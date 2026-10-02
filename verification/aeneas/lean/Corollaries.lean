@@ -177,4 +177,56 @@ theorem validate_zero_stride (self : layout.DstLayout) (tail : layout.TrailingSl
   rw [hconverted, hv]
   simp only [bind_ok]
 
+-- The constructor agrees with direct per-metadata field placement for any
+-- number of fields. The direct rule retains each field's complete inner size.
+contract constructor_matches_record (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout)
+  for layout.DstLayout.for_repr_c_struct repr_align packed fields
+  requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+  requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+  requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed
+  requires hlast : alignmentDomain
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align
+  requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    packed fields.val.length).padFits Usize.max
+  ensures r => ∀ n : Nat,
+    let direct := LayoutMath.recordState (fields.val.map layoutValue)
+      (initialAlignment repr_align) (packingValue packed) n fields.val.length
+    (layoutValue r).size n = LayoutMath.roundUp direct.2 direct.1
+  proof:
+    obtain ⟨start, hstart, halign, hsize, hunpadded⟩ :=
+      WP.spec_imp_exists (new_zst_spec repr_align (fun a h => (ha a h).1))
+    have hv : layoutValue start = constructionPrefix fields
+        (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+      simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+        List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+        initialAlignment, LayoutMath.LayoutValue.initial]
+      cases repr_align <;> rfl
+    have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+    obtain ⟨complete, hloop, hv, hc⟩ := WP.spec_imp_exists
+      (constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc)
+    have hca : complete.align.val.val =
+        (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align :=
+      congrArg LayoutMath.LayoutValue.align hv
+    obtain ⟨r, hpad, hnumeric⟩ := WP.spec_imp_exists (pad_to_align_size complete
+      (by rw [hca]; exact hlast.1) hc (by rw [hv]; exact hfit))
+    unfold layout.DstLayout.for_repr_c_struct
+    rw [hstart, bind_ok, hloop, bind_ok, hpad]
+    apply WP.spec.ret
+    intro n
+    dsimp only
+    rw [hnumeric n, hca, hv]
+    have hdomain : ∀ i (hi : i < (fields.val.map layoutValue).length),
+        (LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue)
+          (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) (packingValue packed) i).extendFits
+          (fields.val.map layoutValue)[i] (packingValue packed) Usize.max := by
+      intro i hi
+      have hil : i < fields.val.length := by simpa only [List.length_map] using hi
+      simpa only [constructionPrefix, List.getElem_map] using (hd i hil).2.2.2
+    have hstate := LayoutMath.recordState_refinement (fields.val.map layoutValue)
+      (initialAlignment repr_align) (packingValue packed) n Usize.max hdomain
+      fields.val.length (by simp only [List.length_map, le_refl])
+    rw [hstate]
+    rfl
+
 end Zerocopy.Corollaries

@@ -1226,6 +1226,19 @@ impl DstLayout {
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
+        // ```aeneas
+        // spec for_repr_c_struct_spec (repr_align repr_packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+        //   requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+        //   requires hp : ∀ a ∈ repr_packed, alignmentDomain a.val.val
+        //   requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed
+        //   requires hlast : alignmentDomain
+        //     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align
+        //   requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+        //     repr_packed fields.val.length).padFits Usize.max
+        //   ensures r => layoutValue r =
+        //     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad
+        // ```
+
         // This harness covers up to three fields, including an optional final
         // DST. Arbitrary-length composition is not established by this bound.
         #[cfg(kani)]
