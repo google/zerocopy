@@ -9,13 +9,404 @@ those terms. -/
 module
 public import Zerocopy.Funs
 public import Contracts
-public import Arithmetic
+public import Loops
+public import LayoutModel
+public import LayoutMath
+import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs
-abbrev NonZeroUsize :=
-  core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
+@@AENEAS_PROOF("zerocopy::util::padding_needed_for")@@
 
-@@AENEAS_PROOFS@@
+@@AENEAS_PROOF("zerocopy::util::round_down_to_next_multiple_of_alignment")@@
+
+@@AENEAS_PROOF("zerocopy::util::max")@@
+
+@@AENEAS_PROOF("zerocopy::util::min")@@
+
+contract pointer_width_spec
+  for layout.POINTER_WIDTH_BITS
+  ensures w => w.val = System.Platform.numBits
+  proof:
+    unfold layout.POINTER_WIDTH_BITS
+    simp only [core.mem.size_of, ite_true, bind_ok]
+    have hv : ({ bv := BitVec.ofNat _ (System.Platform.numBits / 8) } : Usize).val =
+        System.Platform.numBits / 8 := by
+      change (System.Platform.numBits / 8) % 2 ^ System.Platform.numBits = _
+      rcases System.Platform.numBits_eq with h | h <;> simp only [h] <;> decide
+    step as ⟨w, hw⟩
+    · rw [hv]
+      rcases System.Platform.numBits_eq with h | h <;>
+        simp only [Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq, h,
+          UScalar.val] <;> decide
+    · rw [hv] at hw
+      rcases System.Platform.numBits_eq with h | h <;>
+        simp only [h] at hw ⊢ <;> omega
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::new")@@
+
+theorem highest_bit_xor (k p : Nat) (hp : p < 2 ^ k) : (2 ^ k + p) ^^^ 2 ^ k = p := by
+  have hjoin : 2 ^ k + p = 2 ^ k ||| p := by
+    simpa only [Nat.mul_one] using Nat.two_pow_add_eq_or_of_lt hp 1
+  rw [hjoin]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_xor, Nat.testBit_or]
+  by_cases hi : i = k
+  · subst i
+    rw [Nat.testBit_two_pow_self, Nat.testBit_lt_two_pow hp]
+    rfl
+  · rw [Nat.testBit_two_pow_of_ne (Ne.symm hi)]
+    simp
+
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::components")@@
+
+@@AENEAS_PROOF("zerocopy::layout::RoundingAlignAndPhase::align")@@
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::size_offset")@@
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::max_trailing_bytes")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::assume_shallow_unpadded")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_type")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_unpadded_type")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_slice")@@
+
+@@AENEAS_PROOF("zerocopy::layout::max_elems_for_bytes")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::requires_static_padding")@@
+
+theorem wrapping_sub_cancel (x y : Usize) :
+    ((core.num.Usize.wrapping_sub x y).val + y.val) % UScalar.size .Usize = x.val := by
+  rw [core.num.Usize.wrapping_sub_val_eq, Nat.mod_add_mod]
+  have hy := UScalar.hSize y
+  rw [show x.val + (UScalar.size .Usize - y.val) + y.val =
+    x.val + UScalar.size .Usize by omega, Nat.add_mod_right]
+  exact Nat.mod_eq_of_lt (UScalar.hSize x)
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::padding_for_elems")@@
+
+theorem trailing_align_pos (self : layout.TrailingSliceLayout Usize) :
+    0 < (trailingFormula self).align := Nat.two_pow_pos _
+
+theorem trailing_product_le_size (self : layout.TrailingSliceLayout Usize) (n : Nat) :
+    n * self.elem_size.val ≤ (trailingFormula self).size n := by
+  have h := (LayoutMath.roundUp_properties
+    ((trailingFormula self).phase + n * self.elem_size.val)
+    (trailingFormula self).align (trailing_align_pos self)).1
+  unfold trailingFormula byteFormula LayoutMath.Formula.size LayoutMath.Formula.bytes at *
+  dsimp only at *
+  omega
+
+theorem word_mod_of_le (n : Nat) (h : n ≤ Usize.max) : n % UScalar.size .Usize = n := by
+  apply Nat.mod_eq_of_lt
+  have hp := Nat.two_pow_pos System.Platform.numBits
+  simp only [Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq, UScalar.size] at h ⊢
+  omega
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::size_for_elems")@@
+
+@@AENEAS_PROOF("zerocopy::layout::SizeInfo::try_to_nonzero_elem_size")@@
+
+theorem min_align_eq : layout.DstLayout.MIN_ALIGN = .ok ⟨1#usize⟩ := by
+  simp [layout.DstLayout.MIN_ALIGN, core.num.nonzero.NonZero.new]
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::new_zst")@@
+
+theorem decoded_encoding (a p : Nat) (ha : a.isPowerOfTwo) (hp : p < a) :
+    2 ^ Nat.log2 (a + p) = a ∧ a + p - 2 ^ Nat.log2 (a + p) = p := by
+  obtain ⟨k, hk⟩ := ha
+  have hpos := Nat.two_pow_pos k
+  have hlog : Nat.log2 (a + p) = k := by
+    apply (Nat.log2_eq_iff (by omega)).mpr
+    rw [Nat.pow_succ]
+    omega
+  rw [hlog, ← hk]
+  omega
+
+theorem trailing_view (self : layout.TrailingSliceLayout Usize) (a p : Nat)
+    (ha : a.isPowerOfTwo) (hp : p < a)
+    (hn : self.size_rounding_align_and_phase.val.val = a + p) :
+    trailingFormula self = ⟨self.size_base.val, p, a, self.elem_size.val, self.offset.val⟩ := by
+  obtain ⟨hd, _⟩ := decoded_encoding a p ha hp
+  simp only [trailingFormula, byteFormula, hn, hd, Nat.add_sub_cancel_left]
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::pad_to_align")@@
+
+contract current_max_align_spec
+  for layout.DstLayout.CURRENT_MAX_ALIGN
+  ensures a => a.val.val = 2 ^ 29
+  proof:
+    unfold layout.DstLayout.CURRENT_MAX_ALIGN
+    step as ⟨i, hi, _⟩
+    · have := System.Platform.numBits_eq
+      scalar_tac
+    · have hv : i.val = 2 ^ 29 := by
+        rw [Nat.shiftLeft_eq, Nat.one_mul] at hi
+        have hfit : 2 ^ 29 < Usize.size := by
+          rw [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq]
+          rcases System.Platform.numBits_eq with h | h <;> rw [h] <;> decide
+        simpa only [Nat.mod_eq_of_lt hfit] using hi
+      have hnz : i ≠ 0#usize := by
+        intro h
+        have := congrArg UScalar.val h
+        rw [hv] at this
+        change 2 ^ 29 = 0 at this
+        omega
+      simp only [core.num.nonzero.NonZero.new, cast_eq, hnz,
+        ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+      exact hv
+
+contract theoretical_max_align_spec
+  for layout.DstLayout.THEORETICAL_MAX_ALIGN
+  ensures a => a.val.val = 2 ^ (System.Platform.numBits - 1)
+  proof:
+    unfold layout.DstLayout.THEORETICAL_MAX_ALIGN
+    step with pointer_width_spec as ⟨w, hw⟩
+    have hb : 32 ≤ System.Platform.numBits := by
+      rcases System.Platform.numBits_eq with h | h <;> omega
+    step with Usize.sub_spec (show (1#usize).val ≤ w.val by simpa only [show (1#usize).val = 1 by simp, hw] using (show 1 ≤ System.Platform.numBits by omega)) as ⟨shift, hs, _⟩
+    have hs' : shift.val = System.Platform.numBits - 1 := by
+      simpa only [hw, show (1#usize).val = 1 by simp] using hs
+    step with Usize.ShiftLeft_spec 1#usize shift (by rw [hs']; omega) as ⟨a, hav, _⟩
+    have hv : a.val = 2 ^ (System.Platform.numBits - 1) := by
+      rw [hs', Nat.shiftLeft_eq, Nat.one_mul] at hav
+      have hfit : 2 ^ (System.Platform.numBits - 1) < Usize.size := by
+        rw [Usize.size, Usize.numBits, UScalarTy.Usize_numBits_eq]
+        exact (Nat.pow_lt_pow_iff_right (by decide : 1 < 2)).mpr (by omega)
+      simpa only [Nat.mod_eq_of_lt hfit] using hav
+    have hnz : a ≠ 0#usize := by
+      intro h
+      have := congrArg UScalar.val h
+      rw [hv] at this
+      change 2 ^ (System.Platform.numBits - 1) = 0 at this
+      have := Nat.two_pow_pos (System.Platform.numBits - 1)
+      omega
+    simp only [core.num.nonzero.NonZero.new, cast_eq, hnz,
+      ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
+    exact hv
+
+theorem fill_low_bits (n k : Nat) : n ||| (2 ^ k - 1) = n - n % 2 ^ k + (2 ^ k - 1) := by
+  have h : (n - n % 2 ^ k) % 2 ^ k = 0 := by
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  rw [← LayoutMath.aligned_or _ _ _ ⟨k, rfl⟩ h (by have := Nat.two_pow_pos k; omega)]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_or, Nat.testBit_or, Nat.testBit_two_pow_sub_one]
+  by_cases hi : i < k
+  · simp only [hi, decide_true, Bool.or_true]
+  · simp only [hi, decide_false, Bool.or_false]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, ← Nat.shiftLeft_eq]
+    rw [Nat.testBit_shiftLeft]
+    rw [Nat.testBit_div_two_pow]
+    simp only [show k ≤ i by omega, decide_true, Bool.true_and,
+      show i - k + k = i by omega]
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::advance")@@
+
+theorem checked_some_size (f : LayoutMath.Formula) (n : Nat) (size : Usize)
+    (h : some size.val = f.checkedSize Usize.max n) :
+    size.val = f.size n ∧ f.size n ≤ Usize.max := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+theorem checked_none_size (f : LayoutMath.Formula) (n : Nat)
+    (h : none = f.checkedSize Usize.max n) : Usize.max < f.size n := by
+  unfold LayoutMath.Formula.checkedSize at h
+  split at h <;> simp_all
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::requires_dynamic_padding")@@
+
+contract packing_limit_spec (packed : Option NonZeroUsize)
+  for (match packed with | none => layout.DstLayout.THEORETICAL_MAX_ALIGN | some a => Result.ok a)
+  requires hp : ∀ a ∈ packed, a.val.val.isPowerOfTwo
+  ensures a => a.val.val = packingValue packed ∧ a.val.val.isPowerOfTwo
+  proof:
+    cases packed with
+    | none =>
+      step with theoretical_max_align_spec as ⟨a, ha⟩
+      exact ⟨ha, ⟨_, ha⟩⟩
+    | some a =>
+      simp only [WP.spec_ok, packingValue, Option.map_some, Option.getD_some]
+      exact ⟨by trivial, hp a rfl⟩
+
+-- Aeneas shares a generated matcher with the alignment encoder. The model
+-- comparison checks that matcher; this proof deliberately names it.
+set_option linter.auxLemma false in
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::extend")@@
+
+theorem power_dvd_of_le (a b : Nat) (ha : a.isPowerOfTwo) (hb : b.isPowerOfTwo)
+    (hle : a ≤ b) : a ∣ b := by
+  obtain ⟨i, hi⟩ := ha
+  obtain ⟨j, hj⟩ := hb
+  rw [hi, hj] at hle ⊢
+  exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp hle)
+
+@@AENEAS_PROOF("zerocopy::layout::TrailingSliceLayout::has_same_size_sequence")@@
+
+contract cast_offset_spec (cast : layout.CastType) (length : Usize)
+  for (match cast with | .Prefix => Result.ok 0#usize | .Suffix => Result.ok length)
+  ensures offset => offset.val = castSide cast length.val ∧ offset ≤ length
+  proof:
+    cases cast <;> simp [castSide, WP.spec_ok]
+
+contract cast_split_spec (cast : layout.CastType) (length size elems : Usize)
+  for (match cast with
+    | .Prefix => Result.ok (core.result.Result.Ok (elems, size))
+    | .Suffix => do
+      let split ← length - size
+      Result.ok (core.result.Result.Ok (elems, split)) :
+    Result (core.result.Result (Usize × Usize) layout.MetadataCastError))
+  requires h : size.val ≤ length.val
+  ensures r => ∃ split, r = .Ok (elems, split) ∧
+    split.val = castSplit cast length.val size.val
+  proof:
+    cases cast with
+    | Prefix => exact WP.spec.ret ⟨size, rfl, rfl⟩
+    | Suffix =>
+      step with Usize.sub_spec h as ⟨split, hs, _⟩
+      exact ⟨split, rfl, hs⟩
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::validate_cast_and_convert_metadata")@@
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::metadata_for_exact_size")@@
+
+contract extend_value_spec (self field : layout.DstLayout) (packed : Option NonZeroUsize)
+  for layout.DstLayout.extend self field packed
+  requires hself : alignmentDomain self.align.val.val
+  requires hfield : alignmentDomain field.align.val.val
+  requires hpacked : ∀ a ∈ packed, alignmentDomain a.val.val
+  requires hcanonical : canonicalLayout field
+  requires hfit : (layoutValue self).extendFits (layoutValue field) (packingValue packed) Usize.max
+  refines layoutValue to (layoutValue self).extend (layoutValue field) (packingValue packed)
+  ensures r => canonicalLayout r
+  proof:
+    cases hs : self.size_info with
+    | SliceDst tail => simp [layoutValue, hs, LayoutMath.LayoutValue.extendFits] at hfit
+    | Sized size =>
+      have hf : match field.size_info with
+        | .Sized s => placement size field packed + s.val ≤ Usize.max
+        | .SliceDst t => placement size field packed + t.offset.val ≤ Usize.max ∧
+          placement size field packed + t.size_base.val ≤ Usize.max := by
+        cases hfs : field.size_info <;>
+          simpa only [layoutValue, hs, hfs, LayoutMath.LayoutValue.extendFits,
+            placement, fieldAlignment, trailingFormula, byteFormula] using hfit
+      apply WP.spec_mono (extend_spec self field packed size hs hself hfield hpacked hf)
+      rintro r ⟨ha, hu, hr⟩
+      cases hfs : field.size_info with
+      | Sized s =>
+        simp only [hfs] at hr
+        obtain ⟨bytes, hb, hv⟩ := hr
+        simp only [layoutValue, hb, hs, hfs, LayoutMath.LayoutValue.extend,
+          canonicalLayout, ha, hu, hv, placement, fieldAlignment]
+        exact ⟨rfl, trivial⟩
+      | SliceDst t =>
+        simp only [hfs] at hr
+        simp only [canonicalLayout, hfs] at hcanonical
+        obtain ⟨u, hsi, ho, hb, he, hc⟩ := hr
+        simp only [layoutValue, hsi, hs, hfs, LayoutMath.LayoutValue.extend,
+          canonicalLayout, ha, hu, trailingFormula, byteFormula, ho, hb, he, hc,
+          placement, fieldAlignment]
+        exact ⟨rfl, hcanonical⟩
+
+attribute [step] extend_value_spec
+
+contract pad_value_spec (self : layout.DstLayout)
+  for layout.DstLayout.pad_to_align self
+  requires ha : self.align.val.val.isPowerOfTwo
+  requires hc : canonicalLayout self
+  requires hf : (layoutValue self).padFits Usize.max
+  refines layoutValue to (layoutValue self).pad
+  proof:
+    have hfit : match self.size_info with
+      | .Sized s => LayoutMath.roundUp s.val self.align.val.val ≤ Usize.max
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase.val.val ∧
+        (if (trailingFormula t).align < self.align.val.val then
+          LayoutMath.roundUp t.size_base.val (trailingFormula t).align +
+            (trailingFormula t).phase ≤ Usize.max
+         else LayoutMath.roundUp t.size_base.val self.align.val.val ≤ Usize.max) := by
+      cases hs : self.size_info with
+      | Sized s => simpa only [layoutValue, hs, LayoutMath.LayoutValue.padFits] using hf
+      | SliceDst t =>
+        simp only [canonicalLayout, hs] at hc
+        simp only []
+        refine ⟨hc, ?_⟩
+        simpa only [layoutValue, hs, LayoutMath.LayoutValue.padFits,
+          trailingFormula, byteFormula] using hf
+    apply WP.spec_mono (pad_to_align_spec self ha hfit)
+    rintro r ⟨hr, hp⟩
+    cases hs : self.size_info with
+    | Sized s =>
+      simp only [hs] at hp
+      obtain ⟨p, hsi, hv, hu⟩ := hp
+      simp only [layoutValue, hsi, hs, LayoutMath.LayoutValue.pad, hr, hv, hu]
+    | SliceDst t =>
+      simp only [hs] at hp
+      obtain ⟨u, hsi, hv, hu⟩ := hp
+      simp only [layoutValue, hsi, hs, LayoutMath.LayoutValue.pad, hr, hv, hu]
+
+attribute [step] pad_value_spec
+
+theorem construction_prefix_step (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) (hi : i < fields.val.length) :
+    constructionPrefix fields initial packed (i + 1) =
+      (constructionPrefix fields initial packed i).extend (layoutValue fields.val[i]) (packingValue packed) := by
+  unfold constructionPrefix
+  rw [LayoutMath.LayoutValue.prefixValue_step _ _ _ _ (by simpa only [List.length_map] using hi)]
+  simp only [List.getElem_map]
+
+contract constructor_loop_spec (packed : Option NonZeroUsize) (fields : Slice layout.DstLayout)
+    (initial : LayoutMath.LayoutValue) (self : layout.DstLayout) (i : Usize)
+  for layout.DstLayout.for_repr_c_struct_loop packed fields self i
+  requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+  requires hd : constructionDomain fields initial packed
+  requires hi : i.val ≤ fields.val.length
+  requires hv : layoutValue self = constructionPrefix fields initial packed i.val
+  requires hc : canonicalLayout self
+  ensures r => layoutValue r = constructionPrefix fields initial packed fields.val.length ∧ canonicalLayout r
+  proof:
+    unfold layout.DstLayout.for_repr_c_struct_loop
+    apply AeneasContracts.indexed_loop_spec fields.val.length layoutValue
+      (constructionPrefix fields initial packed) canonicalLayout
+    · intro value idx hi hv hc
+      unfold layout.DstLayout.for_repr_c_struct_loop.body
+      simp only [UScalar.lt_equiv, Slice.len_val, Slice.length]
+      split
+      · rename_i hlt
+        have hlt' : idx.val < fields.val.length := hlt
+        step with Slice.index_usize_spec fields idx hlt' as ⟨field, hf⟩
+        obtain ⟨hself, hfield, hcanon, hfits⟩ := hd idx.val hlt'
+        have hsa : alignmentDomain value.align.val.val := by
+          have hh := congrArg LayoutMath.LayoutValue.align hv
+          change value.align.val.val = _ at hh
+          rw [hh]
+          exact hself
+        have hfa : alignmentDomain field.align.val.val := by rw [hf]; exact hfield
+        have hca : canonicalLayout field := by rw [hf]; exact hcanon
+        have hfit : (layoutValue value).extendFits (layoutValue field) (packingValue packed) Usize.max := by
+          rw [hv, hf]
+          exact hfits
+        step as ⟨next, hnext, hcn⟩
+        have hroom : idx.val + (1#usize).val ≤ Usize.max := by
+          have := fields.property
+          change idx.val + 1 ≤ Usize.max
+          omega
+        step with Usize.add_spec (x := idx) (y := 1#usize) hroom as ⟨j, hj⟩
+        change j.val = idx.val + 1 at hj
+        refine ⟨hlt', hj, ?_, hcn⟩
+        rw [hj, construction_prefix_step fields initial packed idx.val hlt', hnext, hv, hf]
+      · rename_i hdone
+        have heq : idx.val = fields.val.length := by omega
+        exact WP.spec.ret ⟨heq, hv, hc⟩
+    · exact hi
+    · exact hv
+    · exact hc
+
+@@AENEAS_PROOF("zerocopy::layout::DstLayout::for_repr_c_struct")@@
+
 end Zerocopy.Proofs

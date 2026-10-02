@@ -28,6 +28,20 @@ set_option maxHeartbeats 1000000
 set_option maxRecDepth 2048
 open Zerocopy
 
+/-- [core::mem::size_of]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 375:0-375:34
+    Name pattern: [core::mem::size_of]
+    Visibility: public -/
+@[rust_fun "core::mem::size_of"]
+axiom core.mem.size_of (T : Type) : Result Std.Usize
+
+/-- [core::mem::align_of]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 543:0-543:35
+    Name pattern: [core::mem::align_of]
+    Visibility: public -/
+@[rust_fun "core::mem::align_of"]
+axiom core.mem.align_of (T : Type) : Result Std.Usize
+
 /-- [core::num::niche_types::{impl core::clone::Clone for core::num::niche_types::NonZeroUsizeInner}::clone]:
     Source: '/rustc/library/core/src/num/niche_types.rs', lines 17:17-17:22
     Name pattern: [core::num::niche_types::{core::clone::Clone<core::num::niche_types::NonZeroUsizeInner>}::clone]
@@ -38,6 +52,17 @@ axiom core.num.niche_types.NonZeroUsizeInner.Insts.CoreCloneClone.clone
   :
   core.num.niche_types.NonZeroUsizeInner → Result
     core.num.niche_types.NonZeroUsizeInner
+
+/-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::new]:
+    Source: '/rustc/library/core/src/num/nonzero.rs', lines 388:4-388:42
+    Name pattern: [core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new]
+    Visibility: public -/
+@[rust_fun
+  "core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new"]
+axiom core.num.nonzero.NonZero.new
+  {T : Type} {Clause0_NonZeroInner : Type} (ZeroablePrimitiveInst :
+  core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
+  T → Result (Option (core.num.nonzero.NonZero T Clause0_NonZeroInner))
 
 /-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::get]:
     Source: '/rustc/library/core/src/num/nonzero.rs', lines 467:4-467:31

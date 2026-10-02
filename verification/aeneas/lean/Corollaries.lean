@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Proofs
+import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std Aeneas.Std.Result
 namespace Zerocopy.Corollaries
@@ -73,88 +74,158 @@ contract round_down_monotone (a b : Usize) (align : NonZeroUsize)
     apply (UScalar.le_equiv _ _).mpr
     exact hgreatest m.val ((UScalar.le_equiv _ _).mp (le_trans hbound hab)) haligned
 
-/-- The original headroom condition implies the exact fit requirement. -/
+/-- The original conservative headroom bound implies the exact fit bound. -/
 theorem pad_to_align_sized_headroom (self : layout.DstLayout) (size : Usize)
-    (hs : self.size_info = layout.SizeInfo.Sized size)
-    (hpow : (self.align.val : Nat).isPowerOfTwo)
-    (hroom : (size : Nat) + (self.align.val : Nat) - 1 ≤ Usize.max) :
+    (hs : self.size_info = .Sized size)
+    (hpow : self.align.val.val.isPowerOfTwo)
+    (hroom : size.val + self.align.val.val - 1 ≤ Usize.max) :
     ∃ r, layout.DstLayout.pad_to_align self = .ok r := by
   have hpos := Nat.pos_of_isPowerOfTwo hpow
   have hlt := Nat.mod_lt (self.align.val.val - size.val % self.align.val.val) hpos
-  have hp := pad_to_align_spec self (by
-    simp only [hs]
-    exact ⟨hpow, by omega⟩)
+  have hp := pad_to_align_spec self hpow (by
+    simp only [hs, LayoutMath.roundUp]
+    omega)
   obtain ⟨r, hr, _⟩ := WP.spec_imp_exists hp
   exact ⟨r, hr⟩
 
-/-- Padding an already aligned sized layout or any DST is the identity. -/
-theorem pad_to_align_aligned (self : layout.DstLayout)
-    (h : ∀ size, self.size_info = layout.SizeInfo.Sized size →
-      (self.align.val : Nat).isPowerOfTwo ∧
-        (size : Nat) % (self.align.val : Nat) = 0) :
-    layout.DstLayout.pad_to_align self = .ok self := by
-  cases hs : self.size_info with
-  | SliceDst dst =>
-    have hp := pad_to_align_spec self (by simp only [hs])
-    obtain ⟨r, hr, _, heq⟩ := WP.spec_imp_exists hp
-    simp only [hs] at heq
-    simpa only [heq] using hr
-  | Sized size =>
-    obtain ⟨hpow, haligned⟩ := h size hs
-    have hp := pad_to_align_spec self (by
-      simp only [hs]
-      refine ⟨hpow, ?_⟩
-      simp only [haligned, Nat.sub_zero, Nat.mod_self, Nat.add_zero]
-      scalar_tac)
-    obtain ⟨r, hr, halign, hpost⟩ := WP.spec_imp_exists hp
-    simp only [hs] at hpost
-    obtain ⟨padded, hinfo, hexact, _, _, _, _, hflag⟩ := hpost
-    have heq : padded = size := UScalar.eq_of_val_eq (by
-      simpa only [haligned, Nat.sub_zero, Nat.mod_self, Nat.add_zero] using hexact)
-    have hflag' : r.statically_shallow_unpadded = self.statically_shallow_unpadded := by
-      simpa only [haligned, decide_true, Bool.and_true] using hflag
-    have hrself : r = self := by
-      cases r
-      cases self
-      simp_all
-    simpa only [hrself] using hr
-
-/- Reapplying layout padding succeeds and leaves the first result unchanged. -/
-contract pad_to_align_idempotent (self : layout.DstLayout)
-  for (do
-    let r ← layout.DstLayout.pad_to_align self
-    let r' ← layout.DstLayout.pad_to_align r
-    ok (r, r'))
-  requires h : ∀ size, self.size_info = layout.SizeInfo.Sized size →
-    let S : Nat := size
-    let A : Nat := self.align.val
-    A.isPowerOfTwo ∧ S + (A - S % A) % A ≤ Usize.max
-  ensures r r' => r' = r
+-- Padding preserves the complete inner size, including its own padding.
+contract pad_to_align_size (self : layout.DstLayout)
+  for layout.DstLayout.pad_to_align self
+  requires ha : self.align.val.val.isPowerOfTwo
+  requires hc : canonicalLayout self
+  requires hf : (layoutValue self).padFits Usize.max
+  ensures r => ∀ n : Nat, (layoutValue r).size n =
+    LayoutMath.roundUp ((layoutValue self).size n) self.align.val.val
   proof:
-    have hp := pad_to_align_spec self (by
-      cases hs : self.size_info with
-      | Sized size => exact h size hs
-      | SliceDst dst => trivial)
-    obtain ⟨r, hr, halign, hpost⟩ := WP.spec_imp_exists hp
-    rw [hr, bind_ok]
-    have hraligned : ∀ size, r.size_info = layout.SizeInfo.Sized size →
-        (r.align.val : Nat).isPowerOfTwo ∧
-          (size : Nat) % (r.align.val : Nat) = 0 := by
-      cases hs : self.size_info with
-      | SliceDst dst =>
-        simp only [hs] at hpost
-        intro size hsize
-        rw [hpost, hs] at hsize
-        contradiction
-      | Sized size =>
-        obtain ⟨hpow, _⟩ := h size hs
-        simp only [hs] at hpost
-        obtain ⟨padded, hinfo, _, _, _, haligned, _, _⟩ := hpost
-        intro size' hsize
-        rw [hinfo] at hsize
-        cases hsize
-        simpa only [halign] using And.intro hpow haligned
-    rw [pad_to_align_aligned r hraligned]
-    simp only [bind_ok, WP.spec_ok, WP.uncurry'_pair]
+    step with pad_value_spec self ha hc hf as ⟨r, hr⟩
+    rw [hr]
+    rename_i n
+    cases hs : self.size_info with
+    | Sized size => simp only [layoutValue, hs, LayoutMath.LayoutValue.pad, LayoutMath.LayoutValue.size]
+    | SliceDst tail =>
+      simp only [layoutValue, hs, LayoutMath.LayoutValue.pad, LayoutMath.LayoutValue.size]
+      apply LayoutMath.pad_size _ _ _ (trailing_align_pos tail) (Nat.pos_of_isPowerOfTwo ha)
+      have hinner : (trailingFormula tail).align.isPowerOfTwo := by
+        simp only [trailingFormula, byteFormula]
+        exact ⟨_, rfl⟩
+      split
+      · rename_i h
+        exact power_dvd_of_le _ _ hinner ha (by omega)
+      · rename_i h
+        exact power_dvd_of_le _ _ ha hinner (by omega)
+
+-- The independent recursive rule determines checked sizes for every metadata.
+contract size_matches_recursive (tail : layout.TrailingSliceLayout Usize)
+    (description : LayoutMath.Description) (n : Usize)
+  for layout.TrailingSliceLayoutUsize.size_for_elems tail n
+  requires hn : 0 < tail.size_rounding_align_and_phase.val.val
+  requires hd : description.valid
+  requires hr : trailingFormula tail = description.compile
+  ensures r => r.map UScalar.val =
+    if description.size n.val ≤ Usize.max then some (description.size n.val) else none
+  proof:
+    step with size_for_elems_spec tail n hn as ⟨r, hsize⟩
+    rw [hr, LayoutMath.Formula.checkedSize, LayoutMath.compile_size description hd] at hsize
+    exact hsize
+
+-- Within the machine size bound, wrapping padding is ordinary physical padding.
+contract padding_matches_recursive (tail : layout.TrailingSliceLayout Usize)
+    (description : LayoutMath.Description) (n : Usize)
+  for layout.TrailingSliceLayoutUsize.padding_for_elems tail n
+  requires hn : 0 < tail.size_rounding_align_and_phase.val.val
+  requires hd : description.valid
+  requires hr : trailingFormula tail = description.compile
+  requires hfit : description.size n.val ≤ Usize.max
+  ensures p => p.val + description.offset + n.val * description.elem = description.size n.val
+  proof:
+    step with padding_for_elems_spec tail n hn as ⟨p, hp⟩
+    have ho : tail.offset.val = description.offset := by
+      have h := congrArg LayoutMath.Formula.offset hr
+      simpa only [trailingFormula, byteFormula, LayoutMath.compile_offset] using h
+    have he : tail.elem_size.val = description.elem := by
+      have h := congrArg LayoutMath.Formula.elem hr
+      simpa only [trailingFormula, LayoutMath.compile_elem] using h
+    rw [ho, he, hr, LayoutMath.compile_size description hd] at hp
+    have hcontains := LayoutMath.description_contains_tail description n.val
+    let physical := description.offset + n.val * description.elem
+    let remaining := description.size n.val - physical
+    have hsum : remaining + physical = description.size n.val := by
+      dsimp only [remaining, physical]
+      omega
+    have hmod : Nat.ModEq (UScalar.size .Usize) (p.val + physical) (remaining + physical) := by
+      change (p.val + physical) % UScalar.size .Usize =
+        (remaining + physical) % UScalar.size .Usize
+      rw [hsum]
+      simpa only [physical, Nat.add_assoc, UScalar.size_UScalarTyUsize] using hp
+    have hcancel := Nat.ModEq.add_right_cancel' physical hmod
+    have hremaining : remaining ≤ Usize.max := by dsimp only [remaining]; omega
+    change p.val % UScalar.size .Usize = remaining % UScalar.size .Usize at hcancel
+    rw [Nat.mod_eq_of_lt (UScalar.hSize p), word_mod_of_le remaining hremaining] at hcancel
+    dsimp only [remaining, physical] at hcancel
+    omega
+
+/-- A zero element stride intentionally panics before inspecting the address. -/
+theorem validate_zero_stride (self : layout.DstLayout) (tail : layout.TrailingSliceLayout Usize)
+    (hs : self.size_info = .SliceDst tail) (he : tail.elem_size = 0#usize)
+    (addr length : Usize) (side : layout.CastType) :
+    layout.DstLayout.validate_cast_and_convert_metadata self addr length side = .fail .panic := by
+  have hp := try_nonzero_spec self.size_info
+  obtain ⟨converted, hconverted, hv⟩ := WP.spec_imp_exists hp
+  simp only [hs, he, if_true] at hv
+  unfold layout.DstLayout.validate_cast_and_convert_metadata
+  rw [hconverted, hv]
+  simp only [bind_ok]
+
+-- The constructor agrees with direct per-metadata field placement for any
+-- number of fields. The direct rule retains each field's complete inner size.
+contract constructor_matches_record (repr_align packed : Option NonZeroUsize)
+    (fields : Slice layout.DstLayout)
+  for layout.DstLayout.for_repr_c_struct repr_align packed fields
+  requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+  requires hp : ∀ a ∈ packed, alignmentDomain a.val.val
+  requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed
+  requires hlast : alignmentDomain
+    (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align
+  requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    packed fields.val.length).padFits Usize.max
+  ensures r => ∀ n : Nat,
+    let direct := LayoutMath.recordState (fields.val.map layoutValue)
+      (initialAlignment repr_align) (packingValue packed) n fields.val.length
+    (layoutValue r).size n = LayoutMath.roundUp direct.2 direct.1
+  proof:
+    obtain ⟨start, hstart, halign, hsize, hunpadded⟩ :=
+      WP.spec_imp_exists (new_zst_spec repr_align (fun a h => (ha a h).1))
+    have hv : layoutValue start = constructionPrefix fields
+        (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed (0#usize).val := by
+      simp only [constructionPrefix, LayoutMath.LayoutValue.prefixValue, show (0#usize).val = 0 by simp,
+        List.take_zero, List.foldl_nil, layoutValue, hsize, hunpadded, halign,
+        initialAlignment, LayoutMath.LayoutValue.initial]
+      cases repr_align <;> rfl
+    have hc : canonicalLayout start := by simp only [canonicalLayout, hsize]
+    obtain ⟨complete, hloop, hv, hc⟩ := WP.spec_imp_exists
+      (constructor_loop_spec packed fields _ start 0#usize hp hd (by simp) hv hc)
+    have hca : complete.align.val.val =
+        (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) packed fields.val.length).align :=
+      congrArg LayoutMath.LayoutValue.align hv
+    obtain ⟨r, hpad, hnumeric⟩ := WP.spec_imp_exists (pad_to_align_size complete
+      (by rw [hca]; exact hlast.1) hc (by rw [hv]; exact hfit))
+    unfold layout.DstLayout.for_repr_c_struct
+    rw [hstart, bind_ok, hloop, bind_ok, hpad]
+    apply WP.spec.ret
+    intro n
+    dsimp only
+    rw [hnumeric n, hca, hv]
+    have hdomain : ∀ i (hi : i < (fields.val.map layoutValue).length),
+        (LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue)
+          (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) (packingValue packed) i).extendFits
+          (fields.val.map layoutValue)[i] (packingValue packed) Usize.max := by
+      intro i hi
+      have hil : i < fields.val.length := by simpa only [List.length_map] using hi
+      simpa only [constructionPrefix, List.getElem_map] using (hd i hil).2.2.2
+    have hstate := LayoutMath.recordState_refinement (fields.val.map layoutValue)
+      (initialAlignment repr_align) (packingValue packed) n Usize.max hdomain
+      fields.val.length (by simp only [List.length_map, le_refl])
+    rw [hstate]
+    rfl
 
 end Zerocopy.Corollaries
