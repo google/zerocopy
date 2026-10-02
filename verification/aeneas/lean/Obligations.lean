@@ -311,5 +311,60 @@ def requires_dynamic_padding_spec : Prop :=
     requires_dynamic_padding_spec_contract self
       (layout.DstLayout.requires_dynamic_padding self)
 
+def validate_cast_spec_contract
+    (self : layout.DstLayout) (addr length : Usize) (side : layout.CastType)
+    (run : Result (core.result.Result (Usize × Usize) layout.MetadataCastError)) : Prop :=
+  layoutValid self →
+    0 < self.align.val.val → addr.val + length.val ≤ Usize.max →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => 0 < t.size_rounding_align_and_phase._0.val.val ∧ 0 < t.elem_size.val) →
+    ∃ r, run = .ok r ∧
+      -- State the expected cases independently of the inline outcome helper.
+      let anchor := addr.val + (match side with | .Prefix => 0 | .Suffix => length.val)
+      match r with
+      | .Err .Alignment => anchor % self.align.val.val ≠ 0
+      | .Err .Size => anchor % self.align.val.val = 0 ∧
+        match self.size_info with
+        | .Sized bytes => length.val < bytes.val
+        | .SliceDst tail => ∀ n : Nat, length.val < (trailingFormula tail).size n
+      | .Ok (elems, split) => anchor % self.align.val.val = 0 ∧
+        match self.size_info with
+        | .Sized bytes => elems.val = 0 ∧ bytes.val ≤ length.val ∧
+          split.val = (match side with
+            | .Prefix => bytes.val
+            | .Suffix => length.val - bytes.val)
+        | .SliceDst tail => (trailingFormula tail).size elems.val ≤ length.val ∧
+          (∀ n : Nat, (trailingFormula tail).size n ≤ length.val ↔ n ≤ elems.val) ∧
+          split.val = (match side with
+            | .Prefix => (trailingFormula tail).size elems.val
+            | .Suffix => length.val - (trailingFormula tail).size elems.val)
+
+def validate_cast_spec : Prop :=
+  ∀ (self : layout.DstLayout) (addr length : Usize) (side : layout.CastType),
+    validate_cast_spec_contract self addr length side
+      (layout.DstLayout.validate_cast_and_convert_metadata self addr length side)
+
+def metadata_exact_spec_contract (self : layout.DstLayout) (size : Usize)
+    (run : Result (Option Usize)) : Prop :=
+  layoutValid self → 0 < self.align.val.val →
+    (match self.size_info with
+      | .Sized _ => True
+      | .SliceDst t => t.elem_size.val ≠ 0 → 0 < t.size_rounding_align_and_phase._0.val.val) →
+    ∃ r, run = .ok r ∧
+      -- Pin exact size and maximal metadata without sharing the inline predicate.
+      match self.size_info with
+      | .Sized _ => r = none
+      | .SliceDst tail =>
+        if tail.elem_size.val = 0 then r = none else
+        match r with
+        | none => ∀ n : Nat, (trailingFormula tail).size n ≠ size.val
+        | some elems => (trailingFormula tail).size elems.val = size.val ∧
+          (∀ n : Nat, (trailingFormula tail).size n ≤ size.val ↔ n ≤ elems.val)
+
+def metadata_exact_spec : Prop :=
+  ∀ (self : layout.DstLayout) (size : Usize),
+    metadata_exact_spec_contract self size (layout.DstLayout.metadata_for_exact_size self size)
+
 
 end Zerocopy.Obligations
