@@ -44,6 +44,15 @@ derive_model_shape Zerocopy.byteorder.F32 with 1 type parameters
 
 derive_model_shape Zerocopy.byteorder.F64 with 1 type parameters
 
+aeneas_model_shape Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters begin
+model RoundingValue where
+  align : Nat
+  phase : Nat
+  align_pow2 : align.isPowerOfTwo
+  phase_lt : phase < align
+  fits : align + phase ≤ Usize.max
+end
+
 derive_model_shape Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
 
 derive_model_shape Zerocopy.pointer.invariant.Initialized with 0 type parameters
