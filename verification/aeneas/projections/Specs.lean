@@ -150,6 +150,26 @@ spec encoding_align_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.encoding_align_spec for Zerocopy.layout.RoundingAlignAndPhase.align with 1
 
+check_model_inputs Zerocopy.layout.nested_reference.round_up with 0 type parameters
+aeneas_spec_begin
+spec nested_round_up_spec
+  for @Zerocopy.layout.nested_reference.round_up with 0 type parameters
+  ensures(raw) rounded => rounded.map UScalar.val =
+    if align.val = 0 then none
+    else if LayoutMath.roundUp size.val align.val ≤ Usize.max
+      then some (LayoutMath.roundUp size.val align.val) else none
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.nested_round_up_spec for Zerocopy.layout.nested_reference.round_up with 2
+
+check_model_inputs Zerocopy.layout.nested_reference.size_for_metadata with 0 type parameters
+aeneas_spec_begin
+spec nested_reference_size_spec
+  for @Zerocopy.layout.nested_reference.size_for_metadata with 0 type parameters
+  ensures(raw) result => result.map UScalar.val =
+    NestedReference.checkedSize leading.val elem_size.val leaf_align.val elems.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.nested_reference_size_spec for Zerocopy.layout.nested_reference.size_for_metadata with 4
+
 check_model_inputs Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
 aeneas_spec_begin
 spec byte_codec_roundtrip_spec
