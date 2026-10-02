@@ -1237,6 +1237,19 @@ impl DstLayout {
     #[cfg_attr(kani, kani::ensures(|&result| {
         Some(result) == proofs::repr_c_layout(repr_align, repr_packed, fields)
     }))]
+    ///
+    /// ```aeneas
+    /// spec for_repr_c_struct_spec
+    ///   requires(raw) ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+    ///   requires(raw) hp : ∀ a ∈ repr_packed, alignmentDomain a.val.val
+    ///   requires(raw) hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed
+    ///   requires(raw) hlast : alignmentDomain
+    ///     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align
+    ///   requires(raw) hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    ///     repr_packed fields.val.length).padFits Usize.max
+    ///   ensures(raw) r => layoutValue r =
+    ///     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad
+    /// ```
     pub const fn for_repr_c_struct(
         repr_align: Option<NonZeroUsize>,
         repr_packed: Option<NonZeroUsize>,
@@ -1255,22 +1268,24 @@ impl DstLayout {
             let _ = DstLayout::for_repr_c_struct(kani::any(), kani::any(), &fields[..len]);
         }
 
-        let mut layout = DstLayout::new_zst(repr_align);
+        // A local named `layout` shadows Aeneas's generated Lean namespace.
+        // Keep this name distinct so the extracted calls resolve correctly.
+        let mut result = DstLayout::new_zst(repr_align);
 
         let mut i = 0;
         #[allow(clippy::arithmetic_side_effects)]
         while i < fields.len() {
             #[allow(clippy::indexing_slicing)]
             let field = fields[i];
-            layout = layout.extend(field, repr_packed);
+            result = result.extend(field, repr_packed);
             i += 1;
         }
 
-        layout = layout.pad_to_align();
+        result = result.pad_to_align();
 
-        // SAFETY: `layout` accurately describes the layout of a `repr(C)`
+        // SAFETY: `result` accurately describes the result of a `repr(C)`
         // struct with `repr_align` or `repr_packed` alignment modifications and
-        // the given `fields`. The `layout` is constructed using a sequence of
+        // the given `fields`. The `result` is constructed using a sequence of
         // invocations of `DstLayout::{new_zst,extend,pad_to_align}`. The
         // documentation of these items vows that invocations in this manner
         // will accurately describe a type, so long as:
@@ -1280,7 +1295,7 @@ impl DstLayout {
         //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
         //
         // We respect all three of these preconditions above.
-        layout
+        result
     }
 
     /// Like `Layout::extend`, this creates a layout that describes a record
@@ -2278,6 +2293,14 @@ mod tests {
             &[(nz(1), nz(1), 1), (nz(2), nz(2), 3), (nz(8), nz(8), 5)],
         ];
         for &leading in cases {
+            let reference_layers: Vec<_> = leading
+                .iter()
+                .map(|&(packed, align, prefix)| nested_reference::NestedLayer {
+                    packed: packed.get(),
+                    min_align: align.get(),
+                    prefix_bytes: prefix,
+                })
+                .collect();
             for &(elem_size, alignment) in &[(0, 1), (0, 8), (1, 1), (2, 2), (3, 1), (8, 8)] {
                 let alignment = nz(alignment);
                 let expected = size_for_metadata_model(leading, elem_size, alignment);
@@ -2289,6 +2312,12 @@ mod tests {
                     max_elems.saturating_add(1),
                     usize::MAX,
                 ]) {
+                    nested_reference::assert_matches_dst_layout(
+                        &reference_layers,
+                        elem_size,
+                        alignment.get(),
+                        elems,
+                    );
                     assert_eq!(
                         actual(elems),
                         expected(elems),
