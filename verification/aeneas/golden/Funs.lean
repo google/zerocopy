@@ -643,14 +643,14 @@ def byteorder.verification.set_u32_be
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
 /-- [zerocopy::layout::POINTER_WIDTH_BITS]
-    Source: 'src/layout/mod.rs', lines 20:0-20:62 -/
+    Source: 'src/layout/mod.rs', lines 23:0-23:62 -/
 @[global_simps, irreducible]
 def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   let i ← core.mem.size_of Std.Usize
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout/mod.rs', lines 100:4-119:5 -/
+    Source: 'src/layout/mod.rs', lines 103:4-122:5 -/
 def layout.RoundingAlignAndPhase.new
   (align : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
@@ -671,7 +671,7 @@ def layout.RoundingAlignAndPhase.new
   | some encoded1 => ok { _0 := encoded1 }
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout/mod.rs', lines 133:4-160:5 -/
+    Source: 'src/layout/mod.rs', lines 136:4-163:5 -/
 def layout.RoundingAlignAndPhase.components
   (self : layout.RoundingAlignAndPhase) :
   Result ((core.num.nonzero.NonZero Std.Usize
@@ -699,7 +699,7 @@ def layout.RoundingAlignAndPhase.components
     ok (align1, phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout/mod.rs', lines 173:4-182:5 -/
+    Source: 'src/layout/mod.rs', lines 176:4-185:5 -/
 def layout.RoundingAlignAndPhase.align
   (self : layout.RoundingAlignAndPhase) :
   Result (core.num.nonzero.NonZero Std.Usize
@@ -707,6 +707,153 @@ def layout.RoundingAlignAndPhase.align
   := do
   let (nz, _) ← layout.RoundingAlignAndPhase.components self
   ok nz
+
+/-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
+    Source: 'src/layout/mod.rs', lines 791:4-819:5 -/
+def layout.SizeInfoUsize.try_to_nonzero_elem_size
+  (self : layout.SizeInfo Std.Usize) :
+  Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)))
+  := do
+  match self with
+  | layout.SizeInfo.Sized size => ok (some (layout.SizeInfo.Sized size))
+  | layout.SizeInfo.SliceDst tsl =>
+    let o ←
+      core.num.nonzero.NonZero.new
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        tsl.elem_size
+    match o with
+    | none => ok none
+    | some elem_size =>
+      ok (some (layout.SizeInfo.SliceDst
+        {
+          offset := tsl.offset,
+          elem_size,
+          size_base := tsl.size_base,
+          size_rounding_align_and_phase := tsl.size_rounding_align_and_phase
+        }))
+
+/-- [zerocopy::layout::max_elems_for_bytes]:
+    Source: 'src/layout/mod.rs', lines 847:0-862:1 -/
+def layout.max_elems_for_bytes
+  (bytes : Std.Usize)
+  (elem_size : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result (Std.Usize × Std.Usize)
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner elem_size
+  let elems ← bytes / i
+  let o ← lift (Usize.checked_mul elems i)
+  match o with
+  | none => fail panic
+  | some used => ok (elems, used)
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MIN_ALIGN]
+    Source: 'src/layout/mod.rs', lines 882:4-885:6 -/
+@[global_simps, irreducible]
+def layout.DstLayout.MIN_ALIGN
+  :
+  Result (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)
+  := do
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 1#usize
+  match o with
+  | none => fail panic
+  | some min_align => ok min_align
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::assume_shallow_unpadded]:
+    Source: 'src/layout/mod.rs', lines 951:4-960:5 -/
+def layout.DstLayout.assume_shallow_unpadded
+  (self : layout.DstLayout) : Result layout.DstLayout := do
+  ok { self with statically_shallow_unpadded := true }
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::new_zst]:
+    Source: 'src/layout/mod.rs', lines 989:4-1009:5
+    Visibility: public -/
+def layout.DstLayout.new_zst
+  (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) :
+  Result layout.DstLayout
+  := do
+  let align ←
+    match repr_align with
+    | none => layout.DstLayout.MIN_ALIGN
+    | some align1 => ok align1
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  massert b
+  ok
+    {
+      align,
+      size_info := (layout.SizeInfo.Sized 0#usize),
+      statically_shallow_unpadded := true
+    }
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_type]:
+    Source: 'src/layout/mod.rs', lines 1033:4-1058:5
+    Visibility: public -/
+def layout.DstLayout.for_type (T : Type) : Result layout.DstLayout := do
+  let i ← core.mem.align_of T
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+  match o with
+  | none => fail panic
+  | some align =>
+    let i1 ← core.mem.size_of T
+    ok
+      {
+        align,
+        size_info := (layout.SizeInfo.Sized i1),
+        statically_shallow_unpadded := false
+      }
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_unpadded_type]:
+    Source: 'src/layout/mod.rs', lines 1088:4-1102:5
+    Visibility: public -/
+def layout.DstLayout.for_unpadded_type
+  (T : Type) : Result layout.DstLayout := do
+  let dl ← layout.DstLayout.for_type T
+  layout.DstLayout.assume_shallow_unpadded dl
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::for_slice]:
+    Source: 'src/layout/mod.rs', lines 1127:4-1163:5 -/
+def layout.DstLayout.for_slice (T : Type) : Result layout.DstLayout := do
+  let i ← core.mem.align_of T
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+  match o with
+  | none => fail panic
+  | some align =>
+    let i1 ← core.mem.size_of T
+    let raap ← layout.RoundingAlignAndPhase.new align 0#usize
+    ok
+      {
+        align,
+        size_info :=
+          (layout.SizeInfo.SliceDst
+            {
+              offset := 0#usize,
+              elem_size := i1,
+              size_base := 0#usize,
+              size_rounding_align_and_phase := raap
+            }),
+        statically_shallow_unpadded := true
+      }
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
+    Source: 'src/layout/mod.rs', lines 1554:4-1563:5
+    Visibility: public -/
+def layout.DstLayout.requires_static_padding
+  (self : layout.DstLayout) : Result Bool := do
+  ok (¬ self.statically_shallow_unpadded)
 
 /-- [zerocopy::layout::nested_reference::round_up]:
     Source: 'src/layout/nested_reference.rs', lines 46:0-56:1 -/
@@ -822,6 +969,98 @@ def layout.nested_reference.size_for_metadata
       | some p => let (size, _) := p
                   ok (some size)
   else ok none
+
+/-- [zerocopy::layout::primitive_checks::check_primitive_layouts]:
+    Source: 'src/layout/primitive_checks.rs', lines 31:0-61:1 -/
+def layout.primitive_checks.check_primitive_layouts
+  (T : Type) : Result Unit := do
+  let size ← core.mem.size_of T
+  let align ← core.mem.align_of T
+  let b ← core.num.Usize.is_power_of_two align
+  if b
+  then
+    let fixed ← layout.DstLayout.for_type T
+    let i ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        fixed.align
+    massert (i = align)
+    let b1 ←
+      match fixed.size_info with
+      | layout.SizeInfo.Sized actual =>
+        if actual = size
+        then ok true
+        else ok false
+      | layout.SizeInfo.SliceDst _ => ok false
+    massert b1
+    massert (¬ fixed.statically_shallow_unpadded)
+    let unpadded ← layout.DstLayout.for_unpadded_type T
+    let i1 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        unpadded.align
+    massert (i1 = align)
+    let b2 ←
+      match unpadded.size_info with
+      | layout.SizeInfo.Sized actual =>
+        if actual = size
+        then ok true
+        else ok false
+      | layout.SizeInfo.SliceDst _ => ok false
+    massert b2
+    massert unpadded.statically_shallow_unpadded
+    let slice ← layout.DstLayout.for_slice T
+    let i2 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        slice.align
+    massert (i2 = align)
+    massert slice.statically_shallow_unpadded
+    match slice.size_info with
+    | layout.SizeInfo.Sized _ => fail panic
+    | layout.SizeInfo.SliceDst tail =>
+      massert (tail.offset = 0#usize)
+      massert (tail.elem_size = size)
+      massert (tail.size_base = 0#usize)
+      let i3 ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+          tail.size_rounding_align_and_phase._0
+      massert (i3 = align)
+  else ok ()
+
+/-- [zerocopy::layout::primitive_checks::check_empty_layout]:
+    Source: 'src/layout/primitive_checks.rs', lines 69:0-81:1 -/
+def layout.primitive_checks.check_empty_layout
+  (repr_align : Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) :
+  Result Unit
+  := do
+  let expected_align ←
+    match repr_align with
+    | none => ok 1#usize
+    | some align =>
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two expected_align
+  if b
+  then
+    let empty ← layout.DstLayout.new_zst repr_align
+    let i ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        empty.align
+    massert (i = expected_align)
+    let b1 ←
+      match empty.size_info with
+      | layout.SizeInfo.Sized i1 =>
+        match i1.val with
+        | 0 => ok true
+        | _ => ok false
+      | layout.SizeInfo.SliceDst _ => ok false
+    massert b1
+    massert empty.statically_shallow_unpadded
+  else ok ()
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
     Source: 'src/util/mod.rs', lines 262:0-280:1 -/
