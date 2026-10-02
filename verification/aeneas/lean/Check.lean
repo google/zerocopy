@@ -9,6 +9,7 @@ those terms. -/
 import Required
 import SpecsSyntaxTests
 import ContractTests
+import SupportTests
 import Corollaries
 open Lean Elab Command
 run_elab do
