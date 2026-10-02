@@ -64,8 +64,74 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
   innerCopyInst := core.num.niche_types.NonZeroUsizeInner.Insts.CoreMarkerCopy
 }
 
+/-- [zerocopy::layout::POINTER_WIDTH_BITS]
+    Source: 'src/layout/mod.rs', lines 17:0-17:62 -/
+@[global_simps, irreducible]
+def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
+  let i ← core.mem.size_of Std.Usize
+  i * 8#usize
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
+    Source: 'src/layout/mod.rs', lines 97:4-116:5 -/
+def layout.RoundingAlignAndPhase.new
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+  Result layout.RoundingAlignAndPhase
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  massert b
+  massert (phase < i)
+  let encoded ← lift (i ||| phase)
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner encoded
+  match o with
+  | none => fail panic
+  | some encoded1 => ok { _0 := encoded1 }
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
+    Source: 'src/layout/mod.rs', lines 130:4-157:5 -/
+def layout.RoundingAlignAndPhase.components
+  (self : layout.RoundingAlignAndPhase) :
+  Result ((core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner) × Std.Usize)
+  := do
+  let i ← layout.POINTER_WIDTH_BITS
+  let i1 ← i - 1#usize
+  let i2 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner self._0
+  let i3 ← lift (core.num.Usize.leading_zeros i2)
+  let i4 ← lift (UScalar.cast .Usize i3)
+  let shift ← i1 - i4
+  let align ← 1#usize <<< shift
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  match o with
+  | none => fail panic
+  | some align1 =>
+    let i5 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align1
+    let phase ← lift (i2 ^^^ i5)
+    ok (align1, phase)
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
+    Source: 'src/layout/mod.rs', lines 170:4-179:5 -/
+def layout.RoundingAlignAndPhase.align
+  (self : layout.RoundingAlignAndPhase) :
+  Result (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)
+  := do
+  let (nz, _) ← layout.RoundingAlignAndPhase.components self
+  ok nz
+
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 260:0-278:1 -/
+    Source: 'src/util/mod.rs', lines 261:0-279:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -82,7 +148,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 168:0-228:1 -/
+    Source: 'src/util/mod.rs', lines 169:0-229:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -122,7 +188,7 @@ def util.checks.check_arithmetic
   else ok ()
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 288:0-294:1 -/
+    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -142,7 +208,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 304:0-310:1 -/
+    Source: 'src/util/mod.rs', lines 305:0-311:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
