@@ -155,7 +155,13 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 ///
 /// ```aeneas
 /// spec padding_lt_alignment
-///   ensures p => p.val < align.val.val
+///   requires h : (align.val : Nat).isPowerOfTwo
+///   ensures p => p < align.val ∧
+///     let L : Nat := len
+///     let A : Nat := align.val
+///     let P : Nat := p
+///     P = (A - L % A) % A ∧ (L + P) % A = 0 ∧
+///       (∀ q : Nat, (L + q) % A = 0 → P ≤ q) ∧ (P = 0 ↔ L % A = 0)
 /// ```
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     #[cfg(kani)]
@@ -241,8 +247,13 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
 ///
 /// ```aeneas
 /// spec round_down_spec
-///   requires h : align.val.val.isPowerOfTwo
-///   ensures m => m.val ≤ n.val ∧ m.val % align.val.val = 0
+///   requires h : (align.val : Nat).isPowerOfTwo
+///   ensures m => m ≤ n ∧
+///     let N : Nat := n
+///     let A : Nat := align.val
+///     let M : Nat := m
+///     M = N - N % A ∧ M % A = 0 ∧ N < M + A ∧
+///       (∀ q : Nat, q ≤ N → q % A = 0 → q ≤ M)
 /// ```
 pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
@@ -269,7 +280,8 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
 ///
 /// ```aeneas
 /// spec max_spec
-///   ensures r => r.val.val = Nat.max a.val.val b.val.val
+///   ensures r => r.val = max a.val b.val ∧ (r = a ∨ r = b) ∧
+///     a.val ≤ r.val ∧ b.val ≤ r.val
 /// ```
 pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() < b.get() {
@@ -284,7 +296,8 @@ pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 ///
 /// ```aeneas
 /// spec min_spec
-///   ensures r => r.val.val = Nat.min a.val.val b.val.val
+///   ensures r => r.val = min a.val b.val ∧ (r = a ∨ r = b) ∧
+///     r.val ≤ a.val ∧ r.val ≤ b.val
 /// ```
 pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     if a.get() > b.get() {
