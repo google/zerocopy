@@ -33,6 +33,8 @@ model RoundingValue where
   fits : align + phase ≤ Usize.max
 end
 
+derive_model_shape Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
+
 derive_model_shape Zerocopy.trait_checks.XorCodec with 0 type parameters
 
 derive_model_shape Zerocopy.trait_checks.Forward with 1 type parameters
