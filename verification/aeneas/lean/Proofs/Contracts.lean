@@ -131,6 +131,16 @@ theorem size_for_elems_spec : Zerocopy.Specs.size_for_elems_spec := by
   exact facts
 register_spec_step size_for_elems_spec
 
+/- Prove that a positive comparison implies equal sizes for all metadata. The
+negative branch deliberately promises no inequality between the sequences.
+-/
+theorem same_size_sequence_spec : Zerocopy.Specs.same_size_sequence_spec := by
+  unfold Zerocopy.Specs.same_size_sequence_spec
+  representation_simps
+  intro self other hs ho
+  exact Raw.same_size_sequence_spec self other hs ho
+register_spec_step same_size_sequence_spec
+
 theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
   unfold Zerocopy.Specs.max_elems_for_bytes_spec
   representation_simps
@@ -203,10 +213,38 @@ theorem requires_static_padding_spec : Zerocopy.Specs.requires_static_padding_sp
   exact Raw.requires_static_padding_spec self
 register_spec_step requires_static_padding_spec
 
+theorem requires_dynamic_padding_spec : Zerocopy.Specs.requires_dynamic_padding_spec := by
+  unfold Zerocopy.Specs.requires_dynamic_padding_spec
+  representation_simps
+  intro self hv
+  apply Raw.requires_dynamic_padding_spec self
+  cases hs : self.size_info with
+  | Sized _ => trivial
+  | SliceDst _ => simpa only [hs] using hv.2
+register_spec_step requires_dynamic_padding_spec
+
 end Zerocopy.Proofs
 
 namespace Zerocopy.Proofs
 open AeneasSpecs
+
+/- Changing the byte origin must preserve the complete-size formula. Carry
+aligned bytes into base and keep the residual phase without losing physical
+offset.
+-/
+theorem advance_spec : Zerocopy.Specs.advance_spec := by
+  unfold Zerocopy.Specs.advance_spec
+  representation_simps
+  intro self bytes elem hv
+  apply WP.spec_mono (Raw.advance_spec self bytes elem hv)
+  rintro result ⟨accepted, facts⟩
+  refine ⟨?_, facts⟩
+  change isValid result
+  rw [option_valid_iff]
+  intro next member
+  rw [trailing_valid_iff]
+  exact ⟨by simp, accepted next member⟩
+register_spec_step advance_spec
 
 /- Explain both zero-stride rejection and successful conversion. The raw lemma
 retains broad representation coverage; the canonical spec adds recursive

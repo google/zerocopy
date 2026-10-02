@@ -309,4 +309,101 @@ theorem theoretical_max_align_spec :
     ↓reduceDIte, ↓reduceIte, bind_ok, WP.spec_ok]
   exact hv
 
+theorem fill_low_bits (n k : Nat) : n ||| (2 ^ k - 1) = n - n % 2 ^ k + (2 ^ k - 1) := by
+  have h : (n - n % 2 ^ k) % 2 ^ k = 0 := by
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  rw [← LayoutMath.aligned_or _ _ _ ⟨k, rfl⟩ h (by have := Nat.two_pow_pos k; omega)]
+  apply Nat.eq_of_testBit_eq
+  intro i
+  rw [Nat.testBit_or, Nat.testBit_or, Nat.testBit_two_pow_sub_one]
+  by_cases hi : i < k
+  · simp only [hi, decide_true, Bool.or_true]
+  · simp only [hi, decide_false, Bool.or_false]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, ← Nat.shiftLeft_eq]
+    rw [Nat.testBit_shiftLeft]
+    rw [Nat.testBit_div_two_pow]
+    simp only [show k ≤ i by omega, decide_true, Bool.true_and,
+      show i - k + k = i by omega]
+
+/- Changing the byte origin must preserve the complete-size formula. Carry
+aligned bytes into base and keep the residual phase without losing physical
+offset.
+-/
+theorem advance_spec :
+  ∀ (self : layout.TrailingSliceLayout Usize) (bytes elem_size : Usize), ∀ (hn : (0 < self.size_rounding_align_and_phase._0.val.val : Prop)),
+    @Zerocopy.layout.TrailingSliceLayoutUsize.advance self bytes elem_size ⦃ result => (∀ t ∈ result, encodingValid t.size_rounding_align_and_phase) ∧ match result with
+    | none => Usize.max < ((trailingFormula self).advance bytes.val elem_size.val).base
+    | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem_size.val ∧
+      ((trailingFormula self).advance bytes.val elem_size.val).base ≤ Usize.max ⦄ := by
+  intro self bytes elem hn
+  unfold layout.TrailingSliceLayoutUsize.advance
+  step with encoding_components_spec _ hn as ⟨a, p, ha, hp, hsum, halign, hphase⟩
+  have hv := trailing_view self a.val.val p.val ha hp hsum.symm
+  have apos := Nat.pos_of_isPowerOfTwo ha
+  simp only [core.num.nonzero.NonZero.get, bind_ok]
+  step with Usize.sub_spec (show (1#usize).val ≤ a.val.val by simpa using (show 1 ≤ a.val.val by omega)) as ⟨mask, hm, _⟩
+  step with Usize.sub_spec (show self.size_base.val ≤ core.num.Usize.MAX.val by scalar_tac) as ⟨available, hav, _⟩
+  let pc := available ||| mask
+  have hpc : pc.val = (Usize.max - self.size_base.val) -
+      (Usize.max - self.size_base.val) % a.val.val + (a.val.val - 1) := by
+    obtain ⟨k, hk⟩ := ha
+    rw [UScalar.val_or, hm, hav]
+    rw [hk, fill_low_bits]
+  have hpbound : p.val ≤ pc.val := by
+    have hor : mask.val ≤ pc.val := by
+      rw [UScalar.val_or]
+      exact Nat.right_le_or
+    omega
+  simp only [lift, bind_ok]
+  step with Usize.sub_spec hpbound as ⟨advance, hadv, _⟩
+  dsimp only [pc] at *
+  simp only [UScalar.lt_equiv]
+  split
+  · rename_i hlarge
+    simp only [WP.spec_ok, hv, LayoutMath.Formula.advance]
+    constructor
+    · simp
+    · have hcap := LayoutMath.floor_capacity (p.val + bytes.val)
+        (Usize.max - self.size_base.val) a.val.val apos
+      have hbase : self.size_base.val ≤ Usize.max := by scalar_tac
+      have hrem := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+  · rename_i hsmall
+    have hshift : p.val + bytes.val ≤ (available ||| mask).val := by omega
+    have hword : (available ||| mask).val ≤ Usize.max := by
+      have h := UScalar.hSize (available ||| mask)
+      simp only [UScalar.size, Usize.max, Usize.numBits, UScalarTy.Usize_numBits_eq] at h ⊢
+      have := Nat.two_pow_pos System.Platform.numBits
+      omega
+    step with Usize.add_spec (x := p) (y := bytes) (by omega) as ⟨shifted, hshifted⟩
+    have hlow : (shifted &&& mask).val = shifted.val % a.val.val := by
+      obtain ⟨k, hk⟩ := ha
+      rw [UScalar.val_and, hm, hk, Nat.and_two_pow_sub_one_eq_mod]
+    step with round_down_spec shifted a ha as ⟨whole, _, hwhole, _, _, _⟩
+    have hbase : self.size_base.val + whole.val ≤ Usize.max := by
+      have hcap := (LayoutMath.floor_capacity (p.val + bytes.val)
+        (Usize.max - self.size_base.val) a.val.val apos).mpr (by omega)
+      rw [hwhole, hshifted]
+      have hb : self.size_base.val ≤ Usize.max := by scalar_tac
+      omega
+    step with Usize.add_spec (x := self.size_base) (y := whole) hbase as ⟨base, hb⟩
+    step with encoding_new_spec a (shifted &&& mask) ha (by rw [hlow]; exact Nat.mod_lt _ apos) as ⟨encoded, he⟩
+    have hnew := trailing_view
+      ({ self with elem_size := elem, size_base := base, size_rounding_align_and_phase := encoded })
+      a.val.val (shifted.val % a.val.val) ha (Nat.mod_lt _ apos) (by rw [he, hlow])
+    have hencoded : encodingValid encoded := by
+      unfold encodingValid
+      rw [he]
+      omega
+    simp only [hnew, hv, LayoutMath.Formula.advance]
+    refine ⟨?_, ?_, ?_⟩
+    · simpa using hencoded
+    · rw [hshifted, hb, hwhole, hshifted]
+      congr 1
+      have := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+    · rw [hwhole, hshifted] at hbase
+      have := Nat.mod_le (p.val + bytes.val) a.val.val
+      omega
+
 end Zerocopy.Proofs.Raw
