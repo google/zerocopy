@@ -18,6 +18,8 @@ struct Functions<'a> {
     source: &'a str,
     modules: Vec<String>,
     unsupported: usize,
+    impl_type: Option<String>,
+    inherent: bool,
     functions: Vec<Value>,
 }
 
@@ -32,7 +34,7 @@ impl Functions<'_> {
                 .map_or(self.source[start..].len(), |(byte, _)| byte)
     }
 
-    fn function(&mut self, ident: &syn::Ident, block: &syn::Block) {
+    fn function(&mut self, ident: &syn::Ident, block: &syn::Block, method: bool) {
         let open = self.offset(block.brace_token.span.open().start());
         assert_eq!(&self.source[open..open + 1], "{", "Invalid function brace span");
         let mut path = self.modules.clone();
@@ -41,6 +43,7 @@ impl Functions<'_> {
             "path": path.join("::"), "open": open,
             "close": self.offset(block.brace_token.span.close().end()),
             "supported": self.unsupported == 0,
+            "method": method, "impl_type": self.impl_type, "inherent": self.inherent,
         }));
     }
 }
@@ -53,7 +56,7 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_fn(&mut self, item: &'ast syn::ItemFn) {
-        self.function(&item.sig.ident, &item.block);
+        self.function(&item.sig.ident, &item.block, false);
         // Never attribute nested functions to the enclosing function or method.
         self.unsupported += 1;
         visit::visit_item_fn(self, item);
@@ -61,16 +64,36 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_impl(&mut self, item: &'ast syn::ItemImpl) {
-        // Support simple, nongeneric inherent impls in their type's module.
-        // Qualified Self types, trait impls and generics need explicit identity
-        // resolution; annotations there must continue to fail closed.
-        let ident = match item.self_ty.as_ref() {
-            syn::Type::Path(path) if path.qself.is_none() => path.path.get_ident(),
+        let previous_type = self.impl_type.clone();
+        let previous_inherent = self.inherent;
+        self.impl_type = match item.self_ty.as_ref() {
+            syn::Type::Path(path) => path.path.segments.last().map(|s| s.ident.to_string()),
             _ => None,
         };
-        if let Some(ident) = ident.filter(|_| {
-            item.trait_.is_none() && item.generics.params.is_empty() && self.unsupported == 0
-        }) {
+        self.inherent = item.trait_.is_none();
+        // A local named Self may apply the impl's own type parameters.
+        // Specializations, qualified Self and trait impls still fail closed.
+        let ident = match item.self_ty.as_ref() {
+            syn::Type::Path(path) if path.qself.is_none() && path.path.segments.len() == 1 => {
+                let segment = &path.path.segments[0];
+                let supported = match &segment.arguments {
+                    syn::PathArguments::None => true,
+                    syn::PathArguments::AngleBracketed(args) => args.args.iter().all(|arg| {
+                        let syn::GenericArgument::Type(syn::Type::Path(arg)) = arg else {
+                            return false;
+                        };
+                        arg.qself.is_none()
+                            && arg.path.get_ident().is_some_and(|ident| {
+                                item.generics.type_params().any(|param| param.ident == *ident)
+                            })
+                    }),
+                    _ => false,
+                };
+                supported.then_some(&segment.ident)
+            }
+            _ => None,
+        };
+        if let Some(ident) = ident.filter(|_| item.trait_.is_none() && self.unsupported == 0) {
             self.modules.push(ident.to_string());
             visit::visit_item_impl(self, item);
             self.modules.pop();
@@ -79,15 +102,15 @@ impl<'ast> Visit<'ast> for Functions<'_> {
             visit::visit_item_impl(self, item);
             self.unsupported -= 1;
         }
+        self.impl_type = previous_type;
+        self.inherent = previous_inherent;
     }
 
     fn visit_impl_item_fn(&mut self, item: &'ast syn::ImplItemFn) {
-        let generic = !item.sig.generics.params.is_empty();
-        self.unsupported += usize::from(generic);
-        self.function(&item.sig.ident, &item.block);
+        self.function(&item.sig.ident, &item.block, true);
         self.unsupported += 1;
         visit::visit_impl_item_fn(self, item);
-        self.unsupported -= 1 + usize::from(generic);
+        self.unsupported -= 1;
     }
 
     fn visit_item_trait(&mut self, item: &'ast syn::ItemTrait) {
@@ -110,8 +133,14 @@ fn inspect(source: &str) -> Result<Value, syn::Error> {
         offset += token.len;
     }
     let syntax = syn::parse_file(source)?;
-    let mut visitor =
-        Functions { source, modules: Vec::new(), unsupported: 0, functions: Vec::new() };
+    let mut visitor = Functions {
+        source,
+        modules: Vec::new(),
+        unsupported: 0,
+        impl_type: None,
+        inherent: false,
+        functions: Vec::new(),
+    };
     visitor.visit_file(&syntax);
     Ok(json!({"comments": comments, "functions": visitor.functions}))
 }
@@ -157,7 +186,8 @@ mod tests {
     fn resolves_simple_inherent_methods_and_rejects_other_impl_forms() {
         for (implementation, supported) in [
             ("impl S", true),
-            ("impl<T> S<T>", false),
+            ("impl<T> S<T>", true),
+            ("impl S<u8>", false),
             ("impl Trait for S", false),
             ("impl m::S", false),
         ] {
@@ -171,6 +201,6 @@ mod tests {
             }
         }
         let value = inspect("impl S { fn f<T>() {} }").unwrap();
-        assert_eq!(value["functions"][0]["supported"], false);
+        assert_eq!(value["functions"][0]["supported"], true);
     }
 }
