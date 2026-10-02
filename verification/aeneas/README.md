@@ -145,6 +145,8 @@ lemmas retain useful representation-level domains.
 predicate, and round-down is monotone, aligned and idempotent under its stated
 conditions.
 
+`LayoutMath.lean` supplies independent unbounded size and capacity formulas.
+
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
 clauses preserve the extracted representation vocabulary while retaining
