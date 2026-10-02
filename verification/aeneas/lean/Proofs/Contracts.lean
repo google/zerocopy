@@ -77,6 +77,60 @@ theorem encoding_align_spec : Zerocopy.Specs.encoding_align_spec := by
   exact ⟨av, (decodeNonZeroUScalar_iff align av).mpr rfl, he.trans hvalue.1.symm⟩
 register_spec_step encoding_align_spec
 
+/- Reading physical offset must preserve the raw word even though the element
+carrier can be generic. No size normalization is needed for this observation.
+-/
+theorem size_offset_spec : Zerocopy.Specs.size_offset_spec := by
+  unfold Zerocopy.Specs.size_offset_spec
+  representation_simps
+  intro E self validity hv
+  exact Raw.size_offset_spec self hv.2
+register_spec_step size_offset_spec
+
+/- Solve the rounded complete-size inequality for the greatest byte budget. The
+proof must preserve rounding plateaus and the case where even zero bytes do
+not fit; dividing by element stride belongs to a later operation.
+-/
+theorem max_trailing_bytes_spec : Zerocopy.Specs.max_trailing_bytes_spec := by
+  unfold Zerocopy.Specs.max_trailing_bytes_spec
+  representation_simps
+  intro E self available validity hv
+  apply WP.spec_mono (Raw.max_trailing_bytes_spec self available hv.2)
+  intro result facts
+  refine ⟨?_, facts⟩
+  change isValid result
+  simp
+register_spec_step max_trailing_bytes_spec
+
+/- Compute padding with wrapping machine arithmetic. The raw theorem records the
+modular result; physical padding follows only when the complete size fits.
+-/
+theorem padding_for_elems_spec : Zerocopy.Specs.padding_for_elems_spec := by
+  unfold Zerocopy.Specs.padding_for_elems_spec
+  representation_simps
+  intro self elems hv
+  exact Raw.padding_for_elems_spec self elems hv
+register_spec_step padding_for_elems_spec
+
+/- Distinguish a successful checked size from overflow using the unbounded
+complete-size formula. Rust None is a successful payload, not a panic.
+-/
+theorem size_for_elems_spec : Zerocopy.Specs.size_for_elems_spec := by
+  intro self elems value hvalue count hcount
+  have hv : 0 < self.size_rounding_align_and_phase._0.val.val :=
+    by simpa only [trailingValid, encodingValid, scalar_valid_iff, true_and] using
+      (trailing_decoder_admitted_iff self).mp ⟨value, hvalue⟩
+  have hformula := trailingFormula_decode self value hvalue
+  have hn := (decodeUScalar_iff elems count).mp hcount
+  apply WP.spec_mono (Raw.size_for_elems_spec self elems hv)
+  intro result facts
+  obtain ⟨decoded, hd⟩ := (option_valid_iff result).mpr (by simp)
+  refine ⟨decoded, hd, ?_⟩
+  change decoded.map (fun size => (size : Nat)) = _
+  rw [optionalSize_decode result decoded hd, hformula, ← hn]
+  exact facts
+register_spec_step size_for_elems_spec
+
 theorem max_elems_for_bytes_spec : Zerocopy.Specs.max_elems_for_bytes_spec := by
   unfold Zerocopy.Specs.max_elems_for_bytes_spec
   representation_simps
@@ -208,5 +262,23 @@ theorem new_zst_spec : Zerocopy.Specs.new_zst_spec := by
   | none => simp
   | some a => simpa only [Option.getD_some, and_true] using Nat.pos_of_isPowerOfTwo (hp a rfl)
 register_spec_step new_zst_spec
+
+/-- An arbitrary proof of the compact mathematical clause implies the separately
+maintained exact optional-size and overflow obligation. -/
+@[contract_simps] theorem size_for_elems_spec_implies_required
+    (self : layout.TrailingSliceLayout Usize) (elems : Usize) (run : Result (Option Usize))
+    (provided : Zerocopy.Specs.size_for_elems_spec_contract self elems run) :
+    Zerocopy.Obligations.size_for_elems_spec_contract self elems run := by
+  intro positive
+  have valid : trailingValid self := ⟨by simp, positive⟩
+  obtain ⟨value, hvalue⟩ := (trailing_decoder_admitted_iff self).mpr valid
+  have hformula := trailingFormula_decode self value hvalue
+  have execution := provided value hvalue (unsignedWord elems) rfl
+  simp only [WP.spec_equiv_exists] at execution
+  obtain ⟨result, hexec, decoded, hd, hsize⟩ := execution
+  refine ⟨result, hexec, ?_⟩
+  change decoded.map (fun size => (size : Nat)) = _ at hsize
+  rw [optionalSize_decode result decoded hd, hformula, unsignedWord_value] at hsize
+  exact hsize
 
 end Zerocopy.Proofs
