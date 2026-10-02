@@ -65,7 +65,7 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
 }
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 160:0-220:1 -/
+    Source: 'src/util/mod.rs', lines 166:0-226:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -81,7 +81,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 247:0-265:1 -/
+    Source: 'src/util/mod.rs', lines 258:0-276:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -98,7 +98,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 274:0-280:1 -/
+    Source: 'src/util/mod.rs', lines 286:0-292:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -118,7 +118,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
+    Source: 'src/util/mod.rs', lines 302:0-308:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
