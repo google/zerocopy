@@ -316,10 +316,6 @@
 ))]
 #![cfg_attr(not(any(test, kani, feature = "std")), no_std)]
 #![cfg_attr(
-    all(feature = "simd-nightly", target_arch = "arm"),
-    feature(stdarch_arm_neon_intrinsics)
-)]
-#![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
     feature(stdarch_powerpc)
 )]
