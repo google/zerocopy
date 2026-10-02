@@ -109,9 +109,7 @@ function scope. There is no copied Rust implementation.
 | `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
-| `RoundingAlignAndPhase::new` | For power-of-two alignment `A` and phase `P < A`, successfully encodes exactly `A + P`. |
-| `RoundingAlignAndPhase::components` | For any nonzero encoded word, returns its highest set bit as a power-of-two alignment and the remaining lower bits as a phase below that alignment; their sum is the original word. |
-| `RoundingAlignAndPhase::align` | For any nonzero encoded word, returns exactly its highest set bit. |
+| Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
 
 Every registered function uses total `spec`: accepted raw representations,
 supplied mathematical ghosts, and explicit requirements imply successful
