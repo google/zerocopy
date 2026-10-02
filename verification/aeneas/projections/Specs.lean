@@ -122,6 +122,22 @@ spec set_u32_be_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
 
+check_model_inputs Zerocopy.layout.composition_checks.check_extend with 0 type parameters
+aeneas_spec_begin
+spec composition_extend_checks_spec
+  for @Zerocopy.layout.composition_checks.check_extend with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.composition_extend_checks_spec for Zerocopy.layout.composition_checks.check_extend with 5
+
+check_model_inputs Zerocopy.layout.composition_checks.check_pad with 0 type parameters
+aeneas_spec_begin
+spec composition_pad_checks_spec
+  for @Zerocopy.layout.composition_checks.check_pad with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.composition_pad_checks_spec for Zerocopy.layout.composition_checks.check_pad with 2
+
 check_model_inputs Zerocopy.layout.RoundingAlignAndPhase.new with 0 type parameters
 aeneas_spec_begin
 spec encoding_new_spec
@@ -263,6 +279,32 @@ spec for_slice_spec (size align : Usize)
       tail.size_rounding_align_and_phase._0.val.val = align.val
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.for_slice_spec for Zerocopy.layout.DstLayout.for_slice with 1
+
+check_model_inputs Zerocopy.layout.DstLayout.extend with 0 type parameters
+aeneas_spec_begin
+spec extend_spec
+  for @Zerocopy.layout.DstLayout.extend with 0 type parameters
+  requires hself : self.align.value.isPowerOfTwo ∧ self.align.value ≤ 2 ^ 29
+  requires hfield : field.align.value.isPowerOfTwo ∧ field.align.value ≤ 2 ^ 29
+  requires hpacked : ∀ a ∈ repr_packed, a.value.isPowerOfTwo ∧ a.value ≤ 2 ^ 29
+  requires hfit : (ModelViews.layoutValue self).extendFits
+    (ModelViews.layoutValue field) (ModelViews.packingValue repr_packed) Usize.max
+  ensures r => ModelViews.layoutValue r =
+    (ModelViews.layoutValue self).extend
+      (ModelViews.layoutValue field) (ModelViews.packingValue repr_packed)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.extend_spec for Zerocopy.layout.DstLayout.extend with 3
+
+check_model_inputs Zerocopy.layout.DstLayout.pad_to_align with 0 type parameters
+aeneas_spec_begin
+spec pad_to_align_spec
+  for @Zerocopy.layout.DstLayout.pad_to_align with 0 type parameters
+  requires ha : (self.align : Nat).isPowerOfTwo
+  requires hfit : (ModelViews.layoutValue self).padFits Usize.max
+  ensures result =>
+    ModelViews.layoutValue result = (ModelViews.layoutValue self).pad
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pad_to_align_spec for Zerocopy.layout.DstLayout.pad_to_align with 1
 
 check_model_inputs Zerocopy.layout.DstLayout.requires_static_padding with 0 type parameters
 aeneas_spec_begin
