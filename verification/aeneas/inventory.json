@@ -15,6 +15,38 @@
       "syntax": "RoundingAlignAndPhase::align"
     },
     {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "SizeInfo::try_to_nonzero_elem_size"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "max_elems_for_bytes"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::assume_shallow_unpadded"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::new_zst"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_type"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_unpadded_type"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::for_slice"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_static_padding"
+    },
+    {
       "file": "zerocopy/src/util/mod.rs",
       "syntax": "max"
     },

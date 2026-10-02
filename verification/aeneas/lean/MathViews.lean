@@ -22,6 +22,17 @@ set_option linter.unusedSimpArgs false
 def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
   0 < code._0.val.val
 
+def trailingValid {E : Type} [RustModel E] (tail : layout.TrailingSliceLayout E) : Prop :=
+  isValid tail.elem_size ∧ encodingValid tail.size_rounding_align_and_phase
+
+def sizeInfoValid {E : Type} [RustModel E] (info : layout.SizeInfo E) : Prop :=
+  match info with
+  | .Sized _ => True
+  | .SliceDst tail => trailingValid tail
+
+def layoutValid (self : layout.DstLayout) : Prop :=
+  0 < self.align.val.val ∧ sizeInfoValid self.size_info
+
 @[contract_simps] theorem admission_eq {Raw : Type u} (provider : RustModel Raw)
     (raw : Raw) : (∃ value, provider.decode raw = some value) =
       @isValid Raw provider raw := rfl
@@ -63,6 +74,37 @@ def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
       layout.RoundingAlignAndPhase.decode, layout.RoundingAlignAndPhase.decodeFields,
       modelNonZeroUScalar, hp, encodingValid]
 
+@[simp, contract_simps] theorem trailing_valid_iff {E : Type} [RustModel E]
+    (tail : layout.TrailingSliceLayout E) : isValid tail ↔ trailingValid tail := by
+  change (∃ value, layout.TrailingSliceLayout.decode E tail = some value) ↔ _
+  unfold trailingValid
+  simp only [layout.TrailingSliceLayout.decode, layout.TrailingSliceLayout.decodeFields,
+    decodeUScalar, admitted_bind, admitted_some,
+    and_true, true_and, option_decoded_post_iff, admission_eq, encoding_valid_iff]
+  change (isValid tail.elem_size ∧ isValid tail.size_rounding_align_and_phase) ↔ _
+  rw [encoding_valid_iff]
+
+@[simp, contract_simps] theorem size_info_valid_iff {E : Type} [RustModel E]
+    (info : layout.SizeInfo E) : isValid info ↔ sizeInfoValid info := by
+  change (∃ value, layout.SizeInfo.decode E info = some value) ↔ _
+  cases info <;>
+    simp only [layout.SizeInfo.decode, layout.SizeInfo.decodeFields,
+      decodeUScalar, admitted_bind, admitted_some,
+      and_true, true_and, admission_eq, sizeInfoValid, trailing_valid_iff]
+  change isValid _ ↔ _
+  exact trailing_valid_iff _
+
+@[simp, contract_simps] theorem layout_valid_iff (self : layout.DstLayout) :
+    isValid self ↔ layoutValid self := by
+  change (∃ value, layout.DstLayout.decode self = some value) ↔ _
+  unfold layoutValid
+  simp only [layout.DstLayout.decode, layout.DstLayout.decodeFields,
+    admitted_bind, admitted_some, and_true,
+    option_decoded_post_iff, admission_eq, nonzero_valid_iff, size_info_valid_iff,
+    bool_valid_iff]
+  change (isValid self.align ∧ isValid self.size_info ∧ isValid self.statically_shallow_unpadded) ↔ _
+  simp only [nonzero_valid_iff, size_info_valid_iff, bool_valid_iff, and_true]
+
 @[contract_simps] theorem scalar_admitted_iff (x : UScalar ty) :
     (∃ value, RustModel.decode x = some value) ↔ True := scalar_valid_iff x
 
@@ -71,6 +113,15 @@ def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
 
 @[contract_simps] theorem encoding_admitted_iff (x : layout.RoundingAlignAndPhase) :
     (∃ value, RustModel.decode x = some value) ↔ encodingValid x := encoding_valid_iff x
+
+@[contract_simps] theorem trailing_admitted_iff {E : Type} [RustModel E] (x : layout.TrailingSliceLayout E) :
+    (∃ value, RustModel.decode x = some value) ↔ trailingValid x := trailing_valid_iff x
+
+@[contract_simps] theorem size_info_admitted_iff {E : Type} [RustModel E] (x : layout.SizeInfo E) :
+    (∃ value, RustModel.decode x = some value) ↔ sizeInfoValid x := size_info_valid_iff x
+
+@[contract_simps] theorem layout_admitted_iff (x : layout.DstLayout) :
+    (∃ value, RustModel.decode x = some value) ↔ layoutValid x := layout_valid_iff x
 
 @[contract_simps] theorem bool_admitted_iff (x : Bool) :
     (∃ value, RustModel.decode x = some value) ↔ True := bool_valid_iff x
@@ -88,16 +139,58 @@ def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
     (∃ value, layout.RoundingAlignAndPhase.decode raw = some value) ↔
       encodingValid raw := encoding_valid_iff raw
 
+@[contract_simps] theorem trailing_decoder_admitted_iff {E : Type} [RustModel E]
+    (raw : layout.TrailingSliceLayout E) :
+    (∃ value, layout.TrailingSliceLayout.decode E raw = some value) ↔
+      trailingValid raw := trailing_valid_iff raw
+
+@[contract_simps] theorem size_info_decoder_admitted_iff {E : Type} [RustModel E] (raw : layout.SizeInfo E) :
+    (∃ value, layout.SizeInfo.decode E raw = some value) ↔
+      sizeInfoValid raw := size_info_valid_iff raw
+
+@[contract_simps] theorem layout_decoder_admitted_iff (raw : layout.DstLayout) :
+    (∃ value, layout.DstLayout.decode raw = some value) ↔
+      layoutValid raw := layout_valid_iff raw
+
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
 
 attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
 
 attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
-attribute [contract_simps] encodingValid
+attribute [contract_simps] encodingValid trailingValid sizeInfoValid layoutValid
 
 @[simp, contract_simps] theorem rounding_model_decode_eq
     (raw : layout.RoundingAlignAndPhase) :
     RustModel.decode raw = layout.RoundingAlignAndPhase.decode raw := rfl
+
+@[simp, contract_simps] theorem trailing_model_decode_eq {E : Type} [RustModel E]
+    (raw : layout.TrailingSliceLayout E) :
+    RustModel.decode raw = layout.TrailingSliceLayout.decode E raw := rfl
+
+@[simp, contract_simps] theorem size_info_model_decode_eq {E : Type} [RustModel E]
+    (raw : layout.SizeInfo E) :
+    RustModel.decode raw = layout.SizeInfo.decode E raw := rfl
+
+@[simp, contract_simps] theorem layout_model_decode_eq (raw : layout.DstLayout) :
+    RustModel.decode raw = layout.DstLayout.decode raw := rfl
+
+-- A named decoder can also occur after a surrounding structural traversal
+-- exposes the retained dictionary. These are the same admission equivalences.
+@[contract_simps] theorem trailing_usize_admitted_iff
+    (raw : layout.TrailingSliceLayout Usize) :
+    (∃ value : layout.TrailingSliceLayout.Fields (UnsignedWord .Usize),
+      RustModel.decode raw = some value) ↔
+      0 < raw.size_rounding_align_and_phase._0.val.val := by
+  simpa only [trailingValid, encodingValid, scalar_valid_iff, true_and] using
+    trailing_admitted_iff raw
+
+-- Optional traversal exposes the same fixed provider's named decoder directly.
+@[contract_simps] theorem trailing_usize_decoder_admitted_iff
+    (raw : layout.TrailingSliceLayout Usize) :
+    (∃ value : layout.TrailingSliceLayout.Fields (UnsignedWord .Usize),
+      layout.TrailingSliceLayout.decode Usize raw = some value) ↔
+      0 < raw.size_rounding_align_and_phase._0.val.val :=
+  trailing_usize_admitted_iff raw
 
 end Zerocopy.Proofs
