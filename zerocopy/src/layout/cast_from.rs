@@ -22,55 +22,34 @@ use crate::*;
 
 /// A numerical metadata transformation selected for a pair of layouts.
 ///
-/// A raw plan contains no type or layout identity. Its parameters describe the
-/// offset/element-size equation below only in relation to the layouts used by
-/// `try_compute`; an arbitrary plan is not a witness for a `KnownLayout` pair.
-/// `CastParams` carries that association for pointer projection.
+/// A raw plan contains no type or layout identity. Its parameters preserve size
+/// only in relation to the layouts used by `try_compute`. `CastParams` retains
+/// that connection to the `KnownLayout` pair used for pointer projection.
 #[derive(Copy, Clone)]
 enum CastPlan {
-    // Assume that `Src` and `Dst` are slice DSTs, and define:
-    // - `S_OFF = Src::LAYOUT.size_info.offset`
-    // - `S_ELEM = Src::LAYOUT.size_info.elem_size`
-    // - `D_OFF = Dst::LAYOUT.size_info.offset`
-    // - `D_ELEM = Dst::LAYOUT.size_info.elem_size`
+    // At compile time (specifically, post-monomorphization time),
+    // we need to compute two things:
+    // - Whether, given *any* `*Src`, it is possible to construct a
+    //   `*Dst` which addresses the same number of bytes (ie,
+    //   whether, for any `Src` pointer metadata, there exists `Dst`
+    //   pointer metadata that addresses the same number of bytes)
+    // - If this is possible, any information necessary to perform
+    //   the `Src`->`Dst` metadata conversion at runtime.
     //
-    // We are trying to solve the following equation:
+    // For slice DSTs, destination metadata is an affine function
+    // of source metadata:
     //
-    //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+    //   dst_meta = offset_delta_elems + src_meta * elem_multiple
     //
-    // At runtime, we will be attempting to compute `d_meta`, given
-    // `s_meta` (a runtime value) and all other parameters (which
-    // are compile-time values). We can solve like so:
-    //
-    //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-    //
-    //   d_meta * D_ELEM = S_OFF - D_OFF + s_meta * S_ELEM
-    //
-    //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-    //
-    // Since `d_meta` will be a `usize`, we need the right-hand side
-    // to be an integer, and this needs to hold for *any* value of
-    // `s_meta` (in order for our conversion to be infallible - ie,
-    // to not have to reject certain values of `s_meta` at runtime).
-    // This means that:
-    //
-    // - `s_meta * S_ELEM` must be a multiple of `D_ELEM`
-    // - Since this must hold for any value of `s_meta`, `S_ELEM`
-    //   must be a multiple of `D_ELEM`
-    // - `S_OFF - D_OFF` must be a multiple of `D_ELEM`
-    //
-    // Thus, let `OFFSET_DELTA_ELEMS = (S_OFF - D_OFF)/D_ELEM` and
-    // `ELEM_MULTIPLE = S_ELEM/D_ELEM`. We can rewrite the above
-    // expression as:
-    //
-    //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-    //
-    //   d_meta = OFFSET_DELTA_ELEMS + s_meta * ELEM_MULTIPLE
-    //
-    // Thus, plan selection checks these ratios and stores the parameters
-    // needed to compute `d_meta` at runtime. `CastParams` associates the selected
-    // plan with the `KnownLayout` types whose layouts were used to select it.
-    /// Converts between slice DSTs using the ratios described above.
+    // `elem_multiple` scales the destination's trailing element
+    // size to the source's. `offset_delta_elems` selects a
+    // destination size equal to the source's zero-element size.
+    // We then prove that the two complete rounded size formulas
+    // produce the same sequence for all metadata. This is
+    // necessary because a packed outer DST can retain a nested
+    // field's rounding operation; comparing only physical
+    // trailing-slice offsets is not sufficient.
+    /// Converts between slice DSTs using a size-preserving affine map.
     UnsizedToUnsized { offset_delta_elems: usize, elem_multiple: usize },
 
     /// Uses the metadata selected for a sized source and a slice DST.
@@ -81,100 +60,145 @@ enum CastPlan {
 }
 
 impl CastPlan {
-    /// Selects a plan from layout values without converting typed metadata.
-    const fn try_compute(src: &DstLayout, dst: &DstLayout) -> Option<Self> {
-        if src.align.get() < dst.align.get() {
+    /// Given a nonzero `dst.elem_size` that exactly divides
+    /// `src.elem_size`, produces `true` only when the following
+    /// metadata map preserves the complete object size for every
+    /// source element count `src_meta`:
+    ///
+    /// ```text
+    /// dst_meta = dst_base + src_meta * (src.elem_size / dst.elem_size)
+    /// ```
+    ///
+    /// This recognizes sufficient conditions for equality. A
+    /// `false` result also includes equivalent size sequences
+    /// that this test cannot recognize, or an adjustment whose
+    /// normalized components cannot be represented in `usize`.
+    const fn size_sequences_match(
+        src: TrailingSliceLayout,
+        dst: TrailingSliceLayout,
+        dst_base: usize,
+    ) -> bool {
+        let base_bytes = match dst_base.checked_mul(dst.elem_size) {
+            Some(bytes) => bytes,
+            None => return false,
+        };
+        let shifted_dst = match dst.advance(base_bytes, src.elem_size) {
+            Some(layout) => layout,
+            None => return false,
+        };
+        src.has_same_size_sequence(shifted_dst)
+    }
+
+    /// Given the complete layouts of `Src` and `Dst`, produces
+    /// parameters for a cast that preserves object size.
+    ///
+    /// A `Some` result establishes that `Src`'s alignment is at
+    /// least `Dst`'s and that the metadata map preserves size for
+    /// every valid source metadata value.
+    ///
+    /// Supports casts between sized types of equal size, from a
+    /// sized type to a slice DST, and between slice DSTs. A slice
+    /// DST destination must have nonzero-sized elements; between
+    /// slice DSTs, its element size must exactly divide the
+    /// source's nonzero element size.
+    ///
+    /// Produces `None` for unsupported casts or when this method
+    /// cannot establish a size-preserving metadata map. Rejection
+    /// does not establish that no such map exists.
+    const fn try_compute(src_layout: &DstLayout, dst_layout: &DstLayout) -> Option<Self> {
+        if src_layout.align.get() < dst_layout.align.get() {
             return None;
         }
 
-        let plan = match (src.size_info, dst.size_info) {
+        let plan = match (src_layout.size_info, dst_layout.size_info) {
             (SizeInfo::Sized { size: src_size }, SizeInfo::Sized { size: dst_size }) => {
                 if src_size != dst_size {
                     return None;
                 }
 
-                // We checked above that `src_size == dst_size`.
+                // SAFETY: We checked above that `src_size ==
+                // dst_size`.
                 CastPlan::SizedToSized
             }
-            (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(dst)) => {
-                let offset_delta = if let Some(od) = src_size.checked_sub(dst.offset) {
-                    od
-                } else {
-                    return None;
+            (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(_)) => {
+                let dst_meta = match dst_layout.metadata_for_exact_size(src_size) {
+                    Some(meta) => meta,
+                    None => return None,
                 };
 
-                let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
-                    e
-                } else {
-                    return None;
-                };
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                if delta_mod_other_elem != 0 {
-                    return None;
-                }
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let dst_meta = offset_delta / dst_elem_size.get();
-
-                // The preceding math ensures that
-                // `dst.offset + dst_meta * dst.elem_size == src_size`.
+                // SAFETY: The preceding math ensures that a `Dst`
+                // with `dst_meta` addresses `src_size` bytes.
                 CastPlan::SizedToUnsized { dst_meta }
             }
             (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) => {
-                let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
-                    od
-                } else {
-                    return None;
-                };
-
                 let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
                     e
                 } else {
                     return None;
                 };
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elem_remainder = src.elem_size % dst_elem_size.get();
-
-                if delta_mod_other_elem != 0 || src.elem_size < dst.elem_size || elem_remainder != 0
-                {
+                if src.elem_size < dst.elem_size {
                     return None;
                 }
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let offset_delta_elems = offset_delta / dst_elem_size.get();
+                let (elem_multiple, described_src_elem_size) =
+                    super::max_elems_for_bytes(src.elem_size, dst_elem_size);
+                if described_src_elem_size != src.elem_size {
+                    return None;
+                }
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                // divide by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elem_multiple = src.elem_size / dst_elem_size.get();
+                // Prefer an exact destination-element adjustment
+                // between `src.size_offset()` and
+                // `dst.size_offset()`. This preserves offset-based
+                // cast compatibility and metadata selection when
+                // several lengths have the same rounded size. It
+                // also avoids choosing a length whose subsequent
+                // padding sequence differs from the source's.
+                let exact_offset_delta_elems =
+                    match src.size_offset().checked_sub(dst.size_offset()) {
+                        Some(delta) => {
+                            let (elems, described_delta) =
+                                super::max_elems_for_bytes(delta, dst_elem_size);
+                            if described_delta == delta {
+                                Some(elems)
+                            } else {
+                                None
+                            }
+                        }
+                        None => None,
+                    };
+
+                let offset_delta_elems = match exact_offset_delta_elems {
+                    Some(elems) if Self::size_sequences_match(src, dst, elems) => elems,
+                    _ => {
+                        let src_zero_size = match src.size_for_elems(0) {
+                            Some(size) => size,
+                            None => return None,
+                        };
+                        let elems = match dst_layout.metadata_for_exact_size(src_zero_size) {
+                            Some(elems) => elems,
+                            None => return None,
+                        };
+                        if !Self::size_sequences_match(src, dst, elems) {
+                            return None;
+                        }
+                        elems
+                    }
+                };
 
                 CastPlan::UnsizedToUnsized {
-                    // We checked above that this is an exact ratio.
+                    // SAFETY: `size_sequences_match` proves that
+                    // this affine metadata map preserves size.
                     offset_delta_elems,
-                    // We checked above that this is an exact ratio.
+                    // SAFETY: We checked above that this is an exact
+                    // ratio of source to destination element size.
                     elem_multiple,
                 }
             }
             _ => return None,
         };
 
+        // SAFETY: We checked above that `src.align >= dst.align`.
         Some(plan)
     }
 
@@ -187,17 +211,11 @@ impl CastPlan {
     /// The other variants impose no condition on `src_meta` and ignore it.
     #[inline(always)]
     unsafe fn cast_metadata(self, src_meta: usize) -> usize {
-        #[allow(unused)]
-        use crate::util::polyfills::*;
-
         match self {
             CastPlan::UnsizedToUnsized { offset_delta_elems, elem_multiple } => {
-                #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
-                // SAFETY: The caller promises that neither the multiplication
-                // nor the addition overflows `usize`.
-                unsafe {
-                    offset_delta_elems.unchecked_add(src_meta.unchecked_mul(elem_multiple))
-                }
+                // SAFETY: The caller provides the helper's complete
+                // no-overflow precondition.
+                unsafe { super::add_scaled_metadata(offset_delta_elems, src_meta, elem_multiple) }
             }
             CastPlan::SizedToUnsized { dst_meta } => dst_meta,
             CastPlan::SizedToSized => 0,
@@ -252,14 +270,57 @@ impl<Src: KnownLayout + ?Sized, Dst: KnownLayout + ?Sized> CastParams<Src, Dst> 
             _ => 0,
         };
 
-        // SAFETY: `self.plan` was selected for `Src::LAYOUT` and `Dst::LAYOUT`.
-        // For `UnsizedToUnsized`, its parameters satisfy the equation:
+        // SAFETY: The sized variants perform no unchecked arithmetic.
+        // For `UnsizedToUnsized`, `self.plan` was selected for the layouts and
+        // witnesses that this affine map makes `Src` and `Dst`'s complete
+        // rounded size formulas equal for every source metadata value.
+        // Interpret the arithmetic in this proof over the
+        // mathematical nonnegative integers. Since the
+        // caller promises that `src_meta` is valid `Src`
+        // metadata, the source object size `src_size` it
+        // describes is at most `isize::MAX`. Let
+        // `src_elem_size` and `dst_elem_size` be the
+        // respective trailing-slice element sizes. Then:
         //
-        //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+        //   src_meta * src_elem_size
+        //       <= src_size <= isize::MAX.
         //
-        // Since the caller promises that `src_meta` is valid `Src` metadata,
-        // this math will not overflow, and the returned value will describe a
-        // `Dst` of the same size. The other variants do no unchecked arithmetic.
+        // Since `elem_multiple` is the exact ratio
+        // `src_elem_size / dst_elem_size` and
+        // `dst_elem_size >= 1`,
+        //
+        //   src_meta * elem_multiple
+        //       <= src_meta * src_elem_size
+        //       <= isize::MAX <= usize::MAX.
+        //
+        // Thus `scaled_elems = src_meta * elem_multiple`
+        // is representable, and its byte contribution is
+        // `scaled_elems * dst_elem_size = src_meta *
+        // src_elem_size`. Let `base_bytes =
+        // offset_delta_elems * dst_elem_size`.
+        // `size_sequences_match` compares the source
+        // formula with the destination formula advanced by
+        // `base_bytes`. The latter's unrounded term
+        // contains `base_bytes + src_meta * src_elem_size`,
+        // and its complete size is at least that large
+        // (formally checked by Kani in
+        // `prove_size_formula_bounds_size_offset`).
+        // Sequence equality therefore gives, over the
+        // mathematical nonnegative integers,
+        //
+        //   base_bytes + src_meta * src_elem_size
+        //       = (offset_delta_elems + scaled_elems)
+        //           * dst_elem_size
+        //       <= src_size.
+        //
+        // Since `dst_elem_size >= 1`, the metadata sum
+        // `offset_delta_elems + scaled_elems` is also at
+        // most `src_size`, and thus at most `isize::MAX <=
+        // usize::MAX`. The sum is therefore representable,
+        // and the returned metadata describes a `Dst` of
+        // the same size.
+        // SAFETY: The bounds above establish the helper's
+        // complete no-overflow precondition.
         let dst_meta = unsafe { self.plan.cast_metadata(src_meta) };
         Dst::PointerMetadata::from_elem_count(dst_meta)
     }

@@ -72,7 +72,7 @@ def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
   i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout/mod.rs', lines 98:4-117:5 -/
+    Source: 'src/layout/mod.rs', lines 97:4-116:5 -/
 def layout.RoundingAlignAndPhase.new
   (align : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
@@ -93,7 +93,7 @@ def layout.RoundingAlignAndPhase.new
   | some encoded1 => ok { _0 := encoded1 }
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout/mod.rs', lines 131:4-158:5 -/
+    Source: 'src/layout/mod.rs', lines 130:4-157:5 -/
 def layout.RoundingAlignAndPhase.components
   (self : layout.RoundingAlignAndPhase) :
   Result ((core.num.nonzero.NonZero Std.Usize
@@ -121,7 +121,7 @@ def layout.RoundingAlignAndPhase.components
     ok (align1, phase)
 
 /-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout/mod.rs', lines 171:4-180:5 -/
+    Source: 'src/layout/mod.rs', lines 170:4-179:5 -/
 def layout.RoundingAlignAndPhase.align
   (self : layout.RoundingAlignAndPhase) :
   Result (core.num.nonzero.NonZero Std.Usize
@@ -131,7 +131,7 @@ def layout.RoundingAlignAndPhase.align
   ok nz
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 260:0-278:1 -/
+    Source: 'src/util/mod.rs', lines 261:0-279:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -148,7 +148,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 168:0-228:1 -/
+    Source: 'src/util/mod.rs', lines 169:0-229:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -188,7 +188,7 @@ def util.checks.check_arithmetic
   else ok ()
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 288:0-294:1 -/
+    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -208,7 +208,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 304:0-310:1 -/
+    Source: 'src/util/mod.rs', lines 305:0-311:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
