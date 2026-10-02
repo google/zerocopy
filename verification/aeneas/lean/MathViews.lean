@@ -34,6 +34,9 @@ set_option linter.unusedSimpArgs false
 -- Raw observations remain available independently of function contracts.
 -- They record the full positive encoding domain, including arbitrary stored
 -- words, and do not register a separately selectable validity interpretation.
+def encodingValid (code : layout.RoundingAlignAndPhase) : Prop :=
+  0 < code._0.val.val
+
 @[contract_simps] theorem admission_eq {Raw : Type u} (provider : RustModel Raw)
     (raw : Raw) : (∃ value, provider.decode raw = some value) =
       @isValid Raw provider raw := rfl
@@ -68,11 +71,21 @@ set_option linter.unusedSimpArgs false
 @[simp, contract_simps] theorem bool_valid_iff (x : Bool) : isValid x ↔ True := by
   simp [isValid, RustModel.decode, modelBool]
 
+@[simp, contract_simps] theorem encoding_valid_iff (code : layout.RoundingAlignAndPhase) :
+    isValid code ↔ encodingValid code := by
+  by_cases hp : 0 < code._0.val.val <;>
+    simp [isValid, RustModel.decode, layout.RoundingAlignAndPhase.aeneasModel,
+      layout.RoundingAlignAndPhase.decode, layout.RoundingAlignAndPhase.decodeFields,
+      modelNonZeroUScalar, hp, encodingValid]
+
 @[contract_simps] theorem scalar_admitted_iff (x : UScalar ty) :
     (∃ value, RustModel.decode x = some value) ↔ True := scalar_valid_iff x
 
 @[contract_simps] theorem nonzero_admitted_iff (x : NonZeroUsize) :
     (∃ value, RustModel.decode x = some value) ↔ 0 < x.val.val := nonzero_valid_iff x
+
+@[contract_simps] theorem encoding_admitted_iff (x : layout.RoundingAlignAndPhase) :
+    (∃ value, RustModel.decode x = some value) ↔ encodingValid x := encoding_valid_iff x
 
 @[contract_simps] theorem bool_admitted_iff (x : Bool) :
     (∃ value, RustModel.decode x = some value) ↔ True := bool_valid_iff x
@@ -86,11 +99,20 @@ set_option linter.unusedSimpArgs false
 
 -- A named decoder can also occur after a surrounding structural traversal
 -- exposes the retained dictionary. These are the same admission equivalences.
+@[contract_simps] theorem encoding_decoder_admitted_iff (raw : layout.RoundingAlignAndPhase) :
+    (∃ value, layout.RoundingAlignAndPhase.decode raw = some value) ↔
+      encodingValid raw := encoding_valid_iff raw
+
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
 
 attribute [contract_simps] option_valid_iff prod_valid_iff result_valid_iff
 
 attribute [contract_simps] and_true true_and and_self true_implies forall_true_iff
+attribute [contract_simps] encodingValid
+
+@[simp, contract_simps] theorem rounding_model_decode_eq
+    (raw : layout.RoundingAlignAndPhase) :
+    RustModel.decode raw = layout.RoundingAlignAndPhase.decode raw := rfl
 
 end Zerocopy.Proofs
