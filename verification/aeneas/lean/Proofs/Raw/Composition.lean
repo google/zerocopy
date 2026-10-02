@@ -31,7 +31,6 @@ theorem packing_limit_spec (packed : Option NonZeroUsize)
 -- Aeneas shares a generated matcher with the alignment encoder. The model
 -- comparison checks that matcher; this proof deliberately names it.
 set_option linter.auxLemma false in
-
 /- Append a field at its effective packed alignment, retaining the field's
 complete inner layout. The canonical theorem then proves the concise
 mathematical extension equation and successful decoding of the returned

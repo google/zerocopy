@@ -56,35 +56,6 @@ allocator admission additionally needs the outer alignment and the signed
 metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
 separate Rust obligations.
 
-Six concrete wrappers in [`lib.rs`](../../zerocopy/src/lib.rs) call the actual
-`PointerMetadata` implementations for `()` and `usize`. Their contracts check
-element-count conversion, layout-variant handling, and checked metadata sizing.
-Using these results for an arbitrary `KnownLayout` implementation requires
-separate layout correspondence.
-
-The numerical harness in [`split_at.rs`](../../zerocopy/src/split_at.rs) compares
-split sizes with the independent remainder-based reference. It checks physical
-tail containment and the zero-padding gate. The shared length helper also runs
-in the production pointer path. These proofs establish bounds and disjoint byte
-intervals, including empty and zero-sized tails; pointer validity and provenance
-remain separate Rust obligations.
-
-The checks in [`pointer/mod.rs`](../../zerocopy/src/pointer/mod.rs) follow the
-actual `CastUnsized` layout gate. Accepted DST pairs retain alignment, physical
-tail offset, and complete sizes for every metadata count. Sized pairs need only
-equal sizes, including zero-sized layouts with different alignments. Rejection
-does not claim that a cast would be impossible. The proof covers the numerical
-decision and sizing comparison, not the resulting pointer's validity.
-
-The checks in [`util/allocation.rs`](../../zerocopy/src/util/allocation.rs) cover
-actual metadata sizing and exact preparation of allocator arguments. Preparation
-preserves every optional size and the supplied alignment, without adding a
-runtime validity filter. Under explicit correspondence to a valid recursive
-layout, separate lemmas establish complete size and tail containment. Numerical
-allocator admission additionally needs the outer alignment and the signed
-metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
-separate Rust obligations.
-
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
@@ -291,8 +262,6 @@ whole-program unsafe-code certification.
 
 ## Scope and proofs
 
-Rust review entry points: [arithmetic assertions](../../zerocopy/src/util/checks.rs), [nested reference](../../zerocopy/src/layout/nested_reference.rs), [primitive assertions](../../zerocopy/src/layout/primitive_checks.rs), [tail assertions](../../zerocopy/src/layout/tail_checks.rs), [composition assertions](../../zerocopy/src/layout/composition_checks.rs), [tail transformations](../../zerocopy/src/layout/tail_transform_checks.rs).
-
 Extraction starts from the function and nominal-type owners of every present
 `aeneas` fence in `zerocopy/src`, including their dependencies. The current
 function specifications cover the layout and arithmetic methods and their Rust
@@ -363,36 +332,6 @@ Rust constructor returned a correct result. Fragment operations have explicit
 fit requirements; arbitrary malformed internal layout records need not succeed.
 Generic size/alignment reads are explicit external data inputs, never axioms
 asserting layout correctness.
-
-`LayoutMath.lean` supplies independent unbounded size and capacity formulas.
-
-The mathematical layout semantics proves normalization across arbitrary
-nesting and metadata values. These algebraic laws do not themselves verify
-a Rust layout method.
-
-The nominal rounding wrapper decodes to `RoundingValue`, a power-of-two
-alignment and bounded phase with machine-fit proofs. Ordinary representation
-laws establish acceptance of every positive stored word and exact reconstruction
-from that pair. Zero is rejected by the native NonZero child decoder.
-
-`LayoutModel.lean` supplies raw observations and projections of the recursively
-decoded records without function proofs. Layout models retain each field and
-the unpadded flag; realizability, alignment and fit conditions remain explicit.
-Generic size/alignment reads are external data inputs, not correctness axioms.
-See [SEMANTICS.md](SEMANTICS.md) for the Rust correspondence premise.
-
-The checked trailing-size and padding contracts connect machine arithmetic
-to the independent recursive semantics.
-
-Extension and normalized padding preserve complete inner sizes, including
-padding inside packed fields.
-
-A positive size-sequence comparison establishes equal sizes for every natural
-metadata value; a negative result does not assert that the sequences differ.
-
-Cast validation and exact metadata inference establish error priority, exact
-splits and rejection of unattainable sizes. Intentional zero-stride panic is
-checked separately.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
 and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
@@ -1290,14 +1229,3 @@ checking its signature; no formatting proposition or behavior is assumed. A
 change to a proposition or a function fails the audit. The PhantomData model
 likewise records its zero runtime fields, with a Lean shape theorem that fails
 if extraction adds fields; it makes no ownership or provenance claim.
-
-## Numerical cast composition
-
-The inline checks in `layout/cast_from.rs` cover numerical cast composition.
-They select a production `CastPlan`, require the checked metadata calculation
-to succeed, compare it with the actual unchecked conversion, and compare
-complete sizes using the independent remainder-based reference. Metadata
-representability follows from a representable complete source size; it is not
-an assumed harness precondition. The proof covers all three accepted plan
-variants. Rejected plans carry no completeness promise, and the typed pointer
-adapter's provenance and `KnownLayout` obligations remain outside this proof.
