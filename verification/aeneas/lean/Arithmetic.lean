@@ -33,6 +33,17 @@ theorem coe_min (a b : Usize) :
     rw [min_eq_right hba]
     exact (Nat.min_eq_right ((UScalar.le_equiv _ _).mp hba)).symm
 
+
+/-- Scalar maximum agrees with mathematical maximum. -/
+theorem coe_max (a b : Usize) :
+    ((max a b : Usize) : Nat) = Nat.max (a : Nat) (b : Nat) := by
+  by_cases h : a ≤ b
+  · rw [max_eq_right h]
+    exact (Nat.max_eq_right ((UScalar.le_equiv _ _).mp h)).symm
+  · have hba : b ≤ a := le_of_not_ge h
+    rw [max_eq_left hba]
+    exact (Nat.max_eq_left ((UScalar.le_equiv _ _).mp hba)).symm
+
 /-- The unique bounded padding that makes the sum divisible by alignment. -/
 theorem padding_unique (len align p : Nat) (hpos : 0 < align)
     (hlt : p < align) (haligned : (len + p) % align = 0) :
