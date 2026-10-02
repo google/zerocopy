@@ -15,7 +15,7 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 15 actual functions in `zerocopy/src/layout.rs` and
+Extraction starts from 19 actual functions in `zerocopy/src/layout.rs` and
 `zerocopy/src/util/mod.rs`, including their dependencies. There is no copied
 Rust implementation. This stack position registers only the functions listed
 below; it does not yet close coverage over every inherent layout method. Later
@@ -28,17 +28,19 @@ proof layers add the remaining methods and the final record-constructor proof.
 | `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
 | `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
+| Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
 
-All 15 registered specifications use total `spec`: their stated
+All 19 registered specifications use total `spec`: their stated
 requirements imply successful termination and their postconditions.
 
 `LayoutMath.lean` defines independent recursive layout semantics and proves
 normalization correct for every nesting depth and metadata value.
 `LayoutModel.lean` supplies interpretation predicates without using any
 function proof. The first layout contracts establish exact construction and
-conversion fields. The extracted record constructor is not yet connected to
-direct per-metadata field placement; that connection is completed in the final
-proof layer.
+conversion fields. Checked sizes and physical padding are connected to the
+recursive semantics in `Corollaries.lean`. The extracted record constructor is
+not yet connected to direct per-metadata field placement; that connection is
+completed in the final proof layer.
 
 Generic size/alignment reads are external data inputs, each of type `Type →
 Usize`, never axioms asserting layout correctness. Constructor contracts
