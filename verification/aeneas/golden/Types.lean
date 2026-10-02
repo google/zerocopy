@@ -99,6 +99,12 @@ structure byteorder.U32 (O : Type) where
   _0 : Array Std.U8 4#usize
   _1 : core.marker.PhantomData O
 
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+structure layout.RoundingAlignAndPhase where
+  _0 : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+
 /-- Trait declaration: [zerocopy::IntoBytes]
     Source: 'src/lib.rs', lines 5941:0-6414:1
     Visibility: public -/
