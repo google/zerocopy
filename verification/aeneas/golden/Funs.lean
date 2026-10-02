@@ -801,4 +801,98 @@ def layout.DstLayout.requires_dynamic_padding
       then ok true
       else ok (¬ (i1 = 0#usize))
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
+    Source: 'src/layout.rs', lines 1866:4-2014:5 -/
+def layout.DstLayout.validate_cast_and_convert_metadata
+  (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
+  (cast_type : layout.CastType) :
+  Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+  := do
+  let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
+  match o with
+  | none => fail panic
+  | some size_info =>
+    let o1 ← lift (Usize.checked_add addr bytes_len)
+    let e := core.option.Option.is_some o1
+    massert e
+    let offset ←
+      match cast_type with
+      | layout.CastType.Prefix => ok 0#usize
+      | layout.CastType.Suffix => ok bytes_len
+    let i ← addr + offset
+    let i1 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
+        self.align
+    let i2 ← i % i1
+    if i2 != 0#usize
+    then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+    else
+      match size_info with
+      | layout.SizeInfo.Sized size =>
+        massert ((size > bytes_len) || (size <= bytes_len))
+        if size > bytes_len
+        then ok (core.result.Result.Err layout.MetadataCastError.Size)
+        else
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (0#usize, size))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - size
+            ok (core.result.Result.Ok (0#usize, split_at))
+      | layout.SizeInfo.SliceDst trailing =>
+        let o2 ←
+          layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
+        match o2 with
+        | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+        | some bytes =>
+          let (elems, _) ←
+            layout.max_elems_for_bytes bytes trailing.elem_size
+          let size_align ←
+            layout.RoundingAlignAndPhase.align
+              trailing.size_rounding_align_and_phase
+          let i3 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              trailing.elem_size
+          let unused_bytes ← bytes % i3
+          let unused_aligned_bytes ←
+            util.round_down_to_next_multiple_of_alignment unused_bytes
+              size_align
+          let i4 ← bytes_len - trailing.size_base
+          let max_rounded_bytes ←
+            util.round_down_to_next_multiple_of_alignment i4 size_align
+          let i5 ← max_rounded_bytes - unused_aligned_bytes
+          let self_bytes ← trailing.size_base + i5
+          massert (self_bytes <= bytes_len)
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (elems, self_bytes))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - self_bytes
+            ok (core.result.Result.Ok (elems, split_at))
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
+    Source: 'src/layout.rs', lines 1726:4-1750:5 -/
+def layout.DstLayout.metadata_for_exact_size
+  (self : layout.DstLayout) (size : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match self.size_info with
+  | layout.SizeInfo.Sized _ => ok none
+  | layout.SizeInfo.SliceDst tsl =>
+    match tsl.elem_size.val with
+    | 0 => ok none
+    | _ =>
+      let r ←
+        layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
+          layout.CastType.Prefix
+      match r with
+      | core.result.Result.Ok p =>
+        let (elems, object_size) := p
+        if object_size = size
+        then ok (some elems)
+        else ok none
+      | core.result.Result.Err _ => ok none
+
 end Zerocopy
