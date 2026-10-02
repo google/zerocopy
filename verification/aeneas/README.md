@@ -17,7 +17,7 @@ The existing required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 19 actual functions in `zerocopy/src/layout.rs` and
+Extraction starts from 21 actual functions in `zerocopy/src/layout.rs` and
 `zerocopy/src/util/mod.rs`, including their dependencies. There is no copied
 Rust implementation. This stack position registers only the functions listed
 below; it does not yet close coverage over every inherent layout method. Later
@@ -31,8 +31,9 @@ proof layers add the remaining methods and the final record-constructor proof.
 | `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
 | `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 | Trailing size, padding, and capacity | Exact size-offset and capacity formulas, checked-size overflow, and wrapping padding; successful sizes and physical padding refine the independent recursive semantics. |
+| `DstLayout::{extend,pad_to_align}` | Exact field placement, alignment, padding flags, and normalized size formulas; outer padding preserves each field's complete inner size. |
 
-All 19 registered specifications use total `contract`: their stated
+All 21 registered specifications use total `contract`: their stated
 requirements imply successful termination and their postconditions.
 
 `LayoutMath.lean` defines independent recursive layout semantics and proves
@@ -40,9 +41,11 @@ normalization correct for every nesting depth and metadata value.
 `LayoutModel.lean` supplies interpretation predicates without using any
 function proof. The first layout contracts establish exact construction and
 conversion fields. Checked sizes and physical padding are connected to the
-recursive semantics in `Corollaries.lean`. The extracted record constructor is
-not yet connected to direct per-metadata field placement; that connection is
-completed in the final proof layer.
+recursive semantics in `Corollaries.lean`. The same module proves that outer
+padding rounds the complete inner size, including padding inside a packed
+field. The extracted record constructor is not yet connected to direct
+per-metadata field placement; that connection is completed in the final proof
+layer.
 
 Generic size/alignment reads are external data inputs, each of type `Type →
 Usize`, never axioms asserting layout correctness. Constructor contracts
@@ -217,7 +220,7 @@ unexpanded slots fail. `target/aeneas/rendered-golden` holds the assembled model
 used for comparison. These invalid-Lean slots are expanded before compilation
 and never interpreted as ordinary comments.
 
-All 19 registered proof bodies live in the Rust annotations; shared arithmetic
+All 21 registered proof bodies live in the Rust annotations; shared arithmetic
 lemmas and composition corollaries live in Lean modules. `lean/Proofs.lean.in`
 supplies shared imports, support lemmas, and named
 `@@AENEAS_PROOF("rust::identity")@@` slots. Every registered proof has exactly
@@ -297,6 +300,13 @@ The final layer adds the arbitrary-length record-constructor proof and closes
 method coverage. Shared support and required-contract checks are already active
 for every registered function at this stack position.
 
+`DstLayout::pad_to_align` declares dependencies on rounding, encoding, and
+padding helpers. Its proof applies their contracts to establish the normalized
+result and rule out overflow under its fit condition. `Corollaries.lean` proves
+for every metadata value that outer padding preserves the complete inner size,
+and that the original conservative sized-layout headroom bound implies the
+new exact fit requirement.
+
 Generated `Required.lean` records the declared theorem edges. `Check.lean`
 inspects elaborated theorem types and proof terms, following local helper
 declarations and stopping at other registered theorems. Every referenced
@@ -349,7 +359,7 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 After comparison succeeds, CI compiles the checked-in model and the unmodified
-live model in separate fresh Lake workspaces. Both must prove the same 19
+live model in separate fresh Lake workspaces. Both must prove the same 21
 contracts and composition corollaries and pass the required-type checks and axiom
 audit; neither imports
 the other's compiled model. The live functions always come from Aeneas. Inline
@@ -430,9 +440,11 @@ reversing the translated `min` comparison must fail its proof. In the live
 workspace, comment drift must pass fuzzy comparison and
 proof checking, while reversing `min` must also fail comparison. These controls
 edit scratch files and restore them before rechecking the original results.
-In both workspaces, unused theorem dependencies fail the dependency audit,
-and an incorrect translated padding function fails its proof. Exact
-contracts reject always-zero padding and round-down. Replacing round-down with its valid earlier
+In both workspaces, removing a padding callee fails its caller proof;
+undeclared and unused dependencies fail the audit, including through private
+helpers. Incorrect translated padding fails its proof. Exact contracts reject
+always-zero padding and round-down, an incorrect shallow-padding flag,
+conflating physical offset with size base, and dropping inner rounding. Replacing round-down with its valid earlier
 weaker contract must fail the independent required-type check. Unit tests
 also reject missing dependencies and cycles and exercise method ownership and
 Charon Self-type binding.

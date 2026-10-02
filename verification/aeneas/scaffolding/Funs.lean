@@ -130,6 +130,40 @@ def layout.DstLayout.MIN_ALIGN
   | none => fail panic
   | some min_align => ok min_align
 
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::THEORETICAL_MAX_ALIGN]
+    Source: 'src/layout.rs', lines 1391:4-1395:10 -/
+@[global_simps, irreducible]
+def layout.DstLayout.THEORETICAL_MAX_ALIGN
+  :
+  Result (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)
+  := do
+  let i ← layout.POINTER_WIDTH_BITS
+  let i1 ← i - 1#usize
+  let i2 ← 1#usize <<< i1
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i2
+  match o with
+  | none => fail panic
+  | some max_align => ok max_align
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::CURRENT_MAX_ALIGN]
+    Source: 'src/layout.rs', lines 1405:4-1408:6 -/
+@[global_simps, irreducible]
+def layout.DstLayout.CURRENT_MAX_ALIGN
+  :
+  Result (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)
+  := do
+  let i ← 1#usize <<< 29#i32
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner i
+  match o with
+  | none => fail panic
+  | some max_align => ok max_align
+
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::assume_shallow_unpadded]:
     Source: 'src/layout.rs', lines 1445:4-1467:5 -/
 @@AENEAS_GOLDEN("layout.DstLayout.assume_shallow_unpadded.lean.in")@@
@@ -153,18 +187,28 @@ def layout.DstLayout.MIN_ALIGN
     Source: 'src/layout.rs', lines 1701:4-1788:5 -/
 @@AENEAS_GOLDEN("layout.DstLayout.for_slice.lean.in")@@
 
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
-    Source: 'src/layout.rs', lines 2174:4-2197:5
-    Visibility: public -/
-@@AENEAS_GOLDEN("layout.DstLayout.requires_static_padding.lean.in")@@
+/-- [zerocopy::util::min]:
+    Source: 'src/util/mod.rs', lines 384:0-424:1 -/
+@@AENEAS_GOLDEN("util.min.lean.in")@@
 
 /-- [zerocopy::util::max]:
     Source: 'src/util/mod.rs', lines 340:0-380:1 -/
 @@AENEAS_GOLDEN("util.max.lean.in")@@
 
-/-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 384:0-424:1 -/
-@@AENEAS_GOLDEN("util.min.lean.in")@@
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::extend]:
+    Source: 'src/layout.rs', lines 1898:4-2281:5
+    Visibility: public -/
+@@AENEAS_GOLDEN("layout.DstLayout.extend.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
+    Source: 'src/layout.rs', lines 2309:4-2606:5
+    Visibility: public -/
+@@AENEAS_GOLDEN("layout.DstLayout.pad_to_align.lean.in")@@
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::requires_static_padding]:
+    Source: 'src/layout.rs', lines 2618:4-2641:5
+    Visibility: public -/
+@@AENEAS_GOLDEN("layout.DstLayout.requires_static_padding.lean.in")@@
 
 
 end Zerocopy

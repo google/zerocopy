@@ -143,6 +143,77 @@ lake build SupportTests > "$backup/loop-restore-build.log" 2>&1 || {
     cat "$backup/loop-restore-build.log" >&2; exit 1;
 }
 
+# The caller must actually have its callee theorem available during elaboration.
+python3 - <<'PY'
+from pathlib import Path
+p = Path("Proofs.lean")
+s = p.read_text()
+old = 'contract padding_lt_alignment '
+if s.count(old) != 1:
+    raise SystemExit("Callee theorem negative control no longer matches")
+p.write_text(s.replace(old, 'contract unavailable_padding_lt_alignment '))
+PY
+if lake build Proofs > "$backup/dependency-build.log" 2>&1; then
+    echo "Caller proof accepted an unavailable callee theorem" >&2
+    exit 1
+fi
+if ! grep -q 'Unknown identifier.*padding_lt_alignment' "$backup/dependency-build.log"; then
+    cat "$backup/dependency-build.log" >&2; exit 1
+fi
+echo "Confirmed: caller proof rejects an unavailable callee theorem"
+cp "$backup/Proofs.lean" Proofs.lean
+
+# A private alias outside the proof namespace must not hide a callee reference.
+python3 - <<'PY'
+from pathlib import Path
+p = Path("Proofs.lean")
+s = p.read_text()
+alias = '''end Zerocopy.Proofs
+namespace DependencyControl
+private def padding_alias := Zerocopy.Proofs.padding_lt_alignment
+end DependencyControl
+namespace Zerocopy.Proofs
+
+'''
+call = 'step with padding_lt_alignment size self.align ha'
+if s.count('contract pad_to_align_spec ') != 1 or s.count(call) != 1:
+    raise SystemExit("Private helper dependency control no longer matches")
+s = s.replace('contract pad_to_align_spec ', alias + 'contract pad_to_align_spec ')
+p.write_text(s.replace(call, 'step with DependencyControl.padding_alias size self.align ha'))
+PY
+lake build Required > "$backup/helper-build.log" 2>&1 || {
+    cat "$backup/helper-build.log" >&2; exit 1;
+}
+lake env lean -DwarningAsError=true Check.lean > "$backup/helper-check.log" 2>&1 || {
+    cat "$backup/helper-check.log" >&2; exit 1;
+}
+echo "Confirmed: dependency audit follows a private helper outside the proof namespace"
+
+# Terms remain valid when an edge is omitted; the dependency audit must catch it.
+python3 - <<'PY'
+from pathlib import Path
+p = Path("Required.lean")
+s = p.read_text()
+old = ('(`Zerocopy.Proofs.pad_to_align_spec, #[`Zerocopy.Proofs.padding_lt_alignment, '
+       '`Zerocopy.Proofs.encoding_components_spec, `Zerocopy.Proofs.round_down_spec, '
+       '`Zerocopy.Proofs.encoding_new_spec])')
+if s.count(old) != 1:
+    raise SystemExit("Undeclared dependency negative control no longer matches")
+p.write_text(s.replace(old, old.replace('`Zerocopy.Proofs.padding_lt_alignment, ', '')))
+PY
+lake build Required > "$backup/undeclared-build.log" 2>&1 || {
+    cat "$backup/undeclared-build.log" >&2; exit 1;
+}
+if lake env lean Check.lean > "$backup/undeclared-check.log" 2>&1; then
+    echo "Dependency audit accepted an undeclared proof reference" >&2; exit 1
+fi
+if ! grep -q 'undeclared proof dependency.*padding_lt_alignment' "$backup/undeclared-check.log"; then
+    cat "$backup/undeclared-check.log" >&2; exit 1
+fi
+echo "Confirmed: dependency audit rejects an undeclared proof reference"
+cp "$backup/Required.lean" Required.lean
+cp "$backup/Proofs.lean" Proofs.lean
+
 python3 - <<'PY'
 from pathlib import Path
 p = Path("Required.lean")
@@ -213,6 +284,16 @@ PYCONTROL
 }
 reject_model "always-zero padding" 'ok (i2 &&& mask)' 'ok 0#usize'
 reject_model "always-zero round-down" 'ok (n &&& mask)' 'ok 0#usize'
+reject_model "an incorrect shallow-padding flag" \
+    'statically_shallow_unpadded := (padding = 0#usize)' \
+    'statically_shallow_unpadded := true' 'layout.DstLayout.pad_to_align'
+reject_model "conflating physical offset with the size base" \
+    'Usize.checked_add offset tsl.offset' \
+    'Usize.checked_add offset tsl.size_base' 'layout.DstLayout.extend'
+reject_model "dropping inner rounding under outer packing" \
+    'util.padding_needed_for trailing.size_base size_align' \
+    'util.padding_needed_for trailing.size_base self.align' 'layout.DstLayout.pad_to_align'
+
 cat >> Proofs.lean <<'LEAN'
 namespace Zerocopy.Proofs
 theorem negative_control : True := by sorry
