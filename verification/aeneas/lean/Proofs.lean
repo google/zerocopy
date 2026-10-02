@@ -29,6 +29,7 @@ implementation each time.
 
 Aeneas Result describes execution success, panic, or divergence. Rust Option
 and Rust Result values may themselves be successful payloads. The proof must
-keep these cases distinct.
+keep these cases distinct. Corollaries connects the operation results to the
+independent recursive layout semantics under the explicit Rust premise.
 -/
 open Aeneas Aeneas.Std
