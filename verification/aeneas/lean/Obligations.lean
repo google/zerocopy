@@ -147,6 +147,31 @@ def size_for_elems_spec : Prop :=
   ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize),
     size_for_elems_spec_contract t n (layout.TrailingSliceLayoutUsize.size_for_elems t n)
 
+def same_size_sequence_spec_contract (a b : layout.TrailingSliceLayout Usize)
+    (run : Result Bool) : Prop :=
+  0 < a.size_rounding_align_and_phase._0.val.val → 0 < b.size_rounding_align_and_phase._0.val.val →
+    ∃ same, run = .ok same ∧
+      (same = true → ∀ n : Nat, (trailingFormula a).size n = (trailingFormula b).size n)
+
+def same_size_sequence_spec : Prop :=
+  ∀ (a b : layout.TrailingSliceLayout Usize),
+    same_size_sequence_spec_contract a b
+      (layout.TrailingSliceLayoutUsize.has_same_size_sequence a b)
+
+def advance_spec_contract (t : layout.TrailingSliceLayout Usize) (bytes stride : Usize)
+    (run : Result (Option (layout.TrailingSliceLayout Usize))) : Prop :=
+  0 < t.size_rounding_align_and_phase._0.val.val →
+    run ⦃ r => (∀ next ∈ r, encodingValid next.size_rounding_align_and_phase) ∧
+      match r with
+      | none => Usize.max < ((trailingFormula t).advance bytes.val stride.val).base
+      | some next => trailingFormula next = (trailingFormula t).advance bytes.val stride.val ∧
+        ((trailingFormula t).advance bytes.val stride.val).base ≤ Usize.max ⦄
+
+def advance_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (bytes stride : Usize),
+    advance_spec_contract t bytes stride
+      (layout.TrailingSliceLayoutUsize.advance t bytes stride)
+
 def try_nonzero_spec_contract (si : layout.SizeInfo Usize)
     (run : Result (Option (layout.SizeInfo NonZeroUsize))) : Prop :=
   sizeInfoValid si → run ⦃ r => (∀ next ∈ r, sizeInfoValid next) ∧
@@ -285,6 +310,20 @@ def requires_static_padding_spec_contract (self : layout.DstLayout)
 def requires_static_padding_spec : Prop :=
   ∀ (self : layout.DstLayout),
     requires_static_padding_spec_contract self (layout.DstLayout.requires_static_padding self)
+
+def requires_dynamic_padding_spec_contract (self : layout.DstLayout)
+    (run : Result Bool) : Prop :=
+  layoutValid self →
+    ∃ r, run = .ok r ∧
+      (r = false ↔ match self.size_info with
+        | .Sized _ => True
+        | .SliceDst t => (trailingFormula t).size 0 = t.offset.val ∧
+          t.elem_size.val % (trailingFormula t).align = 0)
+
+def requires_dynamic_padding_spec : Prop :=
+  ∀ (self : layout.DstLayout),
+    requires_dynamic_padding_spec_contract self
+      (layout.DstLayout.requires_dynamic_padding self)
 
 
 end Zerocopy.Obligations
