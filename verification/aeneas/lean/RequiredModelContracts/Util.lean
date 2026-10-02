@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Obligations
 public import Specs
+public import MathViews
 @[expose] public section
 
 /-!
@@ -23,17 +24,21 @@ strong enough.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 
--- These bridges consume the supplied weak-stage model contract and recover
--- the unchanged independent c85 propositions. No raw function proof is used.
+attribute [contract_simps] option_admitted_explicit_iff admitted_some admitted_none
+  admitted_dite
+
+-- These implications consume a supplied model contract and recover the
+-- separately authored representation observations. They do not prove or
+-- select a function contract themselves.
 @[contract_simps] theorem required_padding (len : Usize) (align : NonZeroUsize)
     (run : Result Usize) (provided : Specs.padding_lt_alignment_contract len align run) :
     Obligations.padding_lt_alignment_contract len align run := by
-  intro positive
+  intro positive pow2
   let av : NonZeroUsizeValue := ⟨unsignedWord align.val, positive⟩
   have admitted := (decodeNonZeroUScalar_iff align av).mpr rfl
-  apply WP.spec_mono (provided (unsignedWord len) rfl av admitted)
-  rintro output ⟨value, decoded, facts⟩
-  have same := (decodeUScalar_iff output value).mp decoded
+  apply WP.spec_mono (provided (unsignedWord len) rfl av admitted pow2)
+  rintro p ⟨value, decoded, facts⟩
+  have same := (decodeUScalar_iff p value).mp decoded
   simpa only [unsignedWord, av, ← same] using facts
 
 @[contract_simps] theorem required_round_down (n : Usize) (align : NonZeroUsize)
@@ -47,6 +52,12 @@ namespace Zerocopy.Proofs
   have same := (decodeUScalar_iff output value).mp decoded
   simpa only [unsignedWord, av, ← same] using facts
 
+theorem nonzero_raw_eq_of_value_eq (a b : NonZeroUsize)
+    (same : a.val.val = b.val.val) : a = b := by
+  have hs := UScalar.eq_of_val_eq same
+  cases a; cases b
+  congr
+
 @[contract_simps] theorem required_max (a b : NonZeroUsize) (run : Result NonZeroUsize)
     (provided : Specs.max_spec_contract a b run) :
     Obligations.max_spec_contract a b run := by
@@ -57,11 +68,16 @@ namespace Zerocopy.Proofs
   have db := (decodeNonZeroUScalar_iff b bv).mpr rfl
   have result := provided av da bv db
   simp only [WP.spec_equiv_exists] at result
-  obtain ⟨output, call, value, decoded, facts⟩ := result
-  have same := (decodeNonZeroUScalar_iff output value).mp decoded
-  refine ⟨output, call, ?_, ?_⟩
+  obtain ⟨r, call, value, decoded, facts⟩ := result
+  have same := (decodeNonZeroUScalar_iff r value).mp decoded
+  refine ⟨r, call, ?_, ?_, ?_, ?_, ?_⟩
   · rw [same]; exact value.positive
-  · simpa only [av, bv, unsignedWord, ← same] using facts
+  · simpa only [av, bv, unsignedWord, ← same] using facts.1
+  · rcases facts.2.1 with h | h
+    · left; apply nonzero_raw_eq_of_value_eq; simp only [same, h, av, unsignedWord]
+    · right; apply nonzero_raw_eq_of_value_eq; simp only [same, h, bv, unsignedWord]
+  · simpa only [av, unsignedWord, ← same] using facts.2.2.1
+  · simpa only [bv, unsignedWord, ← same] using facts.2.2.2
 
 @[contract_simps] theorem required_min (a b : NonZeroUsize) (run : Result NonZeroUsize)
     (provided : Specs.min_spec_contract a b run) :
@@ -73,9 +89,15 @@ namespace Zerocopy.Proofs
   have db := (decodeNonZeroUScalar_iff b bv).mpr rfl
   have result := provided av da bv db
   simp only [WP.spec_equiv_exists] at result
-  obtain ⟨output, call, value, decoded, facts⟩ := result
-  have same := (decodeNonZeroUScalar_iff output value).mp decoded
-  refine ⟨output, call, ?_, ?_⟩
+  obtain ⟨r, call, value, decoded, facts⟩ := result
+  have same := (decodeNonZeroUScalar_iff r value).mp decoded
+  refine ⟨r, call, ?_, ?_, ?_, ?_, ?_⟩
   · rw [same]; exact value.positive
-  · simpa only [av, bv, unsignedWord, ← same] using facts
+  · simpa only [av, bv, unsignedWord, ← same] using facts.1
+  · rcases facts.2.1 with h | h
+    · left; apply nonzero_raw_eq_of_value_eq; simp only [same, h, av, unsignedWord]
+    · right; apply nonzero_raw_eq_of_value_eq; simp only [same, h, bv, unsignedWord]
+  · simpa only [av, unsignedWord, ← same] using facts.2.2.1
+  · simpa only [bv, unsignedWord, ← same] using facts.2.2.2
+
 end Zerocopy.Proofs

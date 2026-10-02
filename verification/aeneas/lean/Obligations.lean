@@ -10,6 +10,7 @@ module
 public import Zerocopy.Funs
 public import SpecPrelude
 public import MathViews
+public import Arithmetic
 @[expose] public section
 
 /-!
@@ -33,9 +34,9 @@ abbrev NonZeroUsize :=
 
 def max_spec_contract (a b : NonZeroUsize)
     (run : Result NonZeroUsize) : Prop :=
-  0 < a.val.val → 0 < b.val.val →
-    ∃ r, run = .ok r ∧ 0 < r.val.val ∧
-      r.val.val = Nat.max a.val.val b.val.val
+  0 < a.val.val → 0 < b.val.val → ∃ r, run = .ok r ∧ 0 < r.val.val ∧
+    r.val.val = Nat.max a.val.val b.val.val ∧ (r = a ∨ r = b) ∧
+      a.val.val ≤ r.val.val ∧ b.val.val ≤ r.val.val
 
 def max_spec : Prop :=
   ∀ (a b : NonZeroUsize),
@@ -43,18 +44,22 @@ def max_spec : Prop :=
 
 def min_spec_contract (a b : NonZeroUsize)
     (run : Result NonZeroUsize) : Prop :=
-  0 < a.val.val → 0 < b.val.val →
-    ∃ r, run = .ok r ∧ 0 < r.val.val ∧
-      r.val.val = Nat.min a.val.val b.val.val
+  0 < a.val.val → 0 < b.val.val → ∃ r, run = .ok r ∧ 0 < r.val.val ∧
+    r.val.val = Nat.min a.val.val b.val.val ∧ (r = a ∨ r = b) ∧
+      r.val.val ≤ a.val.val ∧ r.val.val ≤ b.val.val
 
 def min_spec : Prop :=
   ∀ (a b : NonZeroUsize),
     min_spec_contract a b (util.min a b)
 
-def padding_lt_alignment_contract (_len : Usize) (align : NonZeroUsize)
+def padding_lt_alignment_contract (len : Usize) (align : NonZeroUsize)
     (run : Result Usize) : Prop :=
-  ∀ (_valid : 0 < align.val.val),
-    run ⦃ p => p.val < align.val.val ⦄
+  ∀ (_valid : 0 < align.val.val) (_h : align.val.val.isPowerOfTwo),
+    run ⦃ p => p.val < align.val.val ∧
+      p.val = (align.val.val - len.val % align.val.val) % align.val.val ∧
+      (len.val + p.val) % align.val.val = 0 ∧
+      (∀ q : Nat, (len.val + q) % align.val.val = 0 → p.val ≤ q) ∧
+      (p.val = 0 ↔ len.val % align.val.val = 0) ⦄
 
 def padding_lt_alignment : Prop :=
   ∀ (len : Usize) (align : NonZeroUsize),
@@ -63,8 +68,10 @@ def padding_lt_alignment : Prop :=
 def round_down_spec_contract (n : Usize) (align : NonZeroUsize)
     (run : Result Usize) : Prop :=
   ∀ (_valid : 0 < align.val.val) (_h : align.val.val.isPowerOfTwo),
-    run
-      ⦃ m => m.val ≤ n.val ∧ m.val % align.val.val = 0 ⦄
+    run ⦃ m =>
+      m.val ≤ n.val ∧ m.val = n.val - n.val % align.val.val ∧
+      m.val % align.val.val = 0 ∧ n.val < m.val + align.val.val ∧
+      (∀ q : Nat, q ≤ n.val → q % align.val.val = 0 → q ≤ m.val) ⦄
 
 def round_down_spec : Prop :=
   ∀ (n : Usize) (align : NonZeroUsize),
