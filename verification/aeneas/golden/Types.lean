@@ -106,10 +106,17 @@ structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 78:0-78:54 -/
+    Source: 'src/layout/mod.rs', lines 81:0-81:54 -/
 structure layout.RoundingAlignAndPhase where
   _0 : core.num.nonzero.NonZero Std.Usize
     core.num.niche_types.NonZeroUsizeInner
+
+/-- [zerocopy::layout::nested_reference::NestedLayer]
+    Source: 'src/layout/nested_reference.rs', lines 29:0-33:1 -/
+structure layout.nested_reference.NestedLayer where
+  packed : Std.Usize
+  min_align : Std.Usize
+  prefix_bytes : Std.Usize
 
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
     Source: 'src/trait_checks.rs', lines 26:0-29:1 -/
