@@ -58,6 +58,19 @@ pub(crate) enum SizeInfo<E = usize> {
 /// ```text
 /// encoded = align + phase
 /// ```
+///
+/// ```aeneas
+/// model RoundingValue where
+///   align : Nat
+///   phase : Nat
+///   align_pow2 : align.isPowerOfTwo
+///   phase_lt : phase < align
+///   fits : align + phase ≤ Usize.max
+/// decode self =>
+///   let word := self._0.value
+///   let align := 2 ^ Nat.log2 word
+///   { align := align, phase := word - align, .. }
+/// ```
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[repr(transparent)]
 #[derive(Copy, Clone)]
@@ -69,11 +82,18 @@ impl RoundingAlignAndPhase {
     ///
     /// # Panics
     ///
-    /// Panics if `align` is not a power of two and `phase` is not less than
+    /// Panics if `align` is not a power of two or `phase` is not less than
     /// `align`.
     #[inline(always)]
     #[cfg_attr(kani, kani::requires(align.is_power_of_two() && phase < align.get()))]
     #[cfg_attr(kani, kani::ensures(|result| result.0.get() == align.get() + phase))]
+    ///
+    /// ```aeneas
+    /// spec encoding_new_spec
+    ///   requires ha : (align : Nat).isPowerOfTwo
+    ///   requires hp : (phase : Nat) < (align : Nat)
+    ///   ensures encoded => encoded.align = (align : Nat) ∧ encoded.phase = (phase : Nat)
+    /// ```
     pub(crate) const fn new(align: NonZeroUsize, phase: usize) -> Self {
         #[cfg(kani)]
         #[kani::proof_for_contract(RoundingAlignAndPhase::new)]
@@ -101,6 +121,12 @@ impl RoundingAlignAndPhase {
         align.is_power_of_two() && phase < align.get()
             && align.get().checked_add(phase) == Some(self.0.get())
     }))]
+    ///
+    /// ```aeneas
+    /// spec encoding_components_spec
+    ///   ensures (align, phase) =>
+    ///     align.value = self.align ∧ phase.value = self.phase
+    /// ```
     pub(crate) const fn components(self) -> (NonZeroUsize, usize) {
         #[cfg(kani)]
         #[kani::proof_for_contract(RoundingAlignAndPhase::components)]
@@ -111,6 +137,7 @@ impl RoundingAlignAndPhase {
         // `leading_zeros <= POINTER_WIDTH_BITS - 1` because the encoded value
         // is non-zero. Converting `leading_zeros` to `usize` cannot truncate
         // because it is at most the number of bits in a `usize`.
+        // Keep the primitive usize operation visible to Aeneas.
         #[allow(
             clippy::arithmetic_side_effects,
             clippy::as_conversions,
@@ -135,6 +162,11 @@ impl RoundingAlignAndPhase {
         align.is_power_of_two() && align.get() <= self.0.get()
             && self.0.get() - align.get() < align.get()
     }))]
+    ///
+    /// ```aeneas
+    /// spec encoding_align_spec
+    ///   ensures align => (align : Nat) = self.align
+    /// ```
     pub(crate) const fn align(self) -> NonZeroUsize {
         #[cfg(kani)]
         #[kani::proof_for_contract(RoundingAlignAndPhase::align)]
@@ -2319,6 +2351,7 @@ mod tests {
         assert_eq!(max.components().1, max_phase);
 
         assert_eq!(mem::size_of::<TrailingSliceLayout>(), 4 * mem::size_of::<usize>());
+        assert_eq!(mem::size_of::<RoundingAlignAndPhase>(), mem::size_of::<usize>());
     }
 
     #[test]
