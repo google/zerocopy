@@ -9,6 +9,7 @@ those terms. -/
 import Required
 import ContractTests
 import Corollaries
+import LayoutMath
 open Lean Elab Command
 run_elab do
   let required := requiredTheorems
