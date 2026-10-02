@@ -1,0 +1,35 @@
+pnpm-lock.yaml
+
+build
+node_modules
+
+# Not for these ready yet
+.babelrc
+*.js
+*.json
+*.scss
+
+# Remove these files when we touch them for other reasons
+ChannelMenu.tsx
+ConfigMenu.tsx
+Help.tsx
+Icon.tsx
+MenuAside.tsx
+MenuGroup.tsx
+ModeMenu.tsx
+Output.tsx
+Output/Execute.tsx
+Output/Section.tsx
+PageSwitcher.tsx
+Router.tsx
+SelectOne.tsx
+SelectableMenuItem.tsx
+ToolsMenu.tsx
+editor/AceEditorCore.tsx
+editor/MonacoEditor.tsx
+highlighting.ts
+index.tsx
+selectors/index.ts
+uss-router/Link.tsx
+uss-router/Router.tsx
+uss-router/index.ts

@@ -1,0 +1,4 @@
+allowBuilds:
+  '@parcel/watcher': false
+  'core-js': false
+  'unrs-resolver': false

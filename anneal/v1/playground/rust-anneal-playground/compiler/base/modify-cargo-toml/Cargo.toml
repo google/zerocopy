@@ -1,0 +1,11 @@
+[package]
+name = "modify-cargo-toml"
+version = "0.1.0"
+authors = ["Jake Goulding <jake.goulding@gmail.com>"]
+
+[workspace]
+
+[dependencies]
+serde = "1.0.78"
+toml = { version = "1.0.3", default-features = false, features = ["display", "parse", "serde"] }
+serde_derive = "1.0.78"

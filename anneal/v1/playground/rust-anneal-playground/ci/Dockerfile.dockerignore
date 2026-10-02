@@ -1,0 +1,10 @@
+*
+!compiler/base/asm-cleanup/**
+compiler/base/asm-cleanup/target
+!compiler/base/orchestrator/**
+compiler/base/orchestrator/target
+!compiler/base/modify-cargo-toml/**
+compiler/base/modify-cargo-toml/target
+!ui/**
+ui/frontend
+ui/target

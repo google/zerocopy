@@ -1,0 +1,4 @@
+.code {
+  background: var(--code-background-color);
+  padding: 0 0.25em;
+}

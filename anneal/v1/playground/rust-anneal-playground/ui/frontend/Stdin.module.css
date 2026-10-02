@@ -1,0 +1,46 @@
+.form {
+  display: flex;
+  gap: 0.25em;
+  align-items: flex-end;
+}
+
+.multiLine {
+  flex: 1;
+  display: grid;
+}
+
+.text,
+.sizer {
+  margin: 0;
+  padding: 0.25em;
+  grid-area: 1 / 1 / 2 /2;
+  max-height: 3.5lh;
+}
+
+.text {
+  resize: none;
+}
+
+.sizer {
+  visibility: hidden;
+  white-space: pre-wrap;
+}
+
+.buttons {
+  font-size: var(--secondary-font-size);
+}
+
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.button {
+  composes: -menuItemFullButton from './shared.module.css';
+  padding: 1em;
+
+  &:hover {
+    color: var(--header-tint);
+  }
+}

@@ -1,0 +1,623 @@
+diff --git a/src/aeneas.rs b/src/aeneas.rs
+index 6fab4b2..92620f9 100644
+--- a/src/aeneas.rs
++++ b/src/aeneas.rs
+@@ -28,6 +28,11 @@ use walkdir::WalkDir;
+ use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
+
+ const ANNEAL_PRELUDE: &str = include_str!("Anneal.lean");
++const VENDORED_AENEAS_LEAN_DIR: &str = "vendor/aeneas/backends/lean";
++const VENDORED_AENEAS_PACKAGES_DIR: &str = "vendor/aeneas/packages";
++const PLAYGROUND_ANNEAL_LAKE_LEAN_DIAGNOSTICS: &str = "PLAYGROUND_ANNEAL_LAKE_LEAN_DIAGNOSTICS";
++const PLAYGROUND_ANNEAL_BUILD_SPECS_SKIP_SUCCESS_DIAGNOSTICS: &str =
++    "PLAYGROUND_ANNEAL_BUILD_SPECS_SKIP_SUCCESS_DIAGNOSTICS";
+
+ /// Orchestrates the Aeneas translation and Lean verification process.
+ ///
+@@ -94,6 +99,8 @@ pub fn run_aeneas(
+     .context("Failed to write Lean toolchain")?;
+
+     let mut lake_roots = vec!["Generated".to_string()];
++    let build_specs_skip_success_diagnostics =
++        std::env::var_os(PLAYGROUND_ANNEAL_BUILD_SPECS_SKIP_SUCCESS_DIAGNOSTICS).is_some();
+     let toolchain = crate::setup::Toolchain::resolve()?;
+
+     for artifact in artifacts {
+@@ -153,7 +160,7 @@ pub fn run_aeneas(
+         log::trace!("Aeneas for '{}' took {:.2?}", artifact.name.target_name, start.elapsed());
+
+         // Aeneas might not generate Funs.lean or Types.lean if there are no
+-        // functions/types. However, `Specs.lean` and `Generated.lean` expect
++        // functions/types. However, `Spec.lean` and `Generated.lean` expect
+         // them to exist (as imports).
+         //
+         // If Anneal found items that *should* result in these files being
+@@ -218,7 +225,7 @@ pub fn run_aeneas(
+         }
+
+         // Note: we let types and funs lack Prefix imports here because `aeneas_only`
+-        // doesn't write `Generated.lean` or `Specs.lean`, which expect them as imports.
++        // doesn't write `Generated.lean` or `Spec.lean`, which expect them as imports.
+
+         // Check for `FunsExternal_Template.lean`.
+         //
+@@ -267,17 +274,22 @@ pub fn run_aeneas(
+         // the generated Lakefile, which is the standard syntax for Name literals in Lean.
+         lake_roots.push(format!("{}.Funs", slug));
+         lake_roots.push(format!("{}.Types", slug));
++        if build_specs_skip_success_diagnostics {
++            let specs_file = artifact.lean_spec_file_name();
++            let specs_module = specs_file.trim_end_matches(".lean");
++            lake_roots.push(format!("{}.{}", slug, specs_module));
++        }
+     }
+
+     // 4. Write Lakefile
+     //
+     // Aeneas and its Lean dependencies are unpacked from the managed archive.
+-    let path = materialize_aeneas_dependency(&tmp_lean_root, &lean_root, &toolchain)?;
++    materialize_aeneas_dependency(&tmp_lean_root, &toolchain)?;
+     let aeneas_dep = format!(
+         r#"-- Aeneas rev: {}
+ require aeneas from "{}""#,
+         env!("ANNEAL_AENEAS_REV"),
+-        path.display()
++        VENDORED_AENEAS_LEAN_DIR
+     );
+
+     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
+@@ -307,53 +319,220 @@ lean_lib «User» where
+     );
+     write_if_changed(&tmp_lean_root.join("lakefile.lean"), &lakefile)
+         .context("Failed to write Lakefile")?;
++    write_lake_manifest(&tmp_lean_root).context("Failed to write Lake manifest")?;
+
+-    // ATOMIC SWAP: If we successfully generated everything, we now swap the
+-    // temporary directory with the real one.
+     let lean_root = roots.lean_root();
+-    if lean_root.exists() {
+-        // Preserve the `.lake` directory and manifest to prevent re-downloading
+-        // dependencies (like Mathlib) on subsequent runs.
+-        let old_lake = lean_root.join(".lake");
+-        let old_manifest = lean_root.join("lake-manifest.json");
+-        if old_lake.exists() {
+-            fs::rename(&old_lake, tmp_lean_root.join(".lake"))?;
+-        }
+-        if old_manifest.exists() {
+-            fs::rename(&old_manifest, tmp_lean_root.join("lake-manifest.json"))?;
+-        }
+-
+-        // Remove the existing directory before renaming the temporary directory.
+-        // Note: `fs::rename` on Unix typically requires the target directory to be
+-        // empty if it exists. While not strictly atomic (there is a brief window
+-        // where the directory is missing), this prevents a half-written state.
+-        log::debug!("Removing existing lean directory: {}", lean_root.display());
+-        fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
+-    }
+-
+-    log::debug!("Renaming {} to {}", tmp_lean_root.display(), lean_root.display());
+-    fs::rename(&tmp_lean_root, &lean_root)
+-        .context("Failed to rename temporary lean directory to target")?;
++    sync_lean_root(&tmp_lean_root, &lean_root).context("Failed to sync Lean directory")?;
+
+     Ok(())
+ }
+
+ fn materialize_aeneas_dependency(
+     tmp_lean_root: &Path,
+-    lean_root: &Path,
+     toolchain: &crate::setup::Toolchain,
+-) -> Result<PathBuf> {
++) -> Result<()> {
+     let vendor_root = tmp_lean_root.join("vendor").join("aeneas");
+     let lean_dst = vendor_root.join("backends").join("lean");
+     let packages_dst = vendor_root.join("packages");
+
+     println!("Materializing packages by copying from toolchain...");
++    let start = std::time::Instant::now();
+     copy_toolchain_tree_writable(&toolchain.aeneas_lean_dir(), &lean_dst)
+         .context("Failed to copy Aeneas Lean package from toolchain")?;
+     copy_toolchain_tree_writable(&toolchain.aeneas_root().join("packages"), &packages_dst)
+         .context("Failed to copy Aeneas Lean dependencies from toolchain")?;
++    log::trace!("Materializing Aeneas packages took {:.2?}", start.elapsed());
++
++    Ok(())
++}
++
++fn write_lake_manifest(lean_root: &Path) -> Result<()> {
++    let aeneas_manifest_path = lean_root.join(VENDORED_AENEAS_LEAN_DIR).join("lake-manifest.json");
++    let content = fs::read_to_string(&aeneas_manifest_path).with_context(|| {
++        format!("Failed to read vendored manifest {}", aeneas_manifest_path.display())
++    })?;
++    let mut manifest: serde_json::Value =
++        serde_json::from_str(&content).context("Failed to parse vendored Lake manifest")?;
++
++    let Some(packages) = manifest.get_mut("packages").and_then(|packages| packages.as_array_mut())
++    else {
++        bail!("Vendored Lake manifest packages field is not an array");
++    };
++    for package in packages.iter_mut() {
++        rewrite_vendored_manifest_package(lean_root, package)?;
++    }
++    packages.insert(
++        0,
++        serde_json::json!({
++            "type": "path",
++            "scope": "",
++            "name": "aeneas",
++            "manifestFile": "lake-manifest.json",
++            "inherited": false,
++            "dir": VENDORED_AENEAS_LEAN_DIR,
++            "configFile": "lakefile.lean"
++        }),
++    );
++
++    manifest["name"] = serde_json::Value::String("anneal_verification".to_owned());
++    manifest["lakeDir"] = serde_json::Value::String(".lake".to_owned());
++    manifest["packagesDir"] = serde_json::Value::String(".lake/packages".to_owned());
++
++    let mut content =
++        serde_json::to_string_pretty(&manifest).context("Failed to serialize Lake manifest")?;
++    content.push('\n');
++    write_if_changed(&lean_root.join("lake-manifest.json"), &content)?;
++    Ok(())
++}
++
++fn rewrite_vendored_manifest_package(
++    lean_root: &Path,
++    package: &mut serde_json::Value,
++) -> Result<()> {
++    let name = package
++        .get("name")
++        .and_then(|name| name.as_str())
++        .context("Vendored Lake manifest package is missing a name")?
++        .to_owned();
++    let dir = std::path::PathBuf::from(VENDORED_AENEAS_PACKAGES_DIR).join(&name);
++    let absolute_dir = lean_root.join(&dir);
++    if !absolute_dir.exists() {
++        bail!("Vendored Lake package directory does not exist: {}", absolute_dir.display());
++    }
++
++    let Some(package) = package.as_object_mut() else {
++        bail!("Vendored Lake manifest package is not an object");
++    };
++    package.insert("type".to_owned(), serde_json::Value::String("path".to_owned()));
++    package.insert("dir".to_owned(), serde_json::Value::String(path_to_lake_string(&dir)));
++    package.insert("inherited".to_owned(), serde_json::Value::Bool(true));
++    package.remove("url");
++    package.remove("rev");
++    package.remove("inputRev");
++    package.remove("subDir");
++
++    Ok(())
++}
++
++fn path_to_lake_string(path: &Path) -> String {
++    path.to_string_lossy().replace('\\', "/")
++}
++
++fn sync_lean_root(tmp_lean_root: &Path, lean_root: &Path) -> Result<()> {
++    let start = std::time::Instant::now();
++    if !lean_root.exists() {
++        log::debug!("Renaming {} to {}", tmp_lean_root.display(), lean_root.display());
++        fs::rename(tmp_lean_root, lean_root)
++            .context("Failed to rename temporary lean directory to target")?;
++        log::trace!("Syncing Lean directory took {:.2?}", start.elapsed());
++        return Ok(());
++    }
++
++    if !lean_root.is_dir() {
++        bail!("Lean root exists but is not a directory: {}", lean_root.display());
++    }
++
++    log::debug!(
++        "Syncing {} into {} while preserving unchanged files",
++        tmp_lean_root.display(),
++        lean_root.display()
++    );
++    sync_directory_preserving_unchanged(tmp_lean_root, lean_root, true)
++        .context("Failed to merge temporary Lean directory into existing Lean directory")?;
++    fs::remove_dir_all(tmp_lean_root).context("Failed to remove temporary Lean directory")?;
++    log::trace!("Syncing Lean directory took {:.2?}", start.elapsed());
++    Ok(())
++}
++
++fn sync_directory_preserving_unchanged(src: &Path, dst: &Path, preserve_top_level_lake: bool) -> Result<()> {
++    fs::create_dir_all(dst)
++        .with_context(|| format!("Failed to create destination directory {}", dst.display()))?;
++
++    let mut expected = std::collections::BTreeSet::new();
++    for entry in fs::read_dir(src).with_context(|| format!("Failed to read {}", src.display()))? {
++        let entry = entry.context("Failed to read source directory entry")?;
++        let file_name = entry.file_name();
++        expected.insert(file_name.clone());
++
++        let src_path = entry.path();
++        let dst_path = dst.join(&file_name);
++        let src_metadata = fs::symlink_metadata(&src_path)
++            .with_context(|| format!("Failed to stat {}", src_path.display()))?;
++
++        if src_metadata.is_dir() {
++            if path_exists(&dst_path) && !dst_path.is_dir() {
++                remove_path(&dst_path)
++                    .with_context(|| format!("Failed to replace {}", dst_path.display()))?;
++            }
++            sync_directory_preserving_unchanged(&src_path, &dst_path, false)?;
++        } else {
++            sync_file_preserving_unchanged(&src_path, &dst_path)?;
++        }
++    }
++
++    for entry in fs::read_dir(dst).with_context(|| format!("Failed to read {}", dst.display()))? {
++        let entry = entry.context("Failed to read destination directory entry")?;
++        let file_name = entry.file_name();
++        if preserve_top_level_lake && file_name == std::ffi::OsStr::new(".lake") {
++            continue;
++        }
++        if !expected.contains(&file_name) {
++            let path = entry.path();
++            remove_path(&path).with_context(|| format!("Failed to remove stale path {}", path.display()))?;
++        }
++    }
++
++    Ok(())
++}
++
++fn sync_file_preserving_unchanged(src: &Path, dst: &Path) -> Result<()> {
++    if files_equal(src, dst)? {
++        return Ok(());
++    }
++
++    if path_exists(dst) {
++        remove_path(dst).with_context(|| format!("Failed to replace {}", dst.display()))?;
++    }
++    fs::rename(src, dst)
++        .with_context(|| format!("Failed to move {} to {}", src.display(), dst.display()))?;
++    Ok(())
++}
++
++fn files_equal(src: &Path, dst: &Path) -> Result<bool> {
++    if !dst.is_file() {
++        return Ok(false);
++    }
++
++    let src_metadata =
++        fs::metadata(src).with_context(|| format!("Failed to stat {}", src.display()))?;
++    let dst_metadata =
++        fs::metadata(dst).with_context(|| format!("Failed to stat {}", dst.display()))?;
++    if src_metadata.len() != dst_metadata.len() {
++        return Ok(false);
++    }
++    if src_metadata.len() == 0 {
++        return Ok(true);
++    }
++
++    let src_content = fs::read(src).with_context(|| format!("Failed to read {}", src.display()))?;
++    let dst_content = fs::read(dst).with_context(|| format!("Failed to read {}", dst.display()))?;
++    Ok(src_content == dst_content)
++}
++
++fn path_exists(path: &Path) -> bool {
++    fs::symlink_metadata(path).is_ok()
++}
+
+-    Ok(lean_root.join("vendor").join("aeneas").join("backends").join("lean"))
++fn remove_path(path: &Path) -> Result<()> {
++    let metadata =
++        fs::symlink_metadata(path).with_context(|| format!("Failed to stat {}", path.display()))?;
++    if metadata.is_dir() {
++        fs::remove_dir_all(path)
++            .with_context(|| format!("Failed to remove directory {}", path.display()))?;
++    } else {
++        fs::remove_file(path).with_context(|| format!("Failed to remove file {}", path.display()))?;
++    }
++    Ok(())
+ }
+
+ fn copy_toolchain_tree_writable(src: &Path, dst: &Path) -> Result<()> {
+@@ -503,7 +682,7 @@ fn is_lake_input_file(path: &Path) -> bool {
+     )
+ }
+
+-/// Generates Anneal `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
++/// Generates Anneal `Spec.lean` and writes `Generated.lean`, but does not run the `lake build`.
+ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+     let lean_generated_root = roots.lean_generated_root();
+     let mut generated_imports = String::new();
+@@ -548,7 +727,7 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
+     Ok(())
+ }
+
+-/// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,
++/// Completes Lean verification by generating Anneal `Spec.lean`, writing `Generated.lean`,
+ /// and running `lake build` + diagnostics.
+ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+     generate_lean_workspace(roots, artifacts)?;
+@@ -562,94 +741,58 @@ pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact])
+ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+     let generated = roots.lean_generated_root();
+     let lean_root = generated.parent().unwrap();
+-    log::info!("Running 'lake build' in {}", lean_root.display());
+-
+-    // 2. Build the project (dependencies only)
+     let toolchain = crate::setup::Toolchain::resolve()?;
+-    let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
+-    cmd.args(["--keep-toolchain", "--old", "build", "Generated", "Anneal"]);
+-    cmd.current_dir(lean_root);
+-    configure_lake_command(&mut cmd, &toolchain)?;
+-    cmd.stdout(Stdio::piped());
+-    cmd.stderr(Stdio::piped());
+-
+-    let start = std::time::Instant::now();
+-    let mut child = cmd.spawn().context("Failed to spawn lake")?;
+
+-    // Capture stderr in background
+-    let stderr_buffer = Arc::new(Mutex::new(Vec::new()));
+-    let stderr_clone = stderr_buffer.clone();
+-    let stderr_handle = child.stderr.take().map(|stderr| {
+-        std::thread::spawn(move || {
+-            let reader = BufReader::new(stderr);
+-            for line in reader.lines().map_while(Result::ok) {
+-                stderr_clone.lock().unwrap().push(line);
++    let use_lake_lean_diagnostics =
++        std::env::var_os(PLAYGROUND_ANNEAL_LAKE_LEAN_DIAGNOSTICS).is_some();
++    let build_specs_skip_success_diagnostics =
++        std::env::var_os(PLAYGROUND_ANNEAL_BUILD_SPECS_SKIP_SUCCESS_DIAGNOSTICS).is_some();
++    let mut lake_build_error = None;
++    if use_lake_lean_diagnostics {
++        log::info!(
++            "[anneal-lake-lean] skipping standalone 'lake build'; diagnostics will use 'lake --old lean -- --json'"
++        );
++    } else {
++        log::info!("Running 'lake build' in {}", lean_root.display());
++        match run_lake_build(lean_root, &toolchain) {
++            Ok(()) if build_specs_skip_success_diagnostics => {
++                log::info!(
++                    "[anneal-fast-diagnostics] successful Lake build included Spec; skipping post-build JSON diagnostics"
++                );
++                return Ok(());
+             }
+-        })
+-    });
+-
+-    // UI Spinner
+-    let pb = ProgressBar::new_spinner();
+-    pb.set_style(ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap());
+-    pb.enable_steady_tick(std::time::Duration::from_millis(100));
+-    pb.set_message("Building Lean dependencies...");
+-
+-    // Capture stdout in background (while ticking progress bar)
+-    let stdout_buffer = Arc::new(Mutex::new(Vec::new()));
+-    let stdout_clone = stdout_buffer.clone();
+-    let pb_clone = pb.clone();
+-
+-    let stdout_handle = child.stdout.take().map(|stdout| {
+-        std::thread::spawn(move || {
+-            let reader = BufReader::new(stdout);
+-            for line in reader.lines().map_while(Result::ok) {
+-                stdout_clone.lock().unwrap().push(line);
+-                pb_clone.tick();
++            Ok(()) => {}
++            Err(error) if build_specs_skip_success_diagnostics => {
++                log::warn!(
++                    "[anneal-fast-diagnostics] Lake build failed after including Spec; running JSON diagnostics"
++                );
++                log::debug!("Lake build failure before diagnostics: {error:?}");
++                lake_build_error = Some(format!("{error:#}"));
+             }
+-        })
+-    });
+-
+-    let status = child.wait().context("Failed to wait for lake")?;
+-    pb.finish_and_clear();
+-    log::trace!("'lake build' took {:.2?}", start.elapsed());
+-
+-    // Join the threads to ensure we have all logs
+-    if let Some(handle) = stderr_handle
+-        && let Err(e) = handle.join()
+-    {
+-        log::error!("Stderr reading thread panicked: {:?}", e);
+-    }
+-    if let Some(handle) = stdout_handle
+-        && let Err(e) = handle.join()
+-    {
+-        log::error!("Stdout reading thread panicked: {:?}", e);
+-    }
+-
+-    if !status.success() {
+-        let stderr = stderr_buffer.lock().unwrap().join("\n");
+-        let stdout = stdout_buffer.lock().unwrap().join("\n");
+-        bail!("Lean build failed\nSTDOUT:\n{}\nSTDERR:\n{}", stdout, stderr);
++            Err(error) => return Err(error),
++        }
+     }
+
+     // 3. Run Diagnostics
+     log::info!("Running Lean diagnostics...");
++    let diagnostics_start = std::time::Instant::now();
+     let mut has_errors = false;
+     let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace().clone());
+
+     for artifact in artifacts {
++        let diagnostic_start = std::time::Instant::now();
+         let slug = artifact.artifact_slug();
+-        // The path in generated file is `generated/Slug/Specs.lean`
++        // The path in generated file is `generated/Slug/Spec.lean`
+         // We construct the relative path from the Lake root (which is `target/anneal/<hash>/lean`)
+         let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
+
+-        let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
+-        cmd.args(["--keep-toolchain", "env", "lean", "--json", &specs_rel_path]);
+-        cmd.current_dir(lean_root);
+-        configure_lake_command(&mut cmd, &toolchain)?;
+-        cmd.stdout(Stdio::piped());
+-        cmd.stderr(Stdio::piped());
+-
+-        let output = cmd.output().context("Failed to run lean compiler")?;
++        let output = run_lean_diagnostics_command(
++            &toolchain,
++            lean_root,
++            &specs_rel_path,
++            &slug,
++            use_lake_lean_diagnostics,
++        )?;
+
+         let output_str = String::from_utf8_lossy(&output.stdout);
+         let specs_abs_path = lean_root.join(&specs_rel_path);
+@@ -737,7 +880,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+             let (file, start, end) = resolve_mapping(&diag, &mappings);
+             mapper.render_raw(&file, diag.message, level, start, end, |s| eprintln!("{s}"));
+         }
++        log::trace!("Lean diagnostics for '{}' took {:.2?}", slug, diagnostic_start.elapsed());
+     }
++    log::trace!("Lean diagnostics took {:.2?}", diagnostics_start.elapsed());
+
+     if has_errors {
+         let cmd = if std::env::var("__ZEROCOPY_LOCAL_DEV").is_ok() {
+@@ -750,9 +895,112 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
+         );
+     }
+
++    if let Some(error) = lake_build_error {
++        bail!("Lean build failed before diagnostics:\n{error}");
++    }
++
++    Ok(())
++}
++
++fn run_lake_build(lean_root: &Path, toolchain: &crate::setup::Toolchain) -> Result<()> {
++    let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
++    cmd.args(["--keep-toolchain", "--old", "build", "Generated", "Anneal"]);
++    cmd.current_dir(lean_root);
++    configure_lake_command(&mut cmd, toolchain)?;
++    cmd.stdout(Stdio::piped());
++    cmd.stderr(Stdio::piped());
++
++    let start = std::time::Instant::now();
++    let mut child = cmd.spawn().context("Failed to spawn lake")?;
++
++    // Capture stderr in background
++    let stderr_buffer = Arc::new(Mutex::new(Vec::new()));
++    let stderr_clone = stderr_buffer.clone();
++    let stderr_handle = child.stderr.take().map(|stderr| {
++        std::thread::spawn(move || {
++            let reader = BufReader::new(stderr);
++            for line in reader.lines().map_while(Result::ok) {
++                stderr_clone.lock().unwrap().push(line);
++            }
++        })
++    });
++
++    // UI Spinner
++    let pb = ProgressBar::new_spinner();
++    pb.set_style(ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap());
++    pb.enable_steady_tick(std::time::Duration::from_millis(100));
++    pb.set_message("Building Lean dependencies...");
++
++    // Capture stdout in background (while ticking progress bar)
++    let stdout_buffer = Arc::new(Mutex::new(Vec::new()));
++    let stdout_clone = stdout_buffer.clone();
++    let pb_clone = pb.clone();
++
++    let stdout_handle = child.stdout.take().map(|stdout| {
++        std::thread::spawn(move || {
++            let reader = BufReader::new(stdout);
++            for line in reader.lines().map_while(Result::ok) {
++                stdout_clone.lock().unwrap().push(line);
++                pb_clone.tick();
++            }
++        })
++    });
++
++    let status = child.wait().context("Failed to wait for lake")?;
++    pb.finish_and_clear();
++    log::trace!("'lake build' took {:.2?}", start.elapsed());
++
++    // Join the threads to ensure we have all logs
++    if let Some(handle) = stderr_handle
++        && let Err(e) = handle.join()
++    {
++        log::error!("Stderr reading thread panicked: {:?}", e);
++    }
++    if let Some(handle) = stdout_handle
++        && let Err(e) = handle.join()
++    {
++        log::error!("Stdout reading thread panicked: {:?}", e);
++    }
++
++    if !status.success() {
++        let stderr = stderr_buffer.lock().unwrap().join("\n");
++        let stdout = stdout_buffer.lock().unwrap().join("\n");
++        bail!("Lean build failed\nSTDOUT:\n{}\nSTDERR:\n{}", stdout, stderr);
++    }
++
+     Ok(())
+ }
+
++fn run_lean_diagnostics_command(
++    toolchain: &crate::setup::Toolchain,
++    lean_root: &Path,
++    specs_rel_path: &str,
++    slug: &str,
++    use_lake_lean_diagnostics: bool,
++) -> Result<std::process::Output> {
++    let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
++    let start = std::time::Instant::now();
++    if use_lake_lean_diagnostics {
++        cmd.args(["--keep-toolchain", "--old", "lean", specs_rel_path, "--", "--json"]);
++    } else {
++        cmd.args(["--keep-toolchain", "env", "lean", "--json", specs_rel_path]);
++    }
++    cmd.current_dir(lean_root);
++    configure_lake_command(&mut cmd, toolchain)?;
++    cmd.stdout(Stdio::piped());
++    cmd.stderr(Stdio::piped());
++
++    let output = cmd.output().context("Failed to run lean compiler")?;
++    if use_lake_lean_diagnostics {
++        log::trace!(
++            "'lake --old lean -- --json' for '{}' took {:.2?}",
++            slug,
++            start.elapsed()
++        );
++    }
++    Ok(output)
++}
++
+ fn configure_lake_command(
+     cmd: &mut std::process::Command,
+     toolchain: &crate::setup::Toolchain,
+diff --git a/src/scanner.rs b/src/scanner.rs
+index 44b6641..2cd29b7 100644
+--- a/src/scanner.rs
++++ b/src/scanner.rs
+@@ -115,7 +115,7 @@ impl AnnealArtifact {
+
+     /// Returns the name of the `.lean` spec file to use for this artifact.
+     pub fn lean_spec_file_name(&self) -> String {
+-        format!("{}.lean", self.artifact_slug())
++        "Spec.lean".to_owned()
+     }
+
+     /// Returns the absolute path to the .llbc file.
+@@ -480,7 +480,7 @@ mod tests {
+     }
+
+     #[test]
+-    fn test_lean_spec_file_name_uses_slug() {
++    fn test_lean_spec_file_name_is_stable() {
+         let name = AnnealTargetName {
+             package_name: PackageName::new("pkg-foo".to_string()),
+             target_name: "name-bar".to_string(),
+@@ -495,10 +495,7 @@ mod tests {
+             items: vec![],
+         };
+
+-        // Slug should be PascalCase: PkgFoo_NameBar_<hash>
+-        // Spec file should be slug + .lean
+         let spec_name = artifact.lean_spec_file_name();
+-        assert!(spec_name.starts_with("PkgFooNameBar"));
+-        assert!(spec_name.ends_with(".lean"));
++        assert_eq!(spec_name, "Spec.lean");
+     }
+ }

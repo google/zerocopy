@@ -1,0 +1,18 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+
+    server_name play.integer32.com;
+
+    ssl_certificate /etc/nginx/ssl/play.integer32.com/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/play.integer32.com/key.pem;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://localhost:8080;
+    }
+}
