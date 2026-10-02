@@ -163,6 +163,14 @@ theorem layout_decoder_admitted_iff (raw : layout.DstLayout) :
   simpa only [trailingValid, encodingValid, scalar_valid_iff, true_and] using
     trailing_admitted_iff raw
 
+-- Optional traversal exposes the same fixed provider's named decoder directly.
+@[contract_simps] theorem trailing_usize_decoder_admitted_iff
+    (raw : layout.TrailingSliceLayout Usize) :
+    (∃ value : layout.TrailingSliceLayout.Fields (UnsignedWord .Usize),
+      layout.TrailingSliceLayout.decode Usize raw = some value) ↔
+      0 < raw.size_rounding_align_and_phase._0.val.val :=
+  trailing_usize_admitted_iff raw
+
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
 

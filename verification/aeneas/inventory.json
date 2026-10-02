@@ -32,6 +32,14 @@
     },
     {
       "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::has_same_size_sequence"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "TrailingSliceLayout::advance"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
       "syntax": "SizeInfo::try_to_nonzero_elem_size"
     },
     {
@@ -69,6 +77,10 @@
     {
       "file": "zerocopy/src/layout.rs",
       "syntax": "DstLayout::requires_static_padding"
+    },
+    {
+      "file": "zerocopy/src/layout.rs",
+      "syntax": "DstLayout::requires_dynamic_padding"
     },
     {
       "file": "zerocopy/src/util/mod.rs",
