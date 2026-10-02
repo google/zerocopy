@@ -55,6 +55,28 @@ def encoding_align_spec : Prop :=
   ∀ (code : layout.RoundingAlignAndPhase), 0 < code._0.val.val →
     ∃ a, layout.RoundingAlignAndPhase.align code = .ok a ∧ 0 < a.val.val ∧ a.val.val = 2 ^ code._0.val.val.log2
 
+def size_offset_spec : Prop :=
+  ∀ (E : Type) (t : layout.TrailingSliceLayout E) [IsValid E], trailingValid t →
+    ∃ offset, layout.TrailingSliceLayout.size_offset t = .ok offset ∧
+      offset.val = t.size_base.val - t.size_base.val % (byteFormula t).align + (byteFormula t).phase
+
+def max_trailing_bytes_spec : Prop :=
+  ∀ (E : Type) (t : layout.TrailingSliceLayout E) (budget : Usize) [IsValid E],
+    trailingValid t →
+    ∃ cap, layout.TrailingSliceLayout.max_trailing_bytes t budget = .ok cap ∧
+      cap.map UScalar.val = (byteFormula t).capacity budget.val
+
+def padding_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize), 0 < t.size_rounding_align_and_phase._0.val.val →
+    ∃ p, layout.TrailingSliceLayoutUsize.padding_for_elems t n = .ok p ∧
+      (p.val + t.offset.val + n.val * t.elem_size.val) % UScalar.size .Usize =
+        (trailingFormula t).size n.val % UScalar.size .Usize
+
+def size_for_elems_spec : Prop :=
+  ∀ (t : layout.TrailingSliceLayout Usize) (n : Usize), 0 < t.size_rounding_align_and_phase._0.val.val →
+    ∃ size, layout.TrailingSliceLayoutUsize.size_for_elems t n = .ok size ∧
+      size.map UScalar.val = (trailingFormula t).checkedSize Usize.max n.val
+
 def try_nonzero_spec : Prop :=
   ∀ (si : layout.SizeInfo Usize), sizeInfoValid si → layout.SizeInfoUsize.try_to_nonzero_elem_size si ⦃ r => (∀ next ∈ r, sizeInfoValid next) ∧
     match si with
