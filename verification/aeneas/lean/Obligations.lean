@@ -11,6 +11,7 @@ public import Zerocopy.Funs
 public import SpecPrelude
 public import MathViews
 public import Arithmetic
+public import LayoutModel
 @[expose] public section
 
 /-!

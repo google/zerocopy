@@ -126,7 +126,12 @@ fn run_codegen_test(bench_name: &str, target_cpu: &str, bless: bool) {
             let expected_result = std::fs::read(expected_file_path).unwrap_or_default();
             if actual_result.as_bytes() != expected_result {
                 let expected = String::from_utf8_lossy(&expected_result[..]);
-                panic!("Bless codegen tests with BLESS=1\nGot unexpected output:\n{}", expected);
+                panic!(
+                    "Bless codegen tests with BLESS=1\nSnapshot: {}\nExpected:\n{}\nActual:\n{}",
+                    expected_file_path.display(),
+                    expected,
+                    actual_result
+                );
             }
         }
     };
@@ -153,7 +158,11 @@ fn codegen() {
         })
         .collect();
 
-    let failed = handles.into_iter().any(|handle| handle.join().unwrap().is_err());
+    // Join every worker so an early failure cannot hide later diagnostics.
+    let mut failed = false;
+    for handle in handles {
+        failed |= handle.join().unwrap().is_err();
+    }
 
     if failed {
         panic!("One or more codegen tests failed. See thread panics above for details.");
