@@ -11,7 +11,8 @@ public import Specs
 public import Proofs.Util
 public import MathViews
 public import Aeneas
-public import Arithmetic
+public import Loops
+public import LayoutMath
 import all Mathlib.Data.Nat.Log
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
