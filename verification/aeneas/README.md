@@ -16,7 +16,7 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 ## Scope and proofs
 
 Extraction starts from these actual helpers in `zerocopy/src/util/mod.rs` and
-the method in `zerocopy/src/layout.rs`, including their dependencies; there is
+methods in `zerocopy/src/layout.rs`, including their dependencies; there is
 no copied Rust implementation:
 
 | Rust function | Checked property |
@@ -26,9 +26,12 @@ no copied Rust implementation:
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
 | `DstLayout::pad_to_align` | For sized layouts, power-of-two alignment and an exact padded size that fits guarantee the least aligned size at least the input; alignment is preserved and the shallow-unpadded flag becomes its old value AND the input being aligned. All DST layouts return unchanged, with no arithmetic preconditions. |
+| `RoundingAlignAndPhase::new` | For power-of-two alignment `A` and phase `P < A`, successfully encodes exactly `A + P`. |
+| `RoundingAlignAndPhase::components` | For any nonzero encoded word, returns its highest set bit as a power-of-two alignment and the remaining lower bits as a phase below that alignment; their sum is the original word. |
+| `RoundingAlignAndPhase::align` | For any nonzero encoded word, returns exactly its highest set bit. |
 
 The theorems quantify over all values of the extracted unsigned integer model;
-these are not finite collections of test inputs. All five inline specifications
+these are not finite collections of test inputs. All eight inline specifications
 use `contract`, whose Aeneas Hoare specification includes successful termination,
 rather than only a postcondition conditional on success.
 
@@ -39,6 +42,13 @@ sized layouts and DSTs, and is idempotent. The idempotence contracts prove both
 calls succeed, including that the first result meets the second call's needs.
 The original `size + align - 1 <= usize::MAX` precondition is also checked as a
 sufficient condition for the layout contract's exact fit requirement.
+
+The alignment/phase encoder is introduced independently of the current layout
+representation. It stores both components in one nonzero word without
+restricting the set of valid nonzero bit patterns. Its Rust tests cover const
+evaluation and boundary cases, and Kani harnesses state both round-trip
+properties. The Lean contracts require positivity explicitly because the
+handwritten `NonZero` model also admits zero.
 
 Comparisons use the unsigned scalar's existing order directly (`m ≤ n`,
 `p < align.val`, `min a.val b.val`). Arithmetic postconditions explicitly bind
@@ -357,6 +367,10 @@ records but does not formally prove:
   Rust values by admitting zero; the alignment proofs establish positivity
   from their explicit power-of-two requirement rather than assuming it through
   an axiom.
+- Extraction uses `size_of` only at `usize`, modeled as the platform word width
+  divided by eight. The encoder also trusts the pinned leading-zero-count and
+  scalar-cast models to match Rust. The handwritten `NonZero::new` model
+  accepts exactly nonzero unsigned machine words; other types are unsupported.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.

@@ -47,6 +47,131 @@ pub(crate) enum SizeInfo<E = usize> {
     SliceDst(TrailingSliceLayout<E>),
 }
 
+/// The alignment and phase of a rounded size calculation.
+///
+/// If `encoded` is the stored non-zero integer, then its highest set bit is a
+/// power-of-two alignment `align`, and its remaining lower bits are a `phase`
+/// in `0..align`. Thus every non-zero bit pattern is a valid encoding, and:
+///
+/// ```text
+/// encoded = align + phase
+/// ```
+#[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
+#[repr(transparent)]
+#[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
+#[allow(dead_code)]
+pub(crate) struct RoundingAlignAndPhase(NonZeroUsize);
+
+// The following layout migration will consume this representation.
+#[allow(dead_code)]
+impl RoundingAlignAndPhase {
+    /// Encodes `align` and `phase`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `align` is not a power of two or `phase` is not less than
+    /// `align`.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::requires(align.is_power_of_two() && phase < align.get()))]
+    #[cfg_attr(kani, kani::ensures(|result| result.0.get() == align.get() + phase))]
+    pub(crate) const fn new(align: NonZeroUsize, phase: usize) -> Self {
+        // ```aeneas
+        // spec encoding_new_spec (align : NonZeroUsize) (phase : Usize)
+        //   requires ha : align.val.val.isPowerOfTwo
+        //   requires hp : phase.val < align.val.val
+        //   ensures encoded => encoded.val.val = align.val.val + phase.val
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::new)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            RoundingAlignAndPhase::new(kani::any(), kani::any());
+        }
+
+        const_assert!(align.get().is_power_of_two());
+        const_assert!(phase < align.get());
+
+        // Since `align` is a power of two and `phase < align`, their set bits
+        // are disjoint. The result is therefore non-zero and losslessly stores
+        // both components.
+        let encoded = align.get() | phase;
+        match NonZeroUsize::new(encoded) {
+            Some(encoded) => Self(encoded),
+            None => const_unreachable!(),
+        }
+    }
+
+    /// Decodes the alignment and phase.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&(align, phase)| {
+        align.is_power_of_two() && phase < align.get()
+            && align.get().checked_add(phase) == Some(self.0.get())
+    }))]
+    pub(crate) const fn components(self) -> (NonZeroUsize, usize) {
+        // ```aeneas
+        // spec encoding_components_spec (self : layout.RoundingAlignAndPhase)
+        //   requires hn : 0 < self.val.val
+        //   ensures (align, phase) =>
+        //     align.val.val.isPowerOfTwo ∧ phase.val < align.val.val ∧
+        //     align.val.val + phase.val = self.val.val ∧
+        //     align.val.val = 2 ^ Nat.log2 self.val.val ∧
+        //     phase.val = self.val.val - 2 ^ Nat.log2 self.val.val
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::components)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<RoundingAlignAndPhase>().components();
+        }
+        // `leading_zeros <= POINTER_WIDTH_BITS - 1` because the encoded value
+        // is non-zero. Converting `leading_zeros` to `usize` cannot truncate
+        // because it is at most the number of bits in a `usize`.
+        // Keep the primitive usize operation visible to Aeneas.
+        #[allow(
+            clippy::arithmetic_side_effects,
+            clippy::as_conversions,
+            clippy::needless_nonzero_get
+        )]
+        let shift = (POINTER_WIDTH_BITS - 1) - (self.0.get().leading_zeros() as usize);
+        #[allow(clippy::arithmetic_side_effects)]
+        let align = 1usize << shift;
+        let align = match NonZeroUsize::new(align) {
+            Some(align) => align,
+            None => const_unreachable!(),
+        };
+        // `align` is the highest set bit, so XOR removes exactly that bit and
+        // leaves a value in `0..align`.
+        let phase = self.0.get() ^ align.get();
+        (align, phase)
+    }
+
+    /// Decodes the alignment, which is the highest set bit of `self`.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|align| {
+        align.is_power_of_two() && align.get() <= self.0.get()
+            && self.0.get() - align.get() < align.get()
+    }))]
+    pub(crate) const fn align(self) -> NonZeroUsize {
+        // ```aeneas
+        // spec encoding_align_spec (self : layout.RoundingAlignAndPhase)
+        //   requires hn : 0 < self.val.val
+        //   ensures align => align.val.val = 2 ^ Nat.log2 self.val.val
+        // ```
+
+        #[cfg(kani)]
+        #[kani::proof_for_contract(RoundingAlignAndPhase::align)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            kani::any::<RoundingAlignAndPhase>().align();
+        }
+
+        self.components().0
+    }
+}
+
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[derive(Copy, Clone)]
 pub(crate) struct TrailingSliceLayout<E = usize> {
@@ -1124,6 +1249,46 @@ mod cast_from {
 mod tests {
     use super::*;
 
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_ALIGN: NonZeroUsize = match NonZeroUsize::new(8) {
+        Some(align) => align,
+        None => const_unreachable!(),
+    };
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE: RoundingAlignAndPhase =
+        RoundingAlignAndPhase::new(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_ALIGN, 3);
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_ALIGN: usize =
+        TEST_SIZE_ROUNDING_ALIGN_AND_PHASE.align().get();
+    const TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_PHASE: usize =
+        TEST_SIZE_ROUNDING_ALIGN_AND_PHASE.components().1;
+
+    #[test]
+    #[allow(clippy::arithmetic_side_effects)]
+    fn test_size_rounding_align_and_phase_encoding() {
+        // These constants ensure that encoding and decoding remain evaluable
+        // on every supported compiler, including the MSRV.
+        assert_eq!(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_ALIGN, 8);
+        assert_eq!(TEST_SIZE_ROUNDING_ALIGN_AND_PHASE_DECODED_PHASE, 3);
+
+        for shift in 0..POINTER_WIDTH_BITS {
+            #[allow(clippy::arithmetic_side_effects)]
+            let align = NonZeroUsize::new(1usize << shift).unwrap();
+            for phase in [0, align.get() / 2, align.get() - 1] {
+                let rounding = RoundingAlignAndPhase::new(align, phase);
+                assert_eq!(rounding.align(), align);
+                assert_eq!(rounding.components().1, phase);
+                assert_eq!(rounding.0.get(), align.get() | phase);
+            }
+        }
+
+        let max_align = DstLayout::THEORETICAL_MAX_ALIGN;
+        let max_phase = max_align.get() - 1;
+        let max = RoundingAlignAndPhase::new(max_align, max_phase);
+        assert_eq!(max.0.get(), usize::MAX);
+        assert_eq!(max.align(), max_align);
+        assert_eq!(max.components().1, max_phase);
+
+        assert_eq!(mem::size_of::<RoundingAlignAndPhase>(), mem::size_of::<usize>());
+    }
+
     #[test]
     fn test_dst_layout_for_slice() {
         let layout = DstLayout::for_slice::<u32>();
@@ -2030,6 +2195,31 @@ mod proofs {
 
             TrailingSliceLayout { elem_size, offset }
         }
+    }
+
+    #[kani::proof]
+    fn prove_size_rounding_align_and_phase_encoding() {
+        let encoded: usize = kani::any();
+        kani::assume(encoded != 0);
+        let encoded = NonZeroUsize::new(encoded).unwrap();
+        let rounding = RoundingAlignAndPhase(encoded);
+
+        let align = rounding.align();
+        let phase = rounding.components().1;
+        assert!(align.is_power_of_two());
+        assert!(phase < align.get());
+        assert_eq!(RoundingAlignAndPhase::new(align, phase), rounding);
+    }
+
+    #[kani::proof]
+    fn prove_size_rounding_align_and_phase_decoding() {
+        let align: NonZeroUsize = kani::any();
+        let phase: usize = kani::any();
+        kani::assume(align.is_power_of_two());
+        kani::assume(phase < align.get());
+
+        let rounding = RoundingAlignAndPhase::new(align, phase);
+        assert_eq!(rounding.components(), (align, phase));
     }
 
     #[kani::proof]

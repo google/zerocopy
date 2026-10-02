@@ -40,7 +40,7 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
 /-- [zerocopy::layout::TrailingSliceLayout]
-    Source: 'src/layout.rs', lines 52:0-68:1 -/
+    Source: 'src/layout.rs', lines 172:0-188:1 -/
 structure layout.TrailingSliceLayout (E : Type) where
   offset : Std.Usize
   elem_size : E
@@ -60,5 +60,11 @@ structure layout.DstLayout where
     core.num.niche_types.NonZeroUsizeInner
   size_info : layout.SizeInfo Std.Usize
   statically_shallow_unpadded : Bool
+
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout.rs', lines 64:0-64:54 -/
+@[reducible]
+def layout.RoundingAlignAndPhase :=
+  core.num.nonzero.NonZero Std.Usize core.num.niche_types.NonZeroUsizeInner
 
 end Zerocopy
