@@ -26,7 +26,8 @@ proved implications available to check_contract's bounded normalization.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 
-attribute [contract_simps] encoding_decoder_admitted_iff
+attribute [contract_simps] encoding_decoder_admitted_iff trailing_decoder_admitted_iff
+  size_info_decoder_admitted_iff layout_decoder_admitted_iff
 
 @[contract_simps] theorem required_encoding_new (align : NonZeroUsize) (phase : Usize)
     (run : Result layout.RoundingAlignAndPhase)
@@ -80,5 +81,18 @@ attribute [contract_simps] encoding_decoder_admitted_iff
   rw [ha, hp]
   exact ⟨Nat.pos_of_isPowerOfTwo value.align_pow2, value.align_pow2, value.phase_lt,
     hraw.symm, hcanonical.1, hcanonical.2⟩
+
+@[contract_simps] theorem required_try_nonzero (self : layout.SizeInfo Usize)
+    (run : Result (Option (layout.SizeInfo NonZeroUsize)))
+    (provided : Specs.try_nonzero_spec_contract self run) :
+    Obligations.try_nonzero_spec_contract self run := by
+  intro accepted
+  obtain ⟨value, decoded⟩ := (size_info_valid_iff self).mpr accepted
+  apply WP.spec_mono (provided value decoded)
+  rintro result ⟨resultValue, resultDecoded, facts⟩
+  refine ⟨?_, ?_⟩
+  · have valid : isValid result := ⟨resultValue, resultDecoded⟩
+    simpa only [option_valid_iff, size_info_valid_iff] using valid
+  · cases self <;> simpa only using facts
 
 end Zerocopy.Proofs
