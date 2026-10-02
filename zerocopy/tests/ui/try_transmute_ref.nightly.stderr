@@ -1,5 +1,21 @@
 error[E0308]: mismatched types
-   --> tests$RUSTUP_TOOLCHAIN/lib/rustlib/src/rust/library/core/src/result.rs:562:5
+   --> $DIR/try_transmute_ref.rs:19:33
+    |
+ 19 |     let _: Result<&mut u8, _> = try_transmute_ref!(&0u8);
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+    |                                 |
+    |                                 types differ in mutability
+    |                                 arguments to this enum variant are incorrect
+    |
+    = note: expected mutable reference `&mut u8`
+                       found reference `&_`
+help: the type constructed contains `&_` due to the type of the argument passed
+   --> $DIR/try_transmute_ref.rs:19:33
+    |
+ 19 |     let _: Result<&mut u8, _> = try_transmute_ref!(&0u8);
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ this argument influences the type of `Ok`
+note: tuple variant defined here
+   --> $RUSTUP_TOOLCHAIN/lib/rustlib/src/rust/library/core/src/result.rs:562:5
     |
 562 |     Ok(#[stable(feature = "rust1", since = "1.0.0")] T),
     |     ^^

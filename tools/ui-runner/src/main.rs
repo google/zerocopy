@@ -10,6 +10,7 @@ use std::{
     env,
     fmt::Debug,
     path::{Path, PathBuf},
+    process::Command,
 };
 
 use ui_test::{
@@ -37,6 +38,13 @@ fn main() {
     );
     let toolchain = env::var("ZEROCOPY_UI_TEST_TOOLCHAIN")
         .expect("ZEROCOPY_UI_TEST_TOOLCHAIN must be set by tests/ui.rs");
+    let sysroot = Command::new("rustc")
+        .env("RUSTUP_TOOLCHAIN", &toolchain)
+        .args(["--print", "sysroot"])
+        .output()
+        .expect("failed to query the UI compiler's sysroot");
+    assert!(sysroot.status.success(), "failed to query the UI compiler's sysroot");
+    let sysroot = PathBuf::from(String::from_utf8(sysroot.stdout).unwrap().trim());
 
     let root = env::current_dir().unwrap();
     let mut config = Config::rustc(tests_dir.clone());
@@ -50,14 +58,19 @@ fn main() {
     let workspace_root =
         env::var("ZEROCOPY_WORKSPACE_ROOT").map(PathBuf::from).unwrap_or_else(|_| root.clone());
 
+    // Normalize the selected compiler's actual source path, including a custom
+    // RUSTUP_HOME. Exact path matching also preserves neighboring diagnostics;
+    // a regex with [^/] could consume newlines before the source path.
+    config
+        .comment_defaults
+        .base()
+        .normalize_stderr
+        .push((sysroot.as_path().into(), b"$RUSTUP_TOOLCHAIN".to_vec()));
+
     config.stderr_filter(&workspace_root.display().to_string(), "$$WORKSPACE");
     if let Ok(canonical) = std::fs::canonicalize(&workspace_root) {
         config.stderr_filter(&canonical.display().to_string(), "$$WORKSPACE");
     }
-
-    // Normalize paths to rustlib source code, which will differ between developer
-    // machines and CI runners.
-    config.stderr_filter(r"(/[^/]+)+/\.rustup/toolchains/[^/]+/", b"$$RUSTUP_TOOLCHAIN/");
 
     config.stderr_filter(&tests_dir.display().to_string(), "$$DIR");
     if let Ok(canonical) = std::fs::canonicalize(&tests_dir) {
