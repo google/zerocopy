@@ -1,0 +1,518 @@
+[
+  {
+    "abort": null,
+    "definitions": null,
+    "elapsed_s": 10.843,
+    "exit": 0,
+    "false_edit_error_count": null,
+    "goal": {
+      "goals": [
+        "⊢ True"
+      ],
+      "rendered": "```lean\n⊢ True\n```"
+    },
+    "goal_position": {
+      "character": 0,
+      "line": 4
+    },
+    "label": "native-sdk-lsp-1",
+    "last_diagnostics_by_version": {
+      "1": []
+    },
+    "min_disk_free_gib": 26.44,
+    "min_memory_free_pct": 32,
+    "peak_sampled_rss_mib": 1152.7,
+    "responses": {
+      "1": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      },
+      "2": {},
+      "3": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      },
+      "4": null
+    },
+    "restored_goal": null,
+    "result": "pass",
+    "trace": {
+      "blocked_shared_mutations": 0,
+      "network_attempts": 0,
+      "process_loads": 4
+    }
+  },
+  {
+    "abort": null,
+    "definitions": {
+      "aeneas": {
+        "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/AeneasMeta/Saturate/Tactic.lean",
+        "range": {
+          "end": {
+            "character": 28,
+            "line": 744
+          },
+          "start": {
+            "character": 0,
+            "line": 740
+          }
+        },
+        "uri": "file://<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/AeneasMeta/Saturate/Tactic.lean"
+      },
+      "mathlib": {
+        "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib/Mathlib/Data/Nat/Basic.lean",
+        "range": {
+          "end": {
+            "character": 20,
+            "line": 55
+          },
+          "start": {
+            "character": 6,
+            "line": 55
+          }
+        },
+        "uri": "file://<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib/Mathlib/Data/Nat/Basic.lean"
+      }
+    },
+    "elapsed_s": 18.921,
+    "exit": 0,
+    "false_edit_error_count": 1,
+    "goal": {
+      "goals": [
+        "⊢ True"
+      ],
+      "rendered": "```lean\n⊢ True\n```"
+    },
+    "goal_position": {
+      "character": 0,
+      "line": 7
+    },
+    "label": "native-sdk-lsp-navigation-1",
+    "last_diagnostics_by_version": {
+      "1": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "Nat.succ_injective : Function.Injective Nat.succ",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 17,
+              "line": 6
+            },
+            "start": {
+              "character": 2,
+              "line": 6
+            }
+          },
+          "message": "'aeneas_saturate' tactic does nothing\n\nNote: This linter can be disabled with `set_option linter.unusedTactic false`",
+          "range": {
+            "end": {
+              "character": 17,
+              "line": 6
+            },
+            "start": {
+              "character": 2,
+              "line": 6
+            }
+          },
+          "severity": 2,
+          "source": "Lean 4"
+        }
+      ],
+      "2": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "message": "Nat.succ_injective : Function.Injective Nat.succ",
+          "range": {
+            "end": {
+              "character": 6,
+              "line": 3
+            },
+            "start": {
+              "character": 0,
+              "line": 3
+            }
+          },
+          "severity": 3,
+          "source": "Lean 4"
+        },
+        {
+          "fullRange": {
+            "end": {
+              "character": 9,
+              "line": 8
+            },
+            "start": {
+              "character": 2,
+              "line": 8
+            }
+          },
+          "message": "Tactic `assumption` failed\n\n⊢ False",
+          "range": {
+            "end": {
+              "character": 9,
+              "line": 8
+            },
+            "start": {
+              "character": 2,
+              "line": 8
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "3": []
+    },
+    "min_disk_free_gib": 26.28,
+    "min_memory_free_pct": 30,
+    "peak_sampled_rss_mib": 1032.2,
+    "responses": {
+      "1": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      },
+      "2": {},
+      "3": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      },
+      "4": [
+        {
+          "originSelectionRange": {
+            "end": {
+              "character": 17,
+              "line": 6
+            },
+            "start": {
+              "character": 2,
+              "line": 6
+            }
+          },
+          "targetRange": {
+            "end": {
+              "character": 28,
+              "line": 744
+            },
+            "start": {
+              "character": 0,
+              "line": 740
+            }
+          },
+          "targetSelectionRange": {
+            "end": {
+              "character": 28,
+              "line": 744
+            },
+            "start": {
+              "character": 0,
+              "line": 740
+            }
+          },
+          "targetUri": "file://<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/AeneasMeta/Saturate/Tactic.lean"
+        }
+      ],
+      "5": [
+        {
+          "originSelectionRange": {
+            "end": {
+              "character": 25,
+              "line": 3
+            },
+            "start": {
+              "character": 7,
+              "line": 3
+            }
+          },
+          "targetRange": {
+            "end": {
+              "character": 20,
+              "line": 55
+            },
+            "start": {
+              "character": 6,
+              "line": 55
+            }
+          },
+          "targetSelectionRange": {
+            "end": {
+              "character": 20,
+              "line": 55
+            },
+            "start": {
+              "character": 6,
+              "line": 55
+            }
+          },
+          "targetUri": "file://<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib/Mathlib/Data/Nat/Basic.lean"
+        }
+      ],
+      "6": {},
+      "7": {},
+      "8": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      },
+      "9": null
+    },
+    "restored_goal": {
+      "goals": [
+        "⊢ True"
+      ],
+      "rendered": "```lean\n⊢ True\n```"
+    },
+    "result": "pass",
+    "trace": {
+      "blocked_shared_mutations": 0,
+      "network_attempts": 0,
+      "process_loads": 4
+    }
+  }
+]

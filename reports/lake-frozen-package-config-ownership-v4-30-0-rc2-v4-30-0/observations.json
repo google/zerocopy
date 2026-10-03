@@ -1,0 +1,2924 @@
+{
+  "normalization": {
+    "run_root": "${RUN_ROOT} denotes the original validation Data directory absolute prefix",
+    "rc2_sysroot": "${RC2_SYSROOT} denotes the original relocated RC2 toolchain absolute prefix",
+    "final_sysroot": "${FINAL_SYSROOT} denotes the original extracted final runtime absolute prefix",
+    "transformation": "Only absolute path prefixes were replaced in string fields. Lake trace hash fields and snapshot SHA-256, sizes, modes and mtimes were retained verbatim."
+  },
+  "cells": [
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-prepare",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "exit": 0,
+      "kind": "tiny producer compilation",
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Built Shared (401ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (209ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 892.25,
+      "min_memory_free_pct": 30,
+      "min_disk_free_gib": 26.891
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-a-normal",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 1.27,
+      "exit": 0,
+      "expectation": "fresh same-context consumer: hash replay, no shared attempts",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (238ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 937.312,
+      "min_memory_free_pct": 30,
+      "min_disk_free_gib": 26.891
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-b-depth",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.847,
+      "exit": 0,
+      "expectation": "only consumer path/depth differs from A",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (224ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/nested/deeper/b/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 643.969,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.891
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-c-root-name",
+      "config_traces": [
+        {
+          "configHash": "77b47976d3e3b8be",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.838,
+      "exit": 0,
+      "expectation": "only root package name differs from A",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_renamed:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (222ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/name/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_renamed/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 654.797,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.89
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-d-package-order",
+      "config_traces": [
+        {
+          "configHash": "b5cf31064d79e500",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/index",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.424,
+      "exit": 1,
+      "expectation": "require and manifest order reversed; inspect actual config idx",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [
+        {
+          "blocked": true,
+          "kind": "mutation",
+          "op": "open",
+          "path": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/config/probe_shared/lakefile.olean.lock",
+          "pid": 4170,
+          "time_ns": 142931497704000
+        }
+      ],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "",
+      "stderr": "error: permission denied (error code: 13)\n  file: ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/config/probe_shared/lakefile.olean.lock\n",
+      "peak_sampled_rss_mib": 640.859,
+      "min_memory_free_pct": 32,
+      "min_disk_free_gib": 26.89
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-e-no-manifest",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/no-manifest",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.632,
+      "exit": 1,
+      "expectation": "fresh manifest discovery: final should own compiled config; RC2 may attempt shared write",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [
+        {
+          "blocked": true,
+          "kind": "mutation",
+          "op": "open",
+          "path": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/config/probe_pad/lakefile.olean.lock",
+          "pid": 4177,
+          "time_ns": 142931948925000
+        }
+      ],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "",
+      "stderr": "info: consumer_a: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/config/probe_pad/lakefile.olean.lock\n",
+      "peak_sampled_rss_mib": 635.797,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.89
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-f-old",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.834,
+      "exit": 0,
+      "expectation": "mtime fallback control, not proof of hash replay",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "--old",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (239ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/old/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 972.109,
+      "min_memory_free_pct": 32,
+      "min_disk_free_gib": 26.89
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-g-local-edit",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.835,
+      "exit": 0,
+      "expectation": "local source edit rebuilds private Client; shared dependency remains unchanged",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (241ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 658.625,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.889
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-h-no-op",
+      "config_traces": [
+        {
+          "configHash": "f3153efa3a088e51",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.637,
+      "exit": 0,
+      "expectation": "second run after local rebuild replays without compiler work",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Replayed Client\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 612.625,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.889
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-missing-prepare",
+      "exit": 0,
+      "kind": "dedicated tiny source producer scratch copy",
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Built Shared (233ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (252ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 954.922,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.889
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-i-copy-healthy",
+      "config_traces": [
+        {
+          "configHash": "23573ed751bbb5e1",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.847,
+      "exit": 0,
+      "expectation": "control: dedicated scratch producer is reusable before damage",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake",
+        "${RC2_SYSROOT}/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-primer/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (235ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/.lake/build/lib/lean ${RC2_SYSROOT}/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-healthy/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 977.734,
+      "min_memory_free_pct": 33,
+      "min_disk_free_gib": 26.889
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-rc2-j-copy-missing-artifact",
+      "config_traces": [
+        {
+          "configHash": "23573ed751bbb5e1",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/work/missing-damaged",
+          "path": ".lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared",
+          "path": ".lake/config/probe_shared/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_pad",
+          "path": ".lake/config/probe_pad/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.637,
+      "exit": 3,
+      "expectation": "missing required scratch OLean: report shared write attempts even under --no-build",
+      "loaded_executables": [
+        "${RC2_SYSROOT}/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [
+        {
+          "blocked": true,
+          "kind": "mutation",
+          "op": "open",
+          "path": "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.trace.nobuild",
+          "pid": 4231,
+          "time_ns": 142937172493000
+        }
+      ],
+      "shared_build_traces": [
+        {
+          "depHash": "8569e9315b04983e",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "2c8d2623007dfc36"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "--no-build",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\n✖ [3/5] Building Shared\nerror: permission denied (error code: 13)\n  file: ${RUN_ROOT}/synthetic/20261003-synthetic-1/rc2/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.trace.nobuild\n✔ [4/5] Ran Client\n✔ [5/5] Ran consumer_a/Client:default\nSome required targets logged failures:\n- Shared\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 632.125,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.889
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-prepare",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "exit": 0,
+      "kind": "tiny producer compilation",
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Built Shared (535ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (204ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 699.25,
+      "min_memory_free_pct": 30,
+      "min_disk_free_gib": 26.888
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-a-normal",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.832,
+      "exit": 0,
+      "expectation": "fresh same-context consumer: hash replay, no shared attempts",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (232ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 833.672,
+      "min_memory_free_pct": 34,
+      "min_disk_free_gib": 26.887
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-b-depth",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.656,
+      "exit": 0,
+      "expectation": "only consumer path/depth differs from A",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (211ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/nested/deeper/b/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 669.516,
+      "min_memory_free_pct": 36,
+      "min_disk_free_gib": 26.887
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-c-root-name",
+      "config_traces": [
+        {
+          "configHash": "9a2d44a905ad8f63",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.845,
+      "exit": 0,
+      "expectation": "only root package name differs from A",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_renamed:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (215ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/name/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_renamed/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 648.594,
+      "min_memory_free_pct": 38,
+      "min_disk_free_gib": 26.887
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-d-package-order",
+      "config_traces": [
+        {
+          "configHash": "dabfe4bdabb827f8",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 1,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 2,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.847,
+      "exit": 0,
+      "expectation": "require and manifest order reversed; inspect actual config idx",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (228ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/index/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 1003.359,
+      "min_memory_free_pct": 38,
+      "min_disk_free_gib": 26.886
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-e-no-manifest",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.839,
+      "exit": 0,
+      "expectation": "fresh manifest discovery: final should own compiled config; RC2 may attempt shared write",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (230ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/no-manifest/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "info: consumer_a: no previous manifest, creating one from scratch\nwarning: probe_pad: ignoring missing manifest '${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/lake-manifest.json'\nwarning: probe_shared: ignoring missing manifest '${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/lake-manifest.json'\n",
+      "peak_sampled_rss_mib": 966.516,
+      "min_memory_free_pct": 39,
+      "min_disk_free_gib": 26.886
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-f-old",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.838,
+      "exit": 0,
+      "expectation": "mtime fallback control, not proof of hash replay",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "--old",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (256ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/old/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 896.578,
+      "min_memory_free_pct": 37,
+      "min_disk_free_gib": 26.885
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-g-local-edit",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.816,
+      "exit": 0,
+      "expectation": "local source edit rebuilds private Client; shared dependency remains unchanged",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (236ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 930.125,
+      "min_memory_free_pct": 34,
+      "min_disk_free_gib": 26.885
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-h-no-op",
+      "config_traces": [
+        {
+          "configHash": "60bb5a99c68c5749",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.846,
+      "exit": 0,
+      "expectation": "second run after local rebuild replays without compiler work",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Replayed Client\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/source/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/a/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 621.328,
+      "min_memory_free_pct": 32,
+      "min_disk_free_gib": 26.885
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-missing-prepare",
+      "exit": 0,
+      "kind": "dedicated tiny source producer scratch copy",
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Built Shared (288ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (218ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 990.578,
+      "min_memory_free_pct": 31,
+      "min_disk_free_gib": 26.885
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-i-copy-healthy",
+      "config_traces": [
+        {
+          "configHash": "3941b0fd1161ab98",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.836,
+      "exit": 0,
+      "expectation": "control: dedicated scratch producer is reusable before damage",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake",
+        "${RUN_ROOT}/lean-final/bin/lean"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\nℹ [3/5] Replayed Shared\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-primer/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/Shared.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/ir/Shared.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/ir/Shared.setup.json --json\nℹ [4/5] Built Client (228ms)\ntrace: .> LEAN_PATH=${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_pad/.lake/build/lib/lean:${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/.lake/build/lib/lean ${RUN_ROOT}/lean-final/bin/lean ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/Client.lean -o ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/.lake/build/lib/lean/Client.olean -i ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/.lake/build/lib/lean/Client.ilean -c ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/.lake/build/ir/Client.c --setup ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-healthy/.lake/build/ir/Client.setup.json --json\n✔ [5/5] Ran consumer_a/Client:default\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 967.453,
+      "min_memory_free_pct": 33,
+      "min_disk_free_gib": 26.884
+    },
+    {
+      "abort": null,
+      "cell": "20261003-synthetic-1-final-j-copy-missing-artifact",
+      "config_traces": [
+        {
+          "configHash": "3941b0fd1161ab98",
+          "idx": 0,
+          "name": "[anonymous]",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-damaged",
+          "path": ".lake/config/0/lakefile.olean.trace"
+        },
+        {
+          "configHash": "943d0f6cab42fb7f",
+          "idx": 1,
+          "name": "probe_pad",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-damaged",
+          "path": ".lake/config/1/lakefile.olean.trace"
+        },
+        {
+          "configHash": "e6d8cc9d0f092ef9",
+          "idx": 2,
+          "name": "probe_shared",
+          "owner": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/work/missing-damaged",
+          "path": ".lake/config/2/lakefile.olean.trace"
+        }
+      ],
+      "elapsed_s": 0.635,
+      "exit": 3,
+      "expectation": "missing required scratch OLean: report shared write attempts even under --no-build",
+      "loaded_executables": [
+        "${RUN_ROOT}/lean-final/bin/lake"
+      ],
+      "network_attempts": [],
+      "shared_attempts": [
+        {
+          "blocked": true,
+          "kind": "mutation",
+          "op": "open",
+          "path": "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.trace.nobuild",
+          "pid": 4370,
+          "time_ns": 142958360392000
+        }
+      ],
+      "shared_build_traces": [
+        {
+          "depHash": "b885d924048f9691",
+          "inputs": [
+            [
+              "Shared:deps",
+              [
+                [
+                  "deps",
+                  [
+                    [
+                      "probe_shared/Shared:extraDep",
+                      [
+                        [
+                          "@probe_shared:extraDep",
+                          "00000000000006bb"
+                        ]
+                      ]
+                    ],
+                    [
+                      "imports",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ],
+                [
+                  "libs",
+                  [
+                    [
+                      "import dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "package external libraries",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module dynlibs",
+                      "00000000000006bb"
+                    ],
+                    [
+                      "module plugins",
+                      "00000000000006bb"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "Lean 4.30.0, commit d024af099ca4bf2c86f649261ebf59565dc8c622",
+              "2f4703bb19086252"
+            ],
+            [
+              "${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/Shared.lean",
+              "04edbacca8765398"
+            ],
+            [
+              "options",
+              "00000000000006bb"
+            ],
+            [
+              "isModule: false",
+              "feefd2a0d3a1847e"
+            ],
+            [
+              "Module.name: Shared",
+              "00b2110ee29aff62"
+            ],
+            [
+              "Package.id?: (some probe_shared)",
+              "8887e5c93498fbb5"
+            ],
+            [
+              "Module.leanArgs: #[]",
+              "00000000000006bb"
+            ]
+          ],
+          "path": ".lake/build/lib/lean/Shared.trace",
+          "synthetic": false
+        }
+      ],
+      "shared_unchanged": true,
+      "command": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "--no-build",
+        "build",
+        "Client"
+      ],
+      "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran consumer_a:extraDep\n✔ [2/5] Ran probe_shared:extraDep\n✖ [3/5] Building Shared\nerror: permission denied (error code: 13)\n  file: ${RUN_ROOT}/synthetic/20261003-synthetic-1/final/missing-source-copy/probe_shared/.lake/build/lib/lean/Shared.trace.nobuild\n✔ [4/5] Ran Client\n✔ [5/5] Ran consumer_a/Client:default\nSome required targets logged failures:\n- Shared\n",
+      "stderr": "",
+      "peak_sampled_rss_mib": 631.766,
+      "min_memory_free_pct": 37,
+      "min_disk_free_gib": 26.884
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "aeneas_dependency_config_olean_present": false,
+  "basis": "tar entry inventory plus current flake.nix primer/gate and Git blame",
+  "bundle_release_published_utc": "2026-06-07T02:41:58Z",
+  "bundled_backend_config_entries": [
+    {
+      "link": "",
+      "mode": 365,
+      "mtime": 1780798696,
+      "path": "aeneas/backends/lean/.lake/config/[anonymous]",
+      "size": 0,
+      "type": "5"
+    },
+    {
+      "link": "",
+      "mode": 292,
+      "mtime": 1780798696,
+      "path": "aeneas/backends/lean/.lake/config/[anonymous]/lakefile.olean",
+      "size": 145368,
+      "type": "0"
+    },
+    {
+      "link": "",
+      "mode": 292,
+      "mtime": 1780798696,
+      "path": "aeneas/backends/lean/.lake/config/[anonymous]/lakefile.olean.lock",
+      "size": 0,
+      "type": "0"
+    },
+    {
+      "link": "",
+      "mode": 292,
+      "mtime": 1780798696,
+      "path": "aeneas/backends/lean/.lake/config/[anonymous]/lakefile.olean.trace",
+      "size": 184,
+      "type": "0"
+    }
+  ],
+  "primer_commit": "64bd6d6f1142022eb9297e880214ceb2d87ef72a",
+  "primer_commit_date_utc": "2026-06-16",
+  "primer_commit_url": "https://github.com/google/zerocopy/commit/64bd6d6f1142022eb9297e880214ceb2d87ef72a"
+}

@@ -1,0 +1,255 @@
+{
+  "repository": "leanprover/lean4",
+  "versions": {
+    "rc2": {
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "version": "v4.30.0-rc2",
+      "sources": [
+        {
+          "path": "src/lake/Lake/Load/Config.lean",
+          "sha256": "f6bbd83e6ddeae0f7766dfa2d16dce114ccd9d54a00afb35b9794bba2c5c8fdc",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Load/Config.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def lakeDir",
+              "lines": [
+                69
+              ]
+            },
+            {
+              "symbol_or_text": "public def configDir",
+              "lines": []
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Load/Lean/Elab.lean",
+          "sha256": "7f263b648396c5f075a0d1a039ab80766402934c51d320dfd2b8b46f9166c98d",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Load/Lean/Elab.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def importConfigFile",
+              "lines": [
+                180
+              ]
+            },
+            {
+              "symbol_or_text": "let configDir :=",
+              "lines": [
+                184
+              ]
+            },
+            {
+              "symbol_or_text": "trace.idx = cfg.pkgIdx",
+              "lines": [
+                272
+              ]
+            },
+            {
+              "symbol_or_text": "IO.FS.createDirAll cfg.lakeDir",
+              "lines": [
+                291
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Load/Resolve.lean",
+          "sha256": "5f68db06b06f4c9b199d1d41efdc6894541e2e3d7c27d7c6558ab9032cf90e80",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Load/Resolve.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "loadDepPackage",
+              "lines": [
+                32,
+                380,
+                479
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Module.lean",
+          "sha256": "189c701ff4b9af9a448b99bf622836b94fc935abf1b0d2995091efebc5de3e8b",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Build/Module.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "Module.recFetchInput",
+              "lines": [
+                30
+              ]
+            },
+            {
+              "symbol_or_text": "Module.recBuildLean",
+              "lines": [
+                874,
+                1083,
+                1092,
+                1098,
+                1114
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Common.lean",
+          "sha256": "4ce4b9ce5ad8b55335719928c56ec5a057e2d1b749e54022bca0c95c553d8ea3",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Build/Common.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "let noBuildTraceFile :=",
+              "lines": [
+                309
+              ]
+            },
+            {
+              "symbol_or_text": "writeBuildTrace noBuildTraceFile",
+              "lines": [
+                313
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Trace.lean",
+          "sha256": "6bdbbb078c712ef5380a300be198422b3a72d9503d76d4f7787a435aa55cb0f5",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Build/Trace.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def mix (t1 t2 : BuildTrace)",
+              "lines": [
+                366
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "final": {
+      "revision": "d024af099ca4bf2c86f649261ebf59565dc8c622",
+      "version": "v4.30.0",
+      "sources": [
+        {
+          "path": "src/lake/Lake/Load/Config.lean",
+          "sha256": "4cefa5608c40b09dc2f09c5a9bde268a7ecf1e2958aea097f65045e5e823ff6b",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Load/Config.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def lakeDir",
+              "lines": [
+                69
+              ]
+            },
+            {
+              "symbol_or_text": "public def configDir",
+              "lines": [
+                73
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Load/Lean/Elab.lean",
+          "sha256": "a82779fc0106c17ad2286715a19dfd87ce728422916a09e2c8c9aeebff9cfbcc",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Load/Lean/Elab.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def importConfigFile",
+              "lines": [
+                180
+              ]
+            },
+            {
+              "symbol_or_text": "let configDir :=",
+              "lines": [
+                183
+              ]
+            },
+            {
+              "symbol_or_text": "trace.idx = cfg.pkgIdx",
+              "lines": [
+                271
+              ]
+            },
+            {
+              "symbol_or_text": "IO.FS.createDirAll cfg.lakeDir",
+              "lines": [
+                290
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Load/Resolve.lean",
+          "sha256": "5f68db06b06f4c9b199d1d41efdc6894541e2e3d7c27d7c6558ab9032cf90e80",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Load/Resolve.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "loadDepPackage",
+              "lines": [
+                32,
+                380,
+                479
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Module.lean",
+          "sha256": "5f571af60381a38095821a086a5bb8ab332652e341f54ad070b4da7cc3b9eb98",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Build/Module.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "Module.recFetchInput",
+              "lines": [
+                30
+              ]
+            },
+            {
+              "symbol_or_text": "Module.recBuildLean",
+              "lines": [
+                897,
+                1106,
+                1115,
+                1121,
+                1137
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Common.lean",
+          "sha256": "4ce4b9ce5ad8b55335719928c56ec5a057e2d1b749e54022bca0c95c553d8ea3",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Build/Common.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "let noBuildTraceFile :=",
+              "lines": [
+                309
+              ]
+            },
+            {
+              "symbol_or_text": "writeBuildTrace noBuildTraceFile",
+              "lines": [
+                313
+              ]
+            }
+          ]
+        },
+        {
+          "path": "src/lake/Lake/Build/Trace.lean",
+          "sha256": "6bdbbb078c712ef5380a300be198422b3a72d9503d76d4f7787a435aa55cb0f5",
+          "url": "https://raw.githubusercontent.com/leanprover/lean4/d024af099ca4bf2c86f649261ebf59565dc8c622/src/lake/Lake/Build/Trace.lean",
+          "anchors": [
+            {
+              "symbol_or_text": "public def mix (t1 t2 : BuildTrace)",
+              "lines": [
+                366
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

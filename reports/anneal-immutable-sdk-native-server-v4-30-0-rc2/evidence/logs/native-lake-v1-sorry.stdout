@@ -1,0 +1,2 @@
+<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/SorryProof.lean:29:4: error: The 'sorry' tactic is forbidden; use --allow-sorry to allow it.
+'expand_output.foo.spec' depends on axioms: [sorryAx]

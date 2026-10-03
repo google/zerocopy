@@ -1,0 +1,40 @@
+[
+  {
+    "after": "archive-final-after.json",
+    "before": "archive-pristine-before.json",
+    "byte_equal": true,
+    "entry_count_after": 28893,
+    "entry_count_before": 28893,
+    "entry_fields": [
+      "link",
+      "mode",
+      "mtime_ns",
+      "path",
+      "sha256",
+      "size"
+    ],
+    "parsed_equal": true,
+    "raw_sha256_after": "78c4481f866063407226cdad5509a8e86d11050cdbd9f3c897eb9d3e834a027d",
+    "raw_sha256_before": "78c4481f866063407226cdad5509a8e86d11050cdbd9f3c897eb9d3e834a027d",
+    "scope": "entire extracted bundle/aeneas tree; excludes unextracted Lean and Rust roots"
+  },
+  {
+    "after": "sdk-final-after.json",
+    "before": "real-sdk-overlay-before.json",
+    "byte_equal": true,
+    "entry_count_after": 217,
+    "entry_count_before": 217,
+    "entry_fields": [
+      "link",
+      "mode",
+      "mtime_ns",
+      "path",
+      "sha256",
+      "size"
+    ],
+    "parsed_equal": true,
+    "raw_sha256_after": "39dfe43c8cb67a46a694b5c45a4a6449480ec61b5554a84f8f92d157dae799c7",
+    "raw_sha256_before": "39dfe43c8cb67a46a694b5c45a4a6449480ec61b5554a84f8f92d157dae799c7",
+    "scope": "primary SDK overlay view"
+  }
+]

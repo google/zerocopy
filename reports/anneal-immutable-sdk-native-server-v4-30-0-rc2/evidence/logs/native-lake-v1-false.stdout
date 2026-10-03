@@ -1,0 +1,2 @@
+<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/FalseProof.lean:31:6: error: Insufficient number of fields for `⟨...⟩` constructor: Constructor `expand_output.foo.Post.mk` has 1 explicit fields, but none were provided
+'expand_output.foo.spec' depends on axioms: [sorryAx]

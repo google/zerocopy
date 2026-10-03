@@ -1,0 +1,43 @@
+{
+  "directories": {
+    "extracted_aeneas": {
+      "du_kib": 1863920,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas"
+    },
+    "final_lean_runtime": {
+      "du_kib": 2338280,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/lean-final"
+    },
+    "primary_sdk_view": {
+      "du_kib": 88,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-install"
+    },
+    "v1_workspace": {
+      "du_kib": 3284,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1"
+    }
+  },
+  "launchers": {
+    "coherent_lake": {
+      "bytes": 51840,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lake",
+      "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+    },
+    "coherent_lean": {
+      "bytes": 49968,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "original_rc2_lake": {
+      "bytes": 51840,
+      "relative_to_project": "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+      "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+    },
+    "primary_sdk_lean": {
+      "bytes": 49968,
+      "relative_to_project": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-install/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    }
+  },
+  "measurement": "du -sk filesystem allocation at evidence selection time; KiB means 1024 bytes"
+}

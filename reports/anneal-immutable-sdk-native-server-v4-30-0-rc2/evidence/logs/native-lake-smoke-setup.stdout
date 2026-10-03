@@ -1,0 +1,1 @@
+{"dynlibs":[],"importArts":{},"isModule":false,"name":"Smoke","options":{},"package":"native_lake_smoke","plugins":["<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.dylib","<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/lib/lean/libLake_shared.dylib"]}

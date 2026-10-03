@@ -1,0 +1,63 @@
+{
+  "version": "1.2.0",
+  "packagesDir": ".lake/packages",
+  "packages": [
+    {
+      "type": "path",
+      "name": "mathlib",
+      "dir": "../../packages/mathlib",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "plausible",
+      "dir": "../../packages/plausible",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "LeanSearchClient",
+      "dir": "../../packages/LeanSearchClient",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "importGraph",
+      "dir": "../../packages/importGraph",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "proofwidgets",
+      "dir": "../../packages/proofwidgets",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "aesop",
+      "dir": "../../packages/aesop",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "Qq",
+      "dir": "../../packages/Qq",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "batteries",
+      "dir": "../../packages/batteries",
+      "inherited": true
+    },
+    {
+      "type": "path",
+      "name": "Cli",
+      "dir": "../../packages/Cli",
+      "inherited": true
+    }
+  ],
+  "name": "aeneas",
+  "lakeDir": ".lake",
+  "fixedToolchain": false
+}

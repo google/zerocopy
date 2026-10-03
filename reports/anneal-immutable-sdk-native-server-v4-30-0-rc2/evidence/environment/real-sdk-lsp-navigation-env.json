@@ -1,0 +1,14 @@
+{
+  "LEAN_SYSROOT": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-install",
+  "PATH": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-install/bin:<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "DYLD_LIBRARY_PATH": "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/lib:<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/lib/lean",
+  "MATHLIB_NO_CACHE_ON_UPDATE": "1",
+  "LAKE_CACHE_DIR": "",
+  "LAKE_ARTIFACT_CACHE": "false",
+  "LAKE_RESTORE_ARTIFACTS": "false",
+  "LEAN_NUM_THREADS": "1",
+  "HOME": "<PROJECT>/Data/20261003-anneal-v1-validation/home",
+  "LAKE_OVERRIDE_LEAN": "true",
+  "LAKE": "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+  "LEAN_SRC_PATH": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/plausible:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/LeanSearchClient:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/importGraph:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/proofwidgets:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/aesop:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/Qq:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/batteries:<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/Cli"
+}

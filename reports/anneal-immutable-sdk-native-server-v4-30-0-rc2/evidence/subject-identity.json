@@ -1,0 +1,81 @@
+{
+  "aeneas_release": {
+    "commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "source_manifest_url": "https://raw.githubusercontent.com/AeneasVerif/aeneas/ac9f1bc5262a5e4ff1e24ca78617121382202727/backends/lean/lake-manifest.json",
+    "tag": "nightly-2026.06.03"
+  },
+  "archive": {
+    "compressed_bytes": 1464207302,
+    "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81",
+    "url": "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-aarch64.tar.zst"
+  },
+  "bundled_lean": {
+    "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "bundled_path_package_names_match_upstream_manifest": true,
+  "platform": "macos-aarch64",
+  "qualification": "The path manifest omits Git revisions; matching names plus two matched source files do not prove whole-tree byte identity to the upstream commits.",
+  "sample_source_byte_matches": [
+    {
+      "path": "AeneasMeta/Saturate/Tactic.lean",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "sha256": "2be40f83847d5439769e24b03f89df3fb4b8c5878d9e819d817847e3c3f4c7f8"
+    },
+    {
+      "path": "Mathlib/Data/Nat/Basic.lean",
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "sha256": "37e27d3f660143df6b8cca8e02dbb0cfac4302a7cd64e8cbfb108a1a9e32fc0e"
+    }
+  ],
+  "source_worktree_commit": "79a357870ee0f5a403cf7c7dd43055c0eddbeda2",
+  "upstream_package_revisions": [
+    {
+      "name": "mathlib",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "url": "https://github.com/leanprover-community/mathlib4.git"
+    },
+    {
+      "name": "plausible",
+      "revision": "86210d4ad1b08b086d0bd638637a75246523dbb8",
+      "url": "https://github.com/leanprover-community/plausible"
+    },
+    {
+      "name": "LeanSearchClient",
+      "revision": "c5d5b8fe6e5158def25cd28eb94e4141ad97c843",
+      "url": "https://github.com/leanprover-community/LeanSearchClient"
+    },
+    {
+      "name": "importGraph",
+      "revision": "cdab3938ccabbdb044be6896e251b5814bec932e",
+      "url": "https://github.com/leanprover-community/import-graph"
+    },
+    {
+      "name": "proofwidgets",
+      "revision": "2db6054a44326f8c0230ee0570e2ddb894816511",
+      "url": "https://github.com/leanprover-community/ProofWidgets4"
+    },
+    {
+      "name": "aesop",
+      "revision": "f0c6e183ea26531e82773feb4b73ab6595ca17a5",
+      "url": "https://github.com/leanprover-community/aesop"
+    },
+    {
+      "name": "Qq",
+      "revision": "1cc7e819b9b9bc1e87c9edcccb62e0269e00a809",
+      "url": "https://github.com/leanprover-community/quote4"
+    },
+    {
+      "name": "batteries",
+      "revision": "5c57f3857ba81924a88b2cdf4f062e34ec04ff11",
+      "url": "https://github.com/leanprover-community/batteries"
+    },
+    {
+      "name": "Cli",
+      "revision": "13567aed1ac4f12aea9484178e07e51f8c9f7658",
+      "url": "https://github.com/leanprover/lean4-cli"
+    }
+  ]
+}

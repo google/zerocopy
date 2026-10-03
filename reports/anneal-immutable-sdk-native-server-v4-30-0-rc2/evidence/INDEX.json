@@ -1,0 +1,965 @@
+{
+  "files": [
+    {
+      "bytes": 1330,
+      "output": "fixture/expected-aeneas.stdout",
+      "output_sha256": "0baebeac74e9f62b318676d18ac58229d0c0afba6d8f011e55df00b9ed5a2c47",
+      "sources": [
+        {
+          "bytes": 1330,
+          "path": "<PROJECT>/.worktrees/anneal-v1-cleanup/anneal/v1/tests/fixtures/expand_output/expected-aeneas.stdout",
+          "sha256": "0baebeac74e9f62b318676d18ac58229d0c0afba6d8f011e55df00b9ed5a2c47"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 914,
+      "output": "fixture/expected-anneal.stdout",
+      "output_sha256": "525f6e94b7b87b2de0d4abaec688d683dbc1138e70f02c2bf9d2a7dd832ae9eb",
+      "sources": [
+        {
+          "bytes": 914,
+          "path": "<PROJECT>/.worktrees/anneal-v1-cleanup/anneal/v1/tests/fixtures/expand_output/expected-anneal.stdout",
+          "sha256": "525f6e94b7b87b2de0d4abaec688d683dbc1138e70f02c2bf9d2a7dd832ae9eb"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 142,
+      "output": "fixture/NativeSmoke.lean",
+      "output_sha256": "6d285590ffe100917134bdb22b13a5e40502cafeb41ad7a0127e16038df789a8",
+      "sources": [
+        {
+          "bytes": 142,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lsp-navigation/NativeSmoke.lean",
+          "sha256": "6d285590ffe100917134bdb22b13a5e40502cafeb41ad7a0127e16038df789a8"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 856,
+      "output": "fixture/V1-Specs.lean",
+      "output_sha256": "8b14561503adc1d0701d7d1f3b23dc643eeff61415a5b377c5146368bcb88f2a",
+      "sources": [
+        {
+          "bytes": 856,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/generated/ExpandOutputExpandOutput1d49e11e5683007f/Specs.lean",
+          "sha256": "8b14561503adc1d0701d7d1f3b23dc643eeff61415a5b377c5146368bcb88f2a"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 751,
+      "output": "fixture/V1-lakefile.lean",
+      "output_sha256": "4e7cdc8a5bcbed21d134175ab62aa1f15733905aa50039f38b16bc5b6ee46374",
+      "sources": [
+        {
+          "bytes": 777,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/lakefile.lean",
+          "sha256": "2c3ea2a98911ff128e3ceb82a539777ddc5c9ca4a4e391a5eb2c495d43417c4b"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 101,
+      "output": "fixture/V1-SdkIdentity.lean",
+      "output_sha256": "c354a2d35de2f0cc5454716cc79dd7adc8d5295910ea1f2c8bb13b5d1e75eb6f",
+      "sources": [
+        {
+          "bytes": 101,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/anneal/SdkIdentity.lean",
+          "sha256": "c354a2d35de2f0cc5454716cc79dd7adc8d5295910ea1f2c8bb13b5d1e75eb6f"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 19,
+      "output": "fixture/V1-Config.lean",
+      "output_sha256": "0b59b2e13cc1602418840f4c596238505a8588a9dbc6aabdd6f6938438248f35",
+      "sources": [
+        {
+          "bytes": 19,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/anneal/Config.lean",
+          "sha256": "0b59b2e13cc1602418840f4c596238505a8588a9dbc6aabdd6f6938438248f35"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 36762,
+      "output": "fixture/V1-Anneal.lean",
+      "output_sha256": "3161d4219312b2c26ffc09edf6fe2ba31ca882ff668022edd13d05e6d071944f",
+      "sources": [
+        {
+          "bytes": 36762,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/anneal/Anneal.lean",
+          "sha256": "3161d4219312b2c26ffc09edf6fe2ba31ca882ff668022edd13d05e6d071944f"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 549,
+      "output": "fixture/V1-Types.lean",
+      "output_sha256": "83e5485ce7a4c7e0fd4914705b07ffe0de2933249f9cc5406f93b44c23d48dc6",
+      "sources": [
+        {
+          "bytes": 549,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/generated/ExpandOutputExpandOutput1d49e11e5683007f/Types.lean",
+          "sha256": "83e5485ce7a4c7e0fd4914705b07ffe0de2933249f9cc5406f93b44c23d48dc6"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 760,
+      "output": "fixture/V1-Funs.lean",
+      "output_sha256": "41a9fe7f9b20597c7c009e4a54f9f94c50ddd948d50687e08c9854442e019cf1",
+      "sources": [
+        {
+          "bytes": 760,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/generated/ExpandOutputExpandOutput1d49e11e5683007f/Funs.lean",
+          "sha256": "41a9fe7f9b20597c7c009e4a54f9f94c50ddd948d50687e08c9854442e019cf1"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 126,
+      "output": "fixture/V1-Generated.lean",
+      "output_sha256": "897bd98ce84050b45cdf2783879a4ffcdc85784d538a0d899579488c35d967a1",
+      "sources": [
+        {
+          "bytes": 126,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/generated/Generated.lean",
+          "sha256": "897bd98ce84050b45cdf2783879a4ffcdc85784d538a0d899579488c35d967a1"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 894,
+      "output": "fixture/V1-Audit.lean",
+      "output_sha256": "ea68a9aef28f013614d7d159aed4e785e2f07160074f716d45359481ff54ce9e",
+      "sources": [
+        {
+          "bytes": 894,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/Audit.lean",
+          "sha256": "ea68a9aef28f013614d7d159aed4e785e2f07160074f716d45359481ff54ce9e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 920,
+      "output": "fixture/V1-FalseProof.lean",
+      "output_sha256": "f7b33c17d778199638bd39cfe64ffd2c456c3d73e625c7a61f762844c3a6bb0a",
+      "sources": [
+        {
+          "bytes": 920,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/FalseProof.lean",
+          "sha256": "f7b33c17d778199638bd39cfe64ffd2c456c3d73e625c7a61f762844c3a6bb0a"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 881,
+      "output": "fixture/V1-SorryProof.lean",
+      "output_sha256": "bbb4efd7294ab0514c2cae962a24e2699de79f770874abe6705c3216c1bf5704",
+      "sources": [
+        {
+          "bytes": 881,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-v1/SorryProof.lean",
+          "sha256": "bbb4efd7294ab0514c2cae962a24e2699de79f770874abe6705c3216c1bf5704"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1829,
+      "output": "environment/real-sdk-lsp-navigation-env.json",
+      "output_sha256": "27b06b48f658b87ddf70c3617b2f86e0201f47cdcd4feecd89e9ec5955287423",
+      "sources": [
+        {
+          "bytes": 2271,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/real-sdk-lsp-navigation-env.json",
+          "sha256": "bfde4e03e6bfb76fcc7a592f4a9598d20a6c40b20e92b98fa586efd8cb89b2ed"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 9009,
+      "output": "coherent-sdk-results.jsonl",
+      "output_sha256": "cd725069e1923ad1aa9855b442dcc5a8df8f1ecc8da3b9ea03e3ce2882c117cf",
+      "sources": [
+        {
+          "bytes": 9347,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-results.jsonl",
+          "sha256": "73b0e6a1299ceb05272bd88e2c49b18945a522138eba412e9de33a99750ccb9f"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 5472,
+      "output": "harness/guard.py",
+      "output_sha256": "3429c607163fe58b67c48f809dfa58435dce976bc1b920d256a14a48c13337d6",
+      "sources": [
+        {
+          "bytes": 5472,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/guard.py",
+          "sha256": "3429c607163fe58b67c48f809dfa58435dce976bc1b920d256a14a48c13337d6"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 5773,
+      "output": "harness/trace.c",
+      "output_sha256": "f811402c423c7ce2d655e16717ece7d79a1318af8c1dbdf9918eb3389fdbcc9d",
+      "sources": [
+        {
+          "bytes": 5773,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/trace.c",
+          "sha256": "f811402c423c7ce2d655e16717ece7d79a1318af8c1dbdf9918eb3389fdbcc9d"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 22563,
+      "output": "harness/lsp_driver.py",
+      "output_sha256": "5610255070d67be58e648a1894e2321860b422db0ad84dfbcb9b0bcf0c48c6a9",
+      "sources": [
+        {
+          "bytes": 22563,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/lsp_driver.py",
+          "sha256": "5610255070d67be58e648a1894e2321860b422db0ad84dfbcb9b0bcf0c48c6a9"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 4690,
+      "output": "harness/native_lake.py",
+      "output_sha256": "4a13dbe845d7564432a510bc268fa8d1709a7a95098b9b8d132576f13e580127",
+      "sources": [
+        {
+          "bytes": 4690,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/native_lake.py",
+          "sha256": "4a13dbe845d7564432a510bc268fa8d1709a7a95098b9b8d132576f13e580127"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 2813,
+      "output": "harness/native_lake_followups.py",
+      "output_sha256": "59fb163282e8bb8da65c008aa78b4d46618004d395d938ee73e69310ab68872d",
+      "sources": [
+        {
+          "bytes": 2813,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/native_lake_followups.py",
+          "sha256": "59fb163282e8bb8da65c008aa78b4d46618004d395d938ee73e69310ab68872d"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 4533,
+      "output": "harness/real_sdk_lake.py",
+      "output_sha256": "13640ed17ccba26509b71dcfd5f9c5413843bda7fecf7e8b0a73f30f5d49413e",
+      "sources": [
+        {
+          "bytes": 4533,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/real_sdk_lake.py",
+          "sha256": "13640ed17ccba26509b71dcfd5f9c5413843bda7fecf7e8b0a73f30f5d49413e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 3127,
+      "output": "harness/sdk_missing_probe.py",
+      "output_sha256": "131aa006fa6d92a0ec01c43db9867352b592ced9f7c8b95cf0ff691a21c369ae",
+      "sources": [
+        {
+          "bytes": 3127,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk_missing_probe.py",
+          "sha256": "131aa006fa6d92a0ec01c43db9867352b592ced9f7c8b95cf0ff691a21c369ae"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 5304,
+      "output": "harness/coherent_sdk_probe.py",
+      "output_sha256": "33807c8fbc0ab3760d192d04a17529cdaa7a2721bd6c1343949a3a59df58b134",
+      "sources": [
+        {
+          "bytes": 5304,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent_sdk_probe.py",
+          "sha256": "33807c8fbc0ab3760d192d04a17529cdaa7a2721bd6c1343949a3a59df58b134"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 5980,
+      "output": "harness/probes.py",
+      "output_sha256": "3e8a94b544537cce6036e53306ae65da840de4886bf5cb33f2d4ab3311e01c3a",
+      "sources": [
+        {
+          "bytes": 6032,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/probes.py",
+          "sha256": "6cf36c1d5369cc6677fd0e27837c32cc96dc9743cad1b2fe62ec0696a4878d37"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 3967,
+      "output": "harness/check_final.py",
+      "output_sha256": "ad6c00d98d76b0869dc015edfc060d106d6227e1e0852c4d087e5439c9f65888",
+      "sources": [
+        {
+          "bytes": 3967,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/check_final.py",
+          "sha256": "ad6c00d98d76b0869dc015edfc060d106d6227e1e0852c4d087e5439c9f65888"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 21100,
+      "output": "harness/select_native_evidence.py",
+      "output_sha256": "3ab03ff90769c6393ba082ec1900b5847fc712eedb7f073075035a9d6a0ad550",
+      "sources": [
+        {
+          "bytes": 21131,
+          "path": "<PROJECT>/Data/20261003-114500-anneal-reference-reports/select_native_evidence.py",
+          "sha256": "96a508b4ee39d4ecfe07be0954cc0095f57669c333058ea86cc8bb52691e42a4"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 3152,
+      "output": "manifest/upstream-aeneas-git-manifest.json",
+      "output_sha256": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb",
+      "sources": [
+        {
+          "bytes": 3152,
+          "path": "<PROJECT>/Data/20261003-114500-anneal-reference-reports/upstream-aeneas-manifest.json",
+          "sha256": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1279,
+      "output": "manifest/bundled-aeneas-path-manifest.json",
+      "output_sha256": "5f967f3cf08a398378f1c7a6993ba6c86d8a4ab83efa57bbbf3dbc68a943482d",
+      "sources": [
+        {
+          "bytes": 1279,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/lake-manifest.json",
+          "sha256": "5f967f3cf08a398378f1c7a6993ba6c86d8a4ab83efa57bbbf3dbc68a943482d"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1067,
+      "output": "manifest/bundled-mathlib-path-manifest.json",
+      "output_sha256": "849250cf7475791fa8974649755391b1838e636f4e3aa82e065a30e502ca68fc",
+      "sources": [
+        {
+          "bytes": 1067,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib/lake-manifest.json",
+          "sha256": "849250cf7475791fa8974649755391b1838e636f4e3aa82e065a30e502ca68fc"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 3293,
+      "output": "source/producer-primer-blame.txt",
+      "output_sha256": "476b418f1595e0490a833a1c89cc30b56804cbaa1afb5070bb0fbc5fd2ec3ec5",
+      "sources": [
+        {
+          "bytes": 3293,
+          "path": "<PROJECT>/Data/20261003-114500-anneal-reference-reports/producer-primer-blame.txt",
+          "sha256": "476b418f1595e0490a833a1c89cc30b56804cbaa1afb5070bb0fbc5fd2ec3ec5"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1849,
+      "output": "source/producer-primer-and-gate.txt",
+      "output_sha256": "91a87062ef88987ccb208a3db70751aa194bffbfeba2dc40d3bee575f73d0e27",
+      "sources": [
+        {
+          "bytes": 31500,
+          "path": "<PROJECT>/.worktrees/anneal-v1-cleanup/anneal/flake.nix",
+          "sha256": "0df03dd0b3473c86f9ab3020dd09625f95e1446f9d84c7107419bad8415bc6d2"
+        }
+      ],
+      "transformation": "Select current flake.nix lines 449-474 and 612-618 with line numbers, then redact paths"
+    },
+    {
+      "bytes": 1825,
+      "output": "source/v1-cargo-pins.txt",
+      "output_sha256": "f245d475c55e83a61ff107d2fce01626fdd611b81f83b4fdf200d81506c5b80c",
+      "sources": [
+        {
+          "bytes": 3613,
+          "path": "<PROJECT>/.worktrees/anneal-v1-cleanup/anneal/v1/Cargo.toml",
+          "sha256": "8afef54d1c588218783c377b7c3876adc1ff1ba05a4152a6b8a146da0a5acc66"
+        }
+      ],
+      "transformation": "Select V1 Cargo.toml archive and source pins with line numbers, then redact paths"
+    },
+    {
+      "bytes": 1214,
+      "output": "producer-gap.json",
+      "output_sha256": "d7772618ef1c31feede1aedc3d309e59868338a956c6f3d568bcb6e4189d8133",
+      "sources": [
+        {
+          "bytes": 8001196,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle-entries.jsonl",
+          "sha256": "1e38873cdfc55dc5cf8ddaa0709856ddfae7c09a61bf61ab7f89675da4f3004e"
+        },
+        {
+          "bytes": 31500,
+          "path": "<PROJECT>/.worktrees/anneal-v1-cleanup/anneal/flake.nix",
+          "sha256": "0df03dd0b3473c86f9ab3020dd09625f95e1446f9d84c7107419bad8415bc6d2"
+        }
+      ],
+      "transformation": "Select backend config tar entries and annotate source chronology; no archive bytes copied"
+    },
+    {
+      "bytes": 3102,
+      "output": "subject-identity.json",
+      "output_sha256": "c078d681e0a20797cefaf147a990057125ad6bad5dac3c0a3f97c802d3c2bcf6",
+      "sources": [
+        {
+          "bytes": 309,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle-inventory.json",
+          "sha256": "b10c241e3119aa05ef6a1323effe0a50137fa47b7f3cc30821d0af0c71ec4ba9"
+        },
+        {
+          "bytes": 3152,
+          "path": "<PROJECT>/Data/20261003-114500-anneal-reference-reports/upstream-aeneas-manifest.json",
+          "sha256": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb"
+        },
+        {
+          "bytes": 1279,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/lake-manifest.json",
+          "sha256": "5f967f3cf08a398378f1c7a6993ba6c86d8a4ab83efa57bbbf3dbc68a943482d"
+        },
+        {
+          "bytes": 37404,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/backends/lean/AeneasMeta/Saturate/Tactic.lean",
+          "sha256": "2be40f83847d5439769e24b03f89df3fb4b8c5878d9e819d817847e3c3f4c7f8"
+        },
+        {
+          "bytes": 4720,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/bundle/aeneas/packages/mathlib/Mathlib/Data/Nat/Basic.lean",
+          "sha256": "37e27d3f660143df6b8cca8e02dbb0cfac4302a7cd64e8cbfb108a1a9e32fc0e"
+        },
+        {
+          "bytes": 110,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/rc2-trace-version.stdout",
+          "sha256": "6b38d6160c0223bc189f88caad3d56588b06ca7af2b81d19cb4dbcef5024f387"
+        }
+      ],
+      "transformation": "Combine release metadata and manifests; verify two selected source hashes against public immutable revisions"
+    },
+    {
+      "bytes": 110,
+      "output": "logs/rc2-trace-version.stdout",
+      "output_sha256": "6b38d6160c0223bc189f88caad3d56588b06ca7af2b81d19cb4dbcef5024f387",
+      "sources": [
+        {
+          "bytes": 110,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/rc2-trace-version.stdout",
+          "sha256": "6b38d6160c0223bc189f88caad3d56588b06ca7af2b81d19cb4dbcef5024f387"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 143,
+      "output": "logs/pristine-normal.stderr",
+      "output_sha256": "439b7e52b87b7cbf8b67908c11ec661474d6d30389a3519e5450413d355fd4c0",
+      "sources": [
+        {
+          "bytes": 169,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/pristine-normal.stderr",
+          "sha256": "ec65910190768f7080c0d769b81a003e1469e18d64e9e54905d8842e16acf07e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 143,
+      "output": "logs/pristine-old.stderr",
+      "output_sha256": "439b7e52b87b7cbf8b67908c11ec661474d6d30389a3519e5450413d355fd4c0",
+      "sources": [
+        {
+          "bytes": 169,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/pristine-old.stderr",
+          "sha256": "ec65910190768f7080c0d769b81a003e1469e18d64e9e54905d8842e16acf07e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 55,
+      "output": "logs/native-lake-v1-audit.stdout",
+      "output_sha256": "018072e8d4f21053cba5c94fd4bc359a8528dcd8082b54ef4ddbdddd8e1c01ea",
+      "sources": [
+        {
+          "bytes": 55,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-audit.stdout",
+          "sha256": "018072e8d4f21053cba5c94fd4bc359a8528dcd8082b54ef4ddbdddd8e1c01ea"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 173,
+      "output": "logs/native-lake-v1-audit.stderr",
+      "output_sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c",
+      "sources": [
+        {
+          "bytes": 173,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-audit.stderr",
+          "sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 293,
+      "output": "logs/native-lake-v1-false.stdout",
+      "output_sha256": "b5dc94bac844e4fca218bac7a8517cd3488798df78b9ae7172bc558471c37486",
+      "sources": [
+        {
+          "bytes": 319,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-false.stdout",
+          "sha256": "27609b33300742e21a1223b1758a86215a72ac885a34dfd50e984b1d5a4e1a8e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 173,
+      "output": "logs/native-lake-v1-false.stderr",
+      "output_sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c",
+      "sources": [
+        {
+          "bytes": 173,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-false.stderr",
+          "sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 212,
+      "output": "logs/native-lake-v1-sorry.stdout",
+      "output_sha256": "3158f9178035143d703dfef3dcf05b6a673123a855dad37b219eecb8a5dbb5ac",
+      "sources": [
+        {
+          "bytes": 238,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-sorry.stdout",
+          "sha256": "99076c861288ea7044662070ad61af1095db520306f4be113e0cf957d5a1da23"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 173,
+      "output": "logs/native-lake-v1-sorry.stderr",
+      "output_sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c",
+      "sources": [
+        {
+          "bytes": 173,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-sorry.stderr",
+          "sha256": "db26290c3a2dec91419640ab535175c8ad8a9caa55a46ea80a2df2c390c7129c"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 377,
+      "output": "logs/native-lake-smoke-setup.stdout",
+      "output_sha256": "a2aff150ecf9a440e02cee4053c2f4b8d7143a3994fd21237aab2f742931fb19",
+      "sources": [
+        {
+          "bytes": 429,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-smoke-setup.stdout",
+          "sha256": "33cabdb27948007d3a962b7882e0f79c24fe3f4a0bac68aa4aa3aea4aa818932"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 122,
+      "output": "logs/native-lake-smoke-false.stdout",
+      "output_sha256": "436a0bff7068f79df1a724aec00a1f0e6d96bcbd7459e64993b83c896076438d",
+      "sources": [
+        {
+          "bytes": 148,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-smoke-false.stdout",
+          "sha256": "eeb5f7d33bfa850ba7703e385c17b6a344885ed86da54848b62ff0135d777f7d"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 975,
+      "output": "logs/sdk-missing-stock-lake.stdout",
+      "output_sha256": "444fc5adbf663098ebebbac091e0c756a39d4709c7773900a0e3eb3648cc7a86",
+      "sources": [
+        {
+          "bytes": 1183,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/sdk-missing-stock-lake.stdout",
+          "sha256": "4c59f2e53e6744ed8f49990fb52da5ed542c4c76826c4a4d94cb6dc1129f86f1"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 87,
+      "output": "logs/sdk-missing-stock-lake.stderr",
+      "output_sha256": "b8ce7cd90aa8525c74a38bbc2be88d137bf5a7b628812eb01074e175c6184d73",
+      "sources": [
+        {
+          "bytes": 87,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/sdk-missing-stock-lake.stderr",
+          "sha256": "b8ce7cd90aa8525c74a38bbc2be88d137bf5a7b628812eb01074e175c6184d73"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 373,
+      "output": "logs/sdk-missing-native-stock-lake.stdout",
+      "output_sha256": "d86d02c7bc4dce0e771c1d3228ba8bd7d3f988875c9caedd8e6a02d346e06e28",
+      "sources": [
+        {
+          "bytes": 399,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/sdk-missing-native-stock-lake.stdout",
+          "sha256": "5e7a2964996cbd8092f45ad9be9a9f8bf15cbb9da727e8385a9b54d231f65a4b"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 94,
+      "output": "logs/sdk-missing-native-stock-lake.stderr",
+      "output_sha256": "8bb0d373644f3738d492df1a483842ba5aacb58cc490bcc53f3b80f6cfe55daa",
+      "sources": [
+        {
+          "bytes": 94,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/sdk-missing-native-stock-lake.stderr",
+          "sha256": "8bb0d373644f3738d492df1a483842ba5aacb58cc490bcc53f3b80f6cfe55daa"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1533,
+      "output": "logs/native-lake-followup-bad-plugin.stdout",
+      "output_sha256": "a40256ca8b535a2962af4ed1f20af95ab5a9cf3a0a19ad7fd331f4b2479f5b77",
+      "sources": [
+        {
+          "bytes": 1819,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-bad-plugin.stdout",
+          "sha256": "77deb15a43395247ed08b5ea75712fff9452d4d869458163ecd9c4ca3a336c1e"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 20,
+      "output": "logs/native-lake-followup-bad-plugin.stderr",
+      "output_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "sources": [
+        {
+          "bytes": 20,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-bad-plugin.stderr",
+          "sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 339,
+      "output": "logs/final-rc2-mismatch.stdout",
+      "output_sha256": "e9062b0ec894c1d69b0096df4249c20275c5b807a82a6a14552ec7124514b699",
+      "sources": [
+        {
+          "bytes": 365,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/final-rc2-mismatch.stdout",
+          "sha256": "61bb68df8b199bf5339d786c72b8a519bbfffd765888d7695ac74d3a2380ec7a"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 900,
+      "output": "logs/native-lake-followup-baseline.stdout",
+      "output_sha256": "aab49a5bdbbd166545b9a6d67c0ef6f32b30587b9c31b1b033eca835d1938f10",
+      "sources": [
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-baseline.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 897,
+      "output": "logs/native-lake-followup-noop.stdout",
+      "output_sha256": "353374dafbec4b28a113f3e3a4788c4bae2c0fb6f94e9c8a72b4a4ad49c21f75",
+      "sources": [
+        {
+          "bytes": 1079,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-noop.stdout",
+          "sha256": "284465bd7ffa650f1b59ff87484375a23781236083c6de20fdfbe670839d4d7f"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 900,
+      "output": "logs/native-lake-followup-edit.stdout",
+      "output_sha256": "aab49a5bdbbd166545b9a6d67c0ef6f32b30587b9c31b1b033eca835d1938f10",
+      "sources": [
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-edit.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 900,
+      "output": "logs/native-lake-followup-delete-output.stdout",
+      "output_sha256": "aab49a5bdbbd166545b9a6d67c0ef6f32b30587b9c31b1b033eca835d1938f10",
+      "sources": [
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-delete-output.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 944,
+      "output": "followup-local-output-actions.json",
+      "output_sha256": "1d558cec15d3fbde74a763263faf657ab3361955519cd3fde71e4c132b38d350",
+      "sources": [
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-baseline.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        },
+        {
+          "bytes": 1079,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-noop.stdout",
+          "sha256": "284465bd7ffa650f1b59ff87484375a23781236083c6de20fdfbe670839d4d7f"
+        },
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-edit.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        },
+        {
+          "bytes": 1082,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-followup-delete-output.stdout",
+          "sha256": "4cc9290f055c8c90af81cf8fecdaa9cd19646c01f11ca192e980d042ef9cb0b3"
+        }
+      ],
+      "transformation": "Select local Smoke build/replay/completion lines and state output-identity limit"
+    },
+    {
+      "bytes": 320,
+      "output": "logs/native-lake-v1-noop.selected.txt",
+      "output_sha256": "4c5f770653b4af8b6ec5cc714e060fbc7ffb47a548d3f68fd9b5dbe2581dc639",
+      "sources": [
+        {
+          "bytes": 6193,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-lake-v1-noop.stdout",
+          "sha256": "add6f8dfbfe970461a08f9fbd46ee9a6c54c10b5b2f33d067307c1961995ec3a"
+        }
+      ],
+      "transformation": "Select Lake replay/build/completion lines, then redact paths"
+    },
+    {
+      "bytes": 173,
+      "output": "logs/native-plugin-load.selected.txt",
+      "output_sha256": "cbd0e68583c045f227c23f5d96fae79dedf739e64715eea74c2d4d4c1bf7b211",
+      "sources": [
+        {
+          "bytes": 207705,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-1.lsp.stderr",
+          "sha256": "b947091e8a36a487d5a7011995300e5e1cd3b8e5accd44bbfe34f5519fa85871"
+        }
+      ],
+      "transformation": "Select dylib load lines with original line numbers, then redact paths"
+    },
+    {
+      "bytes": 1156,
+      "output": "snapshot-equality.json",
+      "output_sha256": "07689955cdac98a24e57c0780f970dce8f2398d09b590d78dca35caa39dad915",
+      "sources": [
+        {
+          "bytes": 6349475,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/archive-pristine-before.json",
+          "sha256": "78c4481f866063407226cdad5509a8e86d11050cdbd9f3c897eb9d3e834a027d"
+        },
+        {
+          "bytes": 6349475,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/archive-final-after.json",
+          "sha256": "78c4481f866063407226cdad5509a8e86d11050cdbd9f3c897eb9d3e834a027d"
+        },
+        {
+          "bytes": 56795,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/real-sdk-overlay-before.json",
+          "sha256": "39dfe43c8cb67a46a694b5c45a4a6449480ec61b5554a84f8f92d157dae799c7"
+        },
+        {
+          "bytes": 56795,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-final-after.json",
+          "sha256": "39dfe43c8cb67a46a694b5c45a4a6449480ec61b5554a84f8f92d157dae799c7"
+        }
+      ],
+      "transformation": "Compare complete JSON snapshot bytes and parsed rows; retain counts and digests only"
+    },
+    {
+      "bytes": 14250,
+      "output": "selected-outcomes.json",
+      "output_sha256": "ed8aa478e5e4b913245de81c767ec97bc2796e9943b77256d6af5f557aeba0a5",
+      "sources": [
+        {
+          "bytes": 2047857,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/runs.jsonl",
+          "sha256": "57167ead80f98b20aea342fd6d4c3012924a82d032d56eb694d509b89f3abd5a"
+        },
+        {
+          "bytes": 38577,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/cells.jsonl",
+          "sha256": "107c4cccbd70cdd8d201dea280fabf9bdeb366ab0dcf8fc6d4a39b5c3e8a00eb"
+        }
+      ],
+      "transformation": "Select 26 checked labels from check_final.py; summarize status and sampled resources"
+    },
+    {
+      "bytes": 13143,
+      "output": "lsp-selected.json",
+      "output_sha256": "bd8a8c18b2dca605f8e6e18d70131616464238fe112bb64e29bb1b2112044f56",
+      "sources": [
+        {
+          "bytes": 131152,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-1.lsp.result.json",
+          "sha256": "cbc7a3eec833490b379ed59eec072ed62a7ee41a38737e467de6707cc2d9d217"
+        },
+        {
+          "bytes": 629010,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-1.lsp.messages.jsonl",
+          "sha256": "36a2077b83abf0bbd511102cfe01789d80a81a9b6e60307a7cbf80470e5adb41"
+        },
+        {
+          "bytes": 792,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-1.lsp.events.jsonl",
+          "sha256": "ed8795e50553bbfc57733400ea0effc3988cd96c49dd7b8e64a75659c39e95b2"
+        },
+        {
+          "bytes": 83212,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-navigation-1.lsp.result.json",
+          "sha256": "29944f2d660342c0a70d849e0dd8d255cc2cc240e40c0124f0dac09811764ebb"
+        },
+        {
+          "bytes": 20056,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-navigation-1.lsp.messages.jsonl",
+          "sha256": "8e0487f94549b1d41f95222c6b75a6f59c0fda146aadb7dc6dfb19f7e92a68de"
+        },
+        {
+          "bytes": 796,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/records/native-sdk-lsp-navigation-1.lsp.events.jsonl",
+          "sha256": "762ad6a919be2462c4f9742eb5f00440132372130f88980e9cb1f606076ae0e2"
+        }
+      ],
+      "transformation": "Select handshake/goal/definition/edit responses, final diagnostics by version, and tracer counts; omit progress spam"
+    },
+    {
+      "bytes": 1571,
+      "output": "final-check.json",
+      "output_sha256": "72fdef2a2aab7e99f69849da9c1fe171dfd2fb5d9ffaa68ac6c626c3f059f750",
+      "sources": [
+        {
+          "bytes": 1571,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/final-check.json",
+          "sha256": "72fdef2a2aab7e99f69849da9c1fe171dfd2fb5d9ffaa68ac6c626c3f059f750"
+        }
+      ],
+      "transformation": "UTF-8 text; replace project and home prefixes with declared tokens"
+    },
+    {
+      "bytes": 1775,
+      "output": "size-and-launcher-identity.json",
+      "output_sha256": "c1a35e8a6e32245059b0e9438ef31138707911f7ab9a68d33077e8061b8a2e2a",
+      "sources": [
+        {
+          "bytes": 49968,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lean",
+          "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+        },
+        {
+          "bytes": 51840,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lake",
+          "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+        },
+        {
+          "bytes": 49968,
+          "path": "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-install/bin/lean",
+          "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+        },
+        {
+          "bytes": 51840,
+          "path": "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+          "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+        }
+      ],
+      "transformation": "Read-only du -sk of four directories plus stat/SHA-256 of copied Lean/Lake launchers"
+    }
+  ],
+  "notes": [
+    "Source SHA-256 covers original local bytes before redaction.",
+    "Output SHA-256 covers preserved report bytes after redaction or selection.",
+    "Original large inventories and LSP/dyld logs are intentionally not copied.",
+    "Snapshot equality covers the extracted Aeneas tree and primary SDK view, not the unextracted Lean/Rust archive roots."
+  ],
+  "redaction_tokens": {
+    "<HOME>": "the local user home directory",
+    "<PROJECT>": "the local zerocopy project root"
+  },
+  "schema": 1
+}

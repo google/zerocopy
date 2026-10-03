@@ -1,0 +1,33 @@
+{
+  "cells": [
+    {
+      "actions": [
+        "ℹ [3/3] Built Smoke (17s)",
+        "Build completed successfully (3 jobs)."
+      ],
+      "label": "native-lake-followup-baseline"
+    },
+    {
+      "actions": [
+        "ℹ [3/3] Replayed Smoke",
+        "Build completed successfully (3 jobs)."
+      ],
+      "label": "native-lake-followup-noop"
+    },
+    {
+      "actions": [
+        "ℹ [3/3] Built Smoke (17s)",
+        "Build completed successfully (3 jobs)."
+      ],
+      "label": "native-lake-followup-edit"
+    },
+    {
+      "actions": [
+        "ℹ [3/3] Built Smoke (17s)",
+        "Build completed successfully (3 jobs)."
+      ],
+      "label": "native-lake-followup-delete-output"
+    }
+  ],
+  "scope": "Lake stdout proves built/replayed action labels. The no-op output mtime/size equality printed by the enclosing controller was not retained in these child logs; do not infer byte identity from this summary alone."
+}

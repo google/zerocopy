@@ -1,0 +1,26 @@
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 449)             # FIXME: Remove this v1-only package config primer once generated
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 450)             # workspaces migrate to v2.
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 451)             # Anneal v1 generated workspaces require this package directly
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 452)             # from the installed archive. Prime the package config that Lake
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 453)             # needs in that dependency context before the archive is frozen.
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 454)             "mkdir -p $TMPDIR/aeneas-config-primer/generated"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 455)             "cp lean-toolchain $TMPDIR/aeneas-config-primer/lean-toolchain"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 456)             "cat > $TMPDIR/aeneas-config-primer/generated/Generated.lean <<'EOF'"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 457)             "import Aeneas"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 458)             "EOF"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 459)             "cat > $TMPDIR/aeneas-config-primer/lakefile.lean <<'EOF'"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 460)             "import Lake"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 461)             "open Lake DSL"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 462)             ""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 463)             "require aeneas from \"@AENEAS_ROOT@\""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 464)             ""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 465)             "package anneal_verification"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 466)             ""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 467)             "@[default_target]"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 468)             "lean_lib «Generated» where"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 469)             "  srcDir := \"generated\""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 470)             "  roots := #[`Generated]"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 471)             "EOF"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 472)             "substituteInPlace $TMPDIR/aeneas-config-primer/lakefile.lean --replace-fail @AENEAS_ROOT@ \"$PWD\""
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 473)             "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake --old build Generated"})"
+64bd6d6f11 anneal/v2/flake.nix (Mark Dittmer 2026-06-16 21:20:51 +0000 474)             "test -f .lake/config/aeneas/lakefile.olean"

@@ -1,0 +1,8 @@
+✔ [0/3] Ran job computation
+✔ [1/3] Ran missing_native_sdk:extraDep
+✖ [2/3] Running missing_native_sdk/aeneasMetaPlugin
+error: no such file or directory (error code: 4294967294)
+  file: <PROJECT>/Data/20261003-anneal-v1-validation/sdk-missing/lib/missing-prebuilt.dylib
+✔ [3/3] Ran Smoke
+Some required targets logged failures:
+- missing_native_sdk/aeneasMetaPlugin

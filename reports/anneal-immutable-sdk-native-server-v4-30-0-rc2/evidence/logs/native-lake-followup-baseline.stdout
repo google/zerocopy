@@ -1,0 +1,6 @@
+✔ [0/3] Ran job computation
+✔ [1/3] Ran native_lake_smoke:extraDep
+✔ [2/3] Ran native_lake_smoke/aeneasMetaPlugin
+ℹ [3/3] Built Smoke (17s)
+trace: .> LEAN_PATH=<PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/.lake/build/lib/lean <PROJECT>/Data/20261003-anneal-v1-validation/sdk-install/bin/lean <PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/Smoke.lean -o <PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/.lake/build/lib/lean/Smoke.olean -i <PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/.lake/build/lib/lean/Smoke.ilean -c <PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/.lake/build/ir/Smoke.c --setup <PROJECT>/Data/20261003-anneal-v1-validation/work/native-lake-invalidation/.lake/build/ir/Smoke.setup.json --json
+Build completed successfully (3 jobs).

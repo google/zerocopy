@@ -1,0 +1,18 @@
+{
+  "host": "macOS arm64",
+  "method": "SHA-256 of installed/extracted files, recorded 2026-10-03; the launcher binaries are byte-identical across these tuples, so compiler identities come from version strings and runtime artifact hashes",
+  "rc2": {
+    "lean_git_hash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "lean_launcher_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_launcher_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "libleanshared_dylib_sha256": "1adcb76f033ea295822da60639002f91e2bd9e590e84acf432e997f388e19484",
+    "libLake_shared_dylib_sha256": "b2a96ebbac21b8d3d14a45ca7e8d08cc5c5581ab3f36d1bd5a7946c6bc629c6a"
+  },
+  "final": {
+    "lean_git_hash": "d024af099ca4bf2c86f649261ebf59565dc8c622",
+    "lean_launcher_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_launcher_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "libleanshared_dylib_sha256": "6733f9c8dad9c15044df5146604075cbe58450ac4ac25bc2ec29346ff7ad2398",
+    "libLake_shared_dylib_sha256": "50642797ad94ca5f92c6a1207c28f33cc1249a357f8510d933886048c8b0f6fe"
+  }
+}

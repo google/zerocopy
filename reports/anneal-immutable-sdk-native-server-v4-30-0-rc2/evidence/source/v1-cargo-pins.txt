@@ -1,0 +1,29 @@
+23: # FIXME: Replace these placeholder archive URLs and hashes before publishing
+24: # this crate; `cargo anneal setup` uses this metadata by default when callers
+25: # do not provide a local archive.
+26: [package.metadata.exocrate.linux.x86_64]
+27: sha256 = "d3d7bbcdfd2645f10e3e64a85b3e848197033992337c969a45576a3d0ec517d9"
+28: url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-x86_64.tar.zst"
+29: 
+30: [package.metadata.exocrate.macos.x86_64]
+31: sha256 = "1252f15262d11f49795c8ed182a8b47f2ae4e627d90babb2f10636349f686438"
+32: url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-x86_64.tar.zst"
+33: 
+34: [package.metadata.exocrate.linux.aarch64]
+35: sha256 = "a9c496fcf21670b2306d02722b9afcf375149315e929d53b6a7585d4daa19710"
+36: url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-linux-aarch64.tar.zst"
+37: 
+38: [package.metadata.exocrate.macos.aarch64]
+39: sha256 = "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+40: url = "https://github.com/google/zerocopy/releases/download/anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d/anneal-toolchain-macos-aarch64.tar.zst"
+100: 
+101: # The commit hash of the Aeneas repository to use.
+102: #
+103: # FIXME: Add a CI step to verify that this commit exists and matches the
+104: # toolchain version.
+105: aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+106: 
+107: # The Lean toolchain version to use. This must match the version of Lean used
+108: # by Aeneas in the `lean-toolchain` file in the commit above.
+109: lean_toolchain = "leanprover/lean4:v4.30.0-rc2"
+110: [[test]]

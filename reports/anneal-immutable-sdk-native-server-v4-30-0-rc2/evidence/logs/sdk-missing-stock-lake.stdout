@@ -1,0 +1,8 @@
+✔ [0/2] Ran job computation
+✔ [1/2] Ran missing_sdk:extraDep
+✖ [2/2] Building Missing (170ms)
+trace: .> LEAN_PATH=<PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/.lake/build/lib/lean <PROJECT>/Data/20261003-anneal-v1-validation/sdk-missing/bin/lean <PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/Missing.lean -o <PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/.lake/build/lib/lean/Missing.olean -i <PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/.lake/build/lib/lean/Missing.ilean -c <PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/.lake/build/ir/Missing.c --setup <PROJECT>/Data/20261003-anneal-v1-validation/work/sdk-missing/.lake/build/ir/Missing.setup.json --json
+error: Missing.lean:1:0: object file '<PROJECT>/Data/20261003-anneal-v1-validation/sdk-missing/lib/lean/Aeneas.olean' of module Aeneas does not exist
+error: Lean exited with code 1
+Some required targets logged failures:
+- Missing

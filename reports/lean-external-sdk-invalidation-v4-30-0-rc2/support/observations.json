@@ -1,0 +1,904 @@
+{
+  "coherent_view_integrity": {
+    "archive_tree_metadata_unchanged": true,
+    "copied_lake_bytes": 51840,
+    "copied_lean_bytes": 49968,
+    "selected_shared_artifact_hashes_unchanged": true,
+    "view_and_sdk_content_metadata_unchanged": true
+  },
+  "fixture_sha256": {
+    "Client-identity.lean": "b7cc4e3c2a0b53183662312399d20a146c370f52e20769c48be13c304bb61506",
+    "Client.lean": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+    "Inspect.lean": "78fc00c1ec68342d251b2a743734df87a954425bc286bb503eb406691a709ac9",
+    "Sdk-v1.lean": "ff63625a821c55325a62aa10c778bc1fe474f1f15259da79eb290d9600bac197",
+    "Sdk-v2.lean": "b2119af7b2360993f463e18f896e1206abeb7135abb192aa7adb91f209c468d1",
+    "SdkIdentity-v1.lean": "6a9e3b9543248e1f1293269033cfe6007fc08d1d2eec1613fc56001011a81729",
+    "SdkIdentity-v2.lean": "85c59f7964a84cf3eb46d2643c140012dea2fca7f3a3feb937ce5d89876612f9",
+    "consumer-identity-lakefile.lean": "89632d16e66968b4f88f931f2f5cc1c050ee9c4163e284cd96dfb6d930a920fd",
+    "consumer-lakefile.lean": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+    "sdk-lakefile.lean": "c676cd5ff35c176926d84f82173fe2d8f4c2ce32c49f2b250f80f6dac1887bfb"
+  },
+  "local_artifacts": {
+    "baseline-v1-build": {
+      "depHash": "90b5218aeee20417",
+      "olean": {
+        "mtime_ns": 1791039410675803920,
+        "sha256": "4b2214fb7481862b29f89ad74ea7a83c7e200f079a9826479963ee7c253a203a",
+        "size": 7504
+      },
+      "trace": {
+        "mtime_ns": 1791039410685802791,
+        "sha256": "8e60db6762802f1089f9cc9626bb2d90924fdac363ea1547e965cf5b11069b86",
+        "size": 2175
+      }
+    },
+    "baseline-v2-build": {
+      "depHash": "90b5218aeee20417",
+      "olean": {
+        "mtime_ns": 1791039410675803920,
+        "sha256": "4b2214fb7481862b29f89ad74ea7a83c7e200f079a9826479963ee7c253a203a",
+        "size": 7504
+      },
+      "trace": {
+        "mtime_ns": 1791039410685802791,
+        "sha256": "8e60db6762802f1089f9cc9626bb2d90924fdac363ea1547e965cf5b11069b86",
+        "size": 2175
+      }
+    },
+    "baseline-v2-rebuild-after-clean": {
+      "depHash": null,
+      "olean": null,
+      "trace": null
+    },
+    "identity-v1-build": {
+      "depHash": "22e22ea38ab2b8df",
+      "olean": {
+        "mtime_ns": 1791039417038078839,
+        "sha256": "81f3e52de95a9a6cc271174f253e29a74f7bd26858c2e41a487c96341f6797eb",
+        "size": 7616
+      },
+      "trace": {
+        "mtime_ns": 1791039417047136714,
+        "sha256": "e81bd721fd2e8fe85e843648afb4292ab8db16269b50edec6b524c7e78e0fd6f",
+        "size": 2288
+      }
+    },
+    "identity-v2-build": {
+      "depHash": "22e22ea38ab2b8df",
+      "olean": null,
+      "trace": {
+        "mtime_ns": 1791039417047136714,
+        "sha256": "e81bd721fd2e8fe85e843648afb4292ab8db16269b50edec6b524c7e78e0fd6f",
+        "size": 2288
+      }
+    },
+    "root-name-v1-build": {
+      "depHash": "90b5218aeee20417",
+      "olean": {
+        "mtime_ns": 1791039414208235894,
+        "sha256": "4b2214fb7481862b29f89ad74ea7a83c7e200f079a9826479963ee7c253a203a",
+        "size": 7504
+      },
+      "trace": {
+        "mtime_ns": 1791039414216068775,
+        "sha256": "e74e5907f9e33d9c5eca13edee6216d150f5cd72d2554971648934d03ce73f31",
+        "size": 2182
+      }
+    },
+    "root-name-v2-build": {
+      "depHash": "90b5218aeee20417",
+      "olean": null,
+      "trace": {
+        "mtime_ns": 1791039414216068775,
+        "sha256": "e74e5907f9e33d9c5eca13edee6216d150f5cd72d2554971648934d03ce73f31",
+        "size": 2182
+      }
+    }
+  },
+  "normalization": {
+    "rule": "Each preserved output excerpt replaces the exact original validation root, exact original RC2 sysroot, project root, and home prefix with <VALIDATION_ROOT>, <LEAN_RC2_ROOT>, <PROJECT_ROOT>, and <HOME>, in that order. The original stdout/stderr SHA-256 values refer to unmodified local raw files. Output excerpts retain semantic lines and are not full stream copies."
+  },
+  "observation_date": "2026-10-03",
+  "original_log_name": {
+    "coherent_pair": "coherent-sdk-run.log",
+    "copied_lean_only": "sdk-sysroot-canary-20261003-overlay-2.log",
+    "invalidation": "sdk-sysroot-canary-20261003-overlay-3.log",
+    "leanpath": "sdk-canary-results.jsonl",
+    "symlink_lean": "sdk-sysroot-canary-20261003-overlay-1.log"
+  },
+  "original_log_sha256": {
+    "coherent_pair": "6beda26c99a80ef2edb6b57b0bfaa6059e4a822ebdfc9084417a1218af1ae2ae",
+    "copied_lean_only": "329f21343a5837af757dcb3905df713b2a17ec06b0b4883e689ba1576994b379",
+    "invalidation": "58330ab203992f169d27fea3a93bd8fe5832db9cf8fd5cb52cf70f33a42e07ac",
+    "leanpath": "fe217deb9d0e83c38a5dd399b7e82dada8fbaa8a0f8c340e26752f2a9a42485b",
+    "symlink_lean": "9703f2df513652f17bb90eda24d5b0aae7221afd3601c5572593d12a5fdf3d7c"
+  },
+  "real_bundle": {
+    "archive_sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81",
+    "native_aeneas_meta_dylib_bytes": 1969424,
+    "native_aeneas_meta_dylib_sha256": "0ffa1ca9ecf894cd4256c75a049287dd285225767c0b41ae9b2e9a3e6e7e4745",
+    "used_only_in": "20261003-112910-build/setup coherent-launcher cell"
+  },
+  "runs": {
+    "20261003-112910-build": {
+      "abort": null,
+      "blocked_mutations_count": 0,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 14.318,
+        "min_disk_free_gib": 26.08,
+        "min_memory_free_pct": 28,
+        "peak_sampled_rss_mib": 1148.31
+      },
+      "stderr_excerpt": "\n",
+      "stderr_excerpt_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "stderr_original_sha256": "a74e75a12966768f555e6aa9ae07ab7067731f646599f584c1dd8ad668ab08d6",
+      "stdout_excerpt": "\u2139 [3/3] Built Smoke (13s)\ndyld[11890]: <4C4C4412-5555-3144-A168-42EC77707592> <VALIDATION_ROOT>/bundle/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.dylib\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "083f2387479cc1e8cae707f74be3e455dd41c403a814d1c204e600484f72e1b6",
+      "stdout_original_sha256": "e2e36685127aa96d124ebce76c020bbe51bdccfbc99bd5ffe1c266236d041ffc"
+    },
+    "20261003-112910-prefix": {
+      "abort": null,
+      "blocked_mutations_count": 0,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 6.794,
+        "min_disk_free_gib": 26.08,
+        "min_memory_free_pct": 30,
+        "peak_sampled_rss_mib": 588.53
+      },
+      "stderr_excerpt": "\n",
+      "stderr_excerpt_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "stderr_original_sha256": "f9d9eee31fb6c59ba9f195a3c393e538725209a8bd730ee09c36cfb33b449966",
+      "stdout_excerpt": "<VALIDATION_ROOT>/coherent-sdk-probe/20261003-112910/view\n",
+      "stdout_excerpt_sha256": "836be720bc1d505929f033a7a5a0790da49cec151831dfb8a0d6e39ccfb78f7c",
+      "stdout_original_sha256": "2ccad297abb6d0b765a2f62dc91826015209999bbcebae350fa2f7b72dbf7530"
+    },
+    "20261003-112910-setup": {
+      "abort": null,
+      "blocked_mutations_count": 0,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 4.009,
+        "min_disk_free_gib": 26.08,
+        "min_memory_free_pct": 33,
+        "peak_sampled_rss_mib": 594.81
+      },
+      "stderr_excerpt": "\n",
+      "stderr_excerpt_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "stderr_original_sha256": "e53c596ed7641a01cd140210bf2d2a439d0c016fdbf1c226de36a7d9ecb6e372",
+      "stdout_excerpt": "{\"dynlibs\":[],\"importArts\":{},\"isModule\":false,\"name\":\"Smoke\",\"options\":{},\"package\":\"coherent_sdk_smoke\",\"plugins\":[\"<VALIDATION_ROOT>/bundle/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.dylib\",\"<VALIDATION_ROOT>/coherent-sdk-probe/20261003-112910/view/lib/lean/libLake_shared.dylib\"]}\n",
+      "stdout_excerpt_sha256": "f492fb9c4023487d7712b09c7aa7e9f3e5719d3e64a50ee9bff13f0046cf24dc",
+      "stdout_original_sha256": "bacede9f6bb5c1f639bd472d8a96f8e124e8293efb825bcade343ded198ac4ef"
+    },
+    "20261003-overlay-1-baseline-v1-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 3.358,
+        "min_disk_free_gib": 27.41,
+        "min_host_memory_free_pct": 48,
+        "peak_sampled_group_rss_mib": 695.48
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/Client.lean": {
+          "mtime_ns": 1791039306851066696,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/lakefile.lean": {
+          "mtime_ns": 1791039306850990446,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/Client.lean": {
+          "mtime_ns": 1791039306851066696,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/lakefile.lean": {
+          "mtime_ns": 1791039306850990446,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: build failed\n",
+      "stderr_excerpt_sha256": "1435ae9d36524bb470dc913b8fa539f538de26b4e49772cede49c3ce11847f03",
+      "stderr_original_sha256": "1435ae9d36524bb470dc913b8fa539f538de26b4e49772cede49c3ce11847f03",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2716 [2/3] Building Client (106ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/ir/Client.setup.json --json\nerror: Client.lean:1:0: unknown module prefix 'Sdk'\n\nNo directory 'Sdk' or file 'Sdk.olean' in the search path entries:\n<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-1/baseline/.lake/build/lib/lean\n<LEAN_RC2_ROOT>/lib/lean\nerror: Lean exited with code 1\n\u2714 [3/3] Ran probe_consumer/Client:default\nSome required targets logged failures:\n- Client\n",
+      "stdout_excerpt_sha256": "964a2374712b9fd1873be6a1a61b49aa0a282ffc3318dd463df7cb3f1047ce63",
+      "stdout_original_sha256": "576ea8d22557ae8582e0eb9e25b686e2b71e68b0f1016c7312058d657fd5a381"
+    },
+    "20261003-overlay-2-baseline-v1-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 1.271,
+        "min_disk_free_gib": 27.39,
+        "min_host_memory_free_pct": 50,
+        "peak_sampled_group_rss_mib": 721.92
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/Client.lean": {
+          "mtime_ns": 1791039351492365429,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791039351492290137,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/Client.lean": {
+          "mtime_ns": 1791039351492365429,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791039351492290137,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stderr_original_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2139 [2/3] Built Client (239ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/ir/Client.setup.json --json\n\u2714 [3/3] Ran probe_consumer/Client:default\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "6a8dac1559edc1f9e2dd332d161d765d47f69bb7a0fc738e5f7926e087d588c1",
+      "stdout_original_sha256": "83ec03c10a295200069d38ee373a8f428fde69f2a2469cdc68446bf8bffa44cb"
+    },
+    "20261003-overlay-2-baseline-v1-eval": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.636,
+        "min_disk_free_gib": 27.39,
+        "min_host_memory_free_pct": 50,
+        "peak_sampled_group_rss_mib": 682.3
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/Client.lean": {
+          "mtime_ns": 1791039351492365429,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791039351492290137,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/Client.lean": {
+          "mtime_ns": 1791039351492365429,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791039351492290137,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "Inspect.lean:1:0: error: unknown module prefix 'Sdk'\n\nNo directory 'Sdk' or file 'Sdk.olean' in the search path entries:\n<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-2/baseline/.lake/build/lib/lean\n<LEAN_RC2_ROOT>/lib/lean\n<LEAN_RC2_ROOT>/lib/lean\n",
+      "stdout_excerpt_sha256": "0f05181b635b9d0773877e4f900ff2a94ffc030207aba433c897a85a670aa8b5",
+      "stdout_original_sha256": "c91d723bc8f7ba401bd8cf8d279f96243cef922681f868ba430cfea50c4de863"
+    },
+    "20261003-overlay-3-baseline-local-clean": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.454,
+        "min_disk_free_gib": 27.33,
+        "min_host_memory_free_pct": 37,
+        "peak_sampled_group_rss_mib": 620.22
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "",
+      "stdout_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "20261003-overlay-3-baseline-v1-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 3.813,
+        "min_disk_free_gib": 27.34,
+        "min_host_memory_free_pct": 38,
+        "peak_sampled_group_rss_mib": 973.06
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stderr_original_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2139 [2/3] Built Client (264ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.setup.json --json\n\u2714 [3/3] Ran probe_consumer/Client:default\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "98d44e2afa6174bed6a7eaa9bee949cbe272b22c9aa20ce31923befc47268290",
+      "stdout_original_sha256": "77b9e76621dfdc50069454c9f98b4e057a4eb0def60fa0040c66e8a860efa528"
+    },
+    "20261003-overlay-3-baseline-v1-eval": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.843,
+        "min_disk_free_gib": 27.34,
+        "min_host_memory_free_pct": 38,
+        "peak_sampled_group_rss_mib": 958.42
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "10\n10\ntrue\nclientProof : clientValue = sdkValue\n",
+      "stdout_excerpt_sha256": "98cb55715d73cb59424448d396978d6e9732f7871cd8b1cd3d1827c99e306adf",
+      "stdout_original_sha256": "98cb55715d73cb59424448d396978d6e9732f7871cd8b1cd3d1827c99e306adf"
+    },
+    "20261003-overlay-3-baseline-v2-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.842,
+        "min_disk_free_gib": 27.34,
+        "min_host_memory_free_pct": 38,
+        "peak_sampled_group_rss_mib": 620.84
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2139 [2/3] Replayed Client\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.setup.json --json\n\u2714 [3/3] Ran probe_consumer/Client:default\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "8ee07bdfbd1c920d4c898b530f6dbaaa41796d00069b433b875555a69f2b01a9",
+      "stdout_original_sha256": "c38795f59970bbc4ca4d168df54776d03ec007dd58aed024d0231f0fbd6d5d90"
+    },
+    "20261003-overlay-3-baseline-v2-eval": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.843,
+        "min_disk_free_gib": 27.34,
+        "min_host_memory_free_pct": 37,
+        "peak_sampled_group_rss_mib": 947.41
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "10\n20\nfalse\nclientProof : clientValue = sdkValue\n",
+      "stdout_excerpt_sha256": "5387bc79a0e4ac8c6f4fce6241ada076dde59c87a8d776b0035d56b8c6190022",
+      "stdout_original_sha256": "5387bc79a0e4ac8c6f4fce6241ada076dde59c87a8d776b0035d56b8c6190022"
+    },
+    "20261003-overlay-3-baseline-v2-rebuild-after-clean": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.848,
+        "min_disk_free_gib": 27.33,
+        "min_host_memory_free_pct": 36,
+        "peak_sampled_group_rss_mib": 953.92
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean": {
+          "mtime_ns": 1791039407032034332,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/lakefile.lean": {
+          "mtime_ns": 1791039407031912582,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "error: build failed\n",
+      "stderr_excerpt_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stderr_original_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2716 [2/3] Building Client (230ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v2/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/baseline/.lake/build/ir/Client.setup.json --json\nerror: Client.lean:3:51: Tactic `decide` proved that the proposition\n  clientValue = sdkValue\nis false\nerror: Lean exited with code 1\n\u2714 [3/3] Ran probe_consumer/Client:default\nSome required targets logged failures:\n- Client\n",
+      "stdout_excerpt_sha256": "3b5eb89b11a67ae413f653abb915a6eaec50022e11fdf97eb9b834b90c24722a",
+      "stdout_original_sha256": "b9cc1200259a76005f121e70229f670e68c90b104f1db5c9c4699f9e646929fa"
+    },
+    "20261003-overlay-3-identity-v1-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 1.072,
+        "min_disk_free_gib": 27.33,
+        "min_host_memory_free_pct": 35,
+        "peak_sampled_group_rss_mib": 982.53
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean": {
+          "mtime_ns": 1791039416006002611,
+          "sha256": "b7cc4e3c2a0b53183662312399d20a146c370f52e20769c48be13c304bb61506",
+          "size": 116
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/SdkIdentity.lean": {
+          "mtime_ns": 1791039416005924653,
+          "sha256": "6a9e3b9543248e1f1293269033cfe6007fc08d1d2eec1613fc56001011a81729",
+          "size": 33
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/lakefile.lean": {
+          "mtime_ns": 1791039416005833862,
+          "sha256": "89632d16e66968b4f88f931f2f5cc1c050ee9c4163e284cd96dfb6d930a920fd",
+          "size": 125
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean": {
+          "mtime_ns": 1791039416006002611,
+          "sha256": "b7cc4e3c2a0b53183662312399d20a146c370f52e20769c48be13c304bb61506",
+          "size": 116
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/SdkIdentity.lean": {
+          "mtime_ns": 1791039416005924653,
+          "sha256": "6a9e3b9543248e1f1293269033cfe6007fc08d1d2eec1613fc56001011a81729",
+          "size": 33
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/lakefile.lean": {
+          "mtime_ns": 1791039416005833862,
+          "sha256": "89632d16e66968b4f88f931f2f5cc1c050ee9c4163e284cd96dfb6d930a920fd",
+          "size": 125
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stderr_original_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stdout_excerpt": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran probe_consumer:extraDep\n\u2139 [2/4] Built SdkIdentity (227ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/SdkIdentity.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/SdkIdentity.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/SdkIdentity.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/SdkIdentity.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/SdkIdentity.setup.json --json\n\u2139 [3/4] Built Client (230ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/Client.setup.json --json\n\u2714 [4/4] Ran probe_consumer/Client:default\nBuild completed successfully (4 jobs).\n",
+      "stdout_excerpt_sha256": "ae4b2f32a7c2e9469f447bac5b459a5e3543ff4491efb3e2b95c24212383b199",
+      "stdout_original_sha256": "8ff2bf325bced42dea1909967a092cb4e409f4643acbacd88c57746f43e17151"
+    },
+    "20261003-overlay-3-identity-v2-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 1.086,
+        "min_disk_free_gib": 27.33,
+        "min_host_memory_free_pct": 36,
+        "peak_sampled_group_rss_mib": 975.08
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean": {
+          "mtime_ns": 1791039416006002611,
+          "sha256": "b7cc4e3c2a0b53183662312399d20a146c370f52e20769c48be13c304bb61506",
+          "size": 116
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean": {
+          "mtime_ns": 1791039416006002611,
+          "sha256": "b7cc4e3c2a0b53183662312399d20a146c370f52e20769c48be13c304bb61506",
+          "size": 116
+        }
+      },
+      "stderr_excerpt": "error: build failed\n",
+      "stderr_excerpt_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stderr_original_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stdout_excerpt": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran probe_consumer:extraDep\n\u2139 [2/4] Built SdkIdentity (240ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v2/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/SdkIdentity.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/SdkIdentity.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/SdkIdentity.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/SdkIdentity.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/SdkIdentity.setup.json --json\n\u2716 [3/4] Building Client (214ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v2/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/identity/.lake/build/ir/Client.setup.json --json\nerror: Client.lean:4:51: Tactic `decide` proved that the proposition\n  clientValue = sdkValue\nis false\nerror: Lean exited with code 1\n\u2714 [4/4] Ran probe_consumer/Client:default\nSome required targets logged failures:\n- Client\n",
+      "stdout_excerpt_sha256": "de235f72557e755d89e34f0394fed9a65313202f5bac3453cf46d48722b4ccbe",
+      "stdout_original_sha256": "fc696a8b120e5d92ebbf0b55f5ef9a6ecf6a47cf1061ee8bc40d06f3049d2843"
+    },
+    "20261003-overlay-3-root-name-v1-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.856,
+        "min_disk_free_gib": 27.34,
+        "min_host_memory_free_pct": 38,
+        "peak_sampled_group_rss_mib": 993.62
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean": {
+          "mtime_ns": 1791039413515331112,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/lakefile.lean": {
+          "mtime_ns": 1791039413515209988,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean": {
+          "mtime_ns": 1791039413515331112,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/lakefile.lean": {
+          "mtime_ns": 1791039413515209988,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stderr_original_sha256": "6b7f438a6be287ed4da0fd1e68957a9376563f8d9b3e43d0acb523f72ae1b5a9",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2139 [2/3] Built Client (231ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v1/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/ir/Client.setup.json --json\n\u2714 [3/3] Ran probe_consumer/Client:default\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "f80edba76ddf09970bd8369b33701dd40465ae3fbed0be5e4cbb6a77fe5e8df6",
+      "stdout_original_sha256": "afdc0c03747b44ccf79e7546c583ee2fed9e04fad70f96017a54397ae4cffcc3"
+    },
+    "20261003-overlay-3-root-name-v2-build": {
+      "abort": null,
+      "blocked_immutable_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "immutable_trees_unchanged": true,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.837,
+        "min_disk_free_gib": 27.33,
+        "min_host_memory_free_pct": 37,
+        "peak_sampled_group_rss_mib": 714.28
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean": {
+          "mtime_ns": 1791039413515331112,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean": {
+          "mtime_ns": 1791039413515331112,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        }
+      },
+      "stderr_excerpt": "error: build failed\n",
+      "stderr_excerpt_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stderr_original_sha256": "c4a27db198c4d8632369ee6102944ef46e83c20d685f7c17a6aaff9cfcfc710f",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer_renamed:extraDep\n\u2716 [2/3] Building Client (258ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/overlay-v2/bin/lean <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/Client.lean -o <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-sysroot-canary/20261003-overlay-3/root-name/.lake/build/ir/Client.setup.json --json\nerror: Client.lean:3:51: Tactic `decide` proved that the proposition\n  clientValue = sdkValue\nis false\nerror: Lean exited with code 1\n\u2714 [3/3] Ran probe_consumer_renamed/Client:default\nSome required targets logged failures:\n- Client\n",
+      "stdout_excerpt_sha256": "7bbd57469fcb743af698524ec5b8a2c19a08b9aa39acf0b51c30c2bca5775578",
+      "stdout_original_sha256": "a9a9f92f288a73889d11addd720e38c40d25ea10112be23cdc9d2668e69059e6"
+    },
+    "20261003-sdk-canary-2-baseline-v1-build": {
+      "abort": null,
+      "blocked_sdk_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 1,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.629,
+        "min_disk_free_gib": 27.43,
+        "min_host_memory_free_pct": 52,
+        "peak_sampled_group_rss_mib": 725.45
+      },
+      "sdk_trees_unchanged": true,
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/Client.lean": {
+          "mtime_ns": 1791038986196817622,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791038986196669748,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/Client.lean": {
+          "mtime_ns": 1791038986196817622,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        },
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/lakefile.lean": {
+          "mtime_ns": 1791038986196669748,
+          "sha256": "d85e761d1073b61f157c0c346fd930d787631603ee47ce1c0611e7f8ca98c9dd",
+          "size": 111
+        }
+      },
+      "stderr_excerpt": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: build failed\n",
+      "stderr_excerpt_sha256": "1435ae9d36524bb470dc913b8fa539f538de26b4e49772cede49c3ce11847f03",
+      "stderr_original_sha256": "1435ae9d36524bb470dc913b8fa539f538de26b4e49772cede49c3ce11847f03",
+      "stdout_excerpt": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_consumer:extraDep\n\u2716 [2/3] Building Client (103ms)\ntrace: .> LEAN_PATH=<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/lib/lean <LEAN_RC2_ROOT>/bin/lean <VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/Client.lean -o <VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/lib/lean/Client.olean -i <VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/lib/lean/Client.ilean -c <VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/ir/Client.c --setup <VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/ir/Client.setup.json --json\nerror: Client.lean:1:0: unknown module prefix 'Sdk'\n\nNo directory 'Sdk' or file 'Sdk.olean' in the search path entries:\n<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/lib/lean\n<LEAN_RC2_ROOT>/lib/lean\nerror: Lean exited with code 1\n\u2714 [3/3] Ran probe_consumer/Client:default\nSome required targets logged failures:\n- Client\n",
+      "stdout_excerpt_sha256": "c36a9ce5541635e9eb3cd56d840defe7d4df7b635e49fbecf9da9f94d4067618",
+      "stdout_original_sha256": "3d622787c5da950efec0fd290cb89a0e7128a6d6301553a093d4ea33982d38a0"
+    },
+    "20261003-sdk-canary-2-lake-env-path": {
+      "abort": null,
+      "blocked_sdk_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 3.362,
+        "min_disk_free_gib": 27.5,
+        "min_host_memory_free_pct": 45,
+        "peak_sampled_group_rss_mib": 620.66
+      },
+      "sdk_trees_unchanged": true,
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/Client.lean": {
+          "mtime_ns": 1791038986196817622,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/Client.lean": {
+          "mtime_ns": 1791038986196817622,
+          "sha256": "32360b65999d561922aaebccd74e9caef29e6a471f594ae091ea189356aeb81e",
+          "size": 97
+        }
+      },
+      "stderr_excerpt": "",
+      "stderr_excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_excerpt": "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/baseline/.lake/build/lib/lean:<LEAN_RC2_ROOT>/lib/lean:<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/sdk-v1/.lake/build/lib/lean\n",
+      "stdout_excerpt_sha256": "75ac6f162c92c0b2862f4eb604b61494ff01cafbe262c969f7484297c99141c2",
+      "stdout_original_sha256": "a75c0c9fb48ce38cda54d10201449fa7e4297de54ca3738e803be27093c400dd"
+    },
+    "20261003-sdk-canary-2-sdk-v1-prepare": {
+      "abort": null,
+      "blocked_sdk_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 2.529,
+        "min_disk_free_gib": 27.43,
+        "min_host_memory_free_pct": 53,
+        "peak_sampled_group_rss_mib": 713.31
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/sdk-v1/Sdk.lean": {
+          "mtime_ns": 1791038982997130393,
+          "sha256": "ff63625a821c55325a62aa10c778bc1fe474f1f15259da79eb290d9600bac197",
+          "size": 25
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/sdk-v1/Sdk.lean": {
+          "mtime_ns": 1791038982997130393,
+          "sha256": "ff63625a821c55325a62aa10c778bc1fe474f1f15259da79eb290d9600bac197",
+          "size": 25
+        }
+      },
+      "stderr_excerpt": "info: probe_sdk: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "d9acc7b2364bf50ad8b5d86fb1aa0b8fcf0501b91b32853073184fe1a8a89115",
+      "stderr_original_sha256": "d9acc7b2364bf50ad8b5d86fb1aa0b8fcf0501b91b32853073184fe1a8a89115",
+      "stdout_excerpt": "\u2714 [2/3] Built Sdk (209ms)\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "72fbaa9fc18ef1bd71d162821250820cf2cf01b460e9a6e6f6c8976d3e392754",
+      "stdout_original_sha256": "72fbaa9fc18ef1bd71d162821250820cf2cf01b460e9a6e6f6c8976d3e392754"
+    },
+    "20261003-sdk-canary-2-sdk-v2-prepare": {
+      "abort": null,
+      "blocked_sdk_mutations_count": 0,
+      "consumer_sources_unchanged": true,
+      "exit": 0,
+      "network_attempts_count": 0,
+      "resources": {
+        "elapsed_s": 0.638,
+        "min_disk_free_gib": 27.43,
+        "min_host_memory_free_pct": 53,
+        "peak_sampled_group_rss_mib": 738.77
+      },
+      "source_tokens_after": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/sdk-v2/Sdk.lean": {
+          "mtime_ns": 1791038982997421351,
+          "sha256": "b2119af7b2360993f463e18f896e1206abeb7135abb192aa7adb91f209c468d1",
+          "size": 25
+        }
+      },
+      "source_tokens_before": {
+        "<VALIDATION_ROOT>/sdk-canary/20261003-sdk-canary-2/sdk-v2/Sdk.lean": {
+          "mtime_ns": 1791038982997421351,
+          "sha256": "b2119af7b2360993f463e18f896e1206abeb7135abb192aa7adb91f209c468d1",
+          "size": 25
+        }
+      },
+      "stderr_excerpt": "info: probe_sdk: no previous manifest, creating one from scratch\n",
+      "stderr_excerpt_sha256": "d9acc7b2364bf50ad8b5d86fb1aa0b8fcf0501b91b32853073184fe1a8a89115",
+      "stderr_original_sha256": "d9acc7b2364bf50ad8b5d86fb1aa0b8fcf0501b91b32853073184fe1a8a89115",
+      "stdout_excerpt": "\u2714 [2/3] Built Sdk (179ms)\nBuild completed successfully (3 jobs).\n",
+      "stdout_excerpt_sha256": "870d04c061eab5ce566801b51300c278a6b4bbf019262c4acd9da1eb219762ca",
+      "stdout_original_sha256": "870d04c061eab5ce566801b51300c278a6b4bbf019262c4acd9da1eb219762ca"
+    }
+  },
+  "sdk_olean": {
+    "sdk_v1_olean": {
+      "mtime_ns": 1791038985447505141,
+      "sha256": "e1733ea9a13718cff38370c3bfd8943e2a9c0550ba53768cb631390b01315dea",
+      "size": 4520
+    },
+    "sdk_v2_olean": {
+      "mtime_ns": 1791038986054389757,
+      "sha256": "140067d410c7281b5541ef536b549c9edd58dbd47428a95e0af2dbfd5a05e6a1",
+      "size": 4520
+    }
+  },
+  "toolchain": {
+    "host": "arm64-apple-darwin24.6.0",
+    "lake_bin_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_bin_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  }
+}

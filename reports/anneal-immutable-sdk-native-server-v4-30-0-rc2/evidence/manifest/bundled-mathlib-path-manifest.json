@@ -1,0 +1,57 @@
+{
+  "version": "1.2.0",
+  "packagesDir": ".lake/packages",
+  "packages": [
+    {
+      "type": "path",
+      "name": "plausible",
+      "dir": "../plausible",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "LeanSearchClient",
+      "dir": "../LeanSearchClient",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "importGraph",
+      "dir": "../importGraph",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "proofwidgets",
+      "dir": "../proofwidgets",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "aesop",
+      "dir": "../aesop",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "Qq",
+      "dir": "../Qq",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "batteries",
+      "dir": "../batteries",
+      "inherited": false
+    },
+    {
+      "type": "path",
+      "name": "Cli",
+      "dir": "../Cli",
+      "inherited": true
+    }
+  ],
+  "name": "mathlib",
+  "lakeDir": ".lake",
+  "fixedToolchain": false
+}

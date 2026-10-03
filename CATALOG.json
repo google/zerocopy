@@ -10527,6 +10527,53 @@
         "rust/toolchain"
       ]
     },
+    "anneal-immutable-sdk-native-server-v4-30-0-rc2": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake RC2 source and runtime"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-toolchain-macos-aarch64.tar.zst",
+            "release": "anneal-toolchains-v0.1.0-alpha.24-27079750833-09497849a10d",
+            "repository": "google/zerocopy",
+            "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+          },
+          "name": "Published Anneal macOS arm64 toolchain archive"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "79a357870ee0f5a403cf7c7dd43055c0eddbeda2"
+          },
+          "name": "Anneal V1 fixture and producer sources"
+        },
+        {
+          "identity": {
+            "artifact": "lean-4.30.0-darwin_aarch64.tar.zst",
+            "repository": "leanprover/lean4",
+            "revision": "d024af099ca4bf2c86f649261ebf59565dc8c622",
+            "sha256": "072dca4a38fbc0d3cedb96fea886cc243b424f2bd16247596200b9a9ab93f0f5",
+            "version": "v4.30.0"
+          },
+          "name": "Lean final compiler used for incompatible-artifact control"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "lean/immutable-sdk",
+        "lake/shared-artifacts",
+        "lean/native-plugins",
+        "lean/server",
+        "lean/source-navigation"
+      ]
+    },
     "anneal-interactive-model-probes-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -14883,6 +14930,33 @@
         "lake/version-ranges"
       ]
     },
+    "lake-frozen-package-config-ownership-v4-30-0-rc2-v4-30-0": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0 release candidate 2"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "d024af099ca4bf2c86f649261ebf59565dc8c622",
+            "version": "v4.30.0"
+          },
+          "name": "Lean and Lake 4.30.0 final"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/configuration",
+        "lake/read-only-dependencies",
+        "lake/build-traces"
+      ]
+    },
     "lake-generated-workspace-readonly-probe-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -15718,6 +15792,34 @@
         "lean/incremental-elaboration",
         "lean/invalidation",
         "lean/server"
+      ]
+    },
+    "lean-external-sdk-invalidation-v4-30-0-rc2": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "artifact": "Anneal V1 macOS arm64 omnibus bundle, June 2026",
+            "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+          },
+          "name": "Anneal V1 macOS arm64 prebuilt Aeneas and Mathlib bundle"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/olean",
+        "lake/build",
+        "lake/environment",
+        "lake/invalidation",
+        "lean/sdk"
       ]
     },
     "lean-generated-file-interactive-workflows-v4-30-0-rc2": {

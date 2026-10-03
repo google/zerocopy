@@ -1,0 +1,33 @@
+449:             # FIXME: Remove this v1-only package config primer once generated
+450:             # workspaces migrate to v2.
+451:             # Anneal v1 generated workspaces require this package directly
+452:             # from the installed archive. Prime the package config that Lake
+453:             # needs in that dependency context before the archive is frozen.
+454:             "mkdir -p $TMPDIR/aeneas-config-primer/generated"
+455:             "cp lean-toolchain $TMPDIR/aeneas-config-primer/lean-toolchain"
+456:             "cat > $TMPDIR/aeneas-config-primer/generated/Generated.lean <<'EOF'"
+457:             "import Aeneas"
+458:             "EOF"
+459:             "cat > $TMPDIR/aeneas-config-primer/lakefile.lean <<'EOF'"
+460:             "import Lake"
+461:             "open Lake DSL"
+462:             ""
+463:             "require aeneas from \"@AENEAS_ROOT@\""
+464:             ""
+465:             "package anneal_verification"
+466:             ""
+467:             "@[default_target]"
+468:             "lean_lib «Generated» where"
+469:             "  srcDir := \"generated\""
+470:             "  roots := #[`Generated]"
+471:             "EOF"
+472:             "substituteInPlace $TMPDIR/aeneas-config-primer/lakefile.lean --replace-fail @AENEAS_ROOT@ \"$PWD\""
+473:             "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake --old build Generated"})"
+474:             "test -f .lake/config/aeneas/lakefile.olean"
+612:               aeneas/bin/aeneas \
+613:               aeneas/bin/charon \
+614:               aeneas/bin/charon-driver \
+615:               aeneas/backends/lean/.lake/config/aeneas/lakefile.olean \
+616:               aeneas/backends/lean/lakefile.lean \
+617:               aeneas/packages/mathlib/lake-manifest.json \
+618:               aeneas/packages/mathlib/.lake/config/mathlib/lakefile.olean \

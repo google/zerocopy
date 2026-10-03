@@ -1,0 +1,67 @@
+{
+  "completed_expected_command_checks": 26,
+  "guarded_commands_total": 117,
+  "archive_unchanged": true,
+  "sdk_view_unchanged": true,
+  "source_worktree_clean": true,
+  "guard_stops": [
+    {
+      "label": "sdk-direct-controller",
+      "exit": -15,
+      "abort": "timeout",
+      "elapsed_s": 240.103
+    },
+    {
+      "label": "sdk-resume-positive",
+      "exit": -15,
+      "abort": "process-group RSS",
+      "elapsed_s": 8.093
+    },
+    {
+      "label": "sdk-resume-false",
+      "exit": -15,
+      "abort": "process-group RSS",
+      "elapsed_s": 1.108
+    },
+    {
+      "label": "sdk-resume-sorry",
+      "exit": -15,
+      "abort": "process-group RSS",
+      "elapsed_s": 0.892
+    },
+    {
+      "label": "20261003-sdk-canary-1-sdk-v1-prepare",
+      "exit": -15,
+      "abort": "process-group RSS",
+      "elapsed_s": 5.666
+    }
+  ],
+  "selected_peak_rss_mib": 1633.2,
+  "selected_min_memory_free_pct": 27,
+  "selected_min_disk_free_gib": 25.97,
+  "lsp_checks": [
+    {
+      "label": "native-sdk-lsp-1",
+      "result": "pass",
+      "elapsed_s": 10.843,
+      "peak_sampled_rss_mib": 1152.7,
+      "min_memory_free_pct": 32,
+      "min_disk_free_gib": 26.44
+    },
+    {
+      "label": "native-sdk-lsp-navigation-1",
+      "result": "pass",
+      "elapsed_s": 18.921,
+      "peak_sampled_rss_mib": 1032.2,
+      "min_memory_free_pct": 30,
+      "min_disk_free_gib": 26.28
+    }
+  ],
+  "final_host": {
+    "memory_free_pct": 38,
+    "disk_free_bytes": 27781500928,
+    "compressor_pages": 169108,
+    "swapouts": 9604074,
+    "swapins": 7668749
+  }
+}

@@ -1,0 +1,490 @@
+{
+  "expected_failures": [
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "lean",
+        "SmokeFalse.lean"
+      ],
+      "elapsed_s": 3.595,
+      "exit": 1,
+      "label": "native-lake-smoke-false",
+      "min_disk_free_gib": 26.82,
+      "min_host_free_pct": 33,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 1633.2
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "lean",
+        "FalseProof.lean"
+      ],
+      "elapsed_s": 82.512,
+      "exit": 1,
+      "label": "native-lake-v1-false",
+      "min_disk_free_gib": 26.51,
+      "min_host_free_pct": 27,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 800.9
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "lean",
+        "SorryProof.lean"
+      ],
+      "elapsed_s": 48.168,
+      "exit": 1,
+      "label": "native-lake-v1-sorry",
+      "min_disk_free_gib": 26.51,
+      "min_host_free_pct": 32,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 1094.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 1.088,
+      "exit": 1,
+      "label": "native-lake-followup-bad-plugin",
+      "min_disk_free_gib": 26.2,
+      "min_host_free_pct": 35,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 623.2
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-missing/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Missing:olean"
+      ],
+      "elapsed_s": 4.484,
+      "exit": 1,
+      "label": "sdk-missing-stock-lake",
+      "min_disk_free_gib": 26.06,
+      "min_host_free_pct": 40,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 705.8
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/sdk-missing/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 0.847,
+      "exit": 1,
+      "label": "sdk-missing-native-stock-lake",
+      "min_disk_free_gib": 26.06,
+      "min_host_free_pct": 42,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 635.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": null,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/lean-final/bin/lean",
+        "--json",
+        "Probe.lean"
+      ],
+      "elapsed_s": 1.062,
+      "exit": 1,
+      "label": "final-rc2-mismatch",
+      "min_disk_free_gib": 25.97,
+      "min_host_free_pct": 37,
+      "network_attempts": null,
+      "peak_sampled_rss_mib": 102.6
+    }
+  ],
+  "expected_successes": [
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "aeneasMetaPlugin"
+      ],
+      "elapsed_s": 5.282,
+      "exit": 0,
+      "label": "native-lake-smoke-target",
+      "min_disk_free_gib": 26.82,
+      "min_host_free_pct": 30,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 578.8
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 7.249,
+      "exit": 0,
+      "label": "native-lake-smoke-build",
+      "min_disk_free_gib": 26.82,
+      "min_host_free_pct": 31,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 1472.8
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Smoke.lean"
+      ],
+      "elapsed_s": 1.049,
+      "exit": 0,
+      "label": "native-lake-smoke-setup",
+      "min_disk_free_gib": 26.82,
+      "min_host_free_pct": 34,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 623.3
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "lean",
+        "Audit.lean"
+      ],
+      "elapsed_s": 80.357,
+      "exit": 0,
+      "label": "native-lake-v1-audit",
+      "min_disk_free_gib": 26.53,
+      "min_host_free_pct": 28,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 857.8
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Audit.lean"
+      ],
+      "elapsed_s": 4.009,
+      "exit": 0,
+      "label": "native-lake-v1-setup",
+      "min_disk_free_gib": 26.53,
+      "min_host_free_pct": 32,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 618.9
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 23.927,
+      "exit": 0,
+      "label": "native-lake-followup-baseline",
+      "min_disk_free_gib": 26.21,
+      "min_host_free_pct": 32,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 758.6
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 2.973,
+      "exit": 0,
+      "label": "native-lake-followup-noop",
+      "min_disk_free_gib": 26.21,
+      "min_host_free_pct": 35,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 609.6
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 19.327,
+      "exit": 0,
+      "label": "native-lake-followup-edit",
+      "min_disk_free_gib": 26.21,
+      "min_host_free_pct": 30,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 1088.2
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 23.203,
+      "exit": 0,
+      "label": "native-lake-followup-delete-output",
+      "min_disk_free_gib": 26.2,
+      "min_host_free_pct": 30,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 803.6
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "Generated",
+        "Anneal"
+      ],
+      "elapsed_s": 0.629,
+      "exit": 0,
+      "label": "native-lake-v1-noop",
+      "min_disk_free_gib": 26.2,
+      "min_host_free_pct": 39,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 622.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": null,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--print-prefix"
+      ],
+      "elapsed_s": 6.794,
+      "exit": 0,
+      "label": "20261003-112910-prefix",
+      "min_disk_free_gib": 26.08,
+      "min_host_free_pct": 30,
+      "network_attempts": null,
+      "peak_sampled_rss_mib": 588.5
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": null,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Smoke:olean"
+      ],
+      "elapsed_s": 14.318,
+      "exit": 0,
+      "label": "20261003-112910-build",
+      "min_disk_free_gib": 26.08,
+      "min_host_free_pct": 28,
+      "network_attempts": null,
+      "peak_sampled_rss_mib": 1148.3
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": null,
+      "command": [
+        "<PROJECT>/Data/20261003-anneal-v1-validation/coherent-sdk-probe/20261003-112910/view/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Smoke.lean"
+      ],
+      "elapsed_s": 4.009,
+      "exit": 0,
+      "label": "20261003-112910-setup",
+      "min_disk_free_gib": 26.08,
+      "min_host_free_pct": 33,
+      "network_attempts": null,
+      "peak_sampled_rss_mib": 594.8
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+SdkIdentity:olean"
+      ],
+      "elapsed_s": 5.476,
+      "exit": 0,
+      "label": "native-lake-v1-build-SdkIdentity",
+      "min_disk_free_gib": 26.69,
+      "min_host_free_pct": 28,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 700.1
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Config:olean"
+      ],
+      "elapsed_s": 0.827,
+      "exit": 0,
+      "label": "native-lake-v1-build-Config",
+      "min_disk_free_gib": 26.69,
+      "min_host_free_pct": 33,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 966.3
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+ExpandOutputExpandOutput1d49e11e5683007f.Types:olean"
+      ],
+      "elapsed_s": 63.628,
+      "exit": 0,
+      "label": "native-lake-v1-build-ExpandOutputExpandOutput1d49e11e5683007f.Types",
+      "min_disk_free_gib": 26.64,
+      "min_host_free_pct": 27,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 759.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+ExpandOutputExpandOutput1d49e11e5683007f.Funs:olean"
+      ],
+      "elapsed_s": 71.155,
+      "exit": 0,
+      "label": "native-lake-v1-build-ExpandOutputExpandOutput1d49e11e5683007f.Funs",
+      "min_disk_free_gib": 26.62,
+      "min_host_free_pct": 27,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 768.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Anneal:olean"
+      ],
+      "elapsed_s": 59.356,
+      "exit": 0,
+      "label": "native-lake-v1-build-Anneal",
+      "min_disk_free_gib": 26.58,
+      "min_host_free_pct": 27,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 797.0
+    },
+    {
+      "abort": null,
+      "blocked_shared_attempts": 0,
+      "command": [
+        "<PROJECT>/.anneal-local-tools/scratch/20260927-reference-experiments/nix_toolchain_relocation/relocated_lean/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--verbose",
+        "build",
+        "+Generated:olean"
+      ],
+      "elapsed_s": 34.309,
+      "exit": 0,
+      "label": "native-lake-v1-build-Generated",
+      "min_disk_free_gib": 26.61,
+      "min_host_free_pct": 31,
+      "network_attempts": 0,
+      "peak_sampled_rss_mib": 1279.1
+    }
+  ]
+}

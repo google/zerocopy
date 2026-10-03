@@ -1,0 +1,2 @@
+⚠ [5/8] Replayed Anneal
+warning: anneal/Anneal.lean:595:0: Definition `Anneal.test_has_layout` of class type must be marked with `@[reducible]` or `@[implicit_reducible]`
