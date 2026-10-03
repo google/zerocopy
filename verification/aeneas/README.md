@@ -15,7 +15,8 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 4 actual functions in `zerocopy/src/util/mod.rs`,
+Extraction starts from 7 actual functions in `zerocopy/src/util/mod.rs` and
+`zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
 
@@ -25,6 +26,9 @@ function scope. There is no copied Rust implementation.
 | `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
 | `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
 | `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| `RoundingAlignAndPhase::new` | For power-of-two alignment `A` and phase `P < A`, successfully encodes exactly `A + P`. |
+| `RoundingAlignAndPhase::components` | For any nonzero encoded word, returns its highest set bit as a power-of-two alignment and the remaining lower bits as a phase below that alignment; their sum is the original word. |
+| `RoundingAlignAndPhase::align` | For any nonzero encoded word, returns exactly its highest set bit. |
 
 Every registered function uses total `spec`: valid Rust value arguments and
 its explicit requirements imply successful termination, a valid returned value,
@@ -39,6 +43,10 @@ conditions.
 
 The mathematical model also defines recursive layout semantics and proves
 normalization across arbitrary nesting and metadata values.
+
+The alignment/phase encoding retains its nominal Rust type. Its type predicate
+requires a positive stored word; power-of-two alignment and phase bounds remain
+operation-specific requirements.
 
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
