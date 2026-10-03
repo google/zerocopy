@@ -15,18 +15,18 @@ The required `All checks succeeded (ci.yml)` job depends on it.
 
 ## Scope and proofs
 
-Extraction starts from 7 actual functions in `zerocopy/src/util/mod.rs` and
+Extraction starts from 15 actual functions in `zerocopy/src/util/mod.rs` and
 `zerocopy/src/layout.rs`,
 including their dependencies. The independent inventory selects the registered
 function scope. There is no copied Rust implementation.
 
-| Rust function | Checked property |
+| Functions | Checked property |
 | --- | --- |
-| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
-| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
-| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
-| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
+| `max`, `min`, padding, round-down | Exact extrema, least padding, greatest aligned predecessor, and bounds. |
 | Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
+| `DstLayout::{assume_shallow_unpadded,new_zst,for_type,for_unpadded_type,for_slice}` | Exact alignment, size-information fields, and recorded shallow-padding flags under explicit input premises. |
+| `SizeInfo::try_to_nonzero_elem_size`, `max_elems_for_bytes` | Exact zero handling, preserved representation fields, and greatest fitting element count. |
+| `DstLayout::requires_static_padding` | Exact negation of the recorded shallow-unpadded flag. |
 
 Every registered function uses total `spec`: valid Rust value arguments and
 its explicit requirements imply successful termination, a valid returned value,
@@ -45,6 +45,12 @@ normalization across arbitrary nesting and metadata values.
 The alignment/phase encoding retains its nominal Rust type. Its type predicate
 requires a positive stored word; power-of-two alignment and phase bounds remain
 operation-specific requirements.
+
+`LayoutModel.lean` supplies interpretation predicates without function proofs.
+Layout validity combines recursively valid fields; realizability, alignment and
+fit conditions remain explicit. Generic size/alignment reads are external data
+inputs, not axioms asserting correctness. See [SEMANTICS.md](SEMANTICS.md) for
+the Rust correspondence premise.
 
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
@@ -176,7 +182,8 @@ proof of the frontend's correctness.
 
 These remain **conditional** contracts. An invariant declaration does not prove
 that every Rust inhabitant is valid, that all constructors preserve it, or that
-all calls satisfy a precondition. Operation-specific
+all calls satisfy a precondition. `DstLayout` has structural field validity, with
+no extra global requirement to describe a realizable Rust layout. Operation-specific
 alignment, fit, and construction conditions remain explicit. Unsupported escaping
 mutable-borrow or backward-continuation contracts are rejected rather than
 silently validating only their visible return value.
@@ -266,6 +273,12 @@ declarations from every handwritten Lean module, including unused auxiliary
 modules, together with the model, vocabulary, obligations, and generated
 specifications. Only `propext`, `Classical.choice`, and `Quot.sound` are
 permitted.
+The explicit data-only Rust layout inputs documented in `SEMANTICS.md`
+are also permitted. Models with generic alignment reads must provide both
+data inputs with their exact signatures; the audit also checks that generic
+size/alignment reads use those inputs and that `Usize` size uses the pointer
+width. These checks pin the declared external interpretation; correspondence
+to the actual Rust ABI remains an explicit premise.
 New axioms, `sorryAx`, and native evaluator proof axioms fail.
 
 Callers reuse ordinary exported theorems, either explicitly with `step with` or
