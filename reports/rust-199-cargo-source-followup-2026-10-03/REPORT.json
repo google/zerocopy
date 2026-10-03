@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust",
+    "cargo",
+    "cargo/feature-resolution",
+    "cargo/incremental-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "Cargo integrated with Rust 1.98.1",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+        "version": "1.98.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 release",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Cargo integrated with Rust 1.99.0",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Persisted version coverage matrix",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ba4556c30835b56d108b0a6854a760bccf8438c5",
+        "path": "reports/anneal-3730-3731-final-coverage-audit-2026-10-01-v90/support/version-coverage-matrix-20261001-v90.csv"
+      }
+    }
+  ],
+  "observed_at": "2026-10-03"
+}

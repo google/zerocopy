@@ -1,0 +1,12 @@
+{
+  "topics": ["anneal", "anneal/issue-3731", "anneal/version-review", "anneal/coverage-audit"],
+  "subjects": [
+    {"name": "Published reference corpus and v90 version matrix", "identity": {"repository": "google/zerocopy", "branch": "reference", "revision": "ba4556c30835b56d108b0a6854a760bccf8438c5"}},
+    {"name": "CompCert 3.18 source pin", "identity": {"repository": "AbsInt/CompCert", "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6", "version": "3.18"}},
+    {"name": "CompCert development master assessed by the published source review", "identity": {"repository": "AbsInt/CompCert", "revision": "66a9fd06ef88619cc94765ca995a1018f7259b5c", "branch": "master"}},
+    {"name": "Lean/Lake prerelease source supplement", "identity": {"repository": "leanprover/lean4", "revision": "470d5ce1400764999581fd26d5d72b00d990b0f4", "version": "v4.35.0-rc3"}},
+    {"name": "Rust 1.99.0 source supplement", "identity": {"repository": "rust-lang/rust", "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4", "version": "1.99.0"}},
+    {"name": "Cargo selected by Rust 1.99.0", "identity": {"repository": "rust-lang/cargo", "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e"}}
+  ],
+  "observed_at": "2026-10-03"
+}

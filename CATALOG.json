@@ -10185,6 +10185,64 @@
         "lean/interactive-goals"
       ]
     },
+    "anneal-3731-version-coverage-audit-2026-10-03-v91": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "ba4556c30835b56d108b0a6854a760bccf8438c5"
+          },
+          "name": "Published reference corpus and v90 version matrix"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 source pin"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "AbsInt/CompCert",
+            "revision": "66a9fd06ef88619cc94765ca995a1018f7259b5c"
+          },
+          "name": "CompCert development master assessed by the published source review"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "470d5ce1400764999581fd26d5d72b00d990b0f4",
+            "version": "v4.35.0-rc3"
+          },
+          "name": "Lean/Lake prerelease source supplement"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust 1.99.0 source supplement"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e"
+          },
+          "name": "Cargo selected by Rust 1.99.0"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/issue-3731",
+        "anneal/version-review",
+        "anneal/coverage-audit"
+      ]
+    },
     "anneal-3731-version-source-audit-83-2026-10-01": {
       "observed_at": "2026-10-01",
       "subjects": [
@@ -15956,6 +16014,32 @@
         "reference/cohort-audit"
       ]
     },
+    "lean-lake-4350rc3-output-reference-routing-source-followup-2026-10-03": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean/Lake stable v4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "470d5ce1400764999581fd26d5d72b00d990b0f4",
+            "version": "v4.35.0-rc3"
+          },
+          "name": "Lean/Lake prerelease v4.35.0-rc3"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/lake",
+        "anneal/version-review"
+      ]
+    },
     "lean-lake-cross-platform-artifact-portability-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -18464,6 +18548,49 @@
         "roslyn/incrementality",
         "roslyn/remote",
         "anneal/architecture"
+      ]
+    },
+    "rust-199-cargo-source-followup-2026-10-03": {
+      "observed_at": "2026-10-03",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "797e8a9bca276c1c9f9f738d2a20f484fa4eea9d",
+            "version": "1.98.1"
+          },
+          "name": "Cargo integrated with Rust 1.98.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust 1.99.0 release"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "1.99.0"
+          },
+          "name": "Cargo integrated with Rust 1.99.0"
+        },
+        {
+          "identity": {
+            "path": "reports/anneal-3730-3731-final-coverage-audit-2026-10-01-v90/support/version-coverage-matrix-20261001-v90.csv",
+            "repository": "google/zerocopy",
+            "revision": "ba4556c30835b56d108b0a6854a760bccf8438c5"
+          },
+          "name": "Persisted version coverage matrix"
+        }
+      ],
+      "topics": [
+        "rust",
+        "cargo",
+        "cargo/feature-resolution",
+        "cargo/incremental-compilation"
       ]
     },
     "rust-aggregate-layout-nightly-2026-05-31": {

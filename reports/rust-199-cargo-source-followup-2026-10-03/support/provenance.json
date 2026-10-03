@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "base_reference": "ba4556c30835b56d108b0a6854a760bccf8438c5",
+  "source_result": "two_narrow_exact_source_deltas",
+  "runtime_result": "unexecuted",
+  "matrix_rows": [
+    "R349",
+    "R351"
+  ],
+  "matrix_effect": "applied_by_integrated_v91_coverage_matrix",
+  "evidence_sha256": {
+    "REPORT.json": "d9ed3f74ede5c4a93c92828f946d53c395ec63868f2d71e97763c7cc98ef1b45",
+    "REPORT.md": "2aa0c68d965dc5e295f5f9d8b3c4f1479c0220b7b2fb059cc449dedcc0ebd055",
+    "check.py": "6ccc6a9051e68bcdb7af688af244c489a548ae48d5865bfa1f2b42e6da832dda",
+    "matrix-delta.json": "cdffcba6f0ab77f82c3bbfceedd16056704e69399eb01c370bdda25d287d8941",
+    "rust-199-tags.txt": "ed50fa3bed0218db8e5b7b2139bb4650e62eeeb75671c609065c14cc8fcb2aef",
+    "rust-199-root-tree.json": "e148e30534259e38ea4e6fe2d07c3a80f7ddf917145795a809fc868441fce6c4",
+    "rust-199-src-tree.json": "f26ba95d042ee1a4ade43d76c1e5815e1a8242d91723f578f1b1f55fc749aad0",
+    "rust-199-tools-tree.json": "527ebf90a7dd1c71c402563835341e8b7443bdf8b7885dc0844cc747c6c22f63",
+    "cargo-1981-to-199-compare.json": "5bfe8cffb44056c946372e638178c47d088cf95b2cf117470b7febf033a5b9da",
+    "cargo-1981-parser.rs": "079cd9226ffb16348ce573c382de06ab750a456f9b25d2f301c6dd9fe734ad4b",
+    "cargo-199-parser.rs": "1e3931934866d9ca6e4616763cfe582ed818efecba941af6d8ae0ede0338538b",
+    "cargo-1981-profiles.rs": "f0ab026542b1fd5c50c61cce3b8aabb02f71e57b6813374a6429756d8946af5b",
+    "cargo-199-profiles.rs": "14ff4ecc42939560df5f80fe59b3de6ba26bd917a53e39bc2b99ab44eb0f9e27"
+  }
+}

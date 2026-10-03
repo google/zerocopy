@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "lean",
+    "lean/lake",
+    "anneal/version-review"
+  ],
+  "subjects": [
+    {
+      "name": "Lean/Lake stable v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean/Lake prerelease v4.35.0-rc3",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "470d5ce1400764999581fd26d5d72b00d990b0f4",
+        "version": "v4.35.0-rc3"
+      }
+    }
+  ],
+  "observed_at": "2026-10-03"
+}

@@ -1,0 +1,647 @@
+{
+  "schema": 2,
+  "base_commit": "ba4556c30835b56d108b0a6854a760bccf8438c5",
+  "base_tree": "dd59e9ed87a71d10dd85e41fd0a7dffcfba4ceb9",
+  "base_matrix_path": "reports/anneal-3730-3731-final-coverage-audit-2026-10-01-v90/support/version-coverage-matrix-20261001-v90.csv",
+  "base_matrix_sha256": "0e308f4cb43bee371c29f7dd4e83b9a2e8af0ebb0c2c8af26178907c515dbeb3",
+  "base_matrix_rows": 651,
+  "next_matrix_sha256": "64baef8e0774ce878631db43c5ada61c3b6ac41ee3a4d710d767c5e43c99807b",
+  "next_matrix_rows": 654,
+  "changed_existing_rows": [
+    {
+      "inventory_id": "R179",
+      "report_path": "reports/anneal-3730-last-good-model-after-rust-failure-2026-09-29/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R229",
+      "report_path": "reports/anneal-3730-rust-input-snapshot-2026-09-29/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R231",
+      "report_path": "reports/anneal-3730-saved-vs-private-rust-overlay-2026-09-29/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R240",
+      "report_path": "reports/anneal-3730-trust-evidence-boundary-2026-09-29/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R348",
+      "report_path": "reports/cargo-compilation-subject-identity-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R349",
+      "report_path": "reports/cargo-metadata-feature-resolution-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        },
+        "source_coverage": {
+          "old": "v85 crosswalk: exact_claim_source_review; source_only_no_new_runtime_or_package_execution",
+          "new": "v85 crosswalk: exact_claim_source_review; source_only_no_new_runtime_or_package_execution; Rust 1.99.0 exact Cargo parser source delta observed for Edition 2024 inherited default-features; runtime unexecuted"
+        },
+        "source_evidence_path": {
+          "old": "reports/cargo-r348-r349-r352-to-rust-1981-source-review-2026-09-30/support/frozen-cohort.csv",
+          "new": "reports/cargo-r348-r349-r352-to-rust-1981-source-review-2026-09-30/support/frozen-cohort.csv;reports/rust-199-cargo-source-followup-2026-10-03/REPORT.md"
+        }
+      }
+    },
+    {
+      "inventory_id": "R350",
+      "report_path": "reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R351",
+      "report_path": "reports/cargo-rustc-cache-reuse-extraction-boundaries-2016-2026/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Compare named pinned source against the newer upstream source revision; preserve historical claims. Exact current tip/release requires per-repository verification.",
+          "new": "Rust stable 1.99.0 released 2026-10-01; exact Cargo profile source delta checked against the prior 1.98.1 gitlink; R351 historical source pins remain historical and runtime is unexecuted."
+        },
+        "source_coverage": {
+          "old": "83-row audit: unchanged",
+          "new": "83-row audit: unchanged; Rust 1.99.0 exact Cargo profile source delta observed for CI incremental default; runtime unexecuted"
+        },
+        "source_evidence_path": {
+          "old": "",
+          "new": "reports/rust-199-cargo-source-followup-2026-10-03/REPORT.md"
+        }
+      }
+    },
+    {
+      "inventory_id": "R352",
+      "report_path": "reports/cargo-unit-graphs-rustc-invocations-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R414",
+      "report_path": "reports/lake-artifact-cache-publication-restoration-v4-30-0-rc2/REPORT.md",
+      "changed_fields": {
+        "source_coverage": {
+          "old": "v85 crosswalk: exact_claim_source_review; source_only_no_new_runtime_or_package_execution",
+          "new": "v85 crosswalk: exact_claim_source_review; source_only_no_new_runtime_or_package_execution; Lean/Lake v4.35.0-rc3 output-reference routing predicate changed in mapped Build.Common source; direct Cache.writeOutputs remains; runtime unexecuted"
+        },
+        "source_evidence_path": {
+          "old": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/support/frozen-cohort.csv",
+          "new": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/support/frozen-cohort.csv;reports/lean-lake-4350rc3-output-reference-routing-source-followup-2026-10-03/REPORT.md"
+        }
+      }
+    },
+    {
+      "inventory_id": "R517",
+      "report_path": "reports/rust-aggregate-layout-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R518",
+      "report_path": "reports/rust-allocation-deallocation-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R519",
+      "report_path": "reports/rust-atomics-memory-orderings-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R520",
+      "report_path": "reports/rust-auto-trait-coinduction-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R521",
+      "report_path": "reports/rust-box-raw-conversions-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R522",
+      "report_path": "reports/rust-conditional-compilation-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R523",
+      "report_path": "reports/rust-const-eval-const-functions-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R524",
+      "report_path": "reports/rust-correctness-termination-terminology-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R525",
+      "report_path": "reports/rust-drop-elaboration-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R526",
+      "report_path": "reports/rust-dst-slice-layout-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R527",
+      "report_path": "reports/rust-extern-foreign-items-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R528",
+      "report_path": "reports/rust-initialization-padding-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R529",
+      "report_path": "reports/rust-inline-global-assembly-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R530",
+      "report_path": "reports/rust-layout-rustc-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R532",
+      "report_path": "reports/rust-lifetimes-charon-aeneas-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R534",
+      "report_path": "reports/rust-local-nested-items-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R535",
+      "report_path": "reports/rust-maybe-uninit-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R536",
+      "report_path": "reports/rust-module-file-resolution-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R537",
+      "report_path": "reports/rust-nightly-upgrade-checklist-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R538",
+      "report_path": "reports/rust-nonnull-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R539",
+      "report_path": "reports/rust-panic-primitives-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R540",
+      "report_path": "reports/rust-panic-unwind-abort-divergence-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R541",
+      "report_path": "reports/rust-pointer-arithmetic-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R542",
+      "report_path": "reports/rust-pointer-casts-provenance-apis-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R543",
+      "report_path": "reports/rust-pointer-copy-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R544",
+      "report_path": "reports/rust-ptr-read-write-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R545",
+      "report_path": "reports/rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R546",
+      "report_path": "reports/rust-raw-slice-pointer-construction-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R547",
+      "report_path": "reports/rust-reference-creation-from-raw-pointers-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R548",
+      "report_path": "reports/rust-safety-boundary-completeness-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R549",
+      "report_path": "reports/rust-size-align-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R550",
+      "report_path": "reports/rust-source-span-provenance-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R551",
+      "report_path": "reports/rust-transmute-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R552",
+      "report_path": "reports/rust-type-alias-lowering-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R553",
+      "report_path": "reports/rust-ub-and-operational-models-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R554",
+      "report_path": "reports/rust-unreachable-unchecked-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R555",
+      "report_path": "reports/rust-unsafe-fields-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R556",
+      "report_path": "reports/rust-unsafe-trait-invariants-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R557",
+      "report_path": "reports/rust-unsafecell-interior-mutability-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R558",
+      "report_path": "reports/rust-validity-well-defined-execution-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R559",
+      "report_path": "reports/rust-volatile-memory-access-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R560",
+      "report_path": "reports/rust-wide-pointer-metadata-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R562",
+      "report_path": "reports/rustc-diagnostic-width-format-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R563",
+      "report_path": "reports/rustc-mir-before-charon-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R564",
+      "report_path": "reports/rustc-mir-unsafe-operations-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R565",
+      "report_path": "reports/rustc-name-resolution-stable-item-identity-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    },
+    {
+      "inventory_id": "R578",
+      "report_path": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/REPORT.md",
+      "changed_fields": {
+        "source_coverage": {
+          "old": "no newer release",
+          "new": "no newer official release as of 2026-09-30; published development-master source review: four commits ahead, three R578-mapped blobs unchanged; no proof/runtime execution"
+        },
+        "source_evidence_path": {
+          "old": "",
+          "new": "reports/sel4-compcert-everest-current-source-review/REPORT.md;reports/sel4-compcert-everest-current-source-review/support/official-source-observation.json"
+        }
+      }
+    },
+    {
+      "inventory_id": "R581",
+      "report_path": "reports/zerocopy-rust-intrinsics-nightly-2026-05-31/REPORT.md",
+      "changed_fields": {
+        "newer_target": {
+          "old": "Rust stable 1.98.1 and nightly-2026-09-30 (rustc 1.101.0-nightly); use matching toolchain for compiler behavior.",
+          "new": "Rust stable 1.99.0 released 2026-10-01 (rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4; Cargo gitlink 5f94df4789f005f9a352888e8355ffc645b7ed0e) supersedes the stable 1.98.1 availability target. Existing 1.98.1 and nightly-2026-09-30 source/runtime coverage stays pinned; 1.99 behavior remains unexecuted and source-unreviewed except the R349/R351 narrow supplement."
+        }
+      }
+    }
+  ],
+  "newly_indexed_reports": [
+    "reports/anneal-3730-3731-final-coverage-audit-2026-10-01-v90/REPORT.md",
+    "reports/lean-lake-4350rc3-output-reference-routing-source-followup-2026-10-03/REPORT.md",
+    "reports/rust-199-cargo-source-followup-2026-10-03/REPORT.md"
+  ],
+  "v90_report_sha256": "e9d4c7bee0aaf0ff275e0c3ed5a5e8a6c9871076e203d0e4ace9ffafa3bf1b47",
+  "source_inputs_sha256": {
+    "lean-REPORT.json": "ed7196afbf2e825624df0a7ac5b11b01a0447350920ed6129bb94057d82ac42a",
+    "lean-REPORT.md": "93a63b22a67d7f5cc734e433cefab314edca5df963dad3051f69a260bf48542f",
+    "lean-verification-manifest.json": "e513a00b9d2a3673e66740896210a24012a0d23067b6652ef5110b8f3a49103c",
+    "rust-REPORT.json": "d9ed3f74ede5c4a93c92828f946d53c395ec63868f2d71e97763c7cc98ef1b45",
+    "rust-REPORT.md": "2aa0c68d965dc5e295f5f9d8b3c4f1479c0220b7b2fb059cc449dedcc0ebd055",
+    "rust-matrix-delta.json": "cdffcba6f0ab77f82c3bbfceedd16056704e69399eb01c370bdda25d287d8941",
+    "rust-provenance.json": "67a241294043d6261cc783b554173d858bdbc319e0f2bd28e605450d27d6d9c8"
+  },
+  "source_package_hashes_sha256": "9b6594c25da6bba7f7ec01800a3b37fac12a36759925a12a0ff15983a7112aa2",
+  "frozen_inventory_path": "reports/anneal-3730-3731-residual-38-source-audit-2026-09-30-v85/support/version-inventory-ebcdcad-581.csv",
+  "frozen_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "compcert_review_sha256": "bd093266a98fa8ac45766cc0c69555bc75daffe6af6d30242fd7d9dfa0f28b04",
+  "compcert_observation_sha256": "aa76a117ac9177cc52ec41cbecd85cd7c342a3c2dadd167ef68a31e3c93f284c",
+  "catalog_sha256": "f6b58de6938c76a5147bf59754dd986a0fa4bf1b8cd3fad16d2087d108196adb",
+  "base_catalog_entries": 652,
+  "next_catalog_entries": 655,
+  "catalog_additions": [
+    "lean-lake-4350rc3-output-reference-routing-source-followup-2026-10-03",
+    "rust-199-cargo-source-followup-2026-10-03",
+    "anneal-3731-version-coverage-audit-2026-10-03-v91"
+  ],
+  "catalog_addition_sha256": "a53edb3e22ba94e2703de0b183cea07b29a5414b93131189a3ad5bd06c092991",
+  "report_md_sha256": "c7b2b75cbf59232767d5f07d8a1e45b96068d9a5f96b6d0061c195ab818cb7c6",
+  "report_json_sha256": "23a14b8699d1d631e633ac1d59c7a5824ee623d9f9ef354f1c9e4e43235e2a91"
+}

@@ -1,0 +1,203 @@
+{
+  "observed_at_utc": "2026-10-03T13:28:06.106584+00:00",
+  "rows": [
+    {
+      "repo": "leanprover/lean4",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/leanprover/lean4.git",
+        "HEAD",
+        "refs/tags/v4.34.1",
+        "refs/tags/v4.35.0-rc3"
+      ],
+      "exit_code": 0,
+      "stdout": "193c3589a4fc16c4059261ab38cfa365eb24f323\tHEAD\n5045d0056413266e57c625dcd7c365b10e377c52\trefs/tags/v4.34.1\n470d5ce1400764999581fd26d5d72b00d990b0f4\trefs/tags/v4.35.0-rc3\n",
+      "stderr": ""
+    },
+    {
+      "repo": "leanprover-community/mathlib4",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/leanprover-community/mathlib4.git",
+        "HEAD",
+        "refs/tags/v4.34.1",
+        "refs/tags/v4.35.0-rc3"
+      ],
+      "exit_code": 0,
+      "stdout": "302343bb9a029d4edab4f736703f0736896c1b64\tHEAD\nd13f23b723b8a846827a245b89c10fc7d3f11612\trefs/tags/v4.34.1\nc55e6e786f49471c72fbddbec5415808896aec1e\trefs/tags/v4.35.0-rc3\n",
+      "stderr": ""
+    },
+    {
+      "repo": "microsoft/TypeScript",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/microsoft/TypeScript.git",
+        "HEAD",
+        "refs/tags/v7.0.2"
+      ],
+      "exit_code": 0,
+      "stdout": "f9f8d01292562242b6e7c7142e46ed7e470926f9\tHEAD\n1e4744d68260a7cb91b62b12edc3f6a2187faaf1\trefs/tags/v7.0.2\n",
+      "stderr": ""
+    },
+    {
+      "repo": "microsoft/typescript-go",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/microsoft/typescript-go.git",
+        "HEAD",
+        "refs/tags/typescript/v7.0.2"
+      ],
+      "exit_code": 0,
+      "stdout": "89d5d5b2849a0db0957065889ca58536fa6d2e4a\tHEAD\n2bd066d87f5bafd315be9f40889d0a60b9e58e0b\trefs/tags/typescript/v7.0.2\n",
+      "stderr": ""
+    },
+    {
+      "repo": "dotnet/roslyn",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/dotnet/roslyn.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "8d2c75f24c88ea99a01a8579ecb67e303d566670\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "golang/tools",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/golang/tools.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "3f3efb7c3b31192232c67403b23a00bfcdbc3eec\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "rust-lang/rust-analyzer",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rust-analyzer.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "3332931d313fad08166571c05d7237d3a4d77ac2\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "llvm/llvm-project",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/llvm/llvm-project.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "1f1a5b38374af3fc5afb52d91c91c0203b5edcdf\tHEAD\n41d4aa7de68ed551010f27ff04ffc54e7616292a\trefs/remotes/gonzalo/HEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "rocq-community/rocq-lsp",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rocq-community/rocq-lsp.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "6ff2d0723547eb84352892cd546f87824d9a9f18\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "haskell/haskell-language-server",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/haskell-language-server.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "1cd039d9e3916264724071068f8eb38c5ee7fa85\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "haskell/hie-bios",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/haskell/hie-bios.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "32dd07707423ffabb34e44af68fcbd027b60ded2\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "JetBrains/kotlin",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/JetBrains/kotlin.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "9b80c8ff99f3a63fcf578010bb2712697f4886aa\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "swiftlang/sourcekit-lsp",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/swiftlang/sourcekit-lsp.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "46d33b124af55647b8329b694373c8479ccb0a85\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "swiftlang/swift",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/swiftlang/swift.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "c5fe44b279ba711339330853a14be3b6516511e8\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "rust-lang/rls",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/rust-lang/rls.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc\tHEAD\n",
+      "stderr": ""
+    },
+    {
+      "repo": "microsoft/TypeScript-wiki",
+      "command": [
+        "git",
+        "ls-remote",
+        "https://github.com/microsoft/TypeScript-wiki.git",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d\tHEAD\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "reference_commit": "ba4556c30835b56d108b0a6854a760bccf8438c5",
+  "source_result": "narrow_source_delta",
+  "runtime_result": "unexecuted",
+  "matrix_rows": [
+    "R414"
+  ],
+  "matrix_effect": "indexed_source_only_in_v91_no_runtime_or_issue_status_change",
+  "source_versions": {
+    "lean_4_34_1": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "lean_4_35_0_rc3": "470d5ce1400764999581fd26d5d72b00d990b0f4",
+    "lean_main_tip": "193c3589a4fc16c4059261ab38cfa365eb24f323",
+    "mathlib_4_35_0_rc3": "c55e6e786f49471c72fbddbec5415808896aec1e"
+  },
+  "claim": "Lake Build.Common output-reference insertion gate changes from pkg.isRoot to pkg.wsIdx = ctx.outputsIdx at tagged rc3; direct Cache.writeOutputs call remains in the mapped helper.",
+  "sha256": {
+    "REPORT.md": "93a63b22a67d7f5cc734e433cefab314edca5df963dad3051f69a260bf48542f",
+    "REPORT.json": "ed7196afbf2e825624df0a7ac5b11b01a0447350920ed6129bb94057d82ac42a",
+    "COHORT-NOTE.md": "072c6025740ae4647162017bc6f81bd19f18c3485b6d8429e6aed1f305e452a1",
+    "upstream_refs.json": "f8416ddf9f9a29accff7ea68d4581b24b9bedf3b11dcabd1ee841f9463fc58e8",
+    "mapped_source_results.json": "7e078fc7988f490de89a2a70d503b3644479182ac3b492466e85eb68c756b475"
+  }
+}
