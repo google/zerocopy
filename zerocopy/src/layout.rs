@@ -555,6 +555,11 @@ impl TrailingSliceLayout {
                 && self.elem_size % other_align.get() == 0)
                 || (self_align == other_align && self_phase == other_phase)))
     }))]
+    ///
+    /// ```aeneas
+    /// spec same_size_sequence_spec
+    ///   ensures b => b = true → ∀ n : Nat, (trailingFormula self).size n = (trailingFormula other).size n
+    /// ```
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
@@ -668,6 +673,14 @@ impl TrailingSliceLayout {
             None => expected_offset.is_none(),
         }
     }))]
+    ///
+    /// ```aeneas
+    /// spec advance_spec
+    ///   ensures result => match result with
+    ///     | none => Usize.max < ((trailingFormula self).advance bytes.val elem_size.val).base
+    ///     | some t => trailingFormula t = (trailingFormula self).advance bytes.val elem_size.val ∧
+    ///       ((trailingFormula self).advance bytes.val elem_size.val).base ≤ Usize.max
+    /// ```
     const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
         #[cfg(kani)]
         #[kani::proof_for_contract(TrailingSliceLayout::advance)]
@@ -1629,6 +1642,14 @@ impl DstLayout {
                 || trailing.elem_size % trailing.size_rounding_align_and_phase.align().get() != 0
         ),
     }))]
+    ///
+    /// ```aeneas
+    /// spec requires_dynamic_padding_spec
+    ///   ensures r => (r = false ↔ match self.size_info with
+    ///     | .Sized _ => True
+    ///     | .SliceDst tail => (trailingFormula tail).size 0 = tail.offset.val ∧
+    ///       tail.elem_size.val % (trailingFormula tail).align = 0)
+    /// ```
     pub const fn requires_dynamic_padding(self) -> bool {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
