@@ -144,9 +144,10 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 /// on the answer it gives if this is not the case.
 #[cfg_attr(
     kani,
-    kani::requires(len <= DstLayout::MAX_SIZE),
     kani::requires(align.is_power_of_two()),
-    kani::ensures(|&p| (len + p) % align.get() == 0),
+    // A power-of-two alignment divides the `usize` modulus, so wrapping
+    // preserves congruence even when the next aligned value exceeds `usize`.
+    kani::ensures(|&p| len.wrapping_add(p) % align.get() == 0),
     // Ensures that we add the minimum required padding.
     kani::ensures(|&p| p < align.get()),
 )]
@@ -594,31 +595,6 @@ mod len_of {
             T::PointerMetadata: Copy,
         {
             self.meta
-        }
-
-        #[inline]
-        pub(crate) fn padding_needed_for(&self) -> usize
-        where
-            T: KnownLayout<PointerMetadata = usize>,
-        {
-            let trailing_slice_layout = crate::trailing_slice_layout::<T>();
-
-            // FIXME(#67): Remove this allow. See NumExt for more details.
-            #[allow(
-                unstable_name_collisions,
-                clippy::incompatible_msrv,
-                clippy::multiple_unsafe_ops_per_block
-            )]
-            // SAFETY: By invariant on `self`, a `&T` with metadata `self.meta`
-            // describes an object of size `<= isize::MAX`. This computes the
-            // size of such a `&T` without any trailing padding, and so neither
-            // the multiplication nor the addition will overflow.
-            let unpadded_size = unsafe {
-                let trailing_size = self.meta.unchecked_mul(trailing_slice_layout.elem_size);
-                trailing_size.unchecked_add(trailing_slice_layout.offset)
-            };
-
-            util::padding_needed_for(unpadded_size, T::LAYOUT.align)
         }
 
         #[inline(always)]
