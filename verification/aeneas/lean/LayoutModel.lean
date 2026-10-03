@@ -15,7 +15,6 @@ public import LayoutMath
 open Aeneas Aeneas.Std
 namespace Zerocopy.Proofs
 
-
 def byteFormula {E : Type} (self : layout.TrailingSliceLayout E) : LayoutMath.Formula :=
   let code := self.size_rounding_align_and_phase._0.val.val
   let align := 2 ^ Nat.log2 code
@@ -79,6 +78,21 @@ def canonicalLayout (self : layout.DstLayout) : Prop :=
   | .SliceDst t => 0 < t.size_rounding_align_and_phase._0.val.val
 
 def alignmentDomain (a : Nat) : Prop := a.isPowerOfTwo ∧ a ≤ 2 ^ 29
+
+def constructionPrefix (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) (i : Nat) : LayoutMath.LayoutValue :=
+  LayoutMath.LayoutValue.prefixValue (fields.val.map layoutValue) initial (packingValue packed) i
+
+def constructionDomain (fields : Slice layout.DstLayout) (initial : LayoutMath.LayoutValue)
+    (packed : Option NonZeroUsize) : Prop :=
+  ∀ i (hi : i < fields.val.length),
+    alignmentDomain (constructionPrefix fields initial packed i).align ∧
+    alignmentDomain fields.val[i].align.val.val ∧ canonicalLayout fields.val[i] ∧
+    (constructionPrefix fields initial packed i).extendFits
+      (layoutValue fields.val[i]) (packingValue packed) Usize.max
+
+def initialAlignment (repr_align : Option NonZeroUsize) : Nat :=
+  (repr_align.map (fun a => a.val.val)).getD 1
 
 attribute [contract_simps] castSide castSplit castSpec metadataSpec
 

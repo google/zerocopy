@@ -1215,6 +1215,19 @@ impl DstLayout {
     #[cfg_attr(kani, kani::ensures(|&result| {
         Some(result) == proofs::repr_c_layout(repr_align, repr_packed, fields)
     }))]
+    ///
+    /// ```aeneas
+    /// spec for_repr_c_struct_spec
+    ///   requires ha : ∀ a ∈ repr_align, alignmentDomain a.val.val
+    ///   requires hp : ∀ a ∈ repr_packed, alignmentDomain a.val.val
+    ///   requires hd : constructionDomain fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed
+    ///   requires hlast : alignmentDomain
+    ///     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).align
+    ///   requires hfit : (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align))
+    ///     repr_packed fields.val.length).padFits Usize.max
+    ///   ensures r => layoutValue r =
+    ///     (constructionPrefix fields (LayoutMath.LayoutValue.initial (initialAlignment repr_align)) repr_packed fields.val.length).pad
+    /// ```
     pub const fn for_repr_c_struct(
         repr_align: Option<NonZeroUsize>,
         repr_packed: Option<NonZeroUsize>,
