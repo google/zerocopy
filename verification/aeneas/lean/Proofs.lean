@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Specs
 public import Proofs.Util
+public import Arithmetic
 import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 open Aeneas Aeneas.Std

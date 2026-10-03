@@ -21,19 +21,19 @@ function scope. There is no copied Rust implementation.
 
 | Rust function | Checked property |
 | --- | --- |
-| `max` | Terminates successfully and returns the mathematical maximum. |
-| `min` | Terminates successfully and returns the mathematical minimum. |
-| `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
-| `round_down_to_next_multiple_of_alignment` | For any positive power-of-two alignment, succeeds with a result no larger than the input and divisible by the alignment. |
+| `max` | Returns the mathematical maximum, selects an input, and bounds both inputs from above. |
+| `min` | Returns the mathematical minimum, selects an input, and bounds both inputs from below. |
+| `padding_needed_for` | For power-of-two alignment, returns padding below it and exactly `(align - len % align) % align`, the least padding making the sum aligned, with zero padding exactly when the input is aligned. |
+| `round_down_to_next_multiple_of_alignment` | For power-of-two alignment, returns exactly `n - n % align`, the greatest aligned value at most `n`; the next multiple exceeds `n`. |
 
 Every registered function uses total `spec`: valid Rust value arguments and
 its explicit requirements imply successful termination, a valid returned value,
 and its postcondition. These are quantified contracts, not finite test inputs.
 Broader ordinary Raw lemmas preserve useful representation-level domains.
 
-This initial arithmetic scope establishes extrema, padding bounds and an
-aligned result no larger than the input. It does not claim least padding or
-the greatest aligned predecessor.
+`Corollaries.lean` composes the arithmetic proofs: extrema preserve a shared
+predicate, and round-down is monotone, aligned and idempotent under its stated
+conditions.
 
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
