@@ -1694,6 +1694,16 @@ impl DstLayout {
             _ => None,
         }
     }))]
+    ///
+    /// ```aeneas
+    /// spec metadata_exact_spec
+    ///   requires ha : 0 < self.align.val.val
+    ///   requires ht : match self.size_info with
+    ///     | .Sized _ => True
+    ///     | .SliceDst tail => tail.elem_size.val ≠ 0 →
+    ///       0 < tail.size_rounding_align_and_phase._0.val.val
+    ///   ensures r => metadataSpec self size.val r
+    /// ```
     const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
@@ -1823,6 +1833,16 @@ impl DstLayout {
             _ => false,
         }
     }))]
+    ///
+    /// ```aeneas
+    /// spec validate_cast_spec
+    ///   requires ha : 0 < self.align.val.val
+    ///   requires hroom : addr.val + bytes_len.val ≤ Usize.max
+    ///   requires ht : match self.size_info with
+    ///     | .Sized _ => True
+    ///     | .SliceDst tail => 0 < tail.size_rounding_align_and_phase._0.val.val ∧ 0 < tail.elem_size.val
+    ///   ensures r => castSpec self addr.val bytes_len.val cast_type r
+    /// ```
     pub(crate) const fn validate_cast_and_convert_metadata(
         &self,
         addr: usize,

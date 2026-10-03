@@ -62,6 +62,17 @@ def layoutValid (self : layout.DstLayout) : Prop :=
 
 @[simp, contract_simps] theorem scalar_valid_iff (x : UScalar ty) : isValid x ↔ True := Iff.rfl
 
+@[simp, contract_simps] theorem cast_type_valid_iff (side : layout.CastType) : isValid side ↔ True := by
+  cases side <;> rfl
+
+@[simp, contract_simps] theorem cast_result_valid_iff
+    (r : core.result.Result (Usize × Usize) layout.MetadataCastError) : isValid r ↔ True := by
+  cases r with
+  | Ok pair => cases pair; simp [isValid, IsValid.isValid, validRustResult]
+  | Err error =>
+    cases error <;> simp [isValid, IsValid.isValid, validRustResult,
+      layout.MetadataCastError.aeneasValid]
+
 @[contract_simps] theorem normalized_nat_pos_iff (n : Nat) :
     Nat.le (Nat.succ 0) n ↔ 0 < n := Nat.succ_le_iff
 
