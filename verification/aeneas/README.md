@@ -37,6 +37,9 @@ conditions.
 
 `LayoutMath.lean` supplies independent unbounded size and capacity formulas.
 
+The mathematical model also defines recursive layout semantics and proves
+normalization across arbitrary nesting and metadata values.
+
 CI uses the default features, debug assertions and the runner's native target.
 Local replay also supports macOS arm64. These conditional contracts do not
 certify other extraction configurations, rustc, zerocopy's pointer safety or
