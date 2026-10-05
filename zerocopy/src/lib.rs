@@ -978,8 +978,8 @@ impl PointerMetadata for () {
     }
 
     #[inline]
-    fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
-        match layout.size_info {
+    fn size_for_metadata(self, runtime_layout: DstLayout) -> Option<usize> {
+        match runtime_layout.size_info {
             SizeInfo::Sized { size } => Some(size),
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
@@ -1000,14 +1000,78 @@ impl PointerMetadata for usize {
     }
 
     #[inline]
-    fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
-        match layout.size_info {
+    fn size_for_metadata(self, runtime_layout: DstLayout) -> Option<usize> {
+        match runtime_layout.size_info {
             SizeInfo::SliceDst(trailing) => trailing.size_for_elems(self),
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
         }
     }
+}
+
+// The annotation frontend binds free roots, rather than trait impl methods.
+// These concrete calls retain the production dictionaries and method bodies
+// in extraction; they introduce no alternate implementation of metadata.
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_unit_from_elem_count_spec
+///   ensures(raw) result => result = ()
+/// ```
+pub(crate) fn pointer_metadata_unit_from_elem_count(elems: usize) {
+    <() as PointerMetadata>::from_elem_count(elems)
+}
+
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_unit_to_elem_count_spec
+///   ensures(raw) result => result.val = 0
+/// ```
+pub(crate) fn pointer_metadata_unit_to_elem_count() -> usize {
+    <() as PointerMetadata>::to_elem_count(())
+}
+
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_unit_size_for_metadata_spec
+///   ensures(raw) result => result = match runtime_layout.size_info with
+///     | .Sized size => some size
+///     | .SliceDst _ => none
+/// ```
+pub(crate) fn pointer_metadata_unit_size_for_metadata(runtime_layout: DstLayout) -> Option<usize> {
+    <() as PointerMetadata>::size_for_metadata((), runtime_layout)
+}
+
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_usize_from_elem_count_spec
+///   ensures(raw) result => result = elems
+/// ```
+pub(crate) fn pointer_metadata_usize_from_elem_count(elems: usize) -> usize {
+    <usize as PointerMetadata>::from_elem_count(elems)
+}
+
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_usize_to_elem_count_spec
+///   ensures(raw) result => result = metadata
+/// ```
+pub(crate) fn pointer_metadata_usize_to_elem_count(metadata: usize) -> usize {
+    <usize as PointerMetadata>::to_elem_count(metadata)
+}
+
+#[allow(dead_code)]
+/// ```aeneas
+/// spec pointer_metadata_usize_size_for_metadata_spec
+///   ensures(raw) result => result.map UScalar.val = match runtime_layout.size_info with
+///     | .Sized _ => none
+///     | .SliceDst tail => (trailingFormula tail).checkedSize Usize.max metadata.val
+/// ```
+pub(crate) fn pointer_metadata_usize_size_for_metadata(
+    metadata: usize,
+    runtime_layout: DstLayout,
+) -> Option<usize> {
+    <usize as PointerMetadata>::size_for_metadata(metadata, runtime_layout)
 }
 
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
