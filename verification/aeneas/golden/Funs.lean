@@ -396,7 +396,7 @@ def layout.DstLayout.requires_static_padding
   ok (¬ self.statically_shallow_unpadded)
 
 /-- [zerocopy::layout::nested_reference::round_up]:
-    Source: 'src/layout/nested_reference.rs', lines 50:0-60:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 46:0-56:1 -/
 def layout.nested_reference.round_up
   (size : Std.Usize) (align : Std.Usize) : Result (Option Std.Usize) := do
   if align = 0#usize
@@ -409,7 +409,7 @@ def layout.nested_reference.round_up
          ok (Usize.checked_add size i)
 
 /-- [zerocopy::layout::nested_reference::apply_layer]:
-    Source: 'src/layout/nested_reference.rs', lines 62:0-84:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 58:0-80:1 -/
 def layout.nested_reference.apply_layer
   (layer : layout.nested_reference.NestedLayer) (size : Std.Usize)
   (alignment : Std.Usize) :
@@ -449,7 +449,7 @@ def layout.nested_reference.apply_layer
   else ok none
 
 /-- [zerocopy::layout::nested_reference::size_for_metadata]: loop body 0:
-    Source: 'src/layout/nested_reference.rs', lines 112:4-119:5 -/
+    Source: 'src/layout/nested_reference.rs', lines 108:4-115:5 -/
 @[rust_loop_body]
 def layout.nested_reference.size_for_metadata_loop.body
   (leading : Slice layout.nested_reference.NestedLayer)
@@ -470,7 +470,7 @@ def layout.nested_reference.size_for_metadata_loop.body
   else ok (done state)
 
 /-- [zerocopy::layout::nested_reference::size_for_metadata]: loop 0:
-    Source: 'src/layout/nested_reference.rs', lines 112:4-119:5 -/
+    Source: 'src/layout/nested_reference.rs', lines 108:4-115:5 -/
 @[rust_loop]
 def layout.nested_reference.size_for_metadata_loop
   (leading : Slice layout.nested_reference.NestedLayer)
@@ -483,7 +483,7 @@ def layout.nested_reference.size_for_metadata_loop
     (state, i)
 
 /-- [zerocopy::layout::nested_reference::size_for_metadata]:
-    Source: 'src/layout/nested_reference.rs', lines 98:0-124:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 94:0-120:1 -/
 def layout.nested_reference.size_for_metadata
   (leading : Slice layout.nested_reference.NestedLayer) (elem_size : Std.Usize)
   (leaf_align : Std.Usize) (elems : Std.Usize) :
@@ -511,7 +511,7 @@ def layout.nested_reference.size_for_metadata
   else ok none
 
 /-- [zerocopy::layout::primitive_checks::check_primitive_layouts]:
-    Source: 'src/layout/primitive_checks.rs', lines 33:0-63:1 -/
+    Source: 'src/layout/primitive_checks.rs', lines 31:0-61:1 -/
 def layout.primitive_checks.check_primitive_layouts
   (T : Type) : Result Unit := do
   let size ← core.mem.size_of T
@@ -570,7 +570,7 @@ def layout.primitive_checks.check_primitive_layouts
   else ok ()
 
 /-- [zerocopy::layout::primitive_checks::check_empty_layout]:
-    Source: 'src/layout/primitive_checks.rs', lines 71:0-83:1 -/
+    Source: 'src/layout/primitive_checks.rs', lines 69:0-81:1 -/
 def layout.primitive_checks.check_empty_layout
   (repr_align : Option (core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)) :
@@ -711,6 +711,94 @@ def layout.tail_checks.trailing_arithmetic_check
       else ok ()
     else ok ()
   else ok ()
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for ()}::from_elem_count]:
+    Source: 'src/lib.rs', lines 973:4-973:46
+    Visibility: public -/
+def Tuple.Insts.ZerocopyPointerMetadata.from_elem_count
+  (_elems : Std.Usize) : Result Unit := do
+  ok ()
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for ()}::to_elem_count]:
+    Source: 'src/lib.rs', lines 976:4-978:5
+    Visibility: public -/
+def Tuple.Insts.ZerocopyPointerMetadata.to_elem_count
+  (_ : Unit) : Result Std.Usize := do
+  ok 0#usize
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for ()}::size_for_metadata]:
+    Source: 'src/lib.rs', lines 981:4-988:5
+    Visibility: public -/
+def Tuple.Insts.ZerocopyPointerMetadata.size_for_metadata
+  (_ : Unit) (runtime_layout : layout.DstLayout) :
+  Result (Option Std.Usize)
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized size => ok (some size)
+  | layout.SizeInfo.SliceDst _ => ok none
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for usize}::from_elem_count]:
+    Source: 'src/lib.rs', lines 993:4-995:5
+    Visibility: public -/
+def Usize.Insts.ZerocopyPointerMetadata.from_elem_count
+  (elems : Std.Usize) : Result Std.Usize := do
+  ok elems
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for usize}::to_elem_count]:
+    Source: 'src/lib.rs', lines 998:4-1000:5
+    Visibility: public -/
+def Usize.Insts.ZerocopyPointerMetadata.to_elem_count
+  (self : Std.Usize) : Result Std.Usize := do
+  ok self
+
+/-- [zerocopy::{impl zerocopy::PointerMetadata for usize}::size_for_metadata]:
+    Source: 'src/lib.rs', lines 1003:4-1010:5
+    Visibility: public -/
+def Usize.Insts.ZerocopyPointerMetadata.size_for_metadata
+  (self : Std.Usize) (runtime_layout : layout.DstLayout) :
+  Result (Option Std.Usize)
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized _ => ok none
+  | layout.SizeInfo.SliceDst trailing =>
+    layout.TrailingSliceLayoutUsize.size_for_elems trailing self
+
+/-- [zerocopy::pointer_metadata_unit_from_elem_count]:
+    Source: 'src/lib.rs', lines 1021:0-1023:1 -/
+def pointer_metadata_unit_from_elem_count
+  (elems : Std.Usize) : Result Unit := do
+  Tuple.Insts.ZerocopyPointerMetadata.from_elem_count elems
+
+/-- [zerocopy::pointer_metadata_unit_to_elem_count]:
+    Source: 'src/lib.rs', lines 1030:0-1032:1 -/
+def pointer_metadata_unit_to_elem_count : Result Std.Usize := do
+  Tuple.Insts.ZerocopyPointerMetadata.to_elem_count ()
+
+/-- [zerocopy::pointer_metadata_unit_size_for_metadata]:
+    Source: 'src/lib.rs', lines 1041:0-1043:1 -/
+def pointer_metadata_unit_size_for_metadata
+  (runtime_layout : layout.DstLayout) : Result (Option Std.Usize) := do
+  Tuple.Insts.ZerocopyPointerMetadata.size_for_metadata () runtime_layout
+
+/-- [zerocopy::pointer_metadata_usize_from_elem_count]:
+    Source: 'src/lib.rs', lines 1050:0-1052:1 -/
+def pointer_metadata_usize_from_elem_count
+  (elems : Std.Usize) : Result Std.Usize := do
+  Usize.Insts.ZerocopyPointerMetadata.from_elem_count elems
+
+/-- [zerocopy::pointer_metadata_usize_to_elem_count]:
+    Source: 'src/lib.rs', lines 1059:0-1061:1 -/
+def pointer_metadata_usize_to_elem_count
+  (metadata : Std.Usize) : Result Std.Usize := do
+  Usize.Insts.ZerocopyPointerMetadata.to_elem_count metadata
+
+/-- [zerocopy::pointer_metadata_usize_size_for_metadata]:
+    Source: 'src/lib.rs', lines 1070:0-1075:1 -/
+def pointer_metadata_usize_size_for_metadata
+  (metadata : Std.Usize) (runtime_layout : layout.DstLayout) :
+  Result (Option Std.Usize)
+  := do
+  Usize.Insts.ZerocopyPointerMetadata.size_for_metadata metadata runtime_layout
 
 /-- [zerocopy::util::checks::check_arithmetic]:
     Source: 'src/util/checks.rs', lines 38:0-46:1 -/

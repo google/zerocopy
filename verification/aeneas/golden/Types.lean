@@ -70,7 +70,7 @@ structure layout.DstLayout where
   statically_shallow_unpadded : Bool
 
 /-- [zerocopy::layout::nested_reference::NestedLayer]
-    Source: 'src/layout/nested_reference.rs', lines 31:0-35:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
 structure layout.nested_reference.NestedLayer where
   packed : Std.Usize
   min_align : Std.Usize
