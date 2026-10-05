@@ -26,7 +26,7 @@ use core::num::NonZeroUsize;
 
 use super::TrailingSliceLayout;
 
-pub(super) fn same_optional_usize(left: Option<usize>, right: Option<usize>) -> bool {
+pub(crate) fn same_optional_usize(left: Option<usize>, right: Option<usize>) -> bool {
     match (left, right) {
         (Some(left), Some(right)) => left == right,
         (None, None) => true,
@@ -41,7 +41,7 @@ fn reference_round_up(bytes: usize, align: NonZeroUsize) -> Option<usize> {
     bytes.checked_add(padding)
 }
 
-pub(super) fn reference_size(
+pub(crate) fn reference_size(
     tail: TrailingSliceLayout,
     align: NonZeroUsize,
     phase: usize,
