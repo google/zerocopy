@@ -76,6 +76,16 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
     else forbiddenExecution
   else forbiddenExecution
 
+-- These two operations have a precise forbidden domain: Rust has UB when the
+-- exact arithmetic overflows. On the permitted domain, retain the backend's
+-- checked arithmetic. Check.lean independently audits both interpretations,
+-- including the tag outside that domain, against golden and live extraction.
+def core.num.Usize.unchecked_add (left right : Usize) : Result Usize :=
+  if left.val + right.val ≤ Usize.max then left + right else forbiddenExecution
+
+def core.num.Usize.unchecked_mul (left right : Usize) : Result Usize :=
+  if left.val * right.val ≤ Usize.max then left * right else forbiddenExecution
+
 @[simp] def core.num.nonzero.NonZero.get
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
