@@ -27,7 +27,11 @@ use super::{
     DstLayout, SizeInfo, TrailingSliceLayout,
 };
 
-fn witness_matches(tail: TrailingSliceLayout, align: NonZeroUsize, phase: usize) -> bool {
+pub(super) fn witness_matches(
+    tail: TrailingSliceLayout,
+    align: NonZeroUsize,
+    phase: usize,
+) -> bool {
     align.get().is_power_of_two()
         && phase < align.get()
         && same_optional_usize(
