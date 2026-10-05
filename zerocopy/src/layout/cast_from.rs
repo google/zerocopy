@@ -291,56 +291,14 @@ impl<Src: KnownLayout + ?Sized, Dst: KnownLayout + ?Sized> CastParams<Src, Dst> 
         };
 
         // SAFETY: The sized variants perform no unchecked arithmetic.
-        // For `UnsizedToUnsized`, `self.plan` was selected for the layouts and
-        // witnesses that this affine map makes `Src` and `Dst`'s complete
-        // rounded size formulas equal for every source metadata value.
-        // Interpret the arithmetic in this proof over the
-        // mathematical nonnegative integers. Since the
-        // caller promises that `src_meta` is valid `Src`
-        // metadata, the source object size `src_size` it
-        // describes is at most `isize::MAX`. Let
-        // `src_elem_size` and `dst_elem_size` be the
-        // respective trailing-slice element sizes. Then:
-        //
-        //   src_meta * src_elem_size
-        //       <= src_size <= isize::MAX.
-        //
-        // Since `elem_multiple` is the exact ratio
-        // `src_elem_size / dst_elem_size` and
-        // `dst_elem_size >= 1`,
-        //
-        //   src_meta * elem_multiple
-        //       <= src_meta * src_elem_size
-        //       <= isize::MAX <= usize::MAX.
-        //
-        // Thus `scaled_elems = src_meta * elem_multiple`
-        // is representable, and its byte contribution is
-        // `scaled_elems * dst_elem_size = src_meta *
-        // src_elem_size`. Let `base_bytes =
-        // offset_delta_elems * dst_elem_size`.
-        // `size_sequences_match` compares the source
-        // formula with the destination formula advanced by
-        // `base_bytes`. The latter's unrounded term
-        // contains `base_bytes + src_meta * src_elem_size`,
-        // and its complete size is at least that large
-        // (formally checked by Kani in
-        // `prove_size_formula_bounds_size_offset`).
-        // Sequence equality therefore gives, over the
-        // mathematical nonnegative integers,
-        //
-        //   base_bytes + src_meta * src_elem_size
-        //       = (offset_delta_elems + scaled_elems)
-        //           * dst_elem_size
-        //       <= src_size.
-        //
-        // Since `dst_elem_size >= 1`, the metadata sum
-        // `offset_delta_elems + scaled_elems` is also at
-        // most `src_size`, and thus at most `isize::MAX <=
-        // usize::MAX`. The sum is therefore representable,
-        // and the returned metadata describes a `Dst` of
-        // the same size.
-        // SAFETY: The bounds above establish the helper's
-        // complete no-overflow precondition.
+        // For the affine variant, the selected plan makes the complete source
+        // and destination sizes equal and has a positive destination stride.
+        // Destination size is at least metadata * stride, so the complete
+        // metadata sum is at most source size. The multiplication's result is
+        // no larger than that sum. Both therefore fit usize, since the caller
+        // bounds source size by isize::MAX. The assertions in
+        // checks::assert_cast_preserves_size prove this numerical composition
+        // against the independent remainder-based size calculation.
         let dst_meta = unsafe { self.plan.cast_metadata(src_meta) };
         Dst::PointerMetadata::from_elem_count(dst_meta)
     }
@@ -396,5 +354,154 @@ where
         let dst_meta = unsafe { params.cast_metadata(src_meta) };
 
         <Dst as KnownLayout>::raw_from_ptr_len(src.as_non_null().cast(), dst_meta).as_ptr()
+    }
+}
+
+// Keep the numerical proof harness next to the pointer adapter it justifies.
+// The harness uses no pointers. Its assertion safety proves the size and
+// arithmetic part of the adapter's safety argument; pointer construction,
+// provenance, and the KnownLayout contract remain separate obligations.
+#[allow(dead_code, clippy::manual_map, clippy::needless_nonzero_get)]
+mod checks {
+    use super::{CastPlan, DstLayout, NonZeroUsize, SizeInfo};
+    use crate::layout::{tail_checks, tail_transform_checks};
+
+    fn witness_matches(runtime_layout: DstLayout, align: NonZeroUsize, phase: usize) -> bool {
+        match runtime_layout.size_info {
+            SizeInfo::Sized { .. } => true,
+            SizeInfo::SliceDst(tail) => tail_transform_checks::witness_matches(tail, align, phase),
+        }
+    }
+
+    // This calculation uses explicit alignment/phase witnesses and the simple
+    // remainder-based reference. It does not call the production size formula.
+    fn reference_size(
+        runtime_layout: DstLayout,
+        align: NonZeroUsize,
+        phase: usize,
+        elems: usize,
+    ) -> Option<usize> {
+        match runtime_layout.size_info {
+            SizeInfo::Sized { size } => Some(size),
+            SizeInfo::SliceDst(tail) => tail_checks::reference_size(tail, align, phase, elems),
+        }
+    }
+
+    fn checked_metadata(plan: CastPlan, src_meta: usize) -> Option<usize> {
+        match plan {
+            CastPlan::UnsizedToUnsized { offset_delta_elems, elem_multiple } => {
+                match src_meta.checked_mul(elem_multiple) {
+                    Some(scaled) => offset_delta_elems.checked_add(scaled),
+                    None => None,
+                }
+            }
+            CastPlan::SizedToUnsized { dst_meta } => Some(dst_meta),
+            CastPlan::SizedToSized => Some(0),
+        }
+    }
+
+    /// Every selected plan preserves the complete object size and alignment
+    /// requirement. For a representable source size, its metadata arithmetic
+    /// must fit, and its unchecked implementation must agree with checked
+    /// arithmetic. Both source and destination sizes use the independent
+    /// remainder-based reference calculation.
+    ///
+    /// The witness guards identify the compressed alignment/phase encoding;
+    /// every valid encoding has witnesses. Rejected plans and unrepresentable
+    /// source sizes impose no claim. In particular, overflow of *metadata*
+    /// after an accepted plan and representable source size is an assertion
+    /// failure, rather than an input exclusion.
+    ///
+    /// Rust objects have the stronger size bound of isize::MAX. Proving this
+    /// for every size fitting usize therefore covers that numerical domain.
+    /// The harness does not model pointer provenance or construct references.
+    ///
+    /// ```aeneas
+    /// spec cast_composition_check_spec
+    ///   ensures(raw) _ => True
+    /// ```
+    fn assert_cast_preserves_size(
+        src: DstLayout,
+        dst: DstLayout,
+        src_rounding_align: NonZeroUsize,
+        src_phase: usize,
+        dst_rounding_align: NonZeroUsize,
+        dst_phase: usize,
+        src_meta: usize,
+    ) {
+        if !witness_matches(src, src_rounding_align, src_phase)
+            || !witness_matches(dst, dst_rounding_align, dst_phase)
+        {
+            return;
+        }
+        let plan = match CastPlan::try_compute(&src, &dst) {
+            Some(plan) => plan,
+            None => return,
+        };
+        let src_size = match reference_size(src, src_rounding_align, src_phase, src_meta) {
+            Some(size) => size,
+            None => return,
+        };
+        assert!(src.align.get() >= dst.align.get());
+        let expected_meta = match checked_metadata(plan, src_meta) {
+            Some(meta) => meta,
+            None => panic!("selected cast metadata overflowed"),
+        };
+        // SAFETY: The preceding checked calculation establishes that both
+        // the multiplication and addition required by cast_metadata fit.
+        let dst_meta = unsafe { plan.cast_metadata(src_meta) };
+        assert!(dst_meta == expected_meta);
+        assert!(tail_checks::same_optional_usize(
+            reference_size(dst, dst_rounding_align, dst_phase, dst_meta),
+            Some(src_size),
+        ));
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::layout::{RoundingAlignAndPhase, TrailingSliceLayout};
+
+        #[test]
+        fn selected_cast_composition() {
+            let one = NonZeroUsize::new(1).unwrap();
+            let four = NonZeroUsize::new(4).unwrap();
+            let sized = DstLayout {
+                align: four,
+                size_info: SizeInfo::Sized { size: 12 },
+                statically_shallow_unpadded: false,
+            };
+            let dst = DstLayout {
+                align: four,
+                statically_shallow_unpadded: false,
+                size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    offset: 0,
+                    elem_size: 4,
+                    size_base: 0,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(four, 2),
+                }),
+            };
+            let src = DstLayout {
+                align: four,
+                statically_shallow_unpadded: false,
+                size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    // Physical offsets deliberately differ from size bases.
+                    // Cast planning must compare complete rounded sizes.
+                    offset: 3,
+                    elem_size: 8,
+                    size_base: 8,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(four, 2),
+                }),
+            };
+            assert!(CastPlan::try_compute(&sized, &sized).is_some());
+            assert!(CastPlan::try_compute(&sized, &dst).is_some());
+            assert!(CastPlan::try_compute(&src, &dst).is_some());
+            for count in [0, 1, 7, usize::MAX / 16, usize::MAX].iter().copied() {
+                // Sized witnesses are ignored, including their phase.
+                assert_cast_preserves_size(sized, sized, one, 0, one, 0, count);
+                assert_cast_preserves_size(sized, dst, one, 0, four, 2, count);
+                assert_cast_preserves_size(src, dst, four, 2, four, 2, count);
+            }
+        }
     }
 }
