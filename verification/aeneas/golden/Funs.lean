@@ -1715,6 +1715,109 @@ def pointer_metadata_usize_size_for_metadata
   := do
   Usize.Insts.ZerocopyPointerMetadata.size_for_metadata metadata runtime_layout
 
+/-- [zerocopy::pointer::cast::cast_unsized_layouts_match]:
+    Source: 'src/pointer/mod.rs', lines 195:4-207:5 -/
+def pointer.cast.cast_unsized_layouts_match
+  (src : layout.DstLayout) (dst : layout.DstLayout) : Result Bool := do
+  match src.size_info with
+  | layout.SizeInfo.Sized src_size =>
+    match dst.size_info with
+    | layout.SizeInfo.Sized dst_size => ok (src_size = dst_size)
+    | layout.SizeInfo.SliceDst _ => ok false
+  | layout.SizeInfo.SliceDst src_trailing =>
+    match dst.size_info with
+    | layout.SizeInfo.Sized _ => ok false
+    | layout.SizeInfo.SliceDst dst_trailing =>
+      let i ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+          src.align
+      let i1 ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+          dst.align
+      if i = i1
+      then
+        if src_trailing.offset = dst_trailing.offset
+        then
+          layout.TrailingSliceLayoutUsize.has_same_size_sequence src_trailing
+            dst_trailing
+        else ok false
+      else ok false
+
+/-- [zerocopy::pointer::cast::checks::witness_matches]:
+    Source: 'src/pointer/mod.rs', lines 218:8-225:9 -/
+def pointer.cast.checks.witness_matches
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+  Result Bool
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized _ => ok true
+  | layout.SizeInfo.SliceDst tail =>
+    layout.tail_transform_checks.witness_matches tail align phase
+
+/-- [zerocopy::pointer::cast::checks::reference_size]:
+    Source: 'src/pointer/mod.rs', lines 227:8-239:9 -/
+def pointer.cast.checks.reference_size
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (metadata : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized size => ok (some size)
+  | layout.SizeInfo.SliceDst tail =>
+    layout.tail_checks.reference_size tail align phase metadata
+
+/-- [zerocopy::pointer::cast::checks::assert_cast_unsized]:
+    Source: 'src/pointer/mod.rs', lines 251:8-276:9 -/
+def pointer.cast.checks.assert_cast_unsized
+  (src : layout.DstLayout) (dst : layout.DstLayout)
+  (src_align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (src_phase : Std.Usize)
+  (dst_align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (dst_phase : Std.Usize)
+  (metadata : Std.Usize) :
+  Result Unit
+  := do
+  let b ← pointer.cast.checks.witness_matches src src_align src_phase
+  if b
+  then
+    let b1 ← pointer.cast.checks.witness_matches dst dst_align dst_phase
+    if b1
+    then
+      let b2 ← pointer.cast.cast_unsized_layouts_match src dst
+      if b2
+      then
+        let o ←
+          pointer.cast.checks.reference_size src src_align src_phase metadata
+        let o1 ←
+          pointer.cast.checks.reference_size dst dst_align dst_phase metadata
+        let b3 ← layout.tail_checks.same_optional_usize o o1
+        massert b3
+        match src.size_info with
+        | layout.SizeInfo.Sized _ => ok ()
+        | layout.SizeInfo.SliceDst src_tail =>
+          match dst.size_info with
+          | layout.SizeInfo.Sized _ => ok ()
+          | layout.SizeInfo.SliceDst dst_tail =>
+            let i ←
+              core.num.nonzero.NonZero.get
+                Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+                src.align
+            let i1 ←
+              core.num.nonzero.NonZero.get
+                Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+                dst.align
+            massert (i = i1)
+            massert (src_tail.offset = dst_tail.offset)
+      else ok ()
+    else ok ()
+  else ok ()
+
 /-- [zerocopy::split_at::split_right_len]:
     Source: 'src/split_at.rs', lines 27:0-29:1 -/
 def split_at.split_right_len
