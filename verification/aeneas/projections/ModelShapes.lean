@@ -44,11 +44,7 @@ derive_model_shape Zerocopy.byteorder.F32 with 1 type parameters
 
 derive_model_shape Zerocopy.byteorder.F64 with 1 type parameters
 
-derive_model_shape Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
-
-derive_model_shape Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
-
-derive_model_shape Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
+derive_model_shape Zerocopy.layout.cast_from.CastPlan with 0 type parameters
 
 aeneas_model_shape Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters begin
 model RoundingValue where
@@ -61,13 +57,19 @@ end
 
 derive_model_shape Zerocopy.layout.TrailingSliceLayout with 1 type parameters
 
+derive_model_shape Zerocopy.layout.MetadataCastError with 0 type parameters
+
+derive_model_shape Zerocopy.layout.CastType with 0 type parameters
+
 derive_model_shape Zerocopy.layout.SizeInfo with 1 type parameters
 
 derive_model_shape Zerocopy.layout.DstLayout with 0 type parameters
 
-derive_model_shape Zerocopy.layout.CastType with 0 type parameters
+derive_model_shape Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
 
-derive_model_shape Zerocopy.layout.MetadataCastError with 0 type parameters
+derive_model_shape Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
+
+derive_model_shape Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
 
 derive_model_shape Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 
