@@ -196,6 +196,60 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# Successful-input proofs cannot detect changing UB into an ordinary panic.
+# Check the independent primitive interpretation, then directly compile the
+# rejection examples so --old cannot replay a test from the unchanged model.
+if has_model layout.add_scaled_metadata; then
+    [[ -f UnsafeArithmeticTests.lean ]] || {
+        echo "Unchecked arithmetic requires UnsafeArithmeticTests.lean" >&2; exit 1;
+    }
+    python3 - <<'PYCONTROL'
+from pathlib import Path
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+old = "def Zerocopy.forbiddenExecution {α : Type} : Result α := .fail .undef"
+if s.count(old) != 1:
+    raise SystemExit("Forbidden execution tag control no longer matches")
+p.write_text(s.replace(old, old.replace(".undef", ".panic")))
+PYCONTROL
+    check_model_mutant "unchecked overflow modeled as panic" Zerocopy.FunsExternal
+    expect_failure "unchecked overflow modeled as panic" unsafe-tag-audit.log audit
+    if ! grep -Fq 'forbidden-execution interpretation' "$backup/unsafe-tag-audit.log"; then
+        cat "$backup/unsafe-tag-audit.log" >&2; exit 1
+    fi
+    expect_failure "the wrong unsafe arithmetic tag" unsafe-tag-proof.log \
+        aeneas_lake env lean -DwarningAsError=true UnsafeArithmeticTests.lean
+    restore_build
+fi
+
+# An opaque helper must not conceal an adapter which discards forbidden
+# failures. This mutation leaves NonZero::get's returned value unchanged, so
+# ordinary functional proofs alone would not detect the unsupported dependency.
+# Its backend-like namespace must not hide its actual downstream module owner.
+python3 - <<'PYCONTROL'
+from pathlib import Path
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+start = "@[simp] def core.num.nonzero.NonZero.get"
+body = "(x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val"
+if s.count(start) != 1 or s.count(body) != 1:
+    raise SystemExit("Failure erasure control no longer matches")
+helper = ("opaque Aeneas.Std.hiddenFailureErasure : Option Unit :=\n"
+          "  Aeneas.Std.Option.ofResult (Result.fail .undef : Result Unit)\n\n")
+s = s.replace(start, helper + start)
+s = s.replace(body, "(x : core.num.nonzero.NonZero T Inner) : Result T :=\n"
+              "  match Aeneas.Std.hiddenFailureErasure with\n"
+              "  | none => .ok x.val\n"
+              "  | some _ => .ok x.val")
+p.write_text(s)
+PYCONTROL
+check_model_mutant "failure erasure hidden behind an opaque helper" Zerocopy.FunsExternal
+expect_failure "failure erasure hidden behind an opaque helper" unsafe-erasure-audit.log audit
+if ! grep -Fq 'unsupported failure erasure' "$backup/unsafe-erasure-audit.log"; then
+    cat "$backup/unsafe-erasure-audit.log" >&2; exit 1
+fi
+restore_build
+
 # Harmless extracted-function imports are ordinary acyclic dependencies.
 # Their presence cannot replace the independently authored outcome expectation.
 if [[ -f ModelSupport.lean ]]; then

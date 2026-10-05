@@ -73,6 +73,21 @@ run_elab do
       throwError "Missing external size read"
     unless ← Meta.isDefEq (mkConst `core.mem.size_of) sizeRead do
       throwError "External size read changed its data-input interpretation"
+  if env.contains `core.num.Usize.unchecked_add || env.contains `core.num.Usize.unchecked_mul then
+    -- A proof on fitting inputs cannot distinguish UB from a recoverable
+    -- panic outside that domain. Independently check both complete primitive
+    -- interpretations, so changing only their failure tag still fails CI.
+    let add ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val + right.val ≤ Aeneas.Std.Usize.max then left + right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    let mul ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val * right.val ≤ Aeneas.Std.Usize.max then left * right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    for (primitive, expected) in #[(`core.num.Usize.unchecked_add, add),
+                              (`core.num.Usize.unchecked_mul, mul)] do
+      unless env.contains primitive && (← Meta.isDefEq (mkConst primitive) (← instantiateMVars expected)) do
+        throwError "External unchecked arithmetic changed its forbidden-execution interpretation: {primitive}"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.
@@ -286,6 +301,33 @@ run_elab do
   let extra := actualModels.filter (fun modelName => !expectedModels.contains modelName)
   unless missing.isEmpty && extra.isEmpty do
     throwError "Compiled inline specification models disagree with bindings: missing {missing}; unexpected {extra}"
+  -- The backend's Option.ofResult erases every failure into a normal None,
+  -- including undef. That is not a supported Rust recovery operation here.
+  -- Follow downstream compiled dependencies, including helpers and opaque
+  -- bodies, so hiding this adapter behind another local definition cannot
+  -- admit it. Stop at the pinned backend: its checked integer primitives use
+  -- this adapter internally to represent arithmetic overflow as Rust's None.
+  -- Their implementation is already part of the trusted translation boundary.
+  -- Identify that boundary by compiled module ownership, not a declaration's
+  -- namespace, so a downstream helper cannot impersonate a backend primitive.
+  -- This conservative check rejects even unreachable local dependencies; it
+  -- does not certify arbitrary external models as faithful Rust semantics.
+  let mut pendingModels := actualModels
+  let mut visitedModels : NameHashSet := {}
+  while !pendingModels.isEmpty do
+    let current := pendingModels.back!
+    pendingModels := pendingModels.pop
+    if visitedModels.contains current then continue
+    visitedModels := visitedModels.insert current
+    if current == `Aeneas.Std.Option.ofResult then
+      throwError "Extracted execution depends on unsupported failure erasure: {current}"
+    if let some owner := env.getModuleIdxFor? current then
+      let moduleName := env.allImportedModuleNames[owner.toNat]!
+      if moduleName.getRoot == `Aeneas && !auditModules.contains owner then continue
+    let some info := env.find? current
+      | throwError "Missing execution dependency {current}"
+    pendingModels := pendingModels ++ info.type.getUsedConstants ++
+      ((info.value? (allowOpaque := true)).map (·.getUsedConstants)).getD #[]
   -- Sort only for reproducible diagnostics and dependency output. Coverage was
   -- established from complete sets above, independent of declaration order.
   required := required.qsort (fun a b => a.toString < b.toString)
