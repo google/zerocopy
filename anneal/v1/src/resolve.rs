@@ -1,6 +1,9 @@
-use std::{env, fs, path::PathBuf};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{Context, Result, anyhow, ensure};
 use cargo_metadata::{Metadata, MetadataCommand, Package, PackageName, Target, TargetKind};
 use clap::Parser;
 use sha2::{Digest, Sha256};
@@ -161,16 +164,75 @@ pub struct Roots {
     // E.g., `target/anneal/<hash>`.
     anneal_run_root: PathBuf,
     pub roots: Vec<AnnealTarget>,
+    lean_sdk_id: Option<String>,
 }
 
 impl Roots {
+    /// A compiler upgrade owns a fresh Lean leaf, never the previous outputs.
+    pub fn bind_lean_sdk(mut self, sdk: &crate::lean_sdk::LeanSdk) -> Self {
+        self.lean_sdk_id = Some(sdk.id().to_owned());
+        self
+    }
+
     pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
+        create_missing_private_run_directories(&self.anneal_run_root)?;
         let lock = DirLock::lock_exclusive(self.anneal_run_root.clone())?;
         Ok(LockedRoots { roots: self, anneal_run_root: lock })
     }
 
     pub fn cargo_target_dir(&self) -> PathBuf {
         self.anneal_global_root.join("cargo_target")
+    }
+}
+
+// The editor later protects the whole workspace path against another local
+// account. Create only missing build/run components with a private mode; leave
+// every pre-existing caller directory and its permissions untouched.
+pub(crate) fn create_missing_private_run_directories(path: &Path) -> Result<()> {
+    let mut missing = Vec::new();
+    let mut current = path;
+    loop {
+        match fs::symlink_metadata(current) {
+            Ok(_) => break,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                missing.push(current.to_path_buf());
+                current = current.parent().context("Anneal run root has no existing ancestor")?;
+            }
+            Err(error) => return Err(error.into()),
+        }
+    }
+    for directory in missing.into_iter().rev() {
+        create_private_run_component(&directory)?;
+    }
+    Ok(())
+}
+
+fn create_private_run_component(directory: &Path) -> Result<()> {
+    let mut builder = fs::DirBuilder::new();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::DirBuilderExt as _;
+        builder.mode(0o700);
+    }
+    match builder.create(directory) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+            // Another run-root lock may create a shared target/anneal parent
+            // after we observed it missing. Adopt only a physical directory;
+            // never chmod a caller-owned or concurrently created path.
+            let metadata = fs::symlink_metadata(directory).with_context(|| {
+                format!("Inspect concurrently created Anneal run directory {}", directory.display())
+            })?;
+            ensure!(
+                metadata.is_dir(),
+                "Concurrent Anneal run path is not a physical directory: {}",
+                directory.display()
+            );
+            Ok(())
+        }
+        Err(error) => Err(error).with_context(|| {
+            format!("Failed to create private Anneal run directory {}", directory.display())
+        }),
     }
 }
 
@@ -190,7 +252,9 @@ impl<'a> LockedRoots<'a> {
     }
 
     pub fn lean_root(&self) -> PathBuf {
-        self.anneal_run_root.path.join("lean")
+        self.anneal_run_root.path.join("lean").join(
+            self.roots.lean_sdk_id.as_deref().expect("Lean SDK selected before taking run lock"),
+        )
     }
 
     pub fn lean_generated_root(&self) -> PathBuf {
@@ -239,6 +303,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
         anneal_global_root,
         anneal_run_root,
         roots: Vec::new(),
+        lean_sdk_id: None,
     };
 
     for package in selected_packages {
@@ -475,4 +540,85 @@ fn check_selected_packages_in_workspace(metadata: &Metadata, packages: &[&Packag
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod private_run_tests {
+    use super::*;
+
+    #[cfg(unix)]
+    #[test]
+    fn shared_run_parent_race_accepts_only_a_physical_directory() {
+        use std::os::unix::fs::{PermissionsExt, symlink};
+
+        let temp = tempfile::tempdir().unwrap();
+        let shared = temp.path().join("target/anneal");
+        create_missing_private_run_directories(&shared).unwrap();
+        let mode = fs::symlink_metadata(&shared).unwrap().permissions().mode();
+        // Model another run-root creator winning between this caller's
+        // missing-path observation and its create attempt. The exact creator
+        // branch must adopt the physical shared directory unchanged.
+        create_private_run_component(&shared).unwrap();
+        assert_eq!(fs::symlink_metadata(&shared).unwrap().permissions().mode(), mode);
+        for run in [shared.join("first"), shared.join("second")] {
+            create_missing_private_run_directories(&run).unwrap();
+            assert!(fs::symlink_metadata(run).unwrap().is_dir());
+        }
+
+        let linked = temp.path().join("linked-anneal");
+        symlink(&shared, &linked).unwrap();
+        assert!(create_private_run_component(&linked).is_err());
+        let file = temp.path().join("not-a-directory");
+        fs::write(&file, b"inert fixture").unwrap();
+        assert!(create_private_run_component(&file).is_err());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn missing_run_directories_are_private_without_changing_existing_target() {
+        use std::os::unix::fs::PermissionsExt;
+
+        const CHILD: &str = "ANNEAL_RESOLVE_GROUP_UMASK_CHILD";
+        if std::env::var_os(CHILD).is_none() {
+            let output = std::process::Command::new(std::env::current_exe().unwrap())
+                .arg("missing_run_directories_are_private_without_changing_existing_target")
+                .arg("--test-threads=1")
+                .env(CHILD, "1")
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{}{}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            );
+            return;
+        }
+
+        unsafe extern "C" {
+            fn umask(mode: u32) -> u32;
+        }
+        // SAFETY: the filtered test runs alone in this child process.
+        let previous = unsafe { umask(0o002) };
+        let temp = tempfile::tempdir().unwrap();
+        let existing_target = temp.path().join("existing-target");
+        fs::create_dir(&existing_target).unwrap();
+        assert_eq!(fs::metadata(&existing_target).unwrap().permissions().mode() & 0o777, 0o775);
+        let run = existing_target.join("anneal/run");
+        create_missing_private_run_directories(&run).unwrap();
+        for path in [existing_target.join("anneal"), run.clone()] {
+            assert_eq!(fs::metadata(path).unwrap().permissions().mode() & 0o777, 0o700);
+        }
+        assert_eq!(fs::metadata(&existing_target).unwrap().permissions().mode() & 0o777, 0o775);
+
+        let fresh = temp.path().join("fresh-target/anneal/run");
+        create_missing_private_run_directories(&fresh).unwrap();
+        for path in
+            [temp.path().join("fresh-target"), temp.path().join("fresh-target/anneal"), fresh]
+        {
+            assert_eq!(fs::metadata(path).unwrap().permissions().mode() & 0o777, 0o700);
+        }
+        // SAFETY: restore this child's prior process-wide umask.
+        unsafe { umask(previous) };
+    }
 }
