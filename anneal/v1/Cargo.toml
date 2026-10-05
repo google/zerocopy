@@ -71,6 +71,9 @@ pathdiff = "0.2.3"
 toml = "0.8"
 tempfile = "3.27.0"
 
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = "0.2"
+
 [build-dependencies]
 sha2 = "0.10"
 toml = "0.8"
