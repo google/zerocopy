@@ -3,6 +3,7 @@ mod charon;
 mod diagnostics;
 mod errors;
 mod generate;
+mod lean_gateway;
 pub mod lean_sdk;
 mod parse;
 mod resolve;
@@ -33,6 +34,8 @@ enum Commands {
     Expand(ExpandArgs),
     /// Generate Lean workspace and print paths without building
     Generate(resolve::Args),
+    /// Operate on an existing workspace through its fixed Lean SDK.
+    Lean(lean_gateway::Args),
     #[command(hide = true)]
     ToolchainPath,
 }
@@ -80,25 +83,18 @@ fn main() -> anyhow::Result<()> {
             })?;
         }
         Commands::Generate(resolve_args) => {
-            prepare_and_run(&resolve_args, |locked_roots, packages| {
-                aeneas::generate_lean_workspace(locked_roots, packages)?;
+            prepare_and_run(&resolve_args, |locked_roots, _| {
                 let lean_root = locked_roots.lean_root();
-                let toolchain = setup::Toolchain::resolve()?;
                 println!("Lean workspace generated at: {}", lean_root.display());
-                println!();
-                println!("To manually build and experiment:");
-                println!("  1. cd {}", lean_root.display());
-                println!(
-                    "  2. LAKE_CACHE_DIR={} {} --keep-toolchain build",
-                    toolchain.cache_dir().display(),
-                    toolchain.lean_bin().join("lake").display()
-                );
+                println!("{}", lean_gateway::build_guidance(&lean_root)?);
+                println!("Run `cargo anneal lean --help` for workspace commands.");
                 Ok(())
             })?;
         }
         Commands::Setup(args) => {
             setup::run_setup(setup::SetupArgs { local_archive: args.local_archive })?;
         }
+        Commands::Lean(args) => lean_gateway::run(args)?,
         Commands::ToolchainPath => {
             let toolchain = setup::Toolchain::resolve()?;
             println!("{}", toolchain.bin_dir().display());
@@ -172,7 +168,12 @@ where
         return Ok(None);
     }
 
+    let sdk = setup::Toolchain::resolve()?.lean_sdk()?;
+    let roots = roots.bind_lean_sdk(&sdk);
     let locked_roots = roots.lock_run_root()?;
+    let lean_root = locked_roots.lean_root();
+    aeneas::admit_private_anneal_lock_directory(lean_root.parent().unwrap())?;
+    let _lean_writer = lean_sdk::Workspace::lock_root(&lean_root)?;
     validate::validate_artifacts(
         &packages,
         resolve_args.allow_sorry,
