@@ -236,6 +236,10 @@
           pname = "aeneas-unpacked";
           version = "1.0.0";
 
+          # This is the first output containing the release Mach-O files.
+          # Preserve their load commands and signatures until native staging.
+          dontFixup = pkgs.stdenv.isDarwin;
+
           src = self.packages.${system}.aeneas-download;
 
           nativeBuildInputs = with pkgs; [
@@ -391,6 +395,10 @@
           pname = "aeneas-compiled";
           version = "0.1.0";
 
+          # Preserve upstream Darwin signatures and native producer bytes;
+          # relocation/signing happens explicitly in fresh omnibus staging.
+          dontFixup = pkgs.stdenv.isDarwin;
+
           src = pkgs.runCommand "empty-src" {} "mkdir $out";
 
           leanToolchain = self.packages.${system}.lean-toolchain;
@@ -494,6 +502,8 @@
             "cp $TMPDIR/lean-sdk-producer.json $out/lean-sdk-producer.json"
             "mkdir -p $out/bin"
             "cp \$(find $aeneasUnpacked -maxdepth 1 -type f -executable) $out/bin/"
+            # Aeneas resolves release libraries relative to its executable.
+            "if [ -d $aeneasUnpacked/libs ]; then cp -a $aeneasUnpacked/libs $out/bin/libs; fi"
           ];
         };
 
@@ -553,6 +563,7 @@
             "  patchelf --remove-rpath \"\$consumed\""
             "done"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+            "python3 ${./prepare-native-tools.py} --root $TMPDIR/dist_staging --platform ${system}"
             # Normalize the producer's install IDs/absolute native references in
             # new staging only. Never modify cached producer inputs in place.
             "python3 ${./prepare-lean-sdk.py} relocate-darwin --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json"
@@ -659,6 +670,13 @@
                 exit 1
               fi
             done
+
+            ${pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+              if ! grep -Fxq 'aeneas/bin/libs/libgmp.10.dylib' "$TMPDIR/archive/entries"; then
+                echo "ERROR: archive is missing Aeneas's upstream GMP provider" >&2
+                exit 1
+              fi
+            ''}
 
             if ! grep -Eq '^aeneas/packages/mathlib/\.lake/build/lib/lean/Mathlib/.+\.olean$' "$TMPDIR/archive/entries"; then
               echo "ERROR: archive is missing Mathlib .olean cache artifacts" >&2
