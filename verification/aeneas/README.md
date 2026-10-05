@@ -1290,3 +1290,14 @@ checking its signature; no formatting proposition or behavior is assumed. A
 change to a proposition or a function fails the audit. The PhantomData model
 likewise records its zero runtime fields, with a Lean shape theorem that fails
 if extraction adds fields; it makes no ownership or provenance claim.
+
+## Numerical cast composition
+
+The inline checks in `layout/cast_from.rs` cover numerical cast composition.
+They select a production `CastPlan`, require the checked metadata calculation
+to succeed, compare it with the actual unchecked conversion, and compare
+complete sizes using the independent remainder-based reference. Metadata
+representability follows from a representable complete source size; it is not
+an assumed harness precondition. The proof covers all three accepted plan
+variants. Rejected plans carry no completeness promise, and the typed pointer
+adapter's provenance and `KnownLayout` obligations remain outside this proof.
