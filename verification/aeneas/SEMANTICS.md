@@ -99,7 +99,9 @@ The `usize` size used to calculate pointer width is modeled separately as
 the selected word width divided by eight. The extracted scalar model
 supports 32- and 64-bit words. `NonZero::new` is modeled for the `Usize`
 instantiations actually extracted: zero returns `None`, and a nonzero input
-returns that input without changing its bits. `NonZero::get` returns those
+returns that input without changing its bits. Other type instantiations return
+the forbidden-execution marker because their model is unsupported; this makes
+no claim about their actual Rust behavior. `NonZero::get` returns those
 bits. Lean's representation permits zero in the external wrapper, so contracts
 using mathematical models reject that zero representation through the native
 NonZero decoder. Its mathematical output carries positivity and machine bounds.
@@ -107,6 +109,35 @@ The rounding decoder accepts every positive representable word and decomposes
 it into a power-of-two alignment and bounded phase; structural layout models
 reuse that shared pair. This admission law has an ordinary Lean proof and does
 not change the extracted raw implementation.
+
+The extracted cast metadata helper uses Rust's unsafe `usize::unchecked_mul`
+and `usize::unchecked_add`. Their handwritten external models use Aeneas's
+checked multiplication and addition on fitting inputs, and return `.fail .undef`
+on overflow. The correspondence premise is restricted
+to non-overflowing inputs: each call returns the exact natural-number result.
+No correspondence is claimed for overflowing inputs, where Rust's unchecked
+operations have undefined behavior. The arithmetic contracts prove both
+intermediate results fit.
+
+The downstream `forbiddenExecution` marker uses Aeneas's existing `.undef`
+failure tag. The backend also uses that tag for unsupported modeling, so it
+means that no execution claim is permitted, not that every tagged case is Rust
+UB. Both total and partial contracts reject it, and sequencing propagates it
+even when a caller discards a result. CI independently checks the complete
+unchecked-arithmetic interpretations, including their overflow tags, and rejects
+downstream execution dependencies on the backend's failure-erasing
+`Option.ofResult` adapter, including uses hidden behind local helpers. The audit
+stops at the pinned backend's implementations: its checked integer operations
+use that adapter internally to turn arithmetic overflow into Rust's `None`.
+These checks run against both golden and live models. They do not prove arbitrary
+external models faithful to Rust; those models and the translator remain part
+of the trusted boundary.
+
+Panic catching, panic-tolerant contracts and thread spawning are not modeled.
+Adding them requires preserving forbidden executions independently of which
+defined outcomes a caller accepts. A future spawn contract must also establish
+safety of the child execution, including after the parent returns or detaches
+the child. A successful parent result alone cannot establish that property.
 
 The remaining trusted boundary is the pinned Rust-to-LLBC-to-Lean translation,
 its builtin arithmetic and control-flow models, the external primitive
