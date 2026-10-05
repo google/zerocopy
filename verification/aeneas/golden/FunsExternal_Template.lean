@@ -75,3 +75,19 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
+/-- [core::num::{usize}::unchecked_add]:
+    Source: '/rustc/library/core/src/num/uint_macros.rs', lines 1031:8-1031:66
+    Name pattern: [core::num::{usize}::unchecked_add]
+    Visibility: public -/
+@[rust_fun "core::num::{usize}::unchecked_add"]
+axiom core.num.Usize.unchecked_add
+  : Std.Usize → Std.Usize → Result Std.Usize
+
+/-- [core::num::{usize}::unchecked_mul]:
+    Source: '/rustc/library/core/src/num/uint_macros.rs', lines 1419:8-1419:66
+    Name pattern: [core::num::{usize}::unchecked_mul]
+    Visibility: public -/
+@[rust_fun "core::num::{usize}::unchecked_mul"]
+axiom core.num.Usize.unchecked_mul
+  : Std.Usize → Std.Usize → Result Std.Usize
+
