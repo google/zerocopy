@@ -114,7 +114,12 @@ checked multiplication and addition. The correspondence premise is restricted
 to non-overflowing inputs: each call returns the exact natural-number result.
 No correspondence is claimed for overflowing inputs, where Rust's unchecked
 operations have undefined behavior. The arithmetic contracts prove both
-intermediate results fit.
+intermediate results fit; `cast_from::checks::assert_cast_preserves_size`
+derives those bounds from an accepted plan and a representable complete source
+size, rather than accepting them as harness preconditions. The root also checks
+size preservation against the independent remainder-based reference. It
+covers the numerical composition, not pointer provenance, reference validity,
+or the `KnownLayout` implementation obligations at the pointer boundary.
 
 The remaining trusted boundary is the pinned Rust-to-LLBC-to-Lean translation,
 its builtin arithmetic and control-flow models, the external primitive
