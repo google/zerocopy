@@ -152,6 +152,14 @@ spec cast_metadata_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.cast_metadata_spec for Zerocopy.layout.cast_from.CastPlan.cast_metadata with 2
 
+check_model_inputs Zerocopy.layout.cast_from.checks.assert_cast_preserves_size with 0 type parameters
+aeneas_spec_begin
+spec cast_composition_check_spec
+  for @Zerocopy.layout.cast_from.checks.assert_cast_preserves_size with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_composition_check_spec for Zerocopy.layout.cast_from.checks.assert_cast_preserves_size with 7
+
 check_model_inputs Zerocopy.layout.composition_checks.check_extend with 0 type parameters
 aeneas_spec_begin
 spec composition_extend_checks_spec
