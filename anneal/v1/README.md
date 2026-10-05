@@ -221,3 +221,14 @@ cargo anneal verify
 - **`cargo anneal verify`**: Verifies the target crate.
 - **`cargo anneal expand`**: Outputs the generated Lean code without running full verification (useful for debugging).
 - **`cargo anneal generate`**: Generates the `.lean` files on disk, allowing you to iterate on proofs using standard Lean tooling before copying them back to Rust source.
+- **`cargo anneal lean --workspace PATH build|check|serve|editor`**: Uses the generated workspace's fixed SDK and private incremental outputs. See [editing a bound Lean workspace](docs/EDITOR.md) for editor setup and dependency refresh behavior.
+
+SDK-bound workspaces require a toolchain archive containing `lean-sdk`.
+Archives published before this format are rejected rather than modified in
+place. When developing this revision before its toolchain release, build the
+updated archive with Nix and install it with
+`cargo anneal setup --local-archive /absolute/anneal-exocrate.tar.zst`.
+The release workflow must publish that archive and update the pinned archive
+URLs and hashes before normal remote setup can use this revision. Generate a
+fresh workspace after an SDK upgrade; its private outputs and server cannot
+be reused with a different SDK.
