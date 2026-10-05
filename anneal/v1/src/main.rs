@@ -5,6 +5,7 @@ mod errors;
 mod generate;
 mod lean_gateway;
 pub mod lean_sdk;
+mod lean_server;
 mod parse;
 mod resolve;
 mod scanner;
