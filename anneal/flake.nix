@@ -407,6 +407,8 @@
             "export HOME=$TMPDIR"
             "export PATH=\"$leanToolchain/bin:\$PATH\""
             "export LEAN_SYSROOT=\"$leanToolchain\""
+            # The SDK exposes AeneasMeta's native plugin on every producer run.
+            "unset CI"
             # Let sandboxed Lean executables find libleanshared.so.
             "export LD_LIBRARY_PATH=\"$leanToolchain/lib:$leanToolchain/lib/lean:\$LD_LIBRARY_PATH\""
             # The cache was fetched in the FOD; do not fetch it again here.
@@ -479,12 +481,17 @@
             "  cat /tmp/non-relocatable-traces >&2"
             "  exit 1"
             "fi"
+            # Capture the trusted producer's expected exports/families before
+            # pruning or candidate staging. Required split families follow the
+            # RC2 source-module profile, never the surviving candidate files.
+            "python3 ${./prepare-lean-sdk.py} catalog --runtime \"$leanToolchain\" --project-root . --packages-root ../../packages --platform ${system} --pruner ${./prune-lake-cache.py} --output $TMPDIR/lean-sdk-producer.json"
             # Prune unused Lean modules and bulky upstream metadata.
             "python3 ${./prune-lake-cache.py} --project-root . --packages-root ../../packages"
             "cd ../.."
             "mkdir -p $out/backends $out/packages"
             "cp -r backends/lean $out/backends/"
             "cp -r packages/* $out/packages/"
+            "cp $TMPDIR/lean-sdk-producer.json $out/lean-sdk-producer.json"
             "mkdir -p $out/bin"
             "cp \$(find $aeneasUnpacked -maxdepth 1 -type f -executable) $out/bin/"
           ];
@@ -499,9 +506,11 @@
 
           nativeBuildInputs = with pkgs; [
             gnutar
+            python3
           ] ++ pkgs.lib.optionals stdenv.isLinux [
             patchelf
             file
+            binutils
           ];
 
           aeneasBuild = self.packages.${system}.aeneas-compiled;
@@ -529,10 +538,24 @@
             "    if patchelf --print-interpreter \"\$file\" >/dev/null 2>&1; then"
             "      patchelf --set-interpreter ${linuxDynamicLinker} \"\$file\" || true"
             "    fi"
-            "    patchelf --set-rpath \"\" \"\$file\" || true"
+            "    patchelf --remove-rpath \"\$file\" || true"
             "    strip \"\$file\" || true"
             "  fi"
             "done"
+            # Relocation failure of a consumed root is fatal. Unused upstream
+            # helpers may have an unrelated architecture, but publisher closure
+            # validation below rejects residual store/interpreter references in
+            # every native image reachable from these roots.
+            "for consumed in $TMPDIR/dist_staging/lean/bin/lean $TMPDIR/dist_staging/lean/bin/lake $TMPDIR/dist_staging/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.so; do"
+            "  if patchelf --print-interpreter \"\$consumed\" >/dev/null 2>&1; then"
+            "    patchelf --set-interpreter ${linuxDynamicLinker} \"\$consumed\""
+            "  fi"
+            "  patchelf --remove-rpath \"\$consumed\""
+            "done"
+          ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+            # Normalize the producer's install IDs/absolute native references in
+            # new staging only. Never modify cached producer inputs in place.
+            "python3 ${./prepare-lean-sdk.py} relocate-darwin --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json"
           ] ++ [
             "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
             "if find $TMPDIR/dist_staging -type f -name \"*.trace\" -exec grep -EIl \"\$TRACE_ABS_RE\" {} + | tee /tmp/non-relocatable-staged-traces | grep -q .; then"
@@ -547,6 +570,12 @@
             # workspaces can use `lake --old` against the installed archive
             # without setup-time mtime repair.
             "find $TMPDIR/dist_staging/aeneas -type f \\( -name \"*.lean\" -o -name \"lakefile.lean\" -o -name \"lakefile.toml\" -o -name \"lake-manifest.json\" -o -name \"lean-toolchain\" \\) -exec touch -h -d \"1970-01-01 00:00:00\" {} +"
+            # Large inputs stay in their coherent archive locations. The thin
+            # SDK copies only Lean/Lake launchers and references other consumed
+            # files through relative links. Pin native bytes after the explicit
+            # trusted ELF relocation above, rather than claiming pre/post hashes
+            # are equal. Producer module/source expectations remain enforced.
+            "python3 ${./prepare-lean-sdk.py} assemble --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json --allow-native-relocation"
             "chmod -R a-w $TMPDIR/dist_staging"
             "cd $TMPDIR/dist_staging"
             "tar -cf $out *"
@@ -601,6 +630,7 @@
             cat > "$TMPDIR/archive/expected-top-level" <<EOF
             aeneas
             lean
+            lean-sdk
             rust
             EOF
             if ! diff -u "$TMPDIR/archive/expected-top-level" "$TMPDIR/archive/top-level"; then
@@ -617,6 +647,11 @@
               aeneas/packages/mathlib/lake-manifest.json \
               aeneas/packages/mathlib/.lake/config/mathlib/lakefile.olean \
               lean/bin/lean \
+              lean-sdk/bin/lean \
+              lean-sdk/bin/lake \
+              lean-sdk/sdk.json \
+              lean-sdk/modules.json \
+              lean-sdk/publisher-catalog.json \
               rust/bin/cargo \
               rust/bin/rustc; do
               if ! grep -Fxq "$path" "$TMPDIR/archive/entries"; then
