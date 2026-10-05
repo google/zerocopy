@@ -316,6 +316,58 @@ spec trailing_arithmetic_check_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.trailing_arithmetic_check_spec for Zerocopy.layout.tail_checks.trailing_arithmetic_check with 5
 
+check_model_inputs Zerocopy.pointer_metadata_unit_from_elem_count with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_unit_from_elem_count_spec
+  for @Zerocopy.pointer_metadata_unit_from_elem_count with 0 type parameters
+  ensures(raw) result => result = ()
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_unit_from_elem_count_spec for Zerocopy.pointer_metadata_unit_from_elem_count with 1
+
+check_model_inputs Zerocopy.pointer_metadata_unit_to_elem_count with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_unit_to_elem_count_spec
+  for @Zerocopy.pointer_metadata_unit_to_elem_count with 0 type parameters
+  ensures(raw) result => result.val = 0
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_unit_to_elem_count_spec for Zerocopy.pointer_metadata_unit_to_elem_count with 0
+
+check_model_inputs Zerocopy.pointer_metadata_unit_size_for_metadata with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_unit_size_for_metadata_spec
+  for @Zerocopy.pointer_metadata_unit_size_for_metadata with 0 type parameters
+  ensures(raw) result => result = match runtime_layout.size_info with
+    | .Sized size => some size
+    | .SliceDst _ => none
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_unit_size_for_metadata_spec for Zerocopy.pointer_metadata_unit_size_for_metadata with 1
+
+check_model_inputs Zerocopy.pointer_metadata_usize_from_elem_count with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_usize_from_elem_count_spec
+  for @Zerocopy.pointer_metadata_usize_from_elem_count with 0 type parameters
+  ensures(raw) result => result = elems
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_usize_from_elem_count_spec for Zerocopy.pointer_metadata_usize_from_elem_count with 1
+
+check_model_inputs Zerocopy.pointer_metadata_usize_to_elem_count with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_usize_to_elem_count_spec
+  for @Zerocopy.pointer_metadata_usize_to_elem_count with 0 type parameters
+  ensures(raw) result => result = metadata
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_usize_to_elem_count_spec for Zerocopy.pointer_metadata_usize_to_elem_count with 1
+
+check_model_inputs Zerocopy.pointer_metadata_usize_size_for_metadata with 0 type parameters
+aeneas_spec_begin
+spec pointer_metadata_usize_size_for_metadata_spec
+  for @Zerocopy.pointer_metadata_usize_size_for_metadata with 0 type parameters
+  ensures(raw) result => result.map UScalar.val = match runtime_layout.size_info with
+    | .Sized _ => none
+    | .SliceDst tail => (trailingFormula tail).checkedSize Usize.max metadata.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.pointer_metadata_usize_size_for_metadata_spec for Zerocopy.pointer_metadata_usize_size_for_metadata with 2
+
 check_model_inputs Zerocopy.util.bytewrite.exact with 0 type parameters
 aeneas_spec_begin
 spec write_exact_spec
