@@ -1998,6 +1998,12 @@ impl DstLayout {
 #[cfg_attr(kani, kani::ensures(|&result| {
     metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
 }))]
+///
+/// ```aeneas
+/// spec add_scaled_metadata_spec
+///   requires(raw) fits : base.val + metadata.val * multiple.val ≤ Usize.max
+///   ensures(raw) result => result.val = base.val + metadata.val * multiple.val
+/// ```
 unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {
     // The call-site safety argument establishes that both operations are
     // representable for valid source metadata. This harness verifies the
