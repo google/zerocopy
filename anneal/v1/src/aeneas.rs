@@ -14,10 +14,8 @@ use std::{
     ffi::OsString,
     fmt::Write,
     fs,
-    io::{BufRead, BufReader},
     path::{Path, PathBuf},
     process::Stdio,
-    sync::{Arc, Mutex},
 };
 
 use anyhow::{Context, Result, bail, ensure};
@@ -530,61 +528,22 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     cmd.stderr(Stdio::piped());
 
     let start = std::time::Instant::now();
-    let mut child = cmd.spawn().context("Failed to spawn lake")?;
-
-    // Capture stderr in background
-    let stderr_buffer = Arc::new(Mutex::new(Vec::new()));
-    let stderr_clone = stderr_buffer.clone();
-    let stderr_handle = child.stderr.take().map(|stderr| {
-        std::thread::spawn(move || {
-            let reader = BufReader::new(stderr);
-            for line in reader.lines().map_while(Result::ok) {
-                stderr_clone.lock().unwrap().push(line);
-            }
-        })
-    });
-
-    // UI Spinner
     let pb = ProgressBar::new_spinner();
     pb.set_style(ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap());
     pb.enable_steady_tick(std::time::Duration::from_millis(100));
     pb.set_message("Building Lean dependencies...");
-
-    // Capture stdout in background (while ticking progress bar)
-    let stdout_buffer = Arc::new(Mutex::new(Vec::new()));
-    let stdout_clone = stdout_buffer.clone();
-    let pb_clone = pb.clone();
-
-    let stdout_handle = child.stdout.take().map(|stdout| {
-        std::thread::spawn(move || {
-            let reader = BufReader::new(stdout);
-            for line in reader.lines().map_while(Result::ok) {
-                stdout_clone.lock().unwrap().push(line);
-                pb_clone.tick();
-            }
-        })
-    });
-
-    let status = child.wait().context("Failed to wait for lake")?;
+    // Command::output drains both streams while waiting and propagates capture
+    // failures. A reader error or panic must not become a successful build.
+    let output = cmd.output();
     pb.finish_and_clear();
+    let output = output.context("Failed to capture lake output")?;
     log::trace!("'lake build' took {:.2?}", start.elapsed());
-
-    // Join the threads to ensure we have all logs
-    if let Some(handle) = stderr_handle
-        && let Err(e) = handle.join()
-    {
-        log::error!("Stderr reading thread panicked: {:?}", e);
-    }
-    if let Some(handle) = stdout_handle
-        && let Err(e) = handle.join()
-    {
-        log::error!("Stdout reading thread panicked: {:?}", e);
-    }
-
-    if !status.success() {
-        let stderr = stderr_buffer.lock().unwrap().join("\n");
-        let stdout = stdout_buffer.lock().unwrap().join("\n");
-        bail!("Lean build failed\nSTDOUT:\n{}\nSTDERR:\n{}", stdout, stderr);
+    if !output.status.success() {
+        bail!(
+            "Lean build failed\nSTDOUT:\n{}\nSTDERR:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
     }
 
     // 3. Run Diagnostics
@@ -607,32 +566,17 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
 
         let output = cmd.output().context("Failed to run lean compiler")?;
 
-        let output_str = String::from_utf8_lossy(&output.stdout);
+        let (diags, failed) = diagnostic_output(&output)?;
+        has_errors |= failed;
         let specs_abs_path = lean_root.join(&specs_rel_path);
-        let specs_source = std::fs::read_to_string(&specs_abs_path).unwrap_or_default();
-
-        let mut diags = Vec::new();
-        for line in output_str.lines() {
-            let line = line.trim();
-            if line.is_empty() {
-                continue;
-            }
-            match serde_json::from_str::<NativeLeanDiagnostic>(line) {
-                Ok(diag) => diags.push(diag),
-                Err(e) => {
-                    log::warn!("Failed to parse JSON from lean diagnostic: {e}");
-                    log::debug!("Raw line:\n{line}");
-                }
-            }
-        }
-
-        if !output.status.success() && diags.is_empty() {
+        let specs_source = std::fs::read_to_string(&specs_abs_path)
+            .with_context(|| format!("Failed to read {}", specs_abs_path.display()))?;
+        if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             if !stderr.trim().is_empty() {
                 eprintln!("Lean compiler failed or produced stderr for {slug}.");
                 eprintln!("STDERR:\n{stderr}");
             }
-            has_errors = true;
         }
 
         // Load Source Map
@@ -763,6 +707,25 @@ fn prepend_paths_to_env_var(var_name: &str, new_paths: &[PathBuf]) -> Result<OsS
         paths.extend(std::env::split_paths(&existing));
     }
     std::env::join_paths(paths).with_context(|| format!("Failed to prepend paths to {var_name}"))
+}
+
+/// Process status and structured error diagnostics are independent failure
+/// witnesses. Informational output cannot make a failed compiler successful.
+fn diagnostic_output(output: &std::process::Output) -> Result<(Vec<NativeLeanDiagnostic>, bool)> {
+    let stdout = std::str::from_utf8(&output.stdout).context("Lean output was not UTF-8")?;
+    let mut failed = !output.status.success();
+    let mut diagnostics = Vec::new();
+    for line in stdout.lines().filter(|line| !line.trim().is_empty()) {
+        let diagnostic: NativeLeanDiagnostic =
+            serde_json::from_str(line).context("Lean emitted malformed diagnostic JSON")?;
+        ensure!(
+            matches!(diagnostic.severity.as_str(), "error" | "warning" | "information"),
+            "Lean emitted an unknown diagnostic severity"
+        );
+        failed |= diagnostic.severity == "error";
+        diagnostics.push(diagnostic);
+    }
+    Ok((diagnostics, failed))
 }
 
 /// Resolves a Lean diagnostic to a Rust source location.
@@ -983,6 +946,29 @@ mod tests {
             column_end: 0,
             message: msg.into(),
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn compiler_failure_cannot_be_hidden_by_informational_output() {
+        let message = r#"{"fileName":"Specs.lean","data":"a theorem was printed","severity":"information","pos":{"line":1,"column":0},"endPos":null}"#;
+        let output = std::process::Command::new("/bin/sh")
+            .args(["-c", "printf '%s\\n' \"$1\"; exit 1", "lean-result-test", message])
+            .output()
+            .unwrap();
+        let (diagnostics, failed) = diagnostic_output(&output).unwrap();
+        assert_eq!(diagnostics.len(), 1);
+        assert!(failed, "a failed compiler is not verification success");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn malformed_compiler_output_cannot_be_ignored() {
+        let output = std::process::Command::new("/bin/sh")
+            .args(["-c", "printf 'not a Lean diagnostic\\n'"])
+            .output()
+            .unwrap();
+        assert!(diagnostic_output(&output).is_err());
     }
 
     #[test]
