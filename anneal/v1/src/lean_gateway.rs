@@ -39,11 +39,20 @@ enum Operation {
     },
     /// Return Lake setup metadata after building saved local imports.
     SetupFile { file: PathBuf },
+    /// Serve through stock Lake with local dependency freshness coordination.
+    Serve,
 }
 
 pub fn run(args: Args) -> Result<()> {
+    if matches!(args.operation, Operation::Serve) {
+        return crate::lean_server::run(&args.workspace);
+    }
     let workspace = Workspace::from_root(&args.workspace)?;
-    let _writer = workspace.writer_lock()?;
+    let _writer = if matches!(args.operation, Operation::Serve) {
+        None
+    } else {
+        Some(workspace.writer_lock()?)
+    };
     match args.operation {
         Operation::Build { targets } => {
             let preparation = workspace.prepare_local_outputs()?;
@@ -80,6 +89,7 @@ pub fn run(args: Args) -> Result<()> {
                 &mut std::io::stderr(),
             )
         }
+        Operation::Serve => unreachable!("Serve was dispatched before workspace admission"),
     }
 }
 

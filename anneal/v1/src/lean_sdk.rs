@@ -696,11 +696,47 @@ impl<'a> Workspace<'a> {
         Ok(workspace)
     }
 
+    /// Startup admission requires the stable sibling lock produced by normal
+    /// generation before reading any replaceable workspace state. It never
+    /// creates a lock or name-policy probe for an arbitrary supplied root.
+    /// Direct API-created workspaces must first obtain their normal writer lock.
+    /// Ordinary constructors remain usable by an already-fenced writer.
+    pub(crate) fn try_from_root_for_startup(
+        root: &Path,
+    ) -> Result<Option<(Workspace<'static>, fs::File)>> {
+        // Resolve parent aliases, but reject a linked leaf rather than locking
+        // one name and then admitting the target of a different name.
+        let root = physical_workspace_path(root)?;
+        check_workspace_parent_namespace(&root)?;
+        let path = workspace_lock_path(&root, false)?;
+        let (file, path) = open_workspace_lock_path(path, false).context(
+            "Startup requires an existing stable workspace writer lock; generate the workspace first",
+        )?;
+        match fs2::FileExt::try_lock_exclusive(&file) {
+            Ok(()) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => return Ok(None),
+            Err(error) => return Err(error.into()),
+        }
+        check_workspace_lock_entry(&file, &path)?;
+        advance_writer_witness(&file).context("Recording startup writer acquisition")?;
+        check_workspace_lock_entry(&file, &path)?;
+        let resolved = fs::canonicalize(&root).context("Unknown Lean workspace")?;
+        // Filesystem-equivalent root spellings must also select this exact
+        // sibling inode. No second lock is created to paper over a mismatch.
+        check_workspace_lock_entry(&file, &workspace_lock_path(&resolved, false)?)?;
+        let workspace = Self::from_root(&resolved)?;
+        check_workspace_lock_entry(&file, &path)?;
+        check_workspace_lock_entry(&file, &workspace_lock_path(workspace.root(), false)?)?;
+        Ok(Some((workspace, file)))
+    }
+
     /// The lock is a sibling of the replaceable workspace directory. All Anneal
     /// source/output writers use it; locks do not control direct user edits.
     pub fn lock_root(root: &Path) -> Result<fs::File> {
         let (file, path) = open_workspace_lock(root, false)?;
         fs2::FileExt::lock_exclusive(&file)?;
+        check_workspace_lock_entry(&file, &path)?;
+        advance_writer_witness(&file).context("Recording workspace writer acquisition")?;
         check_workspace_lock_entry(&file, &path)?;
         Ok(file)
     }
@@ -717,6 +753,17 @@ impl<'a> Workspace<'a> {
 
     pub fn try_shared_lock(&self) -> Result<Option<fs::File>> {
         self.try_lock(true)
+    }
+
+    /// Read the cooperative writer history while the caller retains this exact
+    /// workspace's shared or exclusive fence. Older writers and direct edits
+    /// which do not advance the witness are outside this protocol.
+    pub(crate) fn writer_witness(&self, fence: &fs::File) -> Result<u64> {
+        let path = workspace_lock_path(&self.root, false)?;
+        check_workspace_lock_entry(fence, &path)?;
+        let witness = read_writer_witness(fence)?;
+        check_workspace_lock_entry(fence, &path)?;
+        Ok(witness)
     }
 
     /// One mutable-document coordinator per workspace. This separate lease
@@ -741,6 +788,11 @@ impl<'a> Workspace<'a> {
         match result {
             Ok(()) => {
                 check_workspace_lock_entry(&file, &path)?;
+                if !shared {
+                    advance_writer_witness(&file)
+                        .context("Recording workspace writer acquisition")?;
+                    check_workspace_lock_entry(&file, &path)?;
+                }
                 self.admit()?;
                 Ok(Some(file))
             }
@@ -1538,14 +1590,13 @@ fn check_launcher(path: &Path, installation: &Path) -> Result<()> {
 
 fn open_workspace_lock(root: &Path, server: bool) -> Result<(fs::File, PathBuf)> {
     let root = new_physical_path(root)?;
-    let mut leaf = root.file_name().context("Workspace has no leaf")?.to_os_string();
-    // Writer filenames end in `.lock`; server leases never do. Appending
-    // `.server.lock` would alias the writer lock of a `foo.server` sibling.
-    leaf.push(if server { ".server-lease" } else { ".lock" });
-    let path = root.with_file_name(leaf);
+    open_workspace_lock_path(workspace_lock_path(&root, server)?, true)
+}
+
+fn open_workspace_lock_path(path: PathBuf, create: bool) -> Result<(fs::File, PathBuf)> {
     reject_links(&path)?;
     let mut options = OpenOptions::new();
-    options.read(true).write(true).create(true).truncate(false);
+    options.read(true).write(true).create(create).truncate(false);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt as _;
@@ -1562,6 +1613,70 @@ fn open_workspace_lock(root: &Path, server: bool) -> Result<(fs::File, PathBuf)>
     let file = options.open(&path)?;
     check_workspace_lock_entry(&file, &path)?;
     Ok((file, path))
+}
+
+// The caller supplies a physical parent. Computing a sibling name must not
+// perform the name-policy probes needed only by lock-creating producers.
+fn workspace_lock_path(root: &Path, server: bool) -> Result<PathBuf> {
+    let mut leaf = root.file_name().context("Workspace has no leaf")?.to_os_string();
+    // Writer filenames end in `.lock`; server leases never do. Appending
+    // `.server.lock` would alias the writer lock of a `foo.server` sibling.
+    leaf.push(if server { ".server-lease" } else { ".lock" });
+    Ok(root.with_file_name(leaf))
+}
+
+// The stable sibling lock is never truncated or replaced. A legacy empty
+// lock means zero; every writer stores a positive checked sequence and its
+// complement, then syncs before returning any mutation capability. A failed
+// acquisition can conservatively change history without changing outputs.
+// Interrupted prefix writes are either the old/new valid witness or malformed;
+// no writer effects precede the complete synced record. This is cooperative
+// synchronization, not authentication or a guarantee about older binaries.
+pub(crate) fn read_writer_witness(file: &fs::File) -> Result<u64> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::FileExt as _;
+        match file.metadata()?.len() {
+            0 => Ok(0),
+            16 => {
+                let mut bytes = [0; 16];
+                file.read_exact_at(&mut bytes, 0).context("Reading workspace writer witness")?;
+                ensure!(file.metadata()?.len() == 16, "Workspace writer witness length changed");
+                let sequence = u64::from_le_bytes(bytes[..8].try_into().unwrap());
+                let complement = u64::from_le_bytes(bytes[8..].try_into().unwrap());
+                ensure!(sequence == !complement, "Malformed workspace writer witness");
+                Ok(sequence)
+            }
+            _ => bail!("Malformed workspace writer witness length"),
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = file;
+        bail!("Unsupported positional workspace writer witness")
+    }
+}
+
+pub(crate) fn advance_writer_witness(file: &fs::File) -> Result<u64> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::FileExt as _;
+        let sequence = read_writer_witness(file)?
+            .checked_add(1)
+            .context("Workspace writer witness exhausted")?;
+        let mut bytes = [0; 16];
+        bytes[..8].copy_from_slice(&sequence.to_le_bytes());
+        bytes[8..].copy_from_slice(&(!sequence).to_le_bytes());
+        file.write_all_at(&bytes, 0).context("Writing workspace writer witness")?;
+        file.sync_all().context("Syncing workspace writer witness before writer effects")?;
+        ensure!(read_writer_witness(file)? == sequence, "Workspace writer witness changed");
+        Ok(sequence)
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = file;
+        bail!("Unsupported positional workspace writer witness")
+    }
 }
 
 fn check_workspace_lock_entry(file: &fs::File, path: &Path) -> Result<()> {
@@ -4339,7 +4454,24 @@ pub(crate) mod tests {
     #[cfg(unix)]
     #[test]
     fn unicode_workspace_leases_reuse_precreated_locks_under_read_only_parent() {
-        use std::os::unix::fs::{DirBuilderExt as _, OpenOptionsExt as _, PermissionsExt as _};
+        use std::os::unix::fs::{
+            DirBuilderExt as _, MetadataExt as _, OpenOptionsExt as _, PermissionsExt as _,
+        };
+
+        fn lock_snapshot(path: &Path, server: bool) -> (Vec<u8>, Vec<u8>, u64) {
+            let file = fs::File::open(path).unwrap();
+            fs2::FileExt::lock_shared(&file).unwrap();
+            let metadata = file.metadata().unwrap();
+            let mut identity = if server {
+                modification_identity(&metadata).unwrap()
+            } else {
+                physical_input_identity(&metadata).unwrap()
+            };
+            identity.extend_from_slice(&metadata.uid().to_le_bytes());
+            identity.extend_from_slice(&metadata.gid().to_le_bytes());
+            identity.extend_from_slice(&metadata.mode().to_le_bytes());
+            (identity, fs::read(path).unwrap(), read_writer_witness(&file).unwrap())
+        }
 
         // Other unit tests launch subprocesses concurrently. Keep this immediate
         // lock-release oracle in a process with no unrelated descriptor owners.
@@ -4421,8 +4553,8 @@ pub(crate) mod tests {
             let root_before = directory_modification_identity(&fs::metadata(workspace.root())?)?;
             let stamp_before = workspace.source_stamp()?;
             let mut lock_before = Vec::new();
-            for path in &locks {
-                lock_before.push(modification_identity(&fs::metadata(path)?)?);
+            for (index, path) in locks.iter().enumerate() {
+                lock_before.push(lock_snapshot(path, index == 1));
             }
             // Raw generation locks may precede binding/owner creation.
             drop(Workspace::lock_root(&unbound)?);
@@ -4465,13 +4597,13 @@ pub(crate) mod tests {
             drop(workspace.server_lock()?);
 
             let mut lock_after = Vec::new();
-            for path in &locks {
+            for (index, path) in locks.iter().enumerate() {
                 let metadata = fs::metadata(path)?;
                 checks.push((
                     "precreated lock remains protected regular file",
                     metadata.is_file() && metadata.permissions().mode() & 0o777 == 0o600,
                 ));
-                lock_after.push(modification_identity(&metadata)?);
+                lock_after.push(lock_snapshot(path, index == 1));
             }
             Ok((
                 checks,
@@ -4510,9 +4642,122 @@ pub(crate) mod tests {
         assert_eq!(parent_after, parent_before);
         assert_eq!(root_after, root_before);
         assert_eq!(stamp_after, stamp_before);
-        assert_eq!(lock_after, lock_before);
+        // Only writer history intentionally changes: three successful bound
+        // writer acquisitions and one raw unbound root acquisition above.
+        // Physical inode/device/owner/mode remain exact; shared reads do not
+        // advance history. The separate server lease keeps its original full
+        // modification identity and byte equality.
+        assert_eq!(lock_after[1], lock_before[1]);
+        for (index, increment) in [(0, 3), (2, 1)] {
+            assert_eq!(lock_after[index].0, lock_before[index].0);
+            assert_eq!(lock_after[index].2, lock_before[index].2 + increment);
+            assert_eq!(lock_after[index].1.len(), 16);
+        }
         assert!(!missing.exists());
         assert!(!unbound.join(BINDING).exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn writer_witness_covers_all_exclusive_producers_and_reader_progress() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        configure_test_workspace(&workspace);
+        let stamp = workspace.source_stamp().unwrap();
+        let writer = Workspace::lock_root(workspace.root()).unwrap();
+        let first = workspace.writer_witness(&writer).unwrap();
+        assert!(first > 0);
+        drop(writer);
+        let reader = workspace.try_shared_lock().unwrap().unwrap();
+        let bytes = fs::read(workspace_lock_path(workspace.root(), false).unwrap()).unwrap();
+        assert_eq!(workspace.writer_witness(&reader).unwrap(), first);
+        let second_reader = workspace.try_shared_lock().unwrap().unwrap();
+        assert_eq!(workspace.writer_witness(&second_reader).unwrap(), first);
+        assert!(workspace.try_writer_lock().unwrap().is_none());
+        assert_eq!(fs::read(workspace_lock_path(workspace.root(), false).unwrap()).unwrap(), bytes);
+        drop(reader);
+        assert!(workspace.try_writer_lock().unwrap().is_none());
+        drop(second_reader);
+        let writer = workspace.try_writer_lock().unwrap().unwrap();
+        assert_eq!(workspace.writer_witness(&writer).unwrap(), first + 1);
+        drop(writer);
+        let writer = workspace.writer_lock().unwrap();
+        assert_eq!(workspace.writer_witness(&writer).unwrap(), first + 2);
+        // An interrupted preparation is an output-only change. Its missing
+        // success marker must not erase the already-persisted writer event.
+        let unfinished = workspace.prepare_local_outputs().unwrap();
+        drop(unfinished);
+        assert_eq!(workspace.source_stamp().unwrap(), stamp);
+        drop(writer);
+        let (admitted, startup) =
+            Workspace::try_from_root_for_startup(workspace.root()).unwrap().unwrap();
+        assert_eq!(admitted.writer_witness(&startup).unwrap(), first + 3);
+        assert_eq!(admitted.source_stamp().unwrap(), stamp);
+        drop(startup);
+        let server = workspace.server_lock().unwrap();
+        assert_eq!(fs::read(workspace_lock_path(workspace.root(), true).unwrap()).unwrap(), b"");
+        let writer = workspace.try_writer_lock().unwrap().unwrap();
+        assert_eq!(workspace.writer_witness(&writer).unwrap(), first + 4);
+        drop(writer);
+        drop(server);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn writer_witness_rejects_partial_corrupt_exhausted_and_unwritable_records() {
+        use std::os::unix::fs::FileExt as _;
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        configure_test_workspace(&workspace);
+        let stamp = workspace.source_stamp().unwrap();
+        let path = workspace_lock_path(workspace.root(), false).unwrap();
+        drop(Workspace::lock_root(workspace.root()).unwrap());
+        for bytes in [
+            vec![0; 1],
+            vec![0; 15],
+            vec![0; 17],
+            vec![0; 16],
+            [u64::MAX.to_le_bytes(), 0u64.to_le_bytes()].concat(),
+        ] {
+            fs::write(&path, &bytes).unwrap();
+            assert!(Workspace::lock_root(workspace.root()).is_err());
+            assert!(workspace.try_writer_lock().is_err());
+            assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
+            assert_eq!(fs::read(&path).unwrap(), bytes);
+            assert_eq!(workspace.source_stamp().unwrap(), stamp);
+        }
+        let good = [5u64.to_le_bytes(), (!5u64).to_le_bytes()].concat();
+        fs::write(&path, &good).unwrap();
+        let read_only = fs::File::open(&path).unwrap();
+        fs2::FileExt::lock_exclusive(&read_only).unwrap();
+        assert_eq!(read_writer_witness(&read_only).unwrap(), 5);
+        assert!(advance_writer_witness(&read_only).is_err());
+        assert_eq!(fs::read(&path).unwrap(), good);
+        drop(read_only);
+        let write_only = OpenOptions::new().write(true).open(&path).unwrap();
+        fs2::FileExt::lock_exclusive(&write_only).unwrap();
+        assert!(read_writer_witness(&write_only).is_err());
+        assert!(advance_writer_witness(&write_only).is_err());
+        assert_eq!(fs::read(&path).unwrap(), good);
+        drop(write_only);
+        // Every possible ordered interrupted-prefix boundary of representative
+        // carry transitions is either unchanged/new or rejected. No effects
+        // can occur until write_all_at and sync_all have both succeeded.
+        let file = OpenOptions::new().read(true).write(true).open(&path).unwrap();
+        fs2::FileExt::lock_exclusive(&file).unwrap();
+        for before in [0u64, 1, 255, 65535, u32::MAX as u64, u64::MAX - 1] {
+            let old = [before.to_le_bytes(), (!before).to_le_bytes()].concat();
+            let after = before + 1;
+            let new = [after.to_le_bytes(), (!after).to_le_bytes()].concat();
+            for prefix in 0..=16 {
+                let mut partial = old.clone();
+                partial[..prefix].copy_from_slice(&new[..prefix]);
+                file.write_all_at(&partial, 0).unwrap();
+                if let Ok(observed) = read_writer_witness(&file) {
+                    assert!(observed == before || observed == after);
+                }
+            }
+        }
     }
 
     #[cfg(unix)]
@@ -4950,6 +5195,124 @@ pub(crate) mod tests {
         assert!(first.try_shared_lock().unwrap().is_none());
         drop(second_writer);
         assert!(first.try_writer_lock().unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_waits_before_transient_configuration_and_private_admission() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let writer = workspace.writer_lock().unwrap();
+        let config = workspace.root().join(LAKE_CONFIGURATION);
+        let original = fs::read(&config).unwrap();
+        fs::write(&config, b"transient incomplete configuration").unwrap();
+        let private = workspace.root().join(".lake");
+        let retired = f.base.join("retired-private");
+        fs::rename(&private, &retired).unwrap();
+        assert!(Workspace::from_root(workspace.root()).is_err());
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_none());
+        fs::write(&config, &original).unwrap();
+        fs::rename(&retired, &private).unwrap();
+        drop(writer);
+
+        let (admitted, startup) =
+            Workspace::try_from_root_for_startup(workspace.root()).unwrap().unwrap();
+        admitted.admit().unwrap();
+        let _command = admitted.lake_command(LakeOperation::Serve).unwrap();
+        assert!(workspace.try_writer_lock().unwrap().is_none());
+        let session = admitted.server_lock().unwrap();
+        assert!(workspace.server_lock().is_err());
+        drop(session);
+        drop(startup);
+    }
+
+    #[test]
+    fn root_startup_propagates_unlocked_corruption_and_foreign_binding() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        drop(workspace.writer_lock().unwrap());
+        let config = workspace.root().join(LAKE_CONFIGURATION);
+        let original = fs::read(&config).unwrap();
+        fs::write(&config, b"corrupt configuration").unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
+        fs::write(&config, &original).unwrap();
+        let binding = workspace.root().join(BINDING);
+        let original = fs::read(&binding).unwrap();
+        let mut foreign: serde_json::Value = serde_json::from_slice(&original).unwrap();
+        foreign["sdk_id"] = json!("c".repeat(64));
+        fs::write(&binding, serde_json::to_vec(&foreign).unwrap()).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
+        fs::write(&binding, &original).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_requires_existing_lock_without_creating_cold_sidecars() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        workspace.admit().unwrap();
+        for root in
+            [workspace.root().to_path_buf(), f.base.join("invalid"), f.sdk.root().join("src/lean")]
+        {
+            let parent = root.parent().unwrap();
+            let before = fs::read_dir(parent)
+                .unwrap()
+                .map(|e| e.unwrap().file_name())
+                .collect::<BTreeSet<_>>();
+            assert!(Workspace::try_from_root_for_startup(&root).is_err());
+            assert!(!workspace_lock_path(&root, false).unwrap().try_exists().unwrap());
+            let after = fs::read_dir(parent)
+                .unwrap()
+                .map(|e| e.unwrap().file_name())
+                .collect::<BTreeSet<_>>();
+            assert_eq!(before, after, "Startup changed an unbound/cold namespace");
+        }
+        assert!(Workspace::try_from_root_for_startup(&f.base.join("absent-parent/root")).is_err());
+        drop(workspace.writer_lock().unwrap());
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_uses_stable_lock_during_root_rename_and_actual_leaf_aliases() {
+        let f = Fixture::new(&["Shared.A"]);
+        for (name, alias) in
+            [("CaseWorkspace", "caseworkspace"), ("CaféWorkspace", "Cafe\u{301}Workspace")]
+        {
+            let workspace = Workspace::create(&f.sdk, &f.base.join(name), &["."]).unwrap();
+            configure_test_workspace(&workspace);
+            let writer = workspace.writer_lock().unwrap();
+            let alias = f.base.join(alias);
+            if let Ok(metadata) = fs::symlink_metadata(&alias) {
+                assert_eq!(
+                    physical_input_identity(&metadata).unwrap(),
+                    physical_input_identity(&fs::metadata(workspace.root()).unwrap()).unwrap()
+                );
+                assert!(Workspace::try_from_root_for_startup(&alias).unwrap().is_none());
+            }
+            let retired = f.base.join(format!("retired-{name}"));
+            fs::rename(workspace.root(), &retired).unwrap();
+            assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_none());
+            fs::rename(&retired, workspace.root()).unwrap();
+            drop(writer);
+            if alias.try_exists().unwrap() {
+                let (admitted, _startup) =
+                    Workspace::try_from_root_for_startup(&alias).unwrap().unwrap();
+                assert_eq!(
+                    physical_directory_identity(&fs::metadata(admitted.root()).unwrap()).unwrap(),
+                    physical_directory_identity(&fs::metadata(workspace.root()).unwrap()).unwrap()
+                );
+            }
+            #[cfg(unix)]
+            {
+                let link = f.base.join(format!("linked-{name}"));
+                std::os::unix::fs::symlink(workspace.root(), &link).unwrap();
+                assert!(Workspace::try_from_root_for_startup(&link).is_err());
+                assert!(!workspace_lock_path(&link, false).unwrap().try_exists().unwrap());
+            }
+        }
+        let workspace = f.workspace();
+        drop(workspace.writer_lock().unwrap());
+        fs::rename(workspace.root(), f.base.join("unlocked-retired")).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
     }
 
     #[test]
