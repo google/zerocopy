@@ -64,7 +64,7 @@ class PrepareLeanSdkTests(unittest.TestCase):
         if scratch is not None:
             scratch = Path(scratch)
             scratch.mkdir(parents=True, exist_ok=True)
-        self.case = Path(tempfile.mkdtemp(prefix=self._testMethodName + "-", dir=scratch))
+        self.case = Path(tempfile.mkdtemp(prefix=self._testMethodName + "-", dir=scratch)).resolve()
         self.root = self.case / "archive"
         self.runtime = self.root / "lean"
         self.project = self.root / "aeneas/backends/lean"
