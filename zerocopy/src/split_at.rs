@@ -12,6 +12,164 @@
 use super::*;
 use crate::pointer::invariant::{Aligned, Exclusive, Invariants, Safe, Shared};
 
+// These pure decisions are shared by the pointer operations and the executable
+// numerical checks below. Their proofs concern counts and byte ranges only.
+/// The number of elements remaining after a valid split index.
+///
+/// ```aeneas
+/// spec split_right_len_spec
+///   requires hindex : (left : Nat) ≤ (total : Nat)
+///   ensures right => (right : Nat) + (left : Nat) = (total : Nat) ∧
+///     (right : Nat) ≤ (total : Nat)
+/// ```
+#[inline(always)]
+#[allow(clippy::arithmetic_side_effects)]
+pub(crate) fn split_right_len(total: usize, left: usize) -> usize {
+    total - left
+}
+
+/// The runtime gate is sufficient for disjointness; an empty right range can
+/// also be disjoint when the left part has padding.
+///
+/// ```aeneas
+/// spec split_zero_padding_spec
+///   ensures accepted => (accepted = true ↔ (padding : Nat) = 0)
+/// ```
+#[inline(always)]
+pub(crate) fn split_zero_padding(padding: usize) -> bool {
+    padding == 0
+}
+
+// This is ordinary Rust, visible to extraction without entering pointer code.
+// Numeric witnesses and checked reference sizes guard every assertion. The
+// remainder-based reference lives with the existing trailing-layout checks.
+#[allow(dead_code, clippy::needless_nonzero_get, clippy::arithmetic_side_effects)]
+mod numerical_checks {
+    use core::num::NonZeroUsize;
+
+    use crate::layout::{
+        tail_checks::{reference_size, same_optional_usize},
+        tail_transform_checks::witness_matches,
+        DstLayout, SizeInfo, TrailingSliceLayout,
+    };
+
+    /// Check valid split geometry against an independent remainder-based size
+    /// calculation. Nonmatching witnesses, overflow, and layouts whose complete
+    /// size does not contain their physical tail leave before the assertions.
+    /// Zero-sized elements and an empty right slice follow the same arithmetic.
+    /// The unwraps are assertions too: the proof must show that every guarded
+    /// arithmetic operation succeeds, rather than discard a failing case.
+    ///
+    /// ```aeneas
+    /// spec split_geometry_check_spec
+    ///   ensures _ => True
+    /// ```
+    #[allow(clippy::unwrap_used)]
+    fn check_split_geometry(
+        tail: TrailingSliceLayout,
+        align: NonZeroUsize,
+        phase: usize,
+        total: usize,
+        left: usize,
+    ) {
+        if !witness_matches(tail, align, phase) {
+            return;
+        }
+        if left > total {
+            return;
+        }
+        let source_size = match reference_size(tail, align, phase, total) {
+            Some(size) => size,
+            None => return,
+        };
+        let tail_bytes = match total.checked_mul(tail.elem_size) {
+            Some(bytes) => bytes,
+            None => return,
+        };
+        let tail_end = match tail.offset.checked_add(tail_bytes) {
+            Some(end) => end,
+            None => return,
+        };
+        if tail_end > source_size {
+            return;
+        }
+        assert!(same_optional_usize(tail.size_for_elems(total), Some(source_size)));
+        let left_size = tail.size_for_elems(left).unwrap();
+        assert!(same_optional_usize(reference_size(tail, align, phase, left), Some(left_size)));
+        assert!(left_size <= source_size);
+        let right = super::split_right_len(total, left);
+        assert!(right + left == total);
+        let left_bytes = left.checked_mul(tail.elem_size).unwrap();
+        let right_bytes = right.checked_mul(tail.elem_size).unwrap();
+        let right_start = tail.offset.checked_add(left_bytes).unwrap();
+        let right_end = right_start.checked_add(right_bytes).unwrap();
+        assert!(right_end == tail_end);
+        assert!(right_end <= source_size);
+        if super::split_zero_padding(tail.padding_for_elems(left)) {
+            assert!(left_size == right_start);
+        }
+        let layout = DstLayout {
+            align,
+            size_info: SizeInfo::SliceDst(tail),
+            statically_shallow_unpadded: false,
+        };
+        if !layout.requires_dynamic_padding() {
+            assert!(left_size == right_start);
+        }
+        // An empty right byte range is disjoint regardless of left padding.
+        if left == total {
+            assert!(right_bytes == 0);
+        }
+        if tail.elem_size == 0 {
+            assert!(right_bytes == 0);
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use crate::layout::RoundingAlignAndPhase;
+
+        #[test]
+        fn split_geometry_boundaries() {
+            for alignment in [1, 2, 8] {
+                let align = NonZeroUsize::new(alignment).unwrap();
+                for phase in 0..alignment {
+                    for stride in [0, 1, 2, 8] {
+                        for offset in [0, phase, 5] {
+                            let tail = TrailingSliceLayout {
+                                offset,
+                                elem_size: stride,
+                                size_base: 5,
+                                size_rounding_align_and_phase: RoundingAlignAndPhase::new(
+                                    align, phase,
+                                ),
+                            };
+                            for total in 0..16 {
+                                for left in 0..17 {
+                                    check_split_geometry(tail, align, phase, total, left);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            let align = NonZeroUsize::new(8).unwrap();
+            let tail = TrailingSliceLayout {
+                offset: 1,
+                elem_size: 0,
+                size_base: 0,
+                size_rounding_align_and_phase: RoundingAlignAndPhase::new(align, 1),
+            };
+            for left in [0, 1, usize::MAX] {
+                check_split_geometry(tail, align, 1, usize::MAX, left);
+            }
+            let overflowing = TrailingSliceLayout { elem_size: usize::MAX, ..tail };
+            check_split_geometry(overflowing, align, 1, 2, 1);
+        }
+    }
+}
+
 /// Types that can be split in two.
 ///
 /// This trait generalizes Rust's existing support for splitting slices to
@@ -1031,7 +1189,7 @@ where
         // FIXME(#1290): Once we require `KnownLayout` on all fields, add an
         // `IS_IMMUTABLE` associated const, and add `T::IS_IMMUTABLE ||` to the
         // below check.
-        if trailing_padding == 0 {
+        if split_zero_padding(trailing_padding) {
             // SAFETY: As established above, `trailing_padding` is the exact
             // padding after the left part's trailing slice. If it is zero,
             // the left and right parts are strictly non-overlapping.
