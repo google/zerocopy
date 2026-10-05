@@ -42,6 +42,14 @@ def byteFormula {E : Type} (self : layout.TrailingSliceLayout E) : LayoutMath.Fo
 def trailingFormula (self : layout.TrailingSliceLayout Usize) : LayoutMath.Formula :=
   { byteFormula self with elem := self.elem_size.val }
 
+/- Complete sizes use exactly the same layout observations as the independent
+record semantics. This is distinct from the physical trailing-field offset.
+-/
+def completeLayoutSize (self : layout.DstLayout) (count : Nat) : Nat :=
+  match self.size_info with
+  | .Sized size => size.val
+  | .SliceDst tail => (trailingFormula tail).size count
+
 /- An absent packing bound acts as the largest representable power of two. The
 alignment domain bounds ensure that taking the minimum leaves an admitted
 field alignment unchanged in that case.
