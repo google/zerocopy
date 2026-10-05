@@ -683,6 +683,38 @@ impl<'a> Workspace<'a> {
         Ok(workspace)
     }
 
+    /// Startup admission requires the stable sibling lock produced by normal
+    /// generation before reading any replaceable workspace state. It never
+    /// creates a lock or name-policy probe for an arbitrary supplied root.
+    /// Direct API-created workspaces must first obtain their normal writer lock.
+    /// Ordinary constructors remain usable by an already-fenced writer.
+    pub(crate) fn try_from_root_for_startup(
+        root: &Path,
+    ) -> Result<Option<(Workspace<'static>, fs::File)>> {
+        // Resolve parent aliases, but reject a linked leaf rather than locking
+        // one name and then admitting the target of a different name.
+        let root = physical_workspace_path(root)?;
+        check_workspace_parent_namespace(&root)?;
+        let path = workspace_lock_path(&root, false)?;
+        let (file, path) = open_workspace_lock_path(path, false).context(
+            "Startup requires an existing stable workspace writer lock; generate the workspace first",
+        )?;
+        match fs2::FileExt::try_lock_exclusive(&file) {
+            Ok(()) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => return Ok(None),
+            Err(error) => return Err(error.into()),
+        }
+        check_workspace_lock_entry(&file, &path)?;
+        let resolved = fs::canonicalize(&root).context("Unknown Lean workspace")?;
+        // Filesystem-equivalent root spellings must also select this exact
+        // sibling inode. No second lock is created to paper over a mismatch.
+        check_workspace_lock_entry(&file, &workspace_lock_path(&resolved, false)?)?;
+        let workspace = Self::from_root(&resolved)?;
+        check_workspace_lock_entry(&file, &path)?;
+        check_workspace_lock_entry(&file, &workspace_lock_path(workspace.root(), false)?)?;
+        Ok(Some((workspace, file)))
+    }
+
     /// The lock is a sibling of the replaceable workspace directory. All Anneal
     /// source/output writers use it; locks do not control direct user edits.
     pub fn lock_root(root: &Path) -> Result<fs::File> {
@@ -1525,14 +1557,13 @@ fn check_launcher(path: &Path, installation: &Path) -> Result<()> {
 
 fn open_workspace_lock(root: &Path, server: bool) -> Result<(fs::File, PathBuf)> {
     let root = new_physical_path(root)?;
-    let mut leaf = root.file_name().context("Workspace has no leaf")?.to_os_string();
-    // Writer filenames end in `.lock`; server leases never do. Appending
-    // `.server.lock` would alias the writer lock of a `foo.server` sibling.
-    leaf.push(if server { ".server-lease" } else { ".lock" });
-    let path = root.with_file_name(leaf);
+    open_workspace_lock_path(workspace_lock_path(&root, server)?, true)
+}
+
+fn open_workspace_lock_path(path: PathBuf, create: bool) -> Result<(fs::File, PathBuf)> {
     reject_links(&path)?;
     let mut options = OpenOptions::new();
-    options.read(true).write(true).create(true).truncate(false);
+    options.read(true).write(true).create(create).truncate(false);
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt as _;
@@ -1549,6 +1580,16 @@ fn open_workspace_lock(root: &Path, server: bool) -> Result<(fs::File, PathBuf)>
     let file = options.open(&path)?;
     check_workspace_lock_entry(&file, &path)?;
     Ok((file, path))
+}
+
+// The caller supplies a physical parent. Computing a sibling name must not
+// perform the name-policy probes needed only by lock-creating producers.
+fn workspace_lock_path(root: &Path, server: bool) -> Result<PathBuf> {
+    let mut leaf = root.file_name().context("Workspace has no leaf")?.to_os_string();
+    // Writer filenames end in `.lock`; server leases never do. Appending
+    // `.server.lock` would alias the writer lock of a `foo.server` sibling.
+    leaf.push(if server { ".server-lease" } else { ".lock" });
+    Ok(root.with_file_name(leaf))
 }
 
 fn check_workspace_lock_entry(file: &fs::File, path: &Path) -> Result<()> {
@@ -4917,6 +4958,124 @@ pub(crate) mod tests {
         assert!(first.try_shared_lock().unwrap().is_none());
         drop(second_writer);
         assert!(first.try_writer_lock().unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_waits_before_transient_configuration_and_private_admission() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let writer = workspace.writer_lock().unwrap();
+        let config = workspace.root().join(LAKE_CONFIGURATION);
+        let original = fs::read(&config).unwrap();
+        fs::write(&config, b"transient incomplete configuration").unwrap();
+        let private = workspace.root().join(".lake");
+        let retired = f.base.join("retired-private");
+        fs::rename(&private, &retired).unwrap();
+        assert!(Workspace::from_root(workspace.root()).is_err());
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_none());
+        fs::write(&config, &original).unwrap();
+        fs::rename(&retired, &private).unwrap();
+        drop(writer);
+
+        let (admitted, startup) =
+            Workspace::try_from_root_for_startup(workspace.root()).unwrap().unwrap();
+        admitted.admit().unwrap();
+        let _command = admitted.lake_command(LakeOperation::Serve).unwrap();
+        assert!(workspace.try_writer_lock().unwrap().is_none());
+        let session = admitted.server_lock().unwrap();
+        assert!(workspace.server_lock().is_err());
+        drop(session);
+        drop(startup);
+    }
+
+    #[test]
+    fn root_startup_propagates_unlocked_corruption_and_foreign_binding() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        drop(workspace.writer_lock().unwrap());
+        let config = workspace.root().join(LAKE_CONFIGURATION);
+        let original = fs::read(&config).unwrap();
+        fs::write(&config, b"corrupt configuration").unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
+        fs::write(&config, &original).unwrap();
+        let binding = workspace.root().join(BINDING);
+        let original = fs::read(&binding).unwrap();
+        let mut foreign: serde_json::Value = serde_json::from_slice(&original).unwrap();
+        foreign["sdk_id"] = json!("c".repeat(64));
+        fs::write(&binding, serde_json::to_vec(&foreign).unwrap()).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
+        fs::write(&binding, &original).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_requires_existing_lock_without_creating_cold_sidecars() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        workspace.admit().unwrap();
+        for root in
+            [workspace.root().to_path_buf(), f.base.join("invalid"), f.sdk.root().join("src/lean")]
+        {
+            let parent = root.parent().unwrap();
+            let before = fs::read_dir(parent)
+                .unwrap()
+                .map(|e| e.unwrap().file_name())
+                .collect::<BTreeSet<_>>();
+            assert!(Workspace::try_from_root_for_startup(&root).is_err());
+            assert!(!workspace_lock_path(&root, false).unwrap().try_exists().unwrap());
+            let after = fs::read_dir(parent)
+                .unwrap()
+                .map(|e| e.unwrap().file_name())
+                .collect::<BTreeSet<_>>();
+            assert_eq!(before, after, "Startup changed an unbound/cold namespace");
+        }
+        assert!(Workspace::try_from_root_for_startup(&f.base.join("absent-parent/root")).is_err());
+        drop(workspace.writer_lock().unwrap());
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_some());
+    }
+
+    #[test]
+    fn root_startup_uses_stable_lock_during_root_rename_and_actual_leaf_aliases() {
+        let f = Fixture::new(&["Shared.A"]);
+        for (name, alias) in
+            [("CaseWorkspace", "caseworkspace"), ("CaféWorkspace", "Cafe\u{301}Workspace")]
+        {
+            let workspace = Workspace::create(&f.sdk, &f.base.join(name), &["."]).unwrap();
+            configure_test_workspace(&workspace);
+            let writer = workspace.writer_lock().unwrap();
+            let alias = f.base.join(alias);
+            if let Ok(metadata) = fs::symlink_metadata(&alias) {
+                assert_eq!(
+                    physical_input_identity(&metadata).unwrap(),
+                    physical_input_identity(&fs::metadata(workspace.root()).unwrap()).unwrap()
+                );
+                assert!(Workspace::try_from_root_for_startup(&alias).unwrap().is_none());
+            }
+            let retired = f.base.join(format!("retired-{name}"));
+            fs::rename(workspace.root(), &retired).unwrap();
+            assert!(Workspace::try_from_root_for_startup(workspace.root()).unwrap().is_none());
+            fs::rename(&retired, workspace.root()).unwrap();
+            drop(writer);
+            if alias.try_exists().unwrap() {
+                let (admitted, _startup) =
+                    Workspace::try_from_root_for_startup(&alias).unwrap().unwrap();
+                assert_eq!(
+                    physical_directory_identity(&fs::metadata(admitted.root()).unwrap()).unwrap(),
+                    physical_directory_identity(&fs::metadata(workspace.root()).unwrap()).unwrap()
+                );
+            }
+            #[cfg(unix)]
+            {
+                let link = f.base.join(format!("linked-{name}"));
+                std::os::unix::fs::symlink(workspace.root(), &link).unwrap();
+                assert!(Workspace::try_from_root_for_startup(&link).is_err());
+                assert!(!workspace_lock_path(&link, false).unwrap().try_exists().unwrap());
+            }
+        }
+        let workspace = f.workspace();
+        drop(workspace.writer_lock().unwrap());
+        fs::rename(workspace.root(), f.base.join("unlocked-retired")).unwrap();
+        assert!(Workspace::try_from_root_for_startup(workspace.root()).is_err());
     }
 
     #[test]
