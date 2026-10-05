@@ -46,6 +46,12 @@ use crate::Ref;
 /// separated by any method calls, field accesses, or field modifications *other
 /// than* those from these traits.
 ///
+/// The address and length must also be stable across moves of `b`: moving `b`
+/// must not change the address or length returned by `deref` or `deref_mut`.
+/// This is required because unsafe code may move a `B` (for example, into a
+/// [`Ref`]) after validating that its byte slice is appropriately sized and
+/// aligned, and may then rely on that validation for the moved value.
+///
 /// Note that this also implies that, given `b: B`, the address and length
 /// cannot be modified via objects other than `b`, either on the same thread or
 /// on another thread.
