@@ -100,6 +100,48 @@ def metadataSpec (self : layout.DstLayout) (size : Nat) (r : Option Usize) : Pro
     | some elems => (trailingFormula tail).size elems.val = size ∧
       (∀ n : Nat, (trailingFormula tail).size n ≤ size ↔ n ≤ elems.val)
 
+/- A selected plan maps element counts, not byte offsets. Sized variants ignore
+the source count; the affine variant retains both of its numerical parameters.
+-/
+def castPlanMetadata (plan : layout.cast_from.CastPlan) (count : Nat) : Nat :=
+  match plan with
+  | .UnsizedToUnsized base multiple => base.val + count * multiple.val
+  | .SizedToUnsized metadata => metadata.val
+  | .SizedToSized => 0
+
+def castMetadataFits (plan : layout.cast_from.CastPlan) (count : Nat) : Prop :=
+  castPlanMetadata plan count ≤ Usize.max
+
+/- Complete sizes use exactly the same layout observations as the independent
+record semantics. This is distinct from the physical trailing-field offset.
+-/
+def completeLayoutSize (self : layout.DstLayout) (count : Nat) : Nat :=
+  match self.size_info with
+  | .Sized size => size.val
+  | .SliceDst tail => (trailingFormula tail).size count
+
+/- Acceptance certifies alignment and a size-preserving map for every count.
+Rejection deliberately makes no completeness claim: the selector recognizes
+sufficient conditions and may reject equivalent layouts. Variant compatibility,
+positive destination stride and the exact stride ratio are retained explicitly,
+so subsequent proofs can derive arithmetic bounds without assuming them.
+-/
+def castPlanSpec (src dst : layout.DstLayout)
+    (result : Option layout.cast_from.CastPlan) : Prop :=
+  match result with
+  | none => True
+  | some plan =>
+    dst.align.val.val ≤ src.align.val.val ∧
+    (match src.size_info, dst.size_info, plan with
+    | .Sized srcSize, .Sized dstSize, .SizedToSized => srcSize = dstSize
+    | .Sized srcSize, .SliceDst dstTail, .SizedToUnsized metadata =>
+      0 < dstTail.elem_size.val ∧ (trailingFormula dstTail).size metadata.val = srcSize.val
+    | .SliceDst srcTail, .SliceDst dstTail, .UnsizedToUnsized base multiple =>
+      0 < dstTail.elem_size.val ∧ srcTail.elem_size.val = multiple.val * dstTail.elem_size.val ∧
+        ∀ count : Nat, (trailingFormula srcTail).size count =
+          (trailingFormula dstTail).size (base.val + count * multiple.val)
+    | _, _, _ => False)
+
 /- Project the raw record to the fragment vocabulary used by layout operations.
 This preserves alignment, payload, physical offset, stride, and unpadded
 flag.
