@@ -100,7 +100,7 @@ structure byteorder.U32 (O : Type) where
   _1 : core.marker.PhantomData O
 
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 5941:0-6414:1
+    Source: 'src/lib.rs', lines 6005:0-6478:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
@@ -143,7 +143,7 @@ structure layout.nested_reference.NestedLayer where
   prefix_bytes : Std.Usize
 
 /-- Trait declaration: [zerocopy::Unaligned]
-    Source: 'src/lib.rs', lines 6552:0-6559:1
+    Source: 'src/lib.rs', lines 6616:0-6623:1
     Visibility: public -/
 structure Unaligned (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
