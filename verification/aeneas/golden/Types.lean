@@ -39,6 +39,59 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
+/-- [zerocopy::layout::cast_from::CastPlan]
+    Source: 'src/layout/cast_from.rs', lines 29:0-60:1 -/
+@[discriminant isize]
+inductive layout.cast_from.CastPlan where
+| UnsizedToUnsized : Std.Usize → Std.Usize → layout.cast_from.CastPlan
+| SizedToUnsized : Std.Usize → layout.cast_from.CastPlan
+| SizedToSized : layout.cast_from.CastPlan
+
+/-- [zerocopy::layout::RoundingAlignAndPhase]
+    Source: 'src/layout/mod.rs', lines 93:0-93:54 -/
+structure layout.RoundingAlignAndPhase where
+  _0 : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+
+/-- [zerocopy::layout::TrailingSliceLayout]
+    Source: 'src/layout/mod.rs', lines 200:0-254:1 -/
+structure layout.TrailingSliceLayout (E : Type) where
+  offset : Std.Usize
+  elem_size : E
+  size_base : Std.Usize
+  size_rounding_align_and_phase : layout.RoundingAlignAndPhase
+
+/-- [zerocopy::layout::MetadataCastError]
+    Source: 'src/layout/mod.rs', lines 920:0-923:1 -/
+@[discriminant isize]
+inductive layout.MetadataCastError where
+| Alignment : layout.MetadataCastError
+| Size : layout.MetadataCastError
+
+/-- [zerocopy::layout::CastType]
+    Source: 'src/layout/mod.rs', lines 913:0-916:1
+    Visibility: public -/
+@[discriminant isize]
+inductive layout.CastType where
+| Prefix : layout.CastType
+| Suffix : layout.CastType
+
+/-- [zerocopy::layout::SizeInfo]
+    Source: 'src/layout/mod.rs', lines 62:0-65:1 -/
+@[discriminant isize]
+inductive layout.SizeInfo (E : Type) where
+| Sized : Std.Usize → layout.SizeInfo E
+| SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
+
+/-- [zerocopy::layout::DstLayout]
+    Source: 'src/layout/mod.rs', lines 49:0-57:1
+    Visibility: public -/
+structure layout.DstLayout where
+  align : core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner
+  size_info : layout.SizeInfo Std.Usize
+  statically_shallow_unpadded : Bool
+
 /-- [zerocopy::layout::composition_checks::ReferenceTail]
     Source: 'src/layout/composition_checks.rs', lines 32:0-38:1 -/
 structure layout.composition_checks.ReferenceTail where
@@ -64,53 +117,8 @@ structure layout.composition_checks.ReferenceLayout where
   size : layout.composition_checks.ReferenceSize
   unpadded : Bool
 
-/-- [zerocopy::layout::RoundingAlignAndPhase]
-    Source: 'src/layout/mod.rs', lines 93:0-93:54 -/
-structure layout.RoundingAlignAndPhase where
-  _0 : core.num.nonzero.NonZero Std.Usize
-    core.num.niche_types.NonZeroUsizeInner
-
-/-- [zerocopy::layout::TrailingSliceLayout]
-    Source: 'src/layout/mod.rs', lines 200:0-254:1 -/
-structure layout.TrailingSliceLayout (E : Type) where
-  offset : Std.Usize
-  elem_size : E
-  size_base : Std.Usize
-  size_rounding_align_and_phase : layout.RoundingAlignAndPhase
-
-/-- [zerocopy::layout::SizeInfo]
-    Source: 'src/layout/mod.rs', lines 62:0-65:1 -/
-@[discriminant isize]
-inductive layout.SizeInfo (E : Type) where
-| Sized : Std.Usize → layout.SizeInfo E
-| SliceDst : layout.TrailingSliceLayout E → layout.SizeInfo E
-
-/-- [zerocopy::layout::DstLayout]
-    Source: 'src/layout/mod.rs', lines 49:0-57:1
-    Visibility: public -/
-structure layout.DstLayout where
-  align : core.num.nonzero.NonZero Std.Usize
-    core.num.niche_types.NonZeroUsizeInner
-  size_info : layout.SizeInfo Std.Usize
-  statically_shallow_unpadded : Bool
-
-/-- [zerocopy::layout::CastType]
-    Source: 'src/layout/mod.rs', lines 913:0-916:1
-    Visibility: public -/
-@[discriminant isize]
-inductive layout.CastType where
-| Prefix : layout.CastType
-| Suffix : layout.CastType
-
-/-- [zerocopy::layout::MetadataCastError]
-    Source: 'src/layout/mod.rs', lines 920:0-923:1 -/
-@[discriminant isize]
-inductive layout.MetadataCastError where
-| Alignment : layout.MetadataCastError
-| Size : layout.MetadataCastError
-
 /-- [zerocopy::layout::nested_reference::NestedLayer]
-    Source: 'src/layout/nested_reference.rs', lines 31:0-35:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
 structure layout.nested_reference.NestedLayer where
   packed : Std.Usize
   min_align : Std.Usize

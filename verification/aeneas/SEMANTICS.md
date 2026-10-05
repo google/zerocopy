@@ -108,6 +108,14 @@ it into a power-of-two alignment and bounded phase; structural layout models
 reuse that shared pair. This admission law has an ordinary Lean proof and does
 not change the extracted raw implementation.
 
+The extracted cast metadata helper uses Rust's unsafe `usize::unchecked_mul`
+and `usize::unchecked_add`. Their handwritten external models use Aeneas's
+checked multiplication and addition. The correspondence premise is restricted
+to non-overflowing inputs: each call returns the exact natural-number result.
+No correspondence is claimed for overflowing inputs, where Rust's unchecked
+operations have undefined behavior. The arithmetic contracts prove both
+intermediate results fit.
+
 The remaining trusted boundary is the pinned Rust-to-LLBC-to-Lean translation,
 its builtin arithmetic and control-flow models, the external primitive
 correspondences above, the Lean kernel, and specification adequacy. Both
