@@ -589,6 +589,32 @@ spec array_into_bytes_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.array_into_bytes_spec for Zerocopy.trait_checks.check_array_into_bytes with 0
 
+check_model_inputs Zerocopy.util.allocation.prepare with 0 type parameters
+aeneas_spec_begin
+spec allocation_prepare_spec
+  for @Zerocopy.util.allocation.prepare with 0 type parameters
+  ensures(raw) result =>
+    result.map (fun pair => (pair.1.val, pair.2.val.val)) =
+      size.map (fun s => (s.val, align.val.val))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.allocation_prepare_spec for Zerocopy.util.allocation.prepare with 2
+
+check_model_inputs Zerocopy.util.allocation.assert_preparation with 0 type parameters
+aeneas_spec_begin
+spec allocation_preparation_check_spec
+  for @Zerocopy.util.allocation.assert_preparation with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.allocation_preparation_check_spec for Zerocopy.util.allocation.assert_preparation with 2
+
+check_model_inputs Zerocopy.util.allocation.assert_allocation_size with 0 type parameters
+aeneas_spec_begin
+spec allocation_size_check_spec
+  for @Zerocopy.util.allocation.assert_allocation_size with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.allocation_size_check_spec for Zerocopy.util.allocation.assert_allocation_size with 4
+
 check_model_inputs Zerocopy.util.bytewrite.exact with 0 type parameters
 aeneas_spec_begin
 spec write_exact_spec
