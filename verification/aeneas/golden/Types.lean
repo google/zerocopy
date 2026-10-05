@@ -137,7 +137,7 @@ structure layout.nested_reference.NestedLayer where
   prefix_bytes : Std.Usize
 
 /-- Trait declaration: [zerocopy::Unaligned]
-    Source: 'src/lib.rs', lines 6548:0-6555:1
+    Source: 'src/lib.rs', lines 6612:0-6619:1
     Visibility: public -/
 structure Unaligned (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
