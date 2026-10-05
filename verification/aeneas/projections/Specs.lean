@@ -474,6 +474,32 @@ spec new_zeroed_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.new_zeroed_spec for Zerocopy.FromZeros.new_zeroed.default with 1
 
+check_model_inputs Zerocopy.split_at.split_right_len with 0 type parameters
+aeneas_spec_begin
+spec split_right_len_spec
+  for @Zerocopy.split_at.split_right_len with 0 type parameters
+  requires hindex : (left : Nat) ≤ (total : Nat)
+  ensures right => (right : Nat) + (left : Nat) = (total : Nat) ∧
+    (right : Nat) ≤ (total : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.split_right_len_spec for Zerocopy.split_at.split_right_len with 2
+
+check_model_inputs Zerocopy.split_at.split_zero_padding with 0 type parameters
+aeneas_spec_begin
+spec split_zero_padding_spec
+  for @Zerocopy.split_at.split_zero_padding with 0 type parameters
+  ensures accepted => (accepted = true ↔ (padding : Nat) = 0)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.split_zero_padding_spec for Zerocopy.split_at.split_zero_padding with 1
+
+check_model_inputs Zerocopy.split_at.numerical_checks.check_split_geometry with 0 type parameters
+aeneas_spec_begin
+spec split_geometry_check_spec
+  for @Zerocopy.split_at.numerical_checks.check_split_geometry with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.split_geometry_check_spec for Zerocopy.split_at.numerical_checks.check_split_geometry with 5
+
 check_model_inputs Zerocopy.trait_checks.unaligned_alignment with 1 type parameters
 aeneas_spec_begin
 spec unaligned_alignment_spec
