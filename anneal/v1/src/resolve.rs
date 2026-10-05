@@ -161,9 +161,16 @@ pub struct Roots {
     // E.g., `target/anneal/<hash>`.
     anneal_run_root: PathBuf,
     pub roots: Vec<AnnealTarget>,
+    lean_sdk_id: Option<String>,
 }
 
 impl Roots {
+    /// A compiler upgrade owns a fresh Lean leaf, never the previous outputs.
+    pub fn bind_lean_sdk(mut self, sdk: &crate::lean_sdk::LeanSdk) -> Self {
+        self.lean_sdk_id = Some(sdk.id().to_owned());
+        self
+    }
+
     pub fn lock_run_root(&self) -> Result<LockedRoots<'_>> {
         let lock = DirLock::lock_exclusive(self.anneal_run_root.clone())?;
         Ok(LockedRoots { roots: self, anneal_run_root: lock })
@@ -190,7 +197,9 @@ impl<'a> LockedRoots<'a> {
     }
 
     pub fn lean_root(&self) -> PathBuf {
-        self.anneal_run_root.path.join("lean")
+        self.anneal_run_root.path.join("lean").join(
+            self.roots.lean_sdk_id.as_deref().expect("Lean SDK selected before taking run lock"),
+        )
     }
 
     pub fn lean_generated_root(&self) -> PathBuf {
@@ -239,6 +248,7 @@ pub fn resolve_roots(args: &Args) -> Result<Roots> {
         anneal_global_root,
         anneal_run_root,
         roots: Vec::new(),
+        lean_sdk_id: None,
     };
 
     for package in selected_packages {
