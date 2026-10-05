@@ -123,6 +123,21 @@ run_elab do
     Term.synthesizeSyntheticMVarsNoPostponing
     unless ← Meta.isDefEq (mkConst `util.validity.read_byte) (← instantiateMVars expected) do
       throwError "External candidate byte read changed its complete guarded interpretation"
+  if env.contains `core.num.Usize.unchecked_add || env.contains `core.num.Usize.unchecked_mul then
+    -- A proof on fitting inputs cannot distinguish UB from a recoverable
+    -- panic outside that domain. Independently check both complete primitive
+    -- interpretations, so changing only their failure tag still fails CI.
+    let add ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val + right.val ≤ Aeneas.Std.Usize.max then left + right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    let mul ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val * right.val ≤ Aeneas.Std.Usize.max then left * right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    for (primitive, expected) in #[(`core.num.Usize.unchecked_add, add),
+                              (`core.num.Usize.unchecked_mul, mul)] do
+      unless env.contains primitive && (← Meta.isDefEq (mkConst primitive) (← instantiateMVars expected)) do
+        throwError "External unchecked arithmetic changed its forbidden-execution interpretation: {primitive}"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.
