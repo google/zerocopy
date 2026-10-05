@@ -2300,6 +2300,97 @@ def pointer_metadata_usize_size_for_metadata
   := do
   Usize.Insts.ZerocopyPointerMetadata.size_for_metadata metadata runtime_layout
 
+/-- [zerocopy::split_at::split_right_len]:
+    Source: 'src/split_at.rs', lines 27:0-29:1 -/
+def split_at.split_right_len
+  (total : Std.Usize) (left : Std.Usize) : Result Std.Usize := do
+  total - left
+
+/-- [zerocopy::split_at::split_zero_padding]:
+    Source: 'src/split_at.rs', lines 39:0-41:1 -/
+def split_at.split_zero_padding (padding : Std.Usize) : Result Bool := do
+  ok (padding = 0#usize)
+
+/-- [zerocopy::split_at::numerical_checks::check_split_geometry]:
+    Source: 'src/split_at.rs', lines 68:4-126:5 -/
+def split_at.numerical_checks.check_split_geometry
+  (tail : layout.TrailingSliceLayout Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (total : Std.Usize) (left : Std.Usize) :
+  Result Unit
+  := do
+  let b ← layout.tail_transform_checks.witness_matches tail align phase
+  if b
+  then
+    if left > total
+    then ok ()
+    else
+      let o ← layout.tail_checks.reference_size tail align phase total
+      match o with
+      | none => ok ()
+      | some size =>
+        let o1 ← lift (Usize.checked_mul total tail.elem_size)
+        match o1 with
+        | none => ok ()
+        | some bytes =>
+          let o2 ← lift (Usize.checked_add tail.offset bytes)
+          match o2 with
+          | none => ok ()
+          | some «end» =>
+            if «end» > size
+            then ok ()
+            else
+              let o3 ←
+                layout.TrailingSliceLayoutUsize.size_for_elems tail total
+              let b1 ← layout.tail_checks.same_optional_usize o3 o
+              massert b1
+              let o4 ←
+                layout.TrailingSliceLayoutUsize.size_for_elems tail left
+              let left_size ← core.option.Option.unwrap o4
+              let o5 ←
+                layout.tail_checks.reference_size tail align phase left
+              let b2 ←
+                layout.tail_checks.same_optional_usize o5 (some left_size)
+              massert b2
+              massert (left_size <= size)
+              let right ← split_at.split_right_len total left
+              let i ← right + left
+              massert (i = total)
+              let o6 ← lift (Usize.checked_mul left tail.elem_size)
+              let left_bytes ← core.option.Option.unwrap o6
+              let o7 ← lift (Usize.checked_mul right tail.elem_size)
+              let right_bytes ← core.option.Option.unwrap o7
+              let o8 ← lift (Usize.checked_add tail.offset left_bytes)
+              let right_start ← core.option.Option.unwrap o8
+              let o9 ← lift (Usize.checked_add right_start right_bytes)
+              let right_end ← core.option.Option.unwrap o9
+              massert (right_end = «end»)
+              massert (right_end <= size)
+              let i1 ←
+                layout.TrailingSliceLayoutUsize.padding_for_elems tail left
+              let b3 ← split_at.split_zero_padding i1
+              if b3
+              then massert (left_size = right_start)
+              else ok ()
+              let b4 ←
+                layout.DstLayout.requires_dynamic_padding
+                  {
+                    align,
+                    size_info := (layout.SizeInfo.SliceDst tail),
+                    statically_shallow_unpadded := false
+                  }
+              if b4
+              then ok ()
+              else massert (left_size = right_start)
+              if left = total
+              then massert (right_bytes = 0#usize)
+              else ok ()
+              if tail.elem_size = 0#usize
+              then massert (right_bytes = 0#usize)
+              else ok ()
+  else ok ()
+
 /-- [zerocopy::util::bytewrite::exact]:
     Source: 'src/util/bytewrite/mod.rs', lines 27:0-37:1 -/
 def util.bytewrite.exact
