@@ -10,21 +10,21 @@
 // 6. Running custom diagnostic scripts to verify proofs and report errors
 //    back to Rust.
 
-use std::{
-    ffi::OsString,
-    fmt::Write,
-    fs,
-    path::{Path, PathBuf},
-    process::Stdio,
-};
+use std::{fmt::Write, fs, path::Path};
 
 use anyhow::{Context, Result, bail, ensure};
 use indicatif::{ProgressBar, ProgressStyle};
-use serde_json::{Value, json};
 
-use crate::{generate, resolve::LockedRoots, scanner::AnnealArtifact, setup::Tool};
+use crate::{
+    generate,
+    lean_sdk::{LakeLibrary, LakeOperation, LeanOperation, Workspace, filesystem_folds_ascii_case},
+    resolve::LockedRoots,
+    scanner::AnnealArtifact,
+    setup::Tool,
+};
 
 const ANNEAL_PRELUDE: &str = include_str!("Anneal.lean");
+const SOURCE_ROOTS: &[&str] = &["anneal", "generated", "user"];
 
 /// Orchestrates the Aeneas translation and Lean verification process.
 ///
@@ -45,15 +45,39 @@ pub fn run_aeneas(
     // We generate into a temporary directory first to ensure atomic updates.
     // If the process crashes during generation, the existing `lean` directory
     // will remain untouched (or if it didn't exist, we won't leave a half-baked one).
-    let final_lean_root = roots.lean_generated_root().parent().unwrap().to_path_buf();
-    let tmp_lean_root = final_lean_root.with_extension("tmp");
-    let lean_generated_root = tmp_lean_root.join("generated");
-
-    // Start with a clean slate in tmp
-    if tmp_lean_root.exists() {
-        std::fs::remove_dir_all(&tmp_lean_root).context("Failed to cleanup stale tmp directory")?;
+    let final_lean_root = roots.lean_root();
+    let parent = final_lean_root.parent().context("Lean workspace has no parent")?;
+    create_missing_private_lean_directory(parent)?;
+    let toolchain = crate::setup::Toolchain::resolve()?;
+    let selected_sdk = toolchain.lean_sdk()?;
+    ensure!(
+        !path_entry_exists(&final_lean_root.with_extension("previous"))?,
+        "Interrupted workspace swap at {}; recover preserved sources/outputs before retry",
+        final_lean_root.with_extension("previous").display()
+    );
+    let existing = if final_lean_root.try_exists()? {
+        let workspace = Workspace::from_root(&final_lean_root)?;
+        ensure!(workspace.sdk().id() == selected_sdk.id(), "Workspace SDK identity changed");
+        Some(workspace)
+    } else {
+        None
+    };
+    // A Rust-only archive change may install identical Lean inputs at a new
+    // distribution path. Keep the original physical SDK binding and outputs;
+    // a different Lean identity already selects a fresh workspace leaf.
+    let sdk = existing.as_ref().map_or(selected_sdk, |workspace| workspace.sdk().clone());
+    let old_snapshot = existing.as_ref().map(Workspace::source_snapshot).transpose()?;
+    let stage = tempfile::Builder::new().prefix(".anneal-stage-").tempdir_in(parent)?;
+    let tmp_lean_root = stage.path().join("workspace");
+    Workspace::stage(&sdk, &tmp_lean_root, &final_lean_root, existing.as_ref(), SOURCE_ROOTS)?;
+    fs::create_dir(tmp_lean_root.join("anneal"))?;
+    if let Some(existing) = &existing {
+        let user = existing.root().join("user");
+        if user.try_exists()? {
+            copy_source_tree(&user, &tmp_lean_root.join("user"))?;
+        }
     }
-    std::fs::create_dir_all(tmp_lean_root.join("anneal"))?;
+    let lean_generated_root = tmp_lean_root.join("generated");
 
     // 2. Write Standard Library & Configuration
     let config_content = if args.allow_sorry { "axiom Anneal.allow_sorry : True\n" } else { "" };
@@ -84,14 +108,13 @@ pub fn run_aeneas(
         .context("Failed to write Anneal prelude")?;
 
     // 3. Write Toolchain
-    write_if_changed(
+    write_generated_toolchain(
         &tmp_lean_root.join("lean-toolchain"),
-        &format!("{}\n", env!("ANNEAL_LEAN_TOOLCHAIN")),
+        &format!("{}\n", sdk.root().to_str().context("SDK path is not UTF-8")?),
     )
     .context("Failed to write Lean toolchain")?;
 
     let mut lake_roots = vec!["Generated".to_string()];
-    let toolchain = crate::setup::Toolchain::resolve()?;
 
     for artifact in artifacts {
         if artifact.start_from.is_empty() {
@@ -266,200 +289,282 @@ pub fn run_aeneas(
         lake_roots.push(format!("{}.Types", slug));
     }
 
-    // 4. Write Lakefile
-    //
-    // Aeneas and its Lean dependencies are used directly from the managed
-    // archive. The generated manifest below keeps Lake on the locked dependency
-    // loading path, so package config/build caches can stay read-only.
-    let path = toolchain.aeneas_lean_dir();
-    let aeneas_dep = format!(
-        r#"-- Aeneas rev: {}
-require aeneas from "{}""#,
-        env!("ANNEAL_AENEAS_REV"),
-        path.display()
-    );
-
-    let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
-
-    let lakefile = format!(
-        r#"
-import Lake
-open Lake DSL
-
-{aeneas_dep}
-
-package anneal_verification
-
-@[default_target]
-lean_lib «Generated» where
-  srcDir := "generated"
-  roots := #[{roots_str}]
-
-@[default_target]
-lean_lib «Anneal» where
-  srcDir := "anneal"
-  roots := #[`Config, `Anneal]
-
-lean_lib «User» where
-  srcDir := "user"
-"#
-    );
-    write_if_changed(&tmp_lean_root.join("lakefile.lean"), &lakefile)
-        .context("Failed to write Lakefile")?;
-    write_lake_manifest(&tmp_lean_root, &final_lean_root, &toolchain)
-        .context("Failed to write Lake manifest")?;
-
-    // ATOMIC SWAP: If we successfully generated everything, we now swap the
-    // temporary directory with the real one.
-    let lean_root = roots.lean_root();
-    if lean_root.exists() {
-        // Preserve the `.lake` directory for generated-workspace build/config
-        // caches. The Lake manifest is regenerated in the temporary directory
-        // above because it records paths to the installed toolchain relative
-        // to this generated workspace.
-        let old_lake = lean_root.join(".lake");
-        if old_lake.exists() {
-            fs::rename(&old_lake, tmp_lean_root.join(".lake"))?;
-        }
-
-        // Remove the existing directory before renaming the temporary directory.
-        // Note: `fs::rename` on Unix typically requires the target directory to be
-        // empty if it exists. While not strictly atomic (there is a brief window
-        // where the directory is missing), this prevents a half-written state.
-        log::debug!("Removing existing lean directory: {}", lean_root.display());
-        fs::remove_dir_all(&lean_root).context("Failed to remove existing lean directory")?;
+    // Shared modules belong to the installation, never Lake path packages.
+    fs::create_dir_all(tmp_lean_root.join("user"))?;
+    let folds_case = filesystem_folds_ascii_case(&tmp_lean_root.join(".anneal-sdk.json"))?;
+    let user_modules = local_module_names(&tmp_lean_root.join("user"), folds_case)?;
+    Workspace::write_lakefile(
+        &sdk,
+        &tmp_lean_root,
+        &[
+            LakeLibrary { name: "Generated", source_root: "generated", modules: &lake_roots },
+            LakeLibrary {
+                name: "Anneal",
+                source_root: "anneal",
+                modules: &["Config".into(), "Anneal".into()],
+            },
+            LakeLibrary { name: "User", source_root: "user", modules: &user_modules },
+        ],
+    )?;
+    write_if_changed(&tmp_lean_root.join("lake-manifest.json"), EMPTY_MANIFEST)?;
+    generate_sources(&lean_generated_root, artifacts)?;
+    Workspace::admit_stage(&sdk, &tmp_lean_root, &final_lean_root)?;
+    if let Some(existing) = &existing {
+        preserve_unchanged_mtimes(existing.root(), &tmp_lean_root)?;
+        existing.admit()?;
     }
-
-    log::debug!("Renaming {} to {}", tmp_lean_root.display(), lean_root.display());
-    fs::rename(&tmp_lean_root, &lean_root)
-        .context("Failed to rename temporary lean directory to target")?;
-
+    // Generation failures discard only the new stage. Once output transfer
+    // begins, retain that stage on error so owned incremental outputs survive.
+    let recovery = stage.keep();
+    install_stage(
+        &tmp_lean_root,
+        &final_lean_root,
+        existing.is_some(),
+        || {
+            if let (Some(existing), Some(baseline)) = (&existing, &old_snapshot) {
+                ensure!(
+                    existing.source_stamp()? == baseline.stamp(),
+                    "Lean inputs changed during generation; preserve the edited old workspace"
+                );
+            }
+            Ok(())
+        },
+        |backup| {
+            if let (Some(existing), Some(baseline)) = (&existing, &old_snapshot) {
+                ensure!(
+                    existing.source_stamp_at(backup, baseline)? == baseline.stamp(),
+                    "Lean inputs changed after isolation; preserve the edited old workspace"
+                );
+            }
+            Ok(())
+        },
+    )
+    .with_context(|| format!("Workspace swap failed; recoverable stage: {}", recovery.display()))?;
+    fs::remove_dir(recovery)?;
+    Workspace::open(&sdk, &final_lean_root)?;
     Ok(())
 }
 
-fn write_lake_manifest(
-    manifest_root: &Path,
-    final_workspace_root: &Path,
-    toolchain: &crate::setup::Toolchain,
-) -> Result<()> {
-    // We stage `lake-manifest.json` in the temporary workspace, but Lake reads
-    // it after that directory has been renamed to `final_workspace_root`.
-    //
-    // The final `lean` directory is not the stable object here: it is absent on
-    // first runs, and on reruns it is the old workspace that will be replaced.
-    // Canonicalize the parent and append the final leaf so manifest paths are
-    // relative to the post-rename workspace location.
-    let final_workspace_root = canonical_path_after_create_or_replace(final_workspace_root)
-        .with_context(|| {
-            format!("Failed to resolve final Lean workspace {}", final_workspace_root.display())
-        })?;
-    let manifest = generated_lake_manifest(&final_workspace_root, toolchain)?;
-    let mut contents =
-        serde_json::to_string_pretty(&manifest).context("Failed to serialize Lake manifest")?;
-    contents.push('\n');
-    write_if_changed(&manifest_root.join("lake-manifest.json"), &contents)
+const EMPTY_MANIFEST: &str = r#"{
+  "version": "1.2.0", "packagesDir": ".lake/packages", "packages": [],
+  "name": "anneal_verification", "lakeDir": ".lake", "fixedToolchain": true
+}
+"#;
+
+fn local_module_names(root: &Path, folds_case: bool) -> Result<Vec<String>> {
+    let mut modules = Vec::new();
+    for entry in walkdir::WalkDir::new(root).follow_links(false) {
+        let entry = entry?;
+        ensure!(!entry.file_type().is_symlink(), "Local source contains a symlink");
+        if entry.file_type().is_file()
+            && entry
+                .path()
+                .extension()
+                .and_then(|s| s.to_str())
+                .is_some_and(|s| s == "lean" || (folds_case && s.eq_ignore_ascii_case("lean")))
+        {
+            let relative = entry.path().strip_prefix(root)?.with_extension("");
+            let parts = relative
+                .iter()
+                .map(|part| part.to_str().context("Non-UTF8 Lean module path"))
+                .collect::<Result<Vec<_>>>()?;
+            // Match the SDK's ASCII module-component grammar. Other filenames
+            // remain copied saved inputs, but cannot provide imported modules
+            // or appear in the generated User library's globs.
+            if !parts.iter().all(|part| {
+                let mut chars = part.bytes();
+                chars.next().is_some_and(|c| c.is_ascii_alphabetic() || c == b'_')
+                    && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b'\''))
+            }) {
+                continue;
+            }
+            modules.push(parts.join("."));
+        }
+    }
+    modules.sort();
+    Ok(modules)
 }
 
-fn generated_lake_manifest(
-    workspace_root: &Path,
-    toolchain: &crate::setup::Toolchain,
-) -> Result<Value> {
-    let aeneas_lean_dir = fs::canonicalize(toolchain.aeneas_lean_dir()).with_context(|| {
-        format!(
-            "Failed to resolve Aeneas Lake package directory {}",
-            toolchain.aeneas_lean_dir().display()
-        )
-    })?;
-    let aeneas_manifest_path = aeneas_lean_dir.join("lake-manifest.json");
-    let aeneas_manifest_file = fs::File::open(&aeneas_manifest_path)
-        .with_context(|| format!("Failed to open {}", aeneas_manifest_path.display()))?;
-    let aeneas_manifest: Value = serde_json::from_reader(aeneas_manifest_file)
-        .with_context(|| format!("Failed to parse {}", aeneas_manifest_path.display()))?;
-    let aeneas_packages =
-        aeneas_manifest.get("packages").and_then(Value::as_array).with_context(|| {
+fn copy_source_tree(source: &Path, destination: &Path) -> Result<()> {
+    ensure!(fs::symlink_metadata(source)?.is_dir(), "Source directory is not physical");
+    fs::create_dir(destination)?;
+    for entry in fs::read_dir(source)? {
+        let entry = entry?;
+        let kind = entry.file_type()?;
+        ensure!(!kind.is_symlink(), "Source contains a symlink");
+        if kind.is_dir() {
+            copy_source_tree(&entry.path(), &destination.join(entry.file_name()))?;
+        } else {
+            ensure!(kind.is_file(), "Source contains a special file");
+            fs::copy(entry.path(), destination.join(entry.file_name()))?;
+        }
+    }
+    Ok(())
+}
+
+fn preserve_unchanged_mtimes(old: &Path, stage: &Path) -> Result<()> {
+    for entry in walkdir::WalkDir::new(stage).follow_links(false) {
+        let entry = entry?;
+        if !entry.file_type().is_file() {
+            continue;
+        }
+        let path = entry.path();
+        let prior = old.join(path.strip_prefix(stage)?);
+        if prior.is_file() && fs::read(&prior)? == fs::read(path)? {
+            let modified = fs::metadata(prior)?.modified()?;
+            set_staged_source_mtime(path, modified)?;
+        }
+    }
+    Ok(())
+}
+
+fn set_staged_source_mtime(path: &Path, modified: std::time::SystemTime) -> Result<()> {
+    let times = fs::FileTimes::new().set_modified(modified);
+    #[cfg(unix)]
+    {
+        // futimens needs a readable descriptor and ownership, not data-write
+        // access. A copied 0444 source must stay 0444 throughout regeneration.
+        fs::File::open(path)?.set_times(times)?;
+    }
+    #[cfg(not(unix))]
+    {
+        // Windows SetFileTime needs write-attributes access. Only the private
+        // staged copy is adjusted; always restore its original permissions.
+        let permissions = fs::metadata(path)?.permissions();
+        if permissions.readonly() {
+            let mut writable = permissions.clone();
+            writable.set_readonly(false);
+            fs::set_permissions(path, writable)?;
+        }
+        let result =
+            fs::File::options().write(true).open(path).and_then(|file| file.set_times(times));
+        fs::set_permissions(path, permissions)?;
+        result?;
+    }
+    Ok(())
+}
+
+fn path_entry_exists(path: &Path) -> Result<bool> {
+    match fs::symlink_metadata(path) {
+        Ok(_) => Ok(true),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(false),
+        Err(error) => Err(error.into()),
+    }
+}
+
+/// A same-SDK source replacement transfers whole owned output trees. A failed
+/// transfer leaves named recovery objects; it never adopts a partial workspace.
+/// A late source change retains the installed workspace and isolated backup.
+fn install_stage(
+    stage: &Path,
+    final_root: &Path,
+    existing: bool,
+    validate_live: impl FnOnce() -> Result<()>,
+    mut validate_isolated: impl FnMut(&Path) -> Result<()>,
+) -> Result<()> {
+    let backup = final_root.with_extension("previous");
+    ensure!(
+        !path_entry_exists(&backup)?,
+        "Interrupted workspace swap at {}; preserve/recover it before retry",
+        backup.display()
+    );
+    if !existing {
+        fs::rename(stage, final_root)?;
+        return Ok(());
+    }
+    // Compare the complete live snapshot before our rename changes the root's
+    // metadata. The post-isolation check still catches saves across this boundary.
+    validate_live().context("Source replacement refused before workspace isolation")?;
+    fs::rename(final_root, &backup)?;
+    if let Err(error) = validate_isolated(&backup) {
+        // Saves through the workspace path no longer reach this tree. Check
+        // after isolation, and restore it before moving incremental outputs.
+        // If another writer recreated the old path, retain both trees.
+        if !path_entry_exists(final_root)? {
+            fs::rename(&backup, final_root).context("Failed to restore edited workspace")?;
+        }
+        return Err(error).context(format!(
+            "Source replacement refused; edited sources retained at {} or {}",
+            final_root.display(),
+            backup.display()
+        ));
+    }
+    for private in [".lake", ".runtime"] {
+        fs::rename(backup.join(private), stage.join(private)).with_context(|| {
             format!(
-                "Aeneas Lake manifest {} is missing a packages array",
-                aeneas_manifest_path.display()
+                "Output transfer failed; old sources at {}, new stage at {}",
+                backup.display(),
+                stage.display()
             )
         })?;
-
-    let mut packages = Vec::with_capacity(aeneas_packages.len() + 1);
-    let aeneas_lean_dir_manifest_path =
-        path_to_manifest_string(&relative_manifest_path(&aeneas_lean_dir, workspace_root)?);
-    packages.push(json!({
-        "type": "path",
-        "name": "aeneas",
-        "dir": aeneas_lean_dir_manifest_path,
-        "inherited": false,
-    }));
-
-    for entry in aeneas_packages {
-        let mut entry = entry
-            .as_object()
-            .cloned()
-            .context("Aeneas Lake manifest package entry is not an object")?;
-        let package_name = entry.get("name").and_then(Value::as_str).unwrap_or("<unknown>");
-        let package_type = entry.get("type").and_then(Value::as_str).with_context(|| {
-            format!("Aeneas Lake manifest package entry {package_name} is missing type")
-        })?;
-        ensure!(
-            package_type == "path",
-            "Aeneas Lake manifest package entry {package_name} is {package_type:?}, not a path dependency"
-        );
-        let package_dir = entry.get("dir").and_then(Value::as_str).with_context(|| {
-            format!("Aeneas Lake manifest package entry {package_name} is missing dir")
-        })?;
-        let package_dir = Path::new(package_dir);
-        let package_dir = if package_dir.is_absolute() {
-            package_dir.to_path_buf()
-        } else {
-            aeneas_lean_dir.join(package_dir)
-        };
-        let package_dir = fs::canonicalize(&package_dir)
-            .with_context(|| format!("Failed to resolve Lake package {}", package_dir.display()))?;
-        let package_dir_manifest_path =
-            path_to_manifest_string(&relative_manifest_path(&package_dir, workspace_root)?);
-        entry.insert("dir".to_string(), json!(package_dir_manifest_path));
-        entry.insert("inherited".to_string(), json!(true));
-        packages.push(Value::Object(entry));
     }
-
-    Ok(json!({
-        "version": "1.2.0",
-        "packagesDir": ".lake/packages",
-        "packages": packages,
-        "name": "anneal_verification",
-        "lakeDir": ".lake",
-        "fixedToolchain": false,
-    }))
+    prune_orphan_outputs(stage)?;
+    fs::rename(stage, final_root).with_context(|| {
+        format!("New workspace install failed; old sources at {}", backup.display())
+    })?;
+    // An already-open source descriptor can still write into the isolated tree
+    // during transfer/pruning. Check it again before discarding that tree; a
+    // late failure must retain both installed outputs and the edited backup.
+    validate_isolated(&backup).with_context(|| {
+        format!(
+            "Workspace installed at {}, but isolated source validation failed; backup retained at {}; recover before retry",
+            final_root.display(),
+            backup.display()
+        )
+    })?;
+    fs::remove_dir_all(&backup).with_context(|| {
+        format!("Workspace installed, but old source cleanup failed at {}", backup.display())
+    })?;
+    Ok(())
 }
 
-/// Resolves the path a child will have once it is created under its current parent.
-///
-/// This canonicalizes ancestors without resolving the final component, which
-/// may be missing or may name an old object that is about to be replaced.
-fn canonical_path_after_create_or_replace(path: &Path) -> Result<PathBuf> {
-    let parent = path.parent().with_context(|| format!("Path {} has no parent", path.display()))?;
-    let parent = fs::canonicalize(parent)
-        .with_context(|| format!("Failed to resolve parent {}", parent.display()))?;
-    let file_name =
-        path.file_name().with_context(|| format!("Path {} has no file name", path.display()))?;
-    Ok(parent.join(file_name))
+/// LEAN_PATH puts these owned outputs first, so every reused module needs a
+/// current local source provider. Keep the artifacts of surviving modules and
+/// remove deleted modules' compiler outputs and Lake traces together.
+fn prune_orphan_outputs(stage: &Path) -> Result<()> {
+    let folds_case = filesystem_folds_ascii_case(&stage.join(".anneal-sdk.json"))?;
+    let mut modules = std::collections::BTreeSet::new();
+    for source_root in SOURCE_ROOTS {
+        let source_root = stage.join(source_root);
+        if source_root.try_exists()? {
+            modules.extend(local_module_names(&source_root, folds_case)?);
+        }
+    }
+    for output_root in [".lake/build/lib/lean", ".lake/build/ir"] {
+        let output_root = stage.join(output_root);
+        if !output_root.try_exists()? {
+            continue;
+        }
+        for entry in walkdir::WalkDir::new(&output_root).follow_links(false) {
+            let entry = entry?;
+            ensure!(!entry.file_type().is_symlink(), "Private output contains a symlink");
+            if !entry.file_type().is_file() {
+                continue;
+            }
+            let relative = entry.path().strip_prefix(&output_root)?;
+            let leaf =
+                relative.file_name().and_then(|s| s.to_str()).context("Non-UTF8 output path")?;
+            let Some((module_leaf, _)) = leaf.split_once('.') else { continue };
+            let module = relative
+                .with_file_name(module_leaf)
+                .iter()
+                .map(|part| part.to_str().context("Non-UTF8 output path"))
+                .collect::<Result<Vec<_>>>()?
+                .join(".");
+            // Resolve source paths on their actual filesystem; this also
+            // handles case aliases on an insensitive output/source volume.
+            let source = relative.with_file_name(format!("{module_leaf}.lean"));
+            let present = modules.contains(&module)
+                || SOURCE_ROOTS.iter().any(|root| stage.join(root).join(&source).is_file());
+            if !present {
+                fs::remove_file(entry.path())?;
+            }
+        }
+    }
+    Ok(())
 }
 
-fn relative_manifest_path(path: &Path, base: &Path) -> Result<PathBuf> {
-    pathdiff::diff_paths(path, base).with_context(|| {
-        format!("Failed to compute relative path from {} to {}", base.display(), path.display())
-    })
-}
-
-fn path_to_manifest_string(path: &Path) -> String {
-    path.to_string_lossy().into_owned()
-}
-
-/// Generates Anneal `Specs.lean` and writes `Generated.lean`, but does not run the `lake build`.
-pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
-    let lean_generated_root = roots.lean_generated_root();
+fn generate_sources(lean_generated_root: &Path, artifacts: &[AnnealArtifact]) -> Result<()> {
     let mut generated_imports = String::new();
 
     for artifact in artifacts {
@@ -475,13 +580,13 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
         let specs_path = output_dir.join(artifact.lean_spec_file_name());
         let map_path = output_dir.join(format!("{}.lean.map", artifact.artifact_slug()));
 
-        std::fs::write(&specs_path, &generated.code)
+        write_if_changed(&specs_path, &generated.code)
             .with_context(|| format!("Failed to write specs to {}", specs_path.display()))?;
 
         // Write Source Map
         let map_json = serde_json::to_string(&generated.mappings)
             .context("Failed to serialize source mappings")?;
-        std::fs::write(&map_path, map_json)
+        write_if_changed(&map_path, &map_json)
             .with_context(|| format!("Failed to write source map to {}", map_path.display()))?;
 
         // Build imports for Generated.lean
@@ -505,7 +610,6 @@ pub fn generate_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]
 /// Completes Lean verification by generating Anneal `Specs.lean`, writing `Generated.lean`,
 /// and running `lake build` + diagnostics.
 pub fn verify_lean_workspace(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
-    generate_lean_workspace(roots, artifacts)?;
     run_lake(roots, artifacts)
 }
 
@@ -518,14 +622,13 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    // 2. Build the project (dependencies only)
-    let toolchain = crate::setup::Toolchain::resolve()?;
-    let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
-    cmd.args(["--keep-toolchain", "--old", "build", "Generated", "Anneal"]);
-    cmd.current_dir(lean_root);
-    configure_lake_command(&mut cmd, &toolchain)?;
-    cmd.stdout(Stdio::piped());
-    cmd.stderr(Stdio::piped());
+    let workspace = Workspace::from_root(lean_root)?;
+    // The command pipeline holds the workspace writer lease through this
+    // build. Only a completed build of unchanged inputs may retain provenance.
+    let prepared = workspace.prepare_local_outputs()?;
+    let stamp = prepared.stamp();
+    let targets = ["Generated".into(), "Anneal".into()];
+    let mut cmd = workspace.lake_command(LakeOperation::Build(&targets))?;
 
     let start = std::time::Instant::now();
     let pb = ProgressBar::new_spinner();
@@ -545,6 +648,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
             String::from_utf8_lossy(&output.stderr)
         );
     }
+    workspace.finish_local_outputs(&prepared)?;
 
     // 3. Run Diagnostics
     log::info!("Running Lean diagnostics...");
@@ -557,14 +661,22 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
         // We construct the relative path from the Lake root (which is `target/anneal/<hash>/lean`)
         let specs_rel_path = format!("generated/{}/{}", slug, artifact.lean_spec_file_name());
 
-        let mut cmd = std::process::Command::new(toolchain.lean_bin().join("lake"));
-        cmd.args(["--keep-toolchain", "env", "lean", "--json", &specs_rel_path]);
-        cmd.current_dir(lean_root);
-        configure_lake_command(&mut cmd, &toolchain)?;
-        cmd.stdout(Stdio::piped());
-        cmd.stderr(Stdio::piped());
-
-        let output = cmd.output().context("Failed to run lean compiler")?;
+        // Setup-file builds the actual saved transitive local imports, including
+        // user imports absent from the generated default roots. Direct startup
+        // alone could otherwise verify stale private OLeans.
+        crate::lean_gateway::setup_saved_imports(&workspace, Path::new(&specs_rel_path))?;
+        ensure!(
+            workspace.source_stamp()? == stamp,
+            "Lean inputs changed during build; verification is obsolete"
+        );
+        let output = workspace
+            .lean_command(LeanOperation::Check { file: Path::new(&specs_rel_path), json: true })?
+            .output()
+            .context("Failed to run Lean compiler")?;
+        ensure!(
+            workspace.source_stamp()? == stamp,
+            "Lean inputs changed during verification; result is obsolete"
+        );
 
         let (diags, failed) = diagnostic_output(&output)?;
         has_errors |= failed;
@@ -651,62 +763,6 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn configure_lake_command(
-    cmd: &mut std::process::Command,
-    toolchain: &crate::setup::Toolchain,
-) -> Result<()> {
-    // FIXME: Replace this with a cleaner toolchain/archive contract.
-    //
-    // The Nix-built archive contains prebuilt Lake outputs for the vendored
-    // Aeneas package, and generated verification workspaces require that
-    // package directly from the installed archive. That is only sound if Lake
-    // evaluates Aeneas with the same build configuration that was used when the
-    // archive was produced.
-    //
-    // Aeneas' Lakefile currently makes one of those build settings depend on
-    // the ambient `CI` environment variable:
-    //
-    //     precompileModules := (IO.getEnv "CI").isNone
-    //
-    // Our archive is built without `CI` in the environment, but GitHub Actions
-    // sets `CI=true` for normal workflow steps. If we let that variable reach
-    // this child process, Lake observes a different Aeneas package config than
-    // the one recorded in the archive traces. It then invalidates the prebuilt
-    // cache and attempts to rebuild/remove files below the installed archive's
-    // read-only `.lake/build`.
-    //
-    // Scrubbing `CI` here keeps local runs, example CI jobs, and the integration
-    // test harness aligned with the archive build environment. A cleaner future
-    // solution would make the archive's Lake configuration explicit and
-    // environment-independent, or otherwise arrange for Anneal to request the
-    // exact same Aeneas build variant that the archive contains.
-    cmd.env_remove("CI");
-
-    cmd.env("LEAN_SYSROOT", toolchain.lean_sysroot());
-    cmd.env("MATHLIB_NO_CACHE_ON_UPDATE", "1");
-    cmd.env("PATH", prepend_paths_to_env_var("PATH", &[toolchain.lean_bin()])?);
-
-    let lib_env_var =
-        if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" };
-    cmd.env(
-        lib_env_var,
-        prepend_paths_to_env_var(
-            lib_env_var,
-            &[toolchain.lean_sysroot().join("lib"), toolchain.lean_sysroot().join("lib/lean")],
-        )?,
-    );
-
-    Ok(())
-}
-
-fn prepend_paths_to_env_var(var_name: &str, new_paths: &[PathBuf]) -> Result<OsString> {
-    let mut paths = new_paths.to_vec();
-    if let Some(existing) = std::env::var_os(var_name) {
-        paths.extend(std::env::split_paths(&existing));
-    }
-    std::env::join_paths(paths).with_context(|| format!("Failed to prepend paths to {var_name}"))
 }
 
 /// Process status and structured error diagnostics are independent failure
@@ -928,12 +984,436 @@ fn write_if_changed(path: &std::path::Path, content: &str) -> Result<()> {
     Ok(())
 }
 
+pub(crate) fn write_generated_toolchain(path: &Path, content: &str) -> Result<()> {
+    let mut options = fs::OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        options.mode(0o600);
+    }
+    let mut file = options.open(path)?;
+    std::io::Write::write_all(&mut file, content.as_bytes())?;
+    Ok(())
+}
+
+pub(crate) fn create_missing_private_lean_directory(path: &Path) -> Result<()> {
+    match fs::symlink_metadata(path) {
+        Ok(metadata) => {
+            ensure!(metadata.is_dir(), "Generated Lean parent is not a physical directory");
+            return Ok(());
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    let mut builder = fs::DirBuilder::new();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::DirBuilderExt as _;
+        builder.mode(0o700);
+    }
+    // The run root already exists under LockedRoots. Only create this missing
+    // generated `lean` directory; never chmod an existing path.
+    builder.create(path)?;
+    Ok(())
+}
+
+/// The run-root lock and SDK workspace lock both live in Anneal-owned
+/// directories. Existing caller-owned ancestors are not silently chmodded.
+pub(crate) fn admit_private_anneal_lock_directory(path: &Path) -> Result<()> {
+    create_missing_private_lean_directory(path)?;
+    let before = fs::symlink_metadata(path)?;
+    ensure!(before.is_dir(), "Lean lock parent is not a physical directory");
+    #[cfg(unix)]
+    admit_anneal_lock_directory_ancestry(path)?;
+    Ok(())
+}
+
+#[cfg(unix)]
+fn admit_anneal_lock_directory_ancestry(path: &Path) -> Result<()> {
+    use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
+
+    unsafe extern "C" {
+        fn geteuid() -> u32;
+    }
+    // SAFETY: geteuid takes no arguments and has no side effects.
+    let uid = unsafe { geteuid() };
+    let mut paths = path.ancestors().map(Path::to_owned).collect::<Vec<_>>();
+    paths.reverse();
+    let mut observed = Vec::with_capacity(paths.len());
+    for (index, ancestor) in paths.iter().enumerate() {
+        let metadata = fs::symlink_metadata(ancestor)?;
+        ensure!(metadata.is_dir(), "Lean lock path traverses a nonphysical directory");
+        ensure!(
+            metadata.uid() == uid || metadata.uid() == 0,
+            "Lean lock path has an untrusted owner: {}",
+            ancestor.display()
+        );
+        let mode = metadata.permissions().mode();
+        #[cfg(target_os = "macos")]
+        check_non_granting_lean_parent_acl(ancestor, &metadata)?;
+        if ancestor == path {
+            ensure!(
+                metadata.uid() == uid && mode & 0o777 == 0o700,
+                "Lean lock parent must be invoking-user owned and mode 0700: {}",
+                ancestor.display()
+            );
+        } else if mode & 0o022 != 0 {
+            // A sticky public ancestor protects only entries owned by the
+            // invoking account or trusted root. Other writable ancestry can
+            // rename the private child after this one-time admission.
+            let child = fs::symlink_metadata(&paths[index + 1])?;
+            ensure!(
+                mode & 0o1000 != 0 && child.is_dir() && (child.uid() == uid || child.uid() == 0),
+                "Lean lock path permits cross-account replacement: {}",
+                ancestor.display()
+            );
+        }
+        observed.push((ancestor, metadata));
+    }
+    for (ancestor, before) in observed {
+        let after = fs::symlink_metadata(ancestor)?;
+        ensure!(
+            after.is_dir()
+                && after.dev() == before.dev()
+                && after.ino() == before.ino()
+                && after.uid() == before.uid()
+                && after.permissions().mode() == before.permissions().mode(),
+            "Lean lock path changed during admission: {}",
+            ancestor.display()
+        );
+    }
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+fn check_non_granting_lean_parent_acl(path: &Path, before: &fs::Metadata) -> Result<()> {
+    use std::{
+        ffi::{CString, c_void},
+        os::unix::ffi::OsStrExt as _,
+    };
+
+    unsafe extern "C" {
+        fn acl_get_file(path: *const std::ffi::c_char, kind: i32) -> *mut c_void;
+        fn acl_valid(acl: *mut c_void) -> i32;
+        fn acl_get_entry(acl: *mut c_void, selector: i32, entry: *mut *mut c_void) -> i32;
+        fn acl_get_tag_type(entry: *mut c_void, tag: *mut i32) -> i32;
+        fn acl_free(acl: *mut c_void) -> i32;
+    }
+    let name = CString::new(path.as_os_str().as_bytes())?;
+    // SAFETY: name remains live and NUL-terminated throughout the call.
+    let acl = unsafe { acl_get_file(name.as_ptr(), 0x100) };
+    if acl.is_null() {
+        let error = std::io::Error::last_os_error();
+        ensure!(
+            error.raw_os_error() == Some(2) && same_lean_parent(path, before)?,
+            "Inspect Lean lock parent ACL: {}: {error}",
+            path.display()
+        );
+        return Ok(());
+    }
+    let result = (|| -> Result<()> {
+        // SAFETY: acl is live until acl_free below.
+        ensure!(unsafe { acl_valid(acl) } == 0, "Invalid Lean lock parent ACL");
+        let mut entry = std::ptr::null_mut();
+        // Darwin ACL_FIRST_ENTRY is 0; an allocated empty ACL is unsupported.
+        ensure!(
+            unsafe { acl_get_entry(acl, 0, &mut entry) } == 0 && !entry.is_null(),
+            "Lean lock parent ACL has no readable first entry"
+        );
+        for index in 0..128 {
+            let mut tag = 0;
+            // Darwin ACL_EXTENDED_DENY is 2. ALLOW and unknown tags fail closed.
+            ensure!(
+                unsafe { acl_get_tag_type(entry, &mut tag) } == 0 && tag == 2,
+                "Lean lock parent ACL grants or has unknown authority"
+            );
+            entry = std::ptr::null_mut();
+            let status = unsafe { acl_get_entry(acl, -1, &mut entry) };
+            if status == -1 {
+                ensure!(
+                    std::io::Error::last_os_error().raw_os_error() == Some(22),
+                    "Incomplete Lean lock parent ACL traversal"
+                );
+                return Ok(());
+            }
+            ensure!(
+                status == 0 && !entry.is_null() && index + 1 < 128,
+                "Lean lock parent ACL exceeds 128 entries"
+            );
+        }
+        unreachable!("ACL traversal must end or reject an extra entry")
+    })();
+    // SAFETY: free the exact non-null ACL returned above after traversal.
+    ensure!(unsafe { acl_free(acl) } == 0, "Free Lean lock parent ACL");
+    result?;
+    ensure!(same_lean_parent(path, before)?, "Lean lock parent changed during ACL admission");
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+fn same_lean_parent(path: &Path, before: &fs::Metadata) -> Result<bool> {
+    use std::os::unix::fs::MetadataExt as _;
+    let after = fs::symlink_metadata(path)?;
+    Ok(after.is_dir()
+        && before.dev() == after.dev()
+        && before.ino() == after.ino()
+        && before.uid() == after.uid())
+}
+
 #[cfg(test)]
 mod tests {
-    use std::path::{Path, PathBuf};
+    use std::path::PathBuf;
 
     use super::*;
     use crate::generate::{MappingKind, SourceMapping};
+
+    #[cfg(unix)]
+    #[test]
+    fn generated_lean_directory_and_toolchain_stay_private_under_group_umask() {
+        use std::os::unix::fs::PermissionsExt;
+
+        const CHILD: &str = "ANNEAL_AENEAS_GROUP_UMASK_CHILD";
+        if std::env::var_os(CHILD).is_none() {
+            let output = std::process::Command::new(std::env::current_exe().unwrap())
+                .arg("generated_lean_directory_and_toolchain_stay_private_under_group_umask")
+                .arg("--test-threads=1")
+                .env(CHILD, "1")
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{}{}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            );
+            return;
+        }
+
+        unsafe extern "C" {
+            fn umask(mode: u32) -> u32;
+        }
+        // SAFETY: the filtered test runs alone in this child process.
+        let previous = unsafe { umask(0o002) };
+        #[cfg(target_os = "macos")]
+        let temp = tempfile::tempdir_in("/private/tmp").unwrap();
+        #[cfg(not(target_os = "macos"))]
+        let temp = tempfile::tempdir().unwrap();
+        let lean = temp.path().join("lean");
+        create_missing_private_lean_directory(&lean).unwrap();
+        assert_eq!(fs::metadata(&lean).unwrap().permissions().mode() & 0o777, 0o700);
+        let toolchain = lean.join("lean-toolchain");
+        write_generated_toolchain(&toolchain, "inert SDK path\n").unwrap();
+        assert_eq!(fs::metadata(&toolchain).unwrap().permissions().mode() & 0o777, 0o600);
+        assert_eq!(fs::read_to_string(toolchain).unwrap(), "inert SDK path\n");
+
+        let existing = temp.path().join("existing-lean");
+        fs::create_dir(&existing).unwrap();
+        assert_eq!(fs::metadata(&existing).unwrap().permissions().mode() & 0o777, 0o775);
+        create_missing_private_lean_directory(&existing).unwrap();
+        assert_eq!(fs::metadata(&existing).unwrap().permissions().mode() & 0o777, 0o775);
+        // SAFETY: restore this child's prior process-wide umask.
+        unsafe { umask(previous) };
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn lock_parent_rejects_existing_public_directory_without_chmod() {
+        use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+        #[cfg(target_os = "macos")]
+        let temp = tempfile::tempdir_in("/private/tmp").unwrap();
+        #[cfg(not(target_os = "macos"))]
+        let temp = tempfile::tempdir().unwrap();
+        let private = temp.path().join("private-lean");
+        admit_private_anneal_lock_directory(&private).unwrap();
+        assert_eq!(fs::metadata(&private).unwrap().permissions().mode() & 0o777, 0o700);
+
+        let public = temp.path().join("public-lean");
+        fs::create_dir(&public).unwrap();
+        fs::set_permissions(&public, fs::Permissions::from_mode(0o755)).unwrap();
+        assert!(admit_private_anneal_lock_directory(&public).is_err());
+        assert_eq!(fs::metadata(&public).unwrap().permissions().mode() & 0o777, 0o755);
+
+        let alias = temp.path().join("alias-lean");
+        symlink(&private, &alias).unwrap();
+        assert!(admit_private_anneal_lock_directory(&alias).is_err());
+
+        let run_root = temp.path().join("existing-run-root");
+        fs::create_dir(&run_root).unwrap();
+        fs::set_permissions(&run_root, fs::Permissions::from_mode(0o755)).unwrap();
+        let lock_parent = run_root.join("lean");
+        admit_private_anneal_lock_directory(&lock_parent).unwrap();
+        assert_eq!(fs::metadata(&run_root).unwrap().permissions().mode() & 0o777, 0o755);
+
+        fs::set_permissions(&run_root, fs::Permissions::from_mode(0o775)).unwrap();
+        assert!(admit_private_anneal_lock_directory(&lock_parent).is_err());
+        assert!(!lock_parent.join("sdk-id.lock").exists());
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn lock_parent_allows_only_non_granting_extended_acls() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        fn add_acl(path: &Path, entry: &str) {
+            let status = std::process::Command::new("/bin/chmod")
+                .args(["+a", entry])
+                .arg(path)
+                .status()
+                .unwrap();
+            assert!(status.success());
+        }
+
+        let temp = tempfile::tempdir_in("/private/tmp").unwrap();
+        let deny = temp.path().join("deny");
+        let allow = temp.path().join("allow");
+        fs::create_dir(&deny).unwrap();
+        fs::create_dir(&allow).unwrap();
+        fs::set_permissions(&deny, fs::Permissions::from_mode(0o700)).unwrap();
+        fs::set_permissions(&allow, fs::Permissions::from_mode(0o700)).unwrap();
+        add_acl(&deny, "everyone deny delete");
+        admit_private_anneal_lock_directory(&deny).unwrap();
+        add_acl(&allow, "everyone allow add_file");
+        assert!(admit_private_anneal_lock_directory(&allow).is_err());
+    }
+
+    #[test]
+    fn local_module_names_follow_source_paths() {
+        let temp = tempfile::tempdir().unwrap();
+        fs::create_dir(temp.path().join("Shared")).unwrap();
+        fs::write(temp.path().join("Shared/Local.lean"), "def localValue := 1").unwrap();
+        fs::write(temp.path().join("README.txt"), "ignored").unwrap();
+        let modules = local_module_names(temp.path(), false).unwrap();
+        assert_eq!(modules, ["Shared.Local"]);
+        fs::write(temp.path().join("Shared.Ambiguous.lean"), "").unwrap();
+        assert_eq!(local_module_names(temp.path(), false).unwrap(), ["Shared.Local"]);
+    }
+
+    #[test]
+    fn local_module_names_filter_nonprovider_components_without_losing_valid_modules() {
+        let temp = tempfile::tempdir().unwrap();
+        for path in [
+            "Alpha2.lean",
+            "Foo/Bar.lean",
+            "_Scratch/Proof_1'.lean",
+            "Foo.Bar.lean",
+            "scratch-test.lean",
+            "9Scratch.lean",
+            "scratch-test/Valid.lean",
+            "Dot.Dir/Valid.lean",
+            "9Dir/Valid.lean",
+        ] {
+            let path = temp.path().join(path);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, "def value := 1\n").unwrap();
+        }
+        for folds_case in [false, true] {
+            assert_eq!(
+                local_module_names(temp.path(), folds_case).unwrap(),
+                ["Alpha2", "Foo.Bar", "_Scratch.Proof_1'"]
+            );
+        }
+    }
+
+    #[test]
+    fn preserved_nonprovider_files_survive_user_configuration_and_stay_stamped() {
+        let fixture = crate::lean_sdk::tests::Fixture::new(&["Foo.Bar"]);
+        let temp = tempfile::tempdir().unwrap();
+        let old_user = temp.path().join("old-user");
+        let files = [
+            ("Foo.Bar.lean", "def dotted := 1\n"),
+            ("scratch-test.lean", "def scratch := 2\n"),
+            ("scratch-test/Valid.lean", "def nestedScratch := 3\n"),
+            ("Dot.Dir/Valid.lean", "def dottedDirectory := 4\n"),
+            ("9Dir/Valid.lean", "def numberedDirectory := 5\n"),
+            ("Kept/Proof.lean", "def kept := 6\n"),
+            ("notes.txt", "preserved local data\n"),
+        ];
+        for (relative, bytes) in files {
+            let path = old_user.join(relative);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, bytes).unwrap();
+        }
+        // The SDK is an inert owned-file fixture; no compiler is launched.
+        let workspace =
+            Workspace::create(&fixture.sdk, &temp.path().join("workspace"), &["user"]).unwrap();
+        let user = workspace.root().join("user");
+        copy_source_tree(&old_user, &user).unwrap();
+        let modules = local_module_names(&user, workspace.folds_ascii_case().unwrap()).unwrap();
+        assert_eq!(modules, ["Kept.Proof"]);
+        Workspace::write_lakefile(
+            &fixture.sdk,
+            workspace.root(),
+            &[LakeLibrary { name: "User", source_root: "user", modules: &modules }],
+        )
+        .unwrap();
+        workspace.admit().unwrap();
+        let configuration: serde_json::Value =
+            serde_json::from_slice(&fs::read(workspace.root().join(".anneal-lake.json")).unwrap())
+                .unwrap();
+        assert_eq!(configuration["libraries"][0]["modules"], serde_json::json!(["Kept.Proof"]));
+        for (relative, bytes) in files {
+            assert_eq!(fs::read(user.join(relative)).unwrap(), bytes.as_bytes());
+            assert_eq!(fs::read(old_user.join(relative)).unwrap(), bytes.as_bytes());
+        }
+        let before = workspace.source_stamp().unwrap();
+        fs::write(user.join("Foo.Bar.lean"), "def dotted := 7\n").unwrap();
+        assert_ne!(workspace.source_stamp().unwrap(), before);
+
+        // Filtering the flat filename must not hide a real SDK collision.
+        fs::create_dir(user.join("Foo")).unwrap();
+        fs::write(user.join("Foo/Bar.lean"), "def provider := 8\n").unwrap();
+        assert!(
+            workspace.admit().unwrap_err().to_string().contains("Local/SDK exact module collision")
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn nonprovider_directories_do_not_hide_symlinks_from_module_enumeration() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        fs::create_dir(temp.path().join("scratch-test")).unwrap();
+        fs::write(temp.path().join("Proof.lean"), "def value := 1\n").unwrap();
+        symlink("../Proof.lean", temp.path().join("scratch-test/Link.lean")).unwrap();
+        assert!(
+            local_module_names(temp.path(), false)
+                .unwrap_err()
+                .to_string()
+                .contains("Local source contains a symlink")
+        );
+    }
+
+    #[test]
+    fn local_module_enumeration_uses_suffix_equivalence_without_changing_module_spelling() {
+        let temp = tempfile::tempdir().unwrap();
+        fs::create_dir(temp.path().join("MiXeD")).unwrap();
+        for name in ["LoWeR.lean", "MiDdLe.LeAn", "UpPeR.LEAN", "Ignored.LEAN.bak"] {
+            fs::write(temp.path().join("MiXeD").join(name), "def localValue := 1\n").unwrap();
+        }
+        let exact = local_module_names(temp.path(), false).unwrap();
+        assert_eq!(exact, ["MiXeD.LoWeR"]);
+        let folded = local_module_names(temp.path(), true).unwrap();
+        assert_eq!(folded, ["MiXeD.LoWeR", "MiXeD.MiDdLe", "MiXeD.UpPeR"]);
+
+        // This toy fixture observes only filesystem equivalence; it is not an
+        // admitted workspace or an executable SDK/configuration binding.
+        let marker = temp.path().join(".anneal-sdk.json");
+        fs::write(&marker, "case-probe fixture").unwrap();
+        let measured = filesystem_folds_ascii_case(&marker).unwrap();
+        if !measured {
+            // Existence of a differently cased sibling must not turn an exact
+            // filesystem into a folding one: the probe compares dev/inode.
+            fs::write(temp.path().join(".ANNEAL-SDK.JSON"), "distinct case-probe fixture").unwrap();
+            assert!(!filesystem_folds_ascii_case(&marker).unwrap());
+        }
+        assert_eq!(
+            local_module_names(temp.path(), measured).unwrap(),
+            if measured { folded } else { exact }
+        );
+    }
 
     fn mk_diag(msg: &str, start: usize, end: usize) -> LeanDiagnostic {
         LeanDiagnostic {
@@ -972,76 +1452,316 @@ mod tests {
     }
 
     #[test]
-    fn generated_lake_manifest_locks_archive_path_dependencies_relative_to_future_workspace() {
+    fn interrupted_swap_preserves_both_owned_output_trees() {
         let temp = tempfile::tempdir().unwrap();
-        let workspace_root = temp.path().join("workspace/target/anneal/hash/lean");
-        let toolchain_root = temp.path().join("toolchain");
-        let aeneas_lean = toolchain_root.join("aeneas/backends/lean");
-        let mathlib = toolchain_root.join("aeneas/packages/mathlib");
-        let qq = toolchain_root.join("aeneas/packages/Qq");
-        std::fs::create_dir_all(workspace_root.parent().unwrap()).unwrap();
-        std::fs::create_dir_all(&aeneas_lean).unwrap();
-        std::fs::create_dir_all(&mathlib).unwrap();
-        std::fs::create_dir_all(&qq).unwrap();
-        std::fs::write(
-            aeneas_lean.join("lake-manifest.json"),
-            serde_json::to_string(&json!({
-                "version": "1.2.0",
-                "packagesDir": ".lake/packages",
-                "packages": [
-                    {
-                        "type": "path",
-                        "name": "mathlib",
-                        "dir": "../../packages/mathlib",
-                        "inherited": false,
-                    },
-                    {
-                        "type": "path",
-                        "name": "Qq",
-                        "dir": "../../packages/Qq",
-                        "inherited": true,
-                        "scope": "",
-                    },
-                ],
-                "name": "aeneas",
-                "lakeDir": ".lake",
-                "fixedToolchain": false,
-            }))
-            .unwrap(),
-        )
-        .unwrap();
-
-        let toolchain = crate::setup::Toolchain { root: toolchain_root };
-        let workspace_root = canonical_path_after_create_or_replace(&workspace_root).unwrap();
-        let manifest = generated_lake_manifest(&workspace_root, &toolchain).unwrap();
-        let packages = manifest.get("packages").unwrap().as_array().unwrap();
-
-        // The manifest is written before the workspace leaf exists. Create it
-        // now to verify that the relative paths resolve after the tmp directory
-        // is renamed into place.
-        std::fs::create_dir_all(&workspace_root).unwrap();
-
-        assert_eq!(packages.len(), 3);
-        assert_eq!(packages[0]["name"], "aeneas");
-        assert_manifest_dir_resolves(&workspace_root, &packages[0], &aeneas_lean);
-        assert_eq!(packages[0]["inherited"], false);
-
-        assert_eq!(packages[1]["name"], "mathlib");
-        assert_manifest_dir_resolves(&workspace_root, &packages[1], &mathlib);
-        assert_eq!(packages[1]["inherited"], true);
-
-        assert_eq!(packages[2]["name"], "Qq");
-        assert_manifest_dir_resolves(&workspace_root, &packages[2], &qq);
-        assert_eq!(packages[2]["inherited"], true);
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join(".lake")).unwrap();
+        fs::write(old.join(".lake/unique"), b"incremental").unwrap();
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir_all(stage.join(".runtime")).unwrap();
+        fs::write(stage.join(".runtime/collision"), b"foreign").unwrap();
+        assert!(install_stage(&stage, &old, true, || Ok(()), |_| Ok(())).is_err());
+        assert_eq!(fs::read(stage.join(".lake/unique")).unwrap(), b"incremental");
+        assert!(old.with_extension("previous").join(".runtime").exists());
+        assert!(!old.exists());
     }
 
-    fn assert_manifest_dir_resolves(workspace_root: &Path, entry: &Value, expected: &Path) {
-        let dir = entry.get("dir").unwrap().as_str().unwrap();
-        assert!(Path::new(dir).is_relative(), "manifest dir should be relative: {dir}");
-        assert_eq!(
-            std::fs::canonicalize(workspace_root.join(dir)).unwrap(),
-            std::fs::canonicalize(expected).unwrap()
+    #[test]
+    fn interrupted_swap_cannot_be_retried_as_a_fresh_workspace() {
+        let temp = tempfile::tempdir().unwrap();
+        let final_root = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(final_root.with_extension("previous").join("user")).unwrap();
+        fs::create_dir_all(&stage).unwrap();
+        fs::write(stage.join("new"), "generated").unwrap();
+        assert!(install_stage(&stage, &final_root, false, || Ok(()), |_| Ok(())).is_err());
+        assert!(!final_root.exists());
+        assert!(stage.join("new").exists());
+        assert!(final_root.with_extension("previous").join("user").exists());
+    }
+
+    #[test]
+    fn successful_swap_keeps_outputs_and_unchanged_source_mtime() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join(".lake")).unwrap();
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir(&stage).unwrap();
+        // Filesystem-only swap fixture: provide the existing stage marker used
+        // for case observation without claiming SDK/workspace admission.
+        fs::write(stage.join(".anneal-sdk.json"), "case-probe fixture").unwrap();
+        for root in [&old, &stage] {
+            fs::write(root.join("Local.lean"), "def x := 1\n").unwrap();
+        }
+        let before = fs::metadata(old.join("Local.lean")).unwrap().modified().unwrap();
+        preserve_unchanged_mtimes(&old, &stage).unwrap();
+        fs::write(old.join(".lake/unique"), "outputs").unwrap();
+        install_stage(&stage, &old, true, || Ok(()), |_| Ok(())).unwrap();
+        assert_eq!(fs::metadata(old.join("Local.lean")).unwrap().modified().unwrap(), before);
+        assert_eq!(fs::read_to_string(old.join(".lake/unique")).unwrap(), "outputs");
+        assert!(!old.with_extension("previous").exists());
+    }
+
+    #[test]
+    fn unchanged_read_only_source_keeps_mtime_and_permissions() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("old");
+        let stage = temp.path().join("stage");
+        fs::create_dir(&old).unwrap();
+        let source = old.join("Proof.lean");
+        fs::write(&source, "def proof := 1\n").unwrap();
+        let mut permissions = fs::metadata(&source).unwrap().permissions();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            permissions.set_mode(0o444);
+        }
+        #[cfg(not(unix))]
+        permissions.set_readonly(true);
+        fs::set_permissions(&source, permissions).unwrap();
+        let before = fs::metadata(&source).unwrap().modified().unwrap();
+        copy_source_tree(&old, &stage).unwrap();
+        let staged = stage.join("Proof.lean");
+        assert!(fs::metadata(&staged).unwrap().permissions().readonly());
+        preserve_unchanged_mtimes(&old, &stage).unwrap();
+        assert_eq!(fs::metadata(&staged).unwrap().modified().unwrap(), before);
+        assert!(fs::metadata(&staged).unwrap().permissions().readonly());
+        assert_eq!(fs::read_to_string(&staged).unwrap(), "def proof := 1\n");
+    }
+
+    #[test]
+    fn live_snapshot_rejection_preserves_editable_sources_and_outputs() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join("user")).unwrap();
+        fs::create_dir_all(old.join(".lake")).unwrap();
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir_all(stage.join("user")).unwrap();
+        fs::write(old.join("user/Proof.lean"), "old proof").unwrap();
+        let baseline = fs::read(old.join("user/Proof.lean")).unwrap();
+        fs::write(stage.join("user/Proof.lean"), &baseline).unwrap();
+        fs::write(old.join(".lake/unique"), "outputs").unwrap();
+        fs::write(old.join("user/Proof.lean"), "new saved proof").unwrap();
+        let result = install_stage(
+            &stage,
+            &old,
+            true,
+            || {
+                assert!(old.exists(), "the live check must precede isolation");
+                assert!(!old.with_extension("previous").exists());
+                ensure!(fs::read(old.join("user/Proof.lean"))? == baseline, "snapshot changed");
+                Ok(())
+            },
+            |_| panic!("a rejected live snapshot must not reach the isolated check"),
         );
+        assert!(result.is_err());
+        assert_eq!(fs::read_to_string(old.join("user/Proof.lean")).unwrap(), "new saved proof");
+        assert_eq!(fs::read_to_string(old.join(".lake/unique")).unwrap(), "outputs");
+        assert!(old.join(".runtime").exists());
+        assert!(!old.with_extension("previous").exists());
+        assert!(stage.join("user/Proof.lean").is_file());
+        assert!(!stage.join(".lake").exists());
+    }
+
+    #[test]
+    fn edit_at_isolation_is_restored_before_outputs_move() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join("user")).unwrap();
+        fs::create_dir_all(old.join(".lake")).unwrap();
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir_all(stage.join("user")).unwrap();
+        fs::write(old.join("user/Proof.lean"), "old proof").unwrap();
+        let baseline = fs::read(old.join("user/Proof.lean")).unwrap();
+        fs::write(stage.join("user/Proof.lean"), "staged old proof").unwrap();
+        fs::write(old.join(".lake/unique"), "outputs").unwrap();
+        let result = install_stage(
+            &stage,
+            &old,
+            true,
+            || {
+                assert!(old.exists(), "validate the complete live tree before isolation");
+                ensure!(fs::read(old.join("user/Proof.lean"))? == baseline, "snapshot changed");
+                Ok(())
+            },
+            |backup| {
+                assert!(!old.exists(), "the editable path must be isolated first");
+                // Model a save to an already-open file after the live check.
+                fs::write(backup.join("user/Proof.lean"), "new saved proof")?;
+                ensure!(fs::read(backup.join("user/Proof.lean"))? == baseline, "snapshot changed");
+                Ok(())
+            },
+        );
+        assert!(result.is_err());
+        assert_eq!(fs::read_to_string(old.join("user/Proof.lean")).unwrap(), "new saved proof");
+        assert_eq!(fs::read_to_string(old.join(".lake/unique")).unwrap(), "outputs");
+        assert!(stage.join("user/Proof.lean").is_file());
+        assert!(!stage.join(".lake").exists());
+    }
+
+    #[test]
+    fn isolated_snapshot_rejection_preserves_both_trees_on_restore_collision() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join("user")).unwrap();
+        fs::create_dir_all(old.join(".lake")).unwrap();
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir_all(&stage).unwrap();
+        fs::write(old.join("user/Proof.lean"), "old proof").unwrap();
+        fs::write(old.join(".lake/unique"), "outputs").unwrap();
+        let result = install_stage(
+            &stage,
+            &old,
+            true,
+            || Ok(()),
+            |backup| {
+                fs::write(backup.join("user/Proof.lean"), "new saved proof")?;
+                // A different writer recreates the editable path. Neither tree
+                // may be overwritten when restoring the rejected snapshot.
+                fs::create_dir_all(old.join("user"))?;
+                fs::write(old.join("user/Proof.lean"), "independent saved proof")?;
+                bail!("source snapshot changed")
+            },
+        );
+        assert!(result.is_err());
+        let backup = old.with_extension("previous");
+        assert_eq!(
+            fs::read_to_string(old.join("user/Proof.lean")).unwrap(),
+            "independent saved proof"
+        );
+        assert_eq!(fs::read_to_string(backup.join("user/Proof.lean")).unwrap(), "new saved proof");
+        assert_eq!(fs::read_to_string(backup.join(".lake/unique")).unwrap(), "outputs");
+        assert!(backup.join(".runtime").exists());
+        assert!(!stage.join(".lake").exists());
+        assert!(!stage.join(".runtime").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn late_descriptor_edit_retains_installed_outputs_and_edited_backup() {
+        use std::io::{Seek as _, SeekFrom, Write as _};
+
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let recovery = temp.path().join("recovery");
+        let stage = recovery.join("stage");
+        fs::create_dir_all(old.join("user")).unwrap();
+        fs::create_dir_all(old.join(".lake/build/lib/lean")).unwrap();
+        fs::create_dir_all(old.join(".runtime/cache")).unwrap();
+        fs::create_dir_all(stage.join("user")).unwrap();
+        // Filesystem-only fixture; compiled bytes are inert preservation
+        // sentinels, not a claim of SDK admission or compiler correctness.
+        fs::write(stage.join(".anneal-sdk.json"), "case-probe fixture").unwrap();
+        let baseline = b"old saved proof";
+        for root in [&old, &stage] {
+            fs::write(root.join("user/Proof.lean"), baseline).unwrap();
+        }
+        fs::write(old.join(".lake/build/lib/lean/Proof.olean"), "owned output").unwrap();
+        fs::write(old.join(".lake/build/lib/lean/Removed.olean"), "obsolete output").unwrap();
+        fs::write(old.join(".runtime/cache/unique"), "owned cache").unwrap();
+        let mut editor = fs::File::options().write(true).open(old.join("user/Proof.lean")).unwrap();
+        let mut checks = 0;
+        let result = install_stage(
+            &stage,
+            &old,
+            true,
+            || {
+                ensure!(
+                    fs::read(old.join("user/Proof.lean"))? == baseline,
+                    "live snapshot changed"
+                );
+                Ok(())
+            },
+            |backup| {
+                checks += 1;
+                if checks == 1 {
+                    assert!(!old.exists());
+                    assert!(backup.join(".lake/build/lib/lean/Proof.olean").is_file());
+                } else {
+                    assert_eq!(checks, 2);
+                    assert!(!stage.exists(), "the final check must follow installation");
+                    assert!(!backup.join(".lake").exists());
+                    assert!(!backup.join(".runtime").exists());
+                    assert_eq!(
+                        fs::read(old.join(".lake/build/lib/lean/Proof.olean"))?,
+                        b"owned output"
+                    );
+                    assert!(!old.join(".lake/build/lib/lean/Removed.olean").exists());
+                    editor.seek(SeekFrom::Start(0))?;
+                    editor.write_all(b"late saved proof")?;
+                    editor.flush()?;
+                }
+                ensure!(
+                    fs::read(backup.join("user/Proof.lean"))? == baseline,
+                    "isolated snapshot changed"
+                );
+                Ok(())
+            },
+        );
+        let error = result.unwrap_err();
+        let backup = old.with_extension("previous");
+        assert_eq!(checks, 2);
+        assert!(error.to_string().contains("backup retained"));
+        assert_eq!(fs::read(old.join("user/Proof.lean")).unwrap(), baseline);
+        assert_eq!(fs::read(backup.join("user/Proof.lean")).unwrap(), b"late saved proof");
+        assert_eq!(
+            fs::read(old.join(".lake/build/lib/lean/Proof.olean")).unwrap(),
+            b"owned output"
+        );
+        assert_eq!(fs::read(old.join(".runtime/cache/unique")).unwrap(), b"owned cache");
+        assert!(recovery.is_dir(), "the caller's recovery container must remain");
+        assert!(install_stage(&stage, &old, true, || Ok(()), |_| Ok(())).is_err());
+        assert_eq!(fs::read(backup.join("user/Proof.lean")).unwrap(), b"late saved proof");
+        assert!(old.join(".lake/build/lib/lean/Proof.olean").is_file());
+    }
+
+    #[test]
+    fn replacement_removes_deleted_module_artifacts_and_keeps_surviving_outputs() {
+        let temp = tempfile::tempdir().unwrap();
+        let old = temp.path().join("workspace");
+        let stage = temp.path().join("stage");
+        fs::create_dir_all(old.join(".runtime")).unwrap();
+        fs::create_dir_all(stage.join("user/Shared")).unwrap();
+        fs::write(stage.join(".anneal-sdk.json"), "case-probe fixture").unwrap();
+        fs::write(stage.join("user/Shared/Current.lean"), "import Shared.Deleted\n").unwrap();
+        for root in [".lake/build/lib/lean", ".lake/build/ir"] {
+            fs::create_dir_all(old.join(root).join("Shared")).unwrap();
+            for module in ["Current", "Deleted"] {
+                for extension in [
+                    "olean",
+                    "olean.server",
+                    "olean.private",
+                    "ilean",
+                    "ir",
+                    "trace",
+                    "c",
+                    "c.o.export",
+                    "setup.json",
+                    "ltar.hash",
+                ] {
+                    fs::write(
+                        old.join(root).join(format!("Shared/{module}.{extension}")),
+                        "compiled",
+                    )
+                    .unwrap();
+                }
+            }
+        }
+        let surviving = old.join(".lake/build/lib/lean/Shared/Current.olean");
+        let before = fs::metadata(&surviving).unwrap().modified().unwrap();
+        install_stage(&stage, &old, true, || Ok(()), |_| Ok(())).unwrap();
+        assert_eq!(fs::metadata(&surviving).unwrap().modified().unwrap(), before);
+        for entry in
+            walkdir::WalkDir::new(old.join(".lake/build")).into_iter().filter_map(Result::ok)
+        {
+            assert!(!entry.file_name().to_string_lossy().starts_with("Deleted."));
+        }
+        assert!(old.join(".lake/build/ir/Shared/Current.c.o.export").is_file());
     }
 
     fn mk_mapping(

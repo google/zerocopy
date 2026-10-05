@@ -10,7 +10,7 @@
 /// ```
 pub fn windows_only() -> u32 { 42 }
 
-#[cfg(target_os = "linux")]
+#[cfg(not(target_os = "windows"))]
 /// ```anneal
 /// ensures:
 ///   ret = 100
