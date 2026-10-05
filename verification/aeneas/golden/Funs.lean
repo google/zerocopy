@@ -888,7 +888,7 @@ def layout.composition_checks.reference_pad
   else ok none
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 306:0-312:1 -/
+    Source: 'src/util/mod.rs', lines 307:0-313:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -908,7 +908,7 @@ def util.min
   else ok a
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 290:0-296:1 -/
+    Source: 'src/util/mod.rs', lines 291:0-297:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -928,7 +928,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 170:0-230:1 -/
+    Source: 'src/util/mod.rs', lines 171:0-231:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1142,7 +1142,7 @@ def layout.composition_checks.check_extend
   else ok ()
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 262:0-280:1 -/
+    Source: 'src/util/mod.rs', lines 263:0-281:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -2486,6 +2486,105 @@ def split_at.numerical_checks.check_split_geometry
               then massert (right_bytes = 0#usize)
               else ok ()
   else ok ()
+
+/-- [zerocopy::util::allocation::prepare]:
+    Source: 'src/util/allocation.rs', lines 33:0-38:1 -/
+def util.allocation.prepare
+  (size : Option Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result (Option (Std.Usize × (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)))
+  := do
+  match size with
+  | none => ok none
+  | some size1 => ok (some (size1, align))
+
+/-- [zerocopy::util::allocation::assert_preparation]:
+    Source: 'src/util/allocation.rs', lines 52:0-64:1 -/
+def util.allocation.assert_preparation
+  (size : Option Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Unit
+  := do
+  let prepared ← util.allocation.prepare size align
+  match size with
+  | none => let b := core.option.Option.is_none prepared
+            massert b
+  | some size1 =>
+    match prepared with
+    | none => fail panic
+    | some p =>
+      let (actual_size, actual_align) := p
+      massert (actual_size = size1)
+      let i ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+          actual_align
+      let i1 ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+      massert (i = i1)
+
+/-- [zerocopy::util::allocation::assert_allocation_size]:
+    Source: 'src/util/allocation.rs', lines 80:0-126:1 -/
+def util.allocation.assert_allocation_size
+  (runtime_layout : layout.DstLayout)
+  (rounding_align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (metadata : Std.Usize) :
+  Result Unit
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized size =>
+    let actual ← pointer_metadata_unit_size_for_metadata runtime_layout
+    let b ← layout.tail_checks.same_optional_usize actual (some size)
+    massert b
+    util.allocation.assert_preparation actual runtime_layout.align
+    let o ← util.allocation.prepare actual runtime_layout.align
+    match o with
+    | none => ok ()
+    | some p =>
+      let (size1, _) := p
+      let b1 ←
+        layout.tail_checks.same_optional_usize (some size) (some size1)
+      massert b1
+  | layout.SizeInfo.SliceDst tail =>
+    let b ←
+      layout.tail_transform_checks.witness_matches tail rounding_align phase
+    if b
+    then
+      let actual ←
+        pointer_metadata_usize_size_for_metadata metadata runtime_layout
+      let expected ←
+        layout.tail_checks.reference_size tail rounding_align phase metadata
+      let b1 ← layout.tail_checks.same_optional_usize actual expected
+      massert b1
+      util.allocation.assert_preparation actual runtime_layout.align
+      let o ← util.allocation.prepare actual runtime_layout.align
+      match o with
+      | none => ok ()
+      | some p =>
+        let (size, _) := p
+        let b2 ← layout.tail_checks.same_optional_usize expected (some size)
+        massert b2
+        let o1 ← lift (Usize.checked_add tail.size_base phase)
+        match o1 with
+        | none => fail panic
+        | some start =>
+          if tail.offset > start
+          then ok ()
+          else
+            let o2 ← lift (Usize.checked_mul metadata tail.elem_size)
+            match o2 with
+            | none => fail panic
+            | some bytes =>
+              let o3 ← lift (Usize.checked_add tail.offset bytes)
+              match o3 with
+              | none => fail panic
+              | some «end» => massert («end» <= size)
+    else ok ()
 
 /-- [zerocopy::util::checks::check_arithmetic]:
     Source: 'src/util/checks.rs', lines 38:0-46:1 -/
