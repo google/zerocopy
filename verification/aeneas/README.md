@@ -778,6 +778,10 @@ records but does not formally prove:
   Rust values by admitting zero; the generated conditional contracts assume
   successful recursive decoding of inputs and prove it for returned values.
   This introduces no axiom asserting that every modeled wrapper is nonzero.
+- The external `usize::unchecked_mul` and `usize::unchecked_add` models
+  return the exact product and sum on non-overflowing inputs. Their Lean
+  definitions use checked arithmetic, and every use proves both results fit.
+  They claim no Rust behavior outside that domain.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
