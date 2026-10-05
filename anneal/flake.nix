@@ -44,8 +44,8 @@
 
         rustToolchainSha256 = if system == "x86_64-linux" then "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw="
                               else if system == "aarch64-linux" then "sha256-gWFajI7TJyjslQLZm4VWBBsKA6nYe1lNQwrgUp2hwSA="
-                              else if system == "x86_64-darwin" then "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo="
-                              else if system == "aarch64-darwin" then "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E="
+                              else if system == "x86_64-darwin" then "sha256-VRNaD18Q5TOUwgLETnF40xm5HsKIZ22eDaDD/uoaots="
+                              else if system == "aarch64-darwin" then "sha256-N6Ce8oiYRg/Twaz6X7VFGvgA2pXKOBjiAZCHxXYwMQk="
                               else throw "Unsupported system: ${system}";
 
         leanToolchainSha256 = if system == "x86_64-linux" then "sha256-o47cQjSLK5YL8YZ2raaj+mGAvvO+dIDfVeP2L+WoyMs="
@@ -104,12 +104,15 @@
 
         # Fixed-output downloader used for toolchain assets.
         fetchToolchainAsset = { pname, version, sha256, buildPhase }:
-          pkgs.stdenv.mkDerivation {
+          pkgs.stdenv.mkDerivation ({
             pname = "${pname}-${system}";
             inherit version sha256 buildPhase;
 
             dontUnpack = true;
 
+            # Preserve upstream Darwin install names and signatures at the
+            # first producer; relocation belongs to the private archive stage.
+            dontFixup = pkgs.stdenv.isDarwin;
             # Keep downloaded toolchains byte-for-byte independent of the builder.
             dontPatchShebangs = true;
             dontPatchELF = true;
@@ -128,7 +131,21 @@
             ];
 
             SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-          };
+          } // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+            # Run only the downloaded-tree recipe, without stdenv setup hooks.
+            __structuredAttrs = false;
+            realBuilder = "${pkgs.bash}/bin/bash";
+            args = [ "-e" (pkgs.writeText "anneal-${pname}-${system}-raw-builder" ''
+              set -euo pipefail
+              shopt -s inherit_errexit
+              umask 022
+              export PATH="${pkgs.lib.makeBinPath (with pkgs; [ curl gnutar gzip zstd coreutils findutils ])}"
+              build_toolchain() {
+                ${buildPhase}
+              }
+              build_toolchain
+            '') ];
+          });
 
         # Merge the Rust components into one sysroot.
         fetchRustToolchain = { rustDate, sha256 }:
@@ -235,6 +252,10 @@
         packages.aeneas-unpacked = pkgs.stdenv.mkDerivation {
           pname = "aeneas-unpacked";
           version = "1.0.0";
+
+          # This is the first output containing the release Mach-O files.
+          # Preserve their load commands and signatures until native staging.
+          dontFixup = pkgs.stdenv.isDarwin;
 
           src = self.packages.${system}.aeneas-download;
 
@@ -391,6 +412,10 @@
           pname = "aeneas-compiled";
           version = "0.1.0";
 
+          # Preserve upstream Darwin signatures and native producer bytes;
+          # relocation/signing happens explicitly in fresh omnibus staging.
+          dontFixup = pkgs.stdenv.isDarwin;
+
           src = pkgs.runCommand "empty-src" {} "mkdir $out";
 
           leanToolchain = self.packages.${system}.lean-toolchain;
@@ -494,6 +519,8 @@
             "cp $TMPDIR/lean-sdk-producer.json $out/lean-sdk-producer.json"
             "mkdir -p $out/bin"
             "cp \$(find $aeneasUnpacked -maxdepth 1 -type f -executable) $out/bin/"
+            # Aeneas resolves release libraries relative to its executable.
+            "if [ -d $aeneasUnpacked/libs ]; then cp -a $aeneasUnpacked/libs $out/bin/libs; fi"
           ];
         };
 
@@ -553,6 +580,7 @@
             "  patchelf --remove-rpath \"\$consumed\""
             "done"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+            "python3 ${./prepare-native-tools.py} --root $TMPDIR/dist_staging --platform ${system}"
             # Normalize the producer's install IDs/absolute native references in
             # new staging only. Never modify cached producer inputs in place.
             "python3 ${./prepare-lean-sdk.py} relocate-darwin --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json"
@@ -659,6 +687,13 @@
                 exit 1
               fi
             done
+
+            ${pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+              if ! grep -Fxq 'aeneas/bin/libs/libgmp.10.dylib' "$TMPDIR/archive/entries"; then
+                echo "ERROR: archive is missing Aeneas's upstream GMP provider" >&2
+                exit 1
+              fi
+            ''}
 
             if ! grep -Eq '^aeneas/packages/mathlib/\.lake/build/lib/lean/Mathlib/.+\.olean$' "$TMPDIR/archive/entries"; then
               echo "ERROR: archive is missing Mathlib .olean cache artifacts" >&2
