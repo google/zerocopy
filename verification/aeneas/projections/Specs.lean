@@ -122,6 +122,35 @@ spec set_u32_be_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
 
+check_model_inputs Zerocopy.layout.cast_from.CastPlan.size_sequences_match with 0 type parameters
+aeneas_spec_begin
+spec cast_size_sequences_spec
+  for @Zerocopy.layout.cast_from.CastPlan.size_sequences_match with 0 type parameters
+  requires(raw) positive : 0 < dst.elem_size.val
+  requires(raw) divides : src.elem_size.val % dst.elem_size.val = 0
+  ensures(raw) same => same = true → ∀ count : Nat,
+    (trailingFormula src).size count =
+      (trailingFormula dst).size (dst_base.val + count * (src.elem_size.val / dst.elem_size.val))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_size_sequences_spec for Zerocopy.layout.cast_from.CastPlan.size_sequences_match with 3
+
+check_model_inputs Zerocopy.layout.cast_from.CastPlan.try_compute with 0 type parameters
+aeneas_spec_begin
+spec cast_plan_spec
+  for @Zerocopy.layout.cast_from.CastPlan.try_compute with 0 type parameters
+  ensures(raw) plan => castPlanSpec src_layout dst_layout plan
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_plan_spec for Zerocopy.layout.cast_from.CastPlan.try_compute with 2
+
+check_model_inputs Zerocopy.layout.cast_from.CastPlan.cast_metadata with 0 type parameters
+aeneas_spec_begin
+spec cast_metadata_spec
+  for @Zerocopy.layout.cast_from.CastPlan.cast_metadata with 0 type parameters
+  requires(raw) fits : castMetadataFits self src_meta.val
+  ensures(raw) metadata => metadata.val = castPlanMetadata self src_meta.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_metadata_spec for Zerocopy.layout.cast_from.CastPlan.cast_metadata with 2
+
 check_model_inputs Zerocopy.layout.composition_checks.check_extend with 0 type parameters
 aeneas_spec_begin
 spec composition_extend_checks_spec
@@ -363,6 +392,15 @@ spec validate_cast_spec
   ensures(raw) r => castSpec self addr.val bytes_len.val cast_type r
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.validate_cast_spec for Zerocopy.layout.DstLayout.validate_cast_and_convert_metadata with 4
+
+check_model_inputs Zerocopy.layout.add_scaled_metadata with 0 type parameters
+aeneas_spec_begin
+spec add_scaled_metadata_spec
+  for @Zerocopy.layout.add_scaled_metadata with 0 type parameters
+  requires(raw) fits : base.val + metadata.val * multiple.val ≤ Usize.max
+  ensures(raw) result => result.val = base.val + metadata.val * multiple.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.add_scaled_metadata_spec for Zerocopy.layout.add_scaled_metadata with 3
 
 check_model_inputs Zerocopy.layout.nested_reference.round_up with 0 type parameters
 aeneas_spec_begin

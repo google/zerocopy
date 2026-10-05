@@ -29,14 +29,8 @@ check_model_binding Zerocopy.byteorder.U16 with 1 type parameters
 derive_rust_model Zerocopy.byteorder.U32 with 1 type parameters
 check_model_binding Zerocopy.byteorder.U32 with 1 type parameters
 
-derive_rust_model Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
-check_model_binding Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
-
-derive_rust_model Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
-check_model_binding Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
-
-derive_rust_model Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
-check_model_binding Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
+derive_rust_model Zerocopy.layout.cast_from.CastPlan with 0 type parameters
+check_model_binding Zerocopy.layout.cast_from.CastPlan with 0 type parameters
 
 derive_rust_model Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters decode self =>
   let word := self._0.value
@@ -47,17 +41,26 @@ check_model_binding Zerocopy.layout.RoundingAlignAndPhase with 0 type parameters
 derive_rust_model Zerocopy.layout.TrailingSliceLayout with 1 type parameters
 check_model_binding Zerocopy.layout.TrailingSliceLayout with 1 type parameters
 
+derive_rust_model Zerocopy.layout.MetadataCastError with 0 type parameters
+check_model_binding Zerocopy.layout.MetadataCastError with 0 type parameters
+
+derive_rust_model Zerocopy.layout.CastType with 0 type parameters
+check_model_binding Zerocopy.layout.CastType with 0 type parameters
+
 derive_rust_model Zerocopy.layout.SizeInfo with 1 type parameters
 check_model_binding Zerocopy.layout.SizeInfo with 1 type parameters
 
 derive_rust_model Zerocopy.layout.DstLayout with 0 type parameters
 check_model_binding Zerocopy.layout.DstLayout with 0 type parameters
 
-derive_rust_model Zerocopy.layout.CastType with 0 type parameters
-check_model_binding Zerocopy.layout.CastType with 0 type parameters
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceTail with 0 type parameters
 
-derive_rust_model Zerocopy.layout.MetadataCastError with 0 type parameters
-check_model_binding Zerocopy.layout.MetadataCastError with 0 type parameters
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceSize with 0 type parameters
+
+derive_rust_model Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
+check_model_binding Zerocopy.layout.composition_checks.ReferenceLayout with 0 type parameters
 
 derive_rust_model Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
 check_model_binding Zerocopy.layout.nested_reference.NestedLayer with 0 type parameters
