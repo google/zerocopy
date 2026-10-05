@@ -14,6 +14,7 @@ pub(crate) mod macros;
 #[doc(hidden)]
 pub mod macro_util;
 
+mod allocation;
 pub(crate) mod bytewrite;
 mod checks;
 mod safety_checks;
@@ -463,28 +464,23 @@ pub(crate) unsafe fn new_box<T>(
 where
     T: ?Sized + crate::KnownLayout,
 {
-    let align = T::LAYOUT.align.get();
     if !T::is_valid_metadata(meta) {
         return Err(AllocError);
     }
-    let size = match T::size_for_metadata(meta) {
-        Some(size) => size,
-        // Thanks to the `!T::is_valid_metadata(meta)` check
-        // above, this branch is unreachable. Fortunately, the
-        // optimizer recognizes this, so replacing this branch
-        // with `unreachable_unchecked` produces no codegen
-        // improvements.
+    let (size, align) = match allocation::prepare(T::size_for_metadata(meta), T::LAYOUT.align) {
+        Some(prepared) => prepared,
+        // Valid metadata guarantees a representable complete size by the
+        // KnownLayout contract. Preparation preserves a failed sizing result.
         None => return Err(AllocError),
     };
+    let align = align.get();
     let ptr = if size != 0 {
         // SAFETY:
         // - `align` is derived from a `NonZeroUsize` and is thus non-zero.
-        // - `align` is a power of two because, by invariant on
-        //   `KnownLayout::LAYOUT` `<T as KnownLayout>::LAYOUT` accurately
-        //   reflects the layout of `T`.
-        // - `size`, by invariant on `size_for_metadata` is well-aligned for
-        //   `align` and, by the check on `T::is_valid_metadata(meta)`, is less
-        //   than `isize::MAX`.
+        // - `align` is a power of two by the KnownLayout::LAYOUT contract.
+        // - The complete metadata size is aligned to `align` and bounded by
+        //   `isize::MAX` by KnownLayout and the valid-metadata check above.
+        // - `prepare` preserves the actual metadata size and alignment.
         let layout: Layout = unsafe { Layout::from_size_align_unchecked(size, align) };
         // SAFETY: By contract on the caller, `allocate` is either
         // `alloc::alloc::alloc` or `alloc::alloc::alloc_zeroed`. The above
