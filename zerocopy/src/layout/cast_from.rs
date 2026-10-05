@@ -73,6 +73,15 @@ impl CastPlan {
     /// `false` result also includes equivalent size sequences
     /// that this test cannot recognize, or an adjustment whose
     /// normalized components cannot be represented in `usize`.
+    ///
+    /// ```aeneas
+    /// spec cast_size_sequences_spec
+    ///   requires(raw) positive : 0 < dst.elem_size.val
+    ///   requires(raw) divides : src.elem_size.val % dst.elem_size.val = 0
+    ///   ensures(raw) same => same = true → ∀ count : Nat,
+    ///     (trailingFormula src).size count =
+    ///       (trailingFormula dst).size (dst_base.val + count * (src.elem_size.val / dst.elem_size.val))
+    /// ```
     const fn size_sequences_match(
         src: TrailingSliceLayout,
         dst: TrailingSliceLayout,
@@ -83,7 +92,7 @@ impl CastPlan {
             None => return false,
         };
         let shifted_dst = match dst.advance(base_bytes, src.elem_size) {
-            Some(layout) => layout,
+            Some(advanced) => advanced,
             None => return false,
         };
         src.has_same_size_sequence(shifted_dst)
@@ -105,6 +114,11 @@ impl CastPlan {
     /// Produces `None` for unsupported casts or when this method
     /// cannot establish a size-preserving metadata map. Rejection
     /// does not establish that no such map exists.
+    ///
+    /// ```aeneas
+    /// spec cast_plan_spec
+    ///   ensures(raw) plan => castPlanSpec src_layout dst_layout plan
+    /// ```
     const fn try_compute(src_layout: &DstLayout, dst_layout: &DstLayout) -> Option<Self> {
         if src_layout.align.get() < dst_layout.align.get() {
             return None;
@@ -210,6 +224,12 @@ impl CastPlan {
     /// `offset_delta_elems + src_meta * elem_multiple` may overflow `usize`.
     /// The other variants impose no condition on `src_meta` and ignore it.
     #[inline(always)]
+    ///
+    /// ```aeneas
+    /// spec cast_metadata_spec
+    ///   requires(raw) fits : castMetadataFits self src_meta.val
+    ///   ensures(raw) metadata => metadata.val = castPlanMetadata self src_meta.val
+    /// ```
     unsafe fn cast_metadata(self, src_meta: usize) -> usize {
         match self {
             CastPlan::UnsizedToUnsized { offset_delta_elems, elem_multiple } => {
