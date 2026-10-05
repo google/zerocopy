@@ -871,10 +871,11 @@ impl<'a> Workspace<'a> {
 
     pub fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command> {
         let mut command = self.command("lake")?;
-        command.args(["--keep-toolchain", "--no-cache"]);
+        // RC2 recognizes --version before its ordinary option parser; it must
+        // be the first argument. Version inspection cannot schedule builds.
         if !matches!(operation, LakeOperation::Version) {
             check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
-            command.arg("--reconfigure");
+            command.args(["--keep-toolchain", "--no-cache", "--reconfigure"]);
         }
         match operation {
             LakeOperation::Build(targets) => {
@@ -908,7 +909,14 @@ impl<'a> Workspace<'a> {
                 if json {
                     command.arg("--json");
                 }
-                command.arg(self.local_source(file)?);
+                // Preserve relative diagnostic filenames under the fixed cwd.
+                let source = self.local_source(file)?;
+                let relative = source.strip_prefix(&self.root)?;
+                if relative.as_os_str().as_encoded_bytes().starts_with(b"-") {
+                    command.arg(Path::new(".").join(relative));
+                } else {
+                    command.arg(relative);
+                }
             }
             LeanOperation::Server => {
                 command.arg("--server");
@@ -3085,12 +3093,7 @@ mod tests {
         assert_eq!(check.is_ok(), folds_case);
         assert_eq!(setup.is_ok(), folds_case);
         if folds_case {
-            assert!(
-                check
-                    .unwrap()
-                    .get_args()
-                    .any(|arg| arg == workspace.root().join("Proof.LEAN").as_os_str())
-            );
+            assert!(check.unwrap().get_args().any(|arg| arg == "Proof.LEAN"));
             assert!(setup.unwrap().get_args().any(|arg| arg == uppercase.as_os_str()));
         }
     }
@@ -4019,6 +4022,28 @@ mod tests {
             command.get_args().collect::<Vec<_>>(),
             ["--keep-toolchain", "--no-cache", "--reconfigure", "build", "+Proof:olean"]
         );
+        // RC2 handles this flag before its ordinary option parser. Placing
+        // keep-toolchain/no-cache before it turns a real version probe into a
+        // failed command, preventing stock editor startup.
+        let version = workspace.lake_command(LakeOperation::Version).unwrap();
+        assert_eq!(version.get_args().collect::<Vec<_>>(), ["--version"]);
+        // Admission is physical/absolute, while the invocation remains
+        // relative to the fixed cwd so V1 diagnostics retain their file names.
+        let check = workspace
+            .lean_command(LeanOperation::Check {
+                file: &workspace.root().join("src/Proof.lean"),
+                json: true,
+            })
+            .unwrap();
+        assert_eq!(check.get_current_dir(), Some(workspace.root()));
+        assert!(check.get_args().any(|arg| arg == "src/Proof.lean"));
+        let dash_source = workspace.root().join("-Proof.lean");
+        fs::write(&dash_source, "example : True := by trivial\n").unwrap();
+        let check = workspace
+            .lean_command(LeanOperation::Check { file: &dash_source, json: false })
+            .unwrap();
+        assert!(check.get_args().any(|arg| arg == "./-Proof.lean"));
+        assert!(!check.get_args().any(|arg| arg == "-Proof.lean"));
     }
 
     #[cfg(unix)]
