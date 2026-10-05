@@ -402,10 +402,9 @@ impl<'a, T> PtrInner<'a, [T]> {
         // trivially satisfied.
         let base = unsafe { base.add(range.start) };
 
-        // SAFETY: The caller promises that `start <= end`, and so this will not
-        // underflow.
-        #[allow(unstable_name_collisions)]
-        let len = unsafe { range.end.unchecked_sub(range.start) };
+        // The caller promises `start <= end`, which establishes the numerical
+        // precondition of `split_right_len` and prevents subtraction underflow.
+        let len = crate::split_at::split_right_len(range.end, range.start);
 
         let ptr = core::ptr::slice_from_raw_parts_mut(base, len);
 
