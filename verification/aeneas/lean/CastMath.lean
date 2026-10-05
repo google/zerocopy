@@ -41,4 +41,46 @@ theorem affine_size_of_advance (src dst : Formula) (offset multiple : Nat)
     (n : Nat) : src.size n = dst.size (offset + n * multiple) := by
   rw [hseq n, advance_affine_size src dst offset multiple n he]
 
+/- The unrounded term is contained in the complete size even for an arbitrary
+base and a zero alignment. Thus callers do not need a stronger validity or
+base-alignment premise merely to prove this lower bound.
+-/
+theorem Formula.size_lower_bound (f : Formula) (n : Nat) :
+    f.base + f.phase + n * f.elem ≤ f.size n := by
+  unfold Formula.size Formula.bytes roundUp
+  omega
+
+/- A destination element occupies at least one byte. Hence its element count
+cannot exceed its complete numerical size, regardless of rounding plateaus.
+-/
+theorem Formula.metadata_le_size (f : Formula) (n : Nat) (he : 0 < f.elem) :
+    n ≤ f.size n := by
+  have hmul : n ≤ n * f.elem := by
+    simpa only [Nat.mul_one] using Nat.mul_le_mul_left n (show 1 ≤ f.elem by omega)
+  have hsize := f.size_lower_bound n
+  omega
+
+/- Size preservation bounds both unchecked metadata operations. The product
+and sum are separately bounded so the result directly supplies their two
+no-overflow preconditions. Source formula validity is unnecessary here.
+-/
+theorem affine_metadata_bounds (src dst : Formula) (offset multiple n : Nat)
+    (hdst : 0 < dst.elem)
+    (hsize : src.size n = dst.size (offset + n * multiple)) :
+    n * multiple ≤ src.size n ∧ offset + n * multiple ≤ src.size n := by
+  have h := dst.metadata_le_size (offset + n * multiple) hdst
+  rw [← hsize] at h
+  omega
+
+/- A caller's object-size bound now bounds both arithmetic operations. The
+limit is abstract so the lemma applies to isize::MAX or usize::MAX.
+-/
+theorem affine_metadata_fits (src dst : Formula) (offset multiple n limit : Nat)
+    (hdst : 0 < dst.elem)
+    (hsize : src.size n = dst.size (offset + n * multiple))
+    (hfit : src.size n ≤ limit) :
+    n * multiple ≤ limit ∧ offset + n * multiple ≤ limit := by
+  obtain ⟨hproduct, hsum⟩ := affine_metadata_bounds src dst offset multiple n hdst hsize
+  exact ⟨Nat.le_trans hproduct hfit, Nat.le_trans hsum hfit⟩
+
 end Zerocopy.LayoutMath

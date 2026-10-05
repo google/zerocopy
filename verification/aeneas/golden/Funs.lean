@@ -607,6 +607,179 @@ def layout.cast_from.CastPlan.cast_metadata
   | layout.cast_from.CastPlan.SizedToUnsized dst_meta => ok dst_meta
   | layout.cast_from.CastPlan.SizedToSized => ok 0#usize
 
+/-- [zerocopy::layout::tail_checks::same_optional_usize]:
+    Source: 'src/layout/tail_checks.rs', lines 29:0-35:1 -/
+def layout.tail_checks.same_optional_usize
+  (left : Option Std.Usize) (right : Option Std.Usize) : Result Bool := do
+  match left with
+  | none => match right with
+            | none => ok true
+            | some _ => ok false
+  | some left1 =>
+    match right with
+    | none => ok false
+    | some right1 => ok (left1 = right1)
+
+/-- [zerocopy::layout::tail_transform_checks::witness_matches]:
+    Source: 'src/layout/tail_transform_checks.rs', lines 30:0-41:1 -/
+def layout.tail_transform_checks.witness_matches
+  (tail : layout.TrailingSliceLayout Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+  Result Bool
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  if b
+  then
+    if phase < i
+    then
+      let o ← lift (Usize.checked_add i phase)
+      let i1 ←
+        core.num.nonzero.NonZero.get
+          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+          tail.size_rounding_align_and_phase._0
+      layout.tail_checks.same_optional_usize o (some i1)
+    else ok false
+  else ok false
+
+/-- [zerocopy::layout::cast_from::checks::witness_matches]:
+    Source: 'src/layout/cast_from.rs', lines 369:4-374:5 -/
+def layout.cast_from.checks.witness_matches
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+  Result Bool
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized _ => ok true
+  | layout.SizeInfo.SliceDst tail =>
+    layout.tail_transform_checks.witness_matches tail align phase
+
+/-- [zerocopy::layout::tail_checks::reference_round_up]:
+    Source: 'src/layout/tail_checks.rs', lines 38:0-42:1 -/
+def layout.tail_checks.reference_round_up
+  (bytes : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result (Option Std.Usize)
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let remainder ← bytes % i
+  let padding ← if remainder = 0#usize
+                  then ok 0#usize
+                  else i - remainder
+  ok (Usize.checked_add bytes padding)
+
+/-- [zerocopy::layout::tail_checks::reference_size]:
+    Source: 'src/layout/tail_checks.rs', lines 44:0-60:1 -/
+def layout.tail_checks.reference_size
+  (tail : layout.TrailingSliceLayout Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (elems : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  let o ← lift (Usize.checked_mul elems tail.elem_size)
+  match o with
+  | none => ok none
+  | some bytes =>
+    let o1 ← lift (Usize.checked_add phase bytes)
+    match o1 with
+    | none => ok none
+    | some input =>
+      let o2 ← layout.tail_checks.reference_round_up input align
+      match o2 with
+      | none => ok none
+      | some rounded => ok (Usize.checked_add tail.size_base rounded)
+
+/-- [zerocopy::layout::cast_from::checks::reference_size]:
+    Source: 'src/layout/cast_from.rs', lines 378:4-388:5 -/
+def layout.cast_from.checks.reference_size
+  (runtime_layout : layout.DstLayout)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
+  (elems : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match runtime_layout.size_info with
+  | layout.SizeInfo.Sized size => ok (some size)
+  | layout.SizeInfo.SliceDst tail =>
+    layout.tail_checks.reference_size tail align phase elems
+
+/-- [zerocopy::layout::cast_from::checks::checked_metadata]:
+    Source: 'src/layout/cast_from.rs', lines 390:4-401:5 -/
+def layout.cast_from.checks.checked_metadata
+  (plan : layout.cast_from.CastPlan) (src_meta : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match plan with
+  | layout.cast_from.CastPlan.UnsizedToUnsized offset_delta_elems elem_multiple
+    =>
+    let o ← lift (Usize.checked_mul src_meta elem_multiple)
+    match o with
+    | none => ok none
+    | some scaled => ok (Usize.checked_add offset_delta_elems scaled)
+  | layout.cast_from.CastPlan.SizedToUnsized dst_meta => ok (some dst_meta)
+  | layout.cast_from.CastPlan.SizedToSized => ok (some 0#usize)
+
+/-- [zerocopy::layout::cast_from::checks::assert_cast_preserves_size]:
+    Source: 'src/layout/cast_from.rs', lines 423:4-458:5 -/
+def layout.cast_from.checks.assert_cast_preserves_size
+  (src : layout.DstLayout) (dst : layout.DstLayout)
+  (src_rounding_align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (src_phase : Std.Usize)
+  (dst_rounding_align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (dst_phase : Std.Usize)
+  (src_meta : Std.Usize) :
+  Result Unit
+  := do
+  let b ←
+    layout.cast_from.checks.witness_matches src src_rounding_align src_phase
+  if b
+  then
+    let b1 ←
+      layout.cast_from.checks.witness_matches dst dst_rounding_align dst_phase
+    if b1
+    then
+      let o ← layout.cast_from.CastPlan.try_compute src dst
+      match o with
+      | none => ok ()
+      | some plan =>
+        let o1 ←
+          layout.cast_from.checks.reference_size src src_rounding_align
+            src_phase src_meta
+        match o1 with
+        | none => ok ()
+        | some _ =>
+          let i ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              src.align
+          let i1 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              dst.align
+          massert (i >= i1)
+          let o2 ← layout.cast_from.checks.checked_metadata plan src_meta
+          match o2 with
+          | none => fail panic
+          | some «meta» =>
+            let dst_meta ←
+              layout.cast_from.CastPlan.cast_metadata plan src_meta
+            massert (dst_meta = «meta»)
+            let o3 ←
+              layout.cast_from.checks.reference_size dst dst_rounding_align
+                dst_phase dst_meta
+            let b2 ← layout.tail_checks.same_optional_usize o3 o1
+            massert b2
+    else ok ()
+  else ok ()
+
 /-- [zerocopy::layout::composition_checks::matches_reference]:
     Source: 'src/layout/composition_checks.rs', lines 57:0-75:1 -/
 def layout.composition_checks.matches_reference
@@ -1545,58 +1718,6 @@ def layout.primitive_checks.check_empty_layout
     massert empty.statically_shallow_unpadded
   else ok ()
 
-/-- [zerocopy::layout::tail_checks::same_optional_usize]:
-    Source: 'src/layout/tail_checks.rs', lines 29:0-35:1 -/
-def layout.tail_checks.same_optional_usize
-  (left : Option Std.Usize) (right : Option Std.Usize) : Result Bool := do
-  match left with
-  | none => match right with
-            | none => ok true
-            | some _ => ok false
-  | some left1 =>
-    match right with
-    | none => ok false
-    | some right1 => ok (left1 = right1)
-
-/-- [zerocopy::layout::tail_checks::reference_round_up]:
-    Source: 'src/layout/tail_checks.rs', lines 38:0-42:1 -/
-def layout.tail_checks.reference_round_up
-  (bytes : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result (Option Std.Usize)
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let remainder ← bytes % i
-  let padding ← if remainder = 0#usize
-                  then ok 0#usize
-                  else i - remainder
-  ok (Usize.checked_add bytes padding)
-
-/-- [zerocopy::layout::tail_checks::reference_size]:
-    Source: 'src/layout/tail_checks.rs', lines 44:0-60:1 -/
-def layout.tail_checks.reference_size
-  (tail : layout.TrailingSliceLayout Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize)
-  (elems : Std.Usize) :
-  Result (Option Std.Usize)
-  := do
-  let o ← lift (Usize.checked_mul elems tail.elem_size)
-  match o with
-  | none => ok none
-  | some bytes =>
-    let o1 ← lift (Usize.checked_add phase bytes)
-    match o1 with
-    | none => ok none
-    | some input =>
-      let o2 ← layout.tail_checks.reference_round_up input align
-      match o2 with
-      | none => ok none
-      | some rounded => ok (Usize.checked_add tail.size_base rounded)
-
 /-- [zerocopy::layout::tail_checks::reference_capacity]:
     Source: 'src/layout/tail_checks.rs', lines 63:0-76:1 -/
 def layout.tail_checks.reference_capacity
@@ -1819,33 +1940,8 @@ def layout.tail_checks.layout_observations_check
     else ok ()
   else ok ()
 
-/-- [zerocopy::layout::tail_transform_checks::witness_matches]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 30:0-37:1 -/
-def layout.tail_transform_checks.witness_matches
-  (tail : layout.TrailingSliceLayout Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
-  Result Bool
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let b ← core.num.Usize.is_power_of_two i
-  if b
-  then
-    if phase < i
-    then
-      let o ← lift (Usize.checked_add i phase)
-      let i1 ←
-        core.num.nonzero.NonZero.get
-          Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
-          tail.size_rounding_align_and_phase._0
-      layout.tail_checks.same_optional_usize o (some i1)
-    else ok false
-  else ok false
-
 /-- [zerocopy::layout::tail_transform_checks::reference_advance]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 40:0-66:1 -/
+    Source: 'src/layout/tail_transform_checks.rs', lines 44:0-70:1 -/
 def layout.tail_transform_checks.reference_advance
   (tail : layout.TrailingSliceLayout Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1874,7 +1970,7 @@ def layout.tail_transform_checks.reference_advance
       | some base1 => ok (some (base1, new_phase))
 
 /-- [zerocopy::layout::tail_transform_checks::reference_wrapping_padding]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 69:0-86:1 -/
+    Source: 'src/layout/tail_transform_checks.rs', lines 73:0-90:1 -/
 def layout.tail_transform_checks.reference_wrapping_padding
   (tail : layout.TrailingSliceLayout Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1900,7 +1996,7 @@ def layout.tail_transform_checks.reference_wrapping_padding
   ok (core.num.Usize.wrapping_sub complete slice_end)
 
 /-- [zerocopy::layout::tail_transform_checks::tail_transformations_check]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 101:0-134:1 -/
+    Source: 'src/layout/tail_transform_checks.rs', lines 105:0-138:1 -/
 def layout.tail_transform_checks.tail_transformations_check
   (tail : layout.TrailingSliceLayout Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1969,7 +2065,7 @@ def layout.tail_transform_checks.tail_transformations_check
   else ok ()
 
 /-- [zerocopy::layout::tail_transform_checks::tail_size_sequence_check]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 145:0-163:1 -/
+    Source: 'src/layout/tail_transform_checks.rs', lines 149:0-167:1 -/
 def layout.tail_transform_checks.tail_size_sequence_check
   (left : layout.TrailingSliceLayout Std.Usize)
   (right : layout.TrailingSliceLayout Std.Usize)
@@ -2004,7 +2100,7 @@ def layout.tail_transform_checks.tail_size_sequence_check
   else ok ()
 
 /-- [zerocopy::layout::tail_transform_checks::tail_dynamic_padding_check]:
-    Source: 'src/layout/tail_transform_checks.rs', lines 174:0-188:1 -/
+    Source: 'src/layout/tail_transform_checks.rs', lines 178:0-192:1 -/
 def layout.tail_transform_checks.tail_dynamic_padding_check
   (runtime_layout : layout.DstLayout)
   (align : core.num.nonzero.NonZero Std.Usize
