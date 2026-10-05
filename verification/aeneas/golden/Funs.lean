@@ -642,6 +642,549 @@ def byteorder.verification.set_u32_be
       value n
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
+/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
+    Source: 'src/util/mod.rs', lines 262:0-280:1 -/
+def util.round_down_to_next_multiple_of_alignment
+  (n : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Std.Usize
+  := do
+  let align1 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two align1
+  massert b
+  let i ← align1 - 1#usize
+  let mask ← lift (~~~ i)
+  ok (n &&& mask)
+
+/-- [zerocopy::layout::POINTER_WIDTH_BITS]
+    Source: 'src/layout/mod.rs', lines 32:0-32:62 -/
+@[global_simps, irreducible]
+def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
+  let i ← core.mem.size_of Std.Usize
+  i * 8#usize
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
+    Source: 'src/layout/mod.rs', lines 145:4-172:5 -/
+def layout.RoundingAlignAndPhase.components
+  (self : layout.RoundingAlignAndPhase) :
+  Result ((core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner) × Std.Usize)
+  := do
+  let i ← layout.POINTER_WIDTH_BITS
+  let i1 ← i - 1#usize
+  let i2 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner self._0
+  let i3 ← lift (core.num.Usize.leading_zeros i2)
+  let i4 ← lift (UScalar.cast .Usize i3)
+  let shift ← i1 - i4
+  let align ← 1#usize <<< shift
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  match o with
+  | none => fail panic
+  | some align1 =>
+    let i5 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align1
+    let phase ← lift (i2 ^^^ i5)
+    ok (align1, phase)
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
+    Source: 'src/layout/mod.rs', lines 112:4-131:5 -/
+def layout.RoundingAlignAndPhase.new
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
+  Result layout.RoundingAlignAndPhase
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let b ← core.num.Usize.is_power_of_two i
+  massert b
+  massert (phase < i)
+  let encoded ← lift (i ||| phase)
+  let o ←
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner encoded
+  match o with
+  | none => fail panic
+  | some encoded1 => ok { _0 := encoded1 }
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::advance]:
+    Source: 'src/layout/mod.rs', lines 706:4-802:5 -/
+def layout.TrailingSliceLayoutUsize.advance
+  (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
+  (elem_size : Std.Usize) :
+  Result (Option (layout.TrailingSliceLayout Std.Usize))
+  := do
+  let (size_align, size_phase) ←
+    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+  let align_mask ← i - 1#usize
+  let i1 ← core.num.Usize.MAX - self.size_base
+  let phase_capacity ← lift (i1 ||| align_mask)
+  let max_advance ← phase_capacity - size_phase
+  if bytes > max_advance
+  then ok none
+  else
+    let advanced_phase ← size_phase + bytes
+    let normalized_phase ← lift (advanced_phase &&& align_mask)
+    let whole_bytes ←
+      util.round_down_to_next_multiple_of_alignment advanced_phase size_align
+    let size_base ← self.size_base + whole_bytes
+    let raap ← layout.RoundingAlignAndPhase.new size_align normalized_phase
+    ok (some
+      { self with elem_size, size_base, size_rounding_align_and_phase := raap })
+
+/-- [zerocopy::util::padding_needed_for]:
+    Source: 'src/util/mod.rs', lines 170:0-230:1 -/
+def util.padding_needed_for
+  (len : Std.Usize)
+  (align : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result Std.Usize
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
+  let mask ← i - 1#usize
+  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
+  let i2 ← lift (~~~ i1)
+  ok (i2 &&& mask)
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::padding_for_elems]:
+    Source: 'src/layout/mod.rs', lines 424:4-479:5 -/
+def layout.TrailingSliceLayoutUsize.padding_for_elems
+  (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+  Result Std.Usize
+  := do
+  let (size_align, size_phase) ←
+    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+  let size_mask ← i - 1#usize
+  let elem_remainder ← lift (self.elem_size &&& size_mask)
+  let i1 ← lift (core.num.Usize.wrapping_mul elems elem_remainder)
+  let trailing_remainder ← lift (i1 &&& size_mask)
+  let rounding_input ←
+    lift (core.num.Usize.wrapping_add size_phase trailing_remainder)
+  let rounding_padding ← util.padding_needed_for rounding_input size_align
+  let i2 ← lift (core.num.Usize.wrapping_add self.size_base size_phase)
+  let i3 ← lift (core.num.Usize.wrapping_sub i2 self.offset)
+  ok (core.num.Usize.wrapping_add i3 rounding_padding)
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::max_trailing_bytes]:
+    Source: 'src/layout/mod.rs', lines 310:4-399:5 -/
+def layout.TrailingSliceLayout.max_trailing_bytes
+  {E : Type} (self : layout.TrailingSliceLayout E)
+  (available_bytes : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  let (size_align, size_phase) ←
+    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+  let rounded_phase ←
+    if size_phase = 0#usize
+    then ok 0#usize
+    else
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
+  let o ← lift (Usize.checked_add self.size_base rounded_phase)
+  match o with
+  | none => ok none
+  | some size =>
+    let o1 ← lift (Usize.checked_sub available_bytes size)
+    match o1 with
+    | none => ok none
+    | some bytes =>
+      let aligned_bytes ←
+        util.round_down_to_next_multiple_of_alignment bytes size_align
+      let initial_padding ← rounded_phase - size_phase
+      let trailing_bytes ← lift (aligned_bytes ||| initial_padding)
+      ok (some trailing_bytes)
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::size_for_elems]:
+    Source: 'src/layout/mod.rs', lines 497:4-561:5 -/
+def layout.TrailingSliceLayoutUsize.size_for_elems
+  (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  let o ←
+    layout.TrailingSliceLayout.max_trailing_bytes self core.num.Usize.MAX
+  match o with
+  | none => ok none
+  | some bytes =>
+    let o1 ← lift (Usize.checked_mul self.elem_size elems)
+    match o1 with
+    | none => ok none
+    | some bytes1 =>
+      if bytes1 > bytes
+      then ok none
+      else
+        let trailing_end ←
+          lift (core.num.Usize.wrapping_add self.offset bytes1)
+        let i ← layout.TrailingSliceLayoutUsize.padding_for_elems self elems
+        let size ← lift (core.num.Usize.wrapping_add trailing_end i)
+        ok (some size)
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::has_same_size_sequence]:
+    Source: 'src/layout/mod.rs', lines 585:4-662:5 -/
+def layout.TrailingSliceLayoutUsize.has_same_size_sequence
+  (self : layout.TrailingSliceLayout Std.Usize)
+  (other : layout.TrailingSliceLayout Std.Usize) :
+  Result Bool
+  := do
+  if self.elem_size != other.elem_size
+  then ok false
+  else
+    let o ← layout.TrailingSliceLayoutUsize.size_for_elems self 0#usize
+    let o1 ← layout.TrailingSliceLayoutUsize.size_for_elems other 0#usize
+    match o with
+    | none => ok false
+    | some self_size =>
+      match o1 with
+      | none => ok false
+      | some other_size =>
+        if self_size = other_size
+        then
+          let (self_align, self_phase) ←
+            layout.RoundingAlignAndPhase.components
+              self.size_rounding_align_and_phase
+          let (other_align, other_phase) ←
+            layout.RoundingAlignAndPhase.components
+              other.size_rounding_align_and_phase
+          let self_align1 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              self_align
+          let other_align1 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              other_align
+          let max_align ←
+            if self_align1 > other_align1
+            then ok self_align1
+            else ok other_align1
+          let i ← self.elem_size % max_align
+          if i = 0#usize
+          then ok true
+          else
+            if self_align1 != other_align1
+            then ok false
+            else ok (self_phase = other_phase)
+        else ok false
+
+/-- [zerocopy::layout::cast_from::{zerocopy::layout::cast_from::CastPlan}::size_sequences_match]:
+    Source: 'src/layout/cast_from.rs', lines 85:4-99:5 -/
+def layout.cast_from.CastPlan.size_sequences_match
+  (src : layout.TrailingSliceLayout Std.Usize)
+  (dst : layout.TrailingSliceLayout Std.Usize) (dst_base : Std.Usize) :
+  Result Bool
+  := do
+  let o ← lift (Usize.checked_mul dst_base dst.elem_size)
+  match o with
+  | none => ok false
+  | some bytes =>
+    let o1 ← layout.TrailingSliceLayoutUsize.advance dst bytes src.elem_size
+    match o1 with
+    | none => ok false
+    | some advanced =>
+      layout.TrailingSliceLayoutUsize.has_same_size_sequence src advanced
+
+/-- [zerocopy::layout::max_elems_for_bytes]:
+    Source: 'src/layout/mod.rs', lines 892:0-907:1 -/
+def layout.max_elems_for_bytes
+  (bytes : Std.Usize)
+  (elem_size : core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) :
+  Result (Std.Usize × Std.Usize)
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner elem_size
+  let elems ← bytes / i
+  let o ← lift (Usize.checked_mul elems i)
+  match o with
+  | none => fail panic
+  | some used => ok (elems, used)
+
+/-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
+    Source: 'src/layout/mod.rs', lines 836:4-864:5 -/
+def layout.SizeInfoUsize.try_to_nonzero_elem_size
+  (self : layout.SizeInfo Std.Usize) :
+  Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)))
+  := do
+  match self with
+  | layout.SizeInfo.Sized size => ok (some (layout.SizeInfo.Sized size))
+  | layout.SizeInfo.SliceDst tsl =>
+    let o ←
+      core.num.nonzero.NonZero.new
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+        tsl.elem_size
+    match o with
+    | none => ok none
+    | some elem_size =>
+      ok (some (layout.SizeInfo.SliceDst
+        {
+          offset := tsl.offset,
+          elem_size,
+          size_base := tsl.size_base,
+          size_rounding_align_and_phase := tsl.size_rounding_align_and_phase
+        }))
+
+/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
+    Source: 'src/layout/mod.rs', lines 185:4-194:5 -/
+def layout.RoundingAlignAndPhase.align
+  (self : layout.RoundingAlignAndPhase) :
+  Result (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner)
+  := do
+  let (nz, _) ← layout.RoundingAlignAndPhase.components self
+  ok nz
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
+    Source: 'src/layout/mod.rs', lines 1839:4-1986:5 -/
+def layout.DstLayout.validate_cast_and_convert_metadata
+  (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
+  (cast_type : layout.CastType) :
+  Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
+  := do
+  let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
+  match o with
+  | none => fail panic
+  | some size_info =>
+    let o1 ← lift (Usize.checked_add addr bytes_len)
+    let e := core.option.Option.is_some o1
+    massert e
+    let offset ←
+      match cast_type with
+      | layout.CastType.Prefix => ok 0#usize
+      | layout.CastType.Suffix => ok bytes_len
+    let i ← addr + offset
+    let i1 ←
+      core.num.nonzero.NonZero.get
+        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
+        self.align
+    let i2 ← i % i1
+    if i2 != 0#usize
+    then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
+    else
+      match size_info with
+      | layout.SizeInfo.Sized size =>
+        massert ((size > bytes_len) || (size <= bytes_len))
+        if size > bytes_len
+        then ok (core.result.Result.Err layout.MetadataCastError.Size)
+        else
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (0#usize, size))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - size
+            ok (core.result.Result.Ok (0#usize, split_at))
+      | layout.SizeInfo.SliceDst trailing =>
+        let o2 ←
+          layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
+        match o2 with
+        | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
+        | some bytes =>
+          let (elems, _) ←
+            layout.max_elems_for_bytes bytes trailing.elem_size
+          let size_align ←
+            layout.RoundingAlignAndPhase.align
+              trailing.size_rounding_align_and_phase
+          let i3 ←
+            core.num.nonzero.NonZero.get
+              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+              trailing.elem_size
+          let unused_bytes ← bytes % i3
+          let unused_aligned_bytes ←
+            util.round_down_to_next_multiple_of_alignment unused_bytes
+              size_align
+          let i4 ← bytes_len - trailing.size_base
+          let max_rounded_bytes ←
+            util.round_down_to_next_multiple_of_alignment i4 size_align
+          let i5 ← max_rounded_bytes - unused_aligned_bytes
+          let self_bytes ← trailing.size_base + i5
+          massert (self_bytes <= bytes_len)
+          match cast_type with
+          | layout.CastType.Prefix =>
+            ok (core.result.Result.Ok (elems, self_bytes))
+          | layout.CastType.Suffix =>
+            let split_at ← bytes_len - self_bytes
+            ok (core.result.Result.Ok (elems, split_at))
+
+/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
+    Source: 'src/layout/mod.rs', lines 1701:4-1724:5 -/
+def layout.DstLayout.metadata_for_exact_size
+  (self : layout.DstLayout) (size : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  match self.size_info with
+  | layout.SizeInfo.Sized _ => ok none
+  | layout.SizeInfo.SliceDst tsl =>
+    match tsl.elem_size.val with
+    | 0 => ok none
+    | _ =>
+      let r ←
+        layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
+          layout.CastType.Prefix
+      match r with
+      | core.result.Result.Ok p =>
+        let (elems, object_size) := p
+        if object_size = size
+        then ok (some elems)
+        else ok none
+      | core.result.Result.Err _ => ok none
+
+/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::size_offset]:
+    Source: 'src/layout/mod.rs', lines 274:4-287:5 -/
+def layout.TrailingSliceLayout.size_offset
+  {E : Type} (self : layout.TrailingSliceLayout E) : Result Std.Usize := do
+  let (size_align, size_phase) ←
+    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
+  let aligned_base ←
+    util.round_down_to_next_multiple_of_alignment self.size_base size_align
+  ok (aligned_base ||| size_phase)
+
+/-- [zerocopy::layout::cast_from::{zerocopy::layout::cast_from::CastPlan}::try_compute]:
+    Source: 'src/layout/cast_from.rs', lines 122:4-217:5 -/
+def layout.cast_from.CastPlan.try_compute
+  (src_layout : layout.DstLayout) (dst_layout : layout.DstLayout) :
+  Result (Option layout.cast_from.CastPlan)
+  := do
+  let i ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+      src_layout.align
+  let i1 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+      dst_layout.align
+  if i < i1
+  then ok none
+  else
+    match src_layout.size_info with
+    | layout.SizeInfo.Sized src_size =>
+      match dst_layout.size_info with
+      | layout.SizeInfo.Sized dst_size =>
+        if src_size != dst_size
+        then ok none
+        else ok (some layout.cast_from.CastPlan.SizedToSized)
+      | layout.SizeInfo.SliceDst _ =>
+        let o ← layout.DstLayout.metadata_for_exact_size dst_layout src_size
+        match o with
+        | none => ok none
+        | some «meta» =>
+          ok (some (layout.cast_from.CastPlan.SizedToUnsized «meta»))
+    | layout.SizeInfo.SliceDst src =>
+      match dst_layout.size_info with
+      | layout.SizeInfo.Sized _ => ok none
+      | layout.SizeInfo.SliceDst dst =>
+        let o ←
+          core.num.nonzero.NonZero.new
+            Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
+            dst.elem_size
+        match o with
+        | none => ok none
+        | some e =>
+          if src.elem_size < dst.elem_size
+          then ok none
+          else
+            let (elem_multiple, described_src_elem_size) ←
+              layout.max_elems_for_bytes src.elem_size e
+            if described_src_elem_size != src.elem_size
+            then ok none
+            else
+              let i2 ← layout.TrailingSliceLayout.size_offset src
+              let i3 ← layout.TrailingSliceLayout.size_offset dst
+              let o1 ← lift (Usize.checked_sub i2 i3)
+              let exact_offset_delta_elems ←
+                match o1 with
+                | none => ok none
+                | some delta =>
+                  do
+                  let (elems, described_delta) ←
+                    layout.max_elems_for_bytes delta e
+                  if described_delta = delta
+                  then ok (some elems)
+                  else ok none
+              match exact_offset_delta_elems with
+              | none =>
+                let o2 ←
+                  layout.TrailingSliceLayoutUsize.size_for_elems src 0#usize
+                match o2 with
+                | none => ok none
+                | some size =>
+                  let o3 ←
+                    layout.DstLayout.metadata_for_exact_size dst_layout size
+                  match o3 with
+                  | none => ok none
+                  | some elems =>
+                    let b ←
+                      layout.cast_from.CastPlan.size_sequences_match src dst
+                        elems
+                    if b
+                    then
+                      ok (some (layout.cast_from.CastPlan.UnsizedToUnsized
+                        elems elem_multiple))
+                    else ok none
+              | some elems =>
+                let b ←
+                  layout.cast_from.CastPlan.size_sequences_match src dst elems
+                if b
+                then
+                  ok (some (layout.cast_from.CastPlan.UnsizedToUnsized elems
+                    elem_multiple))
+                else
+                  let o2 ←
+                    layout.TrailingSliceLayoutUsize.size_for_elems src 0#usize
+                  match o2 with
+                  | none => ok none
+                  | some size =>
+                    let o3 ←
+                      layout.DstLayout.metadata_for_exact_size dst_layout size
+                    match o3 with
+                    | none => ok none
+                    | some elems1 =>
+                      let b1 ←
+                        layout.cast_from.CastPlan.size_sequences_match src dst
+                          elems1
+                      if b1
+                      then
+                        ok (some (layout.cast_from.CastPlan.UnsizedToUnsized
+                          elems1 elem_multiple))
+                      else ok none
+
+/-- [zerocopy::layout::add_scaled_metadata]:
+    Source: 'src/layout/mod.rs', lines 2008:0-2082:1 -/
+def layout.add_scaled_metadata
+  (base : Std.Usize) (metadata : Std.Usize) (multiple : Std.Usize) :
+  Result Std.Usize
+  := do
+  let scaled ← core.num.Usize.unchecked_mul metadata multiple
+  core.num.Usize.unchecked_add base scaled
+
+/-- [zerocopy::layout::cast_from::{zerocopy::layout::cast_from::CastPlan}::cast_metadata]:
+    Source: 'src/layout/cast_from.rs', lines 233:4-243:5 -/
+def layout.cast_from.CastPlan.cast_metadata
+  (self : layout.cast_from.CastPlan) (src_meta : Std.Usize) :
+  Result Std.Usize
+  := do
+  match self with
+  | layout.cast_from.CastPlan.UnsizedToUnsized offset_delta_elems elem_multiple
+    =>
+    layout.add_scaled_metadata offset_delta_elems src_meta elem_multiple
+  | layout.cast_from.CastPlan.SizedToUnsized dst_meta => ok dst_meta
+  | layout.cast_from.CastPlan.SizedToSized => ok 0#usize
+
 /-- [zerocopy::layout::composition_checks::matches_reference]:
     Source: 'src/layout/composition_checks.rs', lines 57:0-75:1 -/
 def layout.composition_checks.matches_reference
@@ -927,22 +1470,6 @@ def util.max
   then ok b
   else ok a
 
-/-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 170:0-230:1 -/
-def util.padding_needed_for
-  (len : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result Std.Usize
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let mask ← i - 1#usize
-  let i1 ← lift (core.num.Usize.wrapping_sub len 1#usize)
-  let i2 ← lift (~~~ i1)
-  ok (i2 &&& mask)
-
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::CURRENT_MAX_ALIGN]
     Source: 'src/layout/mod.rs', lines 951:4-954:6 -/
 @[global_simps, irreducible]
@@ -958,13 +1485,6 @@ def layout.DstLayout.CURRENT_MAX_ALIGN
   match o with
   | none => fail panic
   | some max_align => ok max_align
-
-/-- [zerocopy::layout::POINTER_WIDTH_BITS]
-    Source: 'src/layout/mod.rs', lines 32:0-32:62 -/
-@[global_simps, irreducible]
-def layout.POINTER_WIDTH_BITS : Result Std.Usize := do
-  let i ← core.mem.size_of Std.Usize
-  i * 8#usize
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::THEORETICAL_MAX_ALIGN]
     Source: 'src/layout/mod.rs', lines 937:4-941:10 -/
@@ -1141,72 +1661,6 @@ def layout.composition_checks.check_extend
     else ok ()
   else ok ()
 
-/-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 262:0-280:1 -/
-def util.round_down_to_next_multiple_of_alignment
-  (n : Std.Usize)
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result Std.Usize
-  := do
-  let align1 ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let b ← core.num.Usize.is_power_of_two align1
-  massert b
-  let i ← align1 - 1#usize
-  let mask ← lift (~~~ i)
-  ok (n &&& mask)
-
-/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::components]:
-    Source: 'src/layout/mod.rs', lines 145:4-172:5 -/
-def layout.RoundingAlignAndPhase.components
-  (self : layout.RoundingAlignAndPhase) :
-  Result ((core.num.nonzero.NonZero Std.Usize
-    core.num.niche_types.NonZeroUsizeInner) × Std.Usize)
-  := do
-  let i ← layout.POINTER_WIDTH_BITS
-  let i1 ← i - 1#usize
-  let i2 ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner self._0
-  let i3 ← lift (core.num.Usize.leading_zeros i2)
-  let i4 ← lift (UScalar.cast .Usize i3)
-  let shift ← i1 - i4
-  let align ← 1#usize <<< shift
-  let o ←
-    core.num.nonzero.NonZero.new
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  match o with
-  | none => fail panic
-  | some align1 =>
-    let i5 ←
-      core.num.nonzero.NonZero.get
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align1
-    let phase ← lift (i2 ^^^ i5)
-    ok (align1, phase)
-
-/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::new]:
-    Source: 'src/layout/mod.rs', lines 112:4-131:5 -/
-def layout.RoundingAlignAndPhase.new
-  (align : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) (phase : Std.Usize) :
-  Result layout.RoundingAlignAndPhase
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner align
-  let b ← core.num.Usize.is_power_of_two i
-  massert b
-  massert (phase < i)
-  let encoded ← lift (i ||| phase)
-  let o ←
-    core.num.nonzero.NonZero.new
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner encoded
-  match o with
-  | none => fail panic
-  | some encoded1 => ok { _0 := encoded1 }
-
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::pad_to_align]:
     Source: 'src/layout/mod.rs', lines 1512:4-1602:5
     Visibility: public -/
@@ -1331,218 +1785,6 @@ def layout.composition_checks.check_pad
       let b1 ← layout.composition_checks.matches_reference actual expected
       massert b1
   else ok ()
-
-/-- [zerocopy::layout::{zerocopy::layout::RoundingAlignAndPhase}::align]:
-    Source: 'src/layout/mod.rs', lines 185:4-194:5 -/
-def layout.RoundingAlignAndPhase.align
-  (self : layout.RoundingAlignAndPhase) :
-  Result (core.num.nonzero.NonZero Std.Usize
-    core.num.niche_types.NonZeroUsizeInner)
-  := do
-  let (nz, _) ← layout.RoundingAlignAndPhase.components self
-  ok nz
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::size_offset]:
-    Source: 'src/layout/mod.rs', lines 274:4-287:5 -/
-def layout.TrailingSliceLayout.size_offset
-  {E : Type} (self : layout.TrailingSliceLayout E) : Result Std.Usize := do
-  let (size_align, size_phase) ←
-    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
-  let aligned_base ←
-    util.round_down_to_next_multiple_of_alignment self.size_base size_align
-  ok (aligned_base ||| size_phase)
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<E>}::max_trailing_bytes]:
-    Source: 'src/layout/mod.rs', lines 310:4-399:5 -/
-def layout.TrailingSliceLayout.max_trailing_bytes
-  {E : Type} (self : layout.TrailingSliceLayout E)
-  (available_bytes : Std.Usize) :
-  Result (Option Std.Usize)
-  := do
-  let (size_align, size_phase) ←
-    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
-  let rounded_phase ←
-    if size_phase = 0#usize
-    then ok 0#usize
-    else
-      core.num.nonzero.NonZero.get
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
-  let o ← lift (Usize.checked_add self.size_base rounded_phase)
-  match o with
-  | none => ok none
-  | some size =>
-    let o1 ← lift (Usize.checked_sub available_bytes size)
-    match o1 with
-    | none => ok none
-    | some bytes =>
-      let aligned_bytes ←
-        util.round_down_to_next_multiple_of_alignment bytes size_align
-      let initial_padding ← rounded_phase - size_phase
-      let trailing_bytes ← lift (aligned_bytes ||| initial_padding)
-      ok (some trailing_bytes)
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::padding_for_elems]:
-    Source: 'src/layout/mod.rs', lines 424:4-479:5 -/
-def layout.TrailingSliceLayoutUsize.padding_for_elems
-  (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
-  Result Std.Usize
-  := do
-  let (size_align, size_phase) ←
-    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
-  let size_mask ← i - 1#usize
-  let elem_remainder ← lift (self.elem_size &&& size_mask)
-  let i1 ← lift (core.num.Usize.wrapping_mul elems elem_remainder)
-  let trailing_remainder ← lift (i1 &&& size_mask)
-  let rounding_input ←
-    lift (core.num.Usize.wrapping_add size_phase trailing_remainder)
-  let rounding_padding ← util.padding_needed_for rounding_input size_align
-  let i2 ← lift (core.num.Usize.wrapping_add self.size_base size_phase)
-  let i3 ← lift (core.num.Usize.wrapping_sub i2 self.offset)
-  ok (core.num.Usize.wrapping_add i3 rounding_padding)
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::size_for_elems]:
-    Source: 'src/layout/mod.rs', lines 497:4-561:5 -/
-def layout.TrailingSliceLayoutUsize.size_for_elems
-  (self : layout.TrailingSliceLayout Std.Usize) (elems : Std.Usize) :
-  Result (Option Std.Usize)
-  := do
-  let o ←
-    layout.TrailingSliceLayout.max_trailing_bytes self core.num.Usize.MAX
-  match o with
-  | none => ok none
-  | some bytes =>
-    let o1 ← lift (Usize.checked_mul self.elem_size elems)
-    match o1 with
-    | none => ok none
-    | some bytes1 =>
-      if bytes1 > bytes
-      then ok none
-      else
-        let trailing_end ←
-          lift (core.num.Usize.wrapping_add self.offset bytes1)
-        let i ← layout.TrailingSliceLayoutUsize.padding_for_elems self elems
-        let size ← lift (core.num.Usize.wrapping_add trailing_end i)
-        ok (some size)
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::has_same_size_sequence]:
-    Source: 'src/layout/mod.rs', lines 585:4-662:5 -/
-def layout.TrailingSliceLayoutUsize.has_same_size_sequence
-  (self : layout.TrailingSliceLayout Std.Usize)
-  (other : layout.TrailingSliceLayout Std.Usize) :
-  Result Bool
-  := do
-  if self.elem_size != other.elem_size
-  then ok false
-  else
-    let o ← layout.TrailingSliceLayoutUsize.size_for_elems self 0#usize
-    let o1 ← layout.TrailingSliceLayoutUsize.size_for_elems other 0#usize
-    match o with
-    | none => ok false
-    | some self_size =>
-      match o1 with
-      | none => ok false
-      | some other_size =>
-        if self_size = other_size
-        then
-          let (self_align, self_phase) ←
-            layout.RoundingAlignAndPhase.components
-              self.size_rounding_align_and_phase
-          let (other_align, other_phase) ←
-            layout.RoundingAlignAndPhase.components
-              other.size_rounding_align_and_phase
-          let self_align1 ←
-            core.num.nonzero.NonZero.get
-              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
-              self_align
-          let other_align1 ←
-            core.num.nonzero.NonZero.get
-              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
-              other_align
-          let max_align ←
-            if self_align1 > other_align1
-            then ok self_align1
-            else ok other_align1
-          let i ← self.elem_size % max_align
-          if i = 0#usize
-          then ok true
-          else
-            if self_align1 != other_align1
-            then ok false
-            else ok (self_phase = other_phase)
-        else ok false
-
-/-- [zerocopy::layout::{zerocopy::layout::TrailingSliceLayout<usize>}::advance]:
-    Source: 'src/layout/mod.rs', lines 706:4-802:5 -/
-def layout.TrailingSliceLayoutUsize.advance
-  (self : layout.TrailingSliceLayout Std.Usize) (bytes : Std.Usize)
-  (elem_size : Std.Usize) :
-  Result (Option (layout.TrailingSliceLayout Std.Usize))
-  := do
-  let (size_align, size_phase) ←
-    layout.RoundingAlignAndPhase.components self.size_rounding_align_and_phase
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner size_align
-  let align_mask ← i - 1#usize
-  let i1 ← core.num.Usize.MAX - self.size_base
-  let phase_capacity ← lift (i1 ||| align_mask)
-  let max_advance ← phase_capacity - size_phase
-  if bytes > max_advance
-  then ok none
-  else
-    let advanced_phase ← size_phase + bytes
-    let normalized_phase ← lift (advanced_phase &&& align_mask)
-    let whole_bytes ←
-      util.round_down_to_next_multiple_of_alignment advanced_phase size_align
-    let size_base ← self.size_base + whole_bytes
-    let raap ← layout.RoundingAlignAndPhase.new size_align normalized_phase
-    ok (some
-      { self with elem_size, size_base, size_rounding_align_and_phase := raap })
-
-/-- [zerocopy::layout::{zerocopy::layout::SizeInfo<usize>}::try_to_nonzero_elem_size]:
-    Source: 'src/layout/mod.rs', lines 836:4-864:5 -/
-def layout.SizeInfoUsize.try_to_nonzero_elem_size
-  (self : layout.SizeInfo Std.Usize) :
-  Result (Option (layout.SizeInfo (core.num.nonzero.NonZero Std.Usize
-    core.num.niche_types.NonZeroUsizeInner)))
-  := do
-  match self with
-  | layout.SizeInfo.Sized size => ok (some (layout.SizeInfo.Sized size))
-  | layout.SizeInfo.SliceDst tsl =>
-    let o ←
-      core.num.nonzero.NonZero.new
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
-        tsl.elem_size
-    match o with
-    | none => ok none
-    | some elem_size =>
-      ok (some (layout.SizeInfo.SliceDst
-        {
-          offset := tsl.offset,
-          elem_size,
-          size_base := tsl.size_base,
-          size_rounding_align_and_phase := tsl.size_rounding_align_and_phase
-        }))
-
-/-- [zerocopy::layout::max_elems_for_bytes]:
-    Source: 'src/layout/mod.rs', lines 892:0-907:1 -/
-def layout.max_elems_for_bytes
-  (bytes : Std.Usize)
-  (elem_size : core.num.nonzero.NonZero Std.Usize
-  core.num.niche_types.NonZeroUsizeInner) :
-  Result (Std.Usize × Std.Usize)
-  := do
-  let i ←
-    core.num.nonzero.NonZero.get
-      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner elem_size
-  let elems ← bytes / i
-  let o ← lift (Usize.checked_mul elems i)
-  match o with
-  | none => fail panic
-  | some used => ok (elems, used)
 
 /-- [zerocopy::layout::{zerocopy::layout::DstLayout}::MIN_ALIGN]
     Source: 'src/layout/mod.rs', lines 927:4-930:6 -/
@@ -1673,100 +1915,6 @@ def layout.DstLayout.requires_dynamic_padding
       if initial_size != trailing_slice_layout.offset
       then ok true
       else ok (¬ (i1 = 0#usize))
-
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::validate_cast_and_convert_metadata]:
-    Source: 'src/layout/mod.rs', lines 1839:4-1986:5 -/
-def layout.DstLayout.validate_cast_and_convert_metadata
-  (self : layout.DstLayout) (addr : Std.Usize) (bytes_len : Std.Usize)
-  (cast_type : layout.CastType) :
-  Result (core.result.Result (Std.Usize × Std.Usize) layout.MetadataCastError)
-  := do
-  let o ← layout.SizeInfoUsize.try_to_nonzero_elem_size self.size_info
-  match o with
-  | none => fail panic
-  | some size_info =>
-    let o1 ← lift (Usize.checked_add addr bytes_len)
-    let e := core.option.Option.is_some o1
-    massert e
-    let offset ←
-      match cast_type with
-      | layout.CastType.Prefix => ok 0#usize
-      | layout.CastType.Suffix => ok bytes_len
-    let i ← addr + offset
-    let i1 ←
-      core.num.nonzero.NonZero.get
-        Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner 
-        self.align
-    let i2 ← i % i1
-    if i2 != 0#usize
-    then ok (core.result.Result.Err layout.MetadataCastError.Alignment)
-    else
-      match size_info with
-      | layout.SizeInfo.Sized size =>
-        massert ((size > bytes_len) || (size <= bytes_len))
-        if size > bytes_len
-        then ok (core.result.Result.Err layout.MetadataCastError.Size)
-        else
-          match cast_type with
-          | layout.CastType.Prefix =>
-            ok (core.result.Result.Ok (0#usize, size))
-          | layout.CastType.Suffix =>
-            let split_at ← bytes_len - size
-            ok (core.result.Result.Ok (0#usize, split_at))
-      | layout.SizeInfo.SliceDst trailing =>
-        let o2 ←
-          layout.TrailingSliceLayout.max_trailing_bytes trailing bytes_len
-        match o2 with
-        | none => ok (core.result.Result.Err layout.MetadataCastError.Size)
-        | some bytes =>
-          let (elems, _) ←
-            layout.max_elems_for_bytes bytes trailing.elem_size
-          let size_align ←
-            layout.RoundingAlignAndPhase.align
-              trailing.size_rounding_align_and_phase
-          let i3 ←
-            core.num.nonzero.NonZero.get
-              Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner
-              trailing.elem_size
-          let unused_bytes ← bytes % i3
-          let unused_aligned_bytes ←
-            util.round_down_to_next_multiple_of_alignment unused_bytes
-              size_align
-          let i4 ← bytes_len - trailing.size_base
-          let max_rounded_bytes ←
-            util.round_down_to_next_multiple_of_alignment i4 size_align
-          let i5 ← max_rounded_bytes - unused_aligned_bytes
-          let self_bytes ← trailing.size_base + i5
-          massert (self_bytes <= bytes_len)
-          match cast_type with
-          | layout.CastType.Prefix =>
-            ok (core.result.Result.Ok (elems, self_bytes))
-          | layout.CastType.Suffix =>
-            let split_at ← bytes_len - self_bytes
-            ok (core.result.Result.Ok (elems, split_at))
-
-/-- [zerocopy::layout::{zerocopy::layout::DstLayout}::metadata_for_exact_size]:
-    Source: 'src/layout/mod.rs', lines 1701:4-1724:5 -/
-def layout.DstLayout.metadata_for_exact_size
-  (self : layout.DstLayout) (size : Std.Usize) :
-  Result (Option Std.Usize)
-  := do
-  match self.size_info with
-  | layout.SizeInfo.Sized _ => ok none
-  | layout.SizeInfo.SliceDst tsl =>
-    match tsl.elem_size.val with
-    | 0 => ok none
-    | _ =>
-      let r ←
-        layout.DstLayout.validate_cast_and_convert_metadata self 0#usize size
-          layout.CastType.Prefix
-      match r with
-      | core.result.Result.Ok p =>
-        let (elems, object_size) := p
-        if object_size = size
-        then ok (some elems)
-        else ok none
-      | core.result.Result.Err _ => ok none
 
 /-- [zerocopy::layout::nested_reference::round_up]:
     Source: 'src/layout/nested_reference.rs', lines 46:0-56:1 -/
