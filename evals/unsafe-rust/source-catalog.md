@@ -355,7 +355,7 @@ Use separate fresh agents for these audit units:
 7. primitive, atomic, function-pointer, SIMD, float, and validity
    implementations in `src/impls.rs` and `src/byteorder.rs`;
 8. layout/allocation arithmetic, ZSTs, DST metadata, and allocation failure in
-   `src/layout.rs`, `src/util/mod.rs`, and alloc branches;
+   `src/layout/mod.rs`, `src/util/mod.rs`, and alloc branches;
 9. declarative macros and hidden support in `src/macros.rs` and `src/util/`;
 10. the entire proc-macro generator as a theorem over every accepted token
     stream and interaction with other macros/attributes;
