@@ -303,6 +303,7 @@ pub fn run_aeneas(
     )?;
     write_if_changed(&tmp_lean_root.join("lake-manifest.json"), EMPTY_MANIFEST)?;
     generate_sources(&lean_generated_root, artifacts)?;
+    crate::lean_gateway::write_editor_gateway(&tmp_lean_root, &final_lean_root)?;
     Workspace::admit_stage(&sdk, &tmp_lean_root, &final_lean_root)?;
     if let Some(existing) = &existing {
         preserve_unchanged_mtimes(existing.root(), &tmp_lean_root)?;
