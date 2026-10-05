@@ -782,7 +782,12 @@ records but does not formally prove:
 - The external `usize::unchecked_mul` and `usize::unchecked_add` models
   return the exact product and sum on non-overflowing inputs. Their Lean
   definitions use checked arithmetic, and every use proves both results fit.
-  They claim no Rust behavior outside that domain.
+  They claim no Rust behavior outside that domain. The cast composition
+  harness derives these bounds from successful plan selection and a
+  representable source size, and compares complete source/destination sizes
+  using the independent remainder-based reference. Pointer provenance,
+  reference validity, and `KnownLayout` implementations remain outside this
+  numerical proof.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
@@ -850,3 +855,14 @@ checking its signature; no formatting proposition or behavior is assumed. A
 change to a proposition or a function fails the audit. The PhantomData model
 likewise records its zero runtime fields, with a Lean shape theorem that fails
 if extraction adds fields; it makes no ownership or provenance claim.
+
+## Numerical cast composition
+
+The inline checks in `layout/cast_from.rs` cover numerical cast composition.
+They select a production `CastPlan`, require the checked metadata calculation
+to succeed, compare it with the actual unchecked conversion, and compare
+complete sizes using the independent remainder-based reference. Metadata
+representability follows from a representable complete source size; it is not
+an assumed harness precondition. The proof covers all three accepted plan
+variants. Rejected plans carry no completeness promise, and the typed pointer
+adapter's provenance and `KnownLayout` obligations remain outside this proof.
