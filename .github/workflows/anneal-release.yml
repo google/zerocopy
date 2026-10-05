@@ -264,7 +264,7 @@ jobs:
           df -h
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@8d87e8d5e5b8a8309d4281094560f127d9a265f1 # v3.22.5
+        uses: DeterminateSystems/determinate-nix-action@4d65ea9cab522b6d9f29a170aed23ededc1b27af # v3.23.0
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
