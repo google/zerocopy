@@ -26,6 +26,13 @@ element-count conversion, layout-variant handling, and checked metadata sizing.
 Using these results for an arbitrary `KnownLayout` implementation requires
 separate layout correspondence.
 
+The numerical harness in [`split_at.rs`](../../zerocopy/src/split_at.rs) compares
+split sizes with the independent remainder-based reference. It checks physical
+tail containment and the zero-padding gate. The shared length helper also runs
+in the production pointer path. These proofs establish bounds and disjoint byte
+intervals, including empty and zero-sized tails; pointer validity and provenance
+remain separate Rust obligations.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
