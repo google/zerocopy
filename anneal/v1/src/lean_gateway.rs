@@ -37,11 +37,13 @@ enum Operation {
     },
     /// Return Lake setup metadata after building saved local imports.
     SetupFile { file: PathBuf },
+    /// Serve through stock Lake with local dependency freshness coordination.
+    Serve,
 }
 
 pub fn run(args: Args) -> Result<()> {
     let workspace = Workspace::from_root(&args.workspace)?;
-    let _writer = workspace.writer_lock()?;
+    let _writer = if matches!(args.operation, Operation::Serve) { None } else { Some(workspace.writer_lock()?) };
     match args.operation {
         Operation::Build { targets } => {
             let stamp = workspace.source_stamp()?;
@@ -81,6 +83,7 @@ pub fn run(args: Args) -> Result<()> {
             );
             Ok(())
         }
+        Operation::Serve => crate::lean_server::run(&workspace),
     }
 }
 
