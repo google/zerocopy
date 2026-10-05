@@ -1,7 +1,7 @@
 use std::{
     fs, io,
     io::Write as _,
-    os::unix::fs::PermissionsExt,
+    os::unix::fs::{MetadataExt as _, PermissionsExt},
     path::{Path, PathBuf},
     process::{self, Stdio},
     sync::{Arc, Condvar, Mutex, OnceLock},
@@ -14,6 +14,12 @@ use fs2::FileExt as _;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use walkdir::WalkDir;
+
+// Use production ownership creation; the datatest harness runs fixture cases,
+// not the source module's unit-test harness.
+#[allow(dead_code)]
+#[path = "../src/lean_sdk.rs"]
+mod lean_sdk;
 
 fn new_sorted_walkdir(path: impl AsRef<Path>) -> WalkDir {
     WalkDir::new(path).sort_by_file_name()
@@ -116,6 +122,7 @@ static TARGET_DIR: OnceLock<PathBuf> = OnceLock::new();
 static TOOLCHAIN_BASE_DIR: OnceLock<PathBuf> = OnceLock::new();
 static TOOLCHAIN_INSTALL_DIR: OnceLock<PathBuf> = OnceLock::new();
 static TOOLCHAIN_RUN_JOBS: OnceLock<usize> = OnceLock::new();
+static LEAN_SDK_ID: OnceLock<String> = OnceLock::new();
 static PROFILE_LOG: OnceLock<Option<ProfileLog>> = OnceLock::new();
 static PROFILE_SAMPLE_MS: OnceLock<u64> = OnceLock::new();
 static PROFILE_EMIT_SAMPLES: OnceLock<bool> = OnceLock::new();
@@ -274,7 +281,8 @@ fn get_toolchain_install_dir() -> PathBuf {
             for path in [
                 dir.join("aeneas/bin/charon"),
                 dir.join("aeneas/bin/aeneas"),
-                dir.join("lean/bin/lake"),
+                dir.join("lean-sdk/bin/lean"),
+                dir.join("lean-sdk/bin/lake"),
             ] {
                 if !path.exists() {
                     panic!(
@@ -285,76 +293,313 @@ fn get_toolchain_install_dir() -> PathBuf {
                 }
             }
 
+            let sdk = lean_sdk::LeanSdk::load(&dir.join("lean-sdk")).unwrap_or_else(|error| {
+                panic!("Installed toolchain has no admitted Lean SDK: {error:#}")
+            });
+            assert_eq!(sdk.lean_toolchain(), env!("ANNEAL_LEAN_TOOLCHAIN"));
+
             dir
         })
         .clone()
+}
+
+fn get_sdk_id() -> &'static str {
+    LEAN_SDK_ID.get_or_init(|| {
+        let sdk = lean_sdk::LeanSdk::load(&get_toolchain_install_dir().join("lean-sdk"))
+            .expect("Installed SDK passed preflight");
+        sdk.id().to_owned()
+    })
+}
+
+fn sdk_workspace_root(anneal_run_root: &Path) -> PathBuf {
+    anneal_run_root.join("lean").join(get_sdk_id())
 }
 
 fn get_toolchain_bin_dir() -> PathBuf {
     get_toolchain_install_dir().join("aeneas").join("bin")
 }
 
-fn run_archive_lake_cache_reuse_test(test_name: &str) -> datatest_stable::Result<()> {
+fn run_archive_sdk_reuse_test(test_name: &str) -> datatest_stable::Result<()> {
     let _permit =
-        profile_step(test_name, None, "wait_toolchain_run_slot", || acquire_toolchain_run_slot());
-    let temp = tempfile::Builder::new()
-        .prefix("anneal-archive-cache-reuse-")
-        .tempdir_in(get_target_dir())?;
-    assert_archive_lake_cache_reuse(test_name, &get_toolchain_install_dir(), temp.path())
+        profile_step(test_name, None, "wait_toolchain_run_slot", acquire_toolchain_run_slot);
+    fs::create_dir_all(get_target_dir())?;
+    let temp =
+        tempfile::Builder::new().prefix("anneal-archive-sdk-reuse-").tempdir_in(get_target_dir())?;
+    let result = assert_archive_sdk_reuse(test_name, &get_toolchain_install_dir(), temp.path());
+    if std::env::var_os("ANNEAL_KEEP_TEST_DIR").is_some() {
+        eprintln!("Preserved shared SDK fixture at {}", temp.keep().display());
+    }
+    result
 }
 
-fn assert_archive_lake_cache_reuse(
+fn assert_archive_sdk_reuse(
     test_name: &str,
     toolchain_root: &Path,
     temp_root: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let aeneas_root = toolchain_root.join("aeneas");
-    let aeneas_lean = aeneas_root.join("backends/lean");
-    let lean_root = toolchain_root.join("lean");
+    // Exocrate creates the installation wrapper; archive entries own these
+    // frozen subtrees, rather than the wrapper's permission mode.
+    for tree in ["aeneas", "lean", "lean-sdk", "rust"] {
+        assert_no_write_bits(&toolchain_root.join(tree))?;
+    }
+    let original_inventory = frozen_inventory(toolchain_root)?;
+    let sdk = lean_sdk::LeanSdk::load(&toolchain_root.join("lean-sdk"))?;
     let workspace = temp_root.join("generated-workspace");
-
-    assert_no_write_bits(&aeneas_root)?;
-
+    let owned = lean_sdk::Workspace::create(&sdk, &workspace, &["generated", "user"])?;
+    let workspace = owned.root();
+    let lake_version = owned.lake_command(lean_sdk::LakeOperation::Version)?.output()?;
+    assert!(lake_version.status.success(), "bound Lake version inspection failed");
+    assert!(String::from_utf8(lake_version.stdout)?.starts_with("Lake version"));
+    assert!(!workspace.join(".lake/build").exists(), "initial private outputs must be empty");
+    assert_eq!(fs::read_dir(workspace.join(".runtime/cache"))?.count(), 0);
     fs::create_dir_all(workspace.join("generated"))?;
-    fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
-    fs::write(workspace.join("generated/Generated.lean"), "import Aeneas\n")?;
+    fs::create_dir_all(workspace.join("user"))?;
+    fs::write(workspace.join("lean-toolchain"), format!("{}\n", sdk.lean_toolchain()))?;
     fs::write(
-        workspace.join("lakefile.lean"),
-        format!(
-            r#"import Lake
-open Lake DSL
+        workspace.join("generated/Generated.lean"),
+        "import Aeneas\nimport FixtureDependency\n",
+    )?;
+    let dependency = workspace.join("generated/FixtureDependency.lean");
+    fs::write(&dependency, "def fixtureValue : Nat := 10\n")?;
+    fs::write(
+        workspace.join("user/Current.lean"),
+        "import FixtureDependency\nexample : fixtureValue = 10 := by decide\n",
+    )?;
+    let plugin = sdk.plugins().first().ok_or_else(|| invalid_data("SDK has no native plugin"))?;
+    lean_sdk::Workspace::write_lakefile(
+        &sdk,
+        workspace,
+        &[
+            lean_sdk::LakeLibrary {
+                name: "Generated",
+                source_root: "generated",
+                modules: &["Generated".into(), "FixtureDependency".into()],
+            },
+            lean_sdk::LakeLibrary {
+                name: "User",
+                source_root: "user",
+                modules: &["Current".into()],
+            },
+        ],
+    )?;
+    fs::write(
+        workspace.join("lake-manifest.json"),
+        "{\"version\":\"1.2.0\",\"packagesDir\":\".lake/packages\",\"packages\":[],\"name\":\"anneal_verification\",\"lakeDir\":\".lake\",\"fixedToolchain\":false}\n",
+    )?;
 
-require aeneas from "{}"
+    // Deliberately poisoned imports, selectors and restoration paths must never
+    // become providers in the bound child process. They also remain untouched.
+    let foreign = temp_root.join("foreign-cache");
+    fs::create_dir(&foreign)?;
+    fs::write(foreign.join("FixtureDependency.olean"), "foreign compiled input")?;
+    fs::write(foreign.join("foreign.ltar"), "foreign artifact cache")?;
+    let foreign_inventory = frozen_inventory(&foreign)?;
+    let invoke = |phase: &str, args: &[&str]| {
+        run_sdk_gateway(test_name, phase, workspace, args, Some(&foreign))
+    };
+    invoke("cold_build", &["build"])?.assert.success();
+    let private_olean = workspace.join(".lake/build/lib/lean/FixtureDependency.olean");
+    assert!(private_olean.is_file(), "local dependency must build into private outputs");
+    let replay_metadata = fs::metadata(&private_olean)?;
+    invoke("warm_build", &["build"])?.assert.success();
+    assert_eq!(replay_metadata.modified()?, fs::metadata(&private_olean)?.modified()?);
+    assert_eq!(replay_metadata.ino(), fs::metadata(&private_olean)?.ino());
 
-package anneal_verification
+    let setup = invoke("setup_metadata", &["setup-file", "user/Current.lean"])?.assert.success();
+    let metadata: Value = serde_json::from_slice(&setup.get_output().stdout)?;
+    let plugins = metadata["plugins"]
+        .as_array()
+        .ok_or_else(|| invalid_data("setup-file lost plugin metadata"))?;
+    assert!(plugins.iter().any(|path| path.as_str() == plugin.path.to_str()));
+    invoke("current_dependency_positive", &["check", "user/Current.lean", "--json"])?
+        .assert
+        .success();
+    // A direct check must rebuild the saved import closure. A previous OLean
+    // cannot keep proving the value-10 theorem after this saved edit.
+    fs::write(&dependency, "def fixtureValue : Nat := 20\n")?;
+    let rejected =
+        invoke("saved_dependency_edit_rejected", &["check", "user/Current.lean", "--json"])?
+            .assert
+            .failure();
+    let diagnostics = std::str::from_utf8(&rejected.get_output().stdout)?;
+    assert!(
+        diagnostics.lines().any(|line| serde_json::from_str::<Value>(line)
+            .is_ok_and(|diagnostic| diagnostic["severity"] == "error")),
+        "saved dependency edit must reject the old proof with a Lean diagnostic"
+    );
+    fs::write(&dependency, "def fixtureValue : Nat := 10\n")?;
+    invoke("saved_dependency_restored", &["check", "user/Current.lean", "--json"])?
+        .assert
+        .success();
 
-@[default_target]
-lean_lib Generated where
-  srcDir := "generated"
-  roots := #[`Generated]
+    // Local compile-time data is part of the admitted input closure even
+    // though Lake's usual Lean source traces do not track this read. Changing
+    // only the data must not let the old compiled value keep proving 10.
+    let data = workspace.join("generated/fixture-data.txt");
+    fs::write(&data, "10\n")?;
+    fs::write(
+        &dependency,
+        r#"import Lean
+open Lean Elab Term
+elab "fixtureData" : term => do
+  let contents ← IO.FS.readFile "generated/fixture-data.txt"
+  let some value := contents.trimAscii.toString.toNat? | throwError "invalid fixture data"
+  return mkNatLit value
+def fixtureValue : Nat := fixtureData
 "#,
-            lake_string(&aeneas_lean)
-        ),
     )?;
-    write_relative_archive_manifest(&workspace, &aeneas_lean)?;
-
-    // This mirrors v1's generated workspace contract with the Nix-built
-    // archive: dependency paths are locked relative to the workspace, package
-    // caches are read-only, and `--old` must reuse the prebuilt Lake outputs.
-    run_lake_archive_command(
-        test_name,
-        &workspace,
-        &lean_root,
-        &["--keep-toolchain", "--old", "build", "Generated"],
+    invoke("compile_time_data_positive", &["check", "user/Current.lean", "--json"])?
+        .assert
+        .success();
+    fs::write(&data, "20\n")?;
+    let rejected =
+        invoke("compile_time_data_edit_rejected", &["check", "user/Current.lean", "--json"])?
+            .assert
+            .failure();
+    let diagnostics = std::str::from_utf8(&rejected.get_output().stdout)?;
+    assert!(
+        diagnostics.lines().any(|line| serde_json::from_str::<Value>(line)
+            .is_ok_and(|diagnostic| diagnostic["severity"] == "error")),
+        "local data edit must reject the old proof with a Lean diagnostic"
+    );
+    fs::write(&data, "10\n")?;
+    invoke("compile_time_data_restored", &["check", "user/Current.lean", "--json"])?
+        .assert
+        .success();
+    assert_eq!(
+        foreign_inventory,
+        frozen_inventory(&foreign)?,
+        "outside cache must remain untouched"
+    );
+    let manifest: Value =
+        serde_json::from_reader(fs::File::open(workspace.join("lake-manifest.json"))?)?;
+    assert!(
+        manifest["packages"].as_array().is_some_and(Vec::is_empty),
+        "shared dependencies must stay outside Lake's graph"
+    );
+    let packages = workspace.join(".lake/packages");
+    assert!(
+        !packages.exists() || fs::read_dir(packages)?.count() == 0,
+        "workspace must not contain external package providers"
+    );
+    assert_missing_plugin_rejected(test_name, &sdk, temp_root)?;
+    // Exercise the actual Lake parser with control characters that JSON
+    // abbreviates as escapes unsupported by Lean string literals.
+    let escaped_root = "sources\u{8}\u{c}";
+    let escaped = temp_root.join("escaped-source-root");
+    let escaped_workspace = lean_sdk::Workspace::create(&sdk, &escaped, &[escaped_root])?;
+    fs::create_dir(escaped.join(escaped_root))?;
+    fs::write(escaped.join(escaped_root).join("Escaped.lean"), "example : True := by trivial\n")?;
+    lean_sdk::Workspace::write_lakefile(
+        &sdk,
+        escaped_workspace.root(),
+        &[lean_sdk::LakeLibrary {
+            name: "Escaped",
+            source_root: escaped_root,
+            modules: &["Escaped".into()],
+        }],
     )?;
-    run_lake_archive_command(
-        test_name,
-        &workspace,
-        &lean_root,
-        &["--keep-toolchain", "env", "lean", "--json", "generated/Generated.lean"],
-    )?;
-
+    fs::copy(workspace.join("lake-manifest.json"), escaped.join("lake-manifest.json"))?;
+    run_sdk_gateway(test_name, "escaped_source_root", &escaped, &["build"], None)?.assert.success();
+    assert!(escaped.join(".lake/build/lib/lean/Escaped.olean").is_file());
+    assert_eq!(
+        original_inventory,
+        frozen_inventory(toolchain_root)?,
+        "shared installation changed during bound operations"
+    );
     Ok(())
+}
+
+fn assert_missing_plugin_rejected(
+    test_name: &str,
+    sdk: &lean_sdk::LeanSdk,
+    temp_root: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    // An intentionally damaged private view tests admission without modifying
+    // any installed input or constructing another runnable dependency closure.
+    let damaged_installation = temp_root.join("damaged-installation");
+    let damaged_sdk = damaged_installation.join("lean-sdk");
+    for dir in ["bin", "lib/lean", "src/lean"] {
+        fs::create_dir_all(damaged_sdk.join(dir))?;
+    }
+    fs::create_dir(damaged_installation.join("lean"))?;
+    let descriptor: Value = serde_json::from_reader(fs::File::open(sdk.root().join("sdk.json"))?)?;
+    for field in ["source_roots", "import_roots", "loader_roots"] {
+        for path in descriptor[field]
+            .as_array()
+            .ok_or_else(|| invalid_data("SDK is missing search roots"))?
+        {
+            fs::create_dir_all(
+                damaged_sdk.join(path.as_str().ok_or_else(|| invalid_data("Invalid SDK root"))?),
+            )?;
+        }
+    }
+    for path in ["bin/lean", "bin/lake", "sdk.json", "modules.json"] {
+        fs::copy(sdk.root().join(path), damaged_sdk.join(path))?;
+    }
+    let destination = temp_root.join("missing-plugin-workspace");
+    let owned = lean_sdk::Workspace::create(sdk, &destination, &["generated", "user"])?;
+    fs::create_dir(owned.root().join("generated"))?;
+    fs::write(owned.root().join("generated/Generated.lean"), "import Aeneas\n")?;
+    for path in [".anneal-sdk.json", ".lake/.anneal-owner.json"] {
+        let path = owned.root().join(path);
+        let mut binding: Value = serde_json::from_reader(fs::File::open(&path)?)?;
+        binding["sdk_root"] = json!(fs::canonicalize(&damaged_sdk)?);
+        fs::write(path, serde_json::to_vec(&binding)?)?;
+    }
+    let failed =
+        run_sdk_gateway(test_name, "missing_plugin_preflight", owned.root(), &["build"], None)?
+            .assert
+            .failure();
+    let stderr = String::from_utf8_lossy(&failed.get_output().stderr);
+    assert!(
+        stderr.contains("Missing SDK input"),
+        "missing plugin should fail SDK admission: {stderr}"
+    );
+    assert!(
+        !owned.root().join(".lake/build").exists(),
+        "admission failure must precede private compilation"
+    );
+    Ok(())
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct FrozenEntry {
+    path: PathBuf,
+    kind: &'static str,
+    mode: u32,
+    size: u64,
+    modified: std::time::SystemTime,
+    changed_seconds: i64,
+    changed_nanoseconds: i64,
+    link: Option<PathBuf>,
+}
+
+fn frozen_inventory(root: &Path) -> io::Result<Vec<FrozenEntry>> {
+    new_sorted_walkdir(root)
+        .into_iter()
+        .map(|entry| {
+            let entry = entry?;
+            let metadata = fs::symlink_metadata(entry.path())?;
+            let symlink = metadata.file_type().is_symlink();
+            Ok(FrozenEntry {
+                path: entry.path().strip_prefix(root).unwrap().to_path_buf(),
+                kind: if symlink {
+                    "link"
+                } else if metadata.is_dir() {
+                    "directory"
+                } else {
+                    "file"
+                },
+                mode: metadata.permissions().mode(),
+                size: metadata.len(),
+                modified: metadata.modified()?,
+                changed_seconds: metadata.ctime(),
+                changed_nanoseconds: metadata.ctime_nsec(),
+                link: symlink.then(|| fs::read_link(entry.path())).transpose()?,
+            })
+        })
+        .collect()
 }
 
 fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
@@ -364,134 +609,39 @@ fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
         if metadata.file_type().is_symlink() {
             continue;
         }
-        if metadata.permissions().mode() & 0o222 != 0 {
-            panic!("archive path should be read-only: {}", entry.path().display());
-        }
+        assert_eq!(
+            metadata.permissions().mode() & 0o222,
+            0,
+            "archive path should be read-only: {}",
+            entry.path().display()
+        );
     }
     Ok(())
 }
 
-fn write_relative_archive_manifest(
-    workspace: &Path,
-    aeneas_lean: &Path,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let aeneas_lean = fs::canonicalize(aeneas_lean)?;
-    let workspace = fs::canonicalize(workspace)?;
-    let manifest_path = aeneas_lean.join("lake-manifest.json");
-    let manifest: Value = serde_json::from_reader(fs::File::open(&manifest_path)?)?;
-    let aeneas_packages = manifest.get("packages").and_then(Value::as_array).ok_or_else(|| {
-        invalid_data(format!(
-            "Aeneas Lake manifest {} is missing packages",
-            manifest_path.display()
-        ))
-    })?;
-
-    let aeneas_dir = relative_manifest_string(&aeneas_lean, &workspace)?;
-    let mut packages = vec![json!({
-        "type": "path",
-        "name": "aeneas",
-        "dir": aeneas_dir,
-        "inherited": false,
-    })];
-
-    for entry in aeneas_packages {
-        let mut entry = entry
-            .as_object()
-            .cloned()
-            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is not an object"))?;
-        let package_type = entry
-            .get("type")
-            .and_then(Value::as_str)
-            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is missing type"))?;
-        if package_type != "path" {
-            return Err(invalid_data(format!(
-                "Aeneas Lake manifest package entry is {package_type:?}, not a path dependency"
-            ))
-            .into());
-        }
-        let package_dir = entry
-            .get("dir")
-            .and_then(Value::as_str)
-            .ok_or_else(|| invalid_data("Aeneas Lake manifest package entry is missing dir"))?;
-        let package_dir = Path::new(package_dir);
-        let package_dir = if package_dir.is_absolute() {
-            package_dir.to_path_buf()
-        } else {
-            aeneas_lean.join(package_dir)
-        };
-        let package_dir = fs::canonicalize(package_dir)?;
-        entry.insert("dir".to_string(), json!(relative_manifest_string(&package_dir, &workspace)?));
-        entry.insert("inherited".to_string(), json!(true));
-        packages.push(Value::Object(entry));
-    }
-
-    let manifest = json!({
-        "version": "1.2.0",
-        "packagesDir": ".lake/packages",
-        "packages": packages,
-        "name": "anneal_verification",
-        "lakeDir": ".lake",
-        "fixedToolchain": false,
-    });
-    fs::write(
-        workspace.join("lake-manifest.json"),
-        format!("{}\n", serde_json::to_string_pretty(&manifest)?),
-    )?;
-    Ok(())
-}
-
-fn relative_manifest_string(
-    path: &Path,
-    base: &Path,
-) -> Result<String, Box<dyn std::error::Error>> {
-    let path = pathdiff::diff_paths(path, base).ok_or_else(|| {
-        invalid_data(format!(
-            "failed to compute relative path from {} to {}",
-            base.display(),
-            path.display()
-        ))
-    })?;
-    Ok(path.to_string_lossy().into_owned())
-}
-
-fn lake_string(path: &Path) -> String {
-    path.to_string_lossy().replace('\\', "\\\\").replace('"', "\\\"")
-}
-
-fn run_lake_archive_command(
+fn run_sdk_gateway(
     test_name: &str,
+    phase: &str,
     workspace: &Path,
-    lean_root: &Path,
     args: &[&str],
-) -> Result<(), Box<dyn std::error::Error>> {
-    let lean_bin = lean_root.join("bin");
-    let mut cmd = process::Command::new(lean_bin.join("lake"));
-    cmd.args(args)
-        .current_dir(workspace)
-        .env_remove("CI")
-        .env("LEAN_SYSROOT", lean_root)
-        .env("MATHLIB_NO_CACHE_ON_UPDATE", "1")
-        .env("PATH", prepend_env_paths("PATH", &[lean_bin])?);
-
-    let lib_var = if cfg!(target_os = "macos") { "DYLD_LIBRARY_PATH" } else { "LD_LIBRARY_PATH" };
-    cmd.env(
-        lib_var,
-        prepend_env_paths(lib_var, &[lean_root.join("lib"), lean_root.join("lib/lean")])?,
-    );
-
-    run_command_with_profile(test_name, Some("archive_lake_cache_reuse"), cmd)?.assert.success();
-    Ok(())
-}
-
-fn prepend_env_paths(
-    var_name: &str,
-    new_paths: &[PathBuf],
-) -> Result<std::ffi::OsString, Box<dyn std::error::Error>> {
-    let mut paths = new_paths.to_vec();
-    if let Some(existing) = std::env::var_os(var_name) {
-        paths.extend(std::env::split_paths(&existing));
+    foreign: Option<&Path>,
+) -> io::Result<CommandRun> {
+    let mut command = process::Command::new(assert_cmd::cargo::cargo_bin!("cargo-anneal"));
+    command.args(["lean", "--workspace"]).arg(workspace).args(args).current_dir(workspace);
+    if let Some(foreign) = foreign {
+        command
+            .env("LEAN_PATH", foreign)
+            .env("LEAN_SRC_PATH", foreign)
+            .env("LEAN_SYSROOT", foreign)
+            .env("LEAN", foreign.join("lean-must-not-run"))
+            .env("LAKE", foreign.join("lake-must-not-run"))
+            .env("ELAN_TOOLCHAIN", "missing/ambient-toolchain")
+            .env("LAKE_CACHE_DIR", foreign)
+            .env("LAKE_ARTIFACT_CACHE", "true")
+            .env("LAKE_RESTORE_ARTIFACTS", "true")
+            .env("ANNEAL_TOOLCHAIN_DIR", foreign);
     }
-    Ok(std::env::join_paths(paths)?)
+    run_command_with_profile(test_name, Some(phase), command)
 }
 
 fn invalid_data(message: impl Into<String>) -> io::Error {
@@ -889,6 +1039,27 @@ impl TestContext {
             fs::create_dir_all(&home_dir)?;
             copy_dir_contents(&source_dir, &sandbox_root)
         })?;
+        // Cargo fingerprints build scripts using Git discovery. A sandbox
+        // must not accidentally discover the host checkout or a bare store.
+        let status = process::Command::new("git")
+            .env_clear()
+            .env("PATH", "/usr/bin:/bin")
+            .env("HOME", &home_dir)
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env("GIT_CONFIG_GLOBAL", "/dev/null")
+            .args([
+                "-c",
+                "core.hooksPath=/dev/null",
+                "init",
+                "--quiet",
+                "--template=",
+                "--initial-branch=anneal-test",
+            ])
+            .current_dir(&sandbox_root)
+            .status()?;
+        if !status.success() {
+            return Err("Failed to isolate fixture Git discovery".into());
+        }
 
         // Check if we should keep the test directory for debugging
         let temp_dir_to_store = if std::env::var("ANNEAL_KEEP_TEST_DIR").as_deref() == Ok("1")
@@ -988,6 +1159,7 @@ echo "---END-INVOCATION---" >> "{}"
         for var in [
             "RUSTUP_HOME",
             "CARGO_HOME",
+            "ANNEAL_USE_PATH_FOR_TOOLS",
             "RUSTUP_TOOLCHAIN",
             "LD_LIBRARY_PATH",
             "TMPDIR",
@@ -1061,24 +1233,35 @@ echo "---END-INVOCATION---" >> "{}"
         // assertions use PATH shims.
         let use_tool_shims = config.mock.is_some() || !config.command.is_empty();
         let original_path = std::env::var_os("PATH").unwrap_or_default();
+        let path_tools = std::env::var_os("ANNEAL_USE_PATH_FOR_TOOLS").is_some();
         profile_step(&self.test_name, phase_name, "prepare_tool_shims", || {
             if use_tool_shims {
                 let toolchain_bin_dir = get_toolchain_bin_dir();
+                let real_tool = |name: &str| {
+                    if path_tools {
+                        std::env::split_paths(&original_path)
+                            .map(|dir| dir.join(name))
+                            .find(|path| path.is_file())
+                            .expect("Explicit PATH tool must exist")
+                    } else {
+                        toolchain_bin_dir.join(name)
+                    }
+                };
                 let shim_dir = self.sandbox_root.join("bin_shim");
                 fs::create_dir_all(&shim_dir).unwrap();
 
                 if charon_mock_mode.is_some() || !config.command.is_empty() {
-                    let real_charon = toolchain_bin_dir.join("charon");
+                    let real_charon = real_tool("charon");
                     self.create_shim("charon", &real_charon, charon_mock_mode).unwrap();
                 }
                 if aeneas_mock_mode.is_some() {
-                    let real_aeneas = toolchain_bin_dir.join("aeneas");
+                    let real_aeneas = real_tool("aeneas");
                     self.create_shim("aeneas", &real_aeneas, aeneas_mock_mode).unwrap();
                 }
 
                 let new_path = std::env::join_paths(
                     std::iter::once(shim_dir)
-                        .chain(std::iter::once(toolchain_bin_dir))
+                        .chain((!path_tools).then_some(toolchain_bin_dir))
                         .chain(std::env::split_paths(&original_path)),
                 )
                 .unwrap();
@@ -1154,8 +1337,8 @@ fn run_integration_test(path: &Path) -> datatest_stable::Result<()> {
         });
     }
     if path_str.contains("archive_lake_cache_reuse/anneal.toml") {
-        return profile_step(&test_name, None, "archive_lake_cache_reuse_test", || {
-            run_archive_lake_cache_reuse_test(&test_name)
+        return profile_step(&test_name, None, "archive_sdk_reuse_test", || {
+            run_archive_sdk_reuse_test(&test_name)
         });
     }
     // Load the test configuration from the associated 'anneal.toml' manifest.
@@ -1295,7 +1478,8 @@ fn run_single_phase(
         if action == "touch_stale_file" {
             return profile_step(&ctx.test_name, phase_name, "action_touch_stale_file", || {
                 let generated_root =
-                    ctx.sandbox_root.join("target/anneal/anneal_test_target/lean/generated");
+                    sdk_workspace_root(&ctx.sandbox_root.join("target/anneal/anneal_test_target"))
+                        .join("generated");
                 if !generated_root.exists() {
                     return Err(format!(
                         "Generated Lean directory not found at {}",
@@ -1327,14 +1511,14 @@ fn run_single_phase(
             });
         } else if action == "delete_lake_dir" {
             return profile_step(&ctx.test_name, phase_name, "action_delete_lake_dir", || {
-                // Delete the `.lake` build artifacts directory. This is used in
-                // `stale_output` tests to force Lake to regenerate its build
-                // artifacts from scratch, ensuring that stale cached data doesn't
-                // mask bugs in artifact generation or synchronization.
-                let lean_root = ctx.sandbox_root.join("target/anneal/anneal_test_target/lean");
-                let lake_dir = lean_root.join(".lake");
+                // Keep the trusted ownership marker while clearing incremental
+                // outputs, so Lake must rebuild the local import closure.
+                let lean_root =
+                    sdk_workspace_root(&ctx.sandbox_root.join("target/anneal/anneal_test_target"));
+                let lake_dir = lean_root.join(".lake/build");
                 if lake_dir.exists() {
-                    fs::remove_dir_all(&lake_dir).expect("Failed to delete .lake directory");
+                    fs::remove_dir_all(&lake_dir)
+                        .expect("Failed to delete private Lake build outputs");
                 }
                 Ok(())
             });
@@ -1477,6 +1661,15 @@ fn assert_output_file(
     let toolchain_bin_dir = get_toolchain_bin_dir();
     let toolchain_bin_dir_str = toolchain_bin_dir.to_str().unwrap();
     let home_path_str = home_dir.to_str().unwrap();
+    let explicit_tool_dir = std::env::var_os("ANNEAL_USE_PATH_FOR_TOOLS").and_then(|_| {
+        std::env::var_os("PATH")
+            .and_then(|path| std::env::split_paths(&path).find(|dir| dir.join("charon").is_file()))
+    });
+    let actual_str = if let Some(path) = explicit_tool_dir {
+        actual_str.replace(path.to_str().unwrap(), "[CACHE_ROOT]")
+    } else {
+        actual_str
+    };
     // Replace volatile environment-specific paths with static placeholders.
     //
     // - `replace_path` corresponds to the sandbox root, which varies per
@@ -1491,6 +1684,7 @@ fn assert_output_file(
             .replace(toolchain_bin_dir_str, "[CACHE_ROOT]")
             .replace(toolchain_install_dir_str, "[CACHE_ROOT]")
             .replace(toolchain_base_str, "[CACHE_ROOT]")
+            .replace(get_sdk_id(), "<SDK_ID>")
             .replace(home_path_str, "[HOME]")
             .replace(target_path_str, "[TARGET_DIR]"),
     );
@@ -1498,7 +1692,8 @@ fn assert_output_file(
     if bless {
         fs::write(&expected_path, &actual_clean).unwrap();
     } else {
-        let expected_txt = fs::read_to_string(&expected_path).unwrap().replace("\r\n", "\n");
+        let expected_txt =
+            sanitize_output(&fs::read_to_string(&expected_path).unwrap().replace("\r\n", "\n"));
         if expected_txt != actual_clean {
             use similar::{ChangeTag, TextDiff};
             let diff = TextDiff::from_lines(&expected_txt, &actual_clean);
@@ -1577,7 +1772,7 @@ fn assert_artifacts_match(
     expectations: &[ArtifactExpectation],
 ) -> io::Result<()> {
     let llbc_root = anneal_run_root.join("llbc");
-    let lean_root = anneal_run_root.join("lean").join("generated");
+    let lean_root = sdk_workspace_root(anneal_run_root).join("generated");
 
     for exp in expectations {
         let kind = exp.kind.as_deref().unwrap_or("llbc");
@@ -1889,7 +2084,10 @@ fn sanitize_output(output: &str) -> String {
     // Strip ANSI escape codes.
     let re_ansi_escape = regex::Regex::new(r"\x1B\[[0-9;]*[a-zA-Z]").unwrap();
 
-    let mut clean = output.to_string();
+    // Host targets and Darwin's split-debug choice vary in command echoes.
+    let host_target = regex::Regex::new(r"\b(?:x86_64-unknown-linux-gnu|aarch64-unknown-linux-gnu|x86_64-apple-darwin|aarch64-apple-darwin)\b").unwrap();
+    let mut clean = host_target.replace_all(output, "<HOST_TARGET>").into_owned();
+    clean = clean.replace(" -C split-debuginfo=unpacked", "");
 
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
