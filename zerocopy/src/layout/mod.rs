@@ -16,13 +16,13 @@ mod nested_reference;
 mod primitive_checks;
 
 #[allow(dead_code)]
-mod tail_checks;
+pub(crate) mod tail_checks;
 
 #[allow(dead_code)]
 mod composition_checks;
 
 #[allow(dead_code)]
-mod tail_transform_checks;
+pub(crate) mod tail_transform_checks;
 
 use core::{mem, num::NonZeroUsize};
 
