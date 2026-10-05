@@ -56,6 +56,12 @@ allocator admission additionally needs the outer alignment and the signed
 metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
 separate Rust obligations.
 
+Six concrete wrappers in [`lib.rs`](../../zerocopy/src/lib.rs) call the actual
+`PointerMetadata` implementations for `()` and `usize`. Their contracts check
+element-count conversion, layout-variant handling, and checked metadata sizing.
+Using these results for an arbitrary `KnownLayout` implementation requires
+separate layout correspondence.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
