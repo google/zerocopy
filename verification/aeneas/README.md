@@ -1032,6 +1032,10 @@ records but does not formally prove:
   alignment one, hence `1 / alignment = 1`, establishing constructor safety
   before the final checked division. The concrete `u8` caller discharges its
   implementation law. These proofs concern values and arithmetic, not memory.
+- The external `usize::unchecked_mul` and `usize::unchecked_add` models
+  return the exact product and sum on non-overflowing inputs. Their Lean
+  definitions use checked arithmetic, and every use proves both results fit.
+  They claim no Rust behavior outside that domain.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
