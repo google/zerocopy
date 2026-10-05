@@ -38,11 +38,8 @@ impl Tool {
 }
 
 const AENEAS_DIR: &str = "aeneas";
-const AENEAS_BACKENDS_DIR: &str = "backends";
-const AENEAS_LEAN_DIR: &str = "lean";
 const BIN_DIR: &str = "bin";
 const LIB_DIR: &str = "lib";
-const LEAN_SYSROOT: &str = "lean";
 const RUST_SYSROOT: &str = "rust";
 
 pub struct Toolchain {
@@ -57,12 +54,21 @@ impl Toolchain {
         Ok(Self { root })
     }
 
-    pub fn bin_dir(&self) -> PathBuf {
-        self.aeneas_bin_dir()
+    /// Resolve the publisher-admitted Lean installation without modifying an
+    /// existing archive or falling back to ambient Elan/Lean executables.
+    pub fn lean_sdk(&self) -> anyhow::Result<crate::lean_sdk::LeanSdk> {
+        let sdk = crate::lean_sdk::LeanSdk::load(&self.root.join("lean-sdk")).context(
+            "Toolchain has no admitted Lean SDK; install a matching published toolchain",
+        )?;
+        anyhow::ensure!(
+            sdk.lean_toolchain() == env!("ANNEAL_LEAN_TOOLCHAIN"),
+            "Published SDK Lean toolchain does not match this Anneal version"
+        );
+        Ok(sdk)
     }
 
-    pub fn cache_dir(&self) -> PathBuf {
-        self.root.join("lake-cache")
+    pub fn bin_dir(&self) -> PathBuf {
+        self.aeneas_bin_dir()
     }
 
     pub fn aeneas_root(&self) -> PathBuf {
@@ -71,10 +77,6 @@ impl Toolchain {
 
     pub fn aeneas_bin_dir(&self) -> PathBuf {
         self.aeneas_root().join(BIN_DIR)
-    }
-
-    pub fn aeneas_lean_dir(&self) -> PathBuf {
-        self.aeneas_root().join(AENEAS_BACKENDS_DIR).join(AENEAS_LEAN_DIR)
     }
 
     pub fn rust_sysroot(&self) -> PathBuf {
@@ -87,14 +89,6 @@ impl Toolchain {
 
     pub fn rust_lib(&self) -> PathBuf {
         self.rust_sysroot().join(LIB_DIR)
-    }
-
-    pub fn lean_sysroot(&self) -> PathBuf {
-        self.root.join(LEAN_SYSROOT)
-    }
-
-    pub fn lean_bin(&self) -> PathBuf {
-        self.lean_sysroot().join(BIN_DIR)
     }
 
     pub fn command(&self, tool: Tool) -> Command {
@@ -115,9 +109,10 @@ pub fn run_setup(args: SetupArgs) -> anyhow::Result<()> {
         None => exocrate::Source::Remote(remote_archive()),
     };
 
-    let installation_dir = CONFIG
+    let (installation_dir, _) = CONFIG
         .resolve_installation_dir_or_install(location(), source)
         .context("failed to resolve-or-install dependencies")?;
+    Toolchain { root: installation_dir.clone() }.lean_sdk()?;
     log::info!("anneal toolchain is installed at {:?}", installation_dir);
     Ok(())
 }
@@ -195,10 +190,6 @@ mod tests {
         let toolchain = Toolchain { root: PathBuf::from("/tmp/toolchain") };
 
         assert_eq!(toolchain.bin_dir(), PathBuf::from("/tmp/toolchain/aeneas/bin"));
-        assert_eq!(
-            toolchain.aeneas_lean_dir(),
-            PathBuf::from("/tmp/toolchain/aeneas/backends/lean")
-        );
         assert_eq!(
             Tool::Charon.path(&toolchain),
             PathBuf::from("/tmp/toolchain/aeneas/bin/charon")
