@@ -40,6 +40,15 @@ equal sizes, including zero-sized layouts with different alignments. Rejection
 does not claim that a cast would be impossible. The proof covers the numerical
 decision and sizing comparison, not the resulting pointer's validity.
 
+The checks in [`util/allocation.rs`](../../zerocopy/src/util/allocation.rs) cover
+actual metadata sizing and exact preparation of allocator arguments. Preparation
+preserves every optional size and the supplied alignment, without adding a
+runtime validity filter. Under explicit correspondence to a valid recursive
+layout, separate lemmas establish complete size and tail containment. Numerical
+allocator admission additionally needs the outer alignment and the signed
+metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
+separate Rust obligations.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
