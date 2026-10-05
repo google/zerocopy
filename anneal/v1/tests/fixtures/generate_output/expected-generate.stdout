@@ -1,5 +1,3 @@
-Lean workspace generated at: [PROJECT_ROOT]/target/anneal/anneal_test_target/lean
-
-To manually build and experiment:
-  1. cd [PROJECT_ROOT]/target/anneal/anneal_test_target/lean
-  2. LAKE_CACHE_DIR=[CACHE_ROOT]/lake-cache [CACHE_ROOT]/lean/bin/lake --keep-toolchain build
+Lean workspace generated at: [PROJECT_ROOT]/target/anneal/anneal_test_target/lean/<SDK_ID>
+Build with: cargo anneal lean --workspace '[PROJECT_ROOT]/target/anneal/anneal_test_target/lean/<SDK_ID>' build
+Run `cargo anneal lean --help` for workspace commands.
