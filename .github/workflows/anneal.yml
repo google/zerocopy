@@ -66,6 +66,8 @@ jobs:
             anneal/tests/test_prune_lake_cache.py \
             anneal/prune-lake-cache.py \
             anneal/prepare-lean-sdk.py \
+            anneal/prepare-native-tools.py \
+            anneal/tests/test_prepare_native_tools.py \
             anneal/tests/test_prepare_lean_sdk.py \
             anneal/rewrite-lake-vendor.py
           python3 -m unittest discover -s anneal/v1/tools -p 'test_*.py'
@@ -301,7 +303,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-main
-          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py') }}
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py', 'anneal/prepare-native-tools.py') }}
 
       # Pull request caches are scoped by GitHub to the PR merge ref, so they
       # can speed up repeated pushes to the same PR without becoming visible to
@@ -321,7 +323,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-pr
-          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py') }}
+          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py', 'anneal/prepare-native-tools.py') }}
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@4d65ea9cab522b6d9f29a170aed23ededc1b27af # v3.23.0
