@@ -399,8 +399,9 @@ impl<'a> Workspace<'a> {
         let mut leaf = self.root.file_name().context("Workspace has no leaf")?.to_os_string();
         leaf.push(".server");
         let file = open_workspace_lock(&self.root.with_file_name(leaf))?;
-        fs2::FileExt::try_lock_exclusive(&file)
-            .context("An editor coordinator already owns this workspace; close it before starting another")?;
+        fs2::FileExt::try_lock_exclusive(&file).context(
+            "An editor coordinator already owns this workspace; close it before starting another",
+        )?;
         Ok(file)
     }
 
@@ -472,11 +473,15 @@ impl<'a> Workspace<'a> {
             return Ok(false);
         }
         for source in &self.sdk.sources {
-            if root == *source { return Ok(true); }
+            if root == *source {
+                return Ok(true);
+            }
             for module in &self.sdk.modules {
                 let file = source.join(module.replace('.', "/")).with_extension("lean");
                 if let Ok(file) = fs::canonicalize(file) {
-                    if file.starts_with(&root) { return Ok(true); }
+                    if file.starts_with(&root) {
+                        return Ok(true);
+                    }
                 }
             }
         }
@@ -565,7 +570,13 @@ impl<'a> Workspace<'a> {
         for source in &binding.source_roots {
             let source = self.root.join(source);
             if source.try_exists()? {
-                check_local_sources(&source, &source, &self.root, &self.sdk.modules, &mut local_modules)?;
+                check_local_sources(
+                    &source,
+                    &source,
+                    &self.root,
+                    &self.sdk.modules,
+                    &mut local_modules,
+                )?;
             }
         }
         Ok(())
@@ -573,7 +584,11 @@ impl<'a> Workspace<'a> {
 
     pub fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command> {
         let mut command = self.command("lake")?;
-        command.args(["--keep-toolchain", "--no-cache"]);
+        // RC2 recognizes --version before its ordinary option parser; it must
+        // be the first argument. Version inspection cannot schedule builds.
+        if !matches!(operation, LakeOperation::Version) {
+            command.args(["--keep-toolchain", "--no-cache"]);
+        }
         match operation {
             LakeOperation::Build(targets) => {
                 command.arg("build");
@@ -606,7 +621,14 @@ impl<'a> Workspace<'a> {
                 if json {
                     command.arg("--json");
                 }
-                command.arg(self.local_source(file)?);
+                // Preserve relative diagnostic filenames under the fixed cwd.
+                let source = self.local_source(file)?;
+                let relative = source.strip_prefix(&self.root)?;
+                if relative.as_os_str().as_encoded_bytes().starts_with(b"-") {
+                    command.arg(Path::new(".").join(relative));
+                } else {
+                    command.arg(relative);
+                }
             }
             LeanOperation::Server => {
                 command.arg("--server");
@@ -885,13 +907,23 @@ fn check_local_sources(
         let entry = entry?;
         let name = entry.file_name();
         if [".lake", PRIVATE_RUNTIME, ".git"].iter().any(|s| name == *s) {
-            ensure!(path == workspace_root, "Reserved output/cache directory inside a source root: {}", entry.path().display());
+            ensure!(
+                path == workspace_root,
+                "Reserved output/cache directory inside a source root: {}",
+                entry.path().display()
+            );
             continue;
         }
         let kind = entry.file_type()?;
         ensure!(!kind.is_symlink(), "Local source contains a symlink: {}", entry.path().display());
         if kind.is_dir() {
-            check_local_sources(&entry.path(), source_root, workspace_root, modules, local_modules)?;
+            check_local_sources(
+                &entry.path(),
+                source_root,
+                workspace_root,
+                modules,
+                local_modules,
+            )?;
         } else if kind.is_file() {
             let path = entry.path();
             let filename = name.to_string_lossy();
@@ -1459,6 +1491,26 @@ mod tests {
             command.get_args().collect::<Vec<_>>(),
             ["--keep-toolchain", "--no-cache", "build", "+Proof:olean"]
         );
+        // RC2 handles this flag before its ordinary option parser. Placing
+        // keep-toolchain/no-cache before it turns a real version probe into a
+        // failed command, preventing stock editor startup.
+        let version = workspace.lake_command(LakeOperation::Version).unwrap();
+        assert_eq!(version.get_args().collect::<Vec<_>>(), ["--version"]);
+        // Admission is physical/absolute, while the invocation remains
+        // relative to the fixed cwd so V1 diagnostics retain their file names.
+        let check = workspace
+            .lean_command(LeanOperation::Check {
+                file: &workspace.root().join("src/Proof.lean"),
+                json: true,
+            })
+            .unwrap();
+        assert_eq!(check.get_current_dir(), Some(workspace.root()));
+        assert!(check.get_args().any(|arg| arg == "src/Proof.lean"));
+        let dash_source = workspace.root().join("-Proof.lean");
+        fs::write(&dash_source, "example : True := by trivial\n").unwrap();
+        let check = workspace.lean_command(LeanOperation::Check { file: &dash_source, json: false }).unwrap();
+        assert!(check.get_args().any(|arg| arg == "./-Proof.lean"));
+        assert!(!check.get_args().any(|arg| arg == "-Proof.lean"));
     }
 
     #[cfg(unix)]
