@@ -33,6 +33,13 @@ in the production pointer path. These proofs establish bounds and disjoint byte
 intervals, including empty and zero-sized tails; pointer validity and provenance
 remain separate Rust obligations.
 
+The checks in [`pointer/mod.rs`](../../zerocopy/src/pointer/mod.rs) follow the
+actual `CastUnsized` layout gate. Accepted DST pairs retain alignment, physical
+tail offset, and complete sizes for every metadata count. Sized pairs need only
+equal sizes, including zero-sized layouts with different alignments. Rejection
+does not claim that a cast would be impossible. The proof covers the numerical
+decision and sizing comparison, not the resulting pointer's validity.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
