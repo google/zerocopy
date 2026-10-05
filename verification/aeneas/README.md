@@ -20,6 +20,12 @@ assertion to pass. Review the independent calculation, complete comparisons,
 and early returns together: returning early excludes that input from the
 comparison.
 
+Six concrete wrappers in [`lib.rs`](../../zerocopy/src/lib.rs) call the actual
+`PointerMetadata` implementations for `()` and `usize`. Their contracts check
+element-count conversion, layout-variant handling, and checked metadata sizing.
+Using these results for an arbitrary `KnownLayout` implementation requires
+separate layout correspondence.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
