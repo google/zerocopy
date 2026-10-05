@@ -1,4 +1,5 @@
 description = """
-Purpose: Verifies that the installed Nix-built archive can be used read-only by a fresh generated Lake workspace.
-Behavior: Builds and diagnoses a tiny workspace with a complete relative Lake manifest pointing at the installed Aeneas archive.
+Purpose: Verifies that an admitted immutable SDK serves fresh private Lake workspaces.
+Behavior: Checks cold/replayed local builds, native setup, isolated process context,
+saved local dependency freshness, missing-plugin rejection, and unchanged shared inputs.
 """
