@@ -196,6 +196,32 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# Successful-input proofs cannot detect changing UB into an ordinary panic.
+# Check the independent primitive interpretation, then directly compile the
+# rejection examples so --old cannot replay a test from the unchanged model.
+if has_model layout.add_scaled_metadata; then
+    [[ -f UnsafeArithmeticTests.lean ]] || {
+        echo "Unchecked arithmetic requires UnsafeArithmeticTests.lean" >&2; exit 1;
+    }
+    python3 - <<'PYCONTROL'
+from pathlib import Path
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+old = "def Zerocopy.forbiddenExecution {α : Type} : Result α := .fail .undef"
+if s.count(old) != 1:
+    raise SystemExit("Forbidden execution tag control no longer matches")
+p.write_text(s.replace(old, old.replace(".undef", ".panic")))
+PYCONTROL
+    check_model_mutant "unchecked overflow modeled as panic" Zerocopy.FunsExternal
+    expect_failure "unchecked overflow modeled as panic" unsafe-tag-audit.log audit
+    if ! grep -Fq 'forbidden-execution interpretation' "$backup/unsafe-tag-audit.log"; then
+        cat "$backup/unsafe-tag-audit.log" >&2; exit 1
+    fi
+    expect_failure "the wrong unsafe arithmetic tag" unsafe-tag-proof.log \
+        aeneas_lake env lean -DwarningAsError=true UnsafeArithmeticTests.lean
+    restore_build
+fi
+
 # An opaque helper must not conceal an adapter which discards forbidden
 # failures. This mutation leaves NonZero::get's returned value unchanged, so
 # ordinary functional proofs alone would not detect the unsupported dependency.
