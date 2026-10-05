@@ -465,6 +465,27 @@ spec pointer_metadata_usize_size_for_metadata_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.pointer_metadata_usize_size_for_metadata_spec for Zerocopy.pointer_metadata_usize_size_for_metadata with 2
 
+check_model_inputs Zerocopy.pointer.cast.cast_unsized_layouts_match with 0 type parameters
+aeneas_spec_begin
+spec cast_unsized_layouts_match_spec
+  for @Zerocopy.pointer.cast.cast_unsized_layouts_match with 0 type parameters
+  ensures(raw) accepted => match src.size_info, dst.size_info with
+    | .Sized src_size, .Sized dst_size => accepted = decide (src_size = dst_size)
+    | .SliceDst src_tail, .SliceDst dst_tail => accepted = true →
+      src.align = dst.align ∧ src_tail.offset = dst_tail.offset ∧
+      ∀ count : Nat, completeLayoutSize src count = completeLayoutSize dst count
+    | _, _ => accepted = false
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_unsized_layouts_match_spec for Zerocopy.pointer.cast.cast_unsized_layouts_match with 2
+
+check_model_inputs Zerocopy.pointer.cast.checks.assert_cast_unsized with 0 type parameters
+aeneas_spec_begin
+spec cast_unsized_check_spec
+  for @Zerocopy.pointer.cast.checks.assert_cast_unsized with 0 type parameters
+  ensures(raw) _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.cast_unsized_check_spec for Zerocopy.pointer.cast.checks.assert_cast_unsized with 7
+
 check_model_inputs Zerocopy.split_at.split_right_len with 0 type parameters
 aeneas_spec_begin
 spec split_right_len_spec
