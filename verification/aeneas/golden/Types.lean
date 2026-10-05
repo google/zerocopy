@@ -272,7 +272,7 @@ structure pointer.invariant.Alignment (Self : Type) where
     T
 
 /-- Trait declaration: [zerocopy::TryFromBytes]
-    Source: 'src/lib.rs', lines 1901:0-3451:1
+    Source: 'src/lib.rs', lines 1965:0-3515:1
     Visibility: public -/
 structure TryFromBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
@@ -283,7 +283,7 @@ structure TryFromBytes (Self : Type) where
     pointer.invariant.Initialized → Result Bool
 
 /-- Trait declaration: [zerocopy::FromZeros]
-    Source: 'src/lib.rs', lines 3708:0-4074:1
+    Source: 'src/lib.rs', lines 3772:0-4138:1
     Visibility: public -/
 structure FromZeros (Self : Type) where
   TryFromBytesInst : TryFromBytes Self
@@ -291,20 +291,20 @@ structure FromZeros (Self : Type) where
   new_zeroed : Result Self
 
 /-- Trait declaration: [zerocopy::FromBytes]
-    Source: 'src/lib.rs', lines 4302:0-5714:1
+    Source: 'src/lib.rs', lines 4366:0-5778:1
     Visibility: public -/
 structure FromBytes (Self : Type) where
   FromZerosInst : FromZeros Self
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 5953:0-6426:1
+    Source: 'src/lib.rs', lines 6017:0-6490:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::Unaligned]
-    Source: 'src/lib.rs', lines 6564:0-6571:1
+    Source: 'src/lib.rs', lines 6628:0-6635:1
     Visibility: public -/
 structure Unaligned (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
