@@ -1,0 +1,69 @@
+Iterations:        100
+Instructions:      1500
+Total Cycles:      806
+Total uOps:        1900
+
+Dispatch Width:    4
+uOps Per Cycle:    2.36
+IPC:               1.86
+Block RThroughput: 4.8
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.50                        lea	rcx, [rdx + rdx]
+ 1      1     0.33                        mov	r8d, esi
+ 1      1     0.33                        or	r8d, edi
+ 1      0     0.25                        xor	eax, eax
+ 1      1     0.33                        test	r8b, 1
+ 2      2     0.67                        cmovne	rdi, rax
+ 1      1     0.50                        lea	r8, [2*rdx + 4]
+ 1      1     0.33                        cmp	rsi, r8
+ 2      2     0.67                        cmovne	rdi, rax
+ 1      1     0.33                        cmp	rcx, -5
+ 2      2     0.67                        cmovae	rdi, rax
+ 1      1     0.33                        test	rdx, rdx
+ 2      2     0.67                        cmovns	rax, rdi
+ 1      1     0.33                        mov	rdx, rsi
+ 1      1     1.00                  U     ret
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     6.00   6.01    -     5.99    -      -     
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -     0.87   0.13    -      -      -      -     lea	rcx, [rdx + rdx]
+ -      -     0.07   0.16    -     0.77    -      -     mov	r8d, esi
+ -      -     0.11   0.10    -     0.79    -      -     or	r8d, edi
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -     0.10   0.86    -     0.04    -      -     test	r8b, 1
+ -      -     0.13   0.90    -     0.97    -      -     cmovne	rdi, rax
+ -      -     0.95   0.05    -      -      -      -     lea	r8, [2*rdx + 4]
+ -      -     0.92   0.08    -      -      -      -     cmp	rsi, r8
+ -      -     0.87   0.92    -     0.21    -      -     cmovne	rdi, rax
+ -      -     0.06   0.04    -     0.90    -      -     cmp	rcx, -5
+ -      -     0.85   0.95    -     0.20    -      -     cmovae	rdi, rax
+ -      -     0.07   0.09    -     0.84    -      -     test	rdx, rdx
+ -      -     0.90   0.90    -     0.20    -      -     cmovns	rax, rdi
+ -      -     0.10   0.83    -     0.07    -      -     mov	rdx, rsi
+ -      -      -      -      -     1.00    -      -     ret

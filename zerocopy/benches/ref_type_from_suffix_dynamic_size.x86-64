@@ -1,0 +1,15 @@
+bench_ref_type_from_suffix_dynamic_size:
+	lea eax, [rsi + rdi]
+	cmp rsi, 4
+	setb cl
+	or cl, al
+	mov r8d, esi
+	and r8d, 1
+	movabs rdx, 9223372036854775806
+	and rdx, rsi
+	add r8, rdi
+	xor eax, eax
+	test cl, 1
+	cmove rax, r8
+	cmovne rdx, rsi
+	ret

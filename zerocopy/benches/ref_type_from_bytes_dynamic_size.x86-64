@@ -1,0 +1,10 @@
+bench_ref_type_from_bytes_dynamic_size:
+	mov rdx, rsi
+	mov ecx, edx
+	or ecx, edi
+	xor eax, eax
+	cmp rsi, 4
+	cmovb rdi, rax
+	test cl, 1
+	cmove rax, rdi
+	ret

@@ -1,0 +1,20 @@
+bench_ref_type_from_suffix_dynamic_padding:
+	lea eax, [rsi + rdi]
+	test al, 3
+	setne al
+	cmp rsi, 12
+	setb cl
+	or cl, al
+	mov eax, esi
+	and eax, 3
+	xor edx, edx
+	test cl, cl
+	cmovne rax, rdx
+	add rax, rdi
+	test cl, cl
+	cmovne rax, rdx
+	movabs rdx, 9223372036854775804
+	and rdx, rsi
+	test cl, cl
+	cmovne rdx, rsi
+	ret
