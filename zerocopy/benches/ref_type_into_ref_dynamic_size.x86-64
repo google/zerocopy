@@ -1,0 +1,32 @@
+bench_ref_type_into_ref_dynamic_size:
+	cmp rsi, 4
+	setb al
+	or al, dil
+	test al, 1
+	je .LBB8_1
+	mov eax, edi
+	not eax
+	and eax, 1
+.LBB8_4:
+	sub rsp, 24
+	mov qword ptr [rsp], rax
+	mov qword ptr [rsp + 8], rdi
+	mov qword ptr [rsp + 16], rsi
+	lea rdi, [rip + .Lanon.HASH.2]
+	lea rcx, [rip + .Lanon.HASH.1]
+	lea r8, [rip + .Lanon.HASH.4]
+	mov rdx, rsp
+	mov esi, 54
+	call qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
+.LBB8_1:
+	movabs rax, -9223372036854775807
+	test rsi, rax
+	jne .LBB8_2
+	add rsi, -4
+	shr rsi
+	mov rax, rdi
+	mov rdx, rsi
+	ret
+.LBB8_2:
+	mov eax, 1
+	jmp .LBB8_4

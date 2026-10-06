@@ -1,0 +1,85 @@
+Iterations:        100
+Instructions:      2300
+Total Cycles:      705
+Total uOps:        2400
+
+Dispatch Width:    4
+uOps Per Cycle:    3.40
+IPC:               3.26
+Block RThroughput: 6.0
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.33                        mov	rax, rdx
+ 1      1     0.33                        mov	rdx, rsi
+ 1      1     0.50                        lea	rcx, [rax + rax]
+ 1      1     0.33                        test	rax, rax
+ 1      1     0.50                        sets	al
+ 1      1     0.33                        cmp	rcx, -5
+ 1      1     0.50                        setae	sil
+ 1      1     0.33                        or	sil, al
+ 1      1     1.00                        je	.LBB5_2
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        add	rcx, 4
+ 1      1     0.33                        mov	rax, rdx
+ 1      1     0.33                        sub	rax, rcx
+ 1      1     1.00                        jae	.LBB5_4
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        add	rdi, rax
+ 1      0     0.25                        xor	eax, eax
+ 1      1     0.33                        test	dil, 1
+ 2      2     0.67                        cmove	rax, rdi
+ 1      1     0.33                        mov	rdx, rcx
+ 1      1     1.00                  U     ret
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     6.99   6.99    -     7.02    -      -     
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -     0.01   0.98    -     0.01    -      -     mov	rax, rdx
+ -      -     0.99   0.01    -      -      -      -     mov	rdx, rsi
+ -      -     0.01   0.99    -      -      -      -     lea	rcx, [rax + rax]
+ -      -     0.98    -      -     0.02    -      -     test	rax, rax
+ -      -     1.00    -      -      -      -      -     sets	al
+ -      -      -     1.00    -      -      -      -     cmp	rcx, -5
+ -      -     1.00    -      -      -      -      -     setae	sil
+ -      -      -     1.00    -      -      -      -     or	sil, al
+ -      -      -      -      -     1.00    -      -     je	.LBB5_2
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     0.03    -     0.97    -      -     add	rcx, 4
+ -      -      -     0.97    -     0.03    -      -     mov	rax, rdx
+ -      -     1.00    -      -      -      -      -     sub	rax, rcx
+ -      -      -      -      -     1.00    -      -     jae	.LBB5_4
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     0.01    -     0.99    -      -     add	rdi, rax
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -     1.00    -      -      -      -     test	dil, 1
+ -      -     1.00   1.00    -      -      -      -     cmove	rax, rdi
+ -      -     1.00    -      -      -      -      -     mov	rdx, rcx
+ -      -      -      -      -     1.00    -      -     ret

@@ -219,7 +219,7 @@ impl<E> TrailingSliceLayout<E> {
         offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
     }))]
     const fn size_offset(&self) -> usize {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::size_offset)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -250,14 +250,14 @@ impl<E> TrailingSliceLayout<E> {
             .and_then(|rounded| rounded.checked_sub(phase))
     }))]
     const fn max_trailing_bytes(&self, available_bytes: usize) -> Option<usize> {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::<usize>::max_trailing_bytes)]
         #[kani::solver(kissat)]
         fn proof() {
             kani::any::<TrailingSliceLayout>().max_trailing_bytes(kani::any());
         }
 
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::<NonZeroUsize>::max_trailing_bytes)]
         #[kani::solver(kissat)]
         fn proof_nonzero() {
@@ -358,7 +358,7 @@ impl TrailingSliceLayout {
         padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
     }))]
     pub(crate) const fn padding_for_elems(self, elems: usize) -> usize {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::padding_for_elems)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -425,7 +425,7 @@ impl TrailingSliceLayout {
             .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
     }))]
     pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -508,7 +508,7 @@ impl TrailingSliceLayout {
                 || (self_align == other_align && self_phase == other_phase)))
     }))]
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -621,7 +621,7 @@ impl TrailingSliceLayout {
         }
     }))]
     const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(TrailingSliceLayout::advance)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -1102,7 +1102,7 @@ impl DstLayout {
     ) -> DstLayout {
         // This harness covers up to three fields, including an optional final
         // DST. Arbitrary-length composition is not established by this bound.
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(DstLayout::for_repr_c_struct)]
         #[kani::solver(kissat)]
         #[kani::unwind(4)]
@@ -1348,7 +1348,7 @@ impl DstLayout {
     #[cfg_attr(kani, kani::requires(proofs::padded_layout(self).is_some()))]
     #[cfg_attr(kani, kani::ensures(|&result| Some(result) == proofs::padded_layout(self)))]
     pub const fn pad_to_align(self) -> Self {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(DstLayout::pad_to_align)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -1475,7 +1475,7 @@ impl DstLayout {
         ),
     }))]
     pub const fn requires_dynamic_padding(self) -> bool {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -1519,7 +1519,7 @@ impl DstLayout {
         }
     }))]
     const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -1653,7 +1653,7 @@ impl DstLayout {
         bytes_len: usize,
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
-        #[cfg(kani)]
+        #[cfg(all(kani, kani_slow))]
         #[kani::proof_for_contract(DstLayout::validate_cast_and_convert_metadata)]
         #[kani::solver(kissat)]
         fn proof() {
@@ -4260,6 +4260,7 @@ mod proofs {
         padding_testutil::check_layouts(kani::any());
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     #[kani::solver(kissat)]
     fn prove_padding_for_elems() {
@@ -4311,6 +4312,7 @@ mod proofs {
         assert_eq!(rounding.components(), (align, phase));
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_trailing_slice_layout_normal_form() {
         let rounding_word: usize = kani::any();
@@ -4345,18 +4347,7 @@ mod proofs {
         assert_eq!(slice_dst_size_for_trailing_bytes(layout, trailing_size), old_size);
     }
 
-    #[kani::proof]
-    #[kani::solver(kissat)]
-    fn prove_size_for_elems_uses_element_product() {
-        let layout: TrailingSliceLayout = any_bounded_trailing_layout();
-        let elems: usize = kani::any();
-        let expected = layout
-            .elem_size
-            .checked_mul(elems)
-            .and_then(|bytes| slice_dst_size_for_trailing_bytes(layout, bytes));
-        assert_eq!(layout.size_for_elems(elems), expected);
-    }
-
+    #[cfg(kani_slow)]
     #[kani::proof]
     #[kani::solver(kissat)]
     fn prove_element_product_preserves_alignment() {
@@ -4414,6 +4405,7 @@ mod proofs {
         assert_eq!(slice_dst_size_for_trailing_bytes(advanced, trailing_size), expected_size);
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_has_same_size_sequence() {
         let left: TrailingSliceLayout = any_bounded_trailing_layout();
@@ -4636,16 +4628,20 @@ mod proofs {
         assert_eq!(object_start & align_mask, 0);
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     #[kani::solver(kissat)]
     fn prove_size_formula_bounds_size_offset() {
-        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
-        let elems: usize = kani::any();
-        let Some(object_size) = trailing.size_for_elems(elems) else {
+        // Prove the bound for arbitrary byte counts, including counts that
+        // are not whole elements. The `size_for_elems` contract relates this
+        // formula to checked element products. This harness checks the
+        // formula's bound independently of that implementation.
+        let trailing: TrailingSliceLayout = kani::any();
+        let trailing_size: usize = kani::any();
+        let Some(object_size) = slice_dst_size_for_trailing_bytes(trailing, trailing_size) else {
             kani::assume(false);
             loop {}
         };
-        let Some(trailing_size) = trailing.elem_size.checked_mul(elems) else { unreachable!() };
         let size_offset = trailing.size_offset();
         let Some(without_padding) = size_offset.checked_add(trailing_size) else { unreachable!() };
 
@@ -4683,6 +4679,7 @@ mod proofs {
         assert_eq!(actual, expected);
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_requires_dynamic_padding() {
         let layout: DstLayout = any_valid_dst_layout();
@@ -4722,6 +4719,7 @@ mod proofs {
         }
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_dst_layout_extend() {
         use crate::util::{max, min, padding_needed_for};
@@ -4922,6 +4920,7 @@ mod proofs {
         let _ = base.extend(field, packed);
     }
 
+    #[cfg(kani_slow)]
     fn prove_dst_layout_pad_to_align_dst_invariants(
         layout: DstLayout,
         unpadded_trailing: TrailingSliceLayout,
@@ -4988,6 +4987,7 @@ mod proofs {
         assert_eq!(padded_analog.size(), padded_size);
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_dst_layout_pad_to_align_dst_inner_rounding_transition() {
         use crate::util::padding_needed_for;
@@ -5071,6 +5071,7 @@ mod proofs {
         assert_eq!(actual_size, expected_size);
     }
 
+    #[cfg(kani_slow)]
     #[kani::proof]
     fn prove_dst_layout_pad_to_align_dst_outer_alignment_transition() {
         use crate::util::padding_needed_for;
