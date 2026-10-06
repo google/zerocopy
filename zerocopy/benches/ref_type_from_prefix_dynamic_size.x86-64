@@ -1,0 +1,14 @@
+bench_ref_type_from_prefix_dynamic_size:
+	mov ecx, edi
+	not ecx
+	cmp rsi, 4
+	setb r8b
+	or r8b, dil
+	and ecx, 1
+	movabs rdx, 9223372036854775806
+	and rdx, rsi
+	xor eax, eax
+	test r8b, 1
+	cmovne rdx, rcx
+	cmove rax, rdi
+	ret

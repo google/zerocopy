@@ -306,6 +306,29 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_bytes(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_bytes",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_bytes(source: B) -> Result<Ref<B, T>, CastError<B, T>> {
@@ -360,6 +383,29 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_prefix(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_prefix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
@@ -425,6 +471,29 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_suffix(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_suffix",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
@@ -487,6 +556,24 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_bytes_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_bytes_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
@@ -538,6 +625,24 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_prefix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_prefix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     pub fn from_prefix_with_elems(
         source: B,
@@ -584,6 +689,24 @@ where
     ///
     /// let _ = Ref::<_, ZSTy>::from_suffix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
     /// ```
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_from_suffix_with_elems",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 2
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     pub fn from_suffix_with_elems(
         source: B,
@@ -618,6 +741,29 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::into_ref(r)` instead of `r.into_ref()`. This is so that
     /// there is no conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_into_ref",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_ref(r: Self) -> &'a T {
@@ -666,6 +812,24 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::into_mut(r)` instead of `r.into_mut()`. This is so that
     /// there is no conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_into_mut",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_mut(r: Self) -> &'a mut T {
@@ -719,6 +883,29 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that there is
     /// no conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_bytes",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     pub fn bytes(r: &Self) -> &[u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -737,6 +924,29 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::bytes_mut(r)` instead of `r.bytes_mut()`. This is so that
     /// there is no conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_bytes_mut",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     pub fn bytes_mut(r: &mut Self) -> &mut [u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -755,6 +965,12 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::read(r)` instead of `r.read()`. This is so that there is no
     /// conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_read_static_size",
+        format = "coco_static_size",
+    )]
     #[must_use = "has no side effects"]
     #[inline]
     pub fn read(r: &Self) -> T {
@@ -780,6 +996,12 @@ where
     /// Note: this is an associated function, which means that you have to call
     /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that there
     /// is no conflict with a method on the inner type.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_write_static_size",
+        format = "coco_static_size",
+    )]
     #[inline]
     pub fn write(r: &mut Self, t: T) {
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -801,6 +1023,31 @@ where
     T: FromBytes + KnownLayout + Immutable + ?Sized,
 {
     type Target = T;
+
+    /// Dereferences the value.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_deref",
+        format = "coco",
+        arity = 3,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ],
+        [
+            @index 3
+            @title "Dynamically Padded"
+            @variant "dynamic_padding"
+        ]
+    )]
     #[inline]
     fn deref(&self) -> &T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
@@ -843,6 +1090,25 @@ where
     // add a separate inherent method for this?
     T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
 {
+    /// Mutably dereferences the value.
+    ///
+    #[doc = codegen_section!(
+        header = "h5",
+        bench = "ref_type_deref_mut",
+        format = "coco",
+        arity = 2,
+        [
+            open
+            @index 1
+            @title "Sized"
+            @variant "static_size"
+        ],
+        [
+            @index 2
+            @title "Unsized"
+            @variant "dynamic_size"
+        ]
+    )]
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.

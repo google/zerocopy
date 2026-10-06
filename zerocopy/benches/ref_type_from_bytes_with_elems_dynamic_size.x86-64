@@ -1,0 +1,16 @@
+bench_ref_type_from_bytes_with_elems_dynamic_size:
+	lea rcx, [rdx + rdx]
+	mov r8d, esi
+	or r8d, edi
+	xor eax, eax
+	test r8b, 1
+	cmovne rdi, rax
+	lea r8, [2*rdx + 4]
+	cmp rsi, r8
+	cmovne rdi, rax
+	cmp rcx, -5
+	cmovae rdi, rax
+	test rdx, rdx
+	cmovns rax, rdi
+	mov rdx, rsi
+	ret

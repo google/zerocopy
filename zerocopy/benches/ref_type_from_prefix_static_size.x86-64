@@ -1,0 +1,13 @@
+bench_ref_type_from_prefix_static_size:
+	mov ecx, edi
+	not ecx
+	cmp rsi, 6
+	setb dl
+	or dl, dil
+	and ecx, 1
+	xor eax, eax
+	test dl, 1
+	mov edx, 6
+	cmovne rdx, rcx
+	cmove rax, rdi
+	ret
