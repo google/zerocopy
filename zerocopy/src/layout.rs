@@ -4347,18 +4347,6 @@ mod proofs {
 
     #[kani::proof]
     #[kani::solver(kissat)]
-    fn prove_size_for_elems_uses_element_product() {
-        let layout: TrailingSliceLayout = any_bounded_trailing_layout();
-        let elems: usize = kani::any();
-        let expected = layout
-            .elem_size
-            .checked_mul(elems)
-            .and_then(|bytes| slice_dst_size_for_trailing_bytes(layout, bytes));
-        assert_eq!(layout.size_for_elems(elems), expected);
-    }
-
-    #[kani::proof]
-    #[kani::solver(kissat)]
     fn prove_element_product_preserves_alignment() {
         let elem_size: usize = kani::any();
         let elems: usize = kani::any();
@@ -4639,13 +4627,16 @@ mod proofs {
     #[kani::proof]
     #[kani::solver(kissat)]
     fn prove_size_formula_bounds_size_offset() {
-        let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
-        let elems: usize = kani::any();
-        let Some(object_size) = trailing.size_for_elems(elems) else {
+        // Prove the bound for arbitrary byte counts, including counts that
+        // are not whole elements. The `size_for_elems` contract relates this
+        // formula to checked element products. This harness checks the
+        // formula's bound independently of that implementation.
+        let trailing: TrailingSliceLayout = kani::any();
+        let trailing_size: usize = kani::any();
+        let Some(object_size) = slice_dst_size_for_trailing_bytes(trailing, trailing_size) else {
             kani::assume(false);
             loop {}
         };
-        let Some(trailing_size) = trailing.elem_size.checked_mul(elems) else { unreachable!() };
         let size_offset = trailing.size_offset();
         let Some(without_padding) = size_offset.checked_add(trailing_size) else { unreachable!() };
 

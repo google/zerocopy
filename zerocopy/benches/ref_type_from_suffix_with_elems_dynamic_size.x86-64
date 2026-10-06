@@ -1,0 +1,26 @@
+bench_ref_type_from_suffix_with_elems_dynamic_size:
+	mov rax, rdx
+	mov rdx, rsi
+	lea rcx, [rax + rax]
+	test rax, rax
+	sets al
+	cmp rcx, -5
+	setae sil
+	or sil, al
+	je .LBB5_2
+	xor eax, eax
+	ret
+.LBB5_2:
+	add rcx, 4
+	mov rax, rdx
+	sub rax, rcx
+	jae .LBB5_4
+	xor eax, eax
+	ret
+.LBB5_4:
+	add rdi, rax
+	xor eax, eax
+	test dil, 1
+	cmove rax, rdi
+	mov rdx, rcx
+	ret
