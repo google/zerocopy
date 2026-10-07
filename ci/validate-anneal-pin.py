@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 
 root = Path.cwd()
@@ -19,6 +20,35 @@ counter = 0
 
 def save():
     (evidence / "hashes.json").write_text(json.dumps(report, indent=2) + "\n")
+
+def file_hash(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+def mathlib_manifest(store):
+    destination, count = evidence / "mathlib-download-manifest.jsonl", 0
+    with destination.open("w") as stream:
+        for directory, dirs, files in os.walk(store, followlinks=False):
+            dirs.sort()
+            for name in sorted(dirs + files):
+                path = Path(directory) / name
+                mode = path.lstat().st_mode
+                entry = {"path": path.relative_to(store).as_posix(), "mode": oct(stat.S_IMODE(mode))}
+                if stat.S_ISREG(mode):
+                    entry.update(type="file", sha256=file_hash(path), size=path.stat().st_size)
+                elif stat.S_ISLNK(mode):
+                    entry.update(type="symlink", target=os.readlink(path))
+                else:
+                    assert stat.S_ISDIR(mode), f"Unsupported FOD entry: {entry['path']}"
+                    entry.update(type="directory")
+                stream.write(json.dumps(entry, sort_keys=True) + "\n")
+                count += 1
+                assert count <= 250000 and stream.tell() <= 50 * 1024**2, "Manifest limit exceeded"
+    report["mathlib_manifest"] = {"file": destination.name, "entries": count,
+                                  "sha256": file_hash(destination), "bytes": destination.stat().st_size}
 
 def run(args, *, cwd=root, env=None, allow_failure=False):
     global counter
@@ -75,15 +105,14 @@ for pkg, pin in [("rust-toolchain", "rustToolchainSha256"),
     assert actual == discovered, (pkg, discovered, actual)
     report["hashes"][pin] = {"original": expected, "actual": actual, "store": store,
                               "derivation": output[0]["drvPath"]}
+    if pkg == "mathlib-cache-download":
+        mathlib_manifest(Path(store))
     save()
 (evidence / "flake-hashes.patch").write_text(run(["git", "diff", "--", "anneal/flake.nix"]).stdout)
 archive = Path(json.loads(build("omnibus-archive-ci").stdout)[0]["outputs"]["out"])
+report["archive_store"] = str(archive)
 build("omnibus-archive-layout-check")
-digest = hashlib.sha256()
-with archive.open("rb") as stream:
-    for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-        digest.update(chunk)
-report["archive_sha256"] = digest.hexdigest()
+report["archive_sha256"] = file_hash(archive)
 unpacked = root / "validation-unpacked"
 unpacked.mkdir()
 utilities = {}
@@ -132,15 +161,17 @@ run(["aeneas", "-backend", "lean", "-namespace", "Smoke", "-dest", str(smoke / "
 (smoke / "lakefile.lean").write_text('import Lake\nopen Lake DSL\n'
     'require aeneas from "../bundle/aeneas/backends/lean"\n'
     'require rust_model from "../bundle/rust-model"\npackage smoke\n'
-    '@[default_target]\nlean_lib Generated where\n  srcDir := "generated"\n  roots := #[`SmokeProof]\n')
-(smoke / "generated/SmokeProof.lean").write_text('module\npublic import Smoke.Funs\npublic import Rust\n'
-    '@[expose] public section\n'
+    '@[default_target]\nlean_lib Generated where\n  srcDir := "generated"\n  roots := #[`SmokeProof, `Smoke.Funs, `Smoke.Types]\n')
+(smoke / "generated/SmokeProof.lean").write_text('import Smoke.Funs\nimport Rust\n'
     'theorem smoke_identity_spec (x : Aeneas.Std.U32) : Smoke.identity x = .ok x := by rfl\n'
     '#print axioms smoke_identity_spec\n')
 run(["lake", "--keep-toolchain", "--old", "build", "Generated"], cwd=smoke, env=env)
 proof = run(["lake", "--keep-toolchain", "env", "lean", "-DwarningAsError=true",
              "generated/SmokeProof.lean"], cwd=smoke, env=env)
-assert "does not depend on any axioms" in proof.stdout
+audit = re.fullmatch(r"'smoke_identity_spec' depends on axioms: \[([^\]\n]*)\]", proof.stdout.strip())
+assert audit, proof.stdout
+report["proof_axioms"] = [name.strip() for name in audit[1].split(",") if name.strip()]
+assert set(report["proof_axioms"]) <= {"propext", "Classical.choice", "Quot.sound"}, report["proof_axioms"]
 for file in (smoke / "generated").rglob("*.lean"):
     assert not re.search(r"\b(sorry|axiom)\b", file.read_text()), file
 report["validated"] = True

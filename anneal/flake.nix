@@ -98,7 +98,7 @@
                         else throw "Unsupported system: ${system}";
 
         mathlibCacheDownloadSha256 = if system == "x86_64-linux" then "sha256-n67tKjzZm5LsDU1Dl9kaOFKrQw+8YE201F0toYu1C3s="
-                                     else if system == "aarch64-linux" then "sha256-veIWNrd9KarFxTA1Ad/Nh2YmmN0X4tP2UKhTvRyVW54="
+                                     else if system == "aarch64-linux" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
                                      else if system == "x86_64-darwin" then "sha256-DBdUmPfheeLTVwaVUzkB541Y9CWSQN6gmxBnJ3oxL4c="
                                      else if system == "aarch64-darwin" then "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk="
                                      else throw "Unsupported system: ${system}";
@@ -265,7 +265,8 @@
               passthru = { inherit toolchain; };
               upstreamRelease = aeneas.packages.${system}.aeneas-release;
             } ''
-              tar -czf "$out" -C "$upstreamRelease" .
+              cd "$upstreamRelease"
+              tar -czf "$out" *
             ''
           else (fetchAeneas {
             target = aeneasTarget;
@@ -380,11 +381,10 @@
             "mkdir -p $out/packages"
             "cp -r .lake/packages/* $out/packages/"
             "chmod -R +w $out/packages"
-            # Drop only traces that captured Nix store paths.
-            "find $out/packages -type f \\( -name \"*.trace\" -o -name \"*.hash\" \\) \\"
-            "  -exec grep -q \"/nix/store\" {} \\; -delete"
-            # Mathlib's build cache is reconstructed from .ltar archives below.
-            "rm -rf $out/packages/mathlib/.lake"
+            # Keep this download fixed-output derivation independent of the
+            # build root. Lake generates package caches while building the cache
+            # downloader; the .ltar archives restore them in the unpack stage.
+            "find $out/packages -type d -name \".lake\" -prune -exec rm -rf {} +"
             # Git metadata is unnecessary for path dependencies.
             "find $out/packages -type d -name \".git\" -exec rm -rf {} +"
           ];

@@ -986,6 +986,8 @@ echo "---END-INVOCATION---" >> "{}"
         // manually forward essential host variables required by Cargo and the
         // host toolchain.
         for var in [
+            "CARGO_BUILD_JOBS",
+            "LEAN_NUM_THREADS",
             "RUSTUP_HOME",
             "CARGO_HOME",
             "RUSTUP_TOOLCHAIN",
@@ -1390,6 +1392,29 @@ fn run_single_phase(
         ctx.run_anneal(&config, phase_name)
     };
     let assert = run.assert;
+    // Validation-only recording, copied into the container but excluded from candidate.patch.
+    if let Some(dir) = std::env::var_os("ANNEAL_VALIDATION_OUTPUT_DIR") {
+        let label = format!("{}-{}", ctx.test_name, phase_name.unwrap_or("single"))
+            .chars().map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '_' })
+            .collect::<String>();
+        let dir = PathBuf::from(dir).join(label);
+        fs::create_dir_all(&dir)?;
+        let output = assert.get_output();
+        fs::write(dir.join("stdout"), &output.stdout)?;
+        fs::write(dir.join("stderr"), &output.stderr)?;
+        fs::write(dir.join("status"), format!("{}\n", output.status))?;
+        for entry in new_sorted_walkdir(&ctx.sandbox_root) {
+            let entry = entry?;
+            let path = entry.path();
+            if entry.file_type().is_file()
+                && matches!(path.extension().and_then(|e| e.to_str()), Some("lean" | "llbc"))
+            {
+                let dest = dir.join("generated-evidence").join(path.strip_prefix(&ctx.sandbox_root)?);
+                fs::create_dir_all(dest.parent().unwrap())?;
+                fs::copy(path, dest)?;
+            }
+        }
+    }
 
     // Verify Exit Status
     let _assert_status_scope = ProfileScope::new(&ctx.test_name, phase_name, "assert_exit_status");
@@ -1494,6 +1519,19 @@ fn assert_output_file(
             .replace(home_path_str, "[HOME]")
             .replace(target_path_str, "[TARGET_DIR]"),
     );
+
+    // Validation-only sidecar: preserve the harness's exact normalized snapshot
+    // without changing the expected file or its comparison/status assertions.
+    if let Some(dir) = std::env::var_os("ANNEAL_VALIDATION_OUTPUT_DIR") {
+        let fixture_root = fs::canonicalize(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures"),
+        ).unwrap();
+        let fixture_path = fs::canonicalize(test_case_root).unwrap();
+        let relative = fixture_path.strip_prefix(&fixture_root).unwrap();
+        let snapshot = PathBuf::from(dir).join("snapshots").join(relative).join(expected_file);
+        fs::create_dir_all(snapshot.parent().unwrap()).unwrap();
+        fs::write(snapshot, &actual_clean).unwrap();
+    }
 
     if bless {
         fs::write(&expected_path, &actual_clean).unwrap();
@@ -1873,6 +1911,9 @@ fn sanitize_output(output: &str) -> String {
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
     let re_cargo_hash = regex::Regex::new(r"([-=_])([a-f0-9]{5,16})\b").unwrap();
+    let re_charon_nonce = regex::Regex::new(r"charon-dont-cache-this-[a-f0-9]+-\d+").unwrap();
+    let re_cargo_build_hash = regex::Regex::new(r"(/debug/build/[^/]+/)[a-f0-9]{16}(/)")
+        .unwrap();
 
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
@@ -1893,6 +1934,8 @@ fn sanitize_output(output: &str) -> String {
 
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
+    clean = re_charon_nonce.replace_all(&clean, "charon-dont-cache-this-<NONCE>").into_owned();
+    clean = re_cargo_build_hash.replace_all(&clean, "${1}<HASH>${2}").into_owned();
     clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
 
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();

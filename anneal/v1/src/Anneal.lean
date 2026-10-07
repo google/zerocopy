@@ -29,14 +29,11 @@ namespace Anneal
 -- We use Aeneas.Result
 
 -- We use `@[simp]` directly on the `SpecificationHolds` definition.
--- This unrolls the match logic for underlying results without forcing
+-- This unfolds the total-success specification for underlying results without forcing
 -- users to manually type `unfold Anneal.SpecificationHolds` uniformly across all project proofs.
 @[simp]
 def SpecificationHolds {α : Type} (res : Result α) (post : α → Prop) : Prop :=
-  match res with
-  | .ok v => post v
-  | .fail _ => False  -- A function satisfying spec should not fail
-  | .div => False     -- A function satisfying spec should not diverge
+  WP.spec res post
 
 
 -- 2. Struct Invariants
@@ -64,7 +61,7 @@ theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
   (∃ y, m = .ok y) → (∀ y, m = .ok y → P y) → WP.spec m P := by
   intro ⟨y, hy⟩ hP
   rw [hy]
-  exact hP y hy
+  exact (WP.spec_ok y).mpr (hP y hy)
 
 /-- A macro that evaluates progress automatically, or falls back to sorry/fail if stuck. -/
 macro "eval_progress" msg:str fnc:ident : tactic =>
@@ -569,7 +566,7 @@ opaque align_char : Alignment
 @[simp] axiom align_char_divides : align_char.val.val ∣ 4
 primitive_multibyte_layout Char 4 align_char align_char_divides
 
-def test_has_layout : HasLayout Aeneas.Std.U16 := inferInstance
+@[reducible] def test_has_layout : HasLayout Aeneas.Std.U16 := inferInstance
 
 -- Architecture-Dependent Primitives
 -- For `usize` and `isize`, both the size and alignment are platform-dependent.
@@ -743,6 +740,7 @@ namespace Allocation
 theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     a - alloc.base.val ≤ Isize.max := by
   have h_sub := Rust.Allocation.offset_lt_size alloc.toGeometry a ha
+  change a - alloc.base.val < alloc.size.val at h_sub
   have h_size : alloc.size.val ≤ Isize.max := alloc.size_le_isize_max
   omega
 
@@ -758,6 +756,7 @@ theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.add
 theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     a ≤ Usize.max := by
   have h_lt := Rust.Allocation.address_lt_end alloc.toGeometry a ha
+  change a < alloc.base.val + alloc.size.val at h_lt
   have h_max : alloc.base.val + alloc.size.val ≤ Usize.max := alloc.base_add_size_le_usize_max
   omega
 

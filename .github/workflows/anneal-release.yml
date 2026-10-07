@@ -1,6 +1,11 @@
 name: Anneal pinned bundle validation
 on:
   workflow_dispatch:
+    inputs:
+      v1:
+        description: 'Also run cold V1 setup, unit tests and all fixtures on native Linux x86'
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -59,6 +64,9 @@ jobs:
           EXPECTED_SYSTEM: ${{ matrix.system }}
           PYTHONUNBUFFERED: '1'
         run: python3 ci/validate-anneal-pin.py
+      - name: Optional native Linux x86 V1 validation
+        if: matrix.system == 'x86_64-linux' && inputs.v1
+        run: bash ci/validate-anneal-v1.sh
       - name: Restore namespace restriction
         if: always() && runner.os == 'Linux'
         run: |
