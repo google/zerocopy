@@ -127,6 +127,7 @@ added without extending the specification set.
 
 | Rust function | Checked property |
 | --- | --- |
+| Byteorder U16/U32 read, write, and set (both endiannesses) | Exact integer value, every encoded byte, and setter/getter equality for every typed input. |
 | `max` | Terminates successfully and returns the mathematical maximum. |
 | `min` | Terminates successfully and returns the mathematical minimum. |
 | `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
@@ -697,3 +698,28 @@ provided useful prior evidence:
 Those older experiments are not assumed to describe the current release's
 runtime. This integration was validated with the pinned October 1 bundle and
 fresh translations of the current checkout.
+
+## Shared integer and byte mathematics
+
+`anneal/lean/Rust/Bytes.lean` defines unsigned byte encoding and decoding with
+ordinary natural-number arithmetic, independently of Aeneas. It proves lengths,
+bounds, truncation, and round trips for arbitrary byte counts. Anneal v1, v2,
+and this integration share that package; each consumer supplies its own bridge
+to the representation it verifies.
+
+The inline contracts in `byteorder::verification` exercise the production
+U16/U32 `from_bytes`, `get`, `new`, `Into`, and `set` paths for both byte orders.
+`BytesAdapter.lean` connects Aeneas's bit-vector codecs with the shared radix-256
+model. Independent required contracts spell out positional byte sums and each
+output digit, so the same decoder helper cannot define both sides of the check.
+There are no extra preconditions on these fixed arrays or unsigned integers.
+This trial covers value computations; it does not verify signed conversions,
+floating-point operations, pointer access, or the full byteorder API.
+
+The extracted ByteOrder trait dictionaries carry formatting methods even when
+these computations never format anything. Aeneas leaves `Formatter` as an
+opaque `Type`. The axiom audit admits that exact monomorphic data carrier after
+checking its signature; no formatting proposition or behavior is assumed. A
+change to a proposition or a function fails the audit. The PhantomData model
+likewise records its zero runtime fields, with a Lean shape theorem that fails
+if extraction adds fields; it makes no ownership or provenance claim.
