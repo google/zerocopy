@@ -108,6 +108,7 @@ impl RoundingAlignAndPhase {
         fn proof() {
             kani::any::<RoundingAlignAndPhase>().components();
         }
+
         // `leading_zeros <= POINTER_WIDTH_BITS - 1` because the encoded value
         // is non-zero. Converting `leading_zeros` to `usize` cannot truncate
         // because it is at most the number of bits in a `usize`.
@@ -264,80 +265,31 @@ impl<E> TrailingSliceLayout<E> {
             kani::any::<TrailingSliceLayout<NonZeroUsize>>().max_trailing_bytes(kani::any());
         }
 
-        let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
+        let (align, phase) = self.size_rounding_align_and_phase.components();
 
-        // Interpret the normalized size formula over the nonnegative integers:
+        // Over mathematical integers, a tail of `bytes` fits exactly when:
         //
-        //   object_size(trailing_bytes)
-        //       = self.size_base
-        //           + round_up(size_phase + trailing_bytes, size_align).
+        //   size_base + round_up(phase + bytes, align) <= available_bytes.
         //
-        // We seek the largest byte count with
-        // `object_size(trailing_bytes) <= available_bytes`.
-        //
-        // At zero trailing bytes, the input to rounding is just `size_phase`.
-        // Since `0 <= size_phase < size_align`, the least alignment multiple at
-        // or above it is zero for a zero phase, and `size_align` otherwise.
-        // Thus `rounded_phase = round_up(size_phase, size_align)` is exactly
-        // the rounded contribution of an empty tail.
-        let rounded_phase = if size_phase == 0 { 0 } else { size_align.get() };
-
-        // Adding the fixed base gives `minimum_size = object_size(0)`. The size
-        // formula is nondecreasing in the trailing byte count, so this is the
-        // minimum object size. If this sum exceeds `usize::MAX`, it also
-        // exceeds `available_bytes`, and no tail can fit.
-        let minimum_size = match self.size_base.checked_add(rounded_phase) {
-            Some(size) => size,
-            None => return None,
-        };
-
-        // Subtracting the minimum size gives the budget for increasing the
-        // rounded contribution. Failure means even the minimum size exceeds the
-        // available space. Success establishes `minimum_size + extra_bytes =
-        // available_bytes`.
-        let extra_bytes = match available_bytes.checked_sub(minimum_size) {
+        // First remove the fixed base. Failure means even an empty object
+        // cannot fit, since the rounded contribution is nonnegative.
+        let budget = match available_bytes.checked_sub(self.size_base) {
             Some(bytes) => bytes,
             None => return None,
         };
 
-        // The rounded contribution can increase only by multiples of
-        // `size_align`. Its largest permitted increase is therefore
-        // `aligned_bytes = round_down(extra_bytes, size_align)`, with:
+        // An aligned rounded contribution fits in `budget` exactly when it
+        // is at most the largest alignment multiple at or below `budget`.
+        // Since that upper bound is aligned, rounding can be removed:
         //
-        //   aligned_bytes <= extra_bytes < aligned_bytes + size_align.
+        //   round_up(phase + bytes, align) <= round_down(budget, align)
+        //       iff phase + bytes <= round_down(budget, align).
         //
-        // Hence `rounded_phase + aligned_bytes` is the largest alignment
-        // multiple that fits after the base: adding the base gives at most
-        // `minimum_size + extra_bytes = available_bytes`, while the next
-        // alignment multiple would exceed that budget.
-        let aligned_bytes = util::round_down_to_next_multiple_of_alignment(extra_bytes, size_align);
-
-        // Rounding an empty tail adds `rounded_phase - size_phase` bytes. This
-        // is `initial_padding`: the tail can use these bytes without increasing
-        // the rounded contribution. The two cases for `rounded_phase` give `0
-        // <= initial_padding < size_align`, so the subtraction is
-        // representable.
-        #[allow(clippy::arithmetic_side_effects)]
-        let initial_padding = rounded_phase - size_phase;
-
-        // For any nonnegative candidate byte count, the aligned limit above
-        // gives the following equivalences:
-        //
-        //   object_size(candidate_bytes) <= available_bytes
-        //       iff round_up(size_phase + candidate_bytes, size_align)
-        //           <= rounded_phase + aligned_bytes
-        //       iff size_phase + candidate_bytes
-        //           <= rounded_phase + aligned_bytes
-        //       iff candidate_bytes <= aligned_bytes + initial_padding.
-        //
-        // Removing `round_up` is valid because its upper bound is an alignment
-        // multiple. Thus `aligned_bytes + initial_padding` is exactly the
-        // largest tail that fits. Since `aligned_bytes` is a multiple of the
-        // power-of-two `size_align` and `initial_padding < size_align`, their
-        // set bits are disjoint. Bitwise OR therefore equals their sum, with no
-        // carry or overflow.
-        let trailing_bytes = aligned_bytes | initial_padding;
-        Some(trailing_bytes)
+        // Subtracting the phase therefore gives the exact greatest tail
+        // byte count that fits. Failure means even the zero-byte tail does
+        // not fit. No addition or multiplication can overflow here.
+        let rounded_budget = util::round_down_to_next_multiple_of_alignment(budget, align);
+        rounded_budget.checked_sub(phase)
     }
 }
 
@@ -426,68 +378,54 @@ impl TrailingSliceLayout {
     }))]
     pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
         #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().size_for_elems(kani::any());
-        }
+        proofs::unrestricted_contract!(
+            #[kani::stub_verified(TrailingSliceLayout::size_for_trailing_bytes)]
+            prove_contract_unrestricted_size_for_elems,
+            TrailingSliceLayout::size_for_elems,
+            (TrailingSliceLayout, usize)
+        );
 
-        // Let `size_align` and `size_phase` denote the components stored in
-        // `size_rounding_align_and_phase`. The normalized layout formula,
-        // evaluated over the nonnegative integers, is:
-        //
-        //   object_size(trailing_bytes)
-        //       = self.size_base
-        //           + round_up(size_phase + trailing_bytes, size_align)
-        //
-        // Here, `round_up` gives the least multiple of `size_align` greater
-        // than or equal to its input. Thus `object_size` is nondecreasing.
-        // By the capacity helper's contract, `max_trailing_bytes` is the
-        // largest byte count for which `object_size` fits in a `usize`.
-        // Monotonicity then gives the equivalence:
-        //
-        //   object_size(trailing_bytes) <= usize::MAX
-        //       iff trailing_bytes <= max_trailing_bytes.
-        //
-        // If the helper returns `None`, even `object_size(0)` exceeds the
-        // limit, so no element count can produce a representable size.
-        let max_trailing_bytes = match self.max_trailing_bytes(usize::MAX) {
+        let trailing_bytes = match elems.checked_mul(self.elem_size) {
             Some(bytes) => bytes,
             None => return None,
         };
+        self.size_for_trailing_bytes(trailing_bytes)
+    }
 
-        // Each of the `elems` elements contributes `self.elem_size` bytes,
-        // so substitution into the formula requires their product. Checked
-        // multiplication yields that exact product, including zero for
-        // zero-sized elements. If it overflows, the complete size cannot fit
-        // either: `object_size(trailing_bytes) >= trailing_bytes` because
-        // the base, phase, and rounding increment are all nonnegative.
-        let trailing_size = match self.elem_size.checked_mul(elems) {
+    /// Computes the complete size for a trailing byte count, independently of
+    /// element-size multiplication.
+    ///
+    /// Returns `None` if the normalized size formula is not representable.
+    #[inline(always)]
+    #[cfg_attr(kani, kani::ensures(|&size| {
+        size == proofs::slice_dst_size_for_trailing_bytes(self, trailing_bytes)
+    }))]
+    const fn size_for_trailing_bytes(self, trailing_bytes: usize) -> Option<usize> {
+        #[cfg(kani)]
+        proofs::unrestricted_contract!(
+            prove_contract_unrestricted_size_for_trailing_bytes,
+            TrailingSliceLayout::size_for_trailing_bytes,
+            (TrailingSliceLayout, usize)
+        );
+
+        let (align, phase) = self.size_rounding_align_and_phase.components();
+        let unrounded = match phase.checked_add(trailing_bytes) {
             Some(bytes) => bytes,
             None => return None,
         };
+        #[allow(clippy::arithmetic_side_effects)]
+        let mask = align.get() - 1;
 
-        // The equivalence above rejects exactly the remaining cases whose
-        // complete size exceeds `usize::MAX`. After this check we have
-        // `object_size(trailing_size) <= usize::MAX`.
-        if trailing_size > max_trailing_bytes {
-            return None;
-        }
-
-        // The trailing slice starts at `self.offset` and occupies
-        // `trailing_size` bytes. Thus `trailing_end` is its end offset modulo
-        // `usize::MAX + 1`. This sum need not fit: a raw layout need not
-        // describe a Rust type, so its trailing slice need not lie within
-        // the complete object size bounded above.
-        let trailing_end = self.offset.wrapping_add(trailing_size);
-
-        // `padding_for_elems` returns `object_size(trailing_size)` minus the
-        // trailing-slice end, modulo `usize::MAX + 1`. Adding the end back
-        // therefore gives `object_size(trailing_size)` modulo the same
-        // modulus. The bound above establishes that this size fits in
-        // `usize`, so its residue is the exact size specified by the layout.
-        let size = trailing_end.wrapping_add(self.padding_for_elems(elems));
-        Some(size)
+        // Adding the mask and clearing its bits rounds up to the alignment.
+        // Since `align` divides `usize::MAX + 1`, the largest representable
+        // aligned value is `usize::MAX - mask`. Thus adding the mask overflows
+        // exactly when rounding up would exceed `usize::MAX`, including when
+        // `unrounded` is already aligned.
+        let rounded = match unrounded.checked_add(mask) {
+            Some(bytes) => bytes & !mask,
+            None => return None,
+        };
+        self.size_base.checked_add(rounded)
     }
 
     /// Returns `true` only when `self` and `other` describe the same size for
@@ -503,8 +441,8 @@ impl TrailingSliceLayout {
         same == (self.elem_size == other.elem_size
             && initial_size.is_some()
             && initial_size == proofs::slice_dst_size_for_trailing_bytes(other, 0)
-            && ((self.elem_size % self_align.get() == 0
-                && self.elem_size % other_align.get() == 0)
+            && ((self.elem_size & (self_align.get() - 1) == 0
+                && self.elem_size & (other_align.get() - 1) == 0)
                 || (self_align == other_align && self_phase == other_phase)))
     }))]
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
@@ -565,7 +503,7 @@ impl TrailingSliceLayout {
         // complete size sequences agree. This also covers zero-sized elements,
         // whose contribution is zero for every element count.
         #[allow(clippy::arithmetic_side_effects)]
-        if self.elem_size % max_align == 0 {
+        if self.elem_size & (max_align - 1) == 0 {
             return true;
         }
 
@@ -1100,8 +1038,6 @@ impl DstLayout {
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
-        // This harness covers up to three fields, including an optional final
-        // DST. Arbitrary-length composition is not established by this bound.
         #[cfg(kani)]
         #[kani::proof_for_contract(DstLayout::for_repr_c_struct)]
         #[kani::solver(kissat)]
@@ -1113,6 +1049,8 @@ impl DstLayout {
             let _ = DstLayout::for_repr_c_struct(kani::any(), kani::any(), &fields[..len]);
         }
 
+        // This harness covers up to three fields, including an optional final
+        // DST. Arbitrary-length composition is not established by this bound.
         let mut layout = DstLayout::new_zst(repr_align);
 
         let mut i = 0;
@@ -1181,6 +1119,13 @@ impl DstLayout {
             let _ = kani::any::<DstLayout>().extend(kani::any(), kani::any());
         }
 
+        self.extend_impl(field, repr_packed)
+    }
+
+    // Keep the body separate from the contract wrapper so the negative proof
+    // can check the production panic, rather than a contract precondition.
+    #[inline]
+    const fn extend_impl(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
         use util::{max, min, padding_needed_for};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
@@ -1471,7 +1416,7 @@ impl DstLayout {
         SizeInfo::Sized { .. } => !padding,
         SizeInfo::SliceDst(trailing) => padding == (
             proofs::slice_dst_size_for_trailing_bytes(trailing, 0) != Some(trailing.offset)
-                || trailing.elem_size % trailing.size_rounding_align_and_phase.align().get() != 0
+                || trailing.elem_size & (trailing.size_rounding_align_and_phase.align().get() - 1) != 0
         ),
     }))]
     pub const fn requires_dynamic_padding(self) -> bool {
@@ -1491,9 +1436,9 @@ impl DstLayout {
                 match trailing_slice_layout.size_for_elems(0) {
                     Some(initial_size) => {
                         #[allow(clippy::arithmetic_side_effects)]
-                        let has_static_stride = trailing_slice_layout.elem_size
-                            % trailing_slice_layout.size_rounding_align_and_phase.align().get()
-                            == 0;
+                        let align_mask =
+                            trailing_slice_layout.size_rounding_align_and_phase.align().get() - 1;
+                        let has_static_stride = trailing_slice_layout.elem_size & align_mask == 0;
                         initial_size != trailing_slice_layout.offset || !has_static_stride
                     }
                     None => true,
@@ -1811,13 +1756,6 @@ impl DstLayout {
     metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
 }))]
 unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {
-    // The call-site safety argument establishes that both operations are
-    // representable for valid source metadata. This harness verifies the
-    // production implementation selected by Kani's modern rustc against
-    // checked arithmetic under precisely that precondition. The distributive
-    // natural-number argument which establishes the precondition is kept
-    // beside the unsafe pointer projection where it can be reviewed with the
-    // layout premises that it consumes.
     #[cfg(kani)]
     #[kani::proof_for_contract(add_scaled_metadata)]
     #[kani::solver(kissat)]
@@ -1851,6 +1789,13 @@ unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> 
         assert_eq!(unsafe { add_scaled_metadata(base, metadata, multiple) }, expected);
     }
 
+    // The call-site safety argument establishes that both operations are
+    // representable for valid source metadata. This harness verifies the
+    // production implementation selected by Kani's modern rustc against
+    // checked arithmetic under precisely that precondition. The distributive
+    // natural-number argument which establishes the precondition is kept
+    // beside the unsafe pointer projection where it can be reviewed with the
+    // layout premises that it consumes.
     #[allow(unused_imports)]
     use crate::util::polyfills::*;
 
@@ -2293,8 +2238,8 @@ mod padding_testutil {
         let layout = crate::trailing_slice_layout::<Target>();
         let trailing_size = elems.checked_mul(layout.elem_size)?;
 
-        // Evaluate the complete rounded size independently of both helpers:
-        // `size_for_elems` delegates to the padding method being tested.
+        // Evaluate the complete rounded size without calling the padding
+        // method under test.
         let (alignment, phase) = layout.size_rounding_align_and_phase.components();
         #[allow(clippy::arithmetic_side_effects)]
         let mask = alignment.get() - 1;
@@ -2763,6 +2708,10 @@ mod tests {
                         size_rounding_align_and_phase: RoundingAlignAndPhase::new(alignment, phase),
                     };
                     for available in [0, 1, alignment.get() - 1, alignment.get(), usize::MAX] {
+                        assert_eq!(
+                            layout.size_for_trailing_bytes(available),
+                            checked_size(layout, available)
+                        );
                         match layout.max_trailing_bytes(available) {
                             Some(max_bytes) => {
                                 assert!(checked_size(layout, max_bytes).unwrap() <= available);
@@ -2890,6 +2839,14 @@ mod tests {
             _ => panic!("Expected SliceDst"),
         }
         assert_eq!(layout.align.get(), 4);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot extend a DST with additional fields.")]
+    fn test_dst_layout_extend_dst_panics() {
+        let base = DstLayout::for_slice::<u8>();
+        let field = DstLayout::for_type::<u8>();
+        let _ = base.extend(field, None);
     }
 
     /// Tests of when a sized `DstLayout` is extended with a sized field.
@@ -3955,6 +3912,21 @@ mod proofs {
 
     use super::*;
 
+    // These full-domain harnesses must not add assumptions or transform the
+    // inputs. The fail-closed runner permits only these reviewed pure-value
+    // contracts as verified stubs and proves their dependencies first.
+    macro_rules! unrestricted_contract {
+        ($(#[$attr:meta])* $name:ident, $target:path, ($($arg:ty),*)) => {
+            $(#[$attr])*
+            #[kani::proof_for_contract($target)]
+            #[kani::solver(kissat)]
+            fn $name() {
+                let _ = $target($(kani::any::<$arg>()),*);
+            }
+        };
+    }
+    pub(crate) use unrestricted_contract;
+
     /// Evaluates the normalized object size for a trailing slice of
     /// `trailing_size` bytes:
     ///
@@ -3972,10 +3944,9 @@ mod proofs {
         layout: TrailingSliceLayout<ElementSize>,
         trailing_size: usize,
     ) -> Option<usize> {
-        let without_padding =
-            layout.size_rounding_align_and_phase.components().1.checked_add(trailing_size)?;
-        let padding =
-            util::padding_needed_for(without_padding, layout.size_rounding_align_and_phase.align());
+        let (align, phase) = layout.size_rounding_align_and_phase.components();
+        let without_padding = phase.checked_add(trailing_size)?;
+        let padding = util::padding_needed_for(without_padding, align);
         let rounded = without_padding.checked_add(padding)?;
         layout.size_base.checked_add(rounded)
     }
@@ -4140,7 +4111,7 @@ mod proofs {
         padded_layout(layout)
     }
 
-    // The inline contract harnesses use unrestricted `Arbitrary` values.
+    // The contract harnesses use unrestricted `Arbitrary` values.
     // These generators retain the narrower domains of the Rust-layout proofs.
 
     /// Generates any power-of-two alignment representable in `usize`, including
@@ -4157,6 +4128,20 @@ mod proofs {
         // zero-sized layouts, so the validity assumptions below—not this
         // generator—filter combinations that cannot describe Rust types.
         NonZeroUsize::new(1usize << exponent).unwrap()
+    }
+
+    /// Generates exactly the sized branch of `any_valid_dst_layout`, without
+    /// constructing and validating a DST that the caller would discard.
+    fn any_valid_sized_dst_layout() -> DstLayout {
+        let align = any_layout_align();
+        let size: usize = kani::any();
+        kani::assume(size <= DstLayout::MAX_SIZE);
+        kani::assume(Layout::from_size_align(size, align.get()).is_ok());
+        DstLayout {
+            align,
+            size_info: SizeInfo::Sized { size },
+            statically_shallow_unpadded: kani::any(),
+        }
     }
 
     /// Generates layouts satisfying the arithmetic restrictions used by the
@@ -4234,12 +4219,12 @@ mod proofs {
         let elem_size: usize = kani::any();
         let offset: usize = kani::any();
         let size_base: usize = kani::any();
-        let size_align = any_layout_align();
-        let raw_size_phase: usize = kani::any();
-        // Since `size_align` is a power of two, masking is surjective over
-        // precisely the values in `0..size_align`.
-        #[allow(clippy::arithmetic_side_effects)]
-        let size_phase = raw_size_phase & (size_align.get() - 1);
+        // Every nonzero word encodes exactly one power-of-two alignment and
+        // phase, and every permitted alignment/phase pair has such a word.
+        // The encoding/decoding proofs check both directions. Generate that
+        // word directly rather than encoding symbolic components only to
+        // decode them again in the methods under test.
+        let rounding = RoundingAlignAndPhase(kani::any());
 
         kani::assume(elem_size <= DstLayout::MAX_SIZE);
         kani::assume(offset <= DstLayout::MAX_SIZE);
@@ -4249,7 +4234,7 @@ mod proofs {
             elem_size,
             offset,
             size_base,
-            size_rounding_align_and_phase: RoundingAlignAndPhase::new(size_align, size_phase),
+            size_rounding_align_and_phase: rounding,
         }
     }
 
@@ -4346,13 +4331,13 @@ mod proofs {
     }
 
     #[kani::proof]
+    #[kani::stub_verified(TrailingSliceLayout::size_for_trailing_bytes)]
     #[kani::solver(kissat)]
     fn prove_size_for_elems_uses_element_product() {
         let layout: TrailingSliceLayout = any_bounded_trailing_layout();
         let elems: usize = kani::any();
-        let expected = layout
-            .elem_size
-            .checked_mul(elems)
+        let expected = elems
+            .checked_mul(layout.elem_size)
             .and_then(|bytes| slice_dst_size_for_trailing_bytes(layout, bytes));
         assert_eq!(layout.size_for_elems(elems), expected);
     }
@@ -4640,12 +4625,14 @@ mod proofs {
     #[kani::solver(kissat)]
     fn prove_size_formula_bounds_size_offset() {
         let trailing: TrailingSliceLayout = any_bounded_trailing_layout();
-        let elems: usize = kani::any();
-        let Some(object_size) = trailing.size_for_elems(elems) else {
+        // Every representable element product is a byte count. Prove the
+        // bound for all byte counts, then compose it with the element-product
+        // contract of `size_for_elems` rather than repeating multiplication.
+        let trailing_size: usize = kani::any();
+        let Some(object_size) = trailing.size_for_trailing_bytes(trailing_size) else {
             kani::assume(false);
             loop {}
         };
-        let Some(trailing_size) = trailing.elem_size.checked_mul(elems) else { unreachable!() };
         let size_offset = trailing.size_offset();
         let Some(without_padding) = size_offset.checked_add(trailing_size) else { unreachable!() };
 
@@ -4684,6 +4671,7 @@ mod proofs {
     }
 
     #[kani::proof]
+    #[kani::stub_verified(TrailingSliceLayout::size_for_elems)]
     fn prove_requires_dynamic_padding() {
         let layout: DstLayout = any_valid_dst_layout();
 
@@ -4723,10 +4711,11 @@ mod proofs {
     }
 
     #[kani::proof]
+    #[kani::stub_verified(TrailingSliceLayout::size_for_elems)]
     fn prove_dst_layout_extend() {
         use crate::util::{max, min, padding_needed_for};
 
-        let base: DstLayout = any_valid_dst_layout();
+        let base: DstLayout = any_valid_sized_dst_layout();
         let field: DstLayout = any_valid_dst_layout();
         let packed: Option<NonZeroUsize> = kani::any();
 
@@ -4908,18 +4897,17 @@ mod proofs {
     #[kani::proof]
     #[kani::should_panic]
     fn prove_dst_layout_extend_dst_panics() {
-        let base: DstLayout = any_valid_dst_layout();
-        let field: DstLayout = any_valid_dst_layout();
+        // The panic does not require either layout to describe a Rust type.
+        // Cover all DST prefixes and fields, with every valid packing cap.
+        let base: DstLayout = kani::any();
+        let field: DstLayout = kani::any();
         let packed: Option<NonZeroUsize> = kani::any();
-
-        if let Some(max_align) = packed {
-            kani::assume(max_align.is_power_of_two());
-            kani::assume(base.align <= max_align);
-        }
-
+        kani::assume(packed.map_or(true, |align| align.is_power_of_two()));
         kani::assume(matches!(base.size_info, SizeInfo::SliceDst(..)));
 
-        let _ = base.extend(field, packed);
+        // Call the unannotated implementation: a violated contract must not
+        // substitute for reaching the intended panic branch.
+        let _ = base.extend_impl(field, packed);
     }
 
     fn prove_dst_layout_pad_to_align_dst_invariants(
@@ -4958,7 +4946,7 @@ mod proofs {
     fn prove_dst_layout_pad_to_align_sized() {
         use crate::util::padding_needed_for;
 
-        let layout: DstLayout = any_valid_dst_layout();
+        let layout: DstLayout = any_valid_sized_dst_layout();
         let SizeInfo::Sized { size: unpadded_size } = layout.size_info else {
             kani::assume(false);
             loop {}
@@ -4989,6 +4977,7 @@ mod proofs {
     }
 
     #[kani::proof]
+    #[kani::stub_verified(TrailingSliceLayout::size_for_elems)]
     fn prove_dst_layout_pad_to_align_dst_inner_rounding_transition() {
         use crate::util::padding_needed_for;
 
@@ -5072,6 +5061,7 @@ mod proofs {
     }
 
     #[kani::proof]
+    #[kani::stub_verified(TrailingSliceLayout::size_for_elems)]
     fn prove_dst_layout_pad_to_align_dst_outer_alignment_transition() {
         use crate::util::padding_needed_for;
 

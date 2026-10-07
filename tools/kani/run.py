@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+"""Verify contract prerequisites before allowing Kani to verify their callers.
+
+Kani's stub_verified does not itself require a successful contract proof. This
+runner admits only the two reviewed, pure sizing contracts whose harnesses use
+layout::proofs::unrestricted_contract. The macro calls the target once with
+arbitrary unmodified inputs; neither target has input preconditions, mutable
+state, reference arguments, recursion, or a modifies clause. Adding another
+entry requires reviewing those properties and the complete input domain.
+
+The pinned compiler's metadata identifies actual compiled dependencies, including
+nested harnesses. Missing/ambiguous proofs, unreviewed stubs, cycles, unsupported
+features, and unexpected metadata fail closed. A failed or timed-out prerequisite
+stops execution before its consumers, including in filtered runs. Successful
+proofs still rely on Kani's Rust models, translation and solver correctness.
+"""
+
+import argparse
+import json
+import os
+import re
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+
+
+APPROVED_CONTRACTS = {
+    "TrailingSliceLayout::size_for_trailing_bytes":
+        "prove_contract_unrestricted_size_for_trailing_bytes",
+    "TrailingSliceLayout::size_for_elems":
+        "prove_contract_unrestricted_size_for_elems",
+}
+FOUNDATION = "util::proofs::prove_power_of_two_remainder_is_mask"
+UNRESTRICTED_BODY = """fn $name() {
+    let _ = $target($(kani::any::<$arg>()),*);
+}"""
+FOUNDATION_BODY = """fn prove_power_of_two_remainder_is_mask() {
+    let value: usize = kani::any();
+    for shift in 0..(mem::size_of::<usize>() * 8) {
+        let align = 1usize << shift;
+        assert_eq!(value % align, value & (align - 1));
+    }
+}"""
+ATTRIBUTE_KEYS = {
+    "kind", "should_panic", "solver", "unwind_value", "stubs", "verified_stubs",
+}
+
+
+def validate_source(harness, filename, expected, read_source):
+    if harness["original_file"] != filename:
+        raise ValueError("unexpected prerequisite source")
+    start, end = harness["original_start_line"], harness["original_end_line"]
+    lines = read_source(filename).splitlines()
+    if not (1 <= start <= end <= len(lines)):
+        raise ValueError("invalid prerequisite source span")
+    actual = "\n".join(lines[start - 1:end])
+    if re.sub(r"\s+", "", actual) != re.sub(r"\s+", "", expected):
+        raise ValueError("prerequisite no longer uses its unrestricted proof body")
+
+
+def verification_plan(metadata, selected=(),
+                      read_source=lambda filename: Path(filename).read_text()):
+    """Return prerequisite harnesses in dependency order, then other targets."""
+    if metadata["crate_name"] != "zerocopy" or metadata["unsupported_features"]:
+        raise ValueError("unexpected crate or unsupported Kani features")
+    harnesses = metadata["proof_harnesses"] + metadata["test_harnesses"]
+    by_name = {}
+    for harness in harnesses:
+        name, attrs = harness["pretty_name"], harness["attributes"]
+        if name in by_name or set(attrs) != ATTRIBUTE_KEYS:
+            raise ValueError("duplicate harness or unexpected attribute schema")
+        if attrs["stubs"]:
+            raise ValueError(f"unchecked replacement stub in {name}")
+        if not isinstance(attrs["verified_stubs"], list):
+            raise ValueError("unexpected verified-stub schema")
+        for target in attrs["verified_stubs"]:
+            if target not in APPROVED_CONTRACTS:
+                raise ValueError(f"unreviewed verified stub: {target}")
+        by_name[name] = harness
+    if not by_name:
+        raise ValueError("no compiled harnesses")
+    validate_source(by_name[FOUNDATION], "src/util/mod.rs", FOUNDATION_BODY,
+                    read_source)
+    foundation = by_name[FOUNDATION]["attributes"]
+    if (foundation["kind"] != "Proof" or foundation["should_panic"]
+            or foundation["verified_stubs"] or foundation["unwind_value"] != 65):
+        raise ValueError("unexpected remainder-equivalence proof configuration")
+    if selected:
+        missing = set(selected) - by_name.keys()
+        if missing:
+            raise ValueError(f"unknown exact harnesses: {sorted(missing)}")
+        targets = list(dict.fromkeys(selected))
+    else:
+        targets = list(by_name)
+
+    def contract_proof(target):
+        matches = [h for h in harnesses if
+                   h["attributes"]["kind"] == {
+                       "ProofForContract": {"target_fn": target}}
+                   and "{closure#" not in h["pretty_name"]
+                   and h["pretty_name"].split("::")[-1] ==
+                   APPROVED_CONTRACTS[target]]
+        if len(matches) != 1:
+            raise ValueError(f"missing or ambiguous unrestricted proof: {target}")
+        proof = matches[0]
+        validate_source(proof, "src/layout.rs", UNRESTRICTED_BODY, read_source)
+        if (proof["attributes"]["should_panic"]
+                or proof["attributes"]["unwind_value"] is not None):
+            raise ValueError(f"expected-panic harness cannot establish {target}")
+        return proof["pretty_name"]
+
+    prerequisites, active, done = [], set(), set()
+
+    def visit(name):
+        if name in active:
+            raise ValueError(f"cyclic contract dependency at {name}")
+        if name in done:
+            return
+        active.add(name)
+        for target in by_name[name]["attributes"]["verified_stubs"]:
+            proof = contract_proof(target)
+            visit(proof)
+            if proof not in prerequisites:
+                prerequisites.append(proof)
+        active.remove(name)
+        done.add(name)
+
+    # Validate every compiled edge, even when callers have been filtered out.
+    for name in by_name:
+        visit(name)
+    required = set()
+
+    def require(name):
+        for target in by_name[name]["attributes"]["verified_stubs"]:
+            proof = contract_proof(target)
+            if proof not in required:
+                required.add(proof)
+                require(proof)
+
+    for name in targets:
+        require(name)
+    prerequisites = [name for name in prerequisites if name in required]
+    prerequisites.insert(0, FOUNDATION)
+    levels, batches = {}, []
+    for name in prerequisites:
+        dependencies = by_name[name]["attributes"]["verified_stubs"]
+        level = 1 + max((levels[contract_proof(dep)] for dep in dependencies),
+                        default=-1)
+        levels[name] = level
+        while len(batches) <= level:
+            batches.append([])
+        batches[level].append(name)
+    return batches, [name for name in targets
+                           if name not in required and name != FOUNDATION]
+
+
+def verify(command, prerequisites, targets, invoke=subprocess.check_call):
+    # Independent prerequisites can share a process, but the entire batch
+    # must succeed before the next dependency level is released. There is no
+    # proof cache or success inferred from the presence of a harness.
+    for batch in prerequisites:
+        selection = [arg for name in batch for arg in ("--harness", name)]
+        invoke(command + ["--exact"] + selection)
+    if targets:
+        selection = [arg for name in targets for arg in ("--harness", name)]
+        invoke(command + ["--exact"] + selection)
+
+
+def validate_manifest(manifest):
+    tables = [manifest.get("kani"),
+              manifest.get("package", {}).get("metadata", {}).get("kani"),
+              manifest.get("workspace", {}).get("metadata", {}).get("kani")]
+    if any(tables):
+        raise ValueError("Kani manifest overrides are forbidden by this runner")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--harness", action="append", default=[],
+                        help="exact compiled harness name; prerequisites are automatic")
+    parser.add_argument("--jobs", type=int, default=2)
+    parser.add_argument("--harness-timeout")
+    parser.add_argument("--randomize-layout", type=int)
+    args = parser.parse_args()
+    if args.jobs < 1:
+        parser.error("jobs must be positive")
+    version = subprocess.check_output(["cargo", "kani", "--version"], text=True).strip()
+    if version != "cargo-kani 0.60.0":
+        raise ValueError(f"review the metadata schema before changing Kani: {version}")
+    # Kani merges these Cargo.toml flags into its command line, including
+    # --no-assert-contracts and arbitrary CBMC flags. Do not permit overrides.
+    import tomllib  # Python 3.11+; supplied by the Ubuntu CI runner.
+    crate = Path(__file__).resolve().parents[2] / "zerocopy"
+    validate_manifest(tomllib.loads((crate / "Cargo.toml").read_text()))
+    os.chdir(crate)
+    target_root = crate / "target"
+    target_root.mkdir(exist_ok=True)
+    # Fresh metadata prevents a deleted proof from surviving in a stale build.
+    with tempfile.TemporaryDirectory(prefix="kani-verified-", dir=target_root) as target:
+        os.environ["CARGO_TARGET_DIR"] = target
+        command = ["./cargo.sh", "+stable", "kani", "--manifest-path",
+                   str(crate / "Cargo.toml"), "--package", "zerocopy",
+                   "--features", "__internal_use_only_features_that_work_on_stable",
+                   "-Zfunction-contracts", "-Zunstable-options",
+                   "--output-format=terse", "--memory-safety-checks",
+                   "--overflow-checks", "--undefined-function-checks",
+                   "--unwinding-checks", "-j", str(args.jobs)]
+        command.append("--randomize-layout" + (
+            "=" + str(args.randomize_layout) if args.randomize_layout is not None else ""))
+        if args.harness_timeout:
+            command += ["--harness-timeout", args.harness_timeout]
+        subprocess.check_call(command + ["--only-codegen"])
+        files = list(Path(target).glob("kani/**/deps/*.kani-metadata.json"))
+        metadata = [json.loads(path.read_text()) for path in files]
+        metadata = [m for m in metadata if m["crate_name"] == "zerocopy"]
+        if len(metadata) != 1:
+            raise ValueError("expected exactly one freshly compiled zerocopy inventory")
+        prerequisites, targets = verification_plan(metadata[0], args.harness)
+        print(f"Verifying {sum(map(len, prerequisites))} prerequisites before "
+              f"{len(targets)} other harnesses", flush=True)
+        verify(command, prerequisites, targets)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ImportError, KeyError, TypeError, ValueError, subprocess.CalledProcessError) as error:
+        sys.exit(f"Kani verification failed closed: {error}")
