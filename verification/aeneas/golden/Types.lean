@@ -28,6 +28,13 @@ set_option maxRecDepth 2048
 
 namespace Zerocopy
 
+/-- [core::marker::PhantomData]
+    Source: '/rustc/library/core/src/marker.rs', lines 811:0-811:39
+    Name pattern: [core::marker::PhantomData]
+    Visibility: public -/
+@[rust_type "core::marker::PhantomData"]
+structure core.marker.PhantomData (T : Type) where
+
 /-- Trait declaration: [core::num::nonzero::ZeroablePrimitive]
     Source: '/rustc/library/core/src/num/nonzero.rs', lines 34:0-34:59
     Name pattern: [core::num::nonzero::ZeroablePrimitive]
@@ -38,5 +45,58 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   Type) where
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
+
+/-- [zerocopy::byteorder::Order]
+    Source: 'src/byteorder.rs', lines 103:0-108:1
+    Visibility: public -/
+@[discriminant isize]
+inductive byteorder.Order where
+| BigEndian : byteorder.Order
+| LittleEndian : byteorder.Order
+
+/-- Trait declaration: [zerocopy::byteorder::private::Sealed]
+    Source: 'src/byteorder.rs', lines 95:4-95:23
+    Visibility: public -/
+structure byteorder.private.Sealed (Self : Type) where
+
+/-- Trait declaration: [zerocopy::byteorder::ByteOrder]
+    Source: 'src/byteorder.rs', lines 87:0-92:1
+    Visibility: public -/
+structure byteorder.ByteOrder (Self : Type) where
+  ORDER : Result byteorder.Order
+  coremarkerCopyInst : core.marker.Copy Self
+  corecloneCloneInst : core.clone.Clone Self
+  corefmtDebugInst : core.fmt.Debug Self
+  corefmtDisplayInst : core.fmt.Display Self
+  corecmpEqInst : core.cmp.Eq Self
+  corecmpPartialEqInst : core.cmp.PartialEq Self Self
+  corecmpOrdInst : core.cmp.Ord Self
+  corecmpPartialOrdInst : core.cmp.PartialOrd Self Self
+  corehashHashInst : core.hash.Hash Self
+  privateSealedInst : byteorder.private.Sealed Self
+
+/-- [zerocopy::byteorder::BigEndian]
+    Source: 'src/byteorder.rs', lines 114:0-114:21
+    Visibility: public -/
+inductive byteorder.BigEndian where
+
+/-- [zerocopy::byteorder::LittleEndian]
+    Source: 'src/byteorder.rs', lines 131:0-131:24
+    Visibility: public -/
+inductive byteorder.LittleEndian where
+
+/-- [zerocopy::byteorder::U16]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.U16 (O : Type) where
+  _0 : Array Std.U8 2#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::U32]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.U32 (O : Type) where
+  _0 : Array Std.U8 4#usize
+  _1 : core.marker.PhantomData O
 
 end Zerocopy
