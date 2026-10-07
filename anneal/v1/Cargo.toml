@@ -1,6 +1,11 @@
 [workspace]
 members = [".", "tools/doc_gen"]
 
+# Optimize saved-input hashing in development and test builds while retaining
+# the same SHA-256 implementation and the default profile for other packages.
+[profile.dev.package.sha2]
+opt-level = 3
+
 [package]
 name = "cargo-anneal"
 edition = "2024"
