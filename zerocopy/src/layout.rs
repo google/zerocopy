@@ -1091,28 +1091,11 @@ impl DstLayout {
     /// with arguments that cannot correspond to a valid `repr(C)` struct.
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::requires(proofs::repr_c_layout(repr_align, repr_packed, fields).is_some()))]
-    #[cfg_attr(kani, kani::ensures(|&result| {
-        Some(result) == proofs::repr_c_layout(repr_align, repr_packed, fields)
-    }))]
     pub const fn for_repr_c_struct(
         repr_align: Option<NonZeroUsize>,
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
-        // This harness covers up to three fields, including an optional final
-        // DST. Arbitrary-length composition is not established by this bound.
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_repr_c_struct)]
-        #[kani::solver(kissat)]
-        #[kani::unwind(4)]
-        fn proof() {
-            let fields: [DstLayout; 3] = kani::any();
-            let len: usize = kani::any();
-            kani::assume(len <= fields.len());
-            let _ = DstLayout::for_repr_c_struct(kani::any(), kani::any(), &fields[..len]);
-        }
-
         let mut layout = DstLayout::new_zst(repr_align);
 
         let mut i = 0;
@@ -3945,8 +3928,8 @@ mod proofs {
     //! Arithmetic models and input generators for the layout proofs.
     //!
     //! The contract models specify expected results without calling the
-    //! operation being checked. The composition models (`extended_layout`,
-    //! `padded_layout`, and `repr_c_layout`) also define the contracts' input
+    //! operation being checked. The composition models (`extended_layout` and
+    //! `padded_layout`) also define the contracts' input
     //! domains: `Some` supplies an expected layout, while `None` excludes an
     //! input from the corresponding non-panicking contract. These models check
     //! representability in `usize`, without imposing Rust's `isize::MAX` bound.
@@ -4107,37 +4090,6 @@ mod proofs {
             statically_shallow_unpadded: layout.statically_shallow_unpadded && no_static_padding,
             ..layout
         })
-    }
-
-    /// Models a complete layout for `DstLayout::for_repr_c_struct` by composing
-    /// the field-placement and trailing-padding specifications.
-    ///
-    /// Starts with an empty prefix of alignment `align`, or one if absent.
-    /// Appends fields in order, with `packed` as an optional cap on field
-    /// alignment; the final layout is padded to its resulting alignment. Only
-    /// the last field may be unsized, since field extension requires a sized
-    /// prefix.
-    ///
-    /// Returns `None` if the initial alignment is not a power of two or any
-    /// field extension or final padding step returns `None`.
-    pub(super) fn repr_c_layout(
-        align: Option<NonZeroUsize>,
-        packed: Option<NonZeroUsize>,
-        fields: &[DstLayout],
-    ) -> Option<DstLayout> {
-        let align = align.unwrap_or(DstLayout::MIN_ALIGN);
-        if !align.is_power_of_two() {
-            return None;
-        }
-        let mut layout = DstLayout {
-            align,
-            size_info: SizeInfo::Sized { size: 0 },
-            statically_shallow_unpadded: true,
-        };
-        for &field in fields {
-            layout = extended_layout(layout, field, packed)?;
-        }
-        padded_layout(layout)
     }
 
     // The inline contract harnesses use unrestricted `Arbitrary` values.

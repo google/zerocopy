@@ -144,22 +144,19 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 /// on the answer it gives if this is not the case.
 #[cfg_attr(
     kani,
-    kani::requires(align.is_power_of_two()),
-    // A power-of-two alignment divides the `usize` modulus, so wrapping
-    // preserves congruence even when the next aligned value exceeds `usize`.
-    kani::ensures(|&p| len.wrapping_add(p) % align.get() == 0),
-    // Ensures that we add the minimum required padding.
-    kani::ensures(|&p| p < align.get()),
+    zerocopy_kani_macros::contract(
+        target = padding_needed_for,
+        requires(align.is_power_of_two()),
+        // A power-of-two alignment divides the `usize` modulus, so wrapping
+        // preserves congruence even when the next aligned value exceeds `usize`.
+        ensures(|&p| len.wrapping_add(p) % align.get() == 0),
+        // Ensures that we add the minimum required padding.
+        ensures(|&p| p < align.get()),
+    )
 )]
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
-    #[cfg(kani)]
-    #[kani::proof_for_contract(padding_needed_for)]
-    fn proof() {
-        padding_needed_for(kani::any(), kani::any());
-    }
-
     // Abstractly, we want to compute:
     //   align - (len % align).
     // Handling the case where len%align is 0.
@@ -225,25 +222,22 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
 #[inline(always)]
 #[cfg_attr(
     kani,
-    kani::requires(align.is_power_of_two()),
-    kani::ensures(|&m| m <= n && m % align.get() == 0),
-    // Guarantees that `m` is the *largest* value such that `m % align == 0`.
-    kani::ensures(|&m| {
-        // If this `checked_add` fails, then the next multiple would wrap
-        // around, which trivially satisfies the "largest value" requirement.
-        m.checked_add(align.get()).map(|next_mul| next_mul > n).unwrap_or(true)
-    })
+    zerocopy_kani_macros::contract(
+        target = round_down_to_next_multiple_of_alignment,
+        requires(align.is_power_of_two()),
+        ensures(|&m| m <= n && m % align.get() == 0),
+        // Guarantees that `m` is the *largest* value such that `m % align == 0`.
+        ensures(|&m| {
+            // If this `checked_add` fails, then the next multiple would wrap
+            // around, which trivially satisfies the "largest value" requirement.
+            m.checked_add(align.get()).map(|next_mul| next_mul > n).unwrap_or(true)
+        })
+    )
 )]
 pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
-    #[cfg(kani)]
-    #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
-    fn proof() {
-        round_down_to_next_multiple_of_alignment(kani::any(), kani::any());
-    }
-
     let align = align.get();
     #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
     debug_assert!(align.is_power_of_two());
