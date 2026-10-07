@@ -92,6 +92,7 @@ trait Host {
     fn folds_ascii_case(&self) -> Result<bool>;
     fn prepare_local_outputs(&self) -> Result<Option<LocalOutputPreparation>>;
     fn finish_local_outputs(&self, prepared: &LocalOutputPreparation) -> Result<()>;
+    fn admit_produced_outputs(&self) -> Result<()>;
     fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command>;
     fn contains_source(&self, path: &Path) -> Result<bool>;
     fn contains_immutable_sdk_source(&self, path: &Path) -> Result<bool>;
@@ -122,6 +123,9 @@ impl Host for Workspace<'_> {
     }
     fn finish_local_outputs(&self, prepared: &LocalOutputPreparation) -> Result<()> {
         Workspace::finish_local_outputs(self, prepared)
+    }
+    fn admit_produced_outputs(&self) -> Result<()> {
+        Workspace::admit(self)
     }
     fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command> {
         Workspace::lake_command(self, operation)
@@ -1851,6 +1855,15 @@ fn clear_closed_diagnostics(state: &mut State, output: &mut impl Write) -> Resul
     Ok(())
 }
 
+// Closed receipts still name the old generation. Clear them before retiring
+// it, then reject queued results before stopping its native producer group.
+fn retire_worker_generation(state: &mut State, output: &mut impl Write) -> Result<()> {
+    clear_closed_diagnostics(state, output)?;
+    state.generation += 1;
+    state.closed.clear();
+    Ok(())
+}
+
 fn cancel_requests_with_waiters(
     state: &mut State,
     output: &mut impl Write,
@@ -2541,7 +2554,8 @@ fn run_session_with_startup(
                         };
                         if method != "initialize"
                             && (!state.request_current(&request)
-                                || (request.wait.is_none() && hidden_initialize.is_some()))
+                                || (request.wait.is_none()
+                                    && (hidden_initialize.is_some() || server.process.stopped)))
                         {
                             write_message(
                                 &mut output,
@@ -2586,7 +2600,10 @@ fn run_session_with_startup(
                     }
                 }
                 Event::Server(generation, message) => {
-                    if generation != state.generation || (shutdown && server.process.stopped) {
+                    // A stopped group was deliberately suspended; its queued
+                    // EOF/results cannot describe the replacement generation.
+                    // EOF from a live group still fails below.
+                    if generation != state.generation || server.process.stopped {
                         break 'handle_event;
                     }
                     let Some(mut message) = message? else {
@@ -2800,6 +2817,11 @@ fn run_session_with_startup(
         }
         if let Some(active) = build.as_mut().filter(|_| !state.snapshot_pending) {
             if let Some(outcome) = active.poll()? {
+                // poll returns an outcome only after owned command groups are
+                // stopped and their leaders reaped. Validate artifacts before coverage,
+                // even after a failed batch; observations during production did
+                // not certify its mutable private descendants.
+                workspace.admit_produced_outputs()?;
                 let result = reconcile_saved_inputs(workspace, &mut state);
                 let Some(_) = snapshot_or_pending(result, &mut state, &mut output)? else {
                     want_build = true;
@@ -2933,6 +2955,22 @@ fn run_session_with_startup(
                 documents = state.build_documents(true);
             }
             if !documents.is_empty() || server.process.stopped || state.worker_obsolete() {
+                if !server.process.stopped {
+                    // The watchdog can still be running setup/configuration
+                    // producers after initialization or a document open. Stop
+                    // that entire group before complete output admission or
+                    // preparation, not merely after our batch finishes.
+                    state.refreshing = true;
+                    cancel_requests_with_waiters(&mut state, &mut output, true)?;
+                    retire_worker_generation(&mut state, &mut output)?;
+                    server.process.stop();
+                    state.notifications_sent = 0;
+                    hidden_initialize = None;
+                    state.server_requests.retain(|_, request| request.watcher.is_some());
+                    for notification in state.pending_notifications() {
+                        write_message(&mut output, &notification)?;
+                    }
+                }
                 if let Some(writer) = workspace.try_writer_lock()? {
                     // Our acquisition also changes history. Withhold old worker
                     // claims during this build; only its fenced replacement can
@@ -4842,6 +4880,32 @@ mod tests {
     }
 
     #[test]
+    fn native_suspension_clears_queued_close_before_retiring_its_generation() {
+        let (_dir, mut state, _, client) = fixture();
+        open(&mut state, &client, "import Middle\nexample : middle = 10 := by decide\n");
+        state
+            .update_document(
+                &json!({"method":"textDocument/didClose","params":{"textDocument":{"uri":client}}}),
+                false,
+            )
+            .unwrap();
+        let generation = state.generation;
+        let mut output = Vec::new();
+        retire_worker_generation(&mut state, &mut output).unwrap();
+        let mut messages = io::BufReader::new(output.as_slice());
+        let clear = read_message(&mut messages).unwrap().unwrap();
+        assert_eq!(clear["params"]["uri"], client);
+        assert_eq!(clear["params"]["version"], 1);
+        assert_eq!(clear["params"]["diagnostics"], json!([]));
+        assert!(read_message(&mut messages).unwrap().is_none());
+        assert_eq!(state.generation, generation + 1);
+        assert!(state.closed.is_empty());
+        let mut duplicate = Vec::new();
+        retire_worker_generation(&mut state, &mut duplicate).unwrap();
+        assert!(duplicate.is_empty());
+    }
+
+    #[test]
     fn generation_reset_clears_only_remaining_closed_diagnostics_once() {
         let (_dir, mut state, local, client) = fixture();
         open(&mut state, &local, "def value := 10\n");
@@ -4956,6 +5020,13 @@ mod tests {
                 match result {
                     Ok(()) => {
                         if !shared {
+                            let lifetime = self.root.join("server-producer-lifetime");
+                            if lifetime.exists() {
+                                let producer =
+                                    fs::OpenOptions::new().read(true).write(true).open(lifetime)?;
+                                fs2::FileExt::try_lock_exclusive(&producer)
+                                    .context("Writer admission preceded native server cleanup")?;
+                            }
                             crate::lean_sdk::advance_writer_witness(&file)?;
                         }
                         Ok(Some(file))
@@ -5049,11 +5120,40 @@ mod tests {
                 Ok(self.root.join("fold-ascii-case").exists())
             }
             fn prepare_local_outputs(&self) -> Result<Option<LocalOutputPreparation>> {
+                let lifetime = self.root.join("server-producer-lifetime");
+                if lifetime.exists() {
+                    let file = fs::OpenOptions::new().read(true).write(true).open(lifetime)?;
+                    fs2::FileExt::try_lock_exclusive(&file)
+                        .context("Preparation preceded native server producer cleanup")?;
+                }
                 fs::write(self.root.join("prepare-called"), "called")?;
                 Ok(None)
             }
             fn finish_local_outputs(&self, _prepared: &LocalOutputPreparation) -> Result<()> {
                 bail!("Fake host never issues an SDK output preparation")
+            }
+            fn admit_produced_outputs(&self) -> Result<()> {
+                // A real admission boundary must follow process-group cleanup,
+                // not just the leader's exit or a partial batch receipt.
+                for entry in fs::read_dir(&self.root)? {
+                    let entry = entry?;
+                    let name = entry.file_name();
+                    let name = name.to_string_lossy();
+                    if name.starts_with("build-lifetime-")
+                        || name.starts_with("child-lifetime-")
+                        || name == "server-producer-lifetime"
+                    {
+                        let file =
+                            fs::OpenOptions::new().read(true).write(true).open(entry.path())?;
+                        fs2::FileExt::try_lock_exclusive(&file)
+                            .context("Producer admission preceded group cleanup")?;
+                    }
+                }
+                ensure!(
+                    !self.root.join("reject-produced-outputs").exists(),
+                    "Injected invalid private producer outputs"
+                );
+                Ok(())
             }
             fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command> {
                 let mut command = Command::new("/usr/bin/python3");
@@ -6619,6 +6719,57 @@ mod tests {
         }
 
         #[test]
+        fn native_server_producer_is_reaped_before_writer_preparation_and_output_admission() {
+            let mut session = Session::start();
+            assert!(session.dir.path().join("prepare-called").exists());
+            let lifetime = session.dir.path().join("server-producer-lifetime");
+            let producer = fs::OpenOptions::new().read(true).write(true).open(&lifetime).unwrap();
+            assert!(fs2::FileExt::try_lock_exclusive(&producer).is_err());
+            // The current producer is genuinely alive. The FakeHost's writer,
+            // preparation and final-admission checks all require its lifetime
+            // lock to be released; a protocol reply is not that evidence.
+            fs::write(session.dir.path().join("Local.lean"), "def value := 20\n").unwrap();
+            session.send(json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{
+                "textDocument":{"uri":session.client,"version":2},
+                "contentChanges":[{"text":"import Middle\nexample : middle = 20 := by decide\n"}]}}));
+            let client = session.client.clone();
+            session.until(|message| {
+                message["method"] == "textDocument/publishDiagnostics"
+                    && message["params"]["uri"] == client
+                    && message["params"]["version"] == 2
+                    && message["params"]["diagnostics"] == json!([])
+            });
+            assert_eq!(fs::read_to_string(session.dir.path().join("built-value")).unwrap(), "20");
+        }
+
+        #[test]
+        fn completed_build_admission_rejects_outputs_even_after_a_failed_batch() {
+            for failed in [false, true] {
+                let mut session = Session::start();
+                fs::write(session.dir.path().join("reject-produced-outputs"), "invalid owner")
+                    .unwrap();
+                if failed {
+                    fs::write(session.dir.path().join("fail-build-targets"), "+Local:olean\n")
+                        .unwrap();
+                }
+                fs::write(session.dir.path().join("Local.lean"), "def value := 20\n").unwrap();
+                session.send(json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{
+                    "textDocument":{"uri":session.client,"version":2},
+                    "contentChanges":[{"text":"import Middle\nexample : middle = 20 := by decide\n"}]}}));
+                let deadline = Instant::now() + Duration::from_secs(3);
+                while !session.join.as_ref().unwrap().is_finished() {
+                    assert!(
+                        Instant::now() < deadline,
+                        "Invalid producer outputs were not rejected"
+                    );
+                    thread::sleep(Duration::from_millis(10));
+                }
+                let error = session.join.take().unwrap().join().unwrap().unwrap_err();
+                assert!(error.to_string().contains("Injected invalid private producer outputs"));
+            }
+        }
+
+        #[test]
         fn permanent_stamp_failure_terminates_instead_of_retrying() {
             let mut session = Session::start();
             fs::write(session.dir.path().join("stamp-fatal"), "fatal").unwrap();
@@ -6920,24 +7071,32 @@ mod tests {
         }
 
         #[test]
-        fn generation_reset_clears_closed_document_when_old_worker_holds_clear() {
+        fn held_build_close_clears_suspended_worker_once_before_replacement() {
             let mut session = Session::start();
             let root = session.dir.path().to_path_buf();
             fs::write(root.join("hold-build-value"), "20").unwrap();
-            fs::write(root.join("hold-close-clear"), "hold").unwrap();
             fs::write(root.join("Local.lean"), "def value := 20\n").unwrap();
             session.wait_file("build-held-20");
             let client = session.client.clone();
+            let before_close = session.seen.len();
             session.send(json!({"jsonrpc":"2.0","method":"textDocument/didClose","params":{
                 "textDocument":{"uri":client}}}));
-            session.wait_file("close-clear-held");
-            fs::remove_file(root.join("hold-build-value")).unwrap();
             let clear = session.until(|m| {
                 m["method"] == "textDocument/publishDiagnostics"
                     && m["params"]["uri"] == client
                     && m["params"]["diagnostics"] == json!([])
             });
             assert_eq!(clear["params"]["version"], 1);
+            assert_eq!(clear["params"]["isIncremental"], false);
+            // The old worker is suspended, so the coordinator sends this clear
+            // without waiting for the still-active batch or a worker receipt.
+            let build_lifetime = fs::OpenOptions::new()
+                .read(true)
+                .write(true)
+                .open(root.join("build-lifetime-20"))
+                .unwrap();
+            assert!(fs2::FileExt::try_lock_exclusive(&build_lifetime).is_err());
+            fs::remove_file(root.join("hold-build-value")).unwrap();
             // The coordinator clears the closed URI before the replacement
             // finishes hidden initialization. A fresh independent open reaches
             // only that replacement, so its diagnostics fence graceful shutdown.
@@ -6951,6 +7110,15 @@ mod tests {
                     && m["params"]["version"] == 1
                     && m["params"]["diagnostics"] == json!([])
             });
+            let clears = session.seen[before_close..]
+                .iter()
+                .filter(|message| {
+                    message["method"] == "textDocument/publishDiagnostics"
+                        && message["params"]["uri"] == client
+                        && message["params"]["diagnostics"] == json!([])
+                })
+                .count();
+            assert_eq!(clears, 1);
             session.finish();
         }
 

@@ -145,6 +145,11 @@ time.sleep(20)
     print(json.dumps({"plugins": [], "options": {}}))
     sys.exit(0)
 
+# This lock covers the actual native-server producer lifetime. Preparation and
+# final artifact admission must follow cleanup, even when initialization replied.
+server_lifetime = (root / "server-producer-lifetime").open("w")
+fcntl.flock(server_lifetime, fcntl.LOCK_EX)
+
 value = (root / "built-value").read_text() if (root / "built-value").exists() else "0"
 other = (root / "built-other-value").read_text() if (root / "built-other-value").exists() else "0"
 lock = threading.Lock()

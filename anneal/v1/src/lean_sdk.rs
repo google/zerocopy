@@ -81,6 +81,12 @@ pub struct SavedInputSnapshot {
     auxiliary_stamp: [u8; 32],
 }
 
+#[derive(Clone, Copy)]
+enum PrivateAdmission {
+    SavedObservation,
+    Complete,
+}
+
 /// An owned, coherent preparation for local compilation. The caller must hold
 /// the workspace writer lease until all compilation ends and this is finished.
 /// Dropping an unfinished preparation leaves persistent provenance absent.
@@ -751,6 +757,9 @@ impl<'a> Workspace<'a> {
         self.try_lock(false)
     }
 
+    /// Fence saved observations against cooperative external writers. This does
+    /// not certify outputs produced by our own still-running native processes.
+    /// Artifact consumers must separately perform complete admission.
     pub fn try_shared_lock(&self) -> Result<Option<fs::File>> {
         self.try_lock(true)
     }
@@ -793,7 +802,13 @@ impl<'a> Workspace<'a> {
                         .context("Recording workspace writer acquisition")?;
                     check_workspace_lock_entry(&file, &path)?;
                 }
-                self.admit()?;
+                if shared {
+                    // Our own native server can still be producing private
+                    // configuration/cache files under this shared fence.
+                    self.admit_saved_observation()?;
+                } else {
+                    self.admit()?;
+                }
                 Ok(Some(file))
             }
             Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => Ok(None),
@@ -805,7 +820,7 @@ impl<'a> Workspace<'a> {
     /// by the editor. A canonical source reached through a definition link is
     /// checked against its module in the published view, without walking Mathlib.
     pub fn contains_source(&self, path: &Path) -> Result<bool> {
-        self.admit()?;
+        self.admit_saved_observation()?;
         if self.local_source_relative(path)?.is_some() {
             return self.local_source(path).map(|_| true);
         }
@@ -813,7 +828,7 @@ impl<'a> Workspace<'a> {
     }
 
     pub fn contains_sdk_source(&self, path: &Path) -> Result<bool> {
-        self.admit()?;
+        self.admit_saved_observation()?;
         self.contains_immutable_sdk_source(path)
     }
 
@@ -929,7 +944,7 @@ impl<'a> Workspace<'a> {
     }
 
     pub(crate) fn source_snapshot(&self) -> Result<SavedInputSnapshot> {
-        self.admit()?;
+        self.admit_saved_observation()?;
         let snapshot = snapshot_saved_inputs(&self.root, |_| {})?;
         let binding: Binding = read_json(&self.root.join(BINDING))?;
         ensure!(binding == self.binding, "Workspace binding changed after opening");
@@ -1039,6 +1054,19 @@ impl<'a> Workspace<'a> {
 
     /// Recheck ownership at an invocation or private-output transfer boundary.
     pub fn admit(&self) -> Result<()> {
+        self.admit_with_private_contents(PrivateAdmission::Complete)
+    }
+
+    /// Saved observations do not consume or certify private artifacts. An owned
+    /// Lake/Lean producer can create, rename, and remove ordinary entries there
+    /// even while this coordinator holds its writer fence. Check the stable
+    /// namespace/ownership boundaries without enumerating producer descendants;
+    /// commands and completed producers still require full private admission.
+    fn admit_saved_observation(&self) -> Result<()> {
+        self.admit_with_private_contents(PrivateAdmission::SavedObservation)
+    }
+
+    fn admit_with_private_contents(&self, private: PrivateAdmission) -> Result<()> {
         check_workspace_namespace(&self.root)?;
         self.sdk.check_descriptor()?;
         reject_links(&self.root)?;
@@ -1063,7 +1091,11 @@ impl<'a> Workspace<'a> {
         let policy = LocalFilesystemPolicy::at(&self.root)?;
         validate_persisted_source_roots(&binding.source_roots, policy.folds_case)?;
         reject_existing_source_root_aliases(&self.root, &binding.source_roots)?;
-        check_workspace_private_layout(&self.root, &binding, &policy)?;
+        if matches!(private, PrivateAdmission::Complete) {
+            check_workspace_private_layout(&self.root, &binding, &policy)?;
+        } else {
+            check_workspace_private_roots(&self.root, &binding, &policy)?;
+        }
         let mut local_modules = BTreeSet::new();
         let folds_case = policy.folds_case;
         reject_reserved_source_aliases(&binding.source_roots, folds_case)?;
@@ -2528,6 +2560,36 @@ fn check_workspace_private_layout(
             "Missing private runtime directory: {private}"
         );
     }
+    Ok(())
+}
+
+// Do not call check_directory here: its case-policy probe also enumerates
+// children, which may disappear during ordinary private producer activity.
+// The namespace, devices, owner record and fixed runtime roots remain checked.
+fn check_workspace_private_roots(
+    root: &Path,
+    binding: &Binding,
+    policy: &LocalFilesystemPolicy,
+) -> Result<()> {
+    for relative in [
+        ".lake",
+        PRIVATE_RUNTIME,
+        ".runtime/home",
+        ".runtime/cache",
+        ".runtime/config",
+        ".runtime/data",
+        ".runtime/tmp",
+    ] {
+        let path = root.join(relative);
+        let metadata =
+            fs::symlink_metadata(&path).context("Missing private output/runtime directory")?;
+        ensure!(metadata.is_dir(), "Private output/runtime path is not a real directory");
+        policy.check_device(&metadata)?;
+    }
+    let owner_path = root.join(OUTPUT_OWNER);
+    let owner: Binding = read_json(&owner_path)?;
+    policy.check_device(&fs::symlink_metadata(&owner_path)?)?;
+    ensure!(&owner == binding, "Private output ownership mismatch");
     Ok(())
 }
 
@@ -4109,6 +4171,95 @@ pub(crate) mod tests {
         let prepared = workspace.prepare_local_outputs().unwrap();
         assert!(!output.exists());
         workspace.finish_local_outputs(&prepared).unwrap();
+    }
+
+    #[test]
+    fn saved_observations_and_shared_fences_ignore_owned_private_file_churn() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let source = workspace.root().join("src/Proof.lean");
+        fs::create_dir_all(source.parent().unwrap()).unwrap();
+        fs::write(&source, "def value := 10\n").unwrap();
+        let writer = workspace.writer_lock().unwrap();
+        let original = workspace.source_stamp().unwrap();
+        let temporary = workspace.root().join(".runtime/tmp/producer-file");
+        let renamed = temporary.with_extension("renamed");
+        // Deterministically mutate ordinary producer files between recording
+        // saved inputs. They do not become saved inputs or output receipts.
+        let observed = stamp_saved_inputs(workspace.root(), |_| {
+            fs::write(&temporary, b"partial native output").unwrap();
+            fs::rename(&temporary, &renamed).unwrap();
+            fs::remove_file(&renamed).unwrap();
+        })
+        .unwrap();
+        assert_eq!(observed, original);
+        fs::write(&temporary, b"still producing").unwrap();
+        assert_eq!(workspace.source_stamp().unwrap(), original);
+        assert!(workspace.contains_source(&source).unwrap());
+        drop(writer);
+        // The native server remains our producer even without a batch writer.
+        let shared = workspace.try_shared_lock().unwrap().unwrap();
+        fs::remove_file(temporary).unwrap();
+        assert_eq!(workspace.source_stamp().unwrap(), original);
+        drop(shared);
+        workspace.admit().unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn observations_do_not_certify_linked_producer_outputs() {
+        use std::os::unix::fs::symlink;
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        configure_compilation_fixture(&workspace);
+        let writer = workspace.writer_lock().unwrap();
+        let prepared = workspace.prepare_local_outputs().unwrap();
+        let original = workspace.source_stamp().unwrap();
+        let link = workspace.root().join(".lake/build/linked-producer-output");
+        fs::create_dir_all(link.parent().unwrap()).unwrap();
+        symlink(f.sdk.root().join("lib/lean"), &link).unwrap();
+        assert_eq!(workspace.source_stamp().unwrap(), original);
+        drop(writer);
+        let shared = workspace.try_shared_lock().unwrap().unwrap();
+        assert_eq!(workspace.source_stamp().unwrap(), original);
+        drop(shared);
+        // Observations credit no artifacts. Every actual invocation/adoption
+        // still rejects the link, including post-producer finalization.
+        assert!(workspace.admit().is_err());
+        assert!(workspace.lake_command(LakeOperation::Build(&[])).is_err());
+        assert!(workspace.finish_local_outputs(&prepared).is_err());
+        assert!(!workspace.root().join(LOCAL_INPUT_PROVENANCE).exists());
+        fs::remove_file(link).unwrap();
+        workspace.finish_local_outputs(&prepared).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn saved_observation_keeps_private_roots_owner_and_source_namespace_checks() {
+        use std::os::unix::fs::symlink;
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let source = workspace.root().join("Proof.lean");
+        fs::write(&source, "def value := 10\n").unwrap();
+        let before = workspace.source_stamp().unwrap();
+        fs::write(&source, "def value := 20\n").unwrap();
+        assert_ne!(before, workspace.source_stamp().unwrap());
+        let owner = fs::read(workspace.root().join(OUTPUT_OWNER)).unwrap();
+        let mut foreign = workspace.binding.clone();
+        foreign.owner.push_str("-foreign");
+        fs::write(workspace.root().join(OUTPUT_OWNER), serde_json::to_vec(&foreign).unwrap())
+            .unwrap();
+        assert!(workspace.source_stamp().is_err());
+        fs::write(workspace.root().join(OUTPUT_OWNER), owner).unwrap();
+        let runtime = workspace.root().join(".runtime/tmp");
+        fs::remove_dir(&runtime).unwrap();
+        symlink(f.sdk.root(), &runtime).unwrap();
+        assert!(workspace.source_stamp().is_err());
+        fs::remove_file(&runtime).unwrap();
+        fs::create_dir(&runtime).unwrap();
+        fs::remove_file(&source).unwrap();
+        symlink(f.sdk.root().join("src/lean"), &source).unwrap();
+        assert!(workspace.source_stamp().is_err());
     }
 
     #[test]
