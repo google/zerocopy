@@ -14,3 +14,13 @@ public import DeriveModels
 
 open Aeneas Aeneas.Std AeneasSpecs
 
+derive_model_shape Zerocopy.byteorder.Order with 0 type parameters
+
+derive_model_shape Zerocopy.byteorder.BigEndian with 0 type parameters
+
+derive_model_shape Zerocopy.byteorder.LittleEndian with 0 type parameters
+
+derive_model_shape Zerocopy.byteorder.U16 with 1 type parameters
+
+derive_model_shape Zerocopy.byteorder.U32 with 1 type parameters
+
