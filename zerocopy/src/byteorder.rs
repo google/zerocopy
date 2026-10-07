@@ -1625,3 +1625,168 @@ mod tests {
         assert_eq!(val_be_i16.cmp(&val_be_i16), core::cmp::Ordering::Equal);
     }
 }
+
+// These private entry points expose concrete instantiations to Aeneas without
+// depending on annotation discovery inside macro expansions. Each contract is
+// checked for every input against both golden and live extractions.
+#[allow(dead_code)]
+mod verification {
+    use super::{BigEndian, LittleEndian, U16, U32};
+
+    /// Reads bytes according to their positional numerical value.
+    ///
+    /// ```aeneas
+    /// spec read_u16_le_spec
+    ///   ensures n => (n : Nat) = Rust.Bytes.decodeLE
+    ///     (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+    /// ```
+    fn read_u16_le(bytes: [u8; 2]) -> u16 {
+        U16::<LittleEndian>::from_bytes(bytes).get()
+    }
+
+    /// Writes every byte of the integer in the requested order.
+    ///
+    /// ```aeneas
+    /// spec write_u16_le_spec
+    ///   ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    ///     Rust.Bytes.encodeLE 2 (n : Nat)
+    /// ```
+    fn write_u16_le(n: u16) -> [u8; 2] {
+        U16::<LittleEndian>::new(n).into()
+    }
+
+    /// Setting a wrapper preserves the complete numerical value.
+    ///
+    /// ```aeneas
+    /// spec set_u16_le_spec
+    ///   ensures r => r = n
+    /// ```
+    fn set_u16_le(bytes: [u8; 2], n: u16) -> u16 {
+        let mut value = U16::<LittleEndian>::from_bytes(bytes);
+        value.set(n);
+        value.get()
+    }
+
+    /// Reads bytes according to their positional numerical value.
+    ///
+    /// ```aeneas
+    /// spec read_u16_be_spec
+    ///   ensures n => (n : Nat) = Rust.Bytes.decodeBE
+    ///     (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+    /// ```
+    fn read_u16_be(bytes: [u8; 2]) -> u16 {
+        U16::<BigEndian>::from_bytes(bytes).get()
+    }
+
+    /// Writes every byte of the integer in the requested order.
+    ///
+    /// ```aeneas
+    /// spec write_u16_be_spec
+    ///   ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    ///     Rust.Bytes.encodeBE 2 (n : Nat)
+    /// ```
+    fn write_u16_be(n: u16) -> [u8; 2] {
+        U16::<BigEndian>::new(n).into()
+    }
+
+    /// Setting a wrapper preserves the complete numerical value.
+    ///
+    /// ```aeneas
+    /// spec set_u16_be_spec
+    ///   ensures r => r = n
+    /// ```
+    fn set_u16_be(bytes: [u8; 2], n: u16) -> u16 {
+        let mut value = U16::<BigEndian>::from_bytes(bytes);
+        value.set(n);
+        value.get()
+    }
+
+    /// Reads bytes according to their positional numerical value.
+    ///
+    /// ```aeneas
+    /// spec read_u32_le_spec
+    ///   ensures n => (n : Nat) = Rust.Bytes.decodeLE
+    ///     (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+    /// ```
+    fn read_u32_le(bytes: [u8; 4]) -> u32 {
+        U32::<LittleEndian>::from_bytes(bytes).get()
+    }
+
+    /// Writes every byte of the integer in the requested order.
+    ///
+    /// ```aeneas
+    /// spec write_u32_le_spec
+    ///   ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    ///     Rust.Bytes.encodeLE 4 (n : Nat)
+    /// ```
+    fn write_u32_le(n: u32) -> [u8; 4] {
+        U32::<LittleEndian>::new(n).into()
+    }
+
+    /// Setting a wrapper preserves the complete numerical value.
+    ///
+    /// ```aeneas
+    /// spec set_u32_le_spec
+    ///   ensures r => r = n
+    /// ```
+    fn set_u32_le(bytes: [u8; 4], n: u32) -> u32 {
+        let mut value = U32::<LittleEndian>::from_bytes(bytes);
+        value.set(n);
+        value.get()
+    }
+
+    /// Reads bytes according to their positional numerical value.
+    ///
+    /// ```aeneas
+    /// spec read_u32_be_spec
+    ///   ensures n => (n : Nat) = Rust.Bytes.decodeBE
+    ///     (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+    /// ```
+    fn read_u32_be(bytes: [u8; 4]) -> u32 {
+        U32::<BigEndian>::from_bytes(bytes).get()
+    }
+
+    /// Writes every byte of the integer in the requested order.
+    ///
+    /// ```aeneas
+    /// spec write_u32_be_spec
+    ///   ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    ///     Rust.Bytes.encodeBE 4 (n : Nat)
+    /// ```
+    fn write_u32_be(n: u32) -> [u8; 4] {
+        U32::<BigEndian>::new(n).into()
+    }
+
+    /// Setting a wrapper preserves the complete numerical value.
+    ///
+    /// ```aeneas
+    /// spec set_u32_be_spec
+    ///   ensures r => r = n
+    /// ```
+    fn set_u32_be(bytes: [u8; 4], n: u32) -> u32 {
+        let mut value = U32::<BigEndian>::from_bytes(bytes);
+        value.set(n);
+        value.get()
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn byte_examples() {
+            for n in [0, 1, 0x1234, u16::MAX] {
+                assert_eq!(read_u16_le(write_u16_le(n)), n);
+                assert_eq!(read_u16_be(write_u16_be(n)), n);
+                assert_eq!(set_u16_le([0x55; 2], n), n);
+                assert_eq!(set_u16_be([0x55; 2], n), n);
+            }
+            for n in [0, 1, 0x1234_5678, u32::MAX] {
+                assert_eq!(read_u32_le(write_u32_le(n)), n);
+                assert_eq!(read_u32_be(write_u32_be(n)), n);
+                assert_eq!(set_u32_le([0x55; 4], n), n);
+                assert_eq!(set_u32_be([0x55; 4], n), n);
+            }
+        }
+    }
+}
