@@ -66,10 +66,10 @@ def run(args, *, cwd=root, env=None, allow_failure=False):
 def evaluate(attr):
     return run(["nix", "eval", "--no-write-lock-file", "--raw", ref + "#" + attr]).stdout.strip()
 
-def build(pkg, allow_failure=False):
+def build(pkg):
     assert shutil.disk_usage(root).free > 3 * 1024**3, "Less than 3 GiB available; stopping"
     return run(["nix", "build", "--max-jobs", "2", "--cores", "2", "--no-write-lock-file", "--no-link", "--json", "-L",
-                ref + "#" + pkg], allow_failure=allow_failure)
+                ref + "#" + pkg])
 
 save()
 report["commit"] = run(["git", "rev-parse", "HEAD"]).stdout.strip()
@@ -79,30 +79,14 @@ for pkg, pin in [("rust-toolchain", "rustToolchainSha256"),
                  ("mathlib-cache-download", "mathlibCacheDownloadSha256")]:
     attr = f"packages.{system}.{pkg}"
     drv, expected = evaluate(attr + ".drvPath"), evaluate(attr + ".outputHash")
-    p = build(pkg, allow_failure=True)
-    discovered = expected
-    if p.returncode:
-        # Accept exactly one target FOD mismatch, with its evaluated expected hash.
-        mismatches = re.findall(r"hash mismatch in fixed-output derivation '([^']+)':\s*"
-                               r"specified:\s*(sha256-[A-Za-z0-9+/=]+)\s*"
-                               r"got:\s*(sha256-[A-Za-z0-9+/=]+)", p.stderr)
-        assert len(mismatches) == 1 and mismatches[0][:2] == (drv, expected), p.stderr
-        assert p.stderr.count("error:") == 1, "Additional Nix errors; refusing hash recovery"
-        discovered = mismatches[0][2]
-        source = flake.read_text()
-        block = re.search(r"\b" + pin + r"\s*=.*?;", source, re.S)
-        assert block, f"Missing existing pin {pin}"
-        leaf = re.compile(r'(system == "' + re.escape(system) + r'" then ")([^"\n]+)(")')
-        matches = list(leaf.finditer(block[0]))
-        assert len(matches) == 1 and matches[0][2] == expected
-        patched = leaf.sub(lambda m: m[1] + discovered + m[3], block[0])
-        flake.write_text(source[:block.start()] + patched + source[block.end():])
-        p = build(pkg)  # No retry/recovery after the precisely attributed patch.
+    # All four native hashes are known now. Let Nix enforce them directly;
+    # build output can contain arbitrary diagnostic-looking filenames.
+    p = build(pkg)
     output = json.loads(p.stdout)
     assert len(output) == 1
     store = output[0]["outputs"]["out"]
     actual = run(["nix", "hash", "path", "--type", "sha256", "--sri", store]).stdout.strip()
-    assert actual == discovered, (pkg, discovered, actual)
+    assert actual == expected, (pkg, expected, actual)
     report["hashes"][pin] = {"original": expected, "actual": actual, "store": store,
                               "derivation": output[0]["drvPath"]}
     if pkg == "mathlib-cache-download":

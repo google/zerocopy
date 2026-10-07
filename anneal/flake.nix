@@ -97,11 +97,7 @@
                         else if system == "aarch64-darwin" then "sha256-tbWQ0vhC4jWZPsdW09vWCKE8iP1U02p7K2WjY7LuXjU="
                         else throw "Unsupported system: ${system}";
 
-        mathlibCacheDownloadSha256 = if system == "x86_64-linux" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
-                                     else if system == "aarch64-linux" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
-                                     else if system == "x86_64-darwin" then "sha256-DBdUmPfheeLTVwaVUzkB541Y9CWSQN6gmxBnJ3oxL4c="
-                                     else if system == "aarch64-darwin" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
-                                     else throw "Unsupported system: ${system}";
+        mathlibCacheDownloadSha256 = "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM=";
 
         linuxDynamicLinker = if system == "x86_64-linux" then "/lib64/ld-linux-x86-64.so.2"
                              else if system == "aarch64-linux" then "/lib/ld-linux-aarch64.so.1"
