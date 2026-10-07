@@ -645,6 +645,33 @@ def LayoutValue.padFits (v : LayoutValue) (limit : Nat) : Prop :=
     if f.align < v.align then roundUp f.base f.align + f.phase ≤ limit
     else roundUp f.base v.align ≤ limit
 
+/- A completed zero-metadata size bound supplies every stored-field bound
+needed by padding. This is stronger than guessing conservative headroom: it
+uses the same exact fit domain as the independent recursive sizing rule.
+-/
+theorem LayoutValue.padFits_of_zero_size (v : LayoutValue) (f : Formula) (limit : Nat)
+    (hv : v.payload = .trailing f) (ha : 0 < f.align) (ho : 0 < v.align)
+    (hd : if f.align < v.align then f.align ∣ v.align else v.align ∣ f.align)
+    (hfit : roundUp (v.size 0) v.align ≤ limit) : v.padFits limit := by
+  simp only [LayoutValue.size, hv] at hfit
+  simp only [LayoutValue.padFits, hv]
+  split
+  · rename_i hlarge
+    let fixed := roundUp f.base f.align + f.phase
+    have hsize : (f.pad v.align).size 0 = roundUp fixed v.align := by
+      simp only [Formula.pad, hlarge, if_true, Formula.size, Formula.bytes,
+        Nat.zero_mul, Nat.add_zero]
+      simpa only [fixed, Nat.add_zero] using normalize_phase fixed 0 v.align
+    have hpad := pad_size f 0 v.align ha ho hd
+    rw [hsize] at hpad
+    have hfixed := (roundUp_properties fixed v.align ho).1
+    change fixed ≤ limit
+    omega
+  · have hbase : f.base ≤ f.size 0 := by
+      simp only [Formula.size, Formula.bytes, roundUp]
+      omega
+    exact le_trans (roundUp_mono ho hbase) hfit
+
 theorem LayoutValue.extend_size (v field : LayoutValue) (packing bytes n : Nat)
     (h : v.payload = .fixed bytes) :
     (v.extend field packing).size n =
