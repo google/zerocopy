@@ -104,6 +104,10 @@ meta partial def boundModelProvider (raw : Expr) (params dicts : Array Expr) : M
     mkAppOptM n (xs.map some)
   if head.isConstOf ``UScalar then return ← app ``modelUScalar args
   if head.isConstOf ``IScalar then return ← app ``modelIScalar args
+  -- PhantomData has no stored child value: select its fixed empty provider
+  -- without demanding a model for the type named by its phantom parameter.
+  if head.isConstOf ``Zerocopy.core.marker.PhantomData then
+    return ← app ``modelPhantomData args
   if head.isConstOf ``Bool then return mkConst ``modelBool
   if head.isConstOf ``Nat then return mkConst ``modelNat
   if head.isConstOf ``Int then return mkConst ``modelInt
