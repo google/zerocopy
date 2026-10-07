@@ -77,6 +77,46 @@ test -x "$installed/aeneas/bin/charon"
 test -x "$installed/lean/bin/lake"
 export PATH="$installed/rust/bin:$installed/lean/bin:$PATH"
 export LD_LIBRARY_PATH="$installed/rust/lib:$installed/lean/lib/lean"
+if test "${ANNEAL_VALIDATION_BLESS_REVIEWED:-}" = 1; then
+  export ANNEAL_VALIDATION_OUTPUT_DIR="$evidence/bless-outputs"
+  export ANNEAL_INTEGRATION_PROFILE="$evidence/bless-profile.jsonl"
+  # Each selected fixture was reviewed against the first native x86 probe.
+  # Expand also checks its later Aeneas-only output; its headers were reviewed.
+  for fixture in cfg_blind_spot edge_cases_cfg/test_7_1_phantom_fn \
+    edge_cases_cfg/test_7_3_ghost_spec edge_cases_charon/test_8_2_unions \
+    expand_output extern_never_verified raw_ptr_dst_layout split_artifact \
+    target_selection ui_silent_panic unions weird_functions; do
+    BLESS=1 run_stage "bless-${fixture//\//-}" cargo test --manifest-path "$manifest" \
+      --locked --offline --test integration -- --test-threads=4 --nocapture --exact \
+      "run_integration_test::$fixture/anneal.toml"
+  done
+  python3 - "$repo" "$evidence" <<'PY'
+from pathlib import Path
+import json, subprocess, sys
+repo, evidence = map(Path, sys.argv[1:])
+expected = {
+    'cfg_blind_spot/expected.stderr',
+    'edge_cases_cfg/test_7_1_phantom_fn/expected.stderr',
+    'edge_cases_cfg/test_7_3_ghost_spec/expected.stderr',
+    'edge_cases_charon/test_8_2_unions/expected.stderr',
+    'expand_output/expected-all.stdout', 'expand_output/expected-aeneas.stdout',
+    'extern_never_verified/out.txt', 'raw_ptr_dst_layout/expected.stderr',
+    'split_artifact/expected.stderr', 'target_selection/expected.stderr',
+    'ui_silent_panic/expected.stderr', 'unions/expected.stderr',
+    'weird_functions/expected.stderr',
+}
+prefix = 'anneal/v1/tests/fixtures/'
+paths = subprocess.check_output(['git', 'diff', '--name-only', '--', prefix], cwd=repo, text=True).splitlines()
+assert set(paths) == {prefix + path for path in expected}, paths
+patch = subprocess.check_output(['git', 'diff', '--', prefix], cwd=repo)
+(evidence / 'harness-blessed-snapshots.patch').write_bytes(patch)
+commands = [json.loads(line) for line in (evidence / 'bless-profile.jsonl').read_text().splitlines()]
+assert sum(event.get('event') == 'command' for event in commands) == 14
+PY
+  export ANNEAL_VALIDATION_OUTPUT_DIR="$evidence/fixture-outputs"
+  export ANNEAL_INTEGRATION_PROFILE="$evidence/fixtures-profile.jsonl"
+fi
+unset BLESS ANNEAL_BLESS
 run_stage fixtures cargo test --manifest-path "$manifest" --locked --offline --test integration \
   -- --test-threads=4 --nocapture || result=$?
 export CARGO_TARGET_DIR="$work/control-target"

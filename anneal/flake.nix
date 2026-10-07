@@ -73,16 +73,16 @@
         rustDate = pkgs.lib.removePrefix "nightly-" rustToolchainName;
         leanVersion = pkgs.lib.removePrefix "leanprover/lean4:" leanToolchainName;
 
-        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw="
+        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-t9elSNKukvVVsD+GcDRNQeGewoz44Optv5j2+nJNY+s="
                               else if system == "aarch64-linux" then "sha256-l4v7ANDsaFgoyB/rXOsZMMd1mS6Wv2KsGuCIBMipc/w="
                               else if system == "x86_64-darwin" then "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo="
-                              else if system == "aarch64-darwin" then "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E="
+                              else if system == "aarch64-darwin" then "sha256-EZuO4uLKLDngPCqs9+MWzhYLVVqi/6SWvZ08L4n9+lw="
                               else throw "Unsupported system: ${system}";
 
-        leanToolchainSha256 = if system == "x86_64-linux" then "sha256-o47cQjSLK5YL8YZ2raaj+mGAvvO+dIDfVeP2L+WoyMs="
+        leanToolchainSha256 = if system == "x86_64-linux" then "sha256-B5ZDv1AMKN6M6zVLSL6nhDJ64R7ZxupuJvxfAbTn5hw="
                               else if system == "aarch64-linux" then "sha256-HNVY4B6PIaGzfk5wURbNYGm/v5t7ZLz+uzHExKnLM6A="
                               else if system == "x86_64-darwin" then "sha256-DDPmVkXjSLDr21LXcdvNkmGjD2v+sbUyY+REr3uylwI="
-                              else if system == "aarch64-darwin" then "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg="
+                              else if system == "aarch64-darwin" then "sha256-DqRuJqtagp5LLhGw0sD7fuDzqOB93cbIdJOK70GoXmE="
                               else throw "Unsupported system: ${system}";
 
         leantarPlatform = if system == "x86_64-linux" then "x86_64-unknown-linux-musl"
@@ -97,10 +97,10 @@
                         else if system == "aarch64-darwin" then "sha256-tbWQ0vhC4jWZPsdW09vWCKE8iP1U02p7K2WjY7LuXjU="
                         else throw "Unsupported system: ${system}";
 
-        mathlibCacheDownloadSha256 = if system == "x86_64-linux" then "sha256-n67tKjzZm5LsDU1Dl9kaOFKrQw+8YE201F0toYu1C3s="
+        mathlibCacheDownloadSha256 = if system == "x86_64-linux" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
                                      else if system == "aarch64-linux" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
                                      else if system == "x86_64-darwin" then "sha256-DBdUmPfheeLTVwaVUzkB541Y9CWSQN6gmxBnJ3oxL4c="
-                                     else if system == "aarch64-darwin" then "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk="
+                                     else if system == "aarch64-darwin" then "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM="
                                      else throw "Unsupported system: ${system}";
 
         linuxDynamicLinker = if system == "x86_64-linux" then "/lib64/ld-linux-x86-64.so.2"

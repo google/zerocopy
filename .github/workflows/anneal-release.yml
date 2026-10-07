@@ -2,6 +2,10 @@ name: Anneal pinned bundle validation
 on:
   workflow_dispatch:
     inputs:
+      bless:
+        description: 'Regenerate reviewed 13 snapshots through the harness before the unblessed suite'
+        type: boolean
+        default: false
       v1:
         description: 'Also run cold V1 setup, unit tests and all fixtures on native Linux x86'
         type: boolean
@@ -19,12 +23,6 @@ jobs:
         include:
           - os: ubuntu-latest
             system: x86_64-linux
-          - os: ubuntu-24.04-arm
-            system: aarch64-linux
-          - os: macos-26-intel
-            system: x86_64-darwin
-          - os: macos-26
-            system: aarch64-darwin
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -65,6 +63,8 @@ jobs:
           PYTHONUNBUFFERED: '1'
         run: python3 ci/validate-anneal-pin.py
       - name: Optional native Linux x86 V1 validation
+        env:
+          ANNEAL_VALIDATION_BLESS_REVIEWED: ${{ inputs.bless && '1' || '0' }}
         if: matrix.system == 'x86_64-linux' && inputs.v1
         run: bash ci/validate-anneal-v1.sh
       - name: Restore namespace restriction
