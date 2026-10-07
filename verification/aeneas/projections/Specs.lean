@@ -17,6 +17,110 @@ open Aeneas Aeneas.Std
 open Zerocopy.Proofs
 namespace Zerocopy.Specs
 
+check_model_inputs Zerocopy.byteorder.verification.read_u16_le with 0 type parameters
+aeneas_spec_begin
+spec read_u16_le_spec
+  for @Zerocopy.byteorder.verification.read_u16_le with 0 type parameters
+  ensures n => (n : Nat) = Rust.Bytes.decodeLE
+    (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.read_u16_le_spec for Zerocopy.byteorder.verification.read_u16_le with 1
+
+check_model_inputs Zerocopy.byteorder.verification.write_u16_le with 0 type parameters
+aeneas_spec_begin
+spec write_u16_le_spec
+  for @Zerocopy.byteorder.verification.write_u16_le with 0 type parameters
+  ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    Rust.Bytes.encodeLE 2 (n : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_u16_le_spec for Zerocopy.byteorder.verification.write_u16_le with 1
+
+check_model_inputs Zerocopy.byteorder.verification.set_u16_le with 0 type parameters
+aeneas_spec_begin
+spec set_u16_le_spec
+  for @Zerocopy.byteorder.verification.set_u16_le with 0 type parameters
+  ensures r => r = n
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.set_u16_le_spec for Zerocopy.byteorder.verification.set_u16_le with 2
+
+check_model_inputs Zerocopy.byteorder.verification.read_u16_be with 0 type parameters
+aeneas_spec_begin
+spec read_u16_be_spec
+  for @Zerocopy.byteorder.verification.read_u16_be with 0 type parameters
+  ensures n => (n : Nat) = Rust.Bytes.decodeBE
+    (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.read_u16_be_spec for Zerocopy.byteorder.verification.read_u16_be with 1
+
+check_model_inputs Zerocopy.byteorder.verification.write_u16_be with 0 type parameters
+aeneas_spec_begin
+spec write_u16_be_spec
+  for @Zerocopy.byteorder.verification.write_u16_be with 0 type parameters
+  ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    Rust.Bytes.encodeBE 2 (n : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_u16_be_spec for Zerocopy.byteorder.verification.write_u16_be with 1
+
+check_model_inputs Zerocopy.byteorder.verification.set_u16_be with 0 type parameters
+aeneas_spec_begin
+spec set_u16_be_spec
+  for @Zerocopy.byteorder.verification.set_u16_be with 0 type parameters
+  ensures r => r = n
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.set_u16_be_spec for Zerocopy.byteorder.verification.set_u16_be with 2
+
+check_model_inputs Zerocopy.byteorder.verification.read_u32_le with 0 type parameters
+aeneas_spec_begin
+spec read_u32_le_spec
+  for @Zerocopy.byteorder.verification.read_u32_le with 0 type parameters
+  ensures n => (n : Nat) = Rust.Bytes.decodeLE
+    (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.read_u32_le_spec for Zerocopy.byteorder.verification.read_u32_le with 1
+
+check_model_inputs Zerocopy.byteorder.verification.write_u32_le with 0 type parameters
+aeneas_spec_begin
+spec write_u32_le_spec
+  for @Zerocopy.byteorder.verification.write_u32_le with 0 type parameters
+  ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    Rust.Bytes.encodeLE 4 (n : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_u32_le_spec for Zerocopy.byteorder.verification.write_u32_le with 1
+
+check_model_inputs Zerocopy.byteorder.verification.set_u32_le with 0 type parameters
+aeneas_spec_begin
+spec set_u32_le_spec
+  for @Zerocopy.byteorder.verification.set_u32_le with 0 type parameters
+  ensures r => r = n
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.set_u32_le_spec for Zerocopy.byteorder.verification.set_u32_le with 2
+
+check_model_inputs Zerocopy.byteorder.verification.read_u32_be with 0 type parameters
+aeneas_spec_begin
+spec read_u32_be_spec
+  for @Zerocopy.byteorder.verification.read_u32_be with 0 type parameters
+  ensures n => (n : Nat) = Rust.Bytes.decodeBE
+    (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.read_u32_be_spec for Zerocopy.byteorder.verification.read_u32_be with 1
+
+check_model_inputs Zerocopy.byteorder.verification.write_u32_be with 0 type parameters
+aeneas_spec_begin
+spec write_u32_be_spec
+  for @Zerocopy.byteorder.verification.write_u32_be with 0 type parameters
+  ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    Rust.Bytes.encodeBE 4 (n : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_u32_be_spec for Zerocopy.byteorder.verification.write_u32_be with 1
+
+check_model_inputs Zerocopy.byteorder.verification.set_u32_be with 0 type parameters
+aeneas_spec_begin
+spec set_u32_be_spec
+  for @Zerocopy.byteorder.verification.set_u32_be with 0 type parameters
+  ensures r => r = n
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
+
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin
 spec padding_lt_alignment
