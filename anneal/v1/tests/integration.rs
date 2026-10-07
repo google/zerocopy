@@ -317,7 +317,15 @@ fn assert_archive_lake_cache_reuse(
 
     fs::create_dir_all(workspace.join("generated"))?;
     fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
-    fs::write(workspace.join("generated/Generated.lean"), "import Aeneas\n")?;
+    // Compile the actual embedded prelude, then check its success predicate
+    // against the historical definition. This also tests that user proofs can
+    // import that prelude using the archive's read-only dependency caches.
+    fs::write(workspace.join("generated/Anneal.lean"), include_str!("../src/Anneal.lean"))?;
+    fs::write(
+        workspace.join("generated/SpecificationHolds.lean"),
+        include_str!("lean/SpecificationHolds.lean"),
+    )?;
+    fs::write(workspace.join("generated/Generated.lean"), "import SpecificationHolds\n")?;
     fs::write(
         workspace.join("lakefile.lean"),
         format!(
@@ -331,7 +339,7 @@ package anneal_verification
 @[default_target]
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`Generated]
+  roots := #[`Generated, `Anneal, `SpecificationHolds]
 "#,
             lake_string(&aeneas_lean)
         ),
@@ -1873,6 +1881,8 @@ fn sanitize_output(output: &str) -> String {
     let re_file_lock =
         regex::Regex::new(r"(?m)^.*Blocking waiting for file lock on.*$\n?").unwrap();
     let re_cargo_hash = regex::Regex::new(r"([-=_])([a-f0-9]{5,16})\b").unwrap();
+    let re_charon_nonce = regex::Regex::new(r"charon-dont-cache-this-[a-f0-9]+-\d+").unwrap();
+    let re_cargo_build_hash = regex::Regex::new(r"(/debug/build/[^/]+/)[a-f0-9]{16}(/)").unwrap();
 
     let re_timing = regex::Regex::new(r"took \d+(\.\d*)?(m?s)").unwrap();
     let re_lake_timing = regex::Regex::new(r"\(\d+(\.\d*)?m?s\)").unwrap();
@@ -1893,6 +1903,8 @@ fn sanitize_output(output: &str) -> String {
 
     clean = re_thread_id.replace_all(&clean, "thread '$1' (<ID>) panicked").into_owned();
     clean = re_file_lock.replace_all(&clean, "").into_owned();
+    clean = re_charon_nonce.replace_all(&clean, "charon-dont-cache-this-<NONCE>").into_owned();
+    clean = re_cargo_build_hash.replace_all(&clean, "${1}<HASH>${2}").into_owned();
     clean = re_cargo_hash.replace_all(&clean, "${1}<HASH>").into_owned();
 
     clean = re_timing.replace_all(&clean, "took <TIME>").into_owned();

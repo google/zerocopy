@@ -4,15 +4,67 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    aeneas.url = "github:AeneasVerif/aeneas/ca282ec2312a96f6a985a4d23a663690816d3f3e";
+    # Charon's upstream nixpkgs has dropped Intel Mac support. Reuse this
+    # flake's existing compatible lock for the source-built fallback.
+    aeneas.inputs.charon.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }:
+  outputs = { self, nixpkgs, flake-utils, aeneas, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         };
+
+        # The upstream source and its lock identify the complete translation
+        # chain. Release downloads and the source-built Intel Mac fallback use
+        # this same pin; consumers can read the package passthru below.
+        aeneasRevision = aeneas.rev;
+        aeneasReleaseTag = "nightly-2026.10.01-${builtins.substring 0 7 aeneasRevision}";
+        charonRevision = aeneas.inputs.charon.rev;
+        charonSourcePin = pkgs.lib.last (builtins.filter
+          (line: line != "" && !(pkgs.lib.hasPrefix "#" line))
+          (pkgs.lib.splitString "\n" (builtins.readFile "${aeneas}/charon-pin")));
+        leanToolchainName = pkgs.lib.removeSuffix "\n"
+          (builtins.readFile "${aeneas}/backends/lean/lean-toolchain");
+        rustToolchainName =
+          (builtins.fromTOML (builtins.readFile "${aeneas.inputs.charon}/rust-toolchain")).toolchain.channel;
+        # V1 embeds these values in its binary. They are compatibility mirrors
+        # of this flake's upstream pin, and must agree before an archive builds.
+        v1ToolchainMetadata =
+          (builtins.fromTOML (builtins.readFile ./v1/Cargo.toml)).package.metadata.build_rs;
+        toolchainMetadata = {
+          aeneas-release = aeneasReleaseTag;
+          aeneas-revision = aeneasRevision;
+          aeneas-source-nar-hash = aeneas.narHash;
+          charon-revision = charonRevision;
+          lean-toolchain = pkgs.lib.removePrefix "v" leanVersion;
+          rust-toolchain-date = rustDate;
+          rust-toolchain-version = rustToolchainName;
+        };
+        toolchain = toolchainMetadata // {
+          aeneas-source = aeneas.outPath;
+          charon-source = aeneas.inputs.charon.outPath;
+        };
+
+        # Both the upstream Intel archive and a locally patched translator need
+        # the same portable Mach-O bundler. Preserve its upstream dependency;
+        # only remove signing flags that sigtool does not implement.
+        darwinBundlers = builtins.filter
+          (input: (input.pname or "") == "macdylibbundler")
+          aeneas.packages.${system}.aeneas-release.buildInputs;
+        darwinBundler = assert builtins.length darwinBundlers == 1;
+          (builtins.head darwinBundlers).overrideAttrs (old: {
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace src/Utils.cpp --replace-fail \
+                'codesign --force --deep --preserve-metadata=entitlements,requirements,flags,runtime' \
+                'codesign --force'
+            '';
+          });
+        portabilityInputs = pkgs.lib.optionals pkgs.stdenv.isDarwin
+          [ darwinBundler pkgs.darwin.sigtool ];
 
         # Upstream platform names.
         rustPlatform = if system == "x86_64-linux" then "x86_64-unknown-linux-gnu"
@@ -33,25 +85,25 @@
                        else if system == "aarch64-darwin" then "macos-aarch64"
                        else throw "Unsupported system: ${system}";
 
-        aeneasSha256 = if system == "x86_64-linux" then "sha256-APuO9CfU0G3KvZD1GWJm4HcxrfKnRmlkzm9PbR6MvBE="
-                       else if system == "aarch64-linux" then "sha256-JUAsTLy32i0zfLFoZjVCvJx1rpsQ0tJwj1KJ6MqdGQI="
-                       else if system == "x86_64-darwin" then "sha256-uiXuhXp2+o9MECL23/QHLJoBAHRT1nxhz7qhqhwD4xc="
-                       else if system == "aarch64-darwin" then "sha256-dveLZF4zjsfokynwrSJ5KZf0K9m16xRkOsMq3iJO62E="
+        aeneasSha256 = if system == "x86_64-linux" then "sha256-Rz3y5bqwQ5v9GmhQOuAsf4io3kGC6Y5OKBWQKFqwHe4="
+                       else if system == "aarch64-linux" then "sha256-bRH8EBD386jLfDCaOxksohVJHwupQxGPKiLHokT2dOA="
+                       else if system == "x86_64-darwin" then null # Built from pinned source; no upstream archive.
+                       else if system == "aarch64-darwin" then "sha256-+siAmenWh+syFJnkOu8UGKTQb3rnLsugtf19OM8BPd0="
                        else throw "Unsupported system: ${system}";
 
-        rustDate = "2026-05-31";
-        leanVersion = "v4.30.0-rc2";
+        rustDate = pkgs.lib.removePrefix "nightly-" rustToolchainName;
+        leanVersion = pkgs.lib.removePrefix "leanprover/lean4:" leanToolchainName;
 
-        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw="
-                              else if system == "aarch64-linux" then "sha256-gWFajI7TJyjslQLZm4VWBBsKA6nYe1lNQwrgUp2hwSA="
-                              else if system == "x86_64-darwin" then "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo="
-                              else if system == "aarch64-darwin" then "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E="
+        rustToolchainSha256 = if system == "x86_64-linux" then "sha256-t9elSNKukvVVsD+GcDRNQeGewoz44Optv5j2+nJNY+s="
+                              else if system == "aarch64-linux" then "sha256-l4v7ANDsaFgoyB/rXOsZMMd1mS6Wv2KsGuCIBMipc/w="
+                              else if system == "x86_64-darwin" then "sha256-p5RO89GIzFtV6osz9clheFTBPZ4tkQy3l+Odj5S2uLU="
+                              else if system == "aarch64-darwin" then "sha256-EZuO4uLKLDngPCqs9+MWzhYLVVqi/6SWvZ08L4n9+lw="
                               else throw "Unsupported system: ${system}";
 
-        leanToolchainSha256 = if system == "x86_64-linux" then "sha256-o47cQjSLK5YL8YZ2raaj+mGAvvO+dIDfVeP2L+WoyMs="
-                              else if system == "aarch64-linux" then "sha256-IrEGcTEeI1q0/7tLtMiiKPcW05JvaU8kNY6y5eprYg4="
-                              else if system == "x86_64-darwin" then "sha256-DDPmVkXjSLDr21LXcdvNkmGjD2v+sbUyY+REr3uylwI="
-                              else if system == "aarch64-darwin" then "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg="
+        leanToolchainSha256 = if system == "x86_64-linux" then "sha256-B5ZDv1AMKN6M6zVLSL6nhDJ64R7ZxupuJvxfAbTn5hw="
+                              else if system == "aarch64-linux" then "sha256-HNVY4B6PIaGzfk5wURbNYGm/v5t7ZLz+uzHExKnLM6A="
+                              else if system == "x86_64-darwin" then "sha256-ntsUnj7dQ0h+zSg0Ez48N91x8sCu/bu/uuN5VrVecX0="
+                              else if system == "aarch64-darwin" then "sha256-DqRuJqtagp5LLhGw0sD7fuDzqOB93cbIdJOK70GoXmE="
                               else throw "Unsupported system: ${system}";
 
         leantarPlatform = if system == "x86_64-linux" then "x86_64-unknown-linux-musl"
@@ -66,11 +118,7 @@
                         else if system == "aarch64-darwin" then "sha256-tbWQ0vhC4jWZPsdW09vWCKE8iP1U02p7K2WjY7LuXjU="
                         else throw "Unsupported system: ${system}";
 
-        mathlibCacheDownloadSha256 = if system == "x86_64-linux" then "sha256-n67tKjzZm5LsDU1Dl9kaOFKrQw+8YE201F0toYu1C3s="
-                                     else if system == "aarch64-linux" then "sha256-9Yj5BAv6V5BTLd/nOWzIuqTDJPKwqR28bg7m9+46K98="
-                                     else if system == "x86_64-darwin" then "sha256-DBdUmPfheeLTVwaVUzkB541Y9CWSQN6gmxBnJ3oxL4c="
-                                     else if system == "aarch64-darwin" then "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk="
-                                     else throw "Unsupported system: ${system}";
+        mathlibCacheDownloadSha256 = "sha256-pNTivfyKQAjjdrOdds+OBcfReVtMxR0JWHcW9MFQSUM=";
 
         linuxDynamicLinker = if system == "x86_64-linux" then "/lib64/ld-linux-x86-64.so.2"
                              else if system == "aarch64-linux" then "/lib/ld-linux-aarch64.so.1"
@@ -225,11 +273,30 @@
           };
       in
       {
-        packages.aeneas-download = fetchAeneas {
-          target = aeneasTarget;
-          releaseTag = "nightly-2026.06.03";
-          sha256 = aeneasSha256;
-        };
+        packages.aeneas-download =
+          assert charonRevision == charonSourcePin;
+          assert pkgs.lib.hasPrefix "nightly-" rustToolchainName;
+          assert v1ToolchainMetadata.aeneas_rev == aeneasRevision;
+          assert v1ToolchainMetadata.lean_toolchain == leanToolchainName;
+          if system == "x86_64-darwin" then
+            pkgs.runCommand "aeneas-${aeneasTarget}.tar.gz" {
+              nativeBuildInputs = with pkgs; [ gnutar gzip ];
+              passthru = { inherit toolchain portabilityInputs; };
+              upstreamRelease = aeneas.packages.${system}.aeneas-release.overrideAttrs (old: {
+                nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.darwin.sigtool ];
+                buildInputs = map (input:
+                  if (input.pname or "") == "macdylibbundler" then darwinBundler
+                  else input) (old.buildInputs or []);
+              });
+            } ''
+              cd "$upstreamRelease"
+              tar -czf "$out" *
+            ''
+          else (fetchAeneas {
+            target = aeneasTarget;
+            releaseTag = aeneasReleaseTag;
+            sha256 = aeneasSha256;
+          }).overrideAttrs (_: { passthru = { inherit toolchain portabilityInputs; }; });
 
         # Extracts the toolchain metadata implied by the Aeneas archive.
         packages.aeneas-unpacked = pkgs.stdenv.mkDerivation {
@@ -255,14 +322,12 @@
             "  echo \"ERROR: could not parse Lean toolchain from Aeneas archive: \$LEAN_RAW\" >&2"
             "  exit 1"
             "fi"
-            "RUST_DATE=${rustDate}"
-            "RUST_VERSION=\"nightly-\$RUST_DATE\""
-            "cat <<EOF > $out/metadata.json"
-            "{"
-            "  \"lean-toolchain\": \"\$LEAN_VERSION\","
-            "  \"rust-toolchain-date\": \"\$RUST_DATE\","
-            "  \"rust-toolchain-version\": \"\$RUST_VERSION\""
-            "}"
+            "if [ \"\$LEAN_VERSION\" != '${toolchainMetadata.lean-toolchain}' ]; then"
+            "  echo \"ERROR: Aeneas release/source Lean pins differ\" >&2"
+            "  exit 1"
+            "fi"
+            "cat > $out/metadata.json <<'EOF'"
+            (builtins.toJSON toolchainMetadata)
             "EOF"
           ];
         };
@@ -340,11 +405,10 @@
             "mkdir -p $out/packages"
             "cp -r .lake/packages/* $out/packages/"
             "chmod -R +w $out/packages"
-            # Drop only traces that captured Nix store paths.
-            "find $out/packages -type f \\( -name \"*.trace\" -o -name \"*.hash\" \\) \\"
-            "  -exec grep -q \"/nix/store\" {} \\; -delete"
-            # Mathlib's build cache is reconstructed from .ltar archives below.
-            "rm -rf $out/packages/mathlib/.lake"
+            # Keep this download fixed-output derivation independent of the
+            # build root. Lake generates package caches while building the cache
+            # downloader; the .ltar archives restore them in the unpack stage.
+            "find $out/packages -type d -name \".lake\" -prune -exec rm -rf {} +"
             # Git metadata is unnecessary for path dependencies.
             "find $out/packages -type d -name \".git\" -exec rm -rf {} +"
           ];
@@ -471,7 +535,7 @@
             "EOF"
             "substituteInPlace $TMPDIR/aeneas-config-primer/lakefile.lean --replace-fail @AENEAS_ROOT@ \"$PWD\""
             "(cd $TMPDIR/aeneas-config-primer && ${runLeanCommand "lake --old build Generated"})"
-            "test -f .lake/config/aeneas/lakefile.olean"
+            "test -n \"\$(find .lake/config -type f -name lakefile.olean -print)\""
             "python3 ${./rewrite-lake-vendor.py} --root . --packages-dir ../../packages --rewrite-traces --trace-prefix \"$leanToolchain=lean\""
             "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
             "if find . ../../packages -type f -name \"*.trace\" -exec grep -EIl \"\$TRACE_ABS_RE\" {} + | tee /tmp/non-relocatable-traces | grep -q .; then"
@@ -483,10 +547,13 @@
             "python3 ${./prune-lake-cache.py} --project-root . --packages-root ../../packages"
             "cd ../.."
             "mkdir -p $out/backends $out/packages"
+            "cp $aeneasUnpacked/metadata.json $out/metadata.json"
             "cp -r backends/lean $out/backends/"
             "cp -r packages/* $out/packages/"
             "mkdir -p $out/bin"
             "cp \$(find $aeneasUnpacked -maxdepth 1 -type f -executable) $out/bin/"
+            # Darwin release binaries load bundled libraries relative to bin.
+            "if [ -d $aeneasUnpacked/libs ]; then cp -r $aeneasUnpacked/libs $out/bin/; fi"
           ];
         };
 
@@ -609,13 +676,12 @@
             fi
 
             for path in \
+              aeneas/metadata.json \
               aeneas/bin/aeneas \
               aeneas/bin/charon \
               aeneas/bin/charon-driver \
-              aeneas/backends/lean/.lake/config/aeneas/lakefile.olean \
               aeneas/backends/lean/lakefile.lean \
               aeneas/packages/mathlib/lake-manifest.json \
-              aeneas/packages/mathlib/.lake/config/mathlib/lakefile.olean \
               lean/bin/lean \
               rust/bin/cargo \
               rust/bin/rustc; do
@@ -624,6 +690,13 @@
                 exit 1
               fi
             done
+
+            # Lean 4.31 stores dependency configurations under numbered
+            # directories at the workspace root.
+            if ! grep -Eq '^aeneas/backends/lean/\.lake/config/[^/]+/lakefile\.olean$' "$TMPDIR/archive/entries"; then
+              echo "ERROR: archive is missing the Aeneas Lake package configuration" >&2
+              exit 1
+            fi
 
             if ! grep -Eq '^aeneas/packages/mathlib/\.lake/build/lib/lean/Mathlib/.+\.olean$' "$TMPDIR/archive/entries"; then
               echo "ERROR: archive is missing Mathlib .olean cache artifacts" >&2
