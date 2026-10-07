@@ -8,7 +8,7 @@ those terms. -/
 
 module
 public import RustModel
-public import Zerocopy.TypesExternal
+public import Zerocopy.Types
 @[expose] public section
 
 /-!
@@ -24,6 +24,20 @@ decoders test that condition and preserve its proof in the accepted value.
 
 open Aeneas.Std
 namespace AeneasSpecs
+
+-- The imported PhantomData carrier has no runtime fields. Its value model
+-- records only that empty stored value; it makes no claim about ownership,
+-- variance, drop checking, or pointer provenance.
+@[reducible] instance modelPhantomData (T : Type) :
+    RustModel (Zerocopy.core.marker.PhantomData T) :=
+  ⟨Unit, fun _ => some ()⟩
+
+/-- This check fails if the pinned extracted carrier gains runtime fields. -/
+theorem phantomData_eq_mk (T : Type) (raw : Zerocopy.core.marker.PhantomData T) :
+    raw = Zerocopy.core.marker.PhantomData.mk := by
+  cases raw
+  rfl
+
 
 -- The bounds are proofs stored beside the value. They contribute constraints
 -- to the mathematical type without another runtime field or admission test.
