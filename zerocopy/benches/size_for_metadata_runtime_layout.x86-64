@@ -1,0 +1,31 @@
+bench_size_for_metadata_runtime_layout:
+	mov rax, rdi
+	mov rdi, qword ptr [rsi + 8]
+	test rdi, rdi
+	je .LBB5_2
+	mul qword ptr [rsi + 24]
+	jo .LBB5_2
+	bsr rcx, rdi
+	not ecx
+	movabs rdx, -9223372036854775808
+	shr rdx, cl
+	xor rdi, rdx
+	mov rcx, qword ptr [rsi + 32]
+	add rcx, rdi
+	jb .LBB5_2
+	add rcx, rax
+	jb .LBB5_2
+	dec rdx
+	add rdi, rax
+	neg rdi
+	and rdi, rdx
+	add rdi, rcx
+	xor eax, eax
+	cmp rdi, rcx
+	setae al
+	mov rdx, rdi
+	ret
+.LBB5_2:
+	xor eax, eax
+	mov rdx, rdi
+	ret
