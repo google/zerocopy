@@ -148,7 +148,7 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
         requires(align.is_power_of_two()),
         // A power-of-two alignment divides the `usize` modulus, so wrapping
         // preserves congruence even when the next aligned value exceeds `usize`.
-        ensures(|&p| len.wrapping_add(p) % align.get() == 0),
+        ensures(|&p| len.wrapping_add(p) & (align.get() - 1) == 0),
         // Ensures that we add the minimum required padding.
         ensures(|&p| p < align.get()),
     )
@@ -223,7 +223,7 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     kani,
     zerocopy_kani_macros::contract(
         requires(align.is_power_of_two()),
-        ensures(|&m| m <= n && m % align.get() == 0),
+        ensures(|&m| m <= n && m & (align.get() - 1) == 0),
         // Guarantees that `m` is the *largest* value such that `m % align == 0`.
         ensures(|&m| {
             // If this `checked_add` fails, then the next multiple would wrap
@@ -910,5 +910,23 @@ mod tests {
         assert_eq!(AsAddress::addr(p), p as usize);
         assert_eq!(AsAddress::addr(pm), pm as usize);
         assert_eq!(AsAddress::addr(nn), p as usize);
+    }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    // Exhaust every alignment exponent while keeping the dividend arbitrary.
+    // The 65-step bound includes all 64 iterations and the terminating check
+    // on the 64-bit Kani target; unwinding assertions remain enabled.
+    #[kani::proof]
+    #[kani::unwind(65)]
+    fn prove_power_of_two_remainder_is_mask() {
+        let value: usize = kani::any();
+        for shift in 0..(mem::size_of::<usize>() * 8) {
+            let align = 1usize << shift;
+            assert_eq!(value % align, value & (align - 1));
+        }
     }
 }
