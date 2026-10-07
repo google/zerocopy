@@ -64,6 +64,7 @@ pub(crate) enum SizeInfo<E = usize> {
 #[cfg_attr(kani, derive(kani::Arbitrary))]
 pub(crate) struct RoundingAlignAndPhase(NonZeroUsize);
 
+#[cfg_attr(kani, zerocopy_kani_macros::contracts)]
 impl RoundingAlignAndPhase {
     /// Encodes `align` and `phase`.
     ///
@@ -72,16 +73,12 @@ impl RoundingAlignAndPhase {
     /// Panics if `align` is not a power of two and `phase` is not less than
     /// `align`.
     #[inline(always)]
-    #[cfg_attr(kani, kani::requires(align.is_power_of_two() && phase < align.get()))]
-    #[cfg_attr(kani, kani::ensures(|result| result.0.get() == align.get() + phase))]
+    #[cfg_attr(kani, contract(
+        requires(align.is_power_of_two() && phase < align.get()),
+        ensures(|result| result.0.get() == align.get() + phase),
+        solver = kissat
+    ))]
     pub(crate) const fn new(align: NonZeroUsize, phase: usize) -> Self {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(RoundingAlignAndPhase::new)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            RoundingAlignAndPhase::new(kani::any(), kani::any());
-        }
-
         const_assert!(align.get().is_power_of_two());
         const_assert!(phase < align.get());
 
@@ -97,17 +94,14 @@ impl RoundingAlignAndPhase {
 
     /// Decodes the alignment and phase.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&(align, phase)| {
-        align.is_power_of_two() && phase < align.get()
-            && align.get().checked_add(phase) == Some(self.0.get())
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&(align, phase)| {
+            align.is_power_of_two() && phase < align.get()
+                && align.get().checked_add(phase) == Some(self.0.get())
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn components(self) -> (NonZeroUsize, usize) {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(RoundingAlignAndPhase::components)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<RoundingAlignAndPhase>().components();
-        }
         // `leading_zeros <= POINTER_WIDTH_BITS - 1` because the encoded value
         // is non-zero. Converting `leading_zeros` to `usize` cannot truncate
         // because it is at most the number of bits in a `usize`.
@@ -131,18 +125,14 @@ impl RoundingAlignAndPhase {
 
     /// Decodes the alignment, which is the highest set bit of `self`.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|align| {
-        align.is_power_of_two() && align.get() <= self.0.get()
-            && self.0.get() - align.get() < align.get()
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|align| {
+            align.is_power_of_two() && align.get() <= self.0.get()
+                && self.0.get() - align.get() < align.get()
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn align(self) -> NonZeroUsize {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(RoundingAlignAndPhase::align)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<RoundingAlignAndPhase>().align();
-        }
-
         self.components().0
     }
 }
@@ -206,6 +196,9 @@ pub(crate) struct TrailingSliceLayout<E = usize> {
     pub(crate) size_rounding_align_and_phase: RoundingAlignAndPhase,
 }
 
+#[cfg_attr(kani, zerocopy_kani_macros::contracts(
+    instances(word(E = usize), non_zero(E = NonZeroUsize))
+))]
 impl<E> TrailingSliceLayout<E> {
     /// Produces `self.size_base` rounded down to a multiple of `size_align`,
     /// plus `size_phase`, where both components come from
@@ -214,18 +207,14 @@ impl<E> TrailingSliceLayout<E> {
     /// This value need not equal `self.offset`, the trailing slice's byte
     /// offset.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&offset| {
-        let (align, phase) = self.size_rounding_align_and_phase.components();
-        offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&offset| {
+            let (align, phase) = self.size_rounding_align_and_phase.components();
+            offset == util::round_down_to_next_multiple_of_alignment(self.size_base, align) + phase
+        }),
+        solver = kissat
+    ))]
     const fn size_offset(&self) -> usize {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::<usize>::size_offset)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().size_offset();
-        }
-
         let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
         let aligned_base =
             util::round_down_to_next_multiple_of_alignment(self.size_base, size_align);
@@ -243,27 +232,16 @@ impl<E> TrailingSliceLayout<E> {
     /// With `available_bytes = 4`, this method produces `Some(4)`, although
     /// only one whole element, occupying three bytes, fits.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&result| {
-        let (align, phase) = self.size_rounding_align_and_phase.components();
-        result == available_bytes.checked_sub(self.size_base)
-            .map(|bytes| util::round_down_to_next_multiple_of_alignment(bytes, align))
-            .and_then(|rounded| rounded.checked_sub(phase))
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&result| {
+            let (align, phase) = self.size_rounding_align_and_phase.components();
+            result == available_bytes.checked_sub(self.size_base)
+                .map(|bytes| util::round_down_to_next_multiple_of_alignment(bytes, align))
+                .and_then(|rounded| rounded.checked_sub(phase))
+        }),
+        solver = kissat
+    ))]
     const fn max_trailing_bytes(&self, available_bytes: usize) -> Option<usize> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::<usize>::max_trailing_bytes)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().max_trailing_bytes(kani::any());
-        }
-
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::<NonZeroUsize>::max_trailing_bytes)]
-        #[kani::solver(kissat)]
-        fn proof_nonzero() {
-            kani::any::<TrailingSliceLayout<NonZeroUsize>>().max_trailing_bytes(kani::any());
-        }
-
         let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
 
         // Interpret the normalized size formula over the nonnegative integers:
@@ -341,6 +319,7 @@ impl<E> TrailingSliceLayout<E> {
     }
 }
 
+#[cfg_attr(kani, zerocopy_kani_macros::contracts)]
 impl TrailingSliceLayout {
     /// Returns the difference between the complete object size and the
     /// trailing-slice end for `elems` elements, modulo `usize::MAX + 1`.
@@ -349,22 +328,18 @@ impl TrailingSliceLayout {
     /// this is the exact trailing padding. Other inputs need not describe a
     /// Rust type; their result is still the modular difference.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&padding| {
-        let (align, phase) = self.size_rounding_align_and_phase.components();
-        let trailing_bytes = elems.wrapping_mul(self.elem_size);
-        let mask = align.get() - 1;
-        let rounded = phase.wrapping_add(trailing_bytes).wrapping_add(mask) & !mask;
-        let object_size = self.size_base.wrapping_add(rounded);
-        padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&padding| {
+            let (align, phase) = self.size_rounding_align_and_phase.components();
+            let trailing_bytes = elems.wrapping_mul(self.elem_size);
+            let mask = align.get() - 1;
+            let rounded = phase.wrapping_add(trailing_bytes).wrapping_add(mask) & !mask;
+            let object_size = self.size_base.wrapping_add(rounded);
+            padding == object_size.wrapping_sub(self.offset.wrapping_add(trailing_bytes))
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn padding_for_elems(self, elems: usize) -> usize {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::padding_for_elems)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().padding_for_elems(kani::any());
-        }
-
         let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
 
         // Since `size_align` is a nonzero power of two, subtracting one gives
@@ -420,18 +395,14 @@ impl TrailingSliceLayout {
     /// Returns `None` if the element-byte count or complete rounded size
     /// cannot be represented as a `usize`.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&size| {
-        size == elems.checked_mul(self.elem_size)
-            .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&size| {
+            size == elems.checked_mul(self.elem_size)
+                .and_then(|bytes| proofs::slice_dst_size_for_trailing_bytes(self, bytes))
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn size_for_elems(self, elems: usize) -> Option<usize> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().size_for_elems(kani::any());
-        }
-
         // Let `size_align` and `size_phase` denote the components stored in
         // `size_rounding_align_and_phase`. The normalized layout formula,
         // evaluated over the nonnegative integers, is:
@@ -496,25 +467,21 @@ impl TrailingSliceLayout {
     /// This recognizes sufficient conditions for equality. A `false` result
     /// also includes equivalent size sequences that this test cannot recognize.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&same| {
-        let (self_align, self_phase) = self.size_rounding_align_and_phase.components();
-        let (other_align, other_phase) = other.size_rounding_align_and_phase.components();
-        let initial_size = proofs::slice_dst_size_for_trailing_bytes(self, 0);
-        same == (self.elem_size == other.elem_size
-            && initial_size.is_some()
-            && initial_size == proofs::slice_dst_size_for_trailing_bytes(other, 0)
-            && ((self.elem_size % self_align.get() == 0
-                && self.elem_size % other_align.get() == 0)
-                || (self_align == other_align && self_phase == other_phase)))
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&same| {
+            let (self_align, self_phase) = self.size_rounding_align_and_phase.components();
+            let (other_align, other_phase) = other.size_rounding_align_and_phase.components();
+            let initial_size = proofs::slice_dst_size_for_trailing_bytes(self, 0);
+            same == (self.elem_size == other.elem_size
+                && initial_size.is_some()
+                && initial_size == proofs::slice_dst_size_for_trailing_bytes(other, 0)
+                && ((self.elem_size % self_align.get() == 0
+                    && self.elem_size % other_align.get() == 0)
+                    || (self_align == other_align && self_phase == other_phase)))
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn has_same_size_sequence(self, other: Self) -> bool {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::has_same_size_sequence)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().has_same_size_sequence(kani::any());
-        }
-
         // For either layout, interpret its normalized size formula over the
         // nonnegative integers:
         //
@@ -606,28 +573,24 @@ impl TrailingSliceLayout {
     /// components. Even when those components fit, evaluating the rounded
     /// object size may overflow for some or all trailing slice lengths.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|result| {
-        let expected_offset = self.size_offset().checked_add(bytes);
-        match result {
-            Some(advanced) => {
-                let align = self.size_rounding_align_and_phase.align();
-                expected_offset == Some(advanced.size_offset())
-                    && advanced.offset == self.offset
-                    && advanced.elem_size == elem_size
-                    && advanced.size_rounding_align_and_phase.align() == align
-                    && (advanced.size_base & (align.get() - 1)) == (self.size_base & (align.get() - 1))
+    #[cfg_attr(kani, contract(
+        ensures(|result| {
+            let expected_offset = self.size_offset().checked_add(bytes);
+            match result {
+                Some(advanced) => {
+                    let align = self.size_rounding_align_and_phase.align();
+                    expected_offset == Some(advanced.size_offset())
+                        && advanced.offset == self.offset
+                        && advanced.elem_size == elem_size
+                        && advanced.size_rounding_align_and_phase.align() == align
+                        && (advanced.size_base & (align.get() - 1)) == (self.size_base & (align.get() - 1))
+                }
+                None => expected_offset.is_none(),
             }
-            None => expected_offset.is_none(),
-        }
-    }))]
+        }),
+        solver = kissat
+    ))]
     const fn advance(self, bytes: usize, elem_size: usize) -> Option<Self> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(TrailingSliceLayout::advance)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<TrailingSliceLayout>().advance(kani::any(), kani::any());
-        }
-
         let (size_align, size_phase) = self.size_rounding_align_and_phase.components();
 
         // Advancing replaces the phase inside `round_up` with `size_phase +
@@ -719,33 +682,30 @@ impl TrailingSliceLayout {
     }
 }
 
+#[cfg_attr(kani, zerocopy_kani_macros::contracts)]
 impl SizeInfo {
     /// Attempts to create a `SizeInfo` from `Self` in which `elem_size` is a
     /// `NonZeroUsize`. If `elem_size` is 0, returns `None`.
     #[allow(unused)]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
-    #[cfg_attr(kani, kani::ensures(|result| match (*self, *result) {
-        (SizeInfo::Sized { size }, Some(SizeInfo::Sized { size: converted })) => {
-            size == converted
-        }
-        (SizeInfo::SliceDst(original), Some(SizeInfo::SliceDst(converted))) => {
-            converted.elem_size.get() == original.elem_size
-                && converted.offset == original.offset
-                && converted.size_base == original.size_base
-                && converted.size_rounding_align_and_phase == original.size_rounding_align_and_phase
-        }
-        (SizeInfo::SliceDst(original), None) => original.elem_size == 0,
-        _ => false,
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|result| match (*self, *result) {
+            (SizeInfo::Sized { size }, Some(SizeInfo::Sized { size: converted })) => {
+                size == converted
+            }
+            (SizeInfo::SliceDst(original), Some(SizeInfo::SliceDst(converted))) => {
+                converted.elem_size.get() == original.elem_size
+                    && converted.offset == original.offset
+                    && converted.size_base == original.size_base
+                    && converted.size_rounding_align_and_phase == original.size_rounding_align_and_phase
+            }
+            (SizeInfo::SliceDst(original), None) => original.elem_size == 0,
+            _ => false,
+        }),
+        solver = kissat
+    ))]
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(SizeInfo::try_to_nonzero_elem_size)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<SizeInfo>().try_to_nonzero_elem_size();
-        }
-
         Some(match *self {
             SizeInfo::Sized { size } => SizeInfo::Sized { size },
             SizeInfo::SliceDst(TrailingSliceLayout {
@@ -771,9 +731,8 @@ impl SizeInfo {
 
 /// Returns the largest number of `elem_size`-byte elements which fit in
 /// `bytes`, along with the number of bytes those elements occupy.
-#[cfg_attr(
-    kani,
-    kani::ensures(|&(elems, used)| {
+#[cfg_attr(kani, zerocopy_kani_macros::contract(
+    ensures(|&(elems, used)| {
         (match elems.checked_mul(elem_size.get()) {
             Some(product) => {
                 product == used && used <= bytes && bytes - used < elem_size.get()
@@ -783,17 +742,11 @@ impl SizeInfo {
             .checked_add(elem_size.get())
             .map(|next_used| next_used > bytes)
             .unwrap_or(true)
-    })
-)]
+    }),
+    solver = kissat
+))]
 #[inline(always)]
 const fn max_elems_for_bytes(bytes: usize, elem_size: NonZeroUsize) -> (usize, usize) {
-    #[cfg(kani)]
-    #[kani::proof_for_contract(max_elems_for_bytes)]
-    #[kani::solver(kissat)]
-    fn proof() {
-        max_elems_for_bytes(kani::any(), kani::any());
-    }
-
     #[allow(clippy::arithmetic_side_effects)]
     let elems = bytes / elem_size.get();
     let used = match elems.checked_mul(elem_size.get()) {
@@ -805,6 +758,7 @@ const fn max_elems_for_bytes(bytes: usize, elem_size: NonZeroUsize) -> (usize, u
 
 #[doc(hidden)]
 #[derive(Copy, Clone)]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 #[cfg_attr(test, derive(Debug))]
 #[allow(missing_debug_implementations)]
 pub enum CastType {
@@ -819,6 +773,7 @@ pub(crate) enum MetadataCastError {
     Size,
 }
 
+#[cfg_attr(kani, zerocopy_kani_macros::contracts)]
 impl DstLayout {
     /// The minimum possible alignment of a type.
     const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
@@ -881,18 +836,14 @@ impl DstLayout {
     /// shallow padding, unsafe code may assume that the result of this method
     /// accurately reflects the size, alignment, and lack of static shallow
     /// padding of that type.
-    #[cfg_attr(kani, kani::ensures(|result| {
-        result.align == self.align && result.size_info == self.size_info
-            && result.statically_shallow_unpadded
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|result| {
+            result.align == self.align && result.size_info == self.size_info
+                && result.statically_shallow_unpadded
+        }),
+        solver = kissat
+    ))]
     const fn assume_shallow_unpadded(self) -> Self {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::assume_shallow_unpadded)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<DstLayout>().assume_shallow_unpadded();
-        }
-
         Self { statically_shallow_unpadded: true, ..self }
     }
 
@@ -910,20 +861,16 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::requires(repr_align.map_or(true, |align| align.is_power_of_two())))]
-    #[cfg_attr(kani, kani::ensures(|result| {
-        result.align == repr_align.unwrap_or(Self::MIN_ALIGN)
-            && result.size_info == SizeInfo::Sized { size: 0 }
-            && result.statically_shallow_unpadded
-    }))]
+    #[cfg_attr(kani, contract(
+        requires(repr_align.map_or(true, |align| align.is_power_of_two())),
+        ensures(|result| {
+            result.align == repr_align.unwrap_or(Self::MIN_ALIGN)
+                && result.size_info == SizeInfo::Sized { size: 0 }
+                && result.statically_shallow_unpadded
+        }),
+        solver = kissat
+    ))]
     pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::new_zst)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let _ = DstLayout::new_zst(kani::any());
-        }
-
         let align = match repr_align {
             Some(align) => align,
             None => Self::MIN_ALIGN,
@@ -947,24 +894,15 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::ensures(|result| {
-        result.align.get() == mem::align_of::<T>()
-            && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
-            && result.statically_shallow_unpadded == false
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|result| {
+            result.align.get() == mem::align_of::<T>()
+                && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
+                && result.statically_shallow_unpadded == false
+        }),
+        instances(zst(T = ()), pair(T = (u8, u64)))
+    ))]
     pub const fn for_type<T>() -> DstLayout {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_type::<()>)]
-        fn proof_zst() {
-            let _ = DstLayout::for_type::<()>();
-        }
-
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_type::<(u8, u64)>)]
-        fn proof_padded() {
-            let _ = DstLayout::for_type::<(u8, u64)>();
-        }
-
         // SAFETY: `align` is correct by construction. `T: Sized`, and so it is
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction. `unpadded` can safely
@@ -994,24 +932,15 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::ensures(|result| {
-        result.align.get() == mem::align_of::<T>()
-            && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
-            && result.statically_shallow_unpadded == true
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|result| {
+            result.align.get() == mem::align_of::<T>()
+                && result.size_info == SizeInfo::Sized { size: mem::size_of::<T>() }
+                && result.statically_shallow_unpadded == true
+        }),
+        instances(zst(T = ()), pair(T = (u8, u64)))
+    ))]
     pub const fn for_unpadded_type<T>() -> DstLayout {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_unpadded_type::<()>)]
-        fn proof_zst() {
-            let _ = DstLayout::for_unpadded_type::<()>();
-        }
-
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_unpadded_type::<(u8, u64)>)]
-        fn proof_padded() {
-            let _ = DstLayout::for_unpadded_type::<(u8, u64)>();
-        }
-
         Self::for_type::<T>().assume_shallow_unpadded()
     }
 
@@ -1020,26 +949,17 @@ impl DstLayout {
     /// # Safety
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `[T]`.
-    #[cfg_attr(kani, kani::ensures(|result| {
-        result.align.get() == mem::align_of::<T>() && result.statically_shallow_unpadded
-            && matches!(result.size_info, SizeInfo::SliceDst(trailing)
-                if trailing.offset == 0 && trailing.size_base == 0
-                    && trailing.elem_size == mem::size_of::<T>()
-                    && trailing.size_rounding_align_and_phase.components() == (result.align, 0))
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|result| {
+            result.align.get() == mem::align_of::<T>() && result.statically_shallow_unpadded
+                && matches!(result.size_info, SizeInfo::SliceDst(trailing)
+                    if trailing.offset == 0 && trailing.size_base == 0
+                        && trailing.elem_size == mem::size_of::<T>()
+                        && trailing.size_rounding_align_and_phase.components() == (result.align, 0))
+        }),
+        instances(zst(T = ()), pair(T = (u8, u64)))
+    ))]
     pub(crate) const fn for_slice<T>() -> DstLayout {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_slice::<()>)]
-        fn proof_zst() {
-            let _ = DstLayout::for_slice::<()>();
-        }
-
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_slice::<(u8, u64)>)]
-        fn proof_padded() {
-            let _ = DstLayout::for_slice::<(u8, u64)>();
-        }
-
         let align = match NonZeroUsize::new(mem::align_of::<T>()) {
             Some(align) => align,
             None => const_unreachable!(),
@@ -1091,28 +1011,11 @@ impl DstLayout {
     /// with arguments that cannot correspond to a valid `repr(C)` struct.
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::requires(proofs::repr_c_layout(repr_align, repr_packed, fields).is_some()))]
-    #[cfg_attr(kani, kani::ensures(|&result| {
-        Some(result) == proofs::repr_c_layout(repr_align, repr_packed, fields)
-    }))]
     pub const fn for_repr_c_struct(
         repr_align: Option<NonZeroUsize>,
         repr_packed: Option<NonZeroUsize>,
         fields: &[DstLayout],
     ) -> DstLayout {
-        // This harness covers up to three fields, including an optional final
-        // DST. Arbitrary-length composition is not established by this bound.
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::for_repr_c_struct)]
-        #[kani::solver(kissat)]
-        #[kani::unwind(4)]
-        fn proof() {
-            let fields: [DstLayout; 3] = kani::any();
-            let len: usize = kani::any();
-            kani::assume(len <= fields.len());
-            let _ = DstLayout::for_repr_c_struct(kani::any(), kani::any(), &fields[..len]);
-        }
-
         let mut layout = DstLayout::new_zst(repr_align);
 
         let mut i = 0;
@@ -1169,18 +1072,14 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::requires(proofs::extended_layout(self, field, repr_packed).is_some()))]
-    #[cfg_attr(kani, kani::ensures(|&result| {
-        Some(result) == proofs::extended_layout(self, field, repr_packed)
-    }))]
+    #[cfg_attr(kani, contract(
+        requires(proofs::extended_layout(self, field, repr_packed).is_some()),
+        ensures(|&result| {
+            Some(result) == proofs::extended_layout(self, field, repr_packed)
+        }),
+        solver = kissat
+    ))]
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::extend)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let _ = kani::any::<DstLayout>().extend(kani::any(), kani::any());
-        }
-
         use util::{max, min, padding_needed_for};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
@@ -1345,16 +1244,12 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    #[cfg_attr(kani, kani::requires(proofs::padded_layout(self).is_some()))]
-    #[cfg_attr(kani, kani::ensures(|&result| Some(result) == proofs::padded_layout(self)))]
+    #[cfg_attr(kani, contract(
+        requires(proofs::padded_layout(self).is_some()),
+        ensures(|&result| Some(result) == proofs::padded_layout(self)),
+        solver = kissat
+    ))]
     pub const fn pad_to_align(self) -> Self {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::pad_to_align)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let _ = kani::any::<DstLayout>().pad_to_align();
-        }
-
         use util::padding_needed_for;
 
         let (static_padding, size_info) = match self.size_info {
@@ -1448,15 +1343,11 @@ impl DstLayout {
     /// static shallow padding is absent.
     #[must_use]
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&padding| padding == !self.statically_shallow_unpadded))]
+    #[cfg_attr(kani, contract(
+        ensures(|&padding| padding == !self.statically_shallow_unpadded),
+        solver = kissat
+    ))]
     pub const fn requires_static_padding(self) -> bool {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::requires_static_padding)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let _ = kani::any::<DstLayout>().requires_static_padding();
-        }
-
         !self.statically_shallow_unpadded
     }
 
@@ -1467,21 +1358,17 @@ impl DstLayout {
     /// not guarantee that any valid metadata actually requires padding.
     #[must_use]
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&padding| match self.size_info {
-        SizeInfo::Sized { .. } => !padding,
-        SizeInfo::SliceDst(trailing) => padding == (
-            proofs::slice_dst_size_for_trailing_bytes(trailing, 0) != Some(trailing.offset)
-                || trailing.elem_size % trailing.size_rounding_align_and_phase.align().get() != 0
-        ),
-    }))]
+    #[cfg_attr(kani, contract(
+        ensures(|&padding| match self.size_info {
+            SizeInfo::Sized { .. } => !padding,
+            SizeInfo::SliceDst(trailing) => padding == (
+                proofs::slice_dst_size_for_trailing_bytes(trailing, 0) != Some(trailing.offset)
+                    || trailing.elem_size % trailing.size_rounding_align_and_phase.align().get() != 0
+            ),
+        }),
+        solver = kissat
+    ))]
     pub const fn requires_dynamic_padding(self) -> bool {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::requires_dynamic_padding)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let _ = kani::any::<DstLayout>().requires_dynamic_padding();
-        }
-
         match self.size_info {
             SizeInfo::Sized { .. } => false,
             SizeInfo::SliceDst(trailing_slice_layout) => {
@@ -1508,24 +1395,21 @@ impl DstLayout {
     /// Returns `None` if there is no such length, if this describes a sized
     /// type, or if the trailing slice element is zero-sized.
     #[inline(always)]
-    #[cfg_attr(kani, kani::ensures(|&result| {
-        result == match self.size_info {
-            SizeInfo::SliceDst(trailing) if trailing.elem_size != 0 => {
-                proofs::max_trailing_bytes(trailing, size)
-                    .map(|bytes| bytes / trailing.elem_size)
-                    .filter(|&elems| trailing.size_for_elems(elems) == Some(size))
+    #[cfg_attr(kani, contract(
+        ignore = "Solver resources; #3792",
+        ensures(|&result| {
+            result == match self.size_info {
+                SizeInfo::SliceDst(trailing) if trailing.elem_size != 0 => {
+                    proofs::max_trailing_bytes(trailing, size)
+                        .map(|bytes| bytes / trailing.elem_size)
+                        .filter(|&elems| trailing.size_for_elems(elems) == Some(size))
+                }
+                _ => None,
             }
-            _ => None,
-        }
-    }))]
+        }),
+        solver = kissat
+    ))]
     const fn metadata_for_exact_size(&self, size: usize) -> Option<usize> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::metadata_for_exact_size)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            kani::any::<DstLayout>().metadata_for_exact_size(kani::any());
-        }
-
         match self.size_info {
             SizeInfo::Sized { .. }
             | SizeInfo::SliceDst(TrailingSliceLayout { elem_size: 0, .. }) => None,
@@ -1614,57 +1498,49 @@ impl DstLayout {
     /// condition, even if `debug_assertions` are enabled.
     #[allow(unused)]
     #[inline(always)]
-    #[cfg_attr(kani, kani::requires(addr.checked_add(bytes_len).is_some()))]
-    #[cfg_attr(kani, kani::requires(!matches!(self.size_info,
-        SizeInfo::SliceDst(TrailingSliceLayout { elem_size: 0, .. }))))]
-    #[cfg_attr(kani, kani::ensures(|result| {
-        let endpoint = match cast_type {
-            CastType::Prefix => addr,
-            CastType::Suffix => addr + bytes_len,
-        };
-        if endpoint % self.align.get() != 0 {
-            return matches!(result, Err(MetadataCastError::Alignment));
-        }
-        let candidate = match self.size_info {
-            SizeInfo::Sized { size } => {
-                if size <= bytes_len { Some((0, size)) } else { None }
+    #[cfg_attr(kani, contract(
+        ignore = "Solver resources; #3792",
+        requires(addr.checked_add(bytes_len).is_some()),
+        requires(!matches!(self.size_info,
+            SizeInfo::SliceDst(TrailingSliceLayout { elem_size: 0, .. }))),
+        ensures(|result| {
+            let endpoint = match cast_type {
+                CastType::Prefix => addr,
+                CastType::Suffix => addr + bytes_len,
+            };
+            if endpoint % self.align.get() != 0 {
+                return matches!(result, Err(MetadataCastError::Alignment));
             }
-            SizeInfo::SliceDst(trailing) => {
-                proofs::max_trailing_bytes(trailing, bytes_len).and_then(|bytes| {
-                    let elems = bytes / trailing.elem_size;
-                    trailing.size_for_elems(elems).map(|size| (elems, size))
-                })
-            }
-        };
-        match (result, candidate) {
-            (Ok((elems, split_at)), Some((expected_elems, size))) => {
-                *elems == expected_elems && *split_at == match cast_type {
-                    CastType::Prefix => size,
-                    CastType::Suffix => bytes_len - size,
+            let candidate = match self.size_info {
+                SizeInfo::Sized { size } => {
+                    if size <= bytes_len { Some((0, size)) } else { None }
                 }
+                SizeInfo::SliceDst(trailing) => {
+                    proofs::max_trailing_bytes(trailing, bytes_len).and_then(|bytes| {
+                        let elems = bytes / trailing.elem_size;
+                        trailing.size_for_elems(elems).map(|size| (elems, size))
+                    })
+                }
+            };
+            match (result, candidate) {
+                (Ok((elems, split_at)), Some((expected_elems, size))) => {
+                    *elems == expected_elems && *split_at == match cast_type {
+                        CastType::Prefix => size,
+                        CastType::Suffix => bytes_len - size,
+                    }
+                }
+                (Err(MetadataCastError::Size), None) => true,
+                _ => false,
             }
-            (Err(MetadataCastError::Size), None) => true,
-            _ => false,
-        }
-    }))]
+        }),
+        solver = kissat
+    ))]
     pub(crate) const fn validate_cast_and_convert_metadata(
         &self,
         addr: usize,
         bytes_len: usize,
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
-        #[cfg(kani)]
-        #[kani::proof_for_contract(DstLayout::validate_cast_and_convert_metadata)]
-        #[kani::solver(kissat)]
-        fn proof() {
-            let cast_type = if kani::any() { CastType::Prefix } else { CastType::Suffix };
-            let _ = kani::any::<DstLayout>().validate_cast_and_convert_metadata(
-                kani::any(),
-                kani::any(),
-                cast_type,
-            );
-        }
-
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
         macro_rules! __const_debug_assert {
             ($e:expr $(, $msg:expr)?) => {
@@ -1805,52 +1681,22 @@ impl DstLayout {
 /// integers, must not exceed `usize::MAX`.
 #[inline(always)]
 #[allow(unstable_name_collisions)]
-#[cfg_attr(kani, kani::requires(metadata.checked_mul(multiple)
-    .and_then(|scaled| base.checked_add(scaled)).is_some()))]
-#[cfg_attr(kani, kani::ensures(|&result| {
-    metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
-}))]
+#[cfg_attr(kani, zerocopy_kani_macros::contract(
+    requires(metadata.checked_mul(multiple)
+        .and_then(|scaled| base.checked_add(scaled)).is_some()),
+    ensures(|&result| {
+        metadata.checked_mul(multiple).and_then(|scaled| base.checked_add(scaled)) == Some(result)
+    }),
+    solver = kissat
+))]
 unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {
     // The call-site safety argument establishes that both operations are
-    // representable for valid source metadata. This harness verifies the
+    // representable for valid source metadata. The generated proof checks the
     // production implementation selected by Kani's modern rustc against
     // checked arithmetic under precisely that precondition. The distributive
     // natural-number argument which establishes the precondition is kept
     // beside the unsafe pointer projection where it can be reviewed with the
     // layout premises that it consumes.
-    #[cfg(kani)]
-    #[kani::proof_for_contract(add_scaled_metadata)]
-    #[kani::solver(kissat)]
-    fn proof() {
-        let base: usize = kani::any();
-        let metadata: usize = kani::any();
-        let multiple: usize = kani::any();
-        let Some(scaled) = metadata.checked_mul(multiple) else {
-            kani::assume(false);
-            loop {}
-        };
-        let Some(expected) = base.checked_add(scaled) else {
-            kani::assume(false);
-            loop {}
-        };
-
-        // SAFETY: The checked operations above returned `Some`, so the
-        // operation is representable in `usize`. The standard-library
-        // contracts say that this rules out undefined behavior for both
-        // unchecked operations [1][2].
-        //
-        // [1] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_mul:
-        //
-        //   This results in undefined behavior [..] when `checked_mul` would
-        //   return `None`.
-        //
-        // [2] Per https://doc.rust-lang.org/1.93.1/std/primitive.usize.html#method.unchecked_add:
-        //
-        //   This results in undefined behavior [..] when `checked_add` would
-        //   return `None`.
-        assert_eq!(unsafe { add_scaled_metadata(base, metadata, multiple) }, expected);
-    }
-
     #[allow(unused_imports)]
     use crate::util::polyfills::*;
 
@@ -3945,8 +3791,8 @@ mod proofs {
     //! Arithmetic models and input generators for the layout proofs.
     //!
     //! The contract models specify expected results without calling the
-    //! operation being checked. The composition models (`extended_layout`,
-    //! `padded_layout`, and `repr_c_layout`) also define the contracts' input
+    //! operation being checked. The composition models (`extended_layout` and
+    //! `padded_layout`) also define the contracts' input
     //! domains: `Some` supplies an expected layout, while `None` excludes an
     //! input from the corresponding non-panicking contract. These models check
     //! representability in `usize`, without imposing Rust's `isize::MAX` bound.
@@ -4109,38 +3955,7 @@ mod proofs {
         })
     }
 
-    /// Models a complete layout for `DstLayout::for_repr_c_struct` by composing
-    /// the field-placement and trailing-padding specifications.
-    ///
-    /// Starts with an empty prefix of alignment `align`, or one if absent.
-    /// Appends fields in order, with `packed` as an optional cap on field
-    /// alignment; the final layout is padded to its resulting alignment. Only
-    /// the last field may be unsized, since field extension requires a sized
-    /// prefix.
-    ///
-    /// Returns `None` if the initial alignment is not a power of two or any
-    /// field extension or final padding step returns `None`.
-    pub(super) fn repr_c_layout(
-        align: Option<NonZeroUsize>,
-        packed: Option<NonZeroUsize>,
-        fields: &[DstLayout],
-    ) -> Option<DstLayout> {
-        let align = align.unwrap_or(DstLayout::MIN_ALIGN);
-        if !align.is_power_of_two() {
-            return None;
-        }
-        let mut layout = DstLayout {
-            align,
-            size_info: SizeInfo::Sized { size: 0 },
-            statically_shallow_unpadded: true,
-        };
-        for &field in fields {
-            layout = extended_layout(layout, field, packed)?;
-        }
-        padded_layout(layout)
-    }
-
-    // The inline contract harnesses use unrestricted `Arbitrary` values.
+    // The contract harnesses use unrestricted `Arbitrary` values.
     // These generators retain the narrower domains of the Rust-layout proofs.
 
     /// Generates any power-of-two alignment representable in `usize`, including
