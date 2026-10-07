@@ -1,0 +1,57 @@
+bench_size_for_metadata_runtime_layout:
+	mov r10, qword ptr [rsi + 8]
+	test r10, r10
+	je .LBB5_5
+	push r14
+	push rbx
+	mov r9, qword ptr [rsi + 32]
+	bsr rcx, r10
+	not ecx
+	movabs r11, -9223372036854775808
+	shr r11, cl
+	xor ecx, ecx
+	mov rax, r11
+	xor rax, r10
+	mov rbx, r11
+	cmove rbx, rcx
+	mov r14, rbx
+	add r14, r9
+	jb .LBB5_6
+	mov r8, qword ptr [rsi + 24]
+	xor ecx, ecx
+	mov rax, r8
+	mul rdi
+	jo .LBB5_6
+	xor r10, r11
+	not r14
+	mov rdx, r11
+	neg rdx
+	and rdx, r14
+	sub rbx, r10
+	or rbx, rdx
+	cmp rax, rbx
+	ja .LBB5_7
+	dec r11
+	and r8, r11
+	imul r8, rdi
+	and r8, r11
+	add r8, r10
+	neg r8
+	and r8, r11
+	add r9, r10
+	add r9, rax
+	add r9, r8
+	mov ecx, 1
+	jmp .LBB5_7
+.LBB5_5:
+	xor ecx, ecx
+	mov rax, rcx
+	mov rdx, r9
+	ret
+.LBB5_6:
+.LBB5_7:
+	pop rbx
+	pop r14
+	mov rax, rcx
+	mov rdx, r9
+	ret
