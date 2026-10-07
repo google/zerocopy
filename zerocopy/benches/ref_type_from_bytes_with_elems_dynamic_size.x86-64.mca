@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      1500
-Total Cycles:      806
-Total uOps:        1900
+Instructions:      2500
+Total Cycles:      706
+Total uOps:        2500
 
 Dispatch Width:    4
-uOps Per Cycle:    2.36
-IPC:               1.86
-Block RThroughput: 4.8
+uOps Per Cycle:    3.54
+IPC:               3.54
+Block RThroughput: 6.3
 
 
 Instruction Info:
@@ -18,20 +18,30 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
- 1      1     0.50                        lea	rcx, [rdx + rdx]
- 1      1     0.33                        mov	r8d, esi
- 1      1     0.33                        or	r8d, edi
- 1      0     0.25                        xor	eax, eax
- 1      1     0.33                        test	r8b, 1
- 2      2     0.67                        cmovne	rdi, rax
- 1      1     0.50                        lea	r8, [2*rdx + 4]
- 1      1     0.33                        cmp	rsi, r8
- 2      2     0.67                        cmovne	rdi, rax
- 1      1     0.33                        cmp	rcx, -5
- 2      2     0.67                        cmovae	rdi, rax
- 1      1     0.33                        test	rdx, rdx
- 2      2     0.67                        cmovns	rax, rdi
- 1      1     0.33                        mov	rdx, rsi
+ 1      1     0.33                        mov	rax, rdi
+ 1      1     0.50                        lea	rdi, [rcx + rcx]
+ 1      1     0.33                        test	rcx, rcx
+ 1      1     0.50                        setns	r8b
+ 1      1     0.33                        cmp	rdi, -5
+ 1      1     0.50                        setb	dil
+ 1      1     0.33                        and	dil, r8b
+ 1      1     0.50                        lea	r8, [2*rcx + 4]
+ 1      1     0.33                        cmp	rdx, r8
+ 1      1     0.50                        sete	r8b
+ 1      1     0.33                        movabs	r9, 4611686018427387902
+ 1      1     0.33                        cmp	rcx, r9
+ 1      1     0.50                        setb	r9b
+ 1      1     0.33                        and	r9b, r8b
+ 1      1     0.33                        and	r9b, dil
+ 1      1     0.33                        cmp	r9b, 1
+ 1      1     1.00                        je	.LBB5_1
+ 1      1     1.00           *            mov	qword ptr [rax], 0
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        test	sil, 1
+ 1      1     1.00                        jne	.LBB5_2
+ 1      1     1.00           *            mov	qword ptr [rax], rsi
+ 1      1     1.00           *            mov	qword ptr [rax + 8], rdx
+ 1      1     1.00           *            mov	qword ptr [rax + 16], rcx
  1      1     1.00                  U     ret
 
 
@@ -48,22 +58,32 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.00   6.01    -     5.99    -      -     
+ -      -     6.99   7.00   4.00   7.01   2.00   2.00   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.87   0.13    -      -      -      -     lea	rcx, [rdx + rdx]
- -      -     0.07   0.16    -     0.77    -      -     mov	r8d, esi
- -      -     0.11   0.10    -     0.79    -      -     or	r8d, edi
- -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.10   0.86    -     0.04    -      -     test	r8b, 1
- -      -     0.13   0.90    -     0.97    -      -     cmovne	rdi, rax
- -      -     0.95   0.05    -      -      -      -     lea	r8, [2*rdx + 4]
- -      -     0.92   0.08    -      -      -      -     cmp	rsi, r8
- -      -     0.87   0.92    -     0.21    -      -     cmovne	rdi, rax
- -      -     0.06   0.04    -     0.90    -      -     cmp	rcx, -5
- -      -     0.85   0.95    -     0.20    -      -     cmovae	rdi, rax
- -      -     0.07   0.09    -     0.84    -      -     test	rdx, rdx
- -      -     0.90   0.90    -     0.20    -      -     cmovns	rax, rdi
- -      -     0.10   0.83    -     0.07    -      -     mov	rdx, rsi
+ -      -     0.08    -      -     0.92    -      -     mov	rax, rdi
+ -      -     0.99   0.01    -      -      -      -     lea	rdi, [rcx + rcx]
+ -      -     0.92   0.01    -     0.07    -      -     test	rcx, rcx
+ -      -     0.99    -      -     0.01    -      -     setns	r8b
+ -      -     0.01   0.01    -     0.98    -      -     cmp	rdi, -5
+ -      -     0.98    -      -     0.02    -      -     setb	dil
+ -      -      -     0.99    -     0.01    -      -     and	dil, r8b
+ -      -     0.01   0.99    -      -      -      -     lea	r8, [2*rcx + 4]
+ -      -     0.99   0.01    -      -      -      -     cmp	rdx, r8
+ -      -     1.00    -      -      -      -      -     sete	r8b
+ -      -     0.01    -      -     0.99    -      -     movabs	r9, 4611686018427387902
+ -      -      -     1.00    -      -      -      -     cmp	rcx, r9
+ -      -     0.99    -      -     0.01    -      -     setb	r9b
+ -      -     0.01   0.99    -      -      -      -     and	r9b, r8b
+ -      -     0.01   0.99    -      -      -      -     and	r9b, dil
+ -      -      -     1.00    -      -      -      -     cmp	r9b, 1
+ -      -      -      -      -     1.00    -      -     je	.LBB5_1
+ -      -      -      -     1.00    -      -     1.00   mov	qword ptr [rax], 0
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     1.00    -      -      -      -     test	sil, 1
+ -      -      -      -      -     1.00    -      -     jne	.LBB5_2
+ -      -      -      -     1.00    -     1.00    -     mov	qword ptr [rax], rsi
+ -      -      -      -     1.00    -      -     1.00   mov	qword ptr [rax + 8], rdx
+ -      -      -      -     1.00    -     1.00    -     mov	qword ptr [rax + 16], rcx
  -      -      -      -      -     1.00    -      -     ret

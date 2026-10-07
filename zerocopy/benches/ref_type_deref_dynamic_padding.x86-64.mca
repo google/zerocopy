@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      3100
-Total Cycles:      2146
-Total uOps:        3500
+Instructions:      2600
+Total Cycles:      1812
+Total uOps:        2900
 
 Dispatch Width:    4
-uOps Per Cycle:    1.63
-IPC:               1.44
-Block RThroughput: 8.8
+uOps Per Cycle:    1.60
+IPC:               1.43
+Block RThroughput: 7.3
 
 
 Instruction Info:
@@ -18,37 +18,32 @@ Instruction Info:
 [6]: HasSideEffects (U)
 
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
- 1      5     0.50    *                   mov	rcx, qword ptr [rdi]
- 1      5     0.50    *                   mov	rax, qword ptr [rdi + 8]
- 1      1     0.33                        test	cl, 3
- 1      1     0.50                        setne	dl
- 1      1     0.33                        cmp	rax, 12
- 1      1     0.50                        setb	sil
- 1      1     0.33                        or	sil, dl
- 1      1     1.00                        je	.LBB8_1
- 1      0     0.25                        xor	edx, edx
- 1      1     0.33                        test	cl, 3
- 1      1     0.50                        sete	dl
+ 1      5     0.50    *                   mov	rdx, qword ptr [rdi + 16]
+ 1      5     0.50    *                   mov	rax, qword ptr [rdi]
+ 1      5     0.50    *                   mov	rcx, qword ptr [rdi + 8]
+ 1      1     0.33                        mov	esi, 1
+ 1      1     0.33                        movabs	rdi, 3074457345618258599
+ 1      1     0.33                        cmp	rdx, rdi
+ 1      1     1.00                        jae	.LBB8_3
+ 1      1     0.33                        test	al, 3
+ 1      1     1.00                        jne	.LBB8_2
+ 1      1     0.50                        lea	rdi, [rdx + 2*rdx]
+ 1      1     0.33                        or	rdi, 3
+ 1      1     0.33                        add	rdi, 9
+ 1      1     0.33                        cmp	rcx, rdi
+ 1      1     1.00                        jne	.LBB8_3
+ 1      1     1.00                  U     ret
+ 1      0     0.25                        xor	esi, esi
  1      1     0.33                        sub	rsp, 24
- 1      1     1.00           *            mov	qword ptr [rsp], rdx
- 1      1     1.00           *            mov	qword ptr [rsp + 8], rcx
- 1      1     1.00           *            mov	qword ptr [rsp + 16], rax
+ 1      1     1.00           *            mov	qword ptr [rsp], rsi
+ 1      1     1.00           *            mov	qword ptr [rsp + 8], rax
+ 1      1     1.00           *            mov	qword ptr [rsp + 16], rcx
  1      1     0.50                        lea	rdi, [rip + .Lanon.HASH.7]
  1      1     0.50                        lea	rcx, [rip + .Lanon.HASH.1]
  1      1     0.50                        lea	r8, [rip + .Lanon.HASH.9]
  1      1     0.33                        mov	rdx, rsp
  1      1     0.33                        mov	esi, 58
  4      7     1.00    *                   call	qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
- 1      1     0.33                        test	al, 3
- 1      1     1.00                        jne	.LBB8_2
- 1      1     0.33                        add	rax, -9
- 1      1     0.33                        movabs	rdx, -6148914691236517205
- 2      4     1.00                        mul	rdx
- 1      1     0.50                        shr	rdx
- 1      1     0.33                        mov	rax, rcx
- 1      1     1.00                  U     ret
- 1      1     0.33                        mov	edx, 1
- 1      1     1.00                        jmp	.LBB8_4
 
 
 Resources:
@@ -64,38 +59,33 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     8.13   8.89   4.00   8.98   3.89   3.11   
+ -      -     6.41   6.42   4.00   6.17   3.99   4.01   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -      -      -      -      -     0.12   0.88   mov	rcx, qword ptr [rdi]
- -      -      -      -      -      -     0.91   0.09   mov	rax, qword ptr [rdi + 8]
- -      -     0.01   0.90    -     0.09    -      -     test	cl, 3
- -      -     0.17    -      -     0.83    -      -     setne	dl
- -      -     0.03   0.91    -     0.06    -      -     cmp	rax, 12
- -      -     0.16    -      -     0.84    -      -     setb	sil
- -      -     0.08   0.91    -     0.01    -      -     or	sil, dl
- -      -      -      -      -     1.00    -      -     je	.LBB8_1
- -      -      -      -      -      -      -      -     xor	edx, edx
- -      -     0.82   0.07    -     0.11    -      -     test	cl, 3
- -      -     0.83    -      -     0.17    -      -     sete	dl
- -      -     0.09   0.90    -     0.01    -      -     sub	rsp, 24
- -      -      -      -     1.00    -     0.06   0.94   mov	qword ptr [rsp], rdx
- -      -      -      -     1.00    -     0.93   0.07   mov	qword ptr [rsp + 8], rcx
- -      -      -      -     1.00    -     0.09   0.91   mov	qword ptr [rsp + 16], rax
- -      -     0.86   0.14    -      -      -      -     lea	rdi, [rip + .Lanon.HASH.7]
- -      -     0.15   0.85    -      -      -      -     lea	rcx, [rip + .Lanon.HASH.1]
- -      -     0.79   0.21    -      -      -      -     lea	r8, [rip + .Lanon.HASH.9]
- -      -      -     0.09    -     0.91    -      -     mov	rdx, rsp
- -      -     0.08   0.82    -     0.10    -      -     mov	esi, 58
- -      -      -      -     1.00   1.00   1.78   0.22   call	qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
- -      -     0.81   0.15    -     0.04    -      -     test	al, 3
+ -      -      -      -      -      -     0.54   0.46   mov	rdx, qword ptr [rdi + 16]
+ -      -      -      -      -      -     0.50   0.50   mov	rax, qword ptr [rdi]
+ -      -      -      -      -      -     0.49   0.51   mov	rcx, qword ptr [rdi + 8]
+ -      -     0.52   0.47    -     0.01    -      -     mov	esi, 1
+ -      -     0.47   0.53    -      -      -      -     movabs	rdi, 3074457345618258599
+ -      -     0.47   0.53    -      -      -      -     cmp	rdx, rdi
+ -      -      -      -      -     1.00    -      -     jae	.LBB8_3
+ -      -     0.54   0.44    -     0.02    -      -     test	al, 3
  -      -      -      -      -     1.00    -      -     jne	.LBB8_2
- -      -     0.15   0.85    -      -      -      -     add	rax, -9
- -      -     0.10   0.09    -     0.81    -      -     movabs	rdx, -6148914691236517205
- -      -     1.00   1.00    -      -      -      -     mul	rdx
- -      -     1.00    -      -      -      -      -     shr	rdx
- -      -     0.09   0.91    -      -      -      -     mov	rax, rcx
+ -      -     0.44   0.56    -      -      -      -     lea	rdi, [rdx + 2*rdx]
+ -      -     0.48   0.52    -      -      -      -     or	rdi, 3
+ -      -     0.48   0.48    -     0.04    -      -     add	rdi, 9
+ -      -     0.51   0.39    -     0.10    -      -     cmp	rcx, rdi
+ -      -      -      -      -     1.00    -      -     jne	.LBB8_3
  -      -      -      -      -     1.00    -      -     ret
- -      -     0.91   0.09    -      -      -      -     mov	edx, 1
- -      -      -      -      -     1.00    -      -     jmp	.LBB8_4
+ -      -      -      -      -      -      -      -     xor	esi, esi
+ -      -     0.53   0.47    -      -      -      -     sub	rsp, 24
+ -      -      -      -     1.00    -     0.52   0.48   mov	qword ptr [rsp], rsi
+ -      -      -      -     1.00    -     0.48   0.52   mov	qword ptr [rsp + 8], rax
+ -      -      -      -     1.00    -     0.52   0.48   mov	qword ptr [rsp + 16], rcx
+ -      -     0.49   0.51    -      -      -      -     lea	rdi, [rip + .Lanon.HASH.7]
+ -      -     0.46   0.54    -      -      -      -     lea	rcx, [rip + .Lanon.HASH.1]
+ -      -     0.54   0.46    -      -      -      -     lea	r8, [rip + .Lanon.HASH.9]
+ -      -     0.04   0.06    -     0.90    -      -     mov	rdx, rsp
+ -      -     0.44   0.46    -     0.10    -      -     mov	esi, 58
+ -      -      -      -     1.00   1.00   0.94   1.06   call	qword ptr [rip + core::result::unwrap_failed@GOTPCREL]

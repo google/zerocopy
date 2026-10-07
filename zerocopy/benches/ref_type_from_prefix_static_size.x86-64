@@ -1,13 +1,15 @@
 bench_ref_type_from_prefix_static_size:
-	mov ecx, edi
-	not ecx
-	cmp rsi, 6
-	setb dl
-	or dl, dil
-	and ecx, 1
-	xor eax, eax
-	test dl, 1
-	mov edx, 6
-	cmovne rdx, rcx
-	cmove rax, rdi
+	mov rax, rdi
+	cmp rdx, 6
+	setb cl
+	or cl, sil
+	test cl, 1
+	je .LBB5_2
+	xor esi, esi
+	mov qword ptr [rax], rsi
+	ret
+.LBB5_2:
+	mov qword ptr [rax + 8], 6
+	mov qword ptr [rax + 16], 0
+	mov qword ptr [rax], rsi
 	ret
