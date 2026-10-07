@@ -118,12 +118,12 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   -- `h_returns : get_unaligned_fast_pad ... = ok ret` hypothesis binding them!
 ///   have h_fast_pad_result : ret.val.val = 1 := by
 ///     unfold get_unaligned_fast_pad at h_returns
-///     -- When unwrapping monadic execution chains (e.g. evaluating `x = Result.ok y`),
-///     -- standard rewrites fail. Always apply `rw [..., Aeneas.Std.bind_tc_ok]`!
-///     rw [h_aspec, Aeneas.Std.bind_tc_ok] at h_returns
+///     -- Generated monadic chains use `Aeneas.Std.bind`. Reduce successful
+///     -- binds with `Aeneas.Std.bind_ok` after rewriting each call result.
+///     rw [h_aspec, Aeneas.Std.bind_ok] at h_returns
 ///     have h_valid : Anneal.IsValid.isValid h_layout.layout.align.val := by
 ///       simp_all [Anneal.IsValid.isValid]
-///     rw [fast_add_zero _ h_valid, Aeneas.Std.bind_tc_ok] at h_returns
+///     rw [fast_add_zero _ h_valid, Aeneas.Std.bind_ok] at h_returns
 ///     cases ret; simp_all
 ///
 ///   -- `h_ret_is_valid` is implicitly demanded by Anneal for all generated structures.
@@ -175,8 +175,8 @@ pub unsafe fn fast_add(a: usize, b: usize) -> usize {
 ///   rcases h_add with ⟨padded, h_add_eq⟩
 ///
 ///   -- 3. Conclude progress
-///   -- Chain evaluated states seamlessly using `bind_tc_ok`.
-///   rw [h_align_eq, Aeneas.Std.bind_tc_ok, h_add_eq, Aeneas.Std.bind_tc_ok]
+///   -- Chain evaluated states seamlessly using `bind_ok`.
+///   rw [h_align_eq, Aeneas.Std.bind_ok, h_add_eq, Aeneas.Std.bind_ok]
 ///   exact ⟨_, rfl⟩
 /// ```
 pub unsafe fn get_unaligned_fast_pad<T: Unaligned>() -> PositiveUsize {

@@ -30,8 +30,8 @@ pub fn get_align_of_empty_tuple() -> usize {
 
 /// ```anneal
 /// requires: ∃ (_sz : Anneal.core.marker.Sized T) (tl : Anneal.HasStaticLayout T), True
-/// ensures: match core.mem.size_of T with
-///   | Result.ok size => ret.val = size.val
+/// ensures: match (core.mem.size_of T).match with
+///   | .ok size => ret.val = size.val
 ///   | _ => False
 /// proof:
 ///   rcases h_anon with ⟨_sz, tl, _⟩
