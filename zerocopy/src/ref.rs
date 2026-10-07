@@ -315,7 +315,10 @@ where
         {
             return Err(e.with_src(()).with_src(source));
         }
-        // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
+        // SAFETY: `try_cast_into_no_leftover` validates the size and alignment
+        // of `source.deref()`. By the `ByteSlice` safety contract, moving
+        // `source` into the returned `Ref` does not change that address or
+        // length, so the validation remains valid for the `Ref`'s referent.
         Ok(unsafe { Ref::new_unchecked(source) })
     }
 }
