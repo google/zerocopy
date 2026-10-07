@@ -281,6 +281,8 @@ require aeneas from "{}""#,
         path.display()
     );
 
+    let rust_dep = format!(r#"require rust_model from "{}""#, toolchain.rust_lean_dir().display());
+
     let roots_str = lake_roots.iter().map(|r| format!("`{}", r)).collect::<Vec<_>>().join(", ");
 
     let lakefile = format!(
@@ -289,6 +291,7 @@ import Lake
 open Lake DSL
 
 {aeneas_dep}
+{rust_dep}
 
 package anneal_verification
 
@@ -385,13 +388,26 @@ fn generated_lake_manifest(
             )
         })?;
 
-    let mut packages = Vec::with_capacity(aeneas_packages.len() + 1);
+    let rust_lean_dir = fs::canonicalize(toolchain.rust_lean_dir()).with_context(|| {
+        format!(
+            "Failed to resolve Rust Lake package directory {}",
+            toolchain.rust_lean_dir().display()
+        )
+    })?;
+    let mut packages = Vec::with_capacity(aeneas_packages.len() + 2);
     let aeneas_lean_dir_manifest_path =
         path_to_manifest_string(&relative_manifest_path(&aeneas_lean_dir, workspace_root)?);
     packages.push(json!({
         "type": "path",
         "name": "aeneas",
         "dir": aeneas_lean_dir_manifest_path,
+        "inherited": false,
+    }));
+
+    packages.push(json!({
+        "type": "path",
+        "name": "rust_model",
+        "dir": path_to_manifest_string(&relative_manifest_path(&rust_lean_dir, workspace_root)?),
         "inherited": false,
     }));
 
@@ -991,6 +1007,8 @@ mod tests {
         let workspace_root = temp.path().join("workspace/target/anneal/hash/lean");
         let toolchain_root = temp.path().join("toolchain");
         let aeneas_lean = toolchain_root.join("aeneas/backends/lean");
+        let rust_lean = toolchain_root.join("rust-model");
+        std::fs::create_dir_all(&rust_lean).unwrap();
         let mathlib = toolchain_root.join("aeneas/packages/mathlib");
         let qq = toolchain_root.join("aeneas/packages/Qq");
         std::fs::create_dir_all(workspace_root.parent().unwrap()).unwrap();
@@ -1035,18 +1053,22 @@ mod tests {
         // is renamed into place.
         std::fs::create_dir_all(&workspace_root).unwrap();
 
-        assert_eq!(packages.len(), 3);
+        assert_eq!(packages.len(), 4);
         assert_eq!(packages[0]["name"], "aeneas");
         assert_manifest_dir_resolves(&workspace_root, &packages[0], &aeneas_lean);
         assert_eq!(packages[0]["inherited"], false);
 
-        assert_eq!(packages[1]["name"], "mathlib");
-        assert_manifest_dir_resolves(&workspace_root, &packages[1], &mathlib);
-        assert_eq!(packages[1]["inherited"], true);
+        assert_eq!(packages[1]["name"], "rust_model");
+        assert_manifest_dir_resolves(&workspace_root, &packages[1], &rust_lean);
+        assert_eq!(packages[1]["inherited"], false);
 
-        assert_eq!(packages[2]["name"], "Qq");
-        assert_manifest_dir_resolves(&workspace_root, &packages[2], &qq);
+        assert_eq!(packages[2]["name"], "mathlib");
+        assert_manifest_dir_resolves(&workspace_root, &packages[2], &mathlib);
         assert_eq!(packages[2]["inherited"], true);
+
+        assert_eq!(packages[3]["name"], "Qq");
+        assert_manifest_dir_resolves(&workspace_root, &packages[3], &qq);
+        assert_eq!(packages[3]["inherited"], true);
     }
 
     fn assert_manifest_dir_resolves(workspace_root: &Path, entry: &Value, expected: &Path) {

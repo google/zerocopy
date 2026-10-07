@@ -1,3 +1,4 @@
+import Rust
 import Aeneas.Std.Core
 import Aeneas.Std.WP
 import Aeneas.Tactic.Solver.ScalarTac
@@ -155,8 +156,7 @@ macro "verify_empty_post" fnc:ident : tactic => do
   This reflects Rust's requirement that all layout alignments are non-zero powers
   of two.
 -/
-def IsAlignment (n : Nat) : Prop :=
-  0 < n ∧ ∃ (k : Nat), n = 2^k
+abbrev IsAlignment := Rust.IsAlignment
 
 /-- A validated Rust alignment, bundling the value and its proof. -/
 structure Alignment where
@@ -168,7 +168,7 @@ structure Alignment where
 @[simp] theorem Alignment_isValid (a : Alignment) : IsAlignment a.val.val := a.isValid
 
 @[simp, grind .]
-theorem alignment_one : IsAlignment 1 := ⟨by decide, 0, by rfl⟩
+theorem alignment_one : IsAlignment 1 := Rust.alignment_one
 
 instance : Inhabited Alignment := ⟨⟨sz 1, alignment_one⟩⟩
 
@@ -261,6 +261,10 @@ structure SpecLayout where
   size : Nat
   align : Alignment
   sizeAligned : align.val.val ∣ size
+
+/-- Forget the frontend's machine-bounded alignment representation. -/
+abbrev SpecLayout.toGeometry (lay : SpecLayout) : Rust.Layout :=
+  ⟨lay.size, lay.align.val.val, lay.align.isValid, lay.sizeAligned⟩
 
 /--
   A valid physical memory layout for a value.
@@ -416,6 +420,9 @@ structure SpecSliceDstLayout where
   elementSize : Nat
   align : Alignment
 
+abbrev SpecSliceDstLayout.toGeometry (info : SpecSliceDstLayout) : Rust.SliceDstLayout :=
+  ⟨info.trailingOffset, info.elementSize, info.align.val.val, info.align.isValid⟩
+
 /--
   Provides the static slice DST layout properties for a given type.
 
@@ -431,35 +438,10 @@ class SpecSliceDstTypeLayout (α : Type) where
 class TrailingSlice (α : Type) where
   len : α → Nat
 
-/-- Rounds `val` up to the nearest multiple of `align`. -/
-def roundUpToAlign (val align : Nat) : Nat :=
-  ((val + align - 1) / align) * align
-
-/-- A theorem stating that rounding up always produces a value greater than or equal to the original value. -/
-theorem roundUpToAlign_ge (val align : Nat) (h : 0 < align) :
-  val ≤ roundUpToAlign val align := by
-  dsimp [roundUpToAlign]
-  have h1 : ((val + align - 1) / align) * align + (val + align - 1) % align = val + align - 1 := by
-    rw [Nat.mul_comm]
-    exact Nat.div_add_mod _ _
-  have h2 : (val + align - 1) % align < align := Nat.mod_lt _ h
-  omega
-
-/-- A theorem stating that if the resulting padded value is non-zero, it must be at least the alignment. -/
-theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0 < align) :
-  align ≤ roundUpToAlign val align := by
-  dsimp [roundUpToAlign]
-  have h_val_align : align ≤ val + align - 1 := by omega
-  have h_div_pos : 1 ≤ (val + align - 1) / align := Nat.div_pos h_val_align h_align
-  have h_mul : 1 * align ≤ ((val + align - 1) / align) * align := Nat.mul_le_mul_right align h_div_pos
-  omega
-
-
-
-
-
-
-
+-- Compatibility names for the independently checked mathematical library.
+abbrev roundUpToAlign := Rust.roundUpToAlign
+abbrev roundUpToAlign_ge := Rust.roundUpToAlign_ge
+abbrev align_le_roundUpToAlign := Rust.align_le_roundUpToAlign
 
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
@@ -468,8 +450,7 @@ theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0
   element count. It is not constrained by physical memory limits.
 -/
 def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
-  let unpaddedSize := info.trailingOffset + elemCount * info.elementSize
-  roundUpToAlign unpaddedSize info.align.val.val
+  Rust.reprCSliceDstSize info.toGeometry elemCount
 
 /--
   A theorem stating that the unpadded size rounded up to the alignment is always
@@ -477,8 +458,7 @@ def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
 -/
 theorem reprCSliceDstSize_aligned (info : SpecSliceDstLayout) (elemCount : Nat) :
   info.align.val.val ∣ reprCSliceDstSize info elemCount := by
-  dsimp [reprCSliceDstSize, roundUpToAlign]
-  exact ⟨_, Nat.mul_comm _ _⟩
+  exact Rust.reprCSliceDstSize_aligned info.toGeometry elemCount
 
 /-- Marker trait for types that are explicitly `#[repr(C)]`. -/
 class ReprC (α : Type)
@@ -753,14 +733,16 @@ structure Allocation where
   -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
   bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
 
+/-- Forget the frontend's machine bounds, retaining the shared allocation geometry. -/
+abbrev Allocation.toGeometry (a : Allocation) : Rust.Allocation :=
+  ⟨a.base.val, a.size.val, fun addr => addr ∈ a.addresses, a.bounds⟩
+
 namespace Allocation
 
 -- Consequence 1: `a - base` does not overflow `isize`
 theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     a - alloc.base.val ≤ Isize.max := by
-  have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
-  have h_sub : a - alloc.base.val < alloc.size.val := by omega
+  have h_sub := Rust.Allocation.offset_lt_size alloc.toGeometry a ha
   have h_size : alloc.size.val ≤ Isize.max := alloc.size_le_isize_max
   omega
 
@@ -769,14 +751,13 @@ theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.add
 -- which we prove here to show the offset is well-defined mathematically).
 theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     alloc.base.val ≤ a :=
-  (alloc.bounds a ha).left
+  Rust.Allocation.offset_non_negative alloc.toGeometry a ha
 
 -- Consequence 3: `base + o` will not wrap around the address space (overflow `usize`)
 -- `o = a - base`, so `base + o` is just `a` if `base <= a` (which we proved above).
 theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
     a ≤ Usize.max := by
-  have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
+  have h_lt := Rust.Allocation.address_lt_end alloc.toGeometry a ha
   have h_max : alloc.base.val + alloc.size.val ≤ Usize.max := alloc.base_add_size_le_usize_max
   omega
 
@@ -810,13 +791,17 @@ instance : Nonempty Referent :=
        intro a h
        simp at h }⟩
 
+/-- Forget the frontend's machine bounds, retaining the shared referent geometry. -/
+abbrev Referent.toGeometry (r : Referent) : Rust.Referent :=
+  ⟨r.address.val, r.size.val, fun addr => addr ∈ r.addresses, r.bounds⟩
+
 /--
   A predicate indicating that a referent's set of addresses fills the contiguous
   range `[address, address + size)`. This means every address in that range
   belongs to the referent's addresses.
 -/
 def Referent.IsContiguous (r : Referent) : Prop :=
-  ∀ a, r.address.val ≤ a ∧ a < r.address.val + r.size.val → a ∈ r.addresses
+  Rust.Referent.IsContiguous r.toGeometry
 
 /--
   A predicate indicating that a referent fits entirely within a given allocation.
@@ -825,8 +810,7 @@ def Referent.IsContiguous (r : Referent) : Prop :=
   a sub-range of the contiguous address range of the allocation.
 -/
 def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
-  r.addresses ⊆ a.addresses ∧
-  a.base.val ≤ r.address.val ∧ r.address.val + r.size.val ≤ a.base.val + a.size.val
+  Rust.FitsInAllocation r.toGeometry a.toGeometry
 
 /--
   A helper theorem proving that any address belonging to a referent that
@@ -834,9 +818,7 @@ def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
 -/
 theorem FitsInAllocation.address_bounds_alloc (r : Referent) (a : Allocation) (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses) :
   addr < a.base.val + a.size.val := by
-  have h_subset := h.left
-  have h_addr_in_alloc := h_subset ha
-  exact (a.bounds _ h_addr_in_alloc).right
+  exact Rust.FitsInAllocation.address_bounds_alloc r.toGeometry a.toGeometry h addr ha
 
 /--
   A class for types that act as pointers with a well-defined referent.

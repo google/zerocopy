@@ -287,6 +287,7 @@ jobs:
           mkdir -p anneal/target anneal/v1/release-download-check anneal/v1/release-metadata
 
           nix build ./anneal#omnibus-archive-ci --out-link "anneal/target/${ARCHIVE_NAME}"
+          nix build ./anneal#omnibus-archive-layout-check --no-link
           cp -L "anneal/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
           ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/v1/${ARCHIVE_NAME}")"
           printf 'Built %s (%s bytes)\n' "$ARCHIVE_NAME" "$ARCHIVE_SIZE"
