@@ -1240,38 +1240,71 @@ mod tests {
     impl_traits!(F32, f32, signed, @float);
     impl_traits!(F64, f64, signed, @float);
 
+    // Keep one type inventory for ordinary tests and the partitioned proofs.
+    macro_rules! for_each_unsigned_type {
+        ($callback:ident $(, $args:tt)*) => {
+            $callback!(U16, u16 $(, $args)*);
+            $callback!(U32, u32 $(, $args)*);
+            $callback!(U64, u64 $(, $args)*);
+            $callback!(U128, u128 $(, $args)*);
+            $callback!(Usize, usize $(, $args)*);
+        };
+    }
+
+    macro_rules! for_each_signed_type {
+        ($callback:ident $(, $args:tt)*) => {
+            $callback!(I16, i16 $(, $args)*);
+            $callback!(I32, i32 $(, $args)*);
+            $callback!(I64, i64 $(, $args)*);
+            $callback!(I128, i128 $(, $args)*);
+            $callback!(Isize, isize $(, $args)*);
+        };
+    }
+
+    macro_rules! for_each_float_type {
+        ($callback:ident $(, $args:tt)*) => {
+            $callback!(F32, f32 $(, $args)*);
+            $callback!(F64, f64 $(, $args)*);
+        };
+    }
+
+    macro_rules! for_each_type {
+        ($callback:ident $(, $args:tt)*) => {
+            for_each_unsigned_type!($callback $(, $args)*);
+            for_each_signed_type!($callback $(, $args)*);
+            for_each_float_type!($callback $(, $args)*);
+        };
+    }
+
+    macro_rules! call_for_type {
+        ($ty:ident, $module:ident, $function:ident, $byteorder:ident) => {
+            $function::<$ty<$byteorder>>();
+        };
+    }
+
     macro_rules! call_for_unsigned_types {
-        ($fn:ident, $byteorder:ident) => {
-            $fn::<U16<$byteorder>>();
-            $fn::<U32<$byteorder>>();
-            $fn::<U64<$byteorder>>();
-            $fn::<U128<$byteorder>>();
-            $fn::<Usize<$byteorder>>();
+        ($function:ident, $byteorder:ident) => {
+            for_each_unsigned_type!(call_for_type, $function, $byteorder);
         };
     }
 
+    #[cfg(test)]
     macro_rules! call_for_signed_types {
-        ($fn:ident, $byteorder:ident) => {
-            $fn::<I16<$byteorder>>();
-            $fn::<I32<$byteorder>>();
-            $fn::<I64<$byteorder>>();
-            $fn::<I128<$byteorder>>();
-            $fn::<Isize<$byteorder>>();
+        ($function:ident, $byteorder:ident) => {
+            for_each_signed_type!(call_for_type, $function, $byteorder);
         };
     }
 
+    #[cfg(test)]
     macro_rules! call_for_float_types {
-        ($fn:ident, $byteorder:ident) => {
-            $fn::<F32<$byteorder>>();
-            $fn::<F64<$byteorder>>();
+        ($function:ident, $byteorder:ident) => {
+            for_each_float_type!(call_for_type, $function, $byteorder);
         };
     }
 
     macro_rules! call_for_all_types {
-        ($fn:ident, $byteorder:ident) => {
-            call_for_unsigned_types!($fn, $byteorder);
-            call_for_signed_types!($fn, $byteorder);
-            call_for_float_types!($fn, $byteorder);
+        ($function:ident, $byteorder:ident) => {
+            for_each_type!(call_for_type, $function, $byteorder);
         };
     }
 
@@ -1344,44 +1377,70 @@ mod tests {
         call_for_unsigned_types!(test_max_value, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
-    fn test_endian() {
-        fn test<T: ByteOrderType>(invert: bool) {
-            let mut r = SmallRng::seed_from_u64(RNG_SEED);
-            for _ in 0..RAND_ITERS {
-                let native = T::Native::rand(&mut r);
-                let mut bytes = T::ByteArray::default();
-                bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
-                if invert {
-                    bytes = bytes.invert();
-                }
-                let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
-
-                from_native.assert_eq_or_nan(from_bytes);
-                from_native.get().assert_eq_or_nan(native);
-                from_bytes.get().assert_eq_or_nan(native);
-
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
-
-                let updated = T::Native::rand(&mut r);
-                from_native.set(updated);
-                from_native.get().assert_eq_or_nan(updated);
+    fn check_endian<T: ByteOrderType>(invert: bool) {
+        let mut r = SmallRng::seed_from_u64(RNG_SEED);
+        for _ in 0..RAND_ITERS {
+            let native = T::Native::rand(&mut r);
+            let mut bytes = T::ByteArray::default();
+            bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
+            if invert {
+                bytes = bytes.invert();
             }
-        }
+            let mut from_native = T::new(native);
+            let from_bytes = T::from_bytes(bytes);
 
+            from_native.assert_eq_or_nan(from_bytes);
+            from_native.get().assert_eq_or_nan(native);
+            from_bytes.get().assert_eq_or_nan(native);
+
+            assert_eq!(from_native.into_bytes(), bytes);
+            assert_eq!(from_bytes.into_bytes(), bytes);
+
+            let updated = T::Native::rand(&mut r);
+            from_native.set(updated);
+            from_native.get().assert_eq_or_nan(updated);
+        }
+    }
+
+    #[cfg(test)]
+    #[test]
+    fn test_endian() {
         fn test_native<T: ByteOrderType>() {
-            test::<T>(false);
+            check_endian::<T>(false);
         }
 
         fn test_non_native<T: ByteOrderType>() {
-            test::<T>(true);
+            check_endian::<T>(true);
         }
 
         call_for_all_types!(test_native, NativeEndian);
         call_for_all_types!(test_non_native, NonNativeEndian);
+    }
+
+    // Partition the original 24 type/endian instantiations. Each harness
+    // retains the same arbitrary inputs and assertions as the combined proof.
+    #[cfg(kani)]
+    mod proofs {
+        use super::*;
+
+        macro_rules! prove_endian_type {
+            ($ty:ident, $module:ident) => {
+                mod $module {
+                    use super::*;
+
+                    #[kani::proof]
+                    fn native() {
+                        check_endian::<$ty<NativeEndian>>(false);
+                    }
+                    #[kani::proof]
+                    fn non_native() {
+                        check_endian::<$ty<NonNativeEndian>>(true);
+                    }
+                }
+            };
+        }
+
+        for_each_type!(prove_endian_type);
     }
 
     #[test]
