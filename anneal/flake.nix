@@ -75,13 +75,13 @@
 
         rustToolchainSha256 = if system == "x86_64-linux" then "sha256-t9elSNKukvVVsD+GcDRNQeGewoz44Optv5j2+nJNY+s="
                               else if system == "aarch64-linux" then "sha256-l4v7ANDsaFgoyB/rXOsZMMd1mS6Wv2KsGuCIBMipc/w="
-                              else if system == "x86_64-darwin" then "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo="
+                              else if system == "x86_64-darwin" then "sha256-p5RO89GIzFtV6osz9clheFTBPZ4tkQy3l+Odj5S2uLU="
                               else if system == "aarch64-darwin" then "sha256-EZuO4uLKLDngPCqs9+MWzhYLVVqi/6SWvZ08L4n9+lw="
                               else throw "Unsupported system: ${system}";
 
         leanToolchainSha256 = if system == "x86_64-linux" then "sha256-B5ZDv1AMKN6M6zVLSL6nhDJ64R7ZxupuJvxfAbTn5hw="
                               else if system == "aarch64-linux" then "sha256-HNVY4B6PIaGzfk5wURbNYGm/v5t7ZLz+uzHExKnLM6A="
-                              else if system == "x86_64-darwin" then "sha256-DDPmVkXjSLDr21LXcdvNkmGjD2v+sbUyY+REr3uylwI="
+                              else if system == "x86_64-darwin" then "sha256-ntsUnj7dQ0h+zSg0Ez48N91x8sCu/bu/uuN5VrVecX0="
                               else if system == "aarch64-darwin" then "sha256-DqRuJqtagp5LLhGw0sD7fuDzqOB93cbIdJOK70GoXmE="
                               else throw "Unsupported system: ${system}";
 
@@ -263,7 +263,21 @@
             pkgs.runCommand "aeneas-${aeneasTarget}.tar.gz" {
               nativeBuildInputs = with pkgs; [ gnutar gzip ];
               passthru = { inherit toolchain; };
-              upstreamRelease = aeneas.packages.${system}.aeneas-release;
+              upstreamRelease = aeneas.packages.${system}.aeneas-release.overrideAttrs (old: {
+                nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.darwin.sigtool ];
+                buildInputs = map (input:
+                  if (input.pname or "") == "macdylibbundler" then
+                    input.overrideAttrs (bundler: {
+                      # sigtool signs the individual Mach-O files, but does not
+                      # implement Apple's bundle or metadata-preservation flags.
+                      postPatch = (bundler.postPatch or "") + ''
+                        substituteInPlace src/Utils.cpp --replace-fail \
+                          'codesign --force --deep --preserve-metadata=entitlements,requirements,flags,runtime' \
+                          'codesign --force'
+                      '';
+                    })
+                  else input) (old.buildInputs or []);
+              });
             } ''
               cd "$upstreamRelease"
               tar -czf "$out" *
