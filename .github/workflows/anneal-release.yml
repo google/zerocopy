@@ -12,19 +12,32 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            system: x86_64-linux
-          - os: ubuntu-24.04-arm
-            system: aarch64-linux
           - os: macos-26-intel
             system: x86_64-darwin
-          - os: macos-26
-            system: aarch64-darwin
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: DeterminateSystems/determinate-nix-action@4d65ea9cab522b6d9f29a170aed23ededc1b27af # v3.23.0
+        if: matrix.system != 'x86_64-darwin'
+      - name: Install pinned upstream Nix on native Intel Mac
+        if: matrix.system == 'x86_64-darwin'
+        shell: bash
+        run: |
+          set -euo pipefail
+          installer="$RUNNER_TEMP/nix-install-2.31.2"
+          curl --fail --silent --show-error --location \
+            https://releases.nixos.org/nix/nix-2.31.2/install -o "$installer"
+          printf '%s  %s\n' \
+            078e2ffeddf6a9c1f22adf41458ccc46a58bb26911a9e01579645314f9982994 \
+            "$installer" | shasum -a 256 -c -
+          printf 'experimental-features = nix-command flakes\nmax-jobs = 2\ncores = 2\ntrusted-users = root %s\n' \
+            "$USER" > "$RUNNER_TEMP/anneal-nix.conf"
+          sh "$installer" --daemon --yes --no-channel-add \
+            --nix-extra-conf-file "$RUNNER_TEMP/anneal-nix.conf"
+          echo /nix/var/nix/profiles/default/bin >> "$GITHUB_PATH"
+          echo "$HOME/.nix-profile/bin" >> "$GITHUB_PATH"
+          echo 'NIX_SSL_CERT_FILE=/etc/ssl/cert.pem' >> "$GITHUB_ENV"
       - name: Native Linux runtime prerequisites
         if: runner.os == 'Linux'
         run: |
