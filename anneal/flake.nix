@@ -557,6 +557,106 @@
           ];
         };
 
+        # Build the pure Rust semantics and its Aeneas companion against the
+        # archive's already-compiled backend and shared Mathlib dependencies.
+        packages.rust-model-compiled = pkgs.stdenv.mkDerivation {
+          pname = "anneal-rust-model-compiled";
+          version = "0.1.0";
+
+          src = ./lean;
+          leanToolchain = self.packages.${system}.lean-toolchain;
+          compiledAeneas = self.packages.${system}.aeneas-compiled;
+
+          nativeBuildInputs = with pkgs; [ python3 ];
+
+          buildPhase = builtins.concatStringsSep "\n" [
+            "export HOME=$TMPDIR"
+            "export PATH=\"$leanToolchain/bin:\$PATH\""
+            "export LEAN_SYSROOT=\"$leanToolchain\""
+            "export LD_LIBRARY_PATH=\"$leanToolchain/lib:$leanToolchain/lib/lean:\$LD_LIBRARY_PATH\""
+            "export MATHLIB_NO_CACHE_ON_UPDATE=1"
+            # Lake's --old mode requires compiled files to be newer than
+            # their sources. Nix normalizes both to the same timestamp, so a
+            # direct dependency on the store output would rebuild its caches.
+            # Stage a private copy with older inputs, as the final archive does,
+            # then freeze it. Never write to the authoritative backend output.
+            "mkdir -p $TMPDIR/bundle"
+            "cp -r $compiledAeneas $TMPDIR/bundle/aeneas"
+            "chmod -R +w $TMPDIR/bundle/aeneas"
+            "find $TMPDIR/bundle/aeneas -type f \\( -name \"*.lean\" -o -name \"lakefile.lean\" -o -name \"lakefile.toml\" -o -name \"lake-manifest.json\" -o -name \"lean-toolchain\" \\) -exec touch -h -d \"1970-01-01 00:00:00\" {} +"
+            "chmod -R a-w $TMPDIR/bundle/aeneas"
+            "cp -r . $TMPDIR/bundle/rust-model"
+            "cd $TMPDIR/bundle/rust-model"
+            # Keep the shared source package pin aligned with this archive's Lean.
+            "grep -Fxq 'leanprover/lean4:${leanVersion}' lean-toolchain"
+            (runLeanCommand "lake --old build Rust RustTests RustBytesTests")
+            (runLeanCommand "lake env lean -DwarningAsError=true RustTests.lean")
+            # Seed normal Lake path dependencies from the backend's manifest.
+            # os.path operations are lexical: resolving the bundle symlink
+            # would embed Nix store paths in the companion's manifest.
+            "python3 - <<'PY'"
+            "import json, os"
+            "backend = os.path.abspath('../aeneas/backends/lean')"
+            "companion = os.path.abspath('aeneas')"
+            "with open(os.path.join(backend, 'lake-manifest.json')) as source:"
+            "    manifest = json.load(source)"
+            "manifest['name'] = 'rust_model_aeneas'"
+            "for dep in manifest['packages']:"
+            "    assert dep['type'] == 'path', dep"
+            "    dep['dir'] = os.path.relpath(os.path.join(backend, dep['dir']), companion)"
+            "    dep['inherited'] = True"
+            "manifest['packages'] += ["
+            "    dict(type='path', name='rust_model', dir='..', inherited=False),"
+            "    dict(type='path', name='aeneas', dir='../../aeneas/backends/lean', inherited=False),"
+            "]"
+            "with open('aeneas/lake-manifest.json', 'w') as target:"
+            "    json.dump(manifest, target, indent=2)"
+            "    target.write('\\n')"
+            "PY"
+            "(cd aeneas && ${runLeanCommand "lake --old build RustAeneas RustAeneasTests"})"
+            "(cd aeneas && ${runLeanCommand "lake env lean -DwarningAsError=true RustAeneasTests.lean"})"
+            # A fresh verification workspace loads both packages as dependencies.
+            # Prime that package configuration while its build tree is writable.
+            "mkdir -p $TMPDIR/rust-model-config-primer/generated"
+            "cp lean-toolchain $TMPDIR/rust-model-config-primer/lean-toolchain"
+            "printf 'import RustAeneas\\n' > $TMPDIR/rust-model-config-primer/generated/Generated.lean"
+            "cat > $TMPDIR/rust-model-config-primer/lakefile.lean <<'EOF'"
+            "import Lake"
+            "open Lake DSL"
+            ""
+            "require rust_model from \"@RUST_MODEL_ROOT@\""
+            "require rust_model_aeneas from \"@RUST_MODEL_ROOT@/aeneas\""
+            "require aeneas from \"@AENEAS_ROOT@/backends/lean\""
+            ""
+            "package anneal_verification"
+            ""
+            "@[default_target]"
+            "lean_lib Generated where"
+            "  srcDir := \"generated\""
+            "  roots := #[`Generated]"
+            "EOF"
+            "substituteInPlace $TMPDIR/rust-model-config-primer/lakefile.lean --replace-fail @RUST_MODEL_ROOT@ \"$PWD\" --replace-fail @AENEAS_ROOT@ \"$TMPDIR/bundle/aeneas\""
+            "(cd $TMPDIR/rust-model-config-primer && ${runLeanCommand "lake --old build Generated"})"
+            "test -n \"\$(find .lake/config -type f -name lakefile.olean -print)\""
+            "test -n \"\$(find aeneas/.lake/config -type f -name lakefile.olean -print)\""
+            "mkdir -p $TMPDIR/empty-packages"
+            # Restrict rewriting to our writable model tree. In particular,
+            # never walk compiledAeneas or its shared dependency packages.
+            "python3 ${./rewrite-lake-vendor.py} --root . --packages-dir $TMPDIR/empty-packages --rewrite-traces --trace-prefix \"$compiledAeneas=aeneas\" --trace-prefix \"$TMPDIR/bundle/aeneas=aeneas\" --trace-prefix \"$leanToolchain=lean\""
+            "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
+            "if find . -type f -name \"*.trace\" -exec grep -EIl \"\$TRACE_ABS_RE\" {} + | grep -q .; then"
+            "  echo \"ERROR: non-relocatable Rust model trace paths remain\" >&2"
+            "  exit 1"
+            "fi"
+          ];
+
+          installPhase = builtins.concatStringsSep "\n" [
+            "mkdir -p $out"
+            "cp -r $TMPDIR/bundle/rust-model/. $out/"
+            "find $out -type f \\( -name \"*.lean\" -o -name \"lakefile.lean\" -o -name \"lakefile.toml\" -o -name \"lake-manifest.json\" -o -name \"lean-toolchain\" \\) -exec touch -h -d \"1970-01-01 00:00:00\" {} +"
+          ];
+        };
+
         # Stages the relocatable toolchain bundle before compression.
         packages.omnibus-tar = pkgs.stdenv.mkDerivation {
           pname = "anneal-toolchain-omnibus-tar";
@@ -572,6 +672,7 @@
           ];
 
           aeneasBuild = self.packages.${system}.aeneas-compiled;
+          rustModelBuild = self.packages.${system}.rust-model-compiled;
           rustToolchain = self.packages.${system}.rust-toolchain;
           leanToolchain = self.packages.${system}.lean-toolchain;
 
@@ -587,6 +688,9 @@
             "mkdir -p $TMPDIR/dist_staging/aeneas"
             "cp -r $aeneasBuild/* $TMPDIR/dist_staging/aeneas/"
             "chmod -R +w $TMPDIR/dist_staging/aeneas"
+            "mkdir -p $TMPDIR/dist_staging/rust-model"
+            "cp -r $rustModelBuild/. $TMPDIR/dist_staging/rust-model/"
+            "chmod -R +w $TMPDIR/dist_staging/rust-model"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             # Remove Nix dynamic-linker and RPATH references from ELF binaries.
             "echo \"Cleaning up Nix store references...\""
@@ -614,6 +718,7 @@
             # workspaces can use `lake --old` against the installed archive
             # without setup-time mtime repair.
             "find $TMPDIR/dist_staging/aeneas -type f \\( -name \"*.lean\" -o -name \"lakefile.lean\" -o -name \"lakefile.toml\" -o -name \"lake-manifest.json\" -o -name \"lean-toolchain\" \\) -exec touch -h -d \"1970-01-01 00:00:00\" {} +"
+            "find $TMPDIR/dist_staging/rust-model -type f \\( -name \"*.lean\" -o -name \"lakefile.lean\" -o -name \"lakefile.toml\" -o -name \"lake-manifest.json\" -o -name \"lean-toolchain\" \\) -exec touch -h -d \"1970-01-01 00:00:00\" {} +"
             "chmod -R a-w $TMPDIR/dist_staging"
             "cd $TMPDIR/dist_staging"
             "tar -cf $out *"
@@ -669,6 +774,7 @@
             aeneas
             lean
             rust
+            rust-model
             EOF
             if ! diff -u "$TMPDIR/archive/expected-top-level" "$TMPDIR/archive/top-level"; then
               echo "ERROR: unexpected top-level archive layout" >&2
@@ -684,19 +790,40 @@
               aeneas/packages/mathlib/lake-manifest.json \
               lean/bin/lean \
               rust/bin/cargo \
-              rust/bin/rustc; do
+              rust/bin/rustc \
+              rust-model/lakefile.lean \
+              rust-model/lake-manifest.json \
+              rust-model/aeneas/lakefile.lean \
+              rust-model/aeneas/lake-manifest.json \
+              rust-model/Rust/Arithmetic.lean \
+              rust-model/.lake/build/lib/lean/Rust/Arithmetic.olean \
+              rust-model/aeneas/RustAeneas.lean \
+              rust-model/aeneas/RustAeneas/Machine.lean \
+              rust-model/aeneas/RustAeneas/Bytes.lean \
+              rust-model/aeneas/.lake/build/lib/lean/RustAeneas.olean \
+              rust-model/aeneas/.lake/build/lib/lean/RustAeneas/Machine.olean \
+              rust-model/aeneas/.lake/build/lib/lean/RustAeneas/Bytes.olean \
+              rust-model/aeneas/.lake/build/lib/lean/RustAeneasTests.olean \
+              rust-model/.lake/build/lib/lean/Rust.olean \
+              rust-model/.lake/build/lib/lean/Rust/Layout.olean \
+              rust-model/.lake/build/lib/lean/Rust/Memory.olean \
+              rust-model/.lake/build/lib/lean/Rust/Bytes.olean \
+              rust-model/.lake/build/lib/lean/RustTests.olean \
+              rust-model/.lake/build/lib/lean/RustBytesTests.olean; do
               if ! grep -Fxq "$path" "$TMPDIR/archive/entries"; then
                 echo "ERROR: expected archive entry missing: $path" >&2
                 exit 1
               fi
             done
 
-            # Lean 4.31 stores dependency configurations under numbered
-            # directories at the workspace root.
-            if ! grep -Eq '^aeneas/backends/lean/\.lake/config/[^/]+/lakefile\.olean$' "$TMPDIR/archive/entries"; then
-              echo "ERROR: archive is missing the Aeneas Lake package configuration" >&2
-              exit 1
-            fi
+            # Lean 4.31 caches dependency configurations in the workspace
+            # root, rather than under each dependency package.
+            for package_root in aeneas/backends/lean rust-model rust-model/aeneas; do
+              if ! grep -Eq "^$package_root/\\.lake/config/[^/]+/lakefile\\.olean$" "$TMPDIR/archive/entries"; then
+                echo "ERROR: archive is missing Lake package configuration for $package_root" >&2
+                exit 1
+              fi
+            done
 
             if ! grep -Eq '^aeneas/packages/mathlib/\.lake/build/lib/lean/Mathlib/.+\.olean$' "$TMPDIR/archive/entries"; then
               echo "ERROR: archive is missing Mathlib .olean cache artifacts" >&2
