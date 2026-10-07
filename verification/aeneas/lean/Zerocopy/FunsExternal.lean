@@ -19,6 +19,13 @@ def core.num.niche_types.NonZeroUsizeInner.Insts.CoreCloneClone.clone
     (x : core.num.niche_types.NonZeroUsizeInner) :
     Result core.num.niche_types.NonZeroUsizeInner := .ok x
 
+-- Rust's unchecked integer operations are defined only when their exact
+-- arithmetic fits. Use the backend's checked operations on that domain. A
+-- failed model run outside it establishes no Rust behavior: the corresponding
+-- Rust operation has undefined behavior, rather than a promised panic.
+def core.num.Usize.unchecked_add (left right : Usize) : Result Usize := left + right
+def core.num.Usize.unchecked_mul (left right : Usize) : Result Usize := left * right
+
 @[simp] def core.num.nonzero.NonZero.get
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
