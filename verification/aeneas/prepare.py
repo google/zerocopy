@@ -74,6 +74,14 @@ def share_manifest(workspace, backend, rust_model):
         "dir": str(rust_model), "manifestFile": "lake-manifest.json",
         "configFile": "lakefile.lean",
     })
+    companion = rust_model / "aeneas"
+    if not (companion / "lakefile.lean").is_file():
+        raise ValueError(f"Missing shared Rust Aeneas package: {companion}")
+    packages.append({
+        "type": "path", "scope": "", "name": "rust_model_aeneas", "inherited": False,
+        "dir": str(companion), "manifestFile": "lake-manifest.json",
+        "configFile": "lakefile.lean",
+    })
     for dep in upstream["packages"]:
         # Anneal vendors each dependency at the path in its manifest. These
         # paths can leave the backend directory; they are not Lake Git caches.
@@ -100,6 +108,10 @@ def share_manifest(workspace, backend, rust_model):
         'import Lake\nopen Lake DSL\n'
         f'require aeneas from {json.dumps(str(backend))}\n'
         f'require rust_model from {json.dumps(str(rust_model))}\n'
+        # Source builds share the already installed backend. This is a path
+        # to that backend, not an independently selected version or toolchain.
+        f'require rust_model_aeneas from {json.dumps(str(companion))} with\n'
+        f'  Lean.NameMap.insert {{}} `aeneasPath {json.dumps(str(backend))}\n'
         'package zerocopyVerification where\n'
         '  moreLeanArgs := #["-DwarningAsError=true"]\n' + declarations)
 
