@@ -10,8 +10,8 @@ fixture="$(nix build --impure --no-link --print-out-paths --max-jobs 2 --cores 2
   2> >(tee "$evidence/build.log" >&2))"
 printf '%s\n' "$fixture" > "$evidence/store-path"
 workspace="$(mktemp -d "$RUNNER_TEMP/anneal-intel-signing.XXXXXX")"
-cp -R "$fixture" "$workspace/first"
-mv "$workspace/first" "$workspace/relocated"
+# Copy out of the store to test relocation while retaining read-only files.
+cp -R "$fixture" "$workspace/relocated"
 relocated="$workspace/relocated"
 test -x "$relocated/factor"
 test -n "$(find "$relocated/libs" -type f -name '*gmp*.dylib' -print -quit)"
