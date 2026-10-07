@@ -64,8 +64,586 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
   innerCopyInst := core.num.niche_types.NonZeroUsizeInner.Insts.CoreMarkerCopy
 }
 
+/-- Trait implementation: [zerocopy::byteorder::private::{impl zerocopy::byteorder::private::Sealed for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 97:4-97:39 -/
+@[reducible]
+def byteorder.BigEndian.Insts.ZerocopyByteorderPrivateSealed :
+  byteorder.private.Sealed byteorder.BigEndian := {
+}
+
+/-- Trait implementation: [zerocopy::byteorder::private::{impl zerocopy::byteorder::private::Sealed for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 98:4-98:42 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.ZerocopyByteorderPrivateSealed :
+  byteorder.private.Sealed byteorder.LittleEndian := {
+}
+
+/-- [zerocopy::byteorder::{impl core::clone::Clone for zerocopy::byteorder::BigEndian}::clone]:
+    Source: 'src/byteorder.rs', lines 113:15-113:20
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreCloneClone.clone
+  (self : byteorder.BigEndian) : Result byteorder.BigEndian := do
+  ok self
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::clone::Clone for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:15-113:20 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreCloneClone : core.clone.Clone
+  byteorder.BigEndian := {
+  clone := byteorder.BigEndian.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::marker::Copy for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:9-113:13 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreMarkerCopy : core.marker.Copy
+  byteorder.BigEndian := {
+  cloneInst := byteorder.BigEndian.Insts.CoreCloneClone
+}
+
+/-- [zerocopy::byteorder::{impl core::fmt::Debug for zerocopy::byteorder::BigEndian}::fmt]:
+    Source: 'src/byteorder.rs', lines 113:22-113:27
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreFmtDebug.fmt
+  (self : byteorder.BigEndian) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::fmt::Debug for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:22-113:27 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreFmtDebug : core.fmt.Debug byteorder.BigEndian
+  := {
+  fmt := byteorder.BigEndian.Insts.CoreFmtDebug.fmt
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::PartialEq<zerocopy::byteorder::BigEndian> for zerocopy::byteorder::BigEndian}::eq]:
+    Source: 'src/byteorder.rs', lines 113:33-113:42
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian.eq
+  (self : byteorder.BigEndian) (other : byteorder.BigEndian) :
+  Result Bool
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::PartialEq<zerocopy::byteorder::BigEndian> for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:33-113:42 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian : core.cmp.PartialEq
+  byteorder.BigEndian byteorder.BigEndian := {
+  eq := byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian.eq
+}
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::Eq for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:29-113:31 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreCmpEq : core.cmp.Eq byteorder.BigEndian := {
+  partialEqInst := byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::PartialOrd<zerocopy::byteorder::BigEndian> for zerocopy::byteorder::BigEndian}::partial_cmp]:
+    Source: 'src/byteorder.rs', lines 113:49-113:59
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreCmpPartialOrdBigEndian.partial_cmp
+  (self : byteorder.BigEndian) (other : byteorder.BigEndian) :
+  Result (Option Ordering)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::PartialOrd<zerocopy::byteorder::BigEndian> for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:49-113:59 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreCmpPartialOrdBigEndian : core.cmp.PartialOrd
+  byteorder.BigEndian byteorder.BigEndian := {
+  partialEqInst := byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian
+  partial_cmp :=
+    byteorder.BigEndian.Insts.CoreCmpPartialOrdBigEndian.partial_cmp
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::Ord for zerocopy::byteorder::BigEndian}::cmp]:
+    Source: 'src/byteorder.rs', lines 113:44-113:47
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreCmpOrd.cmp
+  (self : byteorder.BigEndian) (other : byteorder.BigEndian) :
+  Result Ordering
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::Ord for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:44-113:47 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreCmpOrd : core.cmp.Ord byteorder.BigEndian
+  := {
+  eqInst := byteorder.BigEndian.Insts.CoreCmpEq
+  partialOrdInst := byteorder.BigEndian.Insts.CoreCmpPartialOrdBigEndian
+  cmp := byteorder.BigEndian.Insts.CoreCmpOrd.cmp
+}
+
+/-- [zerocopy::byteorder::{impl core::hash::Hash for zerocopy::byteorder::BigEndian}::hash]:
+    Source: 'src/byteorder.rs', lines 113:61-113:65
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreHashHash.hash
+  {__H : Type} (corehashHasherInst : core.hash.Hasher __H)
+  (self : byteorder.BigEndian) (state : __H) :
+  Result __H
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::hash::Hash for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 113:61-113:65 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreHashHash : core.hash.Hash byteorder.BigEndian
+  := {
+  hash := fun {H : Type} (corehashHasherInst : core.hash.Hasher H) =>
+    byteorder.BigEndian.Insts.CoreHashHash.hash corehashHasherInst
+}
+
+/-- [zerocopy::byteorder::{impl core::fmt::Display for zerocopy::byteorder::BigEndian}::fmt]:
+    Source: 'src/byteorder.rs', lines 122:4-124:5
+    Visibility: public -/
+def byteorder.BigEndian.Insts.CoreFmtDisplay.fmt
+  (self : byteorder.BigEndian) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::fmt::Display for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 120:0-125:1 -/
+@[reducible]
+def byteorder.BigEndian.Insts.CoreFmtDisplay : core.fmt.Display
+  byteorder.BigEndian := {
+  fmt := byteorder.BigEndian.Insts.CoreFmtDisplay.fmt
+}
+
+/-- [zerocopy::byteorder::{impl zerocopy::byteorder::ByteOrder for zerocopy::byteorder::BigEndian}::ORDER]
+    Source: 'src/byteorder.rs', lines 117:4-117:42
+    Visibility: public -/
+@[global_simps, irreducible]
+def byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder.ORDER
+  : byteorder.Order :=
+  byteorder.Order.BigEndian
+
+/-- Trait implementation: [zerocopy::byteorder::{impl zerocopy::byteorder::ByteOrder for zerocopy::byteorder::BigEndian}]
+    Source: 'src/byteorder.rs', lines 116:0-118:1 -/
+@[reducible]
+def byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder : byteorder.ByteOrder
+  byteorder.BigEndian := {
+  ORDER := ok byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder.ORDER
+  coremarkerCopyInst := byteorder.BigEndian.Insts.CoreMarkerCopy
+  corecloneCloneInst := byteorder.BigEndian.Insts.CoreCloneClone
+  corefmtDebugInst := byteorder.BigEndian.Insts.CoreFmtDebug
+  corefmtDisplayInst := byteorder.BigEndian.Insts.CoreFmtDisplay
+  corecmpEqInst := byteorder.BigEndian.Insts.CoreCmpEq
+  corecmpPartialEqInst := byteorder.BigEndian.Insts.CoreCmpPartialEqBigEndian
+  corecmpOrdInst := byteorder.BigEndian.Insts.CoreCmpOrd
+  corecmpPartialOrdInst := byteorder.BigEndian.Insts.CoreCmpPartialOrdBigEndian
+  corehashHashInst := byteorder.BigEndian.Insts.CoreHashHash
+  privateSealedInst := byteorder.BigEndian.Insts.ZerocopyByteorderPrivateSealed
+}
+
+/-- [zerocopy::byteorder::{impl core::clone::Clone for zerocopy::byteorder::LittleEndian}::clone]:
+    Source: 'src/byteorder.rs', lines 130:15-130:20
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreCloneClone.clone
+  (self : byteorder.LittleEndian) : Result byteorder.LittleEndian := do
+  ok self
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::clone::Clone for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:15-130:20 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreCloneClone : core.clone.Clone
+  byteorder.LittleEndian := {
+  clone := byteorder.LittleEndian.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::marker::Copy for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:9-130:13 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreMarkerCopy : core.marker.Copy
+  byteorder.LittleEndian := {
+  cloneInst := byteorder.LittleEndian.Insts.CoreCloneClone
+}
+
+/-- [zerocopy::byteorder::{impl core::fmt::Debug for zerocopy::byteorder::LittleEndian}::fmt]:
+    Source: 'src/byteorder.rs', lines 130:22-130:27
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreFmtDebug.fmt
+  (self : byteorder.LittleEndian) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::fmt::Debug for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:22-130:27 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreFmtDebug : core.fmt.Debug
+  byteorder.LittleEndian := {
+  fmt := byteorder.LittleEndian.Insts.CoreFmtDebug.fmt
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::PartialEq<zerocopy::byteorder::LittleEndian> for zerocopy::byteorder::LittleEndian}::eq]:
+    Source: 'src/byteorder.rs', lines 130:33-130:42
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian.eq
+  (self : byteorder.LittleEndian) (other : byteorder.LittleEndian) :
+  Result Bool
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::PartialEq<zerocopy::byteorder::LittleEndian> for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:33-130:42 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian :
+  core.cmp.PartialEq byteorder.LittleEndian byteorder.LittleEndian := {
+  eq := byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian.eq
+}
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::Eq for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:29-130:31 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreCmpEq : core.cmp.Eq byteorder.LittleEndian
+  := {
+  partialEqInst := byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::PartialOrd<zerocopy::byteorder::LittleEndian> for zerocopy::byteorder::LittleEndian}::partial_cmp]:
+    Source: 'src/byteorder.rs', lines 130:49-130:59
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreCmpPartialOrdLittleEndian.partial_cmp
+  (self : byteorder.LittleEndian) (other : byteorder.LittleEndian) :
+  Result (Option Ordering)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::PartialOrd<zerocopy::byteorder::LittleEndian> for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:49-130:59 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreCmpPartialOrdLittleEndian :
+  core.cmp.PartialOrd byteorder.LittleEndian byteorder.LittleEndian := {
+  partialEqInst := byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian
+  partial_cmp :=
+    byteorder.LittleEndian.Insts.CoreCmpPartialOrdLittleEndian.partial_cmp
+}
+
+/-- [zerocopy::byteorder::{impl core::cmp::Ord for zerocopy::byteorder::LittleEndian}::cmp]:
+    Source: 'src/byteorder.rs', lines 130:44-130:47
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreCmpOrd.cmp
+  (self : byteorder.LittleEndian) (other : byteorder.LittleEndian) :
+  Result Ordering
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::cmp::Ord for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:44-130:47 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreCmpOrd : core.cmp.Ord
+  byteorder.LittleEndian := {
+  eqInst := byteorder.LittleEndian.Insts.CoreCmpEq
+  partialOrdInst := byteorder.LittleEndian.Insts.CoreCmpPartialOrdLittleEndian
+  cmp := byteorder.LittleEndian.Insts.CoreCmpOrd.cmp
+}
+
+/-- [zerocopy::byteorder::{impl core::hash::Hash for zerocopy::byteorder::LittleEndian}::hash]:
+    Source: 'src/byteorder.rs', lines 130:61-130:65
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreHashHash.hash
+  {__H : Type} (corehashHasherInst : core.hash.Hasher __H)
+  (self : byteorder.LittleEndian) (state : __H) :
+  Result __H
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::hash::Hash for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 130:61-130:65 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreHashHash : core.hash.Hash
+  byteorder.LittleEndian := {
+  hash := fun {H : Type} (corehashHasherInst : core.hash.Hasher H) =>
+    byteorder.LittleEndian.Insts.CoreHashHash.hash corehashHasherInst
+}
+
+/-- [zerocopy::byteorder::{impl core::fmt::Display for zerocopy::byteorder::LittleEndian}::fmt]:
+    Source: 'src/byteorder.rs', lines 139:4-141:5
+    Visibility: public -/
+def byteorder.LittleEndian.Insts.CoreFmtDisplay.fmt
+  (self : byteorder.LittleEndian) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  fail panic
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::fmt::Display for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 137:0-142:1 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.CoreFmtDisplay : core.fmt.Display
+  byteorder.LittleEndian := {
+  fmt := byteorder.LittleEndian.Insts.CoreFmtDisplay.fmt
+}
+
+/-- [zerocopy::byteorder::{impl zerocopy::byteorder::ByteOrder for zerocopy::byteorder::LittleEndian}::ORDER]
+    Source: 'src/byteorder.rs', lines 134:4-134:45
+    Visibility: public -/
+@[global_simps, irreducible]
+def byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder.ORDER
+  : byteorder.Order :=
+  byteorder.Order.LittleEndian
+
+/-- Trait implementation: [zerocopy::byteorder::{impl zerocopy::byteorder::ByteOrder for zerocopy::byteorder::LittleEndian}]
+    Source: 'src/byteorder.rs', lines 133:0-135:1 -/
+@[reducible]
+def byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder :
+  byteorder.ByteOrder byteorder.LittleEndian := {
+  ORDER := ok byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder.ORDER
+  coremarkerCopyInst := byteorder.LittleEndian.Insts.CoreMarkerCopy
+  corecloneCloneInst := byteorder.LittleEndian.Insts.CoreCloneClone
+  corefmtDebugInst := byteorder.LittleEndian.Insts.CoreFmtDebug
+  corefmtDisplayInst := byteorder.LittleEndian.Insts.CoreFmtDisplay
+  corecmpEqInst := byteorder.LittleEndian.Insts.CoreCmpEq
+  corecmpPartialEqInst :=
+    byteorder.LittleEndian.Insts.CoreCmpPartialEqLittleEndian
+  corecmpOrdInst := byteorder.LittleEndian.Insts.CoreCmpOrd
+  corecmpPartialOrdInst :=
+    byteorder.LittleEndian.Insts.CoreCmpPartialOrdLittleEndian
+  corehashHashInst := byteorder.LittleEndian.Insts.CoreHashHash
+  privateSealedInst :=
+    byteorder.LittleEndian.Insts.ZerocopyByteorderPrivateSealed
+}
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::from_bytes]:
+    Source: 'src/byteorder.rs', lines 570:12-572:13
+    Visibility: public -/
+def byteorder.U16.from_bytes
+  (O : Type) (bytes : Array Std.U8 2#usize) : Result (byteorder.U16 O) := do
+  ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::from_bytes]:
+    Source: 'src/byteorder.rs', lines 570:12-572:13
+    Visibility: public -/
+def byteorder.U32.from_bytes
+  (O : Type) (bytes : Array Std.U8 4#usize) : Result (byteorder.U32 O) := do
+  ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::new]:
+    Source: 'src/util/macros.rs', lines 560:21-560:88
+    Visibility: public -/
+def byteorder.U16.new
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (n : Std.U16) :
+  Result (byteorder.U16 O)
+  := do
+  let o ← ByteOrderInst.ORDER
+  match o with
+  | byteorder.Order.BigEndian =>
+    let bytes ← lift (core.num.U16.to_be_bytes n)
+    ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+  | byteorder.Order.LittleEndian =>
+    let bytes ← lift (core.num.U16.to_le_bytes n)
+    ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::set]:
+    Source: 'src/byteorder.rs', lines 619:12-621:13
+    Visibility: public -/
+def byteorder.U16.set
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U16 O)
+  (n : Std.U16) :
+  Result (byteorder.U16 O)
+  := do
+  byteorder.U16.new ByteOrderInst n
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::new]:
+    Source: 'src/util/macros.rs', lines 560:21-560:88
+    Visibility: public -/
+def byteorder.U32.new
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (n : Std.U32) :
+  Result (byteorder.U32 O)
+  := do
+  let o ← ByteOrderInst.ORDER
+  match o with
+  | byteorder.Order.BigEndian =>
+    let bytes ← lift (core.num.U32.to_be_bytes n)
+    ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+  | byteorder.Order.LittleEndian =>
+    let bytes ← lift (core.num.U32.to_le_bytes n)
+    ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::set]:
+    Source: 'src/byteorder.rs', lines 619:12-621:13
+    Visibility: public -/
+def byteorder.U32.set
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U32 O)
+  (n : Std.U32) :
+  Result (byteorder.U32 O)
+  := do
+  byteorder.U32.new ByteOrderInst n
+
+/-- [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U16<O>> for [u8; 2usize]}::from]:
+    Source: 'src/byteorder.rs', lines 631:12-633:13
+    Visibility: public -/
+def ArrayU82.Insts.CoreConvertFromU16.from
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (x : byteorder.U16 O) :
+  Result (Array Std.U8 2#usize)
+  := do
+  ok x._0
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U16<O>> for [u8; 2usize]}]
+    Source: 'src/byteorder.rs', lines 629:8-634:9 -/
+@[reducible]
+def ArrayU82.Insts.CoreConvertFromU16 {O : Type} (ByteOrderInst :
+  byteorder.ByteOrder O) : core.convert.From (Array Std.U8 2#usize)
+  (byteorder.U16 O) := {
+  «from» := ArrayU82.Insts.CoreConvertFromU16.from ByteOrderInst
+}
+
+/-- [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U32<O>> for [u8; 4usize]}::from]:
+    Source: 'src/byteorder.rs', lines 631:12-633:13
+    Visibility: public -/
+def ArrayU84.Insts.CoreConvertFromU32.from
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (x : byteorder.U32 O) :
+  Result (Array Std.U8 4#usize)
+  := do
+  ok x._0
+
+/-- Trait implementation: [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U32<O>> for [u8; 4usize]}]
+    Source: 'src/byteorder.rs', lines 629:8-634:9 -/
+@[reducible]
+def ArrayU84.Insts.CoreConvertFromU32 {O : Type} (ByteOrderInst :
+  byteorder.ByteOrder O) : core.convert.From (Array Std.U8 4#usize)
+  (byteorder.U32 O) := {
+  «from» := ArrayU84.Insts.CoreConvertFromU32.from ByteOrderInst
+}
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::get]:
+    Source: 'src/util/macros.rs', lines 560:21-560:88
+    Visibility: public -/
+def byteorder.U16.get
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U16 O) :
+  Result Std.U16
+  := do
+  let o ← ByteOrderInst.ORDER
+  match o with
+  | byteorder.Order.BigEndian => ok (core.num.U16.from_be_bytes self._0)
+  | byteorder.Order.LittleEndian => ok (core.num.U16.from_le_bytes self._0)
+
+/-- [zerocopy::byteorder::verification::read_u16_le]:
+    Source: 'src/byteorder.rs', lines 1643:4-1645:5 -/
+def byteorder.verification.read_u16_le
+  (bytes : Array Std.U8 2#usize) : Result Std.U16 := do
+  let u ← byteorder.U16.from_bytes byteorder.LittleEndian bytes
+  byteorder.U16.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder u
+
+/-- [zerocopy::byteorder::verification::write_u16_le]:
+    Source: 'src/byteorder.rs', lines 1654:4-1656:5 -/
+def byteorder.verification.write_u16_le
+  (n : Std.U16) : Result (Array Std.U8 2#usize) := do
+  let u ←
+    byteorder.U16.new byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder n
+  core.convert.IntoFrom.into (ArrayU82.Insts.CoreConvertFromU16
+    byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder) u
+
+/-- [zerocopy::byteorder::verification::set_u16_le]:
+    Source: 'src/byteorder.rs', lines 1664:4-1668:5 -/
+def byteorder.verification.set_u16_le
+  (bytes : Array Std.U8 2#usize) (n : Std.U16) : Result Std.U16 := do
+  let value ← byteorder.U16.from_bytes byteorder.LittleEndian bytes
+  let value1 ←
+    byteorder.U16.set byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder
+      value n
+  byteorder.U16.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder
+    value1
+
+/-- [zerocopy::byteorder::verification::read_u16_be]:
+    Source: 'src/byteorder.rs', lines 1677:4-1679:5 -/
+def byteorder.verification.read_u16_be
+  (bytes : Array Std.U8 2#usize) : Result Std.U16 := do
+  let u ← byteorder.U16.from_bytes byteorder.BigEndian bytes
+  byteorder.U16.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder u
+
+/-- [zerocopy::byteorder::verification::write_u16_be]:
+    Source: 'src/byteorder.rs', lines 1688:4-1690:5 -/
+def byteorder.verification.write_u16_be
+  (n : Std.U16) : Result (Array Std.U8 2#usize) := do
+  let u ←
+    byteorder.U16.new byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder n
+  core.convert.IntoFrom.into (ArrayU82.Insts.CoreConvertFromU16
+    byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder) u
+
+/-- [zerocopy::byteorder::verification::set_u16_be]:
+    Source: 'src/byteorder.rs', lines 1698:4-1702:5 -/
+def byteorder.verification.set_u16_be
+  (bytes : Array Std.U8 2#usize) (n : Std.U16) : Result Std.U16 := do
+  let value ← byteorder.U16.from_bytes byteorder.BigEndian bytes
+  let value1 ←
+    byteorder.U16.set byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder
+      value n
+  byteorder.U16.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
+
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::get]:
+    Source: 'src/util/macros.rs', lines 560:21-560:88
+    Visibility: public -/
+def byteorder.U32.get
+  {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U32 O) :
+  Result Std.U32
+  := do
+  let o ← ByteOrderInst.ORDER
+  match o with
+  | byteorder.Order.BigEndian => ok (core.num.U32.from_be_bytes self._0)
+  | byteorder.Order.LittleEndian => ok (core.num.U32.from_le_bytes self._0)
+
+/-- [zerocopy::byteorder::verification::read_u32_le]:
+    Source: 'src/byteorder.rs', lines 1711:4-1713:5 -/
+def byteorder.verification.read_u32_le
+  (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
+  let u ← byteorder.U32.from_bytes byteorder.LittleEndian bytes
+  byteorder.U32.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder u
+
+/-- [zerocopy::byteorder::verification::write_u32_le]:
+    Source: 'src/byteorder.rs', lines 1722:4-1724:5 -/
+def byteorder.verification.write_u32_le
+  (n : Std.U32) : Result (Array Std.U8 4#usize) := do
+  let u ←
+    byteorder.U32.new byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder n
+  core.convert.IntoFrom.into (ArrayU84.Insts.CoreConvertFromU32
+    byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder) u
+
+/-- [zerocopy::byteorder::verification::set_u32_le]:
+    Source: 'src/byteorder.rs', lines 1732:4-1736:5 -/
+def byteorder.verification.set_u32_le
+  (bytes : Array Std.U8 4#usize) (n : Std.U32) : Result Std.U32 := do
+  let value ← byteorder.U32.from_bytes byteorder.LittleEndian bytes
+  let value1 ←
+    byteorder.U32.set byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder
+      value n
+  byteorder.U32.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder
+    value1
+
+/-- [zerocopy::byteorder::verification::read_u32_be]:
+    Source: 'src/byteorder.rs', lines 1745:4-1747:5 -/
+def byteorder.verification.read_u32_be
+  (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
+  let u ← byteorder.U32.from_bytes byteorder.BigEndian bytes
+  byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder u
+
+/-- [zerocopy::byteorder::verification::write_u32_be]:
+    Source: 'src/byteorder.rs', lines 1756:4-1758:5 -/
+def byteorder.verification.write_u32_be
+  (n : Std.U32) : Result (Array Std.U8 4#usize) := do
+  let u ←
+    byteorder.U32.new byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder n
+  core.convert.IntoFrom.into (ArrayU84.Insts.CoreConvertFromU32
+    byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder) u
+
+/-- [zerocopy::byteorder::verification::set_u32_be]:
+    Source: 'src/byteorder.rs', lines 1766:4-1770:5 -/
+def byteorder.verification.set_u32_be
+  (bytes : Array Std.U8 4#usize) (n : Std.U32) : Result Std.U32 := do
+  let value ← byteorder.U32.from_bytes byteorder.BigEndian bytes
+  let value1 ←
+    byteorder.U32.set byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder
+      value n
+  byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
+
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 160:0-220:1 -/
+    Source: 'src/util/mod.rs', lines 161:0-221:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -81,7 +659,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 247:0-265:1 -/
+    Source: 'src/util/mod.rs', lines 248:0-266:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -98,7 +676,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 274:0-280:1 -/
+    Source: 'src/util/mod.rs', lines 275:0-281:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -118,7 +696,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
+    Source: 'src/util/mod.rs', lines 290:0-296:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
