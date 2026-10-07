@@ -90,7 +90,7 @@ utilities = {}
 for name in ["gnutar", "zstd"]:
     expr = f'(builtins.getFlake "{ref}").inputs.nixpkgs.legacyPackages.{system}.{name}'
     p = run(["nix", "build", "--impure", "--no-link", "--json", "--expr", expr])
-    utilities[name] = Path(json.loads(p.stdout)[0]["outputs"]["out"])
+    utilities[name] = Path(json.loads(p.stdout)[0]["outputs"]["bin" if name == "zstd" else "out"])
 run([str(utilities["gnutar"] / "bin/tar"),
      "--use-compress-program=" + str(utilities["zstd"] / "bin/zstd"),
      "-xf", str(archive), "-C", str(unpacked)])
