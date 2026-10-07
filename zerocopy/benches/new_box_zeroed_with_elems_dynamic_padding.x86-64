@@ -6,9 +6,11 @@ bench_new_box_zeroed_with_elems_dynamic_padding:
 	movabs rax, 3074457345618258598
 	cmp rdi, rax
 	ja .LBB5_1
-	lea r14, [rbx + 2*rbx]
-	or r14, 3
-	add r14, 9
+	lea rax, [rbx + 2*rbx]
+	add rax, 4
+	movabs r14, 9223372036854775804
+	and r14, rax
+	add r14, 8
 	call qword ptr [rip + __rustc::__rust_no_alloc_shim_is_unstable_v2@GOTPCREL]
 	mov esi, 4
 	mov rdi, r14

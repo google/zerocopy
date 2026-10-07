@@ -10,9 +10,11 @@ bench_try_ref_from_prefix_with_elems_dynamic_padding:
 	ret
 .LBB5_3:
 	lea rax, [rdx + 2*rdx]
-	or rax, 3
-	add rax, 9
-	cmp rax, rsi
+	add rax, 4
+	movabs rcx, 9223372036854775804
+	and rcx, rax
+	add rcx, 8
+	cmp rcx, rsi
 	jbe .LBB5_4
 .LBB5_1:
 	xor eax, eax

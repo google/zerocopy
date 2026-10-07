@@ -3,14 +3,16 @@ bench_try_ref_from_suffix_with_elems_dynamic_padding:
 	cmp rdx, rax
 	ja .LBB5_3
 	lea rax, [rdx + 2*rdx]
-	or rax, 3
-	add rax, 9
-	lea ecx, [rsi + rdi]
-	test cl, 3
-	setne cl
-	sub rsi, rax
-	setb al
-	or al, cl
+	add rax, 4
+	movabs rcx, 9223372036854775804
+	and rcx, rax
+	add rcx, 8
+	lea eax, [rsi + rdi]
+	test al, 3
+	setne al
+	sub rsi, rcx
+	setb cl
+	or cl, al
 	je .LBB5_4
 .LBB5_3:
 	xor eax, eax

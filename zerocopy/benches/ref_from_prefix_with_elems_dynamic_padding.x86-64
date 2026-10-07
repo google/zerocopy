@@ -14,13 +14,15 @@ bench_ref_from_prefix_with_elems_dynamic_padding:
 	ret
 .LBB5_3:
 	lea rax, [rdx + 2*rdx]
-	or rax, 3
-	add rax, 9
-	xor r8d, r8d
-	cmp rax, rsi
+	add rax, 4
+	movabs rcx, 9223372036854775804
+	and rcx, rax
+	add rcx, 8
+	xor eax, eax
+	cmp rcx, rsi
 	mov ecx, 1
 	cmovbe rcx, rdx
-	cmova rdi, r8
+	cmova rdi, rax
 	mov rax, rdi
 	mov rdx, rcx
 	ret

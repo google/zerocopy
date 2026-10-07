@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      2000
-Total Cycles:      643
-Total uOps:        2200
+Instructions:      2200
+Total Cycles:      711
+Total uOps:        2400
 
 Dispatch Width:    4
-uOps Per Cycle:    3.42
-IPC:               3.11
-Block RThroughput: 5.5
+uOps Per Cycle:    3.38
+IPC:               3.09
+Block RThroughput: 6.0
 
 
 Instruction Info:
@@ -22,14 +22,16 @@ Instruction Info:
  1      1     0.33                        cmp	rdx, rax
  1      1     1.00                        ja	.LBB5_3
  1      1     0.50                        lea	rax, [rdx + 2*rdx]
- 1      1     0.33                        or	rax, 3
- 1      1     0.33                        add	rax, 9
- 1      1     0.50                        lea	ecx, [rsi + rdi]
- 1      1     0.33                        test	cl, 3
- 1      1     0.50                        setne	cl
- 1      1     0.33                        sub	rsi, rax
- 1      1     0.50                        setb	al
- 1      1     0.33                        or	al, cl
+ 1      1     0.33                        add	rax, 4
+ 1      1     0.33                        movabs	rcx, 9223372036854775804
+ 1      1     0.33                        and	rcx, rax
+ 1      1     0.33                        add	rcx, 8
+ 1      1     0.50                        lea	eax, [rsi + rdi]
+ 1      1     0.33                        test	al, 3
+ 1      1     0.50                        setne	al
+ 1      1     0.33                        sub	rsi, rcx
+ 1      1     0.50                        setb	cl
+ 1      1     0.33                        or	cl, al
  1      1     1.00                        je	.LBB5_4
  1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
@@ -53,27 +55,29 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.32   6.33    -     6.35   0.50   0.50   
+ -      -     7.00   7.00    -     7.00   0.50   0.50   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -      -     0.99    -     0.01    -      -     movabs	rax, 3074457345618258598
+ -      -     0.03    -      -     0.97    -      -     movabs	rax, 3074457345618258598
  -      -     0.02   0.98    -      -      -      -     cmp	rdx, rax
  -      -      -      -      -     1.00    -      -     ja	.LBB5_3
- -      -     0.66   0.34    -      -      -      -     lea	rax, [rdx + 2*rdx]
- -      -     0.99    -      -     0.01    -      -     or	rax, 3
- -      -     0.99   0.01    -      -      -      -     add	rax, 9
- -      -     0.01   0.99    -      -      -      -     lea	ecx, [rsi + rdi]
- -      -      -     0.99    -     0.01    -      -     test	cl, 3
- -      -     0.02    -      -     0.98    -      -     setne	cl
- -      -     0.97   0.02    -     0.01    -      -     sub	rsi, rax
- -      -     0.99    -      -     0.01    -      -     setb	al
- -      -     0.32   0.67    -     0.01    -      -     or	al, cl
+ -      -     0.98   0.02    -      -      -      -     lea	rax, [rdx + 2*rdx]
+ -      -      -     0.99    -     0.01    -      -     add	rax, 4
+ -      -     0.99   0.01    -      -      -      -     movabs	rcx, 9223372036854775804
+ -      -     0.02   0.98    -      -      -      -     and	rcx, rax
+ -      -     0.01   0.98    -     0.01    -      -     add	rcx, 8
+ -      -     0.98   0.02    -      -      -      -     lea	eax, [rsi + rdi]
+ -      -     0.97   0.01    -     0.02    -      -     test	al, 3
+ -      -     1.00    -      -      -      -      -     setne	al
+ -      -      -     0.98    -     0.02    -      -     sub	rsi, rcx
+ -      -     0.03    -      -     0.97    -      -     setb	cl
+ -      -     0.01   0.98    -     0.01    -      -     or	cl, al
  -      -      -      -      -     1.00    -      -     je	.LBB5_4
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret
- -      -      -     1.00    -      -      -      -     lea	rcx, [rdi + rsi]
+ -      -     0.95   0.05    -      -      -      -     lea	rcx, [rdi + rsi]
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.35   0.32    -     0.33   0.50   0.50   cmp	word ptr [rdi + rsi], -16192
- -      -     1.00   0.02    -     0.98    -      -     cmove	rax, rcx
+ -      -     0.02   0.01    -     0.97   0.50   0.50   cmp	word ptr [rdi + rsi], -16192
+ -      -     0.99   0.99    -     0.02    -      -     cmove	rax, rcx
  -      -      -      -      -     1.00    -      -     ret

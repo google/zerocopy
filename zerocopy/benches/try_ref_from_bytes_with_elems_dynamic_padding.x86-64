@@ -8,9 +8,11 @@ bench_try_ref_from_bytes_with_elems_dynamic_padding:
 	or dil, cl
 	jne .LBB5_3
 	lea rcx, [rdx + 2*rdx]
-	or rcx, 3
-	add rcx, 9
-	cmp rsi, rcx
+	add rcx, 4
+	movabs rdi, 9223372036854775804
+	and rdi, rcx
+	add rdi, 8
+	cmp rsi, rdi
 	jne .LBB5_3
 	cmp word ptr [rax], -16192
 	je .LBB5_4
