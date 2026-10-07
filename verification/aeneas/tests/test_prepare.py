@@ -9,6 +9,7 @@
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -21,6 +22,39 @@ spec.loader.exec_module(prepare)
 
 
 class PrepareTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('lake'), 'Lake is required to elaborate its configuration')
+    def test_generated_lake_configuration_passes_backend_option(self):
+        # String checks cannot tell whether Lake accepts its configuration.
+        # Elaborate the actual generated file and inspect the dependency's
+        # option, without fetching packages or compiling their modules.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            backend, work, model = (root / name for name in ('backend with spaces', 'work', 'model'))
+            for directory in (backend, work, model, model / 'aeneas'):
+                directory.mkdir(parents=True, exist_ok=True)
+            for directory, name in ((backend, 'aeneas'), (model, 'rust_model'),
+                                    (model / 'aeneas', 'rust_model_aeneas')):
+                (directory / 'lakefile.lean').write_text(
+                    'import Lake\nopen Lake DSL\npackage ' + name + '\n')
+            (backend / 'lake-manifest.json').write_text(json.dumps({
+                'version': '1.2.0', 'packages': [],
+            }))
+            prepare.share_manifest(work, backend, model)
+            lakefile = work / 'lakefile.lean'
+            with lakefile.open('a') as file:
+                file.write('\n#eval show IO Unit from do\n'
+                           '  unless rust_model_aeneas.opts.find? `aeneasPath == some '
+                           + json.dumps(str(backend)) + ' do\n'
+                           '    throw (IO.userError "Incorrect backend option")\n')
+            # Lake initializes the configuration DSL; direct Lean does not.
+            # An environment command loads package configurations without
+            # building modules. Match the archive consumers' Lake policy.
+            env = dict(os.environ)
+            env.pop('CI', None)
+            result = subprocess.run(['lake', '--old', 'env', sys.executable, '-c', 'pass'],
+                                    cwd=work, env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_nominal_fixture_accepts_pruned_unused_dependency(self):
         script = (Path(__file__).parents[1] / 'tests/nominal-tuples.sh').read_text()
         code = script.split("<<'PYLEAN'\n", 1)[1].split('\nPYLEAN\n', 1)[0]
@@ -143,12 +177,18 @@ class PrepareTests(unittest.TestCase):
             rust_model = Path(tmp) / "rust-model"
             rust_model.mkdir()
             (rust_model / "lakefile.lean").write_text("")
+            (rust_model / "aeneas").mkdir()
+            (rust_model / "aeneas/lakefile.lean").write_text("")
             prepare.share_manifest(work, backend, rust_model)
             manifest = json.loads((work / 'lake-manifest.json').read_text())
             self.assertEqual(manifest['packages'][1]['name'], 'rust_model')
             self.assertEqual(manifest['packages'][1]['dir'], str(rust_model))
             config = (work / 'lakefile.lean').read_text()
             self.assertIn('require rust_model from ', config)
+            self.assertEqual(manifest['packages'][2]['name'], 'rust_model_aeneas')
+            self.assertEqual(manifest['packages'][2]['dir'], str(rust_model / 'aeneas'))
+            self.assertIn('require rust_model_aeneas from ', config)
+            self.assertIn('  Lean.NameMap.insert {} `aeneasPath ' + json.dumps(str(backend)), config)
             for module in ('Specs', 'Invariants', 'Required', 'Zerocopy',
                            'ExtraGenerated'):
                 self.assertIn('@[default_target] lean_lib ' + module + '\n', config)
