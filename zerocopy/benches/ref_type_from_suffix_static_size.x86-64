@@ -1,0 +1,13 @@
+bench_ref_type_from_suffix_static_size:
+	lea rax, [rsi + rdi]
+	cmp rsi, 6
+	setb cl
+	or cl, al
+	lea rdx, [rsi + rdi]
+	add rdx, -6
+	xor eax, eax
+	test cl, 1
+	cmove rax, rdx
+	mov edx, 6
+	cmovne rdx, rsi
+	ret

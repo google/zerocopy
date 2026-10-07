@@ -1,0 +1,91 @@
+Iterations:        100
+Instructions:      2600
+Total Cycles:      841
+Total uOps:        2800
+
+Dispatch Width:    4
+uOps Per Cycle:    3.33
+IPC:               3.09
+Block RThroughput: 7.0
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.33                        mov	rcx, rdx
+ 1      1     0.33                        mov	rdx, rsi
+ 1      1     0.33                        movabs	rsi, 6148914691236517201
+ 1      1     0.33                        cmp	rcx, rsi
+ 1      1     1.00                        jbe	.LBB5_2
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.50                        lea	rcx, [rcx + 2*rcx]
+ 1      1     0.33                        or	rcx, 3
+ 1      1     0.33                        add	rcx, 9
+ 1      1     0.33                        mov	rsi, rdx
+ 1      1     0.33                        sub	rsi, rcx
+ 1      1     1.00                        jae	.LBB5_4
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        mov	rax, rdi
+ 1      1     0.33                        add	rax, rsi
+ 1      1     0.33                        mov	edx, ecx
+ 1      1     0.33                        or	edx, eax
+ 1      0     0.25                        xor	esi, esi
+ 1      1     0.33                        test	dl, 3
+ 2      2     0.67                        cmovne	rax, rsi
+ 1      1     0.33                        cmp	rcx, 12
+ 2      2     0.67                        cmovb	rax, rsi
+ 1      1     0.33                        mov	rdx, rcx
+ 1      1     1.00                  U     ret
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     8.33   8.33    -     8.34    -      -     
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -     0.99    -      -     0.01    -      -     mov	rcx, rdx
+ -      -     0.66   0.01    -     0.33    -      -     mov	rdx, rsi
+ -      -     0.33   0.01    -     0.66    -      -     movabs	rsi, 6148914691236517201
+ -      -     0.33    -      -     0.67    -      -     cmp	rcx, rsi
+ -      -      -      -      -     1.00    -      -     jbe	.LBB5_2
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -     0.01   0.99    -      -      -      -     lea	rcx, [rcx + 2*rcx]
+ -      -     0.01   0.34    -     0.65    -      -     or	rcx, 3
+ -      -     0.01   0.99    -      -      -      -     add	rcx, 9
+ -      -     0.99   0.01    -      -      -      -     mov	rsi, rdx
+ -      -     0.01   0.99    -      -      -      -     sub	rsi, rcx
+ -      -      -      -      -     1.00    -      -     jae	.LBB5_4
+ -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -     0.99   0.01    -      -      -      -     mov	rax, rdi
+ -      -     0.01   0.99    -      -      -      -     add	rax, rsi
+ -      -     0.99   0.01    -      -      -      -     mov	edx, ecx
+ -      -     0.01   0.99    -      -      -      -     or	edx, eax
+ -      -      -      -      -      -      -      -     xor	esi, esi
+ -      -     0.01   0.99    -      -      -      -     test	dl, 3
+ -      -     0.99   1.00    -     0.01    -      -     cmovne	rax, rsi
+ -      -      -     0.01    -     0.99    -      -     cmp	rcx, 12
+ -      -     1.00   0.99    -     0.01    -      -     cmovb	rax, rsi
+ -      -     0.99    -      -     0.01    -      -     mov	rdx, rcx
+ -      -      -      -      -     1.00    -      -     ret

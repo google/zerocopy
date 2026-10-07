@@ -1,0 +1,35 @@
+bench_ref_type_into_ref_dynamic_padding:
+	test dil, 3
+	setne al
+	cmp rsi, 12
+	setb cl
+	or cl, al
+	je .LBB8_1
+	xor eax, eax
+	test dil, 3
+	sete al
+.LBB8_4:
+	sub rsp, 24
+	mov qword ptr [rsp], rax
+	mov qword ptr [rsp + 8], rdi
+	mov qword ptr [rsp + 16], rsi
+	lea rdi, [rip + .Lanon.HASH.2]
+	lea rcx, [rip + .Lanon.HASH.1]
+	lea r8, [rip + .Lanon.HASH.4]
+	mov rdx, rsp
+	mov esi, 54
+	call qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
+.LBB8_1:
+	movabs rax, -9223372036854775805
+	test rsi, rax
+	jne .LBB8_2
+	add rsi, -9
+	movabs rcx, -6148914691236517205
+	mov rax, rsi
+	mul rcx
+	shr rdx
+	mov rax, rdi
+	ret
+.LBB8_2:
+	mov eax, 1
+	jmp .LBB8_4

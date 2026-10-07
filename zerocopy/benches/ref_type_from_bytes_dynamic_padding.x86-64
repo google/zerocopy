@@ -1,0 +1,10 @@
+bench_ref_type_from_bytes_dynamic_padding:
+	mov rdx, rsi
+	mov ecx, edx
+	or ecx, edi
+	xor eax, eax
+	cmp rsi, 12
+	cmovb rdi, rax
+	test cl, 3
+	cmove rax, rdi
+	ret

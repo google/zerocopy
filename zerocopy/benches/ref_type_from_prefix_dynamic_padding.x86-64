@@ -1,0 +1,13 @@
+bench_ref_type_from_prefix_dynamic_padding:
+	xor ecx, ecx
+	test dil, 3
+	sete cl
+	cmp rsi, 12
+	setae r8b
+	movabs rdx, 9223372036854775804
+	and rdx, rsi
+	xor eax, eax
+	test cl, r8b
+	cmovne rax, rdi
+	cmove rdx, rcx
+	ret

@@ -1,0 +1,93 @@
+Iterations:        100
+Instructions:      2700
+Total Cycles:      1872
+Total uOps:        3000
+
+Dispatch Width:    4
+uOps Per Cycle:    1.60
+IPC:               1.44
+Block RThroughput: 7.5
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      5     0.50    *                   mov	rax, qword ptr [rdi]
+ 1      5     0.50    *                   mov	rdx, qword ptr [rdi + 8]
+ 1      1     0.33                        cmp	rdx, 4
+ 1      1     0.50                        setb	cl
+ 1      1     0.33                        or	cl, al
+ 1      1     0.33                        test	cl, 1
+ 1      1     1.00                        je	.LBB8_1
+ 1      1     0.33                        mov	ecx, eax
+ 1      1     0.33                        not	ecx
+ 1      1     0.33                        and	ecx, 1
+ 1      1     0.33                        sub	rsp, 24
+ 1      1     1.00           *            mov	qword ptr [rsp], rcx
+ 1      1     1.00           *            mov	qword ptr [rsp + 8], rax
+ 1      1     1.00           *            mov	qword ptr [rsp + 16], rdx
+ 1      1     0.50                        lea	rdi, [rip + .Lanon.HASH.7]
+ 1      1     0.50                        lea	rcx, [rip + .Lanon.HASH.1]
+ 1      1     0.50                        lea	r8, [rip + .Lanon.HASH.9]
+ 1      1     0.33                        mov	rdx, rsp
+ 1      1     0.33                        mov	esi, 58
+ 4      7     1.00    *                   call	qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
+ 1      1     0.33                        test	dl, 1
+ 1      1     1.00                        jne	.LBB8_2
+ 1      1     0.33                        add	rdx, -4
+ 1      1     0.50                        shr	rdx
+ 1      1     1.00                  U     ret
+ 1      1     0.33                        mov	ecx, 1
+ 1      1     1.00                        jmp	.LBB8_4
+
+
+Resources:
+[0]   - SBDivider
+[1]   - SBFPDivider
+[2]   - SBPort0
+[3]   - SBPort1
+[4]   - SBPort4
+[5]   - SBPort5
+[6.0] - SBPort23
+[6.1] - SBPort23
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
+ -      -     6.94   6.94   4.00   8.12   3.22   3.78   
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
+ -      -      -      -      -      -     0.98   0.02   mov	rax, qword ptr [rdi]
+ -      -      -      -      -      -     0.99   0.01   mov	rdx, qword ptr [rdi + 8]
+ -      -     0.15   0.84    -     0.01    -      -     cmp	rdx, 4
+ -      -     0.47    -      -     0.53    -      -     setb	cl
+ -      -     0.11   0.36    -     0.53    -      -     or	cl, al
+ -      -     0.22   0.20    -     0.58    -      -     test	cl, 1
+ -      -      -      -      -     1.00    -      -     je	.LBB8_1
+ -      -     0.10   0.90    -      -      -      -     mov	ecx, eax
+ -      -     0.73   0.05    -     0.22    -      -     not	ecx
+ -      -     0.11   0.73    -     0.16    -      -     and	ecx, 1
+ -      -     0.79   0.20    -     0.01    -      -     sub	rsp, 24
+ -      -      -      -     1.00    -     0.07   0.93   mov	qword ptr [rsp], rcx
+ -      -      -      -     1.00    -     0.70   0.30   mov	qword ptr [rsp + 8], rax
+ -      -      -      -     1.00    -     0.04   0.96   mov	qword ptr [rsp + 16], rdx
+ -      -     0.78   0.22    -      -      -      -     lea	rdi, [rip + .Lanon.HASH.7]
+ -      -     0.17   0.83    -      -      -      -     lea	rcx, [rip + .Lanon.HASH.1]
+ -      -     0.89   0.11    -      -      -      -     lea	r8, [rip + .Lanon.HASH.9]
+ -      -      -     0.58    -     0.42    -      -     mov	rdx, rsp
+ -      -     0.58   0.15    -     0.27    -      -     mov	esi, 58
+ -      -      -      -     1.00   1.00   0.44   1.56   call	qword ptr [rip + core::result::unwrap_failed@GOTPCREL]
+ -      -     0.15   0.70    -     0.15    -      -     test	dl, 1
+ -      -      -      -      -     1.00    -      -     jne	.LBB8_2
+ -      -     0.74   0.11    -     0.15    -      -     add	rdx, -4
+ -      -     0.95    -      -     0.05    -      -     shr	rdx
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     0.96    -     0.04    -      -     mov	ecx, 1
+ -      -      -      -      -     1.00    -      -     jmp	.LBB8_4

@@ -1,0 +1,29 @@
+bench_ref_type_from_suffix_with_elems_dynamic_padding:
+	mov rcx, rdx
+	mov rdx, rsi
+	movabs rsi, 6148914691236517201
+	cmp rcx, rsi
+	jbe .LBB5_2
+	xor eax, eax
+	ret
+.LBB5_2:
+	lea rcx, [rcx + 2*rcx]
+	or rcx, 3
+	add rcx, 9
+	mov rsi, rdx
+	sub rsi, rcx
+	jae .LBB5_4
+	xor eax, eax
+	ret
+.LBB5_4:
+	mov rax, rdi
+	add rax, rsi
+	mov edx, ecx
+	or edx, eax
+	xor esi, esi
+	test dl, 3
+	cmovne rax, rsi
+	cmp rcx, 12
+	cmovb rax, rsi
+	mov rdx, rcx
+	ret
