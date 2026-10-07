@@ -2273,7 +2273,7 @@ mod cast_from {
     }
 }
 
-#[cfg(any(test, kani))]
+#[cfg(any(test, all(kani, feature = "derive")))]
 mod padding_testutil {
     use crate::KnownLayout;
 
@@ -4253,6 +4253,7 @@ mod proofs {
         }
     }
 
+    #[cfg(feature = "derive")]
     #[kani::proof]
     fn prove_padding_for_elems_for_rust_layouts() {
         // For each fixture, check every element count whose complete size
