@@ -1,3 +1,5 @@
+import Rust
+import RustAeneas.Machine
 import Aeneas.Std.Core
 import Aeneas.Std.WP
 import Aeneas.Tactic.Solver.ScalarTac
@@ -152,22 +154,24 @@ macro "verify_empty_post" fnc:ident : tactic => do
   This reflects Rust's requirement that all layout alignments are non-zero powers
   of two.
 -/
-def IsAlignment (n : Nat) : Prop :=
-  0 < n ∧ ∃ (k : Nat), n = 2^k
+abbrev IsAlignment := Rust.IsAlignment
 
 /-- A validated Rust alignment, bundling the value and its proof. -/
-structure Alignment where
-  val : Usize
-  isValid : IsAlignment val.val
+abbrev Alignment := Rust.Machine.Alignment
+namespace Alignment
+abbrev mk := Rust.Machine.Alignment.mk
+abbrev val (x : Alignment) := Rust.Machine.Alignment.val x
+abbrev isValid (x : Alignment) := Rust.Machine.Alignment.isValid x
+end Alignment
 
 @[simp] theorem Usize_ofNatCore_val {n} {h} : (Usize.ofNatCore n h).val = n := rfl
 @[simp] theorem Alignment_val {val} {h} : (@Alignment.mk val h).val = val := rfl
 @[simp] theorem Alignment_isValid (a : Alignment) : IsAlignment a.val.val := a.isValid
 
 @[simp, grind .]
-theorem alignment_one : IsAlignment 1 := ⟨by decide, 0, by rfl⟩
+theorem alignment_one : IsAlignment 1 := Rust.alignment_one
 
-instance : Inhabited Alignment := ⟨⟨sz 1, alignment_one⟩⟩
+-- The shared machine module supplies the `Inhabited Alignment` instance.
 
 @[simp, grind .]
 theorem one_divides (n : Nat) : 1 ∣ n := ⟨n, by omega⟩
@@ -254,65 +258,34 @@ end core
   to fit within `Usize`. It is used to reason about the layout of values whose
   sizes may exceed the maximum addressable memory.
 -/
-structure SpecLayout where
-  size : Nat
-  align : Alignment
-  sizeAligned : align.val.val ∣ size
+abbrev SpecLayout := Rust.Machine.SpecLayout
+namespace SpecLayout
+abbrev mk := Rust.Machine.SpecLayout.mk
+abbrev size (x : SpecLayout) := Rust.Machine.SpecLayout.size x
+abbrev align (x : SpecLayout) := Rust.Machine.SpecLayout.align x
+abbrev sizeAligned (x : SpecLayout) := Rust.Machine.SpecLayout.sizeAligned x
+abbrev toGeometry (x : SpecLayout) := Rust.Machine.SpecLayout.toGeometry x
+@[simp] abbrev toLayout (x : SpecLayout) [Rust.Machine.FitsInUsize x] := Rust.Machine.SpecLayout.toLayout x
+end SpecLayout
 
-/--
-  A valid physical memory layout for a value.
+abbrev Layout := Rust.Machine.Layout
+namespace Layout
+abbrev mk := Rust.Machine.Layout.mk
+-- These names used to be structure projections. Expose the shared projections
+-- to simp so existing size_of/align_of proofs still reduce concrete layouts.
+@[simp] abbrev size (x : Layout) := Rust.Machine.Layout.size x
+@[simp] abbrev align (x : Layout) := Rust.Machine.Layout.align x
+abbrev sizeAligned (x : Layout) := Rust.Machine.Layout.sizeAligned x
+@[simp] abbrev toSpecLayout (x : Layout) := Rust.Machine.Layout.toSpecLayout x
+end Layout
 
-  This layout is defined by a size and an alignment. It is bounded by the
-  physical constraints of the machine, meaning that its size is guaranteed to
-  fit within the addressable memory bounds of `Usize`. It is used to represent
-  the layout of a value that actually exists in physical memory.
--/
-structure Layout where
-  size : Usize
-  align : Alignment
-  sizeAligned : align.val.val ∣ size.val
-
-/--
-  A proof that a mathematical layout size is small enough to exist in physical
-  memory.
-
-  This proof establishes that the size of a mathematical layout fits within
-  `Usize.max`, meaning the layout can describe a physical value.
--/
-class FitsInUsize (lay : SpecLayout) : Prop where
-  fits : lay.size ≤ Usize.max
-
-/--
-  Converts a mathematical layout into a physical layout.
-
-  This conversion requires a proof that the mathematical layout fits within
-  physical memory.
--/
-@[simp]
-def SpecLayout.toLayout (lay : SpecLayout) [FitsInUsize lay] : Layout :=
-  {
-    size := Usize.ofNatCore lay.size (by
-      have := FitsInUsize.fits (lay := lay)
-      scalar_tac),
-    align := lay.align,
-    sizeAligned := lay.sizeAligned
-  }
-
-/--
-  Converts a valid physical layout into its corresponding mathematical layout.
-
-  Because physical memory guarantees a layout's size easily fits within the
-  address space, we can inherently prove that the resulting mathematical `SpecLayout`
-  also fits in `Usize`.
--/
-@[simp]
-def Layout.toSpecLayout (lay : Layout) : SpecLayout :=
-  { size := lay.size.val, align := lay.align, sizeAligned := lay.sizeAligned }
-
-instance (lay : Layout) : FitsInUsize lay.toSpecLayout where
-  fits := by
-    dsimp [Layout.toSpecLayout]
-    scalar_tac
+abbrev FitsInUsize := Rust.Machine.FitsInUsize
+namespace FitsInUsize
+abbrev mk {lay : SpecLayout} (fits : lay.size ≤ Usize.max) : FitsInUsize lay :=
+  Rust.Machine.FitsInUsize.mk fits
+abbrev fits {lay : SpecLayout} [FitsInUsize lay] : lay.size ≤ Usize.max :=
+  Rust.Machine.FitsInUsize.fits (lay := lay)
+end FitsInUsize
 
 /--
   The ability to compute a mathematically idealized layout for a runtime value.
@@ -408,10 +381,14 @@ instance {α : Type} [core.marker.Sized α] [tl : HasStaticSpecLayout α] : HasS
   The mathematical layout properties that are statically known for all instances
   of a slice-based dynamically-sized type (Slice DST).
 -/
-structure SpecSliceDstLayout where
-  trailingOffset : Nat
-  elementSize : Nat
-  align : Alignment
+abbrev SpecSliceDstLayout := Rust.Machine.SpecSliceDstLayout
+namespace SpecSliceDstLayout
+abbrev mk := Rust.Machine.SpecSliceDstLayout.mk
+abbrev trailingOffset (x : SpecSliceDstLayout) := Rust.Machine.SpecSliceDstLayout.trailingOffset x
+abbrev elementSize (x : SpecSliceDstLayout) := Rust.Machine.SpecSliceDstLayout.elementSize x
+abbrev align (x : SpecSliceDstLayout) := Rust.Machine.SpecSliceDstLayout.align x
+abbrev toGeometry (x : SpecSliceDstLayout) := Rust.Machine.SpecSliceDstLayout.toGeometry x
+end SpecSliceDstLayout
 
 /--
   Provides the static slice DST layout properties for a given type.
@@ -428,35 +405,10 @@ class SpecSliceDstTypeLayout (α : Type) where
 class TrailingSlice (α : Type) where
   len : α → Nat
 
-/-- Rounds `val` up to the nearest multiple of `align`. -/
-def roundUpToAlign (val align : Nat) : Nat :=
-  ((val + align - 1) / align) * align
-
-/-- A theorem stating that rounding up always produces a value greater than or equal to the original value. -/
-theorem roundUpToAlign_ge (val align : Nat) (h : 0 < align) :
-  val ≤ roundUpToAlign val align := by
-  dsimp [roundUpToAlign]
-  have h1 : ((val + align - 1) / align) * align + (val + align - 1) % align = val + align - 1 := by
-    rw [Nat.mul_comm]
-    exact Nat.div_add_mod _ _
-  have h2 : (val + align - 1) % align < align := Nat.mod_lt _ h
-  omega
-
-/-- A theorem stating that if the resulting padded value is non-zero, it must be at least the alignment. -/
-theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0 < align) :
-  align ≤ roundUpToAlign val align := by
-  dsimp [roundUpToAlign]
-  have h_val_align : align ≤ val + align - 1 := by omega
-  have h_div_pos : 1 ≤ (val + align - 1) / align := Nat.div_pos h_val_align h_align
-  have h_mul : 1 * align ≤ ((val + align - 1) / align) * align := Nat.mul_le_mul_right align h_div_pos
-  omega
-
-
-
-
-
-
-
+-- Compatibility names for the independently checked mathematical library.
+abbrev roundUpToAlign := Rust.roundUpToAlign
+abbrev roundUpToAlign_ge := Rust.roundUpToAlign_ge
+abbrev align_le_roundUpToAlign := Rust.align_le_roundUpToAlign
 
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
@@ -465,8 +417,7 @@ theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0
   element count. It is not constrained by physical memory limits.
 -/
 def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
-  let unpaddedSize := info.trailingOffset + elemCount * info.elementSize
-  roundUpToAlign unpaddedSize info.align.val.val
+  Rust.reprCSliceDstSize info.toGeometry elemCount
 
 /--
   A theorem stating that the unpadded size rounded up to the alignment is always
@@ -474,8 +425,7 @@ def reprCSliceDstSize (info : SpecSliceDstLayout) (elemCount : Nat) : Nat :=
 -/
 theorem reprCSliceDstSize_aligned (info : SpecSliceDstLayout) (elemCount : Nat) :
   info.align.val.val ∣ reprCSliceDstSize info elemCount := by
-  dsimp [reprCSliceDstSize, roundUpToAlign]
-  exact ⟨_, Nat.mul_comm _ _⟩
+  exact Rust.reprCSliceDstSize_aligned info.toGeometry elemCount
 
 /-- Marker trait for types that are explicitly `#[repr(C)]`. -/
 class ReprC (α : Type)
@@ -733,50 +683,20 @@ elab "inject_builtins" : command => do
   Because there is no guarantee that an allocation is contiguous, `addresses`
   is modeled as an arbitrary `Set Nat` rather than a contiguous range.
 -/
-structure Allocation where
-  base : Usize
-  size : Usize
-  addresses : Set Nat
-
-  -- `base` is not equal to null (address 0)
-  base_not_null : base.val ≠ 0
-
-  -- `size <= isize::MAX`
-  size_le_isize_max : size.val ≤ Isize.max
-
-  -- `base + size <= usize::MAX`
-  base_add_size_le_usize_max : base.val + size.val ≤ Usize.max
-
-  -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
-  bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
-
+abbrev Allocation := Rust.Machine.Allocation
 namespace Allocation
-
--- Consequence 1: `a - base` does not overflow `isize`
-theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a - alloc.base.val ≤ Isize.max := by
-  have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
-  have h_sub : a - alloc.base.val < alloc.size.val := by omega
-  have h_size : alloc.size.val ≤ Isize.max := alloc.size_le_isize_max
-  omega
-
--- Consequence 2: `a - base` is non-negative
--- (This is trivially true in Lean for `Nat` subtraction when `alloc.base ≤ a`,
--- which we prove here to show the offset is well-defined mathematically).
-theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    alloc.base.val ≤ a :=
-  (alloc.bounds a ha).left
-
--- Consequence 3: `base + o` will not wrap around the address space (overflow `usize`)
--- `o = a - base`, so `base + o` is just `a` if `base <= a` (which we proved above).
-theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a ≤ Usize.max := by
-  have h_bound := alloc.bounds a ha
-  have h_lt : a < alloc.base.val + alloc.size.val := h_bound.right
-  have h_max : alloc.base.val + alloc.size.val ≤ Usize.max := alloc.base_add_size_le_usize_max
-  omega
-
+abbrev mk := Rust.Machine.Allocation.mk
+abbrev base (x : Allocation) := Rust.Machine.Allocation.base x
+abbrev size (x : Allocation) := Rust.Machine.Allocation.size x
+abbrev addresses (x : Allocation) := Rust.Machine.Allocation.addresses x
+abbrev base_not_null (x : Allocation) := Rust.Machine.Allocation.base_not_null x
+abbrev size_le_isize_max (x : Allocation) := Rust.Machine.Allocation.size_le_isize_max x
+abbrev base_add_size_le_usize_max (x : Allocation) := Rust.Machine.Allocation.base_add_size_le_usize_max x
+abbrev bounds (x : Allocation) := Rust.Machine.Allocation.bounds x
+abbrev toGeometry (x : Allocation) := Rust.Machine.Allocation.toGeometry x
+abbrev offset_le_isize_max (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses) := Rust.Machine.Allocation.offset_le_isize_max x addr ha
+abbrev offset_non_negative (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses) := Rust.Machine.Allocation.offset_non_negative x addr ha
+abbrev address_le_usize_max (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses) := Rust.Machine.Allocation.address_le_usize_max x addr ha
 end Allocation
 
 -- 7. Pointer Referents
@@ -786,54 +706,24 @@ end Allocation
   Retrieves the properties of a pointer's referent.
   The referent is the region of memory that the pointer addresses.
 -/
-structure Referent where
-  -- The start address of the referent
-  address : Usize
-  -- The size of the referent in bytes
-  size : Usize
-  -- The mathematical set of addresses that make up the referent
-  addresses : Set Nat
+abbrev Referent := Rust.Machine.Referent
+namespace Referent
+abbrev mk := Rust.Machine.Referent.mk
+abbrev address (x : Referent) := Rust.Machine.Referent.address x
+abbrev size (x : Referent) := Rust.Machine.Referent.size x
+abbrev addresses (x : Referent) := Rust.Machine.Referent.addresses x
+abbrev bounds (x : Referent) := Rust.Machine.Referent.bounds x
+abbrev addresses_are_usizes (x : Referent) := Rust.Machine.Referent.addresses_are_usizes x
+abbrev toGeometry (x : Referent) := Rust.Machine.Referent.toGeometry x
+abbrev IsContiguous (x : Referent) : Prop := Rust.Machine.Referent.IsContiguous x
+end Referent
 
-  bounds : ∀ a ∈ addresses, address.val ≤ a ∧ a < address.val + size.val
-
-  addresses_are_usizes : ∀ a ∈ addresses, a ≤ Usize.max
-
-instance : Nonempty Referent :=
-  ⟨{ address := sz 0, size := sz 0, addresses := ∅,
-     bounds := by
-       intro a h
-       simp at h,
-     addresses_are_usizes := by
-       intro a h
-       simp at h }⟩
-
-/--
-  A predicate indicating that a referent's set of addresses fills the contiguous
-  range `[address, address + size)`. This means every address in that range
-  belongs to the referent's addresses.
--/
-def Referent.IsContiguous (r : Referent) : Prop :=
-  ∀ a, r.address.val ≤ a ∧ a < r.address.val + r.size.val → a ∈ r.addresses
-
-/--
-  A predicate indicating that a referent fits entirely within a given allocation.
-  This means that all logical addresses of the referent are addresses allocated
-  in the allocation, and the contiguous address range of the referent is
-  a sub-range of the contiguous address range of the allocation.
--/
-def FitsInAllocation (r : Referent) (a : Allocation) : Prop :=
-  r.addresses ⊆ a.addresses ∧
-  a.base.val ≤ r.address.val ∧ r.address.val + r.size.val ≤ a.base.val + a.size.val
-
-/--
-  A helper theorem proving that any address belonging to a referent that
-  fits in an allocation is strictly less than the allocation's upper bound.
--/
-theorem FitsInAllocation.address_bounds_alloc (r : Referent) (a : Allocation) (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses) :
-  addr < a.base.val + a.size.val := by
-  have h_subset := h.left
-  have h_addr_in_alloc := h_subset ha
-  exact (a.bounds _ h_addr_in_alloc).right
+abbrev FitsInAllocation := Rust.Machine.FitsInAllocation
+namespace FitsInAllocation
+abbrev address_bounds_alloc (r : Referent) (a : Allocation)
+    (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses) :=
+  Rust.Machine.FitsInAllocation.address_bounds_alloc r a h addr ha
+end FitsInAllocation
 
 /--
   A class for types that act as pointers with a well-defined referent.
