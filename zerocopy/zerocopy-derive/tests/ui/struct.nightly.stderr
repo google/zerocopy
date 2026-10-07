@@ -484,7 +484,7 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `SplitAtN
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `SplitAt`
-   --> src/split_at.rs:97:0
+   --> src/split_at.rs:255:0
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `u8: SplitAt` is not satisfied
@@ -502,10 +502,10 @@ help: the following other types implement trait `SplitAt`
 ...
 363 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ `SplitAtSized`
-   --> src/split_at.rs:289:0
+   --> src/split_at.rs:447:0
     |
     = note: `[T]`
-   ::: src/split_at.rs:312:0
+   ::: src/split_at.rs:470:0
     |
     = note: `ManuallyDrop<T>`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
