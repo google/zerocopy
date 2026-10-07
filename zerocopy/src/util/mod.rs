@@ -154,12 +154,6 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 #[cfg_attr(not(zerocopy_inline_always), inline)]
 #[cfg_attr(zerocopy_inline_always, inline(always))]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
-    #[cfg(kani)]
-    #[kani::proof_for_contract(padding_needed_for)]
-    fn proof() {
-        padding_needed_for(kani::any(), kani::any());
-    }
-
     // Abstractly, we want to compute:
     //   align - (len % align).
     // Handling the case where len%align is 0.
@@ -238,12 +232,6 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
-    #[cfg(kani)]
-    #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
-    fn proof() {
-        round_down_to_next_multiple_of_alignment(kani::any(), kani::any());
-    }
-
     let align = align.get();
     #[cfg(not(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0))]
     debug_assert!(align.is_power_of_two());
@@ -918,5 +906,20 @@ mod tests {
         assert_eq!(AsAddress::addr(p), p as usize);
         assert_eq!(AsAddress::addr(pm), pm as usize);
         assert_eq!(AsAddress::addr(nn), p as usize);
+    }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    #[kani::proof_for_contract(padding_needed_for)]
+    fn prove_contract_padding_needed_for() {
+        padding_needed_for(kani::any(), kani::any());
+    }
+
+    #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
+    fn prove_contract_round_down_to_next_multiple_of_alignment() {
+        round_down_to_next_multiple_of_alignment(kani::any(), kani::any());
     }
 }
