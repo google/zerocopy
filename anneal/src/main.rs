@@ -128,6 +128,17 @@ mod tests {
                 .expect("archive Lake cache reuse test failed");
         }
 
+        #[test]
+        fn test_archive_rust_model_dependency() {
+            let installation_dir = install_local_archive();
+            let temp = tempfile::Builder::new()
+                .prefix("anneal-v2-rust-model-cache-reuse-")
+                .tempdir()
+                .expect("failed to create Rust model cache reuse tempdir");
+            assert_archive_rust_model_dependency(&installation_dir, temp.path())
+                .expect("archive Rust model dependency test failed");
+        }
+
         fn install_local_archive() -> PathBuf {
             // ASSUMPTION: The CI dependency builder downloads the Nix-built
             // archive artifact to this path before running v2 tests.
@@ -176,6 +187,71 @@ lean_lib Generated where
 
             // The Nix archive must support fresh generated workspaces without
             // reconfiguring packages or rebuilding read-only Lake artifacts.
+            run_lake_archive_command(
+                &workspace,
+                &lean_root,
+                &["--keep-toolchain", "--old", "build", "Generated"],
+            )?;
+            run_lake_archive_command(
+                &workspace,
+                &lean_root,
+                &["--keep-toolchain", "env", "lean", "--json", "generated/Generated.lean"],
+            )?;
+
+            Ok(())
+        }
+
+        fn assert_archive_rust_model_dependency(
+            toolchain_root: &Path,
+            temp_root: &Path,
+        ) -> Result<(), Box<dyn std::error::Error>> {
+            let rust_model = toolchain_root.join("rust-model");
+            let lean_root = toolchain_root.join("lean");
+            let workspace = temp_root.join("generated-workspace");
+
+            assert_no_write_bits(&rust_model)?;
+            fs::create_dir_all(workspace.join("generated"))?;
+            fs::copy(rust_model.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
+            fs::write(
+                workspace.join("generated/Generated.lean"),
+                "import Rust.Layout\nimport Rust.Memory\nimport Rust.Bytes\n",
+            )?;
+            fs::write(
+                workspace.join("lakefile.lean"),
+                format!(
+                    r#"import Lake
+open Lake DSL
+
+require rust_model from "{}"
+
+package anneal_rust_model_test
+
+@[default_target]
+lean_lib Generated where
+  srcDir := "generated"
+  roots := #[`Generated]
+"#,
+                    lake_string(&rust_model)
+                ),
+            )?;
+            let manifest = json!({
+                "version": "1.2.0",
+                "packagesDir": ".lake/packages",
+                "packages": [{
+                    "type": "path",
+                    "name": "rust_model",
+                    "dir": relative_manifest_string(&rust_model, &workspace)?,
+                    "inherited": false,
+                }],
+                "name": "anneal_rust_model_test",
+                "lakeDir": ".lake",
+                "fixedToolchain": false,
+            });
+            fs::write(
+                workspace.join("lake-manifest.json"),
+                format!("{}\n", serde_json::to_string_pretty(&manifest)?),
+            )?;
+
             run_lake_archive_command(
                 &workspace,
                 &lean_root,
