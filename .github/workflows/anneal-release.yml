@@ -1,4 +1,4 @@
-name: Shared integrated native validation
+name: Shared integrated native validation — Intel network retry
 on:
   workflow_dispatch:
 permissions:
@@ -12,12 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-26
-            system: aarch64-darwin
           - os: macos-15-intel
             system: x86_64-darwin
-          - os: ubuntu-24.04
-            system: x86_64-linux
     env:
       LEAN_NUM_THREADS: '2'
       CARGO_BUILD_JOBS: '2'
