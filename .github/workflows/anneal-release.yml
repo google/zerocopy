@@ -59,6 +59,24 @@ jobs:
         run: |
           sysctl -n kernel.apparmor_restrict_unprivileged_userns > "$RUNNER_TEMP/anneal-apparmor-before"
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Build backend with bounded retries for upstream network failures
+        timeout-minutes: 150
+        run: |
+          set -euo pipefail
+          mkdir network-retry-evidence
+          status=1
+          for attempt in 1 2 3; do
+            status=0
+            nix build --no-write-lock-file --no-link --print-out-paths \
+              --max-jobs 1 --cores 2 "path:$PWD/anneal#aeneas-compiled" \
+              > "network-retry-evidence/attempt-$attempt.log" \
+              2> "network-retry-evidence/attempt-$attempt.stderr.log" || status=$?
+            printf '%s\n' "$status" > "network-retry-evidence/attempt-$attempt.status"
+            cat "network-retry-evidence/attempt-$attempt.stderr.log" >&2
+            if test "$status" -eq 0; then break; fi
+            if test "$attempt" -lt 3; then sleep 5; fi
+          done
+          exit "$status"
       - name: Cold production setup, extraction, proofs and controls
         timeout-minutes: 230
         env:
@@ -79,5 +97,6 @@ jobs:
           path: |
             validation-evidence/
             intel-signing-evidence/
+            network-retry-evidence/
           if-no-files-found: error
           retention-days: 3
