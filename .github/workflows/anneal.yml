@@ -65,8 +65,10 @@ jobs:
             anneal/v1/tools/update-exocrate-metadata.py \
             anneal/tests/test_prune_lake_cache.py \
             anneal/prune-lake-cache.py \
+            anneal/prepare-lean-sdk.py \
             anneal/prepare-native-tools.py \
             anneal/tests/test_prepare_native_tools.py \
+            anneal/tests/test_prepare_lean_sdk.py \
             anneal/rewrite-lake-vendor.py
           python3 -m unittest discover -s anneal/v1/tools -p 'test_*.py'
           python3 -m unittest discover -s anneal/tests -p 'test_*.py'
@@ -301,7 +303,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-main
-          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-native-tools.py') }}
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py', 'anneal/prepare-native-tools.py', 'anneal/finite-lake/FiniteLake.lean', 'anneal/build-finite-lake.py', 'anneal/build-anneal-support.py', 'anneal/v1/src/Anneal.lean') }}
 
       # Pull request caches are scoped by GitHub to the PR merge ref, so they
       # can speed up repeated pushes to the same PR without becoming visible to
@@ -321,7 +323,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: anneal/target/nix-cache-pr
-          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-native-tools.py') }}
+          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'anneal/prepare-lean-sdk.py', 'anneal/prepare-native-tools.py', 'anneal/finite-lake/FiniteLake.lean', 'anneal/build-finite-lake.py', 'anneal/build-anneal-support.py', 'anneal/v1/src/Anneal.lean') }}
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@4d65ea9cab522b6d9f29a170aed23ededc1b27af # v3.23.0
@@ -349,7 +351,7 @@ jobs:
             fi
           done
 
-          nix build "${nix_args[@]}" .#omnibus-archive-ci --out-link "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          nix build --print-build-logs "${nix_args[@]}" .#omnibus-archive-ci --out-link "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
           archive="$(readlink -f "target/$ANNEAL_TOOLCHAIN_ARCHIVE")"
           rm "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
           cp "$archive" "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
@@ -360,7 +362,7 @@ jobs:
             echo "::error::$ANNEAL_TOOLCHAIN_ARCHIVE is ${archive_size} bytes, which exceeds GitHub's ${max_github_release_asset_size}-byte release asset limit."
             exit 1
           fi
-          nix build "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
+          nix build --print-build-logs "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
         working-directory: anneal
 
       # Re-enable the AppArmor namespace restriction to restore the runner host's default security posture.
