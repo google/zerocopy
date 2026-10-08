@@ -163,8 +163,11 @@ buffer stays pending without being saved or discarded. Its own document
 continues to receive interactive diagnostics.
 
 Once the intended saved inputs are available, the coordinator builds the
-current local import closure and runs stock `setup-file` for open local files,
-supplying the live RC2 module header through stdin. This keeps unsaved import
+current local import closure and prepares each open file with Lake's module-setup
+API, supplying its live RC2 module header. New SDK archives batch these operations
+through a finite helper with one workspace load and fresh build state for each
+root; older SDKs use stock `setup-file`. Public `setup-file` commands and the
+language server itself remain stock Lake interfaces. This keeps unsaved import
 changes distinct from the saved dependency state. Unrecognized header syntax
 keeps affected results pending instead of guessing metadata.
 It does not compile each live proof as a prerequisite for viewing that proof's

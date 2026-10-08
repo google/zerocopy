@@ -30,7 +30,12 @@ use std::{
 use anyhow::{Context, Result, bail, ensure};
 use serde_json::{Value, json};
 
+use crate::lean_preparation::{self, Outcome, Producer, Recipe, Setup, Step};
 use crate::lean_sdk::{LakeOperation, LocalOutputPreparation, SourceStampChanged, Workspace};
+
+#[cfg(all(test, unix))]
+#[path = "lean_server_finite_tests.rs"]
+mod finite_preparation_tests;
 
 const MAX_MESSAGE: usize = 16 * 1024 * 1024;
 const MAX_QUEUED_EVENTS: usize = 2048;
@@ -94,6 +99,13 @@ trait Host {
     fn finish_local_outputs(&self, prepared: &LocalOutputPreparation) -> Result<()>;
     fn admit_produced_outputs(&self) -> Result<()>;
     fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command>;
+    fn preparation_recipe(
+        &self,
+        _operation: &str,
+        _requests: &[lean_preparation::Request],
+    ) -> Result<Option<Vec<Step>>> {
+        Ok(None)
+    }
     fn contains_source(&self, path: &Path) -> Result<bool>;
     fn contains_immutable_sdk_source(&self, path: &Path) -> Result<bool>;
     fn try_writer_lock(&self) -> Result<Option<fs::File>>;
@@ -129,6 +141,13 @@ impl Host for Workspace<'_> {
     }
     fn lake_command(&self, operation: LakeOperation<'_>) -> Result<Command> {
         Workspace::lake_command(self, operation)
+    }
+    fn preparation_recipe(
+        &self,
+        operation: &str,
+        requests: &[lean_preparation::Request],
+    ) -> Result<Option<Vec<Step>>> {
+        lean_preparation::recipe(self, operation, &[], requests).map(Some)
     }
     fn contains_source(&self, path: &Path) -> Result<bool> {
         Workspace::contains_source(self, path)
@@ -1627,6 +1646,7 @@ struct PreparedCommand {
 struct BuildBatch {
     commands: VecDeque<PreparedCommand>,
     documents: BTreeMap<PathBuf, RefreshInput>,
+    native: Option<(Recipe, Vec<(PathBuf, RefreshInput)>)>,
 }
 
 struct BuildOutcome {
@@ -1637,6 +1657,7 @@ struct BuildOutcome {
 
 struct Build {
     process: Option<Process>,
+    native: Option<(Producer, Vec<(PathBuf, RefreshInput)>)>,
     input_result: Option<mpsc::Receiver<io::Result<()>>>,
     commands: VecDeque<PreparedCommand>,
     batch_documents: BTreeMap<PathBuf, RefreshInput>,
@@ -1652,6 +1673,10 @@ struct Build {
 
 impl Build {
     fn stop(&mut self) {
+        if let Some((producer, _)) = &mut self.native {
+            producer.cancel();
+        }
+        self.native = None;
         if let Some(process) = &mut self.process {
             process.stop();
         }
@@ -1668,9 +1693,10 @@ impl Build {
         preparation: Option<LocalOutputPreparation>,
         writer: fs::File,
     ) -> Result<Self> {
-        let had_commands = batches.iter().any(|batch| !batch.commands.is_empty());
+        let had_commands = batches.iter().any(BuildBatch::has_commands);
         let mut build = Self {
             process: None,
+            native: None,
             input_result: None,
             commands: VecDeque::new(),
             batch_documents: BTreeMap::new(),
@@ -1690,6 +1716,10 @@ impl Build {
         while let Some(batch) = self.batches.pop_front() {
             self.commands = batch.commands;
             self.batch_documents = batch.documents;
+            if let Some((recipe, members)) = batch.native {
+                self.native = Some((recipe.spawn()?, members));
+                return Ok(());
+            }
             if let Some(command) = self.commands.pop_front() {
                 let (process, input) = Self::child(command)?;
                 self.process = Some(process);
@@ -1730,6 +1760,23 @@ impl Build {
         Ok((process, input_result))
     }
     fn poll(&mut self) -> Result<Option<BuildOutcome>> {
+        if let Some((producer, members)) = &mut self.native {
+            let Some(result) = producer.poll()? else { return Ok(None) };
+            ensure!(result.initial_error.is_none(), "Unexpected editor initial-build result");
+            ensure!(result.roots.len() == members.len(), "Editor preparation coverage mismatch");
+            self.failed |= result.failed();
+            for (result, (path, input)) in result.roots.into_iter().zip(members.iter()) {
+                if matches!(result.outcome, Outcome::Prepared | Outcome::BuildOnly) {
+                    self.covered.insert(path.clone(), input.clone());
+                }
+            }
+            // Producer::poll has validated terminal/exit/EOF and stopped all
+            // pipe owners. Coverage stays provisional until every chunk and
+            // the coordinator's saved/output fences complete.
+            self.native = None;
+            self.start_next_batch()?;
+            return Ok(None);
+        }
         let Some(process) = self.process.as_mut() else {
             return Ok(Some(BuildOutcome {
                 covered: self.covered.clone(),
@@ -1775,13 +1822,19 @@ impl Build {
     }
 }
 
+impl BuildBatch {
+    fn has_commands(&self) -> bool {
+        self.native.is_some() || !self.commands.is_empty()
+    }
+}
+
 fn partition_documents(
     documents: &BTreeMap<PathBuf, RefreshInput>,
 ) -> Vec<(BTreeSet<String>, BTreeMap<PathBuf, RefreshInput>)> {
     // A compile or setup failure belongs to one document. A failed
     // {Broken, Shared} closure must not hold an independent {Shared} importer.
-    // Repeated shared targets cost another warm Lake invocation, bounded by
-    // the number of selected documents in this saved-input generation.
+    // Keep a fresh Lake build context for each selected document, even when
+    // several groups share targets inside one finite helper invocation.
     documents
         .iter()
         .map(|(path, input)| {
@@ -1795,46 +1848,149 @@ fn build_commands(
     state: &State,
     documents: &BTreeMap<PathBuf, RefreshInput>,
 ) -> Result<VecDeque<BuildBatch>> {
-    let mut batches = VecDeque::new();
-    for (modules, members) in partition_documents(documents) {
-        let mut commands = VecDeque::new();
-        let targets: Vec<_> = modules
+    let partitions = partition_documents(documents);
+    let mut requests = Vec::new();
+    for (index, (modules, members)) in partitions.iter().enumerate() {
+        let targets = modules
             .iter()
             .map(|module| format!("+{}:olean", state.inputs.module_names[module]))
             .collect();
-        if !targets.is_empty() {
-            commands.push_back(PreparedCommand {
-                command: workspace.lake_command(LakeOperation::Build(&targets))?,
-                input: None,
-            });
-        }
+        let mut setup = None;
         for doc in state.documents.values().filter(|d| d.local && members.contains_key(&d.path)) {
             // setup-file requires a saved path. A newly created unsaved document
             // still reaches the server with its live header and complete buffer.
             if !doc.path.try_exists()? {
+                if state.inputs.texts.contains_key(&doc.path) {
+                    return Err(SourceStampChanged::new(format!(
+                        "Local editor source disappeared during setup: {}",
+                        doc.path.display()
+                    ))
+                    .into());
+                }
                 continue;
             }
-            let header = &members[&doc.path].header;
-            let mut command = match workspace.lake_command(LakeOperation::SetupFile(&doc.path)) {
-                Ok(command) => command,
-                Err(error) => {
-                    if !doc.path.try_exists()? {
+            let header = members[&doc.path].header.clone();
+            let input = serde_json::to_vec(&header)?;
+            ensure!(input.len() < MAX_MESSAGE, "Oversized live module header");
+            setup = Some(Setup {
+                file_name: doc.path.to_string_lossy().into_owned(),
+                path: doc.path.clone(),
+                header: Some(header),
+            });
+        }
+        requests.push(lean_preparation::Request {
+            request_id: format!("root-{index}"),
+            targets,
+            setup,
+        });
+    }
+    if requests.is_empty() {
+        return Ok(VecDeque::new());
+    }
+    let mut batches = VecDeque::new();
+    let active_indices = requests
+        .iter()
+        .enumerate()
+        .filter_map(|(index, request)| {
+            if request.targets.is_empty() && request.setup.is_none() {
+                // Unsaved import-free buffers need only a zero-command worker
+                // refresh. Do not invalidate owned incremental outputs for them.
+                batches.push_back(BuildBatch {
+                    commands: VecDeque::new(),
+                    documents: partitions[index].1.clone(),
+                    native: None,
+                });
+                None
+            } else {
+                Some(index)
+            }
+        })
+        .collect::<Vec<_>>();
+    if active_indices.is_empty() {
+        return Ok(batches);
+    }
+    let active_requests =
+        active_indices.iter().map(|&index| requests[index].clone()).collect::<Vec<_>>();
+    let operation = format!("editor-{}-{}", state.generation, state.serial);
+    let selected = match workspace.preparation_recipe(&operation, &active_requests) {
+        Ok(selected) => selected,
+        Err(error) => {
+            for request in &active_requests {
+                if let Some(setup) = &request.setup {
+                    if !setup.path.try_exists()? {
                         return Err(SourceStampChanged::new(format!(
                             "Local editor source disappeared during setup: {}",
-                            doc.path.display()
+                            setup.path.display()
                         ))
                         .into());
                     }
-                    return Err(error);
                 }
-            };
-            command.arg("-");
-            let mut input = serde_json::to_vec(header)?;
-            input.push(b'\n');
-            ensure!(input.len() <= MAX_MESSAGE, "Oversized live module header");
-            commands.push_back(PreparedCommand { command, input: Some(input) });
+            }
+            return Err(error);
         }
-        batches.push_back(BuildBatch { commands, documents: members });
+    };
+    let steps = selected.unwrap_or_else(|| {
+        vec![Step::Stock {
+            initial_targets: Vec::new(),
+            request_indices: (0..active_requests.len()).collect(),
+        }]
+    });
+    for step in steps {
+        match step {
+            Step::Native(recipe) => {
+                let members = recipe
+                    .request_indices
+                    .iter()
+                    .map(|&index| partitions[active_indices[index]].1.iter().next().unwrap())
+                    .map(|(path, input)| (path.clone(), input.clone()))
+                    .collect();
+                batches.push_back(BuildBatch {
+                    commands: VecDeque::new(),
+                    documents: BTreeMap::new(),
+                    native: Some((recipe, members)),
+                });
+            }
+            Step::Stock { initial_targets, request_indices } => {
+                ensure!(initial_targets.is_empty(), "Unexpected editor initial targets");
+                for active_index in request_indices {
+                    let index = active_indices[active_index];
+                    let request = &requests[index];
+                    let mut commands = VecDeque::new();
+                    if !request.targets.is_empty() {
+                        commands.push_back(PreparedCommand {
+                            command: workspace
+                                .lake_command(LakeOperation::Build(&request.targets))?,
+                            input: None,
+                        });
+                    }
+                    if let Some(setup) = &request.setup {
+                        let mut command =
+                            match workspace.lake_command(LakeOperation::SetupFile(&setup.path)) {
+                                Ok(command) => command,
+                                Err(error) => {
+                                    if !setup.path.try_exists()? {
+                                        return Err(SourceStampChanged::new(format!(
+                                            "Local editor source disappeared during setup: {}",
+                                            setup.path.display()
+                                        ))
+                                        .into());
+                                    }
+                                    return Err(error);
+                                }
+                            };
+                        command.arg("-");
+                        let mut input = serde_json::to_vec(&setup.header)?;
+                        input.push(b'\n');
+                        commands.push_back(PreparedCommand { command, input: Some(input) });
+                    }
+                    batches.push_back(BuildBatch {
+                        commands,
+                        documents: partitions[index].1.clone(),
+                        native: None,
+                    });
+                }
+            }
+        }
     }
     Ok(batches)
 }
@@ -2978,7 +3134,7 @@ fn run_session_with_startup(
                     observe_writer_fence(workspace, &mut state, &writer)?;
                     let result = (|| {
                         let batches = build_commands(workspace, &state, &documents)?;
-                        let has_commands = batches.iter().any(|batch| !batch.commands.is_empty());
+                        let has_commands = batches.iter().any(BuildBatch::has_commands);
                         let preparation = if has_commands {
                             // A failed or interrupted preparation cannot
                             // certify any outputs until a complete later build.
@@ -5489,6 +5645,7 @@ mod tests {
                             input: Some(vec![b'x'; MAX_MESSAGE]),
                         }]),
                         documents: attempted.clone(),
+                        native: None,
                     }]),
                     attempted.clone(),
                     [0; 32],
