@@ -184,8 +184,42 @@ def run_checked(command, root, work):
         raise subprocess.CalledProcessError(status, command)
 
 
-def check(root, work):
+def check_source_copies(root, work):
+    """CI must prove the authored sources in the checkout, not an older copy.
+
+    Initialization copies sources before extraction records its input identity.
+    A source edited between those steps could otherwise leave a stale copy with
+    a fresh fingerprint. The editor's check command deliberately permits edits
+    in its native Lean project; only CI verification requires these exact copies.
+    """
+    for relative in handwritten(root):
+        copied = work / relative
+        if not copied.is_file() or copied.read_bytes() != (
+                root / 'verification/aeneas/lean' / relative).read_bytes():
+            raise ValueError(f'CI proof source differs from the checkout: {relative}; regenerate the project')
+
+
+def check(root, work, *, require_admission=False):
     """Rebuild local proofs, then audit their compiled declarations."""
+    manifest = json.loads((work / 'bindings.json').read_text())
+    # CI uses verify, not the editor's check command. A development manifest
+    # may support proof iteration, but cannot certify fresh Rust extraction.
+    if require_admission and manifest.get('mode') != 'verified-live':
+        raise ValueError('CI verification requires verified-live bindings and execution admission')
+    if require_admission:
+        check_source_copies(root, work)
+    if manifest.get('mode') == 'verified-live':
+        import admission
+        evidence = manifest.get('admission')
+        roots = sorted(name for name, binding in manifest['bindings'].items()
+                       if binding['kind'] == 'function')
+        if (not isinstance(evidence, dict) or evidence.get('version') != 1 or
+                evidence.get('sources') != manifest.get('sources') or
+                evidence.get('registry') != admission.digest(root / 'verification/aeneas/external.json') or
+                evidence.get('inputs') != admission.input_identity(root) or
+                set(evidence.get('stages', {})) != {'before', 'llbc'} or
+                any(stage.get('roots') != roots for stage in evidence['stages'].values())):
+            raise ValueError('Missing or stale mandatory admission evidence; run fresh extraction')
     # --old preserves the archive's read-only dependency caches, but ignores
     # changed imports. A persistent editor project could therefore reuse a proof
     # checked against an earlier model. Even the direct axiom audit would accept
@@ -206,6 +240,12 @@ def check(root, work):
     # sources again while reusing the immutable toolchain dependencies.
     # The audit also writes the proof graph; run it even when Lake caches imports.
     run_checked(['lake', 'env', 'lean', '-DwarningAsError=true', 'Check.lean'], root, work)
+    if require_admission:
+        check_source_copies(root, work)
+    # Checking takes long enough for an editor to change the source mid-run.
+    # Such a run may help development, but it cannot certify the new source.
+    if manifest.get('mode') == 'verified-live' and evidence['inputs'] != admission.input_identity(root):
+        raise ValueError('Inputs changed during proof checking; run fresh extraction')
 
 
 def inspect_spec(root, work, spec):
@@ -272,7 +312,7 @@ def inspect_spec(root, work, spec):
 def main():
     """Keep preview/apply editing, regeneration protection, and inspection explicit."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['initialize', 'check', 'protect', 'inspect', 'copy-back'])
+    parser.add_argument('command', choices=['initialize', 'verify', 'check', 'protect', 'inspect', 'copy-back'])
     parser.add_argument('work', type=Path)
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--backend', type=Path)
@@ -303,7 +343,7 @@ def main():
             parser.error('inspect requires --spec')
         inspect_spec(root, work, args.spec)
     else:
-        check(root, work)
+        check(root, work, require_admission=args.command == 'verify')
 
 
 if __name__ == '__main__':
