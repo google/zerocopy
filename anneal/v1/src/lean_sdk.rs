@@ -294,6 +294,10 @@ impl LeanSdk {
         &self.inner.descriptor.lean_toolchain
     }
 
+    pub(crate) fn has_module(&self, name: &str) -> bool {
+        self.inner.modules.contains(name)
+    }
+
     pub fn plugins(&self) -> &[Plugin] {
         &self.inner.plugins
     }

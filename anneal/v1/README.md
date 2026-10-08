@@ -232,3 +232,10 @@ The release workflow must publish that archive and update the pinned archive
 URLs and hashes before normal remote setup can use this revision. Generate a
 fresh workspace after an SDK upgrade; its private outputs and server cannot
 be reused with a different SDK.
+
+New archives also include a small finite Lake helper and a compiled
+`AnnealSupport` module. The helper loads the generated Lake project once per
+preparation batch and uses Lake's normal build and module-setup APIs. It reports
+import readiness; Anneal still checks each proof with Lean. Shared support stays
+in the immutable installation, while consumer configuration and proof policy
+stay local. Older SDK archives use the existing stock commands and local support.

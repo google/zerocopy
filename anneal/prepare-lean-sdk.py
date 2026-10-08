@@ -513,6 +513,62 @@ def finite_producer(root: Path, catalog: dict) -> tuple[Path | None, dict | None
     return helper, identity
 
 
+def catalog_support(root: Path, catalog: dict) -> dict:
+    """Add only the freshly compiled invariant module to the unified view.
+
+    Local Config, strict sorry handlers and consumer calls are not SDK exports.
+    The admitted immutable module map itself selects support sharing.
+    """
+    root = root.resolve(strict=True)
+    if (root / "lean-sdk").exists() or (root / "lean-sdk").is_symlink() or "anneal_support" in catalog or "AnnealSupport" in catalog["modules"]:
+        raise ValueError("support producer capture requires fresh staging")
+    source = _archive_path(root, "lean/src/lean/AnnealSupport.lean")
+    recipe = _archive_path(root, "lean/src/anneal/build-anneal-support.py")
+    if is_split(source):
+        raise ValueError("AnnealSupport requires unchanged legacy source format")
+    result = json.loads(json.dumps(catalog))
+    artifacts = {}
+    for suffix in LEGACY:
+        relative = "lean/lib/lean/AnnealSupport." + suffix
+        path = _archive_path(root, relative)
+        if path.is_symlink():
+            raise ValueError("support compiler artifacts must be physical")
+        if suffix != "ilean":
+            check_olean(path)
+        runtime_relative = str(path.relative_to(root / "lean"))
+        if runtime_relative in result["runtime_inventory"]:
+            raise ValueError("support artifact already in runtime producer capture")
+        artifacts[suffix] = {"path": relative, "sha256": digest(path)}
+        result["runtime_inventory"][runtime_relative] = {
+            "sha256": artifacts[suffix]["sha256"], "publisher_relocation": False}
+    result["modules"]["AnnealSupport"] = {"provider": "lean",
+        "source": {"path": str(source.relative_to(root)), "sha256": digest(source)},
+        "artifacts": artifacts}
+    result["anneal_support"] = {"recipe": {"path": str(recipe.relative_to(root)), "sha256": digest(recipe)}}
+    return result
+
+
+def support_producer(root: Path, catalog: dict) -> dict | None:
+    if "anneal_support" not in catalog:
+        return None
+    row = catalog["anneal_support"]
+    if not isinstance(row, dict) or set(row) != {"recipe"}:
+        raise ValueError("unsupported support publisher fields")
+    recipe = row["recipe"]
+    if not isinstance(recipe, dict) or set(recipe) != {"path", "sha256"} or recipe["path"] != "lean/src/anneal/build-anneal-support.py":
+        raise ValueError("support recipe ownership mismatch")
+    if digest(_archive_path(root, recipe["path"])) != recipe["sha256"]:
+        raise ValueError("support recipe changed since producer capture")
+    module = catalog["modules"].get("AnnealSupport")
+    if not isinstance(module, dict) or module.get("provider") != "lean" or module.get("source", {}).get("path") != "lean/src/lean/AnnealSupport.lean" or set(module.get("artifacts", {})) != set(LEGACY):
+        raise ValueError("support has no coherent module producer")
+    for suffix, artifact in module["artifacts"].items():
+        expected = {"sha256": artifact["sha256"], "publisher_relocation": False}
+        if catalog["runtime_inventory"].get("lib/lean/AnnealSupport." + suffix) != expected:
+            raise ValueError("support has no coherent runtime producer")
+    return row
+
+
 def link_overlay(sdk: Path, archive: Path, links: dict[Path, Path]):
     """Compact complete immutable subtrees; merge partial namespaces exactly."""
     def materialize(prefix: Path, entries: dict[Path, Path]):
@@ -562,6 +618,7 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
     platform = catalog["platform"]
     _profile(platform)
     finite_helper, finite_identity = finite_producer(root, catalog)
+    support_identity = support_producer(root, catalog)
     modules = catalog["modules"]
     if not isinstance(modules, dict) or not modules:
         raise ValueError("missing expected exported module catalog")
@@ -666,6 +723,8 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
                "plugin": {"path": catalog["plugin"]["path"], "sha256": plugin_hash}, "native_closure": native_closure}
     if finite_identity is not None:
         content["finite_lake_producer"] = finite_identity
+    if support_identity is not None:
+        content["anneal_support_producer"] = support_identity
     descriptor["id"] = hashlib.sha256(encoded(content)).hexdigest()
     # All validation precedes destination creation. If an IO failure occurs
     # afterward, retain the incomplete destination; never adopt/repair it.
@@ -736,6 +795,10 @@ def main():
     finite.add_argument("--root", type=Path, required=True)
     finite.add_argument("--catalog", type=Path, required=True)
     finite.add_argument("--output", type=Path, required=True)
+    support = commands.add_parser("catalog-support")
+    support.add_argument("--root", type=Path, required=True)
+    support.add_argument("--catalog", type=Path, required=True)
+    support.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "catalog":
         spec = importlib.util.spec_from_file_location("lean_sdk_pruning_policy", args.pruner)
@@ -747,6 +810,10 @@ def main():
             stream.write(encoded(catalog))
     elif args.command == "catalog-finite":
         catalog = catalog_finite(args.root, json.loads(args.catalog.read_text()))
+        with args.output.open("xb") as stream:
+            stream.write(encoded(catalog))
+    elif args.command == "catalog-support":
+        catalog = catalog_support(args.root, json.loads(args.catalog.read_text()))
         with args.output.open("xb") as stream:
             stream.write(encoded(catalog))
     elif args.command == "relocate-darwin":

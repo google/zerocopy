@@ -89,10 +89,17 @@ pub fn run_aeneas(
 
     let mut prelude = String::new();
     prelude.push_str("import Config\n");
-    if !args.allow_sorry {
-        prelude.push_str("import Lean\n");
+    if sdk.has_module("AnnealSupport") {
+        // The admitted shared support has no consumer proof policy. Config and
+        // the high-priority sorry handlers below stay in this local facade;
+        // inject_builtins still reflects the generated consumer environment.
+        prelude.push_str("import AnnealSupport\n");
+    } else {
+        if !args.allow_sorry {
+            prelude.push_str("import Lean\n");
+        }
+        prelude.push_str(ANNEAL_PRELUDE);
     }
-    prelude.push_str(ANNEAL_PRELUDE);
 
     if !args.allow_sorry {
         prelude.push_str("\n\n");

@@ -556,11 +556,15 @@
             "mkdir -p $TMPDIR/dist_staging/aeneas"
             "cp -r $aeneasBuild/* $TMPDIR/dist_staging/aeneas/"
             "chmod -R +w $TMPDIR/dist_staging/aeneas"
-            # One finite internal Lake process per admitted operation. Compile
+            # Bounded finite Lake chunks share one admitted operation. Compile
             # against this pinned RC2 runtime before native relocation; retain
             # exact source/recipe and include final helper/loader bytes in SDK id.
             "python3 ${./build-finite-lake.py} --root $TMPDIR/dist_staging --source ${./finite-lake/FiniteLake.lean} --platform ${system}"
-            "python3 ${./prepare-lean-sdk.py} catalog-finite --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json --output $TMPDIR/lean-sdk-staged-producer.json"
+            "python3 ${./prepare-lean-sdk.py} catalog-finite --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json --output $TMPDIR/lean-sdk-finite-producer.json"
+            # Compile invariant support once against this exact retained Aeneas
+            # closure. Config/policy and consumer reflection calls stay local.
+            "python3 ${./build-anneal-support.py} --root $TMPDIR/dist_staging --source ${./v1/src/Anneal.lean} --platform ${system}"
+            "python3 ${./prepare-lean-sdk.py} catalog-support --root $TMPDIR/dist_staging --catalog $TMPDIR/lean-sdk-finite-producer.json --output $TMPDIR/lean-sdk-staged-producer.json"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             # Remove Nix dynamic-linker and RPATH references from ELF binaries.
             "echo \"Cleaning up Nix store references...\""
@@ -689,6 +693,9 @@
               lean-sdk/sdk.json \
               lean-sdk/modules.json \
               lean-sdk/publisher-catalog.json \
+              lean-sdk/src/lean/AnnealSupport.lean \
+              lean-sdk/lib/lean/AnnealSupport.olean \
+              lean-sdk/lib/lean/AnnealSupport.ilean \
               rust/bin/cargo \
               rust/bin/rustc; do
               if ! grep -Fxq "$path" "$TMPDIR/archive/entries"; then

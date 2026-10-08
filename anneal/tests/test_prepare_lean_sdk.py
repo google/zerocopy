@@ -113,6 +113,63 @@ class PrepareLeanSdkTests(unittest.TestCase):
         catalog["runtime_inventory"].pop("bin/anneal-finite-lake")
         return publisher.catalog_finite(self.root, catalog)
 
+    def support_catalog(self):
+        catalog = self.catalog()
+        module(self.runtime, "AnnealSupport", runtime=True)
+        write(self.runtime / "src/anneal/build-anneal-support.py", "# exact support recipe\n")
+        return publisher.catalog_support(self.root, catalog)
+
+    def test_support_is_an_exact_unified_module_with_source_and_complete_family(self):
+        catalog = self.support_catalog()
+        descriptor = publisher.assemble(self.root, catalog)
+        sdk = self.root / "lean-sdk"
+        self.assertEqual(descriptor["schema"], 1)  # No new support capability flag.
+        modules = json.loads((sdk / "modules.json").read_text())
+        self.assertEqual(modules["schema"], 1)
+        self.assertIn("AnnealSupport", modules["modules"])
+        self.assertEqual((sdk / "src/lean/AnnealSupport.lean").read_bytes(),
+                         (self.runtime / "src/lean/AnnealSupport.lean").read_bytes())
+        for suffix in publisher.LEGACY:
+            self.assertEqual((sdk / "lib/lean" / ("AnnealSupport." + suffix)).read_bytes(),
+                             (self.runtime / "lib/lean" / ("AnnealSupport." + suffix)).read_bytes())
+        content = json.loads((sdk / "publisher-catalog.json").read_text())["published"]
+        self.assertEqual(content["anneal_support_producer"], catalog["anneal_support"])
+        self.assertEqual(content["modules"]["AnnealSupport"]["provider"], "lean")
+
+    def test_support_drift_or_incomplete_family_rejected_before_sdk_creation(self):
+        catalog = self.support_catalog()
+        for relative in ["src/lean/AnnealSupport.lean", "src/anneal/build-anneal-support.py",
+                         "lib/lean/AnnealSupport.olean", "lib/lean/AnnealSupport.ilean"]:
+            with self.subTest(relative=relative):
+                path = self.runtime / relative
+                original = path.read_bytes()
+                path.write_bytes(original + b"changed")
+                self.reject_assembly(catalog)
+                path.write_bytes(original)
+        for suffix in publisher.LEGACY:
+            with self.subTest(suffix=suffix):
+                changed = copy.deepcopy(catalog)
+                del changed["modules"]["AnnealSupport"]["artifacts"][suffix]
+                self.reject_assembly(changed)
+        changed = copy.deepcopy(catalog)
+        changed["runtime_inventory"]["lib/lean/AnnealSupport.olean"]["publisher_relocation"] = True
+        self.reject_assembly(changed)
+        changed = copy.deepcopy(catalog)
+        changed["anneal_support"]["unknown"] = True
+        self.reject_assembly(changed)
+
+    def test_support_capture_cannot_adopt_existing_catalog_or_split_source(self):
+        catalog = self.support_catalog()
+        with self.assertRaises(ValueError):
+            publisher.catalog_support(self.root, catalog)
+        original = self.catalog()
+        original["modules"].pop("AnnealSupport")
+        original["runtime_inventory"].pop("lib/lean/AnnealSupport.olean")
+        original["runtime_inventory"].pop("lib/lean/AnnealSupport.ilean")
+        write(self.runtime / "src/lean/AnnealSupport.lean", "module\n-- changed source format\n")
+        with self.assertRaises(ValueError):
+            publisher.catalog_support(self.root, original)
+
     def test_finite_descriptor_keeps_module_map_schema_and_real_relocatable_helper(self):
         catalog = self.finite_catalog()
         # The helper's Lake closure is actually included rather than presumed
