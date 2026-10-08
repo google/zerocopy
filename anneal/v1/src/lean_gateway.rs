@@ -44,9 +44,14 @@ enum Operation {
     },
     /// Return Lake setup metadata after building saved local imports.
     SetupFile { file: PathBuf },
+    /// Start the bound server with local dependency freshness coordination.
+    Serve,
 }
 
 pub fn run(args: Args) -> Result<()> {
+    if matches!(args.operation, Operation::Serve) {
+        return crate::lean_server::run(&args.workspace);
+    }
     #[cfg(unix)]
     let signals = crate::lean_server::SignalGuard::install()?;
     // Quiesce native producers before Complete admission of their outputs.
@@ -100,6 +105,7 @@ pub fn run(args: Args) -> Result<()> {
                 &mut std::io::stderr(),
             )
         }
+        Operation::Serve => unreachable!("Serve was dispatched before workspace admission"),
     }
 }
 
