@@ -17,7 +17,8 @@ use indicatif::{ProgressBar, ProgressStyle};
 
 use crate::{
     generate,
-    lean_sdk::{LakeLibrary, LakeOperation, LeanOperation, Workspace, filesystem_folds_ascii_case},
+    lean_preparation::{self, Request, Setup},
+    lean_sdk::{LakeLibrary, LeanOperation, Workspace, filesystem_folds_ascii_case},
     resolve::LockedRoots,
     scanner::AnnealArtifact,
     setup::Tool,
@@ -66,9 +67,8 @@ pub fn run_aeneas(
     // A Rust-only archive change may install identical Lean inputs at a new
     // distribution path. Keep the original physical SDK binding and outputs;
     // a different Lean identity already selects a fresh workspace leaf.
-    let sdk = existing
-        .as_ref()
-        .map_or_else(|| selected_sdk.clone(), |workspace| workspace.sdk().clone());
+    let sdk =
+        existing.as_ref().map_or_else(|| selected_sdk.clone(), |workspace| workspace.sdk().clone());
     let old_snapshot = existing.as_ref().map(Workspace::source_snapshot).transpose()?;
     let stage = create_private_lean_stage(parent)?;
     let tmp_lean_root = stage.path().join("workspace");
@@ -676,7 +676,26 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let prepared = workspace.prepare_local_outputs()?;
     let stamp = prepared.stamp();
     let targets = ["Generated".into(), "Anneal".into()];
-    let mut cmd = workspace.lake_command(LakeOperation::Build(&targets))?;
+    let requests = artifacts
+        .iter()
+        .enumerate()
+        .map(|(index, artifact)| {
+            let path = lean_root.join(format!(
+                "generated/{}/{}",
+                artifact.artifact_slug(),
+                artifact.lean_spec_file_name()
+            ));
+            Ok(Request {
+                request_id: format!("artifact-{index}"),
+                targets: vec![],
+                setup: Some(Setup {
+                    file_name: path.to_str().context("Lean source path must be UTF-8")?.to_owned(),
+                    path,
+                    header: None,
+                }),
+            })
+        })
+        .collect::<Result<Vec<_>>>()?;
 
     let start = std::time::Instant::now();
     // UI Spinner
@@ -684,27 +703,28 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     pb.set_style(ProgressStyle::default_spinner().template("{spinner:.green} {msg}").unwrap());
     pb.enable_steady_tick(std::time::Duration::from_millis(100));
     pb.set_message("Building Lean dependencies...");
-    // Command::output drains both streams while waiting and propagates capture
-    // failures. A reader error or panic must not become a successful build.
-    let output = cmd.output();
+    // The preparation producer drains status stdout, inherits stderr and owns/
+    // reaps its process group. A reader error or panic cannot become success.
+    let preparation = lean_preparation::run(&workspace, &targets, &requests, stamp);
     pb.finish_and_clear();
-    let output = output.context("Failed to capture lake output")?;
-    log::trace!("'lake build' took {:.2?}", start.elapsed());
-    if !output.status.success() {
-        bail!(
-            "Lean build failed\nSTDOUT:\n{}\nSTDERR:\n{}",
-            String::from_utf8_lossy(&output.stdout),
-            String::from_utf8_lossy(&output.stderr)
-        );
+    let preparation = preparation.context("Failed to prepare Lean imports")?;
+    log::trace!("Lean import preparation took {:.2?}", start.elapsed());
+    if let Some(error) = &preparation.initial_error {
+        bail!("{error}");
     }
-    workspace.finish_local_outputs(&prepared)?;
+    // Commit only when every requested import preparation succeeded. Keep
+    // healthy earlier proof diagnostics in their original artifact order when
+    // a later root failed; partial preparation never installs provenance.
+    if !preparation.failed() {
+        workspace.finish_local_outputs(&prepared)?;
+    }
 
     // 3. Run Diagnostics
     log::info!("Running Lean diagnostics...");
     let mut has_errors = false;
     let mut mapper = crate::diagnostics::DiagnosticMapper::new(roots.workspace().clone());
 
-    for artifact in artifacts {
+    for (index, artifact) in artifacts.iter().enumerate() {
         let slug = artifact.artifact_slug();
         // The path in generated file is `generated/Slug/Specs.lean`
         // We construct the relative path from the Lake root (which is `target/anneal/<hash>/lean`)
@@ -713,7 +733,9 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
         // Setup-file builds the actual saved transitive local imports, including
         // user imports absent from the generated default roots. Direct startup
         // alone could otherwise verify stale private OLeans.
-        crate::lean_gateway::setup_saved_imports(&workspace, Path::new(&specs_rel_path))?;
+        if let Some(error) = &preparation.roots[index].error {
+            bail!("{error}");
+        }
         ensure!(
             workspace.source_stamp()? == stamp,
             "Lean inputs changed during build; verification is obsolete"

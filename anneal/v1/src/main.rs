@@ -5,6 +5,7 @@ mod editor_host;
 mod errors;
 mod generate;
 mod lean_gateway;
+mod lean_preparation;
 pub mod lean_sdk;
 mod lean_server;
 mod parse;

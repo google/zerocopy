@@ -319,6 +319,13 @@ impl LeanSdk {
         }
         Ok(())
     }
+
+    pub(crate) fn check_finite_integrity(&self) -> Result<()> {
+        self.check_descriptor()?;
+        let helper =
+            self.inner.descriptor.finite_lake.as_ref().context("SDK has no finite helper")?;
+        check_finite_helper(&self.inner.root, &self.inner.installation, helper)
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
@@ -434,6 +441,17 @@ impl<'a> Workspace<'a> {
             reject_links(&root.join(filename))?;
         }
         ensure!(!root.join("lakefile.toml").try_exists()?, "Unsupported alternate Lakefile");
+        // Seed an absent manifest when rendering dependency-free configuration. Existing
+        // manifests must pass the same gate; never let Lake repair them first.
+        let manifest_path = root.join("lake-manifest.json");
+        reject_links(&manifest_path)?;
+        if manifest_path.try_exists()? {
+            check_dependency_free_manifest(&read_small(&manifest_path, MAX_MODULES_SIZE)?)?;
+        } else {
+            let mut manifest =
+                OpenOptions::new().write(true).create_new(true).open(&manifest_path)?;
+            manifest.write_all(b"{\"version\":\"1.2.0\",\"packagesDir\":\".lake/packages\",\"packages\":[],\"name\":\"anneal_verification\",\"lakeDir\":\".lake\"}\n")?;
+        }
         let mut spec = tempfile::Builder::new().prefix(".anneal-lake-").tempfile_in(&root)?;
         spec.write_all(&configuration_bytes)?;
         let mut script = tempfile::Builder::new().prefix(".anneal-lake-").tempfile_in(&root)?;
@@ -960,9 +978,7 @@ impl<'a> Workspace<'a> {
     /// for the source client's lifetime under the immutable-installation premise.
     pub fn admit_sdk_source_project(&self, root: &Path) -> Result<bool> {
         self.admit()?;
-        let Ok(root) = fs::canonicalize(root) else {
-            return Ok(false);
-        };
+        let Ok(root) = fs::canonicalize(root) else { return Ok(false) };
         if !root.is_dir() || !root.starts_with(&self.sdk.inner.installation) {
             return Ok(false);
         }
@@ -1211,6 +1227,63 @@ impl<'a> Workspace<'a> {
         Ok(command)
     }
 
+    /// Inspect the exact known generated configuration without acquiring a
+    /// writer lease. The operation owner already holds that lease. A legacy
+    /// descriptor or absent legacy manifest selects incumbent stock commands.
+    pub(crate) fn finite_inputs(&self) -> Result<Option<(String, String)>> {
+        self.admit()?;
+        check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
+        let manifest = self.root.join("lake-manifest.json");
+        reject_links(&manifest)?;
+        if !manifest.try_exists()? {
+            ensure!(
+                self.sdk.inner.descriptor.finite_lake.is_none(),
+                "Finite SDK requires an existing empty Lake manifest"
+            );
+            return Ok(None);
+        }
+        let manifest = read_small(&manifest, MAX_MODULES_SIZE)?;
+        check_dependency_free_manifest(&manifest)?;
+        if self.sdk.inner.descriptor.finite_lake.is_none() {
+            return Ok(None);
+        }
+        let config = read_small(&self.root.join("lakefile.lean"), MAX_MODULES_SIZE)?;
+        Ok(Some((String::from_utf8(config)?, String::from_utf8(manifest)?)))
+    }
+
+    pub(crate) fn finite_command(&self) -> Result<Option<Command>> {
+        self.admit()?;
+        let Some(helper) = &self.sdk.inner.descriptor.finite_lake else { return Ok(None) };
+        self.sdk.check_finite_integrity()?;
+        check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
+        check_dependency_free_manifest(&read_small(
+            &self.root.join("lake-manifest.json"),
+            MAX_MODULES_SIZE,
+        )?)?;
+        let mut command = self.command("anneal-finite-lake")?;
+        ensure!(
+            helper.path == Path::new("bin/anneal-finite-lake"),
+            "Unsupported finite helper path"
+        );
+        command.arg(&self.root);
+        Ok(Some(command))
+    }
+
+    pub(crate) fn validate_preparation_request(
+        &self,
+        targets: &[String],
+        setup: Option<(&str, &Path)>,
+    ) -> Result<()> {
+        for target in targets {
+            ensure!(valid_build_target(target), "Unsupported Lake build target: {target}");
+        }
+        if let Some((file_name, path)) = setup {
+            self.local_source(path)?;
+            ensure!(!file_name.is_empty() && !file_name.contains('\0'), "Invalid setup filename");
+        }
+        Ok(())
+    }
+
     pub fn lean_command(&self, operation: LeanOperation<'_>) -> Result<Command> {
         let mut command = self.command("lean")?;
         command.arg(format!("--root={}", self.root.display()));
@@ -1384,9 +1457,7 @@ fn prune_undeclared_outputs(root: &Path) -> Result<()> {
             let relative = entry.path().strip_prefix(&output_root)?;
             let leaf =
                 relative.file_name().and_then(|s| s.to_str()).context("Non-UTF8 output path")?;
-            let Some((module_leaf, _)) = leaf.split_once('.') else {
-                continue;
-            };
+            let Some((module_leaf, _)) = leaf.split_once('.') else { continue };
             let module = relative
                 .with_file_name(module_leaf)
                 .iter()
@@ -1711,6 +1782,17 @@ fn check_finite_helper(root: &Path, installation: &Path, helper: &FiniteLake) ->
         "Finite Lake helper changed after admission"
     );
     check_launcher(&path, installation)?;
+    Ok(())
+}
+
+fn check_dependency_free_manifest(bytes: &[u8]) -> Result<()> {
+    let manifest: serde_json::Value =
+        serde_json::from_slice(bytes).context("Invalid Lake manifest")?;
+    ensure!(manifest["version"].as_str() == Some("1.2.0"), "Unsupported Lake manifest version");
+    ensure!(
+        manifest["packages"].as_array().is_some_and(Vec::is_empty),
+        "Lake manifest must contain an empty packages array"
+    );
     Ok(())
 }
 
@@ -2044,9 +2126,7 @@ mod darwin_namespace_acl {
     }
 
     pub(super) fn check(directory: &Path, workspace_root: bool) -> Result<()> {
-        let Some(acl) = read_acl(directory)? else {
-            return Ok(());
-        };
+        let Some(acl) = read_acl(directory)? else { return Ok(()) };
         // SAFETY: this ACL is live, privately owned native storage.
         ensure!(unsafe { acl_valid(acl.0) } == 0, "Invalid workspace namespace ACL");
         for index in 0..=MAX_ENTRIES {
@@ -2422,9 +2502,7 @@ fn reject_existing_source_root_aliases(root: &Path, roots: &[PathBuf]) -> Result
     for source in roots {
         let mut current = root.to_path_buf();
         for component in source.components() {
-            let Component::Normal(name) = component else {
-                continue;
-            };
+            let Component::Normal(name) = component else { continue };
             current.push(name);
             let metadata = match fs::symlink_metadata(&current) {
                 Ok(metadata) => metadata,

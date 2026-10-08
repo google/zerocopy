@@ -18,6 +18,7 @@ use std::{
 use anyhow::{Context as _, Result, bail, ensure};
 use clap::{Parser, Subcommand, ValueEnum};
 
+use crate::lean_preparation::{self, Request, Setup};
 use crate::lean_sdk::{LakeOperation, LeanOperation, Workspace};
 
 #[derive(Parser, Debug)]
@@ -161,19 +162,21 @@ pub fn run(args: Args) -> Result<()> {
 
 pub fn setup_saved_imports(workspace: &Workspace<'_>, file: &Path) -> Result<()> {
     let preparation = workspace.prepare_local_outputs()?;
-    let output = workspace.lake_command(LakeOperation::SetupFile(file))?.output()?;
-    if !output.status.success() {
-        ensure_current(workspace, preparation.stamp())?;
+    let path = if file.is_absolute() { file.to_owned() } else { workspace.root().join(file) };
+    let request = Request {
+        request_id: "check".into(),
+        targets: vec![],
+        setup: Some(Setup {
+            file_name: path.to_str().context("Lean source path must be UTF-8")?.to_owned(),
+            path,
+            header: None,
+        }),
+    };
+    let result = lean_preparation::run(workspace, &[], &[request], preparation.stamp())?;
+    if let Some(error) = &result.roots[0].error {
+        bail!("{error}");
     }
-    ensure!(
-        output.status.success(),
-        "Local import build failed\n{}\n{}",
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
-    );
-    let setup: serde_json::Value =
-        serde_json::from_slice(&output.stdout).context("Lake returned malformed setup metadata")?;
-    ensure!(setup.is_object(), "Lake setup metadata is not an object");
+    ensure!(!result.failed(), "Local import preparation failed");
     workspace.finish_local_outputs(&preparation)
 }
 
