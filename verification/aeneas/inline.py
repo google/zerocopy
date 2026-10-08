@@ -50,6 +50,7 @@ class Annotations(dict):
         self.type_classes = None
         self.external_type_parameters = None
         self.source_snapshots = {}
+        self.source_body_digests = {}
 
 
 class GeneratedLines(list):
@@ -462,6 +463,11 @@ def discover(root, tool):
         encoded = source.encode('utf-8')
         annotations.source_snapshots[file] = encoded
         if valid_file(file):
+            for owner in syntax[file].get('functions', []):
+                name = rust_identity(file, owner['path'])
+                annotations.source_body_digests.setdefault(name, []).append(
+                    hashlib.sha256(encoded[owner['open']:owner['close']]).hexdigest())
+        if valid_file(file):
             for macro in syntax[file].get('macros', []):
                 start = len(encoded[:macro['start']].decode('utf-8'))
                 end = len(encoded[:macro['end']].decode('utf-8'))
@@ -759,7 +765,13 @@ def save_bindings(root, annotations, work, development=False):
                            'category': category, 'parameters': declaration['parameters']})
     if {row['rust'] for row in type_image if row['category'] == 'local-nominal'} != set(source_types):
         raise ValueError('Generated raw type image omits a source-bound nominal type')
-    manifest = {'version': 3, 'bindings': bindings,
+    import admission
+    admitted = None if development else admission.inspect(root, work,
+        [name for name, entry in bindings.items() if entry['kind'] == 'function'],
+        source_digest(root, annotations), annotations.source_body_digests)
+    if admitted is not None:
+        admission.check_translation(work, admitted)
+    manifest = {'version': 3, 'bindings': bindings, 'admission': admitted,
                 'type_image': type_image,
                 'mode': 'development' if development else 'verified-live',
                 'sources': source_digest(root, annotations), 'model': model_digest(work)}
@@ -992,6 +1004,8 @@ def check_bindings(root, annotations, llbc):
         wrapped = implementation['skip_binder']
         if set(wrapped) == {'Value'}:
             body = wrapped['Value'][1]
+        elif set(wrapped) == {'Untagged'}:
+            body = wrapped['Untagged']
         elif set(wrapped) == {'Deduplicated'}:
             body = adts.get(wrapped['Deduplicated'], {})
         else:
@@ -1073,6 +1087,8 @@ def check_bindings(root, annotations, llbc):
                     and len(body[1]) == 1 and next(iter(body[1])) in type_tags):
                 type_values.setdefault(body[0], []).append(body[1])
             collect_type_values(body[1])
+        elif tag == 'Untagged':
+            collect_type_values(body)
         elif tag in {'Array', 'Slice'} and isinstance(body, list) and body:
             collect_type_values(body[0])
         elif tag == 'Adt' and isinstance(body, dict):
@@ -1098,6 +1114,8 @@ def check_bindings(root, annotations, llbc):
         if tag == 'Value':
             return (isinstance(body, list) and len(body) == 2
                     and isinstance(body[0], int) and safe_field_type(body[1], parameter_count, seen))
+        if tag == 'Untagged':
+            return safe_field_type(body, parameter_count, seen)
         if tag == 'Deduplicated':
             if not isinstance(body, int) or body in seen:
                 return False
@@ -1300,6 +1318,10 @@ def main():
     annotations = discover(args.root, args.tool)
     if args.command == 'bindings':
         check_bindings(args.root, annotations, args.work / 'zerocopy.llbc')
+        import admission
+        admission.inspect(args.root, args.work,
+            [name for name, entry in annotations.items() if entry.get('kind', 'function') == 'function'],
+            source_digest(args.root, annotations), annotations.source_body_digests)
     elif args.command == 'models':
         # The driver calls this only after bindings, on freshly generated live
         # output. Keep the verified mapping separate from mutable spec text.

@@ -1,0 +1,45 @@
+diff --git a/src/bin/charon-driver/main.rs b/src/bin/charon-driver/main.rs
+--- a/src/bin/charon-driver/main.rs
++++ b/src/bin/charon-driver/main.rs
+@@ -89,6 +89,21 @@
+         return Ok(0);
+     };
+ 
++    // Preserve executable effects before any Charon simplification. The consumer
++    // requires this snapshot, so a stock driver cannot silently skip admission.
++    // This is evidence for a downstream checker, not a rustc correctness proof.
++    if let Some(path) = std::env::var_os("CHARON_ADMISSION_SNAPSHOT") {
++        let snapshot = export::CrateData {
++            charon_version: export::CharonVersion(charon_lib::VERSION.to_owned()),
++            translated: ctx.translated.clone(),
++            has_errors: ctx.errors.borrow().error_count != 0,
++        };
++        snapshot.serialize_to_file(
++            std::path::Path::new(&path),
++            charon_lib::options::SerializationFormat::Json,
++        ).map_err(|()| CharonFailure::Serialize)?;
++    }
++
+     // The bulk of the translation is done, we no longer need to interact with rustc internals. We
+     // run several passes that simplify the items and cleanup the bodies.
+     charon_lib::timing::time("transformation-passes", || {
+diff --git a/src/bin/charon-driver/translate/get_mir.rs b/src/bin/charon-driver/translate/get_mir.rs
+--- a/src/bin/charon-driver/translate/get_mir.rs
++++ b/src/bin/charon-driver/translate/get_mir.rs
+@@ -84,7 +84,15 @@
+                     }
+                     MirLevel::Optimized => {}
+                 }
+-                // We fall back to optimized MIR if the requested body was stolen.
++                // Admission must inspect the requested pre-optimization body.
++                // A stolen local body cannot silently become optimized MIR.
++                // None leaves a missing body which the consumer rejects.
++                if std::env::var_os("CHARON_ADMISSION_SNAPSHOT").is_some()
++                    && !matches!(level, MirLevel::Optimized)
++                {
++                    return None;
++                }
++                // Other consumers retain the upstream fallback behavior.
+             }
+ 
+             // There are only two MIRs we can fetch for non-local bodies: CTFE mir for globals and const
