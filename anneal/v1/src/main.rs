@@ -1,6 +1,7 @@
 mod aeneas;
 mod charon;
 mod diagnostics;
+mod editor_host;
 mod errors;
 mod generate;
 mod lean_gateway;
@@ -10,6 +11,7 @@ mod lean_server;
 mod parse;
 mod resolve;
 mod scanner;
+mod sdk_source_server;
 mod validate;
 
 mod setup;
@@ -38,6 +40,8 @@ enum Commands {
     Generate(resolve::Args),
     /// Operate on an existing workspace through its fixed Lean SDK.
     Lean(lean_gateway::Args),
+    #[command(hide = true)]
+    EditorGateway(lean_gateway::EditorArgs),
     #[command(hide = true)]
     ToolchainPath,
 }
@@ -97,6 +101,7 @@ fn main() -> anyhow::Result<()> {
             setup::run_setup(setup::SetupArgs { local_archive: args.local_archive })?;
         }
         Commands::Lean(args) => lean_gateway::run(args)?,
+        Commands::EditorGateway(args) => lean_gateway::editor(args)?,
         Commands::ToolchainPath => {
             let toolchain = setup::Toolchain::resolve()?;
             println!("{}", toolchain.bin_dir().display());
