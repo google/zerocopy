@@ -196,6 +196,34 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# An opaque helper must not conceal an adapter which discards forbidden
+# failures. This mutation leaves NonZero::get's returned value unchanged, so
+# ordinary functional proofs alone would not detect the unsupported dependency.
+# Its backend-like namespace must not hide its actual downstream module owner.
+python3 - <<'PYCONTROL'
+from pathlib import Path
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+start = "@[simp] def core.num.nonzero.NonZero.get"
+body = "(x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val"
+if s.count(start) != 1 or s.count(body) != 1:
+    raise SystemExit("Failure erasure control no longer matches")
+helper = ("opaque Aeneas.Std.hiddenFailureErasure : Option Unit :=\n"
+          "  Aeneas.Std.Option.ofResult (Result.fail .undef : Result Unit)\n\n")
+s = s.replace(start, helper + start)
+s = s.replace(body, "(x : core.num.nonzero.NonZero T Inner) : Result T :=\n"
+              "  match Aeneas.Std.hiddenFailureErasure with\n"
+              "  | none => .ok x.val\n"
+              "  | some _ => .ok x.val")
+p.write_text(s)
+PYCONTROL
+check_model_mutant "failure erasure hidden behind an opaque helper" Zerocopy.FunsExternal
+expect_failure "failure erasure hidden behind an opaque helper" unsafe-erasure-audit.log audit
+if ! grep -Fq 'unsupported failure erasure' "$backup/unsafe-erasure-audit.log"; then
+    cat "$backup/unsafe-erasure-audit.log" >&2; exit 1
+fi
+restore_build
+
 # Harmless extracted-function imports are ordinary acyclic dependencies.
 # Their presence cannot replace the independently authored outcome expectation.
 if [[ -f ModelSupport.lean ]]; then
@@ -375,6 +403,10 @@ if len(keys) != 1:
     raise SystemExit("Binding-image control requires a unique min mapping")
 if mutation == "missing-map":
     del models[keys[0]]
+    # Keep the admission roster internally consistent so this control reaches
+    # the independent compiled-root coverage check it is intended to challenge.
+    for stage in manifest.get("admission", {}).get("stages", {}).values():
+        stage["roots"].remove(keys[0])
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 elif mutation == "duplicate-map":
     if [entry["raw"] for entry in models.values()].count("Zerocopy.util.max") != 1:

@@ -104,7 +104,9 @@ def probe(tools, data, patched):
 def provenance(tools, data):
     return {"metadata": data, "source_rev": data["aeneas-revision"],
             "source_nar_hash": data["aeneas-source-nar-hash"],
-            "patch_sha256": PATCH_SHA256, "version": data["aeneas-release"] + PATCH_SUFFIX,
+            "patch_sha256": PATCH_SHA256,
+            "admission_patch_sha256": digest(Path(__file__).with_name("patches") / "admission-snapshot.patch"),
+            "version": data["aeneas-release"] + PATCH_SUFFIX,
             "binary_sha256": digest(tools / "aeneas"),
             "upstream_binary_sha256": digest(tools / "aeneas-upstream"),
             "runtime_binary_sha256": {name: digest(tools / name) for name in
