@@ -221,6 +221,7 @@ dependencies = [
  "exocrate",
  "fs2",
  "indicatif",
+ "libc",
  "log",
  "miette",
  "pathdiff",
