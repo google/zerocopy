@@ -23,11 +23,23 @@ let
     AENEAS_VERSION = builtins.getEnv "AENEAS_VERSION";
     postInstall = "";
   });
+  charonBase = upstream.inputs.charon.packages.${system};
+  charon = charonBase.charon-unwrapped.overrideAttrs (old: {
+    patches = (old.patches or []) ++ [ ./patches/admission-snapshot.patch ];
+  });
+  portableCharon = charonBase.charon-portable.overrideAttrs (_: {
+    unpackPhase = ''
+      mkdir bin
+      cp ${charon}/bin/charon ${charon}/bin/charon-driver bin/
+      chmod -R u+w bin
+    '';
+  });
 in pkgs.runCommand "aeneas-nominal-bundle" {
   nativeBuildInputs = anneal.packages.${system}.aeneas-download.portabilityInputs;
 } ''
   mkdir -p $out
   cp ${aeneas}/bin/aeneas $out/aeneas
+  cp ${portableCharon}/bin/charon ${portableCharon}/bin/charon-driver $out/
   ${pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
     chmod +w $out/aeneas
     dylibbundler -od -b -x $out/aeneas -d $out/libs -p @executable_path/libs
