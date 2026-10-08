@@ -50,3 +50,12 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
+/-- [zerocopy::util::copy_unchecked]:
+    Source: 'src/util/mod.rs', lines 310:0-325:1 -/
+axiom util.copy_unchecked
+  : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
+
+/-- [zerocopy::util::transmute_unchecked]:
+    Source: 'src/util/mod.rs', lines 337:0-366:1 -/
+axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
+
