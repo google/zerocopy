@@ -62,6 +62,31 @@ run_elab do
       throwError "Missing external size read"
     unless ← Meta.isDefEq (mkConst `core.mem.size_of) sizeRead do
       throwError "External size read changed its data-input interpretation"
+  if env.contains `util.transmute_unchecked then
+    let expected ← Term.elabTerm (← `(fun {Src : Type} (Dst : Type) (src : Src) => by
+      classical
+      exact if hs : Src = Aeneas.Std.U8 then
+        if hd : Dst = Bool then
+          let byte := cast hs src
+          if byte.val < 2 then Aeneas.Std.Result.ok (cast hd.symm (decide (byte.val = 1)))
+          else Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+        else Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.transmute_unchecked) (← instantiateMVars expected) do
+      throwError "External Boolean conversion changed its complete interpretation"
+  if env.contains `util.copy_unchecked then
+    let expected ← Term.elabTerm (← `(fun (src dst : Aeneas.Std.Slice Aeneas.Std.U8) =>
+      if h : src.val.length ≤ dst.val.length then
+        Aeneas.Std.Result.ok (Aeneas.Std.Slice.from
+          (src.val ++ dst.val.drop src.val.length) (by
+            have := dst.property
+            simp only [List.length_append, List.length_drop]
+            omega))
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.copy_unchecked) (← instantiateMVars expected) do
+      throwError "External byte copy changed its complete interpretation"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.
