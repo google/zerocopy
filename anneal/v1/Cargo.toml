@@ -98,15 +98,13 @@ similar = "2.7.0"
 
 [package.metadata.build_rs]
 
-# The commit hash of the Aeneas repository to use.
-#
-# FIXME: Add a CI step to verify that this commit exists and matches the
-# toolchain version.
-aeneas_rev = "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+# Values embedded in V1's binary. The archive builder checks these against the
+# authoritative Aeneas source pin in ../flake.nix and ../flake.lock.
+aeneas_rev = "ca282ec2312a96f6a985a4d23a663690816d3f3e"
 
 # The Lean toolchain version to use. This must match the version of Lean used
 # by Aeneas in the `lean-toolchain` file in the commit above.
-lean_toolchain = "leanprover/lean4:v4.30.0-rc2"
+lean_toolchain = "leanprover/lean4:v4.31.0"
 [[test]]
 name = "integration"
 harness = false
