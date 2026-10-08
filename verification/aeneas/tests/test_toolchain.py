@@ -125,6 +125,8 @@ class InstalledToolchainTests(unittest.TestCase):
         tar_script.chmod(0o755)
         artifact = scratch / 'patched-cli'
         artifact.mkdir()
+        for name in ('charon', 'charon-driver'):
+            shutil.copy2(self.tools / name, artifact / name)
         binary = artifact / 'aeneas'
         binary.write_text('#!/bin/sh\nif [ "$1" = -help ]; then echo -use-tuple-structs; else echo "aeneas ' + self.data['aeneas-release'] + toolchain.PATCH_SUFFIX + '"; fi\n')
         binary.chmod(0o755)
