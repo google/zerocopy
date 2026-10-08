@@ -38,7 +38,7 @@ pub fn run_charon(args: &Args, roots: &LockedRoots, packages: &[AnnealArtifact])
     let llbc_root = roots.llbc_root();
     std::fs::create_dir_all(&llbc_root).context("Failed to create LLBC output directory")?;
 
-    let toolchain = crate::setup::Toolchain::resolve()?;
+    let toolchain = crate::setup::Toolchain::from_admitted_sdk(roots.lean_sdk());
 
     // Helper closure to prepend a path to an existing environment variable,
     // separating them with a colon if the variable is not empty. This is used
