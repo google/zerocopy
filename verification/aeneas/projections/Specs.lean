@@ -50,4 +50,22 @@ spec min_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.min_spec for Zerocopy.util.min with 2
 
+check_model_inputs Zerocopy.util.safety_checks.checked_bool with 0 type parameters
+aeneas_spec_begin
+spec checked_bool_spec
+  for @Zerocopy.util.safety_checks.checked_bool with 0 type parameters
+  ensures(raw) r => r = if byte.val < 2 then some (decide (byte.val = 1)) else none
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.checked_bool_spec for Zerocopy.util.safety_checks.checked_bool with 1
+
+check_model_inputs Zerocopy.util.safety_checks.checked_copy with 0 type parameters
+aeneas_spec_begin
+spec checked_copy_spec
+  for @Zerocopy.util.safety_checks.checked_copy with 0 type parameters
+  ensures(raw) out => out.1 = decide (src.val.length ≤ dst.val.length) ∧
+    out.2.val = if src.val.length ≤ dst.val.length
+      then src.val ++ dst.val.drop src.val.length else dst.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.checked_copy_spec for Zerocopy.util.safety_checks.checked_copy with 2
+
 end Zerocopy.Specs
