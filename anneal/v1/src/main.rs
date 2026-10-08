@@ -3,6 +3,7 @@ mod charon;
 mod diagnostics;
 mod errors;
 mod generate;
+pub mod lean_sdk;
 mod parse;
 mod resolve;
 mod scanner;
