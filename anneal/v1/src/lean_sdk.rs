@@ -1378,6 +1378,13 @@ impl<'a> Workspace<'a> {
         self.lake_command_with_private(operation, private)
     }
 
+    /// The SDK source peer consumes admitted immutable source providers only.
+    /// Its stock Lake producer is separately leased under a shared main fence;
+    /// do not enumerate another live producer's mutable private descendants.
+    pub(crate) fn source_server_command(&self) -> Result<Command> {
+        self.lake_command_with_private(LakeOperation::Serve, PrivateAdmission::SavedObservation)
+    }
+
     fn lake_command_with_private(
         &self,
         operation: LakeOperation<'_>,
@@ -6645,6 +6652,50 @@ pub(crate) mod tests {
         )
         .unwrap();
         Workspace::from_root(workspace.root()).unwrap().admit().unwrap();
+    }
+
+    #[test]
+    fn shared_native_peers_coexist_and_pending_writer_waits_for_every_holder() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        drop(workspace.writer_lock().unwrap());
+        let (observed, reader) =
+            Workspace::try_from_root_for_observation(workspace.root()).unwrap().unwrap();
+        let witness = observed.writer_witness(&reader).unwrap();
+        let primary = observed.native_producer_lease().unwrap();
+        let source_peer = observed.native_producer_lease().unwrap();
+        let coordinator = observed.server_lock().unwrap();
+        assert!(observed.server_lock().is_err(), "Duplicate Serve must fail under the reader");
+        observed.source_server_command().unwrap();
+        observed.lean_command(LeanOperation::Version).unwrap();
+        observed.lean_command(LeanOperation::PrintPrefix).unwrap();
+        observed.lean_command(LeanOperation::GitHash).unwrap();
+        observed.lake_command(LakeOperation::Version).unwrap();
+        assert_eq!(observed.writer_witness(&reader).unwrap(), witness);
+        drop(reader);
+
+        // Ordinary nonblocking acquisition must not record an unadmitted event.
+        assert!(observed.try_writer_lock().unwrap().is_none());
+        let reader = observed.try_shared_lock().unwrap().unwrap();
+        assert_eq!(observed.writer_witness(&reader).unwrap(), witness);
+        drop(reader);
+        let mut pending = wait_for_test_lock(|| observed.try_reserve_writer());
+        assert!(observed.try_shared_lock().unwrap().is_none());
+        assert!(pending.try_admit().unwrap().is_none());
+        assert_eq!(observed.writer_witness(pending.fence()).unwrap(), witness);
+        drop(primary);
+        assert!(pending.try_admit().unwrap().is_none());
+        assert_eq!(observed.writer_witness(pending.fence()).unwrap(), witness);
+        drop(source_peer);
+        let writer = pending.try_admit().unwrap().unwrap();
+        assert_ne!(observed.writer_witness(&writer).unwrap(), witness);
+        observed.admit().unwrap();
+        drop(writer);
+        drop(coordinator);
+
+        // The root-level fixture/adoption reservation follows the same barrier.
+        let mut pending = wait_for_test_lock(|| WriterReservation::try_unbound(workspace.root()));
+        drop(pending.try_admit().unwrap().unwrap());
     }
 
     #[test]
