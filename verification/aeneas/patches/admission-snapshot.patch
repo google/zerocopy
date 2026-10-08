@@ -1,0 +1,116 @@
+diff --git a/src/bin/charon-driver/main.rs b/src/bin/charon-driver/main.rs
+--- a/src/bin/charon-driver/main.rs
++++ b/src/bin/charon-driver/main.rs
+@@ -89,6 +89,21 @@
+         return Ok(0);
+     };
+ 
++    // Preserve executable effects before any Charon simplification. The consumer
++    // requires this snapshot, so a stock driver cannot silently skip admission.
++    // This is evidence for a downstream checker, not a rustc correctness proof.
++    if let Some(path) = std::env::var_os("CHARON_ADMISSION_SNAPSHOT") {
++        let snapshot = export::CrateData {
++            charon_version: export::CharonVersion(charon_lib::VERSION.to_owned()),
++            translated: ctx.translated.clone(),
++            has_errors: ctx.errors.borrow().error_count != 0,
++        };
++        snapshot.serialize_to_file(
++            std::path::Path::new(&path),
++            charon_lib::options::SerializationFormat::Json,
++        ).map_err(|()| CharonFailure::Serialize)?;
++    }
++
+     // The bulk of the translation is done, we no longer need to interact with rustc internals. We
+     // run several passes that simplify the items and cleanup the bodies.
+     charon_lib::timing::time("transformation-passes", || {
+diff --git a/src/bin/charon-driver/translate/get_mir.rs b/src/bin/charon-driver/translate/get_mir.rs
+--- a/src/bin/charon-driver/translate/get_mir.rs
++++ b/src/bin/charon-driver/translate/get_mir.rs
+@@ -84,7 +84,15 @@
+                     }
+                     MirLevel::Optimized => {}
+                 }
+-                // We fall back to optimized MIR if the requested body was stolen.
++                // Admission must inspect the requested pre-optimization body.
++                // A stolen local body cannot silently become optimized MIR.
++                // None leaves a missing body which the consumer rejects.
++                if std::env::var_os("CHARON_ADMISSION_SNAPSHOT").is_some()
++                    && !matches!(level, MirLevel::Optimized)
++                {
++                    return None;
++                }
++                // Other consumers retain the upstream fallback behavior.
+             }
+ 
+             // There are only two MIRs we can fetch for non-local bodies: CTFE mir for globals and const
+diff --git a/src/bin/charon-driver/translate/translate_items.rs b/src/bin/charon-driver/translate/translate_items.rs
+--- a/src/bin/charon-driver/translate/translate_items.rs
++++ b/src/bin/charon-driver/translate/translate_items.rs
+@@ -900,6 +900,12 @@
+                     let trait_method_id = *assoc_item_id.as_method().unwrap();
+                     let method_name = self.translate_name(&item_src)?;
+                     let method_opacity = self.opacity_for_name(&method_name);
++                    // Excluded provided methods have neither a dictionary field nor a default
++                    // body. Do not translate their signatures: even an unused signature can
++                    // import unrelated traits and types. The method id remains allocated.
++                    if hax_item.has_value && method_opacity.is_invisible() {
++                        continue;
++                    }
+                     let method_item_meta =
+                         self.translate_item_meta(&item_def, &item_src, method_name, method_opacity);
+                     // By default we only enqueue required methods (those that don't have a default
+@@ -1207,6 +1213,20 @@
+             match item_def_id.kind {
+                 hax::DefKind::AssocFn => {
+                     let trait_method_id = *assoc_item_id.as_method().unwrap();
++                    // Match the trait declaration's exclusion even when this impl overrides
++                    // the default. Discovery is not a call and must not import its signature.
++                    let declaration_id = impl_item.decl_def_id();
++                    let declaration = self.poly_hax_def(declaration_id)?;
++                    if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
++                        && declaration.associated_item().has_value
++                    {
++                        let source =
++                            TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
++                        let name = self.translate_name(&source)?;
++                        if self.opacity_for_name(&name).is_invisible() {
++                            continue;
++                        }
++                    }
+                     let binder_kind = BinderKind::TraitMethod(trait_id, trait_method_id);
+                     let bound_fn_ref = match &impl_item.value {
+                         Some(value) => {
+diff --git a/src/bin/charon-driver/translate/translate_crate.rs b/src/bin/charon-driver/translate/translate_crate.rs
+--- a/src/bin/charon-driver/translate/translate_crate.rs
++++ b/src/bin/charon-driver/translate/translate_crate.rs
+@@ -1034,6 +1034,30 @@
+         kind: TransItemSourceKind,
+         enqueue: bool,
+     ) -> Result<RegionBinder<FnPtr>, Error> {
++        // A provided method omitted from its trait dictionary cannot be called. Check the
++        // compiler-resolved declaration, including inherited and overridden implementations,
++        // before translating its signature. Impl discovery uses the no-enqueue path.
++        if enqueue && let hax::FullDefKind::AssocFn(f) = self.poly_hax_def(&item.def_id)?.kind() {
++            let declaration_id = f.associated_item().implemented_trait_item_id();
++            let declaration = self.poly_hax_def(declaration_id)?;
++            if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
++                && declaration.associated_item().has_value
++                && matches!(
++                    &declaration.associated_item().container,
++                    hax::AssocItemContainer::TraitContainer { .. }
++                )
++            {
++                let source = TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
++                let name = self.translate_name(&source)?;
++                if self.opacity_for_name(&name).is_invisible() {
++                    charon_lib::errors::raise_error!(
++                        self,
++                        span,
++                        "referenced excluded provided trait method"
++                    );
++                }
++            }
++        }
+         if let Some(fn_ptr) = self.translate_callable_method_fn_ptr(span, item)? {
+             return Ok(fn_ptr);
+         }

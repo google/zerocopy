@@ -36,7 +36,7 @@ initialize_workspace() {
     "${workspace_cmd[@]}" initialize "$1" --root "$repo" --backend "$backend"
 }
 check_proofs() {
-    "${workspace_cmd[@]}" check "$1" --root "$repo"
+    "${workspace_cmd[@]}" verify "$1" --root "$repo"
 }
 work="$repo/target/aeneas/verification"
 golden_work="$repo/target/aeneas/golden-verification"
@@ -54,6 +54,18 @@ scan=scan
 if "$update_goldens"; then scan=scan-update; fi
 "${inline_cmd[@]}" "$scan" "${inline_args[@]}" --work "$work"
 roots=$(cat "$work/roots.txt")
+# Admission requires controlled compiler inputs and both inspection stages.
+# Registry-derived opaque selections cannot hide arbitrary local functions.
+python3 -B verification/aeneas/admission.py inputs > "$work/extraction-inputs.json"
+opaque_args=()
+while IFS= read -r name; do
+    [[ -z "$name" ]] || opaque_args+=(--opaque "$name")
+done < <(python3 -B verification/aeneas/admission.py opaque)
+excluded_args=()
+while IFS= read -r name; do
+    [[ -z "$name" ]] || excluded_args+=(--exclude "$name")
+done < <(python3 -B verification/aeneas/admission.py exclude)
+export CHARON_ADMISSION_SNAPSHOT="$work/zerocopy.before.ullbc"
 
 # This compiles the actual zerocopy library with its normal build script and
 # default features. Start from these private helpers and their dependencies;
@@ -63,17 +75,28 @@ roots=$(cat "$work/roots.txt")
     CARGO_TARGET_DIR="$repo/target/aeneas/rust" \
         "$tools_dir/charon" cargo --preset=aeneas --sysroot default \
         --start-from "$roots" \
+        --mir promoted --no-dedup-serialized-ast \
+        "${opaque_args[@]}" \
+        "${excluded_args[@]}" \
         --dest-file "$work/zerocopy.llbc" --abort-on-error --error-on-warnings \
         -- --lib --locked --offline
 )
 # Charon produces LLBC; the inline tool binds Rust owners to that inspected
 # extraction. Aeneas then produces the function bodies used by the live proofs.
+# Admission inspects the preserved pre-transformation snapshot and final LLBC.
+# Their remaining correspondence premises are recorded in LOWERING_AUDIT.md.
+# FIXME: Typed copies erase storage events (upstream issue #1405):
+# https://github.com/AeneasVerif/aeneas/issues/1405. Neither strict extraction
+# errors nor the downstream forbidden tag can detect an already erased effect.
+# Promoted MIR precedes drop elaboration: residual Drop terminators reject the
+# body rather than relying on destructor desugaring or Aeneas's drop erasure.
 python3 verification/aeneas/prepare.py llbc "$work/zerocopy.llbc"
 "${inline_cmd[@]}" bindings "${inline_args[@]}" --work "$work"
 "$tools_dir/aeneas" -backend lean -namespace Zerocopy -dest "$work/Zerocopy" \
     -split-files -abort-on-error -warnings-as-errors -no-progress-bar \
     -use-tuple-structs false \
     "$work/zerocopy.llbc"
+unset CHARON_ADMISSION_SNAPSHOT
 python3 verification/aeneas/prepare.py prepare "$work"
 "${inline_cmd[@]}" models "${inline_args[@]}" --work "$work"
 "${inline_cmd[@]}" assemble "${inline_args[@]}" --work "$work"
