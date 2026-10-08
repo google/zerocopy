@@ -268,6 +268,54 @@ class ControlRunnerTests(unittest.TestCase):
                     process.kill()
                     process.wait()
 
+    def test_shared_producer_fixtures_are_recompiled_against_each_model(self):
+        lake = shutil.which('lake')
+        if lake is None:
+            self.skipTest('Requires the pinned Lean installation')
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            scripts = root / 'verification/aeneas/tests'
+            scripts.mkdir(parents=True)
+            shutil.copyfile(AENEAS / 'tests/producer-controls.sh', scripts / 'producer-controls.sh')
+            (scripts / 'producer-controls').mkdir()
+            (scripts / 'producer-controls/Check.lean').write_text(
+                'import Controls.Funs\nexample : translated = 0 := rfl\n')
+            (root / 'verification/aeneas/toolchain.sh').write_text(
+                'AENEAS_TOOLCHAIN_DIR=/unused-for-replay\naeneas_lake() ( unset CI; command lake --old "$@"; )\n')
+            shared = root / 'shared'
+            (shared / 'Controls').mkdir(parents=True)
+            for name, text in {
+                'TypesExternal': 'module\n',
+                'Types': 'module\npublic import Controls.TypesExternal\n',
+                'FunsExternal': 'module\npublic import Controls.Types\npublic import Zerocopy.FunsExternal\n',
+                'Funs': 'module\npublic import Controls.FunsExternal\n@[expose] public section\ndef translated : Nat := modelValue\n',
+            }.items():
+                (shared / 'Controls' / (name + '.lean')).write_text(text)
+            original = {p.name: p.read_bytes() for p in (shared / 'Controls').iterdir()}
+            env = dict(os.environ)
+            env.pop('CI', None)
+            for model, value in [('golden', 0), ('live', 0), ('changed-live', 1)]:
+                project = root / model
+                (project / 'Zerocopy').mkdir(parents=True)
+                (project / 'lean-toolchain').write_bytes((AENEAS.parents[1] / 'anneal/lean/lean-toolchain').read_bytes())
+                (project / 'bindings.json').write_text('{}')
+                (project / 'lakefile.lean').write_text(
+                    'import Lake\nopen Lake DSL\npackage producerReplay\nlean_lib Zerocopy\n')
+                (project / 'Zerocopy/FunsExternal.lean').write_text(f'module\n@[expose] public section\ndef modelValue : Nat := {value}\n')
+                built = subprocess.run([lake, '--old', 'build', '+Zerocopy.FunsExternal'],
+                                       cwd=project, env=env, capture_output=True)
+                self.assertEqual(built.returncode, 0, built.stdout + built.stderr)
+                replay = subprocess.run(['bash', str(scripts / 'producer-controls.sh'),
+                    'check', str(project), str(shared)], env=env, capture_output=True)
+                if value == 0:
+                    self.assertEqual(replay.returncode, 0, replay.stdout + replay.stderr)
+                    for module in ('TypesExternal', 'Types', 'FunsExternal', 'Funs'):
+                        self.assertTrue((project / '.lake/build/lib/lean/Controls' / (module + '.olean')).exists())
+                else:
+                    self.assertNotEqual(replay.returncode, 0)
+                    self.assertIn(b'Check.lean', replay.stdout + replay.stderr)
+            self.assertEqual({p.name: p.read_bytes() for p in (shared / 'Controls').iterdir()}, original)
+
     def test_ci_preflight_accepts_native_trait_laws_and_rejects_projection_edits(self):
         sys.path.insert(0, str(AENEAS))
         with tempfile.TemporaryDirectory() as temporary:

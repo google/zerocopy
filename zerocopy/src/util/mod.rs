@@ -14,6 +14,8 @@ pub(crate) mod macros;
 #[doc(hidden)]
 pub mod macro_util;
 
+mod safety_checks;
+
 use core::{
     marker::PhantomData,
     mem::{self, ManuallyDrop},

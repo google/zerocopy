@@ -175,6 +175,13 @@ PYCONTROL
 has_model() {
     has_binding function "Zerocopy.$1"
 }
+if [[ $AENEAS_CONTROL_FAMILY == producers ]] && has_model util.safety_checks.checked_bool; then
+    python3 -B "$repo/verification/aeneas/control_runner.py" command \
+        "$AENEAS_CONTROL_LOG_DIR/commands" -- bash \
+        "$repo/verification/aeneas/tests/producer-controls.sh" check \
+        "$PWD" "$AENEAS_CONTROL_PRODUCER_DIR"
+fi
+
 if [[ $AENEAS_CONTROL_FAMILY == trait-rounding ]]; then
 # A constrained mathematical value can still break an operation promise or its
 # required raw input domain. Probe the unchanged constructor source fence in an
@@ -253,6 +260,41 @@ if ! grep -Fq 'unsupported failure erasure' "$backup/unsafe-erasure-audit.log"; 
     cat "$backup/unsafe-erasure-audit.log" >&2; exit 1
 fi
 restore_build
+
+# Each storage interpretation must reject its bad inputs even when safe callers
+# never take that branch. First establish that the mutation still compiles, then
+# require the independent complete-definition audit to reject it.
+if has_model util.safety_checks.checked_bool; then
+    for mutation in boolean copy; do
+        python3 - "$mutation" <<'PYCONTROL'
+from pathlib import Path
+import sys
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+if sys.argv[1] == 'boolean':
+    start = s.index('noncomputable def util.transmute_unchecked')
+    end = s.index('\n\n', start)
+    before = s[start:end]
+    after = before.replace('else forbiddenExecution', 'else .ok (cast hd.symm false)', 1)
+else:
+    start = s.index('def util.copy_unchecked')
+    end = s.index('-- Only the u8-to-bool', start)
+    before = s[start:end]
+    after = before.replace('else forbiddenExecution', 'else .ok dst', 1)
+if before == after:
+    raise SystemExit('Storage boundary control no longer matches')
+p.write_text(s[:start] + after + s[end:])
+PYCONTROL
+        check_model_mutant "permitted bad $mutation input" Zerocopy.FunsExternal
+        expect_failure "permitted bad $mutation input" storage-guard-audit.log audit
+        if ! grep -Eq 'Boolean conversion changed|byte copy changed' "$backup/storage-guard-audit.log"; then
+            cat "$backup/storage-guard-audit.log" >&2; exit 1
+        fi
+        expect_failure "permitted bad $mutation input" storage-guard-proof.log \
+            aeneas_lake env lean -DwarningAsError=true SafetyTests.lean
+        restore_build
+    done
+fi
 
 fi # unsafe
 

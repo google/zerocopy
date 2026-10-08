@@ -19,6 +19,41 @@ def core.num.niche_types.NonZeroUsizeInner.Insts.CoreCloneClone.clone
     (x : core.num.niche_types.NonZeroUsizeInner) :
     Result core.num.niche_types.NonZeroUsizeInner := .ok x
 
+-- A forbidden execution cannot be accepted as an ordinary Rust panic. The
+-- backend's existing undef tag also marks unsupported models, so it means
+-- "no permitted execution claim", not necessarily that the Rust code has UB.
+-- Total and partial contracts both reject it. Future recovery models must
+-- propagate it rather than turn it into a successful return or divergence.
+def Zerocopy.forbiddenExecution {α : Type} : Result α := .fail .undef
+
+-- This is an interpretation of the whole Rust helper, whose raw-pointer body
+-- is deliberately opaque to extraction. Valid input references supply separate
+-- readable source and exclusive destination regions. The additional length
+-- guard belongs to execution: violating it must fail even if the caller ignores
+-- the result. Payload bytes have no padding or invalid bit patterns.
+def util.copy_unchecked (src dst : Slice U8) : Result (Slice U8) :=
+  if h : src.val.length ≤ dst.val.length then
+    .ok (Slice.from (src.val ++ dst.val.drop src.val.length) (by
+      have := dst.property
+      simp only [List.length_append, List.length_drop]
+      omega))
+  else forbiddenExecution
+
+-- Only the u8-to-bool instantiation is supported. The admission checker also
+-- checks the original Rust type arguments, before Aeneas can erase them. This
+-- guard checks bit validity BEFORE creating a Bool, whose Lean carrier cannot
+-- represent an invalid boolean. All other instantiations fail closed.
+noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
+    (src : Src) : Result Dst := by
+  classical
+  exact if hs : Src = U8 then
+    if hd : Dst = Bool then
+      let byte := cast hs src
+      if byte.val < 2 then .ok (cast hd.symm (decide (byte.val = 1)))
+      else forbiddenExecution
+    else forbiddenExecution
+  else forbiddenExecution
+
 @[simp] def core.num.nonzero.NonZero.get
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
