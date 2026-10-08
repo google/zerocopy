@@ -294,6 +294,10 @@ impl LeanSdk {
         &self.inner.descriptor.lean_toolchain
     }
 
+    pub(crate) fn has_module(&self, name: &str) -> bool {
+        self.inner.modules.contains(name)
+    }
+
     pub fn plugins(&self) -> &[Plugin] {
         &self.inner.plugins
     }
@@ -318,6 +322,13 @@ impl LeanSdk {
             );
         }
         Ok(())
+    }
+
+    pub(crate) fn check_finite_integrity(&self) -> Result<()> {
+        self.check_descriptor()?;
+        let helper =
+            self.inner.descriptor.finite_lake.as_ref().context("SDK has no finite helper")?;
+        check_finite_helper(&self.inner.root, &self.inner.installation, helper)
     }
 }
 
@@ -731,6 +742,30 @@ impl<'a> Workspace<'a> {
 
     pub fn root(&self) -> &Path {
         &self.root
+    }
+
+    /// Reuse the selected installation when it is this workspace's physical
+    /// binding. A Rust-only archive move can retain the same Lean identity at
+    /// another path; in that case admit the original bound installation once,
+    /// rather than retargeting its outputs to the newly selected installation.
+    /// A different Lean identity never takes this preservation route.
+    pub(crate) fn open_bound(sdk: &'a LeanSdk, root: &Path) -> Result<Self> {
+        let root = fs::canonicalize(root).context("Unknown Lean workspace")?;
+        ensure!(root.to_str().is_some(), "Lean workspace path must be UTF-8");
+        reject_links(&root)?;
+        let binding: Binding = read_json(&root.join(BINDING))?;
+        ensure!(binding.schema == SCHEMA, "Unsupported workspace binding schema");
+        ensure!(binding.sdk_root.is_absolute(), "Workspace SDK path must be absolute");
+        ensure!(binding.sdk_id == sdk.id(), "Workspace SDK identity changed");
+        let workspace = if binding.sdk_root == sdk.root() {
+            Self::open(sdk, &root)?
+        } else {
+            Self::from_root(&root)?
+        };
+        // Constructors read and admit the binding again. A changed identity
+        // between the preliminary observation and admission must also fail.
+        ensure!(workspace.sdk().id() == sdk.id(), "Workspace SDK identity changed");
+        Ok(workspace)
     }
 
     /// Resolve the fixed SDK selected when this workspace was created. This
@@ -1155,6 +1190,63 @@ impl<'a> Workspace<'a> {
             }
         }
         Ok(command)
+    }
+
+    /// Inspect the exact known generated configuration without acquiring a
+    /// writer lease. The operation owner already holds that lease. A legacy
+    /// descriptor or absent legacy manifest selects incumbent stock commands.
+    pub(crate) fn finite_inputs(&self) -> Result<Option<(String, String)>> {
+        self.admit()?;
+        check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
+        let manifest = self.root.join("lake-manifest.json");
+        reject_links(&manifest)?;
+        if !manifest.try_exists()? {
+            ensure!(
+                self.sdk.inner.descriptor.finite_lake.is_none(),
+                "Finite SDK requires an existing empty Lake manifest"
+            );
+            return Ok(None);
+        }
+        let manifest = read_small(&manifest, MAX_MODULES_SIZE)?;
+        check_dependency_free_manifest(&manifest)?;
+        if self.sdk.inner.descriptor.finite_lake.is_none() {
+            return Ok(None);
+        }
+        let config = read_small(&self.root.join("lakefile.lean"), MAX_MODULES_SIZE)?;
+        Ok(Some((String::from_utf8(config)?, String::from_utf8(manifest)?)))
+    }
+
+    pub(crate) fn finite_command(&self) -> Result<Option<Command>> {
+        self.admit()?;
+        let Some(helper) = &self.sdk.inner.descriptor.finite_lake else { return Ok(None) };
+        self.sdk.check_finite_integrity()?;
+        check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
+        check_dependency_free_manifest(&read_small(
+            &self.root.join("lake-manifest.json"),
+            MAX_MODULES_SIZE,
+        )?)?;
+        let mut command = self.command("anneal-finite-lake")?;
+        ensure!(
+            helper.path == Path::new("bin/anneal-finite-lake"),
+            "Unsupported finite helper path"
+        );
+        command.arg(&self.root);
+        Ok(Some(command))
+    }
+
+    pub(crate) fn validate_preparation_request(
+        &self,
+        targets: &[String],
+        setup: Option<(&str, &Path)>,
+    ) -> Result<()> {
+        for target in targets {
+            ensure!(valid_build_target(target), "Unsupported Lake build target: {target}");
+        }
+        if let Some((file_name, path)) = setup {
+            self.local_source(path)?;
+            ensure!(!file_name.is_empty() && !file_name.contains('\0'), "Invalid setup filename");
+        }
+        Ok(())
     }
 
     pub fn lean_command(&self, operation: LeanOperation<'_>) -> Result<Command> {
@@ -5884,6 +5976,88 @@ pub(crate) mod tests {
         workspace.lean_command(LeanOperation::Version).unwrap();
         darwin_namespace_acl::install_test_entry(workspace.root(), 1, 0);
         workspace.lake_command(LakeOperation::Version).unwrap();
+    }
+
+    #[test]
+    fn cloned_sdk_shares_admitted_metadata_and_retains_descriptor_fences() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let selected = f.sdk.clone();
+        assert!(Arc::ptr_eq(&selected.inner, &f.sdk.inner));
+        let reopened = Workspace::open_bound(&selected, workspace.root()).unwrap();
+        assert!(Arc::ptr_eq(&reopened.sdk().inner, &selected.inner));
+        assert!(matches!(&reopened.sdk, Cow::Borrowed(_)));
+        assert_eq!(reopened.sdk().root(), f.sdk.root());
+
+        let descriptor = f.sdk.root().join("sdk.json");
+        let mut changed: serde_json::Value =
+            serde_json::from_slice(&fs::read(&descriptor).unwrap()).unwrap();
+        changed["compiler_hash"] = json!("c".repeat(40));
+        fs::write(&descriptor, serde_json::to_vec(&changed).unwrap()).unwrap();
+        assert!(reopened.lake_command(LakeOperation::Build(&[])).is_err());
+        assert!(Workspace::open_bound(&selected, workspace.root()).is_err());
+    }
+
+    #[test]
+    fn identical_sdk_metadata_in_another_archive_cannot_retarget_a_bound_workspace() {
+        let f = Fixture::new(&["Shared.A"]);
+        let (workspace, sentinels) = f.mapped_workspace_with_sentinels();
+        let second_installation = f.base.join("second-archive");
+        let second_root = second_installation.join("lean-sdk");
+        for directory in ["bin", "lib/lean", "src/lean/lake"] {
+            fs::create_dir_all(second_root.join(directory)).unwrap();
+        }
+        fs::create_dir(second_installation.join("lean")).unwrap();
+        for relative in ["sdk.json", "modules.json", "bin/lean", "bin/lake"] {
+            fs::copy(f.sdk.root().join(relative), second_root.join(relative)).unwrap();
+        }
+        let second_sdk = LeanSdk::load(&second_root).unwrap();
+        assert_eq!(second_sdk.id(), f.sdk.id());
+        assert_ne!(second_sdk.root(), f.sdk.root());
+        for relative in ["sdk.json", "modules.json"] {
+            assert_eq!(
+                fs::read(second_sdk.root().join(relative)).unwrap(),
+                fs::read(f.sdk.root().join(relative)).unwrap()
+            );
+        }
+        assert!(Workspace::open(&second_sdk, workspace.root()).is_err());
+        let preserved = Workspace::open_bound(&second_sdk, workspace.root()).unwrap();
+        assert_eq!(preserved.sdk().root(), f.sdk.root());
+        assert_eq!(preserved.sdk().id(), second_sdk.id());
+        assert!(matches!(&preserved.sdk, Cow::Owned(_)));
+        assert_eq!(
+            preserved.lean_command(LeanOperation::Version).unwrap().get_program(),
+            f.sdk.root().join("bin/lean")
+        );
+        let descriptor = second_root.join("sdk.json");
+        let mut changed: serde_json::Value =
+            serde_json::from_slice(&fs::read(&descriptor).unwrap()).unwrap();
+        changed["id"] = json!("c".repeat(64));
+        fs::write(&descriptor, serde_json::to_vec(&changed).unwrap()).unwrap();
+        let upgraded = LeanSdk::load(&second_root).unwrap();
+        assert_eq!(
+            Workspace::open_bound(&upgraded, workspace.root()).err().unwrap().to_string(),
+            "Workspace SDK identity changed"
+        );
+        // Restore the fixture's selected descriptor for the separate workspace
+        // creation below; the original bound installation was never modified.
+        fs::copy(f.sdk.root().join("sdk.json"), &descriptor).unwrap();
+        let original = Workspace::from_root(workspace.root()).unwrap();
+        assert_eq!(original.sdk().root(), f.sdk.root());
+        assert_eq!(
+            original.lean_command(LeanOperation::Version).unwrap().get_program(),
+            f.sdk.root().join("bin/lean")
+        );
+        for (path, expected) in sentinels {
+            assert_eq!(fs::read(path).unwrap(), expected);
+        }
+        Workspace::create(
+            &second_sdk,
+            &f.base.join("second-workspace"),
+            &["anneal", "generated", "user"],
+        )
+        .unwrap();
+        Workspace::from_root(workspace.root()).unwrap().admit().unwrap();
     }
 
     #[test]
