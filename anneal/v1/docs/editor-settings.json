@@ -1,0 +1,9 @@
+{
+  "lean4.envPathExtensions": [
+    ".anneal-bin"
+  ],
+  "lean4.automaticallyBuildDependencies": false,
+  "lean4.logging.enabled": false,
+  "lean4.serverArgs": [],
+  "lean4.showSetupWarnings": false
+}
