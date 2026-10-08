@@ -44,6 +44,13 @@ each tool answers a different question:
    This is the **extracted model**: executable Lean definitions representing the
    Rust program. Extraction includes called functions, not just the annotated
    function's body.
+   Before Aeneas runs, `admission.py` follows every executable dependency from
+   every discovered specification in two snapshots: original promoted MIR as
+   imported by Charon, and final LLBC. Annotation status never exempts a callee.
+   Unsupported drops, raw pointers, indirect calls, foreign code, and unknown
+   effects reject extraction. This prevents an operation from being accepted
+   simply because a later lowering forgets it. The small Charon snapshot patch
+   preserves evidence; it changes neither Aeneas nor the execution semantics.
 3. Our Lean declarations describe how extracted values are interpreted as
    mathematical values. A `RustModel` supplies a mathematical type and a decoder.
    Successful decoding defines which representations a contract admits. The
@@ -78,7 +85,7 @@ Aeneas also distinguishes execution from the value returned by execution.
 A successful computation may itself return a Rust `Option` or Rust `Result`.
 Thus successful execution returning Rust `None`, a decoder rejecting a value,
 and the function panicking are three different events. Total `spec` requires
-success; `partial spec` also allows divergence, while still excluding panic.
+success; `partial spec` also allows divergence, while still excluding panic and forbidden execution (`.fail .undef`).
 
 The independent comparison checks the specification itself. For an identity
 function, both `ensures r => True` and `ensures r => r = x` are provable about
@@ -116,6 +123,25 @@ The comments in these modules explain their inputs, outputs, and non-obvious
 checks. This integration proves conditional functional
 behavior; it does not prove that every caller meets the requirements or that
 zerocopy's unsafe pointer operations are sound.
+
+## Unsafe boundaries and admission
+
+`external.json` lists exact reviewed Rust identities and signatures, with the
+Lean interpretation used at each boundary. It derives the two local `--opaque`
+selections; arbitrary opaque flags are rejected. A changed local helper body
+requires a fresh review and an updated body digest. Registration is a trusted
+Rust-to-model premise, not a Lean proof of the omitted body. Standard-library
+builtin correspondence also remains part of the pinned translator's trust
+boundary. See [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) for the implemented
+fragment and [LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the erasure inventory.
+
+The binding manifest records both inspected snapshots, their dependency
+closures, exact registry identity, sources, compiler configuration, and patched
+runtime. Inputs are captured before compilation and checked again during binding
+and after proof checking. Neither a stale report nor development-only extraction
+qualifies as completed verification. This remains conditional safety for the
+admitted fragment under explicit correspondence premises, not a rustc proof or
+whole-program unsafe-code certification.
 
 ## Scope and proofs
 
