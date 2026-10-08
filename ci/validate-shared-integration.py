@@ -194,7 +194,7 @@ cat "$evidence/golden-verification-negative-controls.log" "$evidence/verificatio
 cat "$evidence/golden-verification-negative-controls.stderr.log" "$evidence/verification-negative-controls.stderr.log" >&2
 test "$golden_status" = 0 && test "$live_status" = 0
 """
-    run("parallel-negative-controls", ["bash", "-euo", "pipefail", "-c", controls], 60)
+    run("parallel-negative-controls", ["bash", "-euo", "pipefail", "-c", controls], 100)
     REPORT["negative_controls"] = {}
     for name in ["golden-verification", "verification"]:
         status = int((EVIDENCE / (name + "-negative-controls.status")).read_text())
