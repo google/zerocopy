@@ -24,6 +24,93 @@ import workspace
 
 
 class WorkspaceTests(unittest.TestCase):
+    def test_ci_verification_cannot_accept_development_bindings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for mode in (None, 'development', 'verified', ''):
+                (root / 'bindings.json').write_text(json.dumps({'mode': mode}))
+                with self.subTest(mode=mode), mock.patch.object(workspace, 'run_checked') as run:
+                    with self.assertRaisesRegex(ValueError, 'CI verification requires verified-live'):
+                        workspace.check(root, root, require_admission=True)
+                    run.assert_not_called()
+
+    def test_verified_check_requires_both_admission_stages_and_fresh_inputs(self):
+        # These are acceptance-path controls: no proof compilation may start
+        # when admission is absent, incomplete, stale, or bound to other roots.
+        import copy
+        import admission
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            work = root / 'project'
+            work.mkdir()
+            manifest = {'mode': 'verified-live', 'sources': 'source',
+                        'bindings': {'crate::f': {'kind': 'function'}},
+                        'admission': {'version': 1, 'sources': 'source',
+                                      'registry': 'registry', 'inputs': {'project': 'current'},
+                                      'stages': {stage: {'roots': ['crate::f']}
+                                                 for stage in ('before', 'llbc')}}}
+            mutants = []
+            mutant = copy.deepcopy(manifest)
+            del mutant['admission']
+            mutants.append(mutant)
+            for stage in ('before', 'llbc'):
+                mutant = copy.deepcopy(manifest)
+                del mutant['admission']['stages'][stage]
+                mutants.append(mutant)
+                mutant = copy.deepcopy(manifest)
+                mutant['admission']['stages'][stage]['roots'] = []
+                mutants.append(mutant)
+            for key, value in [('sources', 'other'), ('registry', 'other'),
+                               ('inputs', {'project': 'old'})]:
+                mutant = copy.deepcopy(manifest)
+                mutant['admission'][key] = value
+                mutants.append(mutant)
+            with mock.patch.object(admission, 'input_identity', return_value={'project': 'current'}), \
+                    mock.patch.object(admission, 'digest', return_value='registry'), \
+                    mock.patch.object(workspace, 'run_checked') as run:
+                for mutant in mutants:
+                    (work / 'bindings.json').write_text(json.dumps(mutant))
+                    with self.subTest(mutant=mutant), self.assertRaisesRegex(ValueError, 'admission evidence'):
+                        workspace.check(root, work)
+                    run.assert_not_called()
+                (work / 'bindings.json').write_text(json.dumps(manifest))
+                workspace.check(root, work)
+                self.assertEqual(run.call_count, 3)
+                run.reset_mock()
+                # An editor changing Rust during a successful proof build must
+                # prevent that build from certifying the edited source.
+                with mock.patch.object(admission, 'input_identity',
+                                       side_effect=[{'project': 'current'}, {'project': 'edited'}]):
+                    with self.assertRaisesRegex(ValueError, 'Inputs changed during proof'):
+                        workspace.check(root, work)
+                    self.assertEqual(run.call_count, 3)
+                run.reset_mock()
+                # Fresh extraction fingerprints do not establish freshness of
+                # the Lean sources copied before those fingerprints were made.
+                source = root / 'verification/aeneas/lean/Helper.lean'
+                source.parent.mkdir(parents=True)
+                source.write_text('def helper : Nat := 1\n')
+                copied = work / 'Helper.lean'
+                for contents in (None, 'def helper : Nat := 0\n'):
+                    if contents is not None:
+                        copied.write_text(contents)
+                    with self.subTest(contents=contents), self.assertRaisesRegex(
+                            ValueError, 'CI proof source differs'):
+                        workspace.check(root, work, require_admission=True)
+                    run.assert_not_called()
+                copied.write_bytes(source.read_bytes())
+                workspace.check(root, work, require_admission=True)
+                self.assertEqual(run.call_count, 3)
+                run.reset_mock()
+                # A change to a copied source during compilation is also an
+                # editor experiment, not verification of the checkout.
+                def edit_copy(*_args):
+                    copied.write_text('def helper : Nat := 2\n')
+                run.side_effect = edit_copy
+                with self.assertRaisesRegex(ValueError, 'CI proof source differs'):
+                    workspace.check(root, work, require_admission=True)
+                self.assertEqual(run.call_count, 3)
+
     def test_check_rejects_proof_cached_against_an_earlier_model(self):
         lake = shutil.which('lake')
         if lake is None:
