@@ -637,6 +637,11 @@ impl Recipe {
 }
 
 impl Producer {
+    #[cfg(test)]
+    pub(crate) fn terminal_peer_exited(&self) -> bool {
+        self.decoder.terminal && self.exit_status.is_some() && self.eof
+    }
+
     /// None means pending. No root result escapes while the producer runs.
     pub(crate) fn poll(&mut self) -> Result<Option<Prepared>> {
         let result = self.poll_inner();
