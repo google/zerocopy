@@ -65,7 +65,7 @@ def Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner :
 }
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 160:0-220:1 -/
+    Source: 'src/util/mod.rs', lines 163:0-223:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -81,7 +81,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 247:0-265:1 -/
+    Source: 'src/util/mod.rs', lines 250:0-268:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -98,7 +98,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 274:0-280:1 -/
+    Source: 'src/util/mod.rs', lines 277:0-283:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -118,7 +118,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 289:0-295:1 -/
+    Source: 'src/util/mod.rs', lines 292:0-298:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -136,5 +136,27 @@ def util.min
   if i > i1
   then ok b
   else ok a
+
+/-- [zerocopy::util::safety_checks::checked_bool]:
+    Source: 'src/util/safety_checks/mod.rs', lines 28:0-38:1 -/
+def util.safety_checks.checked_bool
+  (byte : Std.U8) : Result (Option Bool) := do
+  if byte < 2#u8
+  then let b ← util.transmute_unchecked Bool byte
+       ok (some b)
+  else ok none
+
+/-- [zerocopy::util::safety_checks::checked_copy]:
+    Source: 'src/util/safety_checks/mod.rs', lines 51:0-61:1 -/
+def util.safety_checks.checked_copy
+  (src : Slice Std.U8) (dst : Slice Std.U8) :
+  Result (Bool × (Slice Std.U8))
+  := do
+  let i := Slice.len src
+  let i1 := Slice.len dst
+  if i <= i1
+  then let dst1 ← util.copy_unchecked src dst
+       ok (true, dst1)
+  else ok (false, dst)
 
 end Zerocopy
