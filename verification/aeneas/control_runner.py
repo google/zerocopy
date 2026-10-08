@@ -26,7 +26,7 @@ import sys
 import tempfile
 import time
 
-FAMILIES = ('authoring', 'trait-rounding', 'unsafe', 'coverage', 'abi',
+FAMILIES = ('producers', 'authoring', 'trait-rounding', 'unsafe', 'coverage', 'abi',
             'contracts', 'dependencies', 'admission', 'semantics')
 MODELS = ('golden-verification', 'verification')
 FIXTURES = ('NegativeControl.lean', 'WeakOutcome.lean',
