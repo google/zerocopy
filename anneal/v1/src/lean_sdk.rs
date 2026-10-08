@@ -1124,7 +1124,10 @@ impl<'a> Workspace<'a> {
         // be the first argument. Version inspection cannot schedule builds.
         if !matches!(operation, LakeOperation::Version) {
             check_lake_configuration(&self.sdk, &self.root, &self.binding.source_roots, true)?;
-            command.args(["--keep-toolchain", "--no-cache", "--reconfigure"]);
+            // Let Lake reuse an unchanged configuration. The exact generated
+            // configuration is still admitted above on every invocation; Lake
+            // tracks changes to it without forcing recompilation on warm calls.
+            command.args(["--keep-toolchain", "--no-cache"]);
         }
         match operation {
             LakeOperation::Build(targets) => {
@@ -6751,7 +6754,7 @@ pub(crate) mod tests {
         assert_eq!(command.get_program(), f.sdk.root().join("bin/lake"));
         assert_eq!(
             command.get_args().collect::<Vec<_>>(),
-            ["--keep-toolchain", "--no-cache", "--reconfigure", "serve"]
+            ["--keep-toolchain", "--no-cache", "serve"]
         );
     }
 
@@ -6822,7 +6825,18 @@ pub(crate) mod tests {
         assert_eq!(command.get_program(), f.sdk.root().join("bin/lake"));
         assert_eq!(
             command.get_args().collect::<Vec<_>>(),
-            ["--keep-toolchain", "--no-cache", "--reconfigure", "build", "+Proof:olean"]
+            ["--keep-toolchain", "--no-cache", "build", "+Proof:olean"]
+        );
+        let setup = workspace.lake_command(LakeOperation::SetupFile(Path::new("src/Proof.lean")))
+            .unwrap();
+        assert_eq!(
+            setup.get_args().collect::<Vec<_>>(),
+            [
+                std::ffi::OsStr::new("--keep-toolchain"),
+                std::ffi::OsStr::new("--no-cache"),
+                std::ffi::OsStr::new("setup-file"),
+                workspace.root().join("src/Proof.lean").as_os_str(),
+            ]
         );
         // RC2 handles this flag before its ordinary option parser. Placing
         // keep-toolchain/no-cache before it turns a real version probe into a
