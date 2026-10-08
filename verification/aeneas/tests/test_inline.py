@@ -194,6 +194,15 @@ class InlineTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.parse('impl S { ' + BLOCK + 'fn f(&mut self, x: usize) {} }')
 
+    def test_only_explicit_mutable_byte_slice_inputs_are_supported(self):
+        found = self.parse(BLOCK + 'fn f(x: &mut [u8]) {}')[0]
+        self.assertEqual(found['inputs'], ['x'])
+        for signature in ('fn f(x: &mut [u16]) {}', 'fn f(x: &mut bool) {}',
+                          'fn f(x: Option<&mut [u8]>) {}',
+                          'fn f(x: &mut [u8]) -> &mut [u8] { x }'):
+            with self.subTest(signature=signature), self.assertRaises(ValueError):
+                self.parse(BLOCK + signature)
+
     def test_ghosts_and_requirements_cannot_shadow_original_parameters(self):
         for header in ('(x : Nat)', '(T : Type)', '(ghost ghost : Nat)'):
             block = BLOCK.replace('spec f_spec', 'spec f_spec ' + header)

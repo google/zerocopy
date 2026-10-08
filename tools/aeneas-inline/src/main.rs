@@ -129,7 +129,8 @@ impl Functions<'_> {
                     supported &= receiver.reference.is_none() || receiver.mutability.is_none();
                 }
                 syn::FnArg::Typed(input) => {
-                    supported &= !unsupported_borrow(&input.ty, true);
+                    supported &=
+                        !unsupported_borrow(&input.ty, true) || mutable_byte_slice(&input.ty);
                     match input.pat.as_ref() {
                         syn::Pat::Ident(pattern)
                             if pattern.by_ref.is_none() && pattern.subpat.is_none() =>
@@ -296,6 +297,17 @@ fn unsupported_borrow(ty: &syn::Type, allow_shared: bool) -> bool {
     let mut visitor = Borrow { found: false, allow_shared };
     visitor.visit_type(ty);
     visitor.found
+}
+
+// Aeneas returns this mutable input as ordinary updated byte-slice state.
+// This narrow shape has no nested loans, stored references, or escaping borrow
+// transformer. Other mutable inputs remain unsupported until their returned
+// state and reconstruction semantics have an explicit audit.
+fn mutable_byte_slice(ty: &syn::Type) -> bool {
+    let syn::Type::Reference(reference) = ty else { return false };
+    let syn::Type::Slice(slice) = reference.elem.as_ref() else { return false };
+    let syn::Type::Path(element) = slice.elem.as_ref() else { return false };
+    reference.mutability.is_some() && element.qself.is_none() && element.path.is_ident("u8")
 }
 
 fn has_borrowed_fields(fields: &Value) -> bool {
