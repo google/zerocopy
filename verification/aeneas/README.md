@@ -135,6 +135,31 @@ builtin correspondence also remains part of the pinned translator's trust
 boundary. See [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) for the implemented
 fragment and [LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the erasure inventory.
 
+The first storage examples are in
+[`util/safety_checks/mod.rs`](../../zerocopy/src/util/safety_checks/mod.rs):
+
+- `checked_bool` accepts exactly byte encodings 0 and 1 and rejects all others.
+- `checked_copy` copies a fitting prefix, preserves the suffix, and leaves the
+  entire destination unchanged when the source is too long. Its model returns
+  the updated mutable slice explicitly.
+
+The existing production `add_scaled_metadata` exercises guarded unchecked
+addition and multiplication. Each of these four primitive definitions has an
+independent complete-definition check, including its forbidden branch. Kernel
+controls prove rejection even if an invalid result is discarded or followed by
+divergence. Extraction controls check actual generated callers that discard an
+invalid Boolean or reach it before a loop. Mutation controls also challenge the
+failure tag and helper guards.
+
+Incoming references must already denote valid Rust allocations with the
+necessary exclusivity and initializedness. Logical byte lists do not establish
+provenance, allocation lifetime, or reference validity. Both storage examples
+use padding-free `u8`/`bool`; general padding and typed-copy effects remain
+unsupported. No panic-catching, thread, callback, or failure-recovery model is
+admitted. Both today's total and partial contracts reject *every* execution
+failure, including source UB aborts whose tag the pinned importer merges with
+panic. Supporting a recovery handler would require preserving that distinction.
+
 The binding manifest records both inspected snapshots, their dependency
 closures, exact registry identity, sources, compiler configuration, and patched
 runtime. Inputs are captured before compilation and checked again during binding
