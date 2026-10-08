@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786359289882,
+  "lastUpdate": 1791461886702,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23429,6 +23429,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 581,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d51a14e861c3bca1b8fd5a3945298c5fee542768",
+          "message": "Bump the cargo group across 3 directories with 1 update (#3796)\n\nBumps the cargo group with 1 update in the /anneal directory: [rustls](https://github.com/rustls/rustls).\nBumps the cargo group with 1 update in the /anneal/v1 directory: [rustls](https://github.com/rustls/rustls).\nBumps the cargo group with 1 update in the /exocrate directory: [rustls](https://github.com/rustls/rustls).\n\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.37 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.37 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.37 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\nUpdates `rustls` from 0.23.40 to 0.23.45\n- [Release notes](https://github.com/rustls/rustls/releases)\n- [Changelog](https://github.com/rustls/rustls/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/rustls/rustls/compare/v/0.23.40...v/0.23.45)\n\n---\nupdated-dependencies:\n- dependency-name: rustls\n  dependency-version: 0.23.45\n  dependency-type: indirect\n- dependency-name: rustls\n  dependency-version: 0.23.45\n  dependency-type: indirect\n- dependency-name: rustls\n  dependency-version: 0.23.45\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-10-08T11:39:22Z",
+          "tree_id": "5c00629f1101112e64c8b4ea54edc0835082c597",
+          "url": "https://github.com/google/zerocopy/commit/d51a14e861c3bca1b8fd5a3945298c5fee542768"
+        },
+        "date": 1791461883657,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 376,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 516,
             "unit": "seconds"
           }
         ]
