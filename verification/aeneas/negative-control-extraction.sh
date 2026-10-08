@@ -31,5 +31,9 @@ manifest = json.loads(Path(sys.argv[1]).read_text())
 if manifest.get('version') != 3 or manifest.get('mode') != 'verified-live':
     raise SystemExit('Invalid verified bindings for extraction controls')
 functions = {row['raw'] for row in manifest['bindings'].values() if row['kind'] == 'function'}
+print('storage' if 'Zerocopy.util.safety_checks.checked_bool' in functions else '')
 PY
 )
+if [[ $capabilities == *storage* ]]; then
+    run bash verification/aeneas/tests/producer-controls.sh generate "$AENEAS_CONTROL_PRODUCER_DIR"
+fi
