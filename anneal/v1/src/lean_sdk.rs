@@ -22,6 +22,7 @@ use std::{
     io::{Read, Write},
     path::{Component, Path, PathBuf},
     process::Command,
+    sync::Arc,
 };
 
 use anyhow::{Context as _, Result, bail, ensure};
@@ -142,9 +143,16 @@ struct ModuleManifest {
     modules: Vec<String>,
 }
 
-/// One publisher-admitted installation, including its immutable module map.
+/// A shared handle to one publisher-admitted installation. Cloning does not
+/// reload or copy the immutable module map; command and workspace admission
+/// still check the descriptor and physical installation on every invocation.
 #[derive(Clone, Debug)]
 pub struct LeanSdk {
+    inner: Arc<LeanSdkInner>,
+}
+
+#[derive(Debug)]
+struct LeanSdkInner {
     root: PathBuf,
     installation: PathBuf,
     descriptor_sha256: String,
@@ -159,7 +167,8 @@ pub struct LeanSdk {
 
 impl LeanSdk {
     /// Resolve a published `lean-sdk` directory. No compiler is run or input
-    /// modified. The module manifest is read once per admitted SDK object.
+    /// modified. The module manifest is read once per admission and shared by
+    /// clones.
     pub fn load(root: &Path) -> Result<Self> {
         let root = fs::canonicalize(root)
             .with_context(|| format!("Lean SDK is not installed at {}", root.display()))?;
@@ -235,47 +244,49 @@ impl LeanSdk {
             ensure!(unique_folded || !folds_case, "Case-equivalent SDK module providers: {name}");
         }
         let sdk = Self {
-            root,
-            installation,
-            descriptor_sha256: sha256(&raw),
-            descriptor,
-            modules,
-            folded_modules,
-            imports,
-            sources,
-            loaders,
-            plugins,
+            inner: Arc::new(LeanSdkInner {
+                root,
+                installation,
+                descriptor_sha256: sha256(&raw),
+                descriptor,
+                modules,
+                folded_modules,
+                imports,
+                sources,
+                loaders,
+                plugins,
+            }),
         };
         command_search_paths(&sdk, None)?;
         Ok(sdk)
     }
 
     pub fn id(&self) -> &str {
-        &self.descriptor.id
+        &self.inner.descriptor.id
     }
 
     pub fn root(&self) -> &Path {
-        &self.root
+        &self.inner.root
     }
 
     pub fn lean_toolchain(&self) -> &str {
-        &self.descriptor.lean_toolchain
+        &self.inner.descriptor.lean_toolchain
     }
 
     pub fn plugins(&self) -> &[Plugin] {
-        &self.plugins
+        &self.inner.plugins
     }
 
     fn check_descriptor(&self) -> Result<()> {
         ensure!(
-            sha256(&read_small(&self.root.join("sdk.json"), MAX_DESCRIPTOR_SIZE)?)
-                == self.descriptor_sha256,
+            sha256(&read_small(&self.inner.root.join("sdk.json"), MAX_DESCRIPTOR_SIZE)?)
+                == self.inner.descriptor_sha256,
             "SDK descriptor changed after admission"
         );
         for launcher in ["lean", "lake"] {
-            check_launcher(&self.root.join("bin").join(launcher), &self.installation)?;
+            check_launcher(&self.inner.root.join("bin").join(launcher), &self.inner.installation)?;
         }
-        for plugin in &self.plugins {
+        for plugin in &self.inner.plugins {
             ensure!(
                 plugin.path.is_file(),
                 "Missing admitted native plugin: {}",
@@ -367,7 +378,7 @@ impl<'a> Workspace<'a> {
             binding.schema == SCHEMA
                 && binding.sdk_id == sdk.id()
                 && binding.sdk_root == sdk.root()
-                && binding.descriptor_sha256 == sdk.descriptor_sha256,
+                && binding.descriptor_sha256 == sdk.inner.descriptor_sha256,
             "Lake configuration SDK binding mismatch"
         );
         let requested_roots =
@@ -443,11 +454,11 @@ impl<'a> Workspace<'a> {
             ensure!(existing.root == final_root, "Cannot move an existing workspace binding");
         }
         ensure!(
-            !staging_root.starts_with(&sdk.installation),
+            !staging_root.starts_with(&sdk.inner.installation),
             "Workspace stage is inside the immutable installation"
         );
         ensure!(
-            !final_root.starts_with(&sdk.installation),
+            !final_root.starts_with(&sdk.inner.installation),
             "Workspace is inside the immutable installation"
         );
         reject_workspace_lock_name(&final_root, None)?;
@@ -505,7 +516,7 @@ impl<'a> Workspace<'a> {
                 "Cannot relocate an existing workspace SDK"
             );
             ensure!(
-                existing.binding.descriptor_sha256 == sdk.descriptor_sha256,
+                existing.binding.descriptor_sha256 == sdk.inner.descriptor_sha256,
                 "Cannot change an existing workspace descriptor"
             );
             ensure!(
@@ -521,7 +532,7 @@ impl<'a> Workspace<'a> {
                 schema: SCHEMA,
                 sdk_id: sdk.id().to_owned(),
                 sdk_root: sdk.root().to_path_buf(),
-                descriptor_sha256: sdk.descriptor_sha256.clone(),
+                descriptor_sha256: sdk.inner.descriptor_sha256.clone(),
                 workspace: final_root,
                 owner: owner.path().file_name().unwrap().to_string_lossy().into_owned(),
                 source_roots,
@@ -631,7 +642,7 @@ impl<'a> Workspace<'a> {
         ensure!(
             binding.sdk_id == sdk.id()
                 && binding.sdk_root == sdk.root()
-                && binding.descriptor_sha256 == sdk.descriptor_sha256
+                && binding.descriptor_sha256 == sdk.inner.descriptor_sha256
                 && binding.workspace == new_physical_path(&final_root)?,
             "Stage binding changed"
         );
@@ -685,6 +696,30 @@ impl<'a> Workspace<'a> {
 
     pub fn root(&self) -> &Path {
         &self.root
+    }
+
+    /// Reuse the selected installation when it is this workspace's physical
+    /// binding. A Rust-only archive move can retain the same Lean identity at
+    /// another path; in that case admit the original bound installation once,
+    /// rather than retargeting its outputs to the newly selected installation.
+    /// A different Lean identity never takes this preservation route.
+    pub(crate) fn open_bound(sdk: &'a LeanSdk, root: &Path) -> Result<Self> {
+        let root = fs::canonicalize(root).context("Unknown Lean workspace")?;
+        ensure!(root.to_str().is_some(), "Lean workspace path must be UTF-8");
+        reject_links(&root)?;
+        let binding: Binding = read_json(&root.join(BINDING))?;
+        ensure!(binding.schema == SCHEMA, "Unsupported workspace binding schema");
+        ensure!(binding.sdk_root.is_absolute(), "Workspace SDK path must be absolute");
+        ensure!(binding.sdk_id == sdk.id(), "Workspace SDK identity changed");
+        let workspace = if binding.sdk_root == sdk.root() {
+            Self::open(sdk, &root)?
+        } else {
+            Self::from_root(&root)?
+        };
+        // Constructors read and admit the binding again. A changed identity
+        // between the preliminary observation and admission must also fail.
+        ensure!(workspace.sdk().id() == sdk.id(), "Workspace SDK identity changed");
+        Ok(workspace)
     }
 
     /// Resolve the fixed SDK selected when this workspace was created. This
@@ -875,12 +910,12 @@ impl<'a> Workspace<'a> {
                 continue;
             }
             let module = parts.join(".");
-            if !self.sdk.modules.contains(&module) {
+            if !self.sdk.inner.modules.contains(&module) {
                 continue;
             }
             // A dotted filename may spell the same module text as a nested
             // provider, but only the manifest module's component path is real.
-            for source in &self.sdk.sources {
+            for source in &self.sdk.inner.sources {
                 let provider = source.join(module.replace('.', "/")).with_extension("lean");
                 let provider = match fs::canonicalize(&provider) {
                     Ok(provider) => provider,
@@ -902,14 +937,14 @@ impl<'a> Workspace<'a> {
     pub fn admit_sdk_source_project(&self, root: &Path) -> Result<bool> {
         self.admit()?;
         let Ok(root) = fs::canonicalize(root) else { return Ok(false) };
-        if !root.is_dir() || !root.starts_with(&self.sdk.installation) {
+        if !root.is_dir() || !root.starts_with(&self.sdk.inner.installation) {
             return Ok(false);
         }
-        for source in &self.sdk.sources {
+        for source in &self.sdk.inner.sources {
             if root == *source {
                 return Ok(true);
             }
-            for module in &self.sdk.modules {
+            for module in &self.sdk.inner.modules {
                 let file = source.join(module.replace('.', "/")).with_extension("lean");
                 if let Ok(file) = fs::canonicalize(file) {
                     if file.starts_with(&root) {
@@ -1078,7 +1113,7 @@ impl<'a> Workspace<'a> {
         ensure!(binding.sdk_id == self.sdk.id(), "Workspace SDK identity mismatch");
         ensure!(binding.sdk_root == self.sdk.root(), "Workspace SDK location mismatch");
         ensure!(
-            binding.descriptor_sha256 == self.sdk.descriptor_sha256,
+            binding.descriptor_sha256 == self.sdk.inner.descriptor_sha256,
             "Workspace SDK descriptor mismatch"
         );
         ensure!(
@@ -1153,7 +1188,7 @@ impl<'a> Workspace<'a> {
     pub fn lean_command(&self, operation: LeanOperation<'_>) -> Result<Command> {
         let mut command = self.command("lean")?;
         command.arg(format!("--root={}", self.root.display()));
-        for plugin in &self.sdk.plugins {
+        for plugin in &self.sdk.inner.plugins {
             command.arg(format!("--plugin={}", plugin.path.display()));
         }
         match operation {
@@ -1239,7 +1274,7 @@ impl<'a> Workspace<'a> {
 
     fn command(&self, tool: &str) -> Result<Command> {
         self.admit()?;
-        let mut command = Command::new(self.sdk.root.join("bin").join(tool));
+        let mut command = Command::new(self.sdk.inner.root.join("bin").join(tool));
         command.current_dir(&self.root).env_clear();
         // An allowlist excludes all ambient tool selectors, imports, dynamic
         // loader injections, native compiler overrides, and external caches.
@@ -1259,10 +1294,10 @@ impl<'a> Workspace<'a> {
         for key in ["TMPDIR", "TMP", "TEMP"] {
             command.env(key, private.join("tmp"));
         }
-        command.env("LEAN", self.sdk.root.join("bin/lean"));
-        command.env("LAKE", self.sdk.root.join("bin/lake"));
-        command.env("LEAN_SYSROOT", &self.sdk.root);
-        command.env("LAKE_HOME", &self.sdk.root);
+        command.env("LEAN", self.sdk.inner.root.join("bin/lean"));
+        command.env("LAKE", self.sdk.inner.root.join("bin/lake"));
+        command.env("LEAN_SYSROOT", &self.sdk.inner.root);
+        command.env("LAKE_HOME", &self.sdk.inner.root);
         command.env("LAKE_OVERRIDE_LEAN", "true");
         command.env("LEAN_NUM_THREADS", "1");
         command.env("LAKE_ARTIFACT_CACHE", "false");
@@ -1352,7 +1387,7 @@ fn command_search_paths(
     sdk: &LeanSdk,
     workspace: Option<(&Path, &[PathBuf])>,
 ) -> Result<CommandSearchPaths> {
-    let mut paths = vec![sdk.root.join("bin")];
+    let mut paths = vec![sdk.inner.root.join("bin")];
     paths.extend(["/usr/bin", "/bin", "/usr/sbin", "/sbin"].map(PathBuf::from));
     let mut imports = Vec::new();
     let mut sources = Vec::new();
@@ -1360,15 +1395,15 @@ fn command_search_paths(
         imports.push(root.join(".lake/build/lib/lean"));
         sources.extend(source_roots.iter().map(|source| root.join(source)));
     }
-    imports.extend(sdk.imports.iter().cloned());
-    sources.extend(sdk.sources.iter().cloned());
+    imports.extend(sdk.inner.imports.iter().cloned());
+    sources.extend(sdk.inner.sources.iter().cloned());
     Ok(CommandSearchPaths {
         path: std::env::join_paths(paths).context("SDK PATH cannot represent its input paths")?,
         imports: std::env::join_paths(imports)
             .context("LEAN_PATH cannot represent its input paths")?,
         sources: std::env::join_paths(sources)
             .context("LEAN_SRC_PATH cannot represent its input paths")?,
-        loaders: std::env::join_paths(&sdk.loaders)
+        loaders: std::env::join_paths(&sdk.inner.loaders)
             .context("Native loader search list cannot represent its input paths")?,
     })
 }
@@ -2719,10 +2754,13 @@ fn check_local_sources(
                 if !parts.iter().all(|part| valid_component(part)) {
                     continue;
                 }
-                ensure!(!sdk.modules.contains(&name), "Local/SDK exact module collision: {name}");
+                ensure!(
+                    !sdk.inner.modules.contains(&name),
+                    "Local/SDK exact module collision: {name}"
+                );
                 let provider = if folds_case { name.to_ascii_lowercase() } else { name.clone() };
                 ensure!(
-                    !folds_case || !sdk.folded_modules.contains(&provider),
+                    !folds_case || !sdk.inner.folded_modules.contains(&provider),
                     "Local/SDK case-equivalent module collision: {name}"
                 );
                 ensure!(local_modules.insert(provider), "Duplicate local module provider: {name}");
@@ -3751,10 +3789,10 @@ pub(crate) mod tests {
         let workspace = f.workspace();
         let binding = fs::read(workspace.root().join(BINDING)).unwrap();
         let relocated_installation = f.base.join("relocated-toolchain");
-        for entry in walkdir::WalkDir::new(&f.sdk.installation).follow_links(false) {
+        for entry in walkdir::WalkDir::new(&f.sdk.inner.installation).follow_links(false) {
             let entry = entry.unwrap();
             let destination = relocated_installation
-                .join(entry.path().strip_prefix(&f.sdk.installation).unwrap());
+                .join(entry.path().strip_prefix(&f.sdk.inner.installation).unwrap());
             if entry.file_type().is_dir() {
                 fs::create_dir_all(destination).unwrap();
             } else {
@@ -3763,7 +3801,7 @@ pub(crate) mod tests {
         }
         let relocated = LeanSdk::load(&relocated_installation.join("lean-sdk")).unwrap();
         assert_eq!(relocated.id(), f.sdk.id());
-        assert_eq!(relocated.descriptor_sha256, f.sdk.descriptor_sha256);
+        assert_eq!(relocated.inner.descriptor_sha256, f.sdk.inner.descriptor_sha256);
         assert_ne!(relocated.root(), f.sdk.root());
         let stage = f.base.join("rejected-stage");
         let error =
@@ -4940,7 +4978,7 @@ pub(crate) mod tests {
         let descriptor_path = f.sdk.root().join("sdk.json");
         let mut descriptor: serde_json::Value =
             serde_json::from_slice(&fs::read(&descriptor_path).unwrap()).unwrap();
-        let loader = f.sdk.installation.join("loader:separator");
+        let loader = f.sdk.inner.installation.join("loader:separator");
         fs::create_dir(&loader).unwrap();
         descriptor["loader_roots"] = json!(["../loader:separator"]);
         fs::write(&descriptor_path, serde_json::to_vec(&descriptor).unwrap()).unwrap();
@@ -6043,6 +6081,26 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn cloned_sdk_shares_admitted_metadata_and_retains_descriptor_fences() {
+        let f = Fixture::new(&["Shared.A"]);
+        let workspace = f.workspace();
+        let selected = f.sdk.clone();
+        assert!(Arc::ptr_eq(&selected.inner, &f.sdk.inner));
+        let reopened = Workspace::open_bound(&selected, workspace.root()).unwrap();
+        assert!(Arc::ptr_eq(&reopened.sdk().inner, &selected.inner));
+        assert!(matches!(&reopened.sdk, Cow::Borrowed(_)));
+        assert_eq!(reopened.sdk().root(), f.sdk.root());
+
+        let descriptor = f.sdk.root().join("sdk.json");
+        let mut changed: serde_json::Value =
+            serde_json::from_slice(&fs::read(&descriptor).unwrap()).unwrap();
+        changed["compiler_hash"] = json!("c".repeat(40));
+        fs::write(&descriptor, serde_json::to_vec(&changed).unwrap()).unwrap();
+        assert!(reopened.lake_command(LakeOperation::Build(&[])).is_err());
+        assert!(Workspace::open_bound(&selected, workspace.root()).is_err());
+    }
+
+    #[test]
     fn identical_sdk_metadata_in_another_archive_cannot_retarget_a_bound_workspace() {
         let f = Fixture::new(&["Shared.A"]);
         let (workspace, sentinels) = f.mapped_workspace_with_sentinels();
@@ -6065,6 +6123,27 @@ pub(crate) mod tests {
             );
         }
         assert!(Workspace::open(&second_sdk, workspace.root()).is_err());
+        let preserved = Workspace::open_bound(&second_sdk, workspace.root()).unwrap();
+        assert_eq!(preserved.sdk().root(), f.sdk.root());
+        assert_eq!(preserved.sdk().id(), second_sdk.id());
+        assert!(matches!(&preserved.sdk, Cow::Owned(_)));
+        assert_eq!(
+            preserved.lean_command(LeanOperation::Version).unwrap().get_program(),
+            f.sdk.root().join("bin/lean")
+        );
+        let descriptor = second_root.join("sdk.json");
+        let mut changed: serde_json::Value =
+            serde_json::from_slice(&fs::read(&descriptor).unwrap()).unwrap();
+        changed["id"] = json!("c".repeat(64));
+        fs::write(&descriptor, serde_json::to_vec(&changed).unwrap()).unwrap();
+        let upgraded = LeanSdk::load(&second_root).unwrap();
+        assert_eq!(
+            Workspace::open_bound(&upgraded, workspace.root()).err().unwrap().to_string(),
+            "Workspace SDK identity changed"
+        );
+        // Restore the fixture's selected descriptor for the separate workspace
+        // creation below; the original bound installation was never modified.
+        fs::copy(f.sdk.root().join("sdk.json"), &descriptor).unwrap();
         let original = Workspace::from_root(workspace.root()).unwrap();
         assert_eq!(original.sdk().root(), f.sdk.root());
         assert_eq!(
@@ -6526,7 +6605,7 @@ pub(crate) mod tests {
         use std::os::unix::ffi::OsStringExt as _;
         let f = Fixture::new(&["Shared.A"]);
         let installation = f.base.join(std::ffi::OsString::from_vec(b"toolchain-\xff".to_vec()));
-        fs::rename(&f.sdk.installation, &installation).unwrap();
+        fs::rename(&f.sdk.inner.installation, &installation).unwrap();
         let error = LeanSdk::load(&installation.join("lean-sdk")).unwrap_err();
         assert_eq!(error.to_string(), "Lean SDK root must be UTF-8");
     }
@@ -6537,7 +6616,7 @@ pub(crate) mod tests {
         use std::os::unix::{ffi::OsStringExt as _, fs::symlink};
         let f = Fixture::new(&["Shared.A"]);
         let plugin =
-            f.sdk.installation.join(std::ffi::OsString::from_vec(b"plugin-\xff.so".to_vec()));
+            f.sdk.inner.installation.join(std::ffi::OsString::from_vec(b"plugin-\xff.so".to_vec()));
         fs::write(&plugin, "immutable fixture plugin").unwrap();
         symlink(&plugin, f.sdk.root().join("lib/plugin.so")).unwrap();
         let descriptor_path = f.sdk.root().join("sdk.json");
@@ -6619,11 +6698,12 @@ pub(crate) mod tests {
     #[test]
     fn generated_configuration_uses_exact_globs_and_bound_plugin_inputs() {
         let mut f = Fixture::new(&["Shared.A"]);
-        f.sdk.plugins.push(Plugin {
-            path: f.sdk.root().join("lib/native plugin.so"),
+        let plugin_path = f.sdk.root().join("lib/native plugin.so");
+        Arc::get_mut(&mut f.sdk.inner).unwrap().plugins.push(Plugin {
+            path: plugin_path,
             name: "nativePlugin".into(),
         });
-        fs::write(&f.sdk.plugins[0].path, "immutable fixture native plugin").unwrap();
+        fs::write(&f.sdk.inner.plugins[0].path, "immutable fixture native plugin").unwrap();
         let workspace =
             Workspace::create(&f.sdk, &f.base.join("generated"), &["generated", "user"]).unwrap();
         let modules = ["Shared.B".into(), "Proof".into()];
@@ -6827,7 +6907,8 @@ pub(crate) mod tests {
             command.get_args().collect::<Vec<_>>(),
             ["--keep-toolchain", "--no-cache", "build", "+Proof:olean"]
         );
-        let setup = workspace.lake_command(LakeOperation::SetupFile(Path::new("src/Proof.lean")))
+        let setup = workspace
+            .lake_command(LakeOperation::SetupFile(Path::new("src/Proof.lean")))
             .unwrap();
         assert_eq!(
             setup.get_args().collect::<Vec<_>>(),

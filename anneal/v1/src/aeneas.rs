@@ -58,8 +58,7 @@ pub fn run_aeneas(
         final_lean_root.with_extension("previous").display()
     );
     let existing = if final_lean_root.try_exists()? {
-        let workspace = Workspace::from_root(&final_lean_root)?;
-        ensure!(workspace.sdk().id() == selected_sdk.id(), "Workspace SDK identity changed");
+        let workspace = Workspace::open_bound(&selected_sdk, &final_lean_root)?;
         Some(workspace)
     } else {
         None
@@ -67,7 +66,9 @@ pub fn run_aeneas(
     // A Rust-only archive change may install identical Lean inputs at a new
     // distribution path. Keep the original physical SDK binding and outputs;
     // a different Lean identity already selects a fresh workspace leaf.
-    let sdk = existing.as_ref().map_or(selected_sdk, |workspace| workspace.sdk().clone());
+    let sdk = existing
+        .as_ref()
+        .map_or_else(|| selected_sdk.clone(), |workspace| workspace.sdk().clone());
     let old_snapshot = existing.as_ref().map(Workspace::source_snapshot).transpose()?;
     let stage = create_private_lean_stage(parent)?;
     let tmp_lean_root = stage.path().join("workspace");
@@ -669,7 +670,7 @@ fn run_lake(roots: &LockedRoots, artifacts: &[AnnealArtifact]) -> Result<()> {
     let lean_root = generated.parent().unwrap();
     log::info!("Running 'lake build' in {}", lean_root.display());
 
-    let workspace = Workspace::from_root(lean_root)?;
+    let workspace = Workspace::open_bound(roots.lean_sdk(), lean_root)?;
     // The command pipeline holds the workspace writer lease through this
     // build. Only a completed build of unchanged inputs may retain provenance.
     let prepared = workspace.prepare_local_outputs()?;
