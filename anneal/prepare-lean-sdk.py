@@ -212,7 +212,8 @@ def _system_absolute(path: str, platform: str) -> bool:
     return path.startswith(("/lib/", "/lib64/", "/usr/lib/", "/usr/lib64/")) and Path(path).name in ELF_SYSTEM
 
 
-def loader_closure(root: Path, plugin: Path, platform: str, *, relocate=False, hashes=None) -> dict:
+def loader_closure(root: Path, plugin: Path, platform: str, *, relocate=False, hashes=None,
+                   extra_images: tuple[Path, ...] = ()) -> dict:
     """Resolve every reachable native image against exact archive providers.
 
     System libraries are explicit platform assumptions, not silently resolved
@@ -224,7 +225,7 @@ def loader_closure(root: Path, plugin: Path, platform: str, *, relocate=False, h
     search = [runtime / "lib", runtime / "lib/lean", plugin.parent]
     allowed = [runtime, plugin.parent]
     executable = runtime / "bin"
-    pending = [executable / "lean", executable / "lake", plugin]
+    pending = [executable / "lean", executable / "lake", plugin, *extra_images]
     visited = {}
     system = set()
 
@@ -457,6 +458,61 @@ def _archive_path(root: Path, relative: str) -> Path:
     return path
 
 
+def catalog_finite(root: Path, catalog: dict) -> dict:
+    """Extend pre-pruning exports with a freshly built staged native producer.
+
+    Source/recipe stay exact; executable relocation is checked and its final
+    bytes plus actual loader closure enter assembly identity. Old catalogs may
+    still publish descriptor1; production's new workflow always calls this.
+    """
+    root = root.resolve(strict=True)
+    if (root / "lean-sdk").exists() or "finite_lake" in catalog:
+        raise ValueError("finite producer capture requires fresh staging")
+    _profile(catalog["platform"])
+    path = root / "lean/bin/anneal-finite-lake"
+    if path.is_symlink() or not path.stat().st_mode & 0o111:
+        raise ValueError("finite helper must be a real executable")
+    checked(path, root / "lean")
+    check_native(path, catalog["platform"])
+    result = json.loads(json.dumps(catalog))
+    source = _archive_path(root, "lean/src/anneal/FiniteLake.lean")
+    recipe = _archive_path(root, "lean/src/anneal/build-finite-lake.py")
+    helper_hash = digest(path)
+    result["finite_lake"] = {
+        "path": "lean/bin/anneal-finite-lake", "producer_sha256": helper_hash, "protocol": 1,
+        "source": {"path": str(source.relative_to(root)), "sha256": digest(source)},
+        "recipe": {"path": str(recipe.relative_to(root)), "sha256": digest(recipe)}}
+    result["runtime_inventory"]["bin/anneal-finite-lake"] = {
+        "sha256": helper_hash, "publisher_relocation": True}
+    return result
+
+
+def finite_producer(root: Path, catalog: dict) -> tuple[Path | None, dict | None]:
+    if "finite_lake" not in catalog:
+        return None, None
+    row = catalog["finite_lake"]
+    if not isinstance(row, dict) or set(row) != {"path", "producer_sha256", "protocol", "source", "recipe"} or type(row["protocol"]) is not int or row["protocol"] != 1 or row["path"] != "lean/bin/anneal-finite-lake":
+        raise ValueError("unsupported finite publisher protocol")
+    identity = {"protocol": 1}
+    for key, expected in [("source", "lean/src/anneal/FiniteLake.lean"),
+                          ("recipe", "lean/src/anneal/build-finite-lake.py")]:
+        value = row[key]
+        if not isinstance(value, dict) or set(value) != {"path", "sha256"} or value["path"] != expected:
+            raise ValueError("finite source/recipe ownership mismatch")
+        path = _archive_path(root, value["path"])
+        if digest(path) != value["sha256"]:
+            raise ValueError("finite source/recipe changed since producer capture")
+        identity[key] = value
+    helper = _archive_path(root, row["path"])
+    if helper.is_symlink() or not helper.stat().st_mode & 0o111:
+        raise ValueError("finite helper must be a real executable")
+    check_native(helper, catalog["platform"])
+    expected = catalog["runtime_inventory"].get("bin/anneal-finite-lake")
+    if expected != {"sha256": row["producer_sha256"], "publisher_relocation": True}:
+        raise ValueError("finite helper has no coherent runtime producer")
+    return helper, identity
+
+
 def link_overlay(sdk: Path, archive: Path, links: dict[Path, Path]):
     """Compact complete immutable subtrees; merge partial namespaces exactly."""
     def materialize(prefix: Path, entries: dict[Path, Path]):
@@ -505,6 +561,7 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
         raise ValueError("unsupported publisher catalog/profile")
     platform = catalog["platform"]
     _profile(platform)
+    finite_helper, finite_identity = finite_producer(root, catalog)
     modules = catalog["modules"]
     if not isinstance(modules, dict) or not modules:
         raise ValueError("missing expected exported module catalog")
@@ -585,7 +642,8 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
     if plugin_hash != catalog["plugin"]["producer_sha256"] and not allow_native_relocation:
         raise ValueError("native plugin changed outside trusted publisher relocation")
     verified_hashes[plugin.resolve(strict=True)] = plugin_hash
-    native_closure = loader_closure(root, plugin, platform, hashes=verified_hashes)
+    native_closure = loader_closure(root, plugin, platform, hashes=verified_hashes,
+                                   extra_images=(finite_helper,) if finite_helper else ())
     for relative, image in native_closure["images"].items():
         if Path(relative).is_relative_to("lean"):
             continue  # Complete runtime hashes were checked above.
@@ -599,10 +657,15 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
                   "import_roots": ["lib/lean"], "loader_roots": ["lib", "lib/lean", "../" + str(plugin.parent.relative_to(root))],
                   "plugins": [{"path": plugin_relative, "name": "aeneas_AeneasMeta"}],
                   "modules": "modules.json", "modules_sha256": hashlib.sha256(module_bytes).hexdigest()}
+    if finite_helper is not None:
+        descriptor.update(schema=2, finite_lake={"path": "bin/anneal-finite-lake",
+                          "sha256": verified_hashes[finite_helper.resolve(strict=True)], "protocol": 1})
     # Paths are archive-relative, so moving the entire archive keeps identity.
     # Full producer/catalog envelope hashes and all Rust bytes are excluded.
     content = {"descriptor": dict(descriptor), "modules": modules, "runtime": final_runtime,
                "plugin": {"path": catalog["plugin"]["path"], "sha256": plugin_hash}, "native_closure": native_closure}
+    if finite_identity is not None:
+        content["finite_lake_producer"] = finite_identity
     descriptor["id"] = hashlib.sha256(encoded(content)).hexdigest()
     # All validation precedes destination creation. If an IO failure occurs
     # afterward, retain the incomplete destination; never adopt/repair it.
@@ -615,7 +678,7 @@ def assemble(root: Path, catalog: dict, *, allow_native_relocation: bool = False
         destination_dir = sdk / directory
         destination_dir.mkdir(exist_ok=True)
         for target in sorted((runtime / directory).iterdir()):
-            if directory == "bin" and target.name in ("lean", "lake"):
+            if directory == "bin" and target.name in ("lean", "lake", "anneal-finite-lake"):
                 shutil.copy2(target, destination_dir / target.name, follow_symlinks=False)
             elif directory == "lib" and target.name == "lean":
                 for support in sorted(target.iterdir()):
@@ -669,6 +732,10 @@ def main():
     relocation = commands.add_parser("relocate-darwin")
     relocation.add_argument("--root", type=Path, required=True)
     relocation.add_argument("--catalog", type=Path, required=True)
+    finite = commands.add_parser("catalog-finite")
+    finite.add_argument("--root", type=Path, required=True)
+    finite.add_argument("--catalog", type=Path, required=True)
+    finite.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "catalog":
         spec = importlib.util.spec_from_file_location("lean_sdk_pruning_policy", args.pruner)
@@ -678,12 +745,18 @@ def main():
         catalog = make_catalog(args.runtime, args.project_root, args.packages_root, args.platform, exports)
         with args.output.open("xb") as stream:
             stream.write(encoded(catalog))
+    elif args.command == "catalog-finite":
+        catalog = catalog_finite(args.root, json.loads(args.catalog.read_text()))
+        with args.output.open("xb") as stream:
+            stream.write(encoded(catalog))
     elif args.command == "relocate-darwin":
         root = args.root.resolve(strict=True)
         catalog = json.loads(args.catalog.read_text())
         if not catalog["platform"].endswith("-darwin"):
             raise ValueError("Darwin relocation requires a Darwin producer")
-        loader_closure(root, _archive_path(root, catalog["plugin"]["path"]), catalog["platform"], relocate=True)
+        helper, _ = finite_producer(root, catalog)
+        loader_closure(root, _archive_path(root, catalog["plugin"]["path"]), catalog["platform"],
+                       relocate=True, extra_images=(helper,) if helper else ())
     else:
         assemble(args.root, json.loads(args.catalog.read_text()), allow_native_relocation=args.allow_native_relocation)
 

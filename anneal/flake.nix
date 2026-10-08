@@ -556,6 +556,11 @@
             "mkdir -p $TMPDIR/dist_staging/aeneas"
             "cp -r $aeneasBuild/* $TMPDIR/dist_staging/aeneas/"
             "chmod -R +w $TMPDIR/dist_staging/aeneas"
+            # One finite internal Lake process per admitted operation. Compile
+            # against this pinned RC2 runtime before native relocation; retain
+            # exact source/recipe and include final helper/loader bytes in SDK id.
+            "python3 ${./build-finite-lake.py} --root $TMPDIR/dist_staging --source ${./finite-lake/FiniteLake.lean} --platform ${system}"
+            "python3 ${./prepare-lean-sdk.py} catalog-finite --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json --output $TMPDIR/lean-sdk-staged-producer.json"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             # Remove Nix dynamic-linker and RPATH references from ELF binaries.
             "echo \"Cleaning up Nix store references...\""
@@ -573,17 +578,20 @@
             # helpers may have an unrelated architecture, but publisher closure
             # validation below rejects residual store/interpreter references in
             # every native image reachable from these roots.
-            "for consumed in $TMPDIR/dist_staging/lean/bin/lean $TMPDIR/dist_staging/lean/bin/lake $TMPDIR/dist_staging/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.so; do"
+            "for consumed in $TMPDIR/dist_staging/lean/bin/lean $TMPDIR/dist_staging/lean/bin/lake $TMPDIR/dist_staging/lean/bin/anneal-finite-lake $TMPDIR/dist_staging/aeneas/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.so; do"
             "  if patchelf --print-interpreter \"\$consumed\" >/dev/null 2>&1; then"
             "    patchelf --set-interpreter ${linuxDynamicLinker} \"\$consumed\""
             "  fi"
             "  patchelf --remove-rpath \"\$consumed\""
             "done"
+            # Blanket staging cleanup above removes producer RPATHs. Restore
+            # only the helper's relative coherent-runtime search, never Nix paths.
+            "patchelf --set-rpath '\$ORIGIN/../lib/lean:\$ORIGIN/../lib' $TMPDIR/dist_staging/lean/bin/anneal-finite-lake"
           ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
             "python3 ${./prepare-native-tools.py} --root $TMPDIR/dist_staging --platform ${system}"
             # Normalize the producer's install IDs/absolute native references in
             # new staging only. Never modify cached producer inputs in place.
-            "python3 ${./prepare-lean-sdk.py} relocate-darwin --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json"
+            "python3 ${./prepare-lean-sdk.py} relocate-darwin --root $TMPDIR/dist_staging --catalog $TMPDIR/lean-sdk-staged-producer.json"
           ] ++ [
             "TRACE_ABS_RE='(^|[\"[:space:]=:])/(nix/store|build|private/tmp/nix-build|ANNEAL_PLACEHOLDER_ROOT)'"
             "if find $TMPDIR/dist_staging -type f -name \"*.trace\" -exec grep -EIl \"\$TRACE_ABS_RE\" {} + | tee /tmp/non-relocatable-staged-traces | grep -q .; then"
@@ -603,7 +611,7 @@
             # files through relative links. Pin native bytes after the explicit
             # trusted ELF relocation above, rather than claiming pre/post hashes
             # are equal. Producer module/source expectations remain enforced.
-            "python3 ${./prepare-lean-sdk.py} assemble --root $TMPDIR/dist_staging --catalog $TMPDIR/dist_staging/aeneas/lean-sdk-producer.json --allow-native-relocation"
+            "python3 ${./prepare-lean-sdk.py} assemble --root $TMPDIR/dist_staging --catalog $TMPDIR/lean-sdk-staged-producer.json --allow-native-relocation"
             "chmod -R a-w $TMPDIR/dist_staging"
             "cd $TMPDIR/dist_staging"
             "tar -cf $out *"
@@ -677,6 +685,7 @@
               lean/bin/lean \
               lean-sdk/bin/lean \
               lean-sdk/bin/lake \
+              lean-sdk/bin/anneal-finite-lake \
               lean-sdk/sdk.json \
               lean-sdk/modules.json \
               lean-sdk/publisher-catalog.json \

@@ -606,6 +606,11 @@ fn assert_missing_plugin_rejected(
     for path in ["bin/lean", "bin/lake", "sdk.json", "modules.json"] {
         fs::copy(sdk.root().join(path), damaged_sdk.join(path))?;
     }
+    // Keep optional protocol launchers intact so this damaged view exercises
+    // the missing-plugin gate, rather than an earlier missing-launcher gate.
+    if let Some(helper) = descriptor["finite_lake"]["path"].as_str() {
+        fs::copy(sdk.root().join(helper), damaged_sdk.join(helper))?;
+    }
     let destination = temp_root.join("missing-plugin-workspace");
     let owned = lean_sdk::Workspace::create(sdk, &destination, &["generated", "user"])?;
     fs::create_dir(owned.root().join("generated"))?;

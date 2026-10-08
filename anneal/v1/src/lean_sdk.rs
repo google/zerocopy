@@ -125,6 +125,16 @@ struct Descriptor {
     plugins: Vec<Plugin>,
     modules: PathBuf,
     modules_sha256: String,
+    #[serde(default)]
+    finite_lake: Option<FiniteLake>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FiniteLake {
+    path: PathBuf,
+    sha256: String,
+    protocol: u32,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -179,7 +189,15 @@ impl LeanSdk {
         let raw = read_small(&root.join("sdk.json"), MAX_DESCRIPTOR_SIZE)?;
         let descriptor: Descriptor =
             serde_json::from_slice(&raw).context("Invalid SDK descriptor")?;
-        ensure!(descriptor.schema == SCHEMA, "Unsupported SDK descriptor schema");
+        ensure!(matches!(descriptor.schema, 1 | 2), "Unsupported SDK descriptor schema");
+        ensure!(
+            (descriptor.schema == 2) == descriptor.finite_lake.is_some(),
+            "SDK descriptor finite helper does not match its schema"
+        );
+        if descriptor.schema == 1 {
+            let fields: serde_json::Value = serde_json::from_slice(&raw)?;
+            ensure!(fields.get("finite_lake").is_none(), "Schema 1 cannot declare a finite helper");
+        }
         ensure!(is_sha256(&descriptor.id), "Invalid SDK identity");
         ensure!(is_lower_hex(&descriptor.compiler_hash, 40), "Invalid Lean compiler commit hash");
         ensure!(is_sha256(&descriptor.modules_sha256), "Invalid module manifest hash");
@@ -197,6 +215,9 @@ impl LeanSdk {
         ensure!(runtime != root, "SDK runtime must name the publisher's compiler closure");
         for launcher in ["lean", "lake"] {
             check_launcher(&root.join("bin").join(launcher), &installation)?;
+        }
+        if let Some(helper) = &descriptor.finite_lake {
+            check_finite_helper(&root, &installation, helper)?;
         }
         let imports = resolve_roots(&root, &installation, &descriptor.import_roots)?;
         let sources = resolve_roots(&root, &installation, &descriptor.source_roots)?;
@@ -285,6 +306,9 @@ impl LeanSdk {
         );
         for launcher in ["lean", "lake"] {
             check_launcher(&self.inner.root.join("bin").join(launcher), &self.inner.installation)?;
+        }
+        if let Some(helper) = &self.inner.descriptor.finite_lake {
+            check_launcher(&self.inner.root.join(&helper.path), &self.inner.installation)?;
         }
         for plugin in &self.inner.plugins {
             ensure!(
@@ -936,7 +960,9 @@ impl<'a> Workspace<'a> {
     /// for the source client's lifetime under the immutable-installation premise.
     pub fn admit_sdk_source_project(&self, root: &Path) -> Result<bool> {
         self.admit()?;
-        let Ok(root) = fs::canonicalize(root) else { return Ok(false) };
+        let Ok(root) = fs::canonicalize(root) else {
+            return Ok(false);
+        };
         if !root.is_dir() || !root.starts_with(&self.sdk.inner.installation) {
             return Ok(false);
         }
@@ -1358,7 +1384,9 @@ fn prune_undeclared_outputs(root: &Path) -> Result<()> {
             let relative = entry.path().strip_prefix(&output_root)?;
             let leaf =
                 relative.file_name().and_then(|s| s.to_str()).context("Non-UTF8 output path")?;
-            let Some((module_leaf, _)) = leaf.split_once('.') else { continue };
+            let Some((module_leaf, _)) = leaf.split_once('.') else {
+                continue;
+            };
             let module = relative
                 .with_file_name(module_leaf)
                 .iter()
@@ -1655,6 +1683,34 @@ fn check_launcher(path: &Path, installation: &Path) -> Result<()> {
         use std::os::unix::fs::PermissionsExt as _;
         ensure!(metadata.permissions().mode() & 0o111 != 0, "SDK launcher is not executable");
     }
+    Ok(())
+}
+
+fn check_finite_helper(root: &Path, installation: &Path, helper: &FiniteLake) -> Result<()> {
+    ensure!(
+        helper.protocol == 1
+            && helper.path == Path::new("bin/anneal-finite-lake")
+            && is_sha256(&helper.sha256),
+        "Invalid finite Lake helper descriptor"
+    );
+    let path = root.join(&helper.path);
+    check_launcher(&path, installation)?;
+    // Stream the executable; admission does not allocate its complete body.
+    let mut file = fs::File::open(&path)?;
+    let mut digest = Sha256::new();
+    let mut buffer = [0u8; 64 * 1024];
+    loop {
+        let count = file.read(&mut buffer)?;
+        if count == 0 {
+            break;
+        }
+        digest.update(&buffer[..count]);
+    }
+    ensure!(
+        hex_digest(digest.finalize().into()) == helper.sha256,
+        "Finite Lake helper changed after admission"
+    );
+    check_launcher(&path, installation)?;
     Ok(())
 }
 
@@ -1988,7 +2044,9 @@ mod darwin_namespace_acl {
     }
 
     pub(super) fn check(directory: &Path, workspace_root: bool) -> Result<()> {
-        let Some(acl) = read_acl(directory)? else { return Ok(()) };
+        let Some(acl) = read_acl(directory)? else {
+            return Ok(());
+        };
         // SAFETY: this ACL is live, privately owned native storage.
         ensure!(unsafe { acl_valid(acl.0) } == 0, "Invalid workspace namespace ACL");
         for index in 0..=MAX_ENTRIES {
@@ -2364,7 +2422,9 @@ fn reject_existing_source_root_aliases(root: &Path, roots: &[PathBuf]) -> Result
     for source in roots {
         let mut current = root.to_path_buf();
         for component in source.components() {
-            let Component::Normal(name) = component else { continue };
+            let Component::Normal(name) = component else {
+                continue;
+            };
             current.push(name);
             let metadata = match fs::symlink_metadata(&current) {
                 Ok(metadata) => metadata,
@@ -6699,10 +6759,10 @@ pub(crate) mod tests {
     fn generated_configuration_uses_exact_globs_and_bound_plugin_inputs() {
         let mut f = Fixture::new(&["Shared.A"]);
         let plugin_path = f.sdk.root().join("lib/native plugin.so");
-        Arc::get_mut(&mut f.sdk.inner).unwrap().plugins.push(Plugin {
-            path: plugin_path,
-            name: "nativePlugin".into(),
-        });
+        Arc::get_mut(&mut f.sdk.inner)
+            .unwrap()
+            .plugins
+            .push(Plugin { path: plugin_path, name: "nativePlugin".into() });
         fs::write(&f.sdk.inner.plugins[0].path, "immutable fixture native plugin").unwrap();
         let workspace =
             Workspace::create(&f.sdk, &f.base.join("generated"), &["generated", "user"]).unwrap();
@@ -6907,9 +6967,8 @@ pub(crate) mod tests {
             command.get_args().collect::<Vec<_>>(),
             ["--keep-toolchain", "--no-cache", "build", "+Proof:olean"]
         );
-        let setup = workspace
-            .lake_command(LakeOperation::SetupFile(Path::new("src/Proof.lean")))
-            .unwrap();
+        let setup =
+            workspace.lake_command(LakeOperation::SetupFile(Path::new("src/Proof.lean"))).unwrap();
         assert_eq!(
             setup.get_args().collect::<Vec<_>>(),
             [
@@ -6970,5 +7029,101 @@ pub(crate) mod tests {
         descriptor["modules_sha256"] = json!(sha256(&raw));
         fs::write(&descriptor_path, serde_json::to_vec(&descriptor).unwrap()).unwrap();
         assert!(LeanSdk::load(f.sdk.root()).is_err());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn finite_descriptor_admission_preserves_stock_routes() {
+        use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+        let f = Fixture::new(&["Shared.A"]);
+        let root = f.sdk.root();
+        let descriptor_path = root.join("sdk.json");
+        let legacy: serde_json::Value =
+            serde_json::from_slice(&fs::read(&descriptor_path).unwrap()).unwrap();
+        // Legacy admission requires no optional helper or manifest.
+        assert!(LeanSdk::load(root).is_ok());
+        let helper_path = root.join("bin/anneal-finite-lake");
+        assert!(!helper_path.exists());
+        let bytes = b"#!/bin/sh\nexit 2\n";
+        fs::write(&helper_path, bytes).unwrap();
+        fs::set_permissions(&helper_path, fs::Permissions::from_mode(0o755)).unwrap();
+        let mut valid = legacy.clone();
+        valid["schema"] = json!(2);
+        valid["finite_lake"] = json!({"path":"bin/anneal-finite-lake",
+            "sha256":sha256(bytes),"protocol":1});
+        let write = |descriptor: &serde_json::Value| {
+            fs::write(&descriptor_path, serde_json::to_vec(descriptor).unwrap()).unwrap();
+        };
+        write(&valid);
+        let sdk = LeanSdk::load(root).unwrap();
+        // SDK2 is usable through stock commands before protocol integration.
+        let workspace = Workspace::create(&sdk, &f.base.join("sdk2-stock"), &["."]).unwrap();
+        configure_test_workspace(&workspace);
+        let command = workspace.lake_command(LakeOperation::Build(&["Source0".into()])).unwrap();
+        assert_eq!(command.get_program(), root.join("bin/lake").as_os_str());
+        assert_eq!(
+            command.get_args().collect::<Vec<_>>(),
+            ["--keep-toolchain", "--no-cache", "build", "Source0"]
+        );
+
+        let mut unknown_schema = valid.clone();
+        unknown_schema["schema"] = json!(3);
+        let mut missing = valid.clone();
+        missing.as_object_mut().unwrap().remove("finite_lake");
+        let mut null = valid.clone();
+        null["finite_lake"] = serde_json::Value::Null;
+        let mut legacy_helper = valid.clone();
+        legacy_helper["schema"] = json!(1);
+        let mut legacy_null = legacy.clone();
+        legacy_null["finite_lake"] = serde_json::Value::Null;
+        let mut bad_protocol = valid.clone();
+        bad_protocol["finite_lake"]["protocol"] = json!(2);
+        let mut bad_path = valid.clone();
+        bad_path["finite_lake"]["path"] = json!("../lean/bin/anneal-finite-lake");
+        let mut malformed_hash = valid.clone();
+        malformed_hash["finite_lake"]["sha256"] = json!("A".repeat(64));
+        let mut wrong_hash = valid.clone();
+        wrong_hash["finite_lake"]["sha256"] = json!("a".repeat(64));
+        let mut unknown_field = valid.clone();
+        unknown_field["finite_lake"]["extra"] = json!(true);
+        for (label, descriptor) in [
+            ("schema", unknown_schema),
+            ("missing", missing),
+            ("null", null),
+            ("legacy helper", legacy_helper),
+            ("legacy null", legacy_null),
+            ("protocol", bad_protocol),
+            ("path", bad_path),
+            ("malformed hash", malformed_hash),
+            ("wrong hash", wrong_hash),
+            ("unknown field", unknown_field),
+        ] {
+            write(&descriptor);
+            assert!(LeanSdk::load(root).is_err(), "Accepted {label}");
+        }
+        write(&valid);
+        fs::write(&helper_path, b"#!/bin/sh\nexit 0\n").unwrap();
+        assert!(LeanSdk::load(root).is_err(), "Accepted changed helper bytes");
+        fs::write(&helper_path, bytes).unwrap();
+        fs::set_permissions(&helper_path, fs::Permissions::from_mode(0o644)).unwrap();
+        assert!(LeanSdk::load(root).is_err(), "Accepted non-executable helper");
+        fs::remove_file(&helper_path).unwrap();
+        assert!(LeanSdk::load(root).is_err(), "Accepted missing helper");
+        let alternate = root.join("bin/retained-helper");
+        fs::write(&alternate, bytes).unwrap();
+        fs::set_permissions(&alternate, fs::Permissions::from_mode(0o755)).unwrap();
+        symlink(&alternate, &helper_path).unwrap();
+        assert!(LeanSdk::load(root).is_err(), "Accepted linked helper");
+        assert!(sdk.check_descriptor().is_err(), "Missed admitted launcher retarget");
+        fs::remove_file(&helper_path).unwrap();
+        symlink(root.join("missing-helper"), &helper_path).unwrap();
+        assert!(LeanSdk::load(root).is_err(), "Accepted dangling helper");
+        fs::remove_file(&helper_path).unwrap();
+        fs::write(&helper_path, bytes).unwrap();
+        fs::set_permissions(&helper_path, fs::Permissions::from_mode(0o755)).unwrap();
+        assert!(LeanSdk::load(root).is_ok());
+        write(&legacy);
+        assert!(LeanSdk::load(root).is_ok());
     }
 }

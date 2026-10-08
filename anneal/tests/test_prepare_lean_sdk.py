@@ -102,6 +102,72 @@ class PrepareLeanSdkTests(unittest.TestCase):
             publisher.assemble(self.root, catalog)
         self.assertFalse((self.root / "lean-sdk").exists(), "rejection must precede output creation")
 
+    def finite_catalog(self):
+        write(self.runtime / "bin/anneal-finite-lake", native(self.platform, b"finite producer"))
+        (self.runtime / "bin/anneal-finite-lake").chmod(0o755)
+        write(self.runtime / "src/anneal/FiniteLake.lean", "-- status-only helper source\n")
+        write(self.runtime / "src/anneal/build-finite-lake.py", "# coherent producer recipe\n")
+        # The ordinary runtime capture precedes the new trusted staged helper.
+        # Remove its entry here to model catalog-finite extending that capture.
+        catalog = self.catalog()
+        catalog["runtime_inventory"].pop("bin/anneal-finite-lake")
+        return publisher.catalog_finite(self.root, catalog)
+
+    def test_finite_descriptor_keeps_module_map_schema_and_real_relocatable_helper(self):
+        catalog = self.finite_catalog()
+        # The helper's Lake closure is actually included rather than presumed
+        # from an existing Lean/Lake launcher or only its executable hash.
+        write(self.runtime / "lib/lean/libLake_shared.dylib", native())
+        catalog["runtime_inventory"]["lib/lean/libLake_shared.dylib"] = {
+            "sha256": publisher.digest(self.runtime / "lib/lean/libLake_shared.dylib"),
+            "publisher_relocation": True}
+        self.dependencies["anneal-finite-lake"] = {"needed":["@rpath/libLake_shared.dylib"],
+            "rpaths":["@executable_path/../lib/lean"], "identity":None, "interpreter":"/usr/lib/dyld"}
+        result = publisher.assemble(self.root, catalog)
+        sdk = self.root / "lean-sdk"
+        self.assertEqual(result["schema"], 2)
+        self.assertEqual(result["finite_lake"], {"path":"bin/anneal-finite-lake",
+            "sha256":publisher.digest(sdk / "bin/anneal-finite-lake"), "protocol":1})
+        self.assertFalse((sdk / "bin/anneal-finite-lake").is_symlink())
+        self.assertEqual(json.loads((sdk / "modules.json").read_text())["schema"], 1)
+        content = json.loads((sdk / "publisher-catalog.json").read_text())["published"]
+        self.assertIn("lean/bin/anneal-finite-lake", content["native_closure"]["images"])
+        self.assertIn("lean/lib/lean/libLake_shared.dylib", content["native_closure"]["images"])
+        self.assertEqual(content["finite_lake_producer"]["source"], catalog["finite_lake"]["source"])
+        self.assertEqual(content["finite_lake_producer"]["recipe"], catalog["finite_lake"]["recipe"])
+
+    def test_finite_source_recipe_and_runtime_provider_drift_reject_before_assembly(self):
+        catalog = self.finite_catalog()
+        for name in ["src/anneal/FiniteLake.lean", "src/anneal/build-finite-lake.py", "bin/anneal-finite-lake"]:
+            path = self.runtime / name
+            before = path.read_bytes()
+            path.write_bytes(before + b"changed")
+            self.reject_assembly(catalog)
+            path.write_bytes(before)
+        for change in [lambda c:c["finite_lake"].update(protocol=2),
+                       lambda c:c["finite_lake"].update(protocol=True),
+                       lambda c:c["finite_lake"].update(path="lean/bin/lake"),
+                       lambda c:c["finite_lake"].update(unknown=1),
+                       lambda c:c["runtime_inventory"].pop("bin/anneal-finite-lake")]:
+            bad = copy.deepcopy(catalog)
+            change(bad)
+            self.reject_assembly(bad)
+
+    def test_finite_final_relocation_bytes_enter_identity(self):
+        catalog = self.finite_catalog()
+        helper = self.runtime / "bin/anneal-finite-lake"
+        helper.write_bytes(native(self.platform, b"relocated finite producer"))
+        self.reject_assembly(catalog)
+        result = publisher.assemble(self.root, catalog, allow_native_relocation=True)
+        self.assertEqual(result["finite_lake"]["sha256"], publisher.digest(helper))
+        self.assertNotEqual(result["finite_lake"]["sha256"], catalog["finite_lake"]["producer_sha256"])
+
+    def test_finite_missing_lake_provider_is_not_assumed_or_host_resolved(self):
+        catalog = self.finite_catalog()
+        self.dependencies["anneal-finite-lake"] = {"needed":["@rpath/libLake_shared.dylib"],
+            "rpaths":[], "identity":None, "interpreter":None}
+        self.reject_assembly(catalog)
+
     def test_merges_exact_modules_and_preserves_real_launchers(self):
         catalog = self.catalog()
         original_inputs = {str(p.relative_to(self.root)): publisher.digest(p)
