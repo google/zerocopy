@@ -24,6 +24,57 @@ import workspace
 
 
 class WorkspaceTests(unittest.TestCase):
+    def test_verified_check_requires_both_admission_stages_and_fresh_inputs(self):
+        # These are acceptance-path controls: no proof compilation may start
+        # when admission is absent, incomplete, stale, or bound to other roots.
+        import copy
+        import admission
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            work = root / 'project'
+            work.mkdir()
+            manifest = {'mode': 'verified-live', 'sources': 'source',
+                        'bindings': {'crate::f': {'kind': 'function'}},
+                        'admission': {'version': 1, 'sources': 'source',
+                                      'registry': 'registry', 'inputs': {'project': 'current'},
+                                      'stages': {stage: {'roots': ['crate::f']}
+                                                 for stage in ('before', 'llbc')}}}
+            mutants = []
+            mutant = copy.deepcopy(manifest)
+            del mutant['admission']
+            mutants.append(mutant)
+            for stage in ('before', 'llbc'):
+                mutant = copy.deepcopy(manifest)
+                del mutant['admission']['stages'][stage]
+                mutants.append(mutant)
+                mutant = copy.deepcopy(manifest)
+                mutant['admission']['stages'][stage]['roots'] = []
+                mutants.append(mutant)
+            for key, value in [('sources', 'other'), ('registry', 'other'),
+                               ('inputs', {'project': 'old'})]:
+                mutant = copy.deepcopy(manifest)
+                mutant['admission'][key] = value
+                mutants.append(mutant)
+            with mock.patch.object(admission, 'input_identity', return_value={'project': 'current'}), \
+                    mock.patch.object(admission, 'digest', return_value='registry'), \
+                    mock.patch.object(workspace, 'run_checked') as run:
+                for mutant in mutants:
+                    (work / 'bindings.json').write_text(json.dumps(mutant))
+                    with self.subTest(mutant=mutant), self.assertRaisesRegex(ValueError, 'admission evidence'):
+                        workspace.check(root, work)
+                    run.assert_not_called()
+                (work / 'bindings.json').write_text(json.dumps(manifest))
+                workspace.check(root, work)
+                self.assertEqual(run.call_count, 3)
+                run.reset_mock()
+                # An editor changing Rust during a successful proof build must
+                # prevent that build from certifying the edited source.
+                with mock.patch.object(admission, 'input_identity',
+                                       side_effect=[{'project': 'current'}, {'project': 'edited'}]):
+                    with self.assertRaisesRegex(ValueError, 'Inputs changed during proof'):
+                        workspace.check(root, work)
+                    self.assertEqual(run.call_count, 3)
+
     def test_check_rejects_proof_cached_against_an_earlier_model(self):
         lake = shutil.which('lake')
         if lake is None:
@@ -34,6 +85,7 @@ class WorkspaceTests(unittest.TestCase):
             project = root / 'project'
             dependency.mkdir()
             project.mkdir()
+            (project / 'bindings.json').write_text(json.dumps({'mode': 'development'}))
             pin = Path(__file__).resolve().parents[3] / 'anneal/lean/lean-toolchain'
             for work in (dependency, project):
                 (work / 'lean-toolchain').write_bytes(pin.read_bytes())
