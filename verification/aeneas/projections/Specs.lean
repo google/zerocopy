@@ -138,6 +138,46 @@ spec forwarded_byte_codec_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.forwarded_byte_codec_spec for Zerocopy.trait_checks.forwarded_byte_codec with 1
 
+check_model_inputs Zerocopy.util.bytewrite.exact with 0 type parameters
+aeneas_spec_begin
+spec write_exact_spec
+  for @Zerocopy.util.bytewrite.exact with 0 type parameters
+  ensures(raw) out => out.1 = decide (src.val.length = dst.val.length) ∧
+    out.2.val = if src.val.length = dst.val.length then src.val else dst.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_exact_spec for Zerocopy.util.bytewrite.exact with 2
+
+check_model_inputs Zerocopy.util.bytewrite.prefix with 0 type parameters
+aeneas_spec_begin
+spec write_prefix_spec
+  for @Zerocopy.util.bytewrite.prefix with 0 type parameters
+  ensures(raw) out => out.1 = decide (src.val.length ≤ dst.val.length) ∧
+    out.2.val = if src.val.length ≤ dst.val.length
+      then src.val ++ dst.val.drop src.val.length else dst.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_prefix_spec for Zerocopy.util.bytewrite.prefix with 2
+
+check_model_inputs Zerocopy.util.bytewrite.suffix with 0 type parameters
+aeneas_spec_begin
+spec write_suffix_spec
+  for @Zerocopy.util.bytewrite.suffix with 0 type parameters
+  ensures(raw) out => out.1 = decide (src.val.length ≤ dst.val.length) ∧
+    out.2.val = if src.val.length ≤ dst.val.length
+      then dst.val.take (dst.val.length - src.val.length) ++ src.val else dst.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_suffix_spec for Zerocopy.util.bytewrite.suffix with 2
+
+check_model_inputs Zerocopy.util.bytewrite.be_word_prefix with 0 type parameters
+aeneas_spec_begin
+spec write_be_word_prefix_spec
+  for @Zerocopy.util.bytewrite.be_word_prefix with 0 type parameters
+  ensures(raw) out => out.1 = decide (2 ≤ dst.val.length) ∧
+    out.2.val.map (fun byte => byte.bv) = if 2 ≤ dst.val.length
+      then Rust.Bytes.encodeBE 2 n.val ++ (dst.val.drop 2).map (fun byte => byte.bv)
+      else dst.val.map (fun byte => byte.bv)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.write_be_word_prefix_spec for Zerocopy.util.bytewrite.be_word_prefix with 2
+
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin
 spec padding_lt_alignment
