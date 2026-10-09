@@ -701,7 +701,7 @@ def util.bytewrite.be_word_prefix
   util.bytewrite.prefix s dst
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 164:0-224:1 -/
+    Source: 'src/util/mod.rs', lines 165:0-225:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -717,7 +717,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 251:0-269:1 -/
+    Source: 'src/util/mod.rs', lines 252:0-270:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -734,7 +734,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 278:0-284:1 -/
+    Source: 'src/util/mod.rs', lines 279:0-285:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -754,7 +754,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 293:0-299:1 -/
+    Source: 'src/util/mod.rs', lines 294:0-300:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -773,13 +773,19 @@ def util.min
   then ok b
   else ok a
 
+/-- [zerocopy::util::validity::bool_encoding]:
+    Source: 'src/util/validity/mod.rs', lines 26:0-28:1 -/
+def util.validity.bool_encoding (byte : Std.U8) : Result Bool := do
+  ok (byte < 2#u8)
+
 /-- [zerocopy::util::safety_checks::checked_bool]:
     Source: 'src/util/safety_checks/mod.rs', lines 28:0-38:1 -/
 def util.safety_checks.checked_bool
   (byte : Std.U8) : Result (Option Bool) := do
-  if byte < 2#u8
-  then let b ← util.transmute_unchecked Bool byte
-       ok (some b)
+  let b ← util.validity.bool_encoding byte
+  if b
+  then let b1 ← util.transmute_unchecked Bool byte
+       ok (some b1)
   else ok none
 
 /-- [zerocopy::util::safety_checks::checked_copy]:
@@ -794,5 +800,75 @@ def util.safety_checks.checked_copy
   then let dst1 ← util.copy_unchecked src dst
        ok (true, dst1)
   else ok (false, dst)
+
+/-- [zerocopy::util::validity::nonzero_encoding]:
+    Source: 'src/util/validity/mod.rs', lines 37:0-39:1 -/
+def util.validity.nonzero_encoding (n : Std.Usize) : Result Bool := do
+  ok (n != 0#usize)
+
+/-- [zerocopy::util::safety_checks::checked_nonzero]:
+    Source: 'src/util/safety_checks/mod.rs', lines 72:0-78:1 -/
+def util.safety_checks.checked_nonzero
+  (n : Std.Usize) :
+  Result (Option (core.num.nonzero.NonZero Std.Usize
+    core.num.niche_types.NonZeroUsizeInner))
+  := do
+  let b ← util.validity.nonzero_encoding n
+  if b
+  then
+    core.num.nonzero.NonZero.new
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner n
+  else ok none
+
+/-- [zerocopy::util::safety_checks::checked_bool_pair]:
+    Source: 'src/util/safety_checks/mod.rs', lines 91:0-97:1 -/
+def util.safety_checks.checked_bool_pair
+  (bytes : Array Std.U8 2#usize) : Result (Option (Array Bool 2#usize)) := do
+  let s ← lift (Array.to_slice bytes)
+  let left ← util.validity.read_byte s 0#usize
+  let s1 ← lift (Array.to_slice bytes)
+  let right ← util.validity.read_byte s1 1#usize
+  let o ← util.safety_checks.checked_bool left
+  match o with
+  | none => ok none
+  | some left1 =>
+    let o1 ← util.safety_checks.checked_bool right
+    match o1 with
+    | none => ok none
+    | some right1 => ok (some (Array.make 2#usize [ left1, right1 ]))
+
+/-- [zerocopy::util::safety_checks::bool_slice_valid]: loop body 0:
+    Source: 'src/util/safety_checks/mod.rs', lines 108:4-115:1 -/
+@[rust_loop_body]
+def util.safety_checks.bool_slice_valid_loop.body
+  (bytes : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len bytes
+  if i < i1
+  then
+    let i2 ← util.validity.read_byte bytes i
+    let b ← util.validity.bool_encoding i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [zerocopy::util::safety_checks::bool_slice_valid]: loop 0:
+    Source: 'src/util/safety_checks/mod.rs', lines 108:4-115:1 -/
+@[rust_loop]
+def util.safety_checks.bool_slice_valid_loop
+  (bytes : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => util.safety_checks.bool_slice_valid_loop.body bytes i1)
+    i
+
+/-- [zerocopy::util::safety_checks::bool_slice_valid]:
+    Source: 'src/util/safety_checks/mod.rs', lines 106:0-115:1 -/
+@[reducible]
+def util.safety_checks.bool_slice_valid
+  (bytes : Slice Std.U8) : Result Bool := do
+  util.safety_checks.bool_slice_valid_loop bytes 0#usize
 
 end Zerocopy
