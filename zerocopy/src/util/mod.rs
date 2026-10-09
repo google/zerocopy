@@ -14,6 +14,7 @@ pub(crate) mod macros;
 #[doc(hidden)]
 pub mod macro_util;
 
+pub(crate) mod bytewrite;
 mod safety_checks;
 
 use core::{
@@ -319,6 +320,31 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     //   bytes does not overlap with the region of memory beginning at `dst`
     //   with the same size, because `dst` is derived from an exclusive
     //   reference.
+    unsafe {
+        core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
+    };
+}
+
+/// Copies `src` into `dst` beginning at byte `start`.
+///
+/// This is a separate reviewed Aeneas boundary, using the same byte-copy
+/// contract as `copy_unchecked`. The model checks the subslice bounds and
+/// retains both untouched regions of the destination.
+///
+/// # Safety
+///
+/// The caller guarantees `start <= dst.len()` and
+/// `src.len() <= dst.len() - start`.
+#[inline(always)]
+#[allow(clippy::indexing_slicing)] // The caller promises an in-bounds start.
+pub(crate) unsafe fn copy_unchecked_at(src: &[u8], dst: &mut [u8], start: usize) {
+    let dst = &mut dst[start..];
+    // Keep this trusted boundary self-contained: its body hash also covers the
+    // actual pointer operation, rather than hiding a mutable local dependency.
+    // SAFETY: The caller guarantees enough bytes in this subslice. The source
+    // reference supplies initialized readable bytes; the mutable destination
+    // supplies writable, disjoint bytes. Byte alignment is one, and subslicing
+    // retains the destination's allocation and exclusive access.
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
     };
