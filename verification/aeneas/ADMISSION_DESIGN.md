@@ -65,6 +65,18 @@ The local offset copy avoids admitting its interpretation, without modifying the
 pinned toolchain. A future builtin replacement needs an independent law for the
 reconstructed destination, including unchanged length and prefix preservation.
 
+`util::validity::read_byte` reads one initialized byte with a bounds check. It
+returns `.fail .panic` out of bounds; it never constructs the type whose bit
+validity is being tested. Its exact source body and complete model are checked.
+This narrow boundary avoids importing the generic indexing dictionary's unused
+pointer operations. It supplies no premise about arbitrary raw-pointer reads,
+uninitialized storage, or padding. Boolean and nonzero-word predicates are
+extracted from the helpers used by the production `TryFromBytes` implementations.
+The checked scalar/pair conversions and slice validator retain all raw integer
+and byte inputs, including rejected encodings. Native regression tests compare
+them with the public conversions; the generic `Maybe` pointer path still relies
+on its existing Rust safety arguments.
+
 The report lives in the existing `bindings.json`. It includes both AST digests,
 root coverage, visited executions, call boundaries, registry digest, source
 identity, Cargo configuration hashes, and patched-runtime provenance. Compiler
