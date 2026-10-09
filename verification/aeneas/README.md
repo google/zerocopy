@@ -151,6 +151,14 @@ checks the public byteorder constructor/accessor composed with prefix writing.
 Native tests compare that composition with `IntoBytes::write_to_prefix`; the
 `as_bytes` pointer bridge remains the existing Rust safety argument.
 
+[`util/validity`](../../zerocopy/src/util/validity/mod.rs) supplies the Boolean and
+nonzero-word predicates used by the actual scalar `TryFromBytes` implementations.
+The checked conversions retain raw candidates until validation; pair and slice
+contracts cover invalid bytes at every position. The exact byte-read bridge has
+an execution-time bounds guard. These proofs establish conditional behavior for
+initialized byte slices, without claiming the whole generic `Maybe` pointer path
+has been lowered and verified.
+
 The existing production `add_scaled_metadata` exercises guarded unchecked
 addition and multiplication. The primitive definitions have an
 independent complete-definition check, including its forbidden branch. Kernel
