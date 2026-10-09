@@ -9,7 +9,7 @@ opt-level = 3
 [package]
 name = "cargo-anneal"
 edition = "2024"
-version = "0.1.0-alpha.24"
+version = "0.1.0-alpha.25"
 description = "Formally verify that your safety comments are correct."
 categories = [
   "development-tools::cargo-plugins",
