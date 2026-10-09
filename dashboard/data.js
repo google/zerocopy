@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791461886702,
+  "lastUpdate": 1791558449796,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23463,6 +23463,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 516,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f7ec49b72010131929229ab61ac7c5f4f93063f8",
+          "message": "[anneal] Build Intel Mac artifacts with Rosetta (#3853)\n\nDeterminate Nix does not support Intel macOS hosts. Build the Intel Mac\nrelease artifact on Apple Silicon with Rosetta, selecting the Nix system\nexplicitly so the archive still contains Intel toolchains.\n\nSpecify the Nix system for each release target to keep artifact names,\nmetadata, and toolchain architecture aligned.",
+          "timestamp": "2026-10-09T14:14:45Z",
+          "tree_id": "ed1f66d06dad7026dbacc7c85c7fbfd8e4de5fef",
+          "url": "https://github.com/google/zerocopy/commit/f7ec49b72010131929229ab61ac7c5f4f93063f8"
+        },
+        "date": 1791558447907,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 484,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 622,
             "unit": "seconds"
           }
         ]
