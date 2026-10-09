@@ -16,6 +16,7 @@ pub mod macro_util;
 
 pub(crate) mod bytewrite;
 mod safety_checks;
+pub(crate) mod validity;
 
 use core::{
     marker::PhantomData,
