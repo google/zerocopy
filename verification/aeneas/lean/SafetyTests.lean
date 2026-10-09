@@ -31,6 +31,13 @@ theorem copy_rejects_oversize (src dst : Slice U8)
     util.copy_unchecked src dst = .fail .undef := by
   simp [util.copy_unchecked, Zerocopy.forbiddenExecution, Nat.not_le.mpr oversize]
 
+theorem offset_copy_rejects_oversize (src dst : Slice U8) (start : Usize)
+    (inside : start.val ≤ dst.val.length)
+    (oversize : dst.val.length - start.val < src.val.length) :
+    util.copy_unchecked_at src dst start = .fail .undef := by
+  simp [util.copy_unchecked_at, Zerocopy.forbiddenExecution, inside,
+    Nat.not_le.mpr oversize]
+
 -- This is the model of an unsafe producer with an invalid bit pattern. These
 -- examples execute no Rust UB: they examine its forbidden abstract outcome.
 noncomputable def badBool : Result Bool := util.transmute_unchecked Bool (2#u8)

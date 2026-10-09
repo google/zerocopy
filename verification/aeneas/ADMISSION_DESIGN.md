@@ -35,7 +35,7 @@ storage, and general memory observations remain unsupported. Valid incoming
 references and Aeneas's reviewed borrow translation are explicit premises.
 
 `external.json` supplies exact reviewed leaves, including standard-library
-builtins and two local unsafe helpers. Local opaque body hashes are checked
+builtins and narrow local byte operations. Local opaque body hashes are checked
 against Rust-parser body boundaries. The only admitted generic transmutation
 instantiation is `u8 -> bool`; its interpretation rejects all other bytes and
 instantiations. Byte copying has explicit input and updated-output slices and
@@ -45,6 +45,25 @@ inputs. Generated external templates must retain failure-capable signatures;
 normalization must not lose a guarded call. Pinned builtin mapping and backend
 semantics remain trusted correspondence premises, rather than a translation
 certificate established by the report.
+
+The production `IntoBytes` methods delegate their write selection to
+`util::bytewrite::{exact,prefix,suffix}`. Their contracts prove exact byte
+contents, preservation of untouched destination regions, and unchanged
+rejection. The offset-copy boundary checks `start <= dst.len()` first, matching
+Rust's checked subslicing, then requires `src.len() <= dst.len() - start` for the
+unsafe copy. Its successful result is the original prefix, the source, and the
+original suffix. Incoming slice references provide initialized bytes, access
+permissions, disjointness, and allocation lifetime, just as for `copy_unchecked`.
+The boundary's Rust body subslices and directly calls `copy_nonoverlapping`.
+Keeping that body self-contained makes its source hash cover the actual pointer
+operation; a change to another local helper cannot silently change its meaning.
+
+The pinned backend's `SliceIndexRangeFromUsizeSlice.get_mut` reconstructs a
+modified suffix incorrectly: it prepends the modified suffix to the old suffix
+instead of retaining the original prefix. That builtin remains unregistered.
+The local offset copy avoids admitting its interpretation, without modifying the
+pinned toolchain. A future builtin replacement needs an independent law for the
+reconstructed destination, including unchanged length and prefix preservation.
 
 The report lives in the existing `bindings.json`. It includes both AST digests,
 root coverage, visited executions, call boundaries, registry digest, source
