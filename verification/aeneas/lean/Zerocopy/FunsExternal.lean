@@ -56,6 +56,11 @@ def util.copy_unchecked_at (src dst : Slice U8) (start : Usize) : Result (Slice 
     else forbiddenExecution
   else .fail .panic
 
+-- Reading bytes never assumes the validity of the type they might encode.
+-- Bounds are checked at execution, including when the caller discards the byte.
+def util.validity.read_byte (bytes : Slice U8) (index : Usize) : Result U8 :=
+  if index.val < bytes.val.length then .ok bytes.val[index.val]! else .fail .panic
+
 -- Only the u8-to-bool instantiation is supported. The admission checker also
 -- checks the original Rust type arguments, before Aeneas can erase them. This
 -- guard checks bit validity BEFORE creating a Bool, whose Lean carrier cannot
@@ -74,3 +79,13 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
 @[simp] def core.num.nonzero.NonZero.get
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
+
+-- The extracted call sites instantiate this primitive only at Usize. Other
+-- types are unsupported, so the model cannot promise a recoverable panic.
+@[simp] noncomputable def core.num.nonzero.NonZero.new
+    {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
+    (x : T) : Result (Option (core.num.nonzero.NonZero T Inner)) := by
+  classical
+  exact if h : T = Usize then
+    if (cast h x : Usize) = 0#usize then .ok none else .ok (some ⟨x⟩)
+  else forbiddenExecution
