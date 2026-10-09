@@ -6172,13 +6172,7 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        let src = self.as_bytes();
-        if dst.len() == src.len() {
-            // SAFETY: Within this branch of the conditional, we have ensured
-            // that `dst.len()` is equal to `src.len()`. Neither the size of the
-            // source nor the size of the destination change between the above
-            // size check and the invocation of `copy_unchecked`.
-            unsafe { util::copy_unchecked(src, dst) }
+        if util::bytewrite::exact(self.as_bytes(), dst) {
             Ok(())
         } else {
             Err(SizeError::new(self))
@@ -6258,18 +6252,10 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        let src = self.as_bytes();
-        match dst.get_mut(..src.len()) {
-            Some(dst) => {
-                // SAFETY: Within this branch of the `match`, we have ensured
-                // through fallible subslicing that `dst.len()` is equal to
-                // `src.len()`. Neither the size of the source nor the size of
-                // the destination change between the above subslicing operation
-                // and the invocation of `copy_unchecked`.
-                unsafe { util::copy_unchecked(src, dst) }
-                Ok(())
-            }
-            None => Err(SizeError::new(self)),
+        if util::bytewrite::prefix(self.as_bytes(), dst) {
+            Ok(())
+        } else {
+            Err(SizeError::new(self))
         }
     }
 
@@ -6353,29 +6339,11 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        let src = self.as_bytes();
-        let start = if let Some(start) = dst.len().checked_sub(src.len()) {
-            start
+        if util::bytewrite::suffix(self.as_bytes(), dst) {
+            Ok(())
         } else {
-            return Err(SizeError::new(self));
-        };
-        let dst = if let Some(dst) = dst.get_mut(start..) {
-            dst
-        } else {
-            // get_mut() should never return None here. We return a `SizeError`
-            // rather than .unwrap() because in the event the branch is not
-            // optimized away, returning a value is generally lighter-weight
-            // than panicking.
-            return Err(SizeError::new(self));
-        };
-        // SAFETY: Through fallible subslicing of `dst`, we have ensured that
-        // `dst.len()` is equal to `src.len()`. Neither the size of the source
-        // nor the size of the destination change between the above subslicing
-        // operation and the invocation of `copy_unchecked`.
-        unsafe {
-            util::copy_unchecked(src, dst);
+            Err(SizeError::new(self))
         }
-        Ok(())
     }
 
     /// Writes a copy of `self` to an `io::Write`.
