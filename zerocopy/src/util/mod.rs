@@ -19,6 +19,7 @@ pub(crate) mod bytewrite;
 #[allow(dead_code)]
 mod owned_transmute;
 mod safety_checks;
+pub(crate) mod validity;
 
 use core::{
     marker::PhantomData,

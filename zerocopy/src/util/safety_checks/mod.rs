@@ -26,7 +26,7 @@
 ///   ensures(raw) r => r = if byte.val < 2 then some (decide (byte.val = 1)) else none
 /// ```
 fn checked_bool(byte: u8) -> Option<bool> {
-    if byte < 2 {
+    if super::validity::bool_encoding(byte) {
         // SAFETY: The branch restricts `byte` to 0 or 1, the two boolean bit
         // patterns. Both types have size one, satisfying the helper's size
         // assertion. The trusted interpretation checks this same condition
@@ -60,9 +60,64 @@ fn checked_copy(src: &[u8], dst: &mut [u8]) -> bool {
     }
 }
 
+/// Checks the same scalar predicate used by `NonZero`'s validator, then
+/// constructs a nonzero word. Zero remains representable at the input boundary.
+///
+/// ```aeneas
+/// spec checked_nonzero_spec
+///   ensures(raw) r => match r with
+///     | none => n.val = 0
+///     | some value => value.val = n ∧ 0 < value.val.val
+/// ```
+fn checked_nonzero(n: usize) -> Option<core::num::NonZeroUsize> {
+    if super::validity::nonzero_encoding(n) {
+        core::num::NonZeroUsize::new(n)
+    } else {
+        None
+    }
+}
+
+/// Converts two raw candidate bytes using the checked scalar conversion.
+/// Invalid candidates are never constructed as bools, even transiently.
+///
+/// ```aeneas
+/// spec checked_bool_pair_spec
+///   ensures(raw) r => match r with
+///     | none => ∃ byte ∈ bytes.val, 2 ≤ byte.val
+///     | some values => values.val = bytes.val.map (fun byte => decide (byte.val = 1)) ∧
+///         ∀ byte ∈ bytes.val, byte.val < 2
+/// ```
+#[allow(clippy::question_mark)] // Keep branches first-order instead of using a Try dictionary.
+fn checked_bool_pair(bytes: [u8; 2]) -> Option<[bool; 2]> {
+    let left = super::validity::read_byte(&bytes, 0);
+    let right = super::validity::read_byte(&bytes, 1);
+    let left = if let Some(left) = checked_bool(left) { left } else { return None };
+    let right = if let Some(right) = checked_bool(right) { right } else { return None };
+    Some([left, right])
+}
+
+/// Validates a concrete boolean slice by checking every raw candidate byte.
+///
+/// ```aeneas
+/// spec bool_slice_valid_spec
+///   ensures(raw) r => r = decide (∀ byte ∈ bytes.val, byte.val < 2)
+/// ```
+#[allow(clippy::arithmetic_side_effects)] // i < bytes.len() rules out overflow of i + 1.
+fn bool_slice_valid(bytes: &[u8]) -> bool {
+    let mut i = 0;
+    while i < bytes.len() {
+        if !super::validity::bool_encoding(super::validity::read_byte(bytes, i)) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::TryFromBytes;
 
     #[test]
     fn all_boolean_bytes() {
@@ -74,6 +129,36 @@ mod tests {
                     1 => Some(true),
                     _ => None,
                 }
+            );
+            assert_eq!(checked_bool(byte), bool::try_read_from_bytes(&[byte]).ok());
+        }
+    }
+
+    #[test]
+    fn boolean_array_and_slice_candidates() {
+        for left in 0..=u8::MAX {
+            for right in 0..=u8::MAX {
+                let bytes = [left, right];
+                assert_eq!(checked_bool_pair(bytes), <[bool; 2]>::try_read_from_bytes(&bytes).ok());
+                assert_eq!(bool_slice_valid(&bytes), <[bool]>::try_ref_from_bytes(&bytes).is_ok());
+            }
+        }
+        assert!(bool_slice_valid(&[]));
+        assert!(bool_slice_valid(&[0, 1, 0, 1]));
+        for invalid_index in 0..4 {
+            let mut bytes = [0, 1, 0, 1];
+            bytes[invalid_index] = 2;
+            assert!(!bool_slice_valid(&bytes));
+            <[bool]>::try_ref_from_bytes(&bytes).unwrap_err();
+        }
+    }
+
+    #[test]
+    fn nonzero_candidates() {
+        for n in [0, 1, 2, 255, 256, usize::MAX / 2, usize::MAX] {
+            assert_eq!(
+                checked_nonzero(n),
+                core::num::NonZeroUsize::try_read_from_bytes(&n.to_ne_bytes()).ok()
             );
         }
     }

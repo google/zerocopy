@@ -287,4 +287,49 @@ spec checked_copy_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.checked_copy_spec for Zerocopy.util.safety_checks.checked_copy with 2
 
+check_model_inputs Zerocopy.util.safety_checks.checked_nonzero with 0 type parameters
+aeneas_spec_begin
+spec checked_nonzero_spec
+  for @Zerocopy.util.safety_checks.checked_nonzero with 0 type parameters
+  ensures(raw) r => match r with
+    | none => n.val = 0
+    | some value => value.val = n ∧ 0 < value.val.val
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.checked_nonzero_spec for Zerocopy.util.safety_checks.checked_nonzero with 1
+
+check_model_inputs Zerocopy.util.safety_checks.checked_bool_pair with 0 type parameters
+aeneas_spec_begin
+spec checked_bool_pair_spec
+  for @Zerocopy.util.safety_checks.checked_bool_pair with 0 type parameters
+  ensures(raw) r => match r with
+    | none => ∃ byte ∈ bytes.val, 2 ≤ byte.val
+    | some values => values.val = bytes.val.map (fun byte => decide (byte.val = 1)) ∧
+        ∀ byte ∈ bytes.val, byte.val < 2
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.checked_bool_pair_spec for Zerocopy.util.safety_checks.checked_bool_pair with 1
+
+check_model_inputs Zerocopy.util.safety_checks.bool_slice_valid with 0 type parameters
+aeneas_spec_begin
+spec bool_slice_valid_spec
+  for @Zerocopy.util.safety_checks.bool_slice_valid with 0 type parameters
+  ensures(raw) r => r = decide (∀ byte ∈ bytes.val, byte.val < 2)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.bool_slice_valid_spec for Zerocopy.util.safety_checks.bool_slice_valid with 1
+
+check_model_inputs Zerocopy.util.validity.bool_encoding with 0 type parameters
+aeneas_spec_begin
+spec bool_encoding_spec
+  for @Zerocopy.util.validity.bool_encoding with 0 type parameters
+  ensures(raw) r => r = decide (byte.val = 0 ∨ byte.val = 1)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.bool_encoding_spec for Zerocopy.util.validity.bool_encoding with 1
+
+check_model_inputs Zerocopy.util.validity.nonzero_encoding with 0 type parameters
+aeneas_spec_begin
+spec nonzero_encoding_spec
+  for @Zerocopy.util.validity.nonzero_encoding with 0 type parameters
+  ensures(raw) r => r = decide (n.val ≠ 0)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.nonzero_encoding_spec for Zerocopy.util.validity.nonzero_encoding with 1
+
 end Zerocopy.Specs
