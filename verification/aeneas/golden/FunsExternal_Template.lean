@@ -63,6 +63,16 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
+/-- [zerocopy::util::copy_unchecked]:
+    Source: 'src/util/mod.rs', lines 314:0-329:1 -/
+axiom util.copy_unchecked
+  : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
+
+/-- [zerocopy::util::copy_unchecked_at]:
+    Source: 'src/util/mod.rs', lines 343:0-354:1 -/
+axiom util.copy_unchecked_at
+  : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)
+
 /-- [zerocopy::impls::_::{impl zerocopy::TryFromBytes for ()}::is_safe]:
     Source: 'src/util/macros.rs', lines 155:8-160:9
     Visibility: public -/
@@ -119,12 +129,7 @@ axiom Array.Insts.ZerocopyTryFromBytes.is_safe
     pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
     Bool
 
-/-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 313:0-328:1 -/
-axiom util.copy_unchecked
-  : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
-
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 340:0-369:1 -/
+    Source: 'src/util/mod.rs', lines 366:0-395:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
 
