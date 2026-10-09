@@ -127,7 +127,7 @@ zerocopy's unsafe pointer operations are sound.
 ## Unsafe boundaries and admission
 
 `external.json` lists exact reviewed Rust identities and signatures, with the
-Lean interpretation used at each boundary. It derives the two local `--opaque`
+Lean interpretation used at each boundary. It derives the local `--opaque`
 selections; arbitrary opaque flags are rejected. A changed local helper body
 requires a fresh review and an updated body digest. Registration is a trusted
 Rust-to-model premise, not a Lean proof of the omitted body. Standard-library
@@ -143,8 +143,16 @@ The first storage examples are in
   entire destination unchanged when the source is too long. Its model returns
   the updated mutable slice explicitly.
 
+The production `IntoBytes` write methods now call the proved
+[`util/bytewrite`](../../zerocopy/src/util/bytewrite/mod.rs) helpers. Their
+contracts cover exact, prefix, and suffix writes, preserved surrounding bytes,
+and unchanged rejection. A concrete big-endian word consumer additionally
+checks the public byteorder constructor/accessor composed with prefix writing.
+Native tests compare that composition with `IntoBytes::write_to_prefix`; the
+`as_bytes` pointer bridge remains the existing Rust safety argument.
+
 The existing production `add_scaled_metadata` exercises guarded unchecked
-addition and multiplication. Each of these four primitive definitions has an
+addition and multiplication. The primitive definitions have an
 independent complete-definition check, including its forbidden branch. Kernel
 controls prove rejection even if an invalid result is discarded or followed by
 divergence. Extraction controls check actual generated callers that discard an

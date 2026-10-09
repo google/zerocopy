@@ -98,6 +98,23 @@ run_elab do
     Term.synthesizeSyntheticMVarsNoPostponing
     unless ← Meta.isDefEq (mkConst `util.copy_unchecked) (← instantiateMVars expected) do
       throwError "External byte copy changed its complete interpretation"
+  if env.contains `util.copy_unchecked_at then
+    -- A write contract exercises only fitting calls. Check the complete leaf
+    -- too: an out-of-range start panics, and a too-long copy is forbidden.
+    let expected ← Term.elabTerm (← `(fun (src dst : Aeneas.Std.Slice Aeneas.Std.U8)
+        (start : Aeneas.Std.Usize) =>
+      if start.val ≤ dst.val.length then
+        if h : src.val.length ≤ dst.val.length - start.val then
+          Aeneas.Std.Result.ok (Aeneas.Std.Slice.from
+            (dst.val.take start.val ++ src.val ++ dst.val.drop (start.val + src.val.length)) (by
+              have := dst.property
+              simp only [List.length_append, List.length_take, List.length_drop]
+              omega))
+        else Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.panic)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.copy_unchecked_at) (← instantiateMVars expected) do
+      throwError "External offset copy changed its complete guarded interpretation"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.
