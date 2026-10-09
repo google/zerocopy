@@ -112,7 +112,7 @@ assert_unaligned!(bool);
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
         let byte = byte.transmute_with::<u8, invariant::Safe, CastSizedExact, BecauseImmutable>();
-        *byte.unaligned_as_ref() < 2
+        util::validity::bool_encoding(*byte.unaligned_as_ref())
     })
 };
 
@@ -180,11 +180,20 @@ const _: () = unsafe {
 };
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
+    // Expose the word predicate to Lean without changing the other scalar
+    // implementations. Their widths and standard-library carriers can be
+    // covered separately as those models are admitted.
+    (@validate NonZeroUsize, $value:expr) => {
+        util::validity::nonzero_encoding($value)
+    };
+    (@validate $nonzero:ident, $value:expr) => {
+        $nonzero::new($value).is_some()
+    };
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
                 let n = n.transmute_with::<Unalign<$prim>, invariant::Safe, CastSizedExact, BecauseImmutable>();
-                $nonzero::new(n.read().into_inner()).is_some()
+                unsafe_impl_try_from_bytes_for_nonzero!(@validate $nonzero, n.read().into_inner())
             });
         )*
     }
