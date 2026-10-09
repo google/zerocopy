@@ -261,7 +261,7 @@ structure FromBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 5953:0-6458:1
+    Source: 'src/lib.rs', lines 5953:0-6426:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
