@@ -483,12 +483,28 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
+      run: |
+        # Compile zerocopy-derive in its internal lint mode so every integration
+        # test exercises generated code under Clippy's general lint groups.
+        if [[ "$CRATE" == 'zerocopy-derive' ]]; then
+          export ZEROCOPY_DERIVE_LINT_GENERATED_CODE=1
+        fi
+        ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires
       # hacks to work around limitations that are fixed in more recent versions.
       if: matrix.toolchain == 'nightly' && matrix.target != 'thumbv6m-none-eabi'
+
+    # Also compile the #3721 regression fixture with the normal downstream
+    # expansion. Its explicit deny must be neutralized by generated-code lint
+    # suppression.
+    - name: Clippy downstream derive output
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        TARGET: ${{ matrix.target }}
+      run: ./cargo.sh +$TOOLCHAIN clippy --package zerocopy-derive --target $TARGET --test clippy --verbose
+      if: matrix.toolchain == 'nightly' && matrix.crate == 'zerocopy-derive' && matrix.target == 'x86_64-unknown-linux-gnu'
 
     - name: Cargo doc
       # We pass --document-private-items and --document-hidden items to ensure that 
