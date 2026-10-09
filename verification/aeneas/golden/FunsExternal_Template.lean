@@ -39,6 +39,17 @@ axiom core.num.niche_types.NonZeroUsizeInner.Insts.CoreCloneClone.clone
   core.num.niche_types.NonZeroUsizeInner → Result
     core.num.niche_types.NonZeroUsizeInner
 
+/-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::new]:
+    Source: '/rustc/library/core/src/num/nonzero.rs', lines 388:4-388:42
+    Name pattern: [core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new]
+    Visibility: public -/
+@[rust_fun
+  "core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new"]
+axiom core.num.nonzero.NonZero.new
+  {T : Type} {Clause0_NonZeroInner : Type} (ZeroablePrimitiveInst :
+  core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
+  T → Result (Option (core.num.nonzero.NonZero T Clause0_NonZeroInner))
+
 /-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::get]:
     Source: '/rustc/library/core/src/num/nonzero.rs', lines 467:4-467:31
     Name pattern: [core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::get]
@@ -51,16 +62,20 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
 /-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 311:0-326:1 -/
+    Source: 'src/util/mod.rs', lines 312:0-327:1 -/
 axiom util.copy_unchecked
   : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
 
 /-- [zerocopy::util::copy_unchecked_at]:
-    Source: 'src/util/mod.rs', lines 340:0-351:1 -/
+    Source: 'src/util/mod.rs', lines 341:0-352:1 -/
 axiom util.copy_unchecked_at
   : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)
 
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 363:0-392:1 -/
+    Source: 'src/util/mod.rs', lines 364:0-393:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
+
+/-- [zerocopy::util::validity::read_byte]:
+    Source: 'src/util/validity/mod.rs', lines 49:0-51:1 -/
+axiom util.validity.read_byte : Slice Std.U8 → Std.Usize → Result Std.U8
 

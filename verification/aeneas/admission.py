@@ -770,6 +770,8 @@ def check_translation(work, evidence):
             'axiom util.copy_unchecked : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)',
         'util.copy_unchecked_at':
             'axiom util.copy_unchecked_at : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)',
+        'util.validity.read_byte':
+            'axiom util.validity.read_byte : Slice Std.U8 → Std.Usize → Result Std.U8',
         'core.num.Usize.unchecked_add':
             'axiom core.num.Usize.unchecked_add : Std.Usize → Std.Usize → Result Std.Usize',
         'core.num.Usize.unchecked_mul':
