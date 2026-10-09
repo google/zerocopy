@@ -39,6 +39,23 @@ def util.copy_unchecked (src dst : Slice U8) : Result (Slice U8) :=
       omega))
   else forbiddenExecution
 
+-- The offset copy has the same reference premises. Check bounds before
+-- constructing a subslice, and preserve BOTH untouched regions. A start past
+-- the end panics at Rust's checked subslicing; an oversized copy is forbidden.
+-- FIXME: Pinned SliceIndexRangeFromUsizeSlice.get_mut reconstructs its output
+-- incorrectly (ca282ec, Aeneas/Std/Slice.lean). Do not admit that builtin until
+-- its prefix-preservation law has been repaired and checked independently.
+def util.copy_unchecked_at (src dst : Slice U8) (start : Usize) : Result (Slice U8) :=
+  if start.val ≤ dst.val.length then
+    if h : src.val.length ≤ dst.val.length - start.val then
+      .ok (Slice.from
+        (dst.val.take start.val ++ src.val ++ dst.val.drop (start.val + src.val.length)) (by
+          have := dst.property
+          simp only [List.length_append, List.length_take, List.length_drop]
+          omega))
+    else forbiddenExecution
+  else .fail .panic
+
 -- Only the u8-to-bool instantiation is supported. The admission checker also
 -- checks the original Rust type arguments, before Aeneas can erase them. This
 -- guard checks bit validity BEFORE creating a Bool, whose Lean carrier cannot

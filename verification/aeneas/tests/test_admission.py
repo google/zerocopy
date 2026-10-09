@@ -30,6 +30,12 @@ class AdmissionTests(unittest.TestCase):
         self.data = json.loads((Path(__file__).with_name('admission') /
                                 'boolean.before.ullbc').read_text())
         self.registry = json.loads((ROOT / 'verification/aeneas/external.json').read_text())
+        # This historical fixture selects only its original opaque helpers.
+        # Keep its evidence bytes intact as the production registry grows;
+        # newly added boundaries have their own extraction/guard controls.
+        selected = self.data['translated']['options']['opaque']
+        self.registry = [row for row in self.registry
+                         if not row.get('opaque') or row['rust'] in selected]
         self.root = 'zerocopy::util::safety_checks::checked_bool'
 
     def check(self):
