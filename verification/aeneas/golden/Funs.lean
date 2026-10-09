@@ -424,6 +424,13 @@ def byteorder.U32.from_bytes
   (O : Type) (bytes : Array Std.U8 4#usize) : Result (byteorder.U32 O) := do
   ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
 
+/-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::to_bytes]:
+    Source: 'src/byteorder.rs', lines 579:12-581:13
+    Visibility: public -/
+def byteorder.U16.to_bytes
+  {O : Type} (self : byteorder.U16 O) : Result (Array Std.U8 2#usize) := do
+  ok self._0
+
 /-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::new]:
     Source: 'src/util/macros.rs', lines 560:21-560:88
     Visibility: public -/
@@ -642,8 +649,59 @@ def byteorder.verification.set_u32_be
       value n
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
+/-- [zerocopy::util::bytewrite::exact]:
+    Source: 'src/util/bytewrite/mod.rs', lines 27:0-37:1 -/
+def util.bytewrite.exact
+  (src : Slice Std.U8) (dst : Slice Std.U8) :
+  Result (Bool × (Slice Std.U8))
+  := do
+  let i := Slice.len dst
+  let i1 := Slice.len src
+  if i = i1
+  then let dst1 ← util.copy_unchecked src dst
+       ok (true, dst1)
+  else ok (false, dst)
+
+/-- [zerocopy::util::bytewrite::prefix]:
+    Source: 'src/util/bytewrite/mod.rs', lines 48:0-57:1 -/
+def util.bytewrite.prefix
+  (src : Slice Std.U8) (dst : Slice Std.U8) :
+  Result (Bool × (Slice Std.U8))
+  := do
+  let i := Slice.len src
+  let i1 := Slice.len dst
+  if i <= i1
+  then let dst1 ← util.copy_unchecked src dst
+       ok (true, dst1)
+  else ok (false, dst)
+
+/-- [zerocopy::util::bytewrite::suffix]:
+    Source: 'src/util/bytewrite/mod.rs', lines 68:0-79:1 -/
+def util.bytewrite.suffix
+  (src : Slice Std.U8) (dst : Slice Std.U8) :
+  Result (Bool × (Slice Std.U8))
+  := do
+  let i := Slice.len dst
+  let i1 := Slice.len src
+  let o ← lift (Usize.checked_sub i i1)
+  match o with
+  | none => ok (false, dst)
+  | some start =>
+    let dst1 ← util.copy_unchecked_at src dst start
+    ok (true, dst1)
+
+/-- [zerocopy::util::bytewrite::be_word_prefix]:
+    Source: 'src/util/bytewrite/mod.rs', lines 93:0-96:1 -/
+def util.bytewrite.be_word_prefix
+  (n : Std.U16) (dst : Slice Std.U8) : Result (Bool × (Slice Std.U8)) := do
+  let value ←
+    byteorder.U16.new byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder n
+  let a ← byteorder.U16.to_bytes value
+  let s ← lift (Array.to_slice a)
+  util.bytewrite.prefix s dst
+
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 163:0-223:1 -/
+    Source: 'src/util/mod.rs', lines 164:0-224:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -659,7 +717,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 250:0-268:1 -/
+    Source: 'src/util/mod.rs', lines 251:0-269:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -676,7 +734,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 277:0-283:1 -/
+    Source: 'src/util/mod.rs', lines 278:0-284:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -696,7 +754,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 292:0-298:1 -/
+    Source: 'src/util/mod.rs', lines 293:0-299:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
