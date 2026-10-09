@@ -221,18 +221,23 @@ jobs:
         include:
           - os: ubuntu-latest
             target: linux-x86_64
+            nix_system: x86_64-linux
             cargo_os: linux
             cargo_arch: x86_64
           - os: ubuntu-24.04-arm
             target: linux-aarch64
+            nix_system: aarch64-linux
             cargo_os: linux
             cargo_arch: aarch64
-          - os: macos-26-intel
+          # Determinate Nix supports Intel macOS builds through Rosetta on Apple Silicon.
+          - os: macos-26
             target: macos-x86_64
+            nix_system: x86_64-darwin
             cargo_os: macos
             cargo_arch: x86_64
           - os: macos-26
             target: macos-aarch64
+            nix_system: aarch64-darwin
             cargo_os: macos
             cargo_arch: aarch64
     steps:
@@ -263,6 +268,10 @@ jobs:
           sudo rm -rf /usr/local/share/boost
           df -h
 
+      - name: Install Rosetta for Intel macOS builds
+        if: matrix.nix_system == 'x86_64-darwin'
+        run: sudo softwareupdate --install-rosetta --agree-to-license
+
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@4d65ea9cab522b6d9f29a170aed23ededc1b27af # v3.23.0
 
@@ -278,6 +287,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
           TARGET: ${{ matrix.target }}
+          NIX_SYSTEM: ${{ matrix.nix_system }}
           CARGO_OS: ${{ matrix.cargo_os }}
           CARGO_ARCH: ${{ matrix.cargo_arch }}
         run: |
@@ -286,7 +296,7 @@ jobs:
           MAX_GITHUB_RELEASE_ASSET_SIZE=2147483647
           mkdir -p anneal/target anneal/v1/release-download-check anneal/v1/release-metadata
 
-          nix build ./anneal#omnibus-archive-ci --out-link "anneal/target/${ARCHIVE_NAME}"
+          nix build ./anneal#omnibus-archive-ci --system "$NIX_SYSTEM" --out-link "anneal/target/${ARCHIVE_NAME}"
           cp -L "anneal/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
           ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/v1/${ARCHIVE_NAME}")"
           printf 'Built %s (%s bytes)\n' "$ARCHIVE_NAME" "$ARCHIVE_SIZE"
