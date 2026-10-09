@@ -234,10 +234,11 @@ fi
 # never take that branch. First establish that the mutation still compiles, then
 # require the independent complete-definition audit to reject it.
 if has_model util.safety_checks.checked_bool; then
-    for mutation in boolean copy offset; do
+    for mutation in boolean copy offset read; do
         # These leaves are external interpretations, not annotated Rust roots:
         # bindings.json therefore cannot answer whether their controls apply.
         if [[ $mutation == offset ]] && ! grep -q '^def util\.copy_unchecked_at ' Zerocopy/FunsExternal.lean; then continue; fi
+        if [[ $mutation == read ]] && ! grep -q '^def util\.validity\.read_byte ' Zerocopy/FunsExternal.lean; then continue; fi
         python3 - "$mutation" <<'PYCONTROL'
 from pathlib import Path
 import sys
@@ -253,18 +254,23 @@ elif sys.argv[1] == 'copy':
     end = s.index('\n\n', start)
     before = s[start:end]
     after = before.replace('else forbiddenExecution', 'else .ok dst', 1)
-else:
+elif sys.argv[1] == 'offset':
     start = s.index('def util.copy_unchecked_at')
     end = s.index('\n\n', start)
     before = s[start:end]
     after = before.replace('else forbiddenExecution', 'else .ok dst', 1)
+else:
+    start = s.index('def util.validity.read_byte')
+    end = s.index('\n\n', start)
+    before = s[start:end]
+    after = before.replace('else .fail .panic', 'else .ok (0#u8)', 1)
 if before == after:
     raise SystemExit('Storage boundary control no longer matches')
 p.write_text(s[:start] + after + s[end:])
 PYCONTROL
         check_model_mutant "permitted bad $mutation input" Zerocopy.FunsExternal
         expect_failure "permitted bad $mutation input" storage-guard-audit.log audit
-        if ! grep -Eq 'Boolean conversion changed|byte copy changed|offset copy changed' "$backup/storage-guard-audit.log"; then
+        if ! grep -Eq 'Boolean conversion changed|byte copy changed|offset copy changed|candidate byte read changed' "$backup/storage-guard-audit.log"; then
             cat "$backup/storage-guard-audit.log" >&2; exit 1
         fi
         expect_failure "permitted bad $mutation input" storage-guard-proof.log \
