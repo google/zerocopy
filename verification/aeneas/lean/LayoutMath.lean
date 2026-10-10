@@ -12,13 +12,19 @@ import all Init.Data.Nat.Power2.Basic
 @[expose] public section
 
 /-!
-This module proves unbounded layout mathematics independently of extracted
-Rust bodies. Formula describes a normalized complete-size calculation, and
-its lemmas characterize padding and the greatest fitting trailing-byte count.
-Machine words and the operation proofs use those facts at a separate
-boundary, where the relevant positivity and overflow conditions must be
-established. This algebra alone does not establish correspondence with a Rust
-compiler.
+This module states layout mathematics independently of extracted Rust bodies.
+Description retains recursive record nesting and each field's complete size.
+Formula normalizes that description into a compact size calculation, and the
+compile theorems prove that normalization preserves every metadata value.
+LayoutValue then describes fragment operations used by the runtime layout
+API.
+
+All sizes here are natural numbers: arithmetic cannot overflow. Explicit fit
+predicates identify when a fragment operation can be implemented with a
+machine word. A fragment need not describe a completed Rust type.
+SEMANTICS.md states the separate premise connecting completed recursive
+descriptions to Rust; the algebra in this module alone does not establish
+compiler correspondence.
 -/
 namespace Zerocopy.LayoutMath
 
@@ -333,5 +339,382 @@ theorem checked_size_spec (f : Formula) (limit n : Nat) :
     (f.checkedSize limit n = none ↔ limit < f.size n) := by
   unfold Formula.checkedSize
   split <;> simp_all
+
+/-- Recursive record semantics, retaining each inner field's complete size. -/
+/- A recursive layout description retains every inner field's complete size.
+Alignment exponents encode powers of two. A record contributes a fixed
+leading region and places its trailing description under optional packing.
+-/
+inductive Description where
+  | slice (elem alignExponent : Nat)
+  | record (leading minAlignExponent : Nat) (packedExponent : Option Nat)
+      (tail : Description)
+deriving DecidableEq
+
+/- Compute the record alignment from its declared minimum and packed field
+alignment. Packing limits field placement; it does not remove inner padding.
+-/
+def Description.alignExponent : Description → Nat
+  | .slice _ a => a
+  | .record _ minimum packed tail => max minimum
+      (match packed with | none => tail.alignExponent | some p => min p tail.alignExponent)
+
+/- Cap the field placement alignment by the packing bound, when present.
+-/
+def Description.fieldAlignExponent (packed : Option Nat) (tail : Description) : Nat :=
+  match packed with | none => tail.alignExponent | some p => min p tail.alignExponent
+
+/- Place the field, add its full recursive size, then round the containing
+record. The order matters: packing the outer record cannot flatten an inner
+field's own final rounding.
+-/
+def Description.size : Description → Nat → Nat
+  | .slice elem _, n => n * elem
+  | d@(.record leading _ packed tail), n =>
+      roundUp (roundUp leading (2 ^ fieldAlignExponent packed tail) + tail.size n)
+        (2 ^ d.alignExponent)
+
+/- Track the physical start of the ultimate slice through every containing
+record. This observation is independent of normalized formula base and phase.
+-/
+def Description.offset : Description → Nat
+  | .slice _ _ => 0
+  | .record leading _ packed tail =>
+      roundUp leading (2 ^ fieldAlignExponent packed tail) + tail.offset
+
+def Description.elem : Description → Nat
+  | .slice e _ => e
+  | .record _ _ _ tail => tail.elem
+
+/- Require the slice element stride to be divisible by its alignment. Every
+record retains that same obligation through its trailing description.
+-/
+def Description.valid : Description → Prop
+  | .slice elem a => elem % 2 ^ a = 0
+  | .record _ _ _ tail => tail.valid
+
+/- Normalize recursively without inspecting generated Rust code. compile_size,
+compile_offset, and compile_elem prove that all retained observations agree.
+-/
+def Description.compile : Description → Formula
+  | .slice elem a => ⟨0, 0, 2 ^ a, elem, 0⟩
+  | d@(.record leading _ packed tail) =>
+      let placement := roundUp leading (2 ^ fieldAlignExponent packed tail)
+      let inner := tail.compile
+      ({ inner with base := placement + inner.base,
+                    offset := placement + inner.offset }).pad (2 ^ d.alignExponent)
+
+theorem compile_power (d : Description) : ∃ k, d.compile.align = 2 ^ k := by
+  induction d with
+  | slice e a => exact ⟨a, rfl⟩
+  | record leading minimum packed tail ih =>
+    obtain ⟨k, hk⟩ := ih
+    unfold Description.compile Formula.pad
+    dsimp only
+    split
+    · exact ⟨_, rfl⟩
+    · exact ⟨k, hk⟩
+
+theorem compile_size (d : Description) (h : d.valid) (n : Nat) :
+    d.compile.size n = d.size n := by
+  induction d with
+  | slice e a =>
+    simp only [Description.compile, Formula.size, Formula.bytes,
+      Description.size, Nat.zero_add]
+    apply roundUp_eq
+    simp only [Description.valid] at h
+    simp [Nat.mul_mod, h]
+  | record leading minimum packed tail ih =>
+    obtain ⟨k, hk⟩ := compile_power tail
+    let placement := roundUp leading (2 ^ Description.fieldAlignExponent packed tail)
+    let f : Formula := { tail.compile with
+      base := placement + tail.compile.base
+      offset := placement + tail.compile.offset }
+    change (f.pad (2 ^ (Description.record leading minimum packed tail).alignExponent)).size n = _
+    have hf : 0 < f.align := by dsimp [f]; rw [hk]; exact Nat.two_pow_pos k
+    have hd : if f.align < 2 ^ (Description.record leading minimum packed tail).alignExponent
+        then f.align ∣ 2 ^ (Description.record leading minimum packed tail).alignExponent
+        else 2 ^ (Description.record leading minimum packed tail).alignExponent ∣ f.align := by
+      dsimp [f]
+      rw [hk]
+      split <;> rename_i hh
+      · exact Nat.pow_dvd_pow 2 ((Nat.pow_lt_pow_iff_right (by decide : 1 < 2)).mp hh).le
+      · exact Nat.pow_dvd_pow 2 ((Nat.pow_le_pow_iff_right (by decide : 1 < 2)).mp (by omega))
+    rw [pad_size f n _ hf (Nat.two_pow_pos _) hd]
+    simp only [Formula.size, Formula.bytes, f, Nat.add_assoc]
+    change roundUp (placement + tail.compile.size n) _ = _
+    rw [ih h]
+    rfl
+
+theorem compile_offset (d : Description) : d.compile.offset = d.offset := by
+  induction d with
+  | slice e a => rfl
+  | record leading minimum packed tail ih =>
+    unfold Description.compile Formula.pad
+    dsimp only
+    split <;> simp only [Description.offset, ih]
+
+theorem compile_elem (d : Description) : d.compile.elem = d.elem := by
+  induction d with
+  | slice e a => rfl
+  | record leading minimum packed tail ih =>
+    unfold Description.compile Formula.pad
+    dsimp only
+    split <;> simp only [Description.elem, ih]
+
+theorem compile_valid (d : Description) : d.compile.valid := by
+  induction d with
+  | slice e a => exact ⟨Nat.two_pow_pos a, Nat.two_pow_pos a⟩
+  | record leading minimum packed tail ih =>
+    exact pad_valid _ _ ih (Nat.two_pow_pos _)
+
+/-- A complete recursive layout always contains the physical slice bytes. -/
+theorem description_contains_tail (d : Description) (n : Nat) :
+    d.offset + n * d.elem ≤ d.size n := by
+  induction d with
+  | slice e a => simp only [Description.offset, Description.elem, Description.size, Nat.zero_add, Nat.le_refl]
+  | record leading minimum packed tail ih =>
+    have h := (roundUp_properties
+      (roundUp leading (2 ^ Description.fieldAlignExponent packed tail) + tail.size n)
+      (2 ^ (Description.record leading minimum packed tail).alignExponent)
+      (Nat.two_pow_pos _)).1
+    simp only [Description.offset, Description.elem, Description.size]
+    omega
+
+theorem compiled_contains_tail (d : Description) (h : d.valid) (n : Nat) :
+    d.compile.offset + n * d.compile.elem ≤ d.compile.size n := by
+  rw [compile_offset, compile_elem, compile_size d h]
+  exact description_contains_tail d n
+
+/-- The old flattened formula loses padding inside a packed field. -/
+theorem packed_regression :
+    (Description.record 2 0 (some 1) (.record 5 2 none (.slice 1 0))).size 0 = 10 ∧
+    roundUp 7 2 = 8 := by decide
+
+theorem aligned_below_next (x k a : Nat) (hx : x % a = 0) (hk : k % a = 0)
+    (h : x < k + a) : x ≤ k := by
+  by_contra hnot
+  have heq : x = k + (x - k) := by omega
+  have hd : (x - k) % a = 0 := by
+    rw [heq, Nat.add_mod, hk, Nat.zero_add, Nat.mod_mod] at hx
+    exact hx
+  rw [Nat.mod_eq_of_lt (by omega)] at hd
+  omega
+
+theorem floor_capacity (n cap a : Nat) (ha : 0 < a) :
+    n - n % a ≤ cap ↔ n ≤ cap - cap % a + (a - 1) := by
+  have hn := Arithmetic.round_down_properties n a (n - n % a) ha rfl
+  have hc := Arithmetic.round_down_properties cap a (cap - cap % a) ha rfl
+  constructor
+  · intro h
+    have hbound := hc.2.2.2 _ h hn.2.1
+    omega
+  · intro h
+    have hbound := aligned_below_next _ _ _ hn.2.1 hc.2.1 (by omega)
+    omega
+
+theorem roundUp_from_aligned_budget (budget unused a : Nat) (ha : 0 < a)
+    (hb : budget % a = 0) (hu : unused ≤ budget) :
+    roundUp (budget - unused) a = budget - (unused - unused % a) := by
+  have hm := Nat.mod_le unused a
+  have hr := Nat.mod_lt unused ha
+  let floor := unused - unused % a
+  have hf : floor % a = 0 := by
+    dsimp only [floor]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  have hq : (budget - floor) % a = 0 := by
+    have hsplit : budget = (budget - floor) + floor := by dsimp only [floor]; omega
+    rw [hsplit, Nat.add_mod, hf, Nat.add_zero, Nat.mod_mod] at hb
+    exact hb
+  have hceil := roundUp_properties (budget - unused) a ha
+  have hupper := roundUp_le (budget - unused) a (budget - floor) ha (by dsimp only [floor]; omega) hq
+  have hlower := aligned_below_next (budget - floor) (roundUp (budget - unused) a) a
+    hq hceil.2.2 (by dsimp only [floor]; omega)
+  dsimp only [floor] at hupper hlower
+  omega
+
+theorem capacity_object_size (f : Formula) (available cap : Nat) (ha : 0 < f.align)
+    (hcap : f.capacity available = some cap) :
+    f.size (cap / f.elem) = f.base +
+      ((available - f.base) - (available - f.base) % f.align) -
+      (cap % f.elem - cap % f.elem % f.align) := by
+  have hspec := capacity_spec f available ha
+  rw [hcap] at hspec
+  have hzero := (hspec 0).mpr (by omega)
+  have hbase : f.base ≤ available := by unfold Formula.bytes at hzero; omega
+  have hphase : f.phase ≤ (available - f.base) - (available - f.base) % f.align := by
+    apply (roundUp_le_budget f.phase f.align (available - f.base) ha).mp
+    unfold Formula.bytes at hzero
+    simp only [Nat.add_zero] at hzero
+    omega
+  have hc : cap = (available - f.base) - (available - f.base) % f.align - f.phase := by
+    unfold Formula.capacity at hcap
+    simp only [hzero, if_true, Option.some.injEq] at hcap
+    exact hcap.symm
+  let budget := (available - f.base) - (available - f.base) % f.align
+  have hb : budget % f.align = 0 := by
+    dsimp only [budget]
+    rw [← Nat.div_mul_self_eq_mod_sub_self, Nat.mul_mod_left]
+  have hm := Nat.mod_le cap f.elem
+  have hdiv := Nat.mod_add_div cap f.elem
+  have hinput : f.phase + (cap / f.elem) * f.elem = budget - cap % f.elem := by
+    dsimp only [budget]
+    rw [Nat.mul_comm] at hdiv
+    omega
+  unfold Formula.size Formula.bytes
+  rw [hinput, roundUp_from_aligned_budget budget _ f.align ha hb (by dsimp only [budget]; omega)]
+  have hfloor := Nat.mod_le (cap % f.elem) f.align
+  dsimp only [budget]
+  omega
+
+/-- An independent description of a layout fragment, with unbounded sizes. -/
+inductive Payload where
+  | fixed (bytes : Nat)
+  | trailing (formula : Formula)
+deriving DecidableEq
+
+/- The mathematical state of a layout fragment, including alignment and the
+unpadded flag. Fragment operations can produce intermediate states, so this
+type intentionally has no blanket completed-Rust-type invariant.
+-/
+structure LayoutValue where
+  align : Nat
+  payload : Payload
+  unpadded : Bool
+deriving DecidableEq
+
+/- Observe fixed byte size or evaluate the trailing formula at this metadata.
+-/
+def LayoutValue.size (v : LayoutValue) (n : Nat) : Nat :=
+  match v.payload with
+  | .fixed bytes => bytes
+  | .trailing f => f.size n
+
+/- Begin record construction with no fields and the requested minimum alignment.
+-/
+def LayoutValue.initial (align : Nat) : LayoutValue := ⟨align, .fixed 0, true⟩
+
+/-- Outside the `extendFits` domain the placeholder result has no contract. -/
+def LayoutValue.extend (v field : LayoutValue) (packing : Nat) : LayoutValue :=
+  match v.payload with
+  | .trailing _ => v
+  | .fixed bytes =>
+    let fieldAlign := min field.align packing
+    let offset := roundUp bytes fieldAlign
+    { align := max v.align fieldAlign,
+      payload := match field.payload with
+        | .fixed size => .fixed (offset + size)
+        | .trailing f => .trailing { f with base := offset + f.base, offset := offset + f.offset },
+      unpadded := v.unpadded && field.unpadded && decide (bytes % fieldAlign = 0) }
+
+/- State the exact machine bounds needed to append a field. A trailing fragment
+cannot receive another field; this rules out extend's placeholder case. For a
+trailing field, physical offset and normalized base each need their own
+bound.
+-/
+def LayoutValue.extendFits (v field : LayoutValue) (packing limit : Nat) : Prop :=
+  match v.payload with
+  | .trailing _ => False
+  | .fixed bytes =>
+    let offset := roundUp bytes (min field.align packing)
+    match field.payload with
+    | .fixed size => offset + size ≤ limit
+    | .trailing f => offset + f.offset ≤ limit ∧ offset + f.base ≤ limit
+
+/- Complete a fragment at its own alignment, retaining inner rounding in a
+trailing payload. Fixed payload padding also updates the unpadded
+observation.
+-/
+def LayoutValue.pad (v : LayoutValue) : LayoutValue :=
+  { v with
+    payload := match v.payload with
+      | .fixed bytes => .fixed (roundUp bytes v.align)
+      | .trailing f => .trailing (f.pad v.align)
+    unpadded := match v.payload with
+      | .fixed bytes => v.unpadded && decide (bytes % v.align = 0)
+      | .trailing _ => v.unpadded }
+
+/- Bound the stored fields changed by padding. This is a machine-representation
+condition, not a bound on every possible metadata value of a trailing
+formula.
+-/
+def LayoutValue.padFits (v : LayoutValue) (limit : Nat) : Prop :=
+  match v.payload with
+  | .fixed bytes => roundUp bytes v.align ≤ limit
+  | .trailing f =>
+    if f.align < v.align then roundUp f.base f.align + f.phase ≤ limit
+    else roundUp f.base v.align ≤ limit
+
+theorem LayoutValue.extend_size (v field : LayoutValue) (packing bytes n : Nat)
+    (h : v.payload = .fixed bytes) :
+    (v.extend field packing).size n =
+      roundUp bytes (min field.align packing) + field.size n := by
+  simp only [LayoutValue.extend, h]
+  cases hf : field.payload <;> simp [LayoutValue.size, hf, Formula.size, Formula.bytes, Nat.add_assoc]
+
+/- Fold extension over the first i fields. The constructor loop invariant uses
+this prefix calculation to identify its current mathematical state.
+-/
+def LayoutValue.prefixValue (fields : List LayoutValue) (initial : LayoutValue)
+    (packing i : Nat) : LayoutValue :=
+  (fields.take i).foldl (fun v field => v.extend field packing) initial
+
+theorem LayoutValue.prefixValue_step (fields : List LayoutValue) (initial : LayoutValue)
+    (packing i : Nat) (hi : i < fields.length) :
+    prefixValue fields initial packing (i + 1) =
+      (prefixValue fields initial packing i).extend fields[i] packing := by
+  unfold prefixValue
+  rw [List.take_succ_eq_append_getElem hi, List.foldl_append]
+  rfl
+
+/-- Direct field placement, evaluated separately for each metadata value.
+This rule never manipulates the normalization's base, phase, or size alignment. -/
+def recordState (fields : List LayoutValue) (minimum packing metadata count : Nat) : Nat × Nat :=
+  (fields.take count).foldl
+    (fun state field =>
+      (max state.1 (min field.align packing),
+       roundUp state.2 (min field.align packing) + field.size metadata))
+    (minimum, 0)
+
+theorem recordState_step (fields : List LayoutValue) (minimum packing metadata i : Nat)
+    (hi : i < fields.length) :
+    recordState fields minimum packing metadata (i + 1) =
+      (max (recordState fields minimum packing metadata i).1 (min fields[i].align packing),
+       roundUp (recordState fields minimum packing metadata i).2 (min fields[i].align packing) +
+         fields[i].size metadata) := by
+  unfold recordState
+  rw [List.take_succ_eq_append_getElem hi, List.foldl_append]
+  rfl
+
+theorem recordState_refinement (fields : List LayoutValue) (minimum packing metadata limit : Nat)
+    (hfit : ∀ i (hi : i < fields.length),
+      (LayoutValue.prefixValue fields (LayoutValue.initial minimum) packing i).extendFits
+        fields[i] packing limit) :
+    ∀ i ≤ fields.length, recordState fields minimum packing metadata i =
+      ((LayoutValue.prefixValue fields (LayoutValue.initial minimum) packing i).align,
+       (LayoutValue.prefixValue fields (LayoutValue.initial minimum) packing i).size metadata) := by
+  intro i
+  induction i with
+  | zero =>
+    intro hi
+    simp only [recordState, LayoutValue.prefixValue, List.take_zero, List.foldl_nil,
+      LayoutValue.initial, LayoutValue.size]
+  | succ i ih =>
+    intro hi
+    have hil : i < fields.length := by omega
+    have hstep := hfit i hil
+    let current := LayoutValue.prefixValue fields (LayoutValue.initial minimum) packing i
+    cases hc : current.payload with
+    | trailing f =>
+      dsimp only [current] at hc
+      simp only [LayoutValue.extendFits, hc] at hstep
+    | fixed bytes =>
+      dsimp only [current] at hc
+      rw [recordState_step fields minimum packing metadata i hil, ih (by omega),
+        LayoutValue.prefixValue_step fields (LayoutValue.initial minimum) packing i hil]
+      change _ = ((current.extend fields[i] packing).align,
+        (current.extend fields[i] packing).size metadata)
+      rw [LayoutValue.extend_size current fields[i] packing bytes metadata hc]
+      simp only [current, LayoutValue.extend, hc, LayoutValue.size]
 
 end Zerocopy.LayoutMath
