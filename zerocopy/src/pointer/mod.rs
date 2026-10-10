@@ -47,7 +47,7 @@ where
 pub mod cast {
     use core::{marker::PhantomData, mem};
 
-    use crate::{layout::SizeInfo, HasField, KnownLayout, PtrInner};
+    use crate::{layout::SizeInfo, DstLayout, HasField, KnownLayout, PtrInner};
 
     /// A pointer cast or projection.
     ///
@@ -177,6 +177,157 @@ pub mod cast {
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub enum CastUnsized {}
 
+    /// The numerical acceptance gate used by `CastUnsized`.
+    ///
+    /// Sized layouts compare only their sizes. Slice DSTs also compare their
+    /// alignment and physical trailing-slice offset. The size-sequence check
+    /// recognizes sufficient conditions; rejection need not prove inequality.
+    ///
+    /// ```aeneas
+    /// spec cast_unsized_layouts_match_spec
+    ///   ensures(raw) accepted => match src.size_info, dst.size_info with
+    ///     | .Sized src_size, .Sized dst_size => accepted = decide (src_size = dst_size)
+    ///     | .SliceDst src_tail, .SliceDst dst_tail => accepted = true →
+    ///       src.align = dst.align ∧ src_tail.offset = dst_tail.offset ∧
+    ///       ∀ count : Nat, completeLayoutSize src count = completeLayoutSize dst count
+    ///     | _, _ => accepted = false
+    /// ```
+    pub(crate) const fn cast_unsized_layouts_match(src: DstLayout, dst: DstLayout) -> bool {
+        match (src.size_info, dst.size_info) {
+            (SizeInfo::Sized { size: src_size }, SizeInfo::Sized { size: dst_size }) => {
+                src_size == dst_size
+            }
+            (SizeInfo::SliceDst(src_trailing), SizeInfo::SliceDst(dst_trailing)) => {
+                src.align.get() == dst.align.get()
+                    && src_trailing.offset == dst_trailing.offset
+                    && src_trailing.has_same_size_sequence(dst_trailing)
+            }
+            _ => false,
+        }
+    }
+
+    // The numerical gate is exercised without pointer construction. Independent
+    // remainder-based sizes retain their complete Option, including overflow.
+    #[allow(dead_code, clippy::needless_nonzero_get)]
+    mod checks {
+        use core::num::NonZeroUsize;
+
+        use super::{cast_unsized_layouts_match, DstLayout, SizeInfo};
+        use crate::layout::{tail_checks, tail_transform_checks};
+
+        fn witness_matches(runtime_layout: DstLayout, align: NonZeroUsize, phase: usize) -> bool {
+            match runtime_layout.size_info {
+                SizeInfo::Sized { .. } => true,
+                SizeInfo::SliceDst(tail) => {
+                    tail_transform_checks::witness_matches(tail, align, phase)
+                }
+            }
+        }
+
+        fn reference_size(
+            runtime_layout: DstLayout,
+            align: NonZeroUsize,
+            phase: usize,
+            metadata: usize,
+        ) -> Option<usize> {
+            match runtime_layout.size_info {
+                SizeInfo::Sized { size } => Some(size),
+                SizeInfo::SliceDst(tail) => {
+                    tail_checks::reference_size(tail, align, phase, metadata)
+                }
+            }
+        }
+
+        /// Acceptance preserves complete sizes for every metadata value, even
+        /// when those sizes overflow. Slice DSTs also preserve the physical
+        /// trailing-slice offset and alignment. Sized casts deliberately do
+        /// not constrain alignment. Witness guards only identify each stored
+        /// rounding encoding; every positive encoding admits witnesses.
+        ///
+        /// ```aeneas
+        /// spec cast_unsized_check_spec
+        ///   ensures(raw) _ => True
+        /// ```
+        fn assert_cast_unsized(
+            src: DstLayout,
+            dst: DstLayout,
+            src_align: NonZeroUsize,
+            src_phase: usize,
+            dst_align: NonZeroUsize,
+            dst_phase: usize,
+            metadata: usize,
+        ) {
+            if !witness_matches(src, src_align, src_phase)
+                || !witness_matches(dst, dst_align, dst_phase)
+                || !cast_unsized_layouts_match(src, dst)
+            {
+                return;
+            }
+            assert!(tail_checks::same_optional_usize(
+                reference_size(src, src_align, src_phase, metadata),
+                reference_size(dst, dst_align, dst_phase, metadata),
+            ));
+            if let (SizeInfo::SliceDst(src_tail), SizeInfo::SliceDst(dst_tail)) =
+                (src.size_info, dst.size_info)
+            {
+                assert!(src.align.get() == dst.align.get());
+                assert!(src_tail.offset == dst_tail.offset);
+            }
+        }
+
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            use crate::layout::{RoundingAlignAndPhase, TrailingSliceLayout};
+
+            #[test]
+            fn sized_gate_preserves_alignment_independence() {
+                let one = NonZeroUsize::new(1).unwrap();
+                let eight = NonZeroUsize::new(8).unwrap();
+                for size in [0, 8] {
+                    let src = DstLayout {
+                        align: one,
+                        size_info: SizeInfo::Sized { size },
+                        statically_shallow_unpadded: true,
+                    };
+                    let dst = DstLayout { align: eight, ..src };
+                    assert!(cast_unsized_layouts_match(src, dst));
+                    assert_cast_unsized(src, dst, one, 0, one, 0, usize::MAX);
+                    let different = DstLayout { size_info: SizeInfo::Sized { size: 16 }, ..dst };
+                    assert!(!cast_unsized_layouts_match(src, different));
+                }
+            }
+
+            #[test]
+            fn dst_gate_preserves_complete_overflow_and_physical_offset() {
+                let four = NonZeroUsize::new(4).unwrap();
+                let tail = TrailingSliceLayout {
+                    offset: 7,
+                    elem_size: 4,
+                    size_base: 0,
+                    size_rounding_align_and_phase: RoundingAlignAndPhase::new(four, 0),
+                };
+                let src = DstLayout {
+                    align: four,
+                    size_info: SizeInfo::SliceDst(tail),
+                    statically_shallow_unpadded: false,
+                };
+                assert!(cast_unsized_layouts_match(src, src));
+                for metadata in [0, 1, usize::MAX / 4, usize::MAX] {
+                    assert_cast_unsized(src, src, four, 0, four, 0, metadata);
+                }
+                let dst = DstLayout {
+                    size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset: 8, ..tail }),
+                    ..src
+                };
+                assert!(!cast_unsized_layouts_match(src, dst));
+                let sized = DstLayout { size_info: SizeInfo::Sized { size: 0 }, ..src };
+                assert!(!cast_unsized_layouts_match(src, sized));
+                assert!(!cast_unsized_layouts_match(sized, src));
+            }
+        }
+    }
+
     // SAFETY: By the `static_assert!`, `Src` and `Dst` are either:
     // - Both sized and equal in size
     // - Both slice DSTs with the same trailing-slice offset, the same object
@@ -192,17 +343,7 @@ pub mod cast {
             // FIXME: Do we want this to support shrinking casts as well? If so,
             // we'll need to remove the `CastExact` impl.
             static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
-                let src = <Src as KnownLayout>::LAYOUT;
-                let dst = <Dst as KnownLayout>::LAYOUT;
-                match (src.size_info, dst.size_info) {
-                    (SizeInfo::Sized { size: src_size }, SizeInfo::Sized { size: dst_size }) => src_size == dst_size,
-                    (SizeInfo::SliceDst(src_trailing), SizeInfo::SliceDst(dst_trailing)) => {
-                        src.align.get() == dst.align.get()
-                            && src_trailing.offset == dst_trailing.offset
-                            && src_trailing.has_same_size_sequence(dst_trailing)
-                    },
-                    _ => false,
-                }
+                cast_unsized_layouts_match(<Src as KnownLayout>::LAYOUT, <Dst as KnownLayout>::LAYOUT)
             });
 
             let metadata = Src::pointer_to_metadata(src.as_ptr());
