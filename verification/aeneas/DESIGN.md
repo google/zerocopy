@@ -303,6 +303,20 @@ the library already models every part of Rust's abstract machine.
   with explicit errors. Add semantics and admission checks before accepting
   them. Stateful or nondeterministic APIs may need observable traces and
   effects, rather than only result contracts.
+- **Abstract storage and bit validity.** Check byte-to-value production before
+  entering Aeneas's typed value domain; rejection must remain a forbidden
+  execution, independently of ordinary library-model admission. A storage model
+  must account for the translation's omissions as well as its primitives. The
+  [pinned lowering audit](LOWERING_AUDIT.md) records known omissions and the
+  additional admission checks needed before making memory-safety claims.
+  [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) specifies the proposed closed
+  dependency traversal, controlled build origins using Charon's existing MIR
+  preservation setup, primitive rules, and mandatory CI path. These additional
+  checks are not implemented yet.
+  <!-- FIXME: Typed transfers lose storage events; track support at
+  https://github.com/AeneasVerif/aeneas/issues/1405. Until then, a typed storage
+  abstraction must forget all padding contents and initialization facts. It
+  must still check access obligations and reject reads that rely on those facts. -->
 - **Anneal's stronger guarantees.** Construction/mutation closure, universal
   caller admission, memory validity, provenance, aliasing, and UB-freedom belong
   to a separately stated stronger claim. Conditional functional proofs can feed

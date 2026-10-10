@@ -134,6 +134,24 @@ run_elab do
     | throwError "Model bindings must contain their source/extraction binding table"
   let .ok entries := entriesValue.getObj?
     | throwError "Model bindings must contain a binding table object"
+  if mode == "verified-live" then
+    let .ok admission := bindings.getObjVal? "admission"
+      | throwError "Missing mandatory execution admission evidence"
+    let .ok admissionVersion := admission.getObjValAs? Nat "version"
+      | throwError "Invalid execution admission evidence"
+    unless admissionVersion == 1 do
+      throwError "Unsupported execution admission evidence"
+    let .ok stages := admission.getObjVal? "stages"
+      | throwError "Missing execution admission stages"
+    let rootNames := entries.toArray.filterMap fun pair =>
+      if pair.2.getObjValAs? String "kind" == .ok "function" then some pair.1 else none
+    for stage in #["before", "llbc"] do
+      let .ok evidence := stages.getObjVal? stage
+        | throwError "Missing {stage} execution admission stage"
+      let .ok roots := evidence.getObjValAs? (Array String) "roots"
+        | throwError "Invalid {stage} execution admission roots"
+      unless roots.size == rootNames.size && rootNames.all roots.contains do
+        throwError "Execution admission roots disagree with the function binding table"
   let some typesModule := env.getModuleIdx? `Zerocopy.Types
     | throwError "Raw extracted types must be imported"
   let some shapesModule := env.getModuleIdx? `ModelShapes
@@ -275,6 +293,33 @@ run_elab do
   let extra := actualModels.filter (fun modelName => !expectedModels.contains modelName)
   unless missing.isEmpty && extra.isEmpty do
     throwError "Compiled inline specification models disagree with bindings: missing {missing}; unexpected {extra}"
+  -- The backend's Option.ofResult erases every failure into a normal None,
+  -- including undef. That is not a supported Rust recovery operation here.
+  -- Follow downstream compiled dependencies, including helpers and opaque
+  -- bodies, so hiding this adapter behind another local definition cannot
+  -- admit it. Stop at the pinned backend: its checked integer primitives use
+  -- this adapter internally to represent arithmetic overflow as Rust's None.
+  -- Their implementation is already part of the trusted translation boundary.
+  -- Identify that boundary by compiled module ownership, not a declaration's
+  -- namespace, so a downstream helper cannot impersonate a backend primitive.
+  -- This conservative check rejects even unreachable local dependencies; it
+  -- does not certify arbitrary external models as faithful Rust semantics.
+  let mut pendingModels := actualModels
+  let mut visitedModels : NameHashSet := {}
+  while !pendingModels.isEmpty do
+    let current := pendingModels.back!
+    pendingModels := pendingModels.pop
+    if visitedModels.contains current then continue
+    visitedModels := visitedModels.insert current
+    if current == `Aeneas.Std.Option.ofResult then
+      throwError "Extracted execution depends on unsupported failure erasure: {current}"
+    if let some owner := env.getModuleIdxFor? current then
+      let moduleName := env.allImportedModuleNames[owner.toNat]!
+      if moduleName.getRoot == `Aeneas && !auditModules.contains owner then continue
+    let some info := env.find? current
+      | throwError "Missing execution dependency {current}"
+    pendingModels := pendingModels ++ info.type.getUsedConstants ++
+      ((info.value? (allowOpaque := true)).map (·.getUsedConstants)).getD #[]
   -- Sort only for reproducible diagnostics and dependency output. Coverage was
   -- established from complete sets above, independent of declaration order.
   required := required.qsort (fun a b => a.toString < b.toString)
