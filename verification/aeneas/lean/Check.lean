@@ -115,6 +115,14 @@ run_elab do
     Term.synthesizeSyntheticMVarsNoPostponing
     unless ← Meta.isDefEq (mkConst `util.copy_unchecked_at) (← instantiateMVars expected) do
       throwError "External offset copy changed its complete guarded interpretation"
+  if env.contains `util.validity.read_byte then
+    let expected ← Term.elabTerm (← `(fun (bytes : Aeneas.Std.Slice Aeneas.Std.U8)
+        (index : Aeneas.Std.Usize) =>
+      if index.val < bytes.val.length then Aeneas.Std.Result.ok bytes.val[index.val]!
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.panic)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.validity.read_byte) (← instantiateMVars expected) do
+      throwError "External candidate byte read changed its complete guarded interpretation"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.

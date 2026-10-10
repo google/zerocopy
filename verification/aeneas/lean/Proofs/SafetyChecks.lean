@@ -49,9 +49,9 @@ theorem checked_bool_raw (byte : U8) :
     util.safety_checks.checked_bool byte ⦃ out =>
       out = if byte.val < 2 then some (decide (byte.val = 1)) else none ⦄ := by
   by_cases valid : byte.val < 2
-  · simp [util.safety_checks.checked_bool, UScalar.lt_equiv,
+  · simp [util.safety_checks.checked_bool, util.validity.bool_encoding, UScalar.lt_equiv,
       UScalar.ofNatCore_val_eq, util.transmute_unchecked, valid, bind_ok]
-  · simp [util.safety_checks.checked_bool, UScalar.lt_equiv,
+  · simp [util.safety_checks.checked_bool, util.validity.bool_encoding, UScalar.lt_equiv,
       UScalar.ofNatCore_val_eq, valid]
 
 theorem checked_bool_spec : Specs.checked_bool_spec := by
