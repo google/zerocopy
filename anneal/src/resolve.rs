@@ -9,17 +9,17 @@
 
 //! Cargo package and target resolution for Anneal.
 //!
-//! Cargo selectors can identify several compilation artifacts depending on
-//! package layout: default selection may include libraries and binaries,
-//! `--tests` can build test harnesses plus supporting targets, and a library
-//! target can expose several crate types such as `rlib` and `cdylib`.
+//! Cargo selectors can identify several logical targets depending on package
+//! layout: a library, named binaries, examples, and integration tests. Cargo
+//! metadata also describes the output artifact kinds for each target, so one
+//! library target can expose several crate types such as `rlib` and `cdylib`.
 //!
-//! This module resolves that selection into one explicit Anneal artifact per
-//! package target and target kind. Downstream stages process those artifacts
-//! independently, assigning each its own LLBC path and Charon configuration.
-//! This prevents selected rustc units from sharing a `--dest-file`, avoids
-//! collisions between workspace packages with the same Rust crate name, and
-//! permits per-target Charon options such as `--start-from` and `--opaque`.
+//! This module resolves that metadata into one explicit Anneal artifact per
+//! logical Cargo target and records the selector Charon must pass back to
+//! Cargo. Downstream stages assign each selection its own LLBC path and Charon
+//! configuration. This prevents distinct selected targets from sharing a
+//! `--dest-file`, while avoiding duplicate translations of one library target
+//! that happens to emit multiple crate types.
 
 use anyhow::Context as _;
 use sha2::Digest as _;
@@ -71,57 +71,65 @@ pub struct Args {
     pub allow_sorry: bool,
 }
 
+/// A logical Cargo target selector that Charon can invoke.
+///
+/// Cargo metadata describes the artifact kinds emitted by a target. In
+/// particular, one library target may list several crate types such as `rlib`
+/// and `cdylib`. Charon's Cargo frontend selects that target with one Cargo
+/// flag (`--lib`), not one flag per emitted crate type. Anneal therefore
+/// normalizes every library-like artifact kind to [`Self::Lib`]. Named binary,
+/// example, and test targets remain distinct because Charon selects them with
+/// `--bin`, `--example`, and `--test`, respectively.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[repr(u8)]
-pub enum AnnealTargetKind {
-    /// A library target (generic).
+pub enum AnnealTargetSelector {
+    /// Select the package's library target with Cargo's `--lib` flag.
     Lib,
-    /// A Rust library.
-    RLib,
-    /// A procedural macro library.
-    ProcMacro,
-    /// A C-compatible dynamic library.
-    CDyLib,
-    /// A dynamic Rust library.
-    DyLib,
-    /// A static system library.
-    StaticLib,
-    /// A binary executable.
+    /// Select a named binary target with Cargo's `--bin` flag.
     Bin,
-    /// A documentation example.
+    /// Select a named example target with Cargo's `--example` flag.
     Example,
-    /// An integration test.
+    /// Select a named integration-test target with Cargo's `--test` flag.
     Test,
 }
 
-impl AnnealTargetKind {
-    pub fn is_lib(&self) -> bool {
-        use AnnealTargetKind::*;
-        match self {
-            Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib => true,
-            Bin | Example | Test => false,
-        }
-    }
-}
+impl AnnealTargetSelector {
+    /// Maps one Cargo metadata target to the selector Charon can use for it.
+    fn for_cargo_target(
+        target: &cargo_metadata::Target,
+    ) -> anyhow::Result<Option<AnnealTargetSelector>> {
+        let mut selector = None;
 
-impl std::convert::TryFrom<&cargo_metadata::TargetKind> for AnnealTargetKind {
-    type Error = ();
+        for kind in &target.kind {
+            use cargo_metadata::TargetKind::*;
+            let candidate = match kind {
+                // These are distinct rustc output artifact kinds, but Cargo and
+                // Charon select their shared logical library target with
+                // `--lib`. Cargo passes all configured crate types to one rustc
+                // invocation, so returning one `Lib` prevents duplicate LLBC.
+                Lib | RLib | ProcMacro | CDyLib | DyLib | StaticLib => Self::Lib,
+                Bin => Self::Bin,
+                Example => Self::Example,
+                Test => Self::Test,
+                // Need `_` because `TargetKind` is `#[non_exhaustive]`.
+                Bench | CustomBuild | _ => continue,
+            };
 
-    fn try_from(kind: &cargo_metadata::TargetKind) -> anyhow::Result<Self, Self::Error> {
-        use cargo_metadata::TargetKind::*;
-        match kind {
-            Lib => Ok(Self::Lib),
-            RLib => Ok(Self::RLib),
-            ProcMacro => Ok(Self::ProcMacro),
-            CDyLib => Ok(Self::CDyLib),
-            DyLib => Ok(Self::DyLib),
-            StaticLib => Ok(Self::StaticLib),
-            Bin => Ok(Self::Bin),
-            Example => Ok(Self::Example),
-            Test => Ok(Self::Test),
-            // Need `_` because `TargetKind` is `#[non_exhaustive]`.
-            Bench | CustomBuild | _ => Err(()),
+            match selector {
+                None => selector = Some(candidate),
+                Some(existing) if existing == candidate => {}
+                Some(existing) => {
+                    anyhow::bail!(
+                        "Cargo target '{}' maps to incompatible Charon selectors {:?} and {:?}",
+                        target.name,
+                        existing,
+                        candidate
+                    );
+                }
+            }
         }
+
+        Ok(selector)
     }
 }
 
@@ -131,12 +139,11 @@ pub struct AnnealTargetName {
     pub package_name: cargo_metadata::PackageName,
     /// The Cargo target name.
     pub target_name: String,
-    /// The target kind compiled for this artifact.
+    /// The logical Cargo selector used to compile this artifact.
     ///
-    /// This is part of the identity because one Cargo target can expose
-    /// multiple crate types, and because later Charon and Lean outputs must not
-    /// rely on target names alone.
-    pub kind: AnnealTargetKind,
+    /// This remains part of the identity so, for example, a library and binary
+    /// with the same target name receive distinct Charon and Lean outputs.
+    pub selector: AnnealTargetSelector,
 }
 
 /// A fully resolved target ready for verification.
@@ -148,7 +155,7 @@ pub struct AnnealTargetName {
 #[derive(Debug)]
 pub struct AnnealTarget {
     pub name: AnnealTargetName,
-    pub kind: AnnealTargetKind,
+    pub selector: AnnealTargetSelector,
 
     /// Path to the `Cargo.toml` for this target.
     pub manifest_path: std::path::PathBuf,
@@ -203,10 +210,10 @@ impl<'a> LockedRoots<'a> {
 
 /// Resolves all verification roots.
 ///
-/// Each entry represents a distinct compilation artifact to be verified.
-/// Keeping this artifact list explicit is deliberate: later Charon invocation
-/// code should not have to rediscover which files a Cargo flag happened to
-/// produce for a particular workspace shape.
+/// Each entry represents a distinct logical Cargo target selection to verify.
+/// Keeping this selection list explicit is deliberate: later Charon invocation
+/// code should not have to rediscover which target a Cargo flag selects for a
+/// particular workspace shape.
 pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow::Result<Roots> {
     log::trace!("resolve_roots({:?})", args);
     let mut cmd = cargo_metadata::MetadataCommand::new();
@@ -251,13 +258,13 @@ pub fn resolve_roots(args: &Args, toolchain: &crate::setup::Toolchain) -> anyhow
             continue;
         }
 
-        roots.roots.extend(targets.into_iter().map(|(target, kind)| AnnealTarget {
+        roots.roots.extend(targets.into_iter().map(|(target, selector)| AnnealTarget {
             name: AnnealTargetName {
                 package_name: package.name.clone(),
                 target_name: target.name.clone(),
-                kind,
+                selector,
             },
-            kind,
+            selector,
             // We convert to absolute paths here to establish a canonical
             // reference for the rest of the pipeline. This avoids ambiguity
             // if the CWD changes or if we're working with complex workspace
@@ -326,9 +333,9 @@ fn resolve_packages<'a>(
             .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
             .collect()
     } else {
-        // Resolve default (Current Working Directory). This mimics Cargo's
-        // behavior: if we are inside a package, we build that package. If we
-        // are at the workspace root, we build the whole workspace.
+        // Resolve Cargo's default package selection for the effective current
+        // directory. At the workspace root Cargo selects `default-members`;
+        // within an individual member it selects that package.
         let cwd = {
             let cwd_candidate = manifest_path
                 .map(|p| p.to_path_buf())
@@ -345,28 +352,29 @@ fn resolve_packages<'a>(
             }
         };
 
-        // Find the package whose manifest directory is an ancestor of CWD.
-        let current_pkg = metadata.packages.iter().find(|p| {
-            let manifest_dir = p.manifest_path.parent().unwrap();
-            cwd.starts_with(manifest_dir)
-        });
-
-        if let Some(pkg) = current_pkg {
-            vec![pkg]
+        // Check the workspace root first. A non-virtual workspace root can
+        // itself be a package, but Cargo still honors `default-members` there.
+        if cwd == metadata.workspace_root.as_std_path() {
+            metadata
+                .workspace_default_members
+                .iter()
+                .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
+                .collect()
         } else {
-            // Fallback: If we are at the workspace root (virtual manifest),
-            // behave like --workspace.
-            if cwd == metadata.workspace_root.as_std_path() {
-                metadata
-                    .workspace_members
-                    .iter()
-                    .filter_map(|id| metadata.packages.iter().find(|p| &p.id == id))
-                    .collect()
-            } else {
-                return Err(anyhow::anyhow!(
-                    "Could not determine package from current directory. Please use -p <NAME> or --workspace."
-                ));
-            }
+            // Find the package whose manifest directory is an ancestor of CWD.
+            metadata
+                .packages
+                .iter()
+                .find(|p| {
+                    let manifest_dir = p.manifest_path.parent().unwrap();
+                    cwd.starts_with(manifest_dir)
+                })
+                .map(|package| vec![package])
+                .ok_or_else(|| {
+                    anyhow::anyhow!(
+                        "Could not determine package from current directory. Please use -p <NAME> or --workspace."
+                    )
+                })?
         }
     };
 
@@ -380,20 +388,13 @@ fn resolve_packages<'a>(
 
 /// Resolves the Cargo targets selected from one package.
 ///
-/// Returns a list of `(Target, TargetKind)` pairs.
-/// If a target is defined as `crate-type = ["rlib", "cdylib"]`, and both are
-/// requested, this returns two entries, allowing them to be verified
-/// independently.
-///
-/// This flattening is critical because different crate types may be compiled
-/// with different flags or conditional compilation options (although the
-/// current scanner is CFG-agnostic, future improvements might respect this).
-/// Verifying them independently gives later stages a separate artifact identity
-/// and output path for every intended compilation mode.
+/// Returns one `(Target, Selector)` pair per selected logical Cargo target.
+/// A library target is returned once even when it emits multiple crate types,
+/// because all of those artifacts are produced by the same `--lib` selection.
 fn resolve_targets<'a>(
     package: &'a cargo_metadata::Package,
     args: &Args,
-) -> anyhow::Result<Vec<(&'a cargo_metadata::Target, AnnealTargetKind)>> {
+) -> anyhow::Result<Vec<(&'a cargo_metadata::Target, AnnealTargetSelector)>> {
     log::trace!("resolve_targets({})", package.name);
     let default_mode = !args.lib
         && args.bin.is_empty()
@@ -407,30 +408,29 @@ fn resolve_targets<'a>(
     // Unlike Cargo, which might build everything by default, we try to be
     // selectively inclusive to avoid overwhelming the user with verification
     // tasks they didn't ask for.
-    let selected_artifacts: Vec<_> = package
-        .targets
-        .iter()
-        .flat_map(|target| {
-            target.kind.iter().filter_map(move |raw_kind| {
-                let kind = AnnealTargetKind::try_from(raw_kind).ok()?;
+    let mut selected_artifacts = Vec::new();
+    for target in &package.targets {
+        let Some(selector) = AnnealTargetSelector::for_cargo_target(target)? else {
+            continue;
+        };
 
-                let include = if default_mode {
-                    kind.is_lib() || kind == AnnealTargetKind::Bin
-                } else {
-                    (args.lib && kind.is_lib())
-                        || (args.bins && kind == AnnealTargetKind::Bin)
-                        || (args.bin.contains(&target.name) && kind == AnnealTargetKind::Bin)
-                        || (args.examples && kind == AnnealTargetKind::Example)
-                        || (args.example.contains(&target.name)
-                            && kind == AnnealTargetKind::Example)
-                        || (args.tests && kind == AnnealTargetKind::Test)
-                        || (args.test.contains(&target.name) && kind == AnnealTargetKind::Test)
-                };
+        let include = if default_mode {
+            matches!(selector, AnnealTargetSelector::Lib | AnnealTargetSelector::Bin)
+        } else {
+            (args.lib && selector == AnnealTargetSelector::Lib)
+                || (args.bins && selector == AnnealTargetSelector::Bin)
+                || (args.bin.contains(&target.name) && selector == AnnealTargetSelector::Bin)
+                || (args.examples && selector == AnnealTargetSelector::Example)
+                || (args.example.contains(&target.name)
+                    && selector == AnnealTargetSelector::Example)
+                || (args.tests && selector == AnnealTargetSelector::Test)
+                || (args.test.contains(&target.name) && selector == AnnealTargetSelector::Test)
+        };
 
-                include.then_some((target, kind))
-            })
-        })
-        .collect();
+        if include {
+            selected_artifacts.push((target, selector));
+        }
+    }
 
     Ok(selected_artifacts)
 }

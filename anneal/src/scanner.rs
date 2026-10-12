@@ -17,7 +17,7 @@ use sha2::Digest as _;
 #[derive(Clone, Debug)]
 pub struct AnnealArtifact {
     pub name: crate::resolve::AnnealTargetName,
-    pub target_kind: crate::resolve::AnnealTargetKind,
+    pub target_selector: crate::resolve::AnnealTargetSelector,
     /// The path to the crate's `Cargo.toml`.
     pub manifest_path: std::path::PathBuf,
 }
@@ -26,7 +26,7 @@ impl From<&crate::resolve::AnnealTarget> for AnnealArtifact {
     fn from(target: &crate::resolve::AnnealTarget) -> Self {
         Self {
             name: target.name.clone(),
-            target_kind: target.kind,
+            target_selector: target.selector,
             manifest_path: target.manifest_path.clone(),
         }
     }
@@ -39,7 +39,7 @@ impl AnnealArtifact {
     /// file. Later Aeneas/Lean stages can reuse the same Lean-compatible stem
     /// when associating generated Lean code with this artifact. The slug is
     /// guaranteed to be a valid Lean identifier (no hyphens), and is unique
-    /// based on the manifest path, target name, and target kind.
+    /// based on the manifest path, target name, and target selector.
     pub fn artifact_slug(&self) -> String {
         fn hash(data: &[u8]) -> u64 {
             // Use SHA-256 not for security but rather stability; Rust's
@@ -53,13 +53,13 @@ impl AnnealArtifact {
             u64::from_le_bytes(bytes)
         }
 
-        // Compute `hash([hash(manifest_path), hash(target_name), hash(target_kind)])` to
+        // Compute `hash([hash(manifest_path), hash(target_name), hash(target_selector)])` to
         // distinguish between e.g. (manifest_path, target_name) = ("abc", "def") and
         // ("ab", "cdef"), which would hash identically if we just hashed their
         // concatenation.
         let h0 = hash(self.manifest_path.as_os_str().as_encoded_bytes());
         let h1 = hash(self.name.target_name.as_bytes());
-        let h2 = hash(&[self.target_kind as u8]);
+        let h2 = hash(&[self.target_selector as u8]);
         let hashes = [h0, h1, h2];
         let h = hash(&hashes.map(u64::to_ne_bytes).concat());
 
