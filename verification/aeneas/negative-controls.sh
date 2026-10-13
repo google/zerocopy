@@ -705,7 +705,7 @@ def replace(old, new):
         raise SystemExit("External-input negative control no longer matches: " + old)
     s = s.replace(old, new)
 size = 'axiom Zerocopy.RustLayout.size (T : Type) : Usize'
-align = 'axiom Zerocopy.RustLayout.align (T : Type) : Usize'
+align = 'axiom Zerocopy.RustLayout.alignInput (T : Type) : Usize'
 mutation = sys.argv[1]
 if mutation in ('missing-size', 'missing-align', 'missing-both'):
     if mutation != 'missing-align':
@@ -713,8 +713,7 @@ if mutation in ('missing-size', 'missing-align', 'missing-both'):
         replace('Zerocopy.RustLayout.size T', '0#usize')
     if mutation != 'missing-size':
         replace(align, '')
-        replace('Zerocopy.RustLayout.align T', '1#usize')
-        replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+        replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'wrong-kind':
     replace(size, 'def Zerocopy.RustLayout.size (_T : Type) : Usize := 0#usize')
 elif mutation == 'wrong-signature':
@@ -723,6 +722,8 @@ elif mutation == 'wrong-signature':
 elif mutation == 'ignored-align':
     replace('Zerocopy.RustLayout.align T', '1#usize')
     replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+elif mutation == 'ignored-align-input':
+    replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'ignored-size':
     replace('Zerocopy.RustLayout.size T', '0#usize')
 elif mutation == 'wrong-pointer-width':
@@ -742,7 +743,7 @@ PYCONTROL
     reject_abi "a missing generic ABI size input" missing-size \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a missing generic ABI alignment input" missing-align \
-        "Missing external layout input Zerocopy.RustLayout.align"
+        "Missing external layout input Zerocopy.RustLayout.alignInput"
     reject_abi "both generic ABI inputs missing" missing-both \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a definition replacing an arbitrary ABI data input" wrong-kind \
@@ -751,6 +752,8 @@ PYCONTROL
         "External layout input Zerocopy.RustLayout.size changed its data-only signature"
     reject_abi "an alignment read ignoring its ABI input" ignored-align \
         "External alignment read changed its data-input interpretation"
+    reject_abi "an alignment interpretation ignoring its abstract input" ignored-align-input \
+        "External alignment model changed its concrete or generic interpretation"
     reject_abi "a generic size read ignoring its ABI input" ignored-size \
         "External size read changed its data-input interpretation"
     reject_abi "an incorrect Usize pointer-width read" wrong-pointer-width \

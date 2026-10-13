@@ -85,7 +85,20 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
 -- every consumer must prove its contract under explicit size/alignment inputs.
 -- The axiom audit admits exactly these signatures, never arbitrary axioms.
 axiom Zerocopy.RustLayout.size (T : Type) : Usize
-axiom Zerocopy.RustLayout.align (T : Type) : Usize
+axiom Zerocopy.RustLayout.alignInput (T : Type) : Usize
+
+-- The byte primitive has compiler alignment one. Its native compile-time
+-- assertion lives beside the Rust layout fixtures. This is a concrete external
+-- interpretation, not a proof of an arbitrary ABI fact; generic types retain
+-- the original unconstrained data input. Keep this one case explicit rather
+-- than inferring physical layout from a Lean type's mathematical meaning.
+noncomputable def Zerocopy.RustLayout.align (T : Type) : Usize := by
+  classical
+  exact if T = U8 then 1#usize else Zerocopy.RustLayout.alignInput T
+
+@[simp] theorem Zerocopy.RustLayout.align_u8 :
+    Zerocopy.RustLayout.align U8 = 1#usize := by
+  simp [Zerocopy.RustLayout.align]
 
 @[simp] noncomputable def core.mem.size_of (T : Type) : Result Usize := by
   classical
