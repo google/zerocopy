@@ -6772,6 +6772,44 @@ mod tests {
         inner: ManuallyDrop<NestedPackedDstInner<T>>,
     }
 
+    // `size_of_val` and `align_of_val` became const in 1.85. Expected sizes and
+    // alignments come from references safely unsized from real sized objects.
+    #[rustversion::since(1.85)]
+    const _: () = {
+        macro_rules! assert_native_dst_layout {
+            ($elems:expr) => {{
+                let value = NestedPackedDstOuter {
+                    z: 0,
+                    inner: ManuallyDrop::new(NestedPackedDstInner {
+                        a: NestedPackedDstWord([0; 4]),
+                        b: 0,
+                        tail: [0; $elems],
+                    }),
+                };
+                let value: &NestedPackedDstOuter<[u8]> = &value;
+                let layout = NestedPackedDstOuter::<[u8]>::LAYOUT;
+                const_assert!(layout.align.get() == mem::align_of_val(value));
+                match layout.size_info {
+                    // This is the const implementation called by
+                    // `PointerMetadata::size_for_metadata` for slice DSTs.
+                    SizeInfo::SliceDst(trailing) => match trailing.size_for_elems($elems) {
+                        Some(size) => const_assert!(size == mem::size_of_val(value)),
+                        None => const_panic!("native DST size must fit in usize"),
+                    },
+                    SizeInfo::Sized { .. } => const_panic!("expected a slice DST layout"),
+                }
+            }};
+        }
+
+        assert_native_dst_layout!(0);
+        assert_native_dst_layout!(1);
+        assert_native_dst_layout!(2);
+        assert_native_dst_layout!(3);
+        assert_native_dst_layout!(4);
+        assert_native_dst_layout!(7);
+        assert_native_dst_layout!(8);
+    };
+
     #[repr(C, align(2))]
     struct Align2<T>(T);
 
@@ -6877,7 +6915,7 @@ mod tests {
 
     #[test]
     fn test_nested_packed_dst_layout() {
-        fn assert_native_size<const N: usize>(expected: usize) {
+        fn assert_native_size<const N: usize>() {
             let value = NestedPackedDstOuter {
                 z: 0,
                 inner: ManuallyDrop::new(NestedPackedDstInner {
@@ -6887,17 +6925,20 @@ mod tests {
                 }),
             };
             let value: &NestedPackedDstOuter<[u8]> = &value;
-            assert_eq!(mem::size_of_val(value), expected);
-            assert_eq!(NestedPackedDstOuter::<[u8]>::size_for_metadata(N), Some(expected));
+            assert_eq!(
+                NestedPackedDstOuter::<[u8]>::size_for_metadata(N),
+                Some(mem::size_of_val(value))
+            );
+            assert_eq!(NestedPackedDstOuter::<[u8]>::LAYOUT.align.get(), mem::align_of_val(value));
         }
 
-        assert_native_size::<0>(10);
-        assert_native_size::<1>(10);
-        assert_native_size::<2>(10);
-        assert_native_size::<3>(10);
-        assert_native_size::<4>(14);
-        assert_native_size::<7>(14);
-        assert_native_size::<8>(18);
+        assert_native_size::<0>();
+        assert_native_size::<1>();
+        assert_native_size::<2>();
+        assert_native_size::<3>();
+        assert_native_size::<4>();
+        assert_native_size::<7>();
+        assert_native_size::<8>();
 
         let layout = NestedPackedDstOuter::<[u8]>::LAYOUT;
         assert_eq!(layout.align.get(), 2);
