@@ -1,4 +1,3 @@
-diff --git a/src/bin/charon-driver/main.rs b/src/bin/charon-driver/main.rs
 --- a/src/bin/charon-driver/main.rs
 +++ b/src/bin/charon-driver/main.rs
 @@ -89,6 +89,21 @@
@@ -23,7 +22,6 @@ diff --git a/src/bin/charon-driver/main.rs b/src/bin/charon-driver/main.rs
      // The bulk of the translation is done, we no longer need to interact with rustc internals. We
      // run several passes that simplify the items and cleanup the bodies.
      charon_lib::timing::time("transformation-passes", || {
-diff --git a/src/bin/charon-driver/translate/get_mir.rs b/src/bin/charon-driver/translate/get_mir.rs
 --- a/src/bin/charon-driver/translate/get_mir.rs
 +++ b/src/bin/charon-driver/translate/get_mir.rs
 @@ -84,7 +84,15 @@
@@ -43,7 +41,122 @@ diff --git a/src/bin/charon-driver/translate/get_mir.rs b/src/bin/charon-driver/
              }
  
              // There are only two MIRs we can fetch for non-local bodies: CTFE mir for globals and const
-diff --git a/src/bin/charon-driver/translate/translate_items.rs b/src/bin/charon-driver/translate/translate_items.rs
+--- a/src/bin/charon-driver/translate/translate_crate.rs
++++ b/src/bin/charon-driver/translate/translate_crate.rs
+@@ -26,7 +26,7 @@
+ use crate::hax::SInto;
+ use charon_lib::ast::*;
+ use charon_lib::name_matcher::NamePattern;
+-use charon_lib::options::{CliOpts, ConstHandling, StartFrom, TranslateOptions};
++use charon_lib::options::{CliOpts, ConstHandling, SourceOwnerSpan, StartFrom, TranslateOptions};
+ use charon_lib::transform::TransformCtx;
+ use macros::VariantIndexArity;
+ 
+@@ -375,6 +375,16 @@
+                 return None;
+             }
+         })
++    }
++
++    fn matches_source_owner(&mut self, owner: &SourceOwnerSpan, span: rustc_span::Span) -> bool {
++        if span.is_dummy() {
++            return false;
++        }
++        let source_file = self.tcx.sess.source_map().lookup_source_file(span.lo());
++        matches!(self.translate_filename(source_file.name.clone()), FileName::Local(path) if path == owner.file)
++            && source_file.original_relative_byte_pos(span.lo()).0 == owner.beg
++            && source_file.original_relative_byte_pos(span.hi()).0 == owner.end
+     }
+ 
+     /// Add this item to the queue of items to translate. Each translated item will then
+@@ -1034,6 +1044,30 @@
+         kind: TransItemSourceKind,
+         enqueue: bool,
+     ) -> Result<RegionBinder<FnPtr>, Error> {
++        // A provided method omitted from its trait dictionary cannot be called. Check the
++        // compiler-resolved declaration, including inherited and overridden implementations,
++        // before translating its signature. Impl discovery uses the no-enqueue path.
++        if enqueue && let hax::FullDefKind::AssocFn(f) = self.poly_hax_def(&item.def_id)?.kind() {
++            let declaration_id = f.associated_item().implemented_trait_item_id();
++            let declaration = self.poly_hax_def(declaration_id)?;
++            if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
++                && declaration.associated_item().has_value
++                && matches!(
++                    &declaration.associated_item().container,
++                    hax::AssocItemContainer::TraitContainer { .. }
++                )
++            {
++                let source = TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
++                let name = self.translate_name(&source)?;
++                if self.opacity_for_name(&name).is_invisible() {
++                    charon_lib::errors::raise_error!(
++                        self,
++                        span,
++                        "referenced excluded provided trait method"
++                    );
++                }
++            }
++        }
+         if let Some(fn_ptr) = self.translate_callable_method_fn_ptr(span, item)? {
+             return Ok(fn_ptr);
+         }
+@@ -1198,6 +1232,56 @@
+                     }
+                 }
+             }
++            StartFrom::SourceSpan(owner) => {
++                // Resolve against compiler owners, never against names, generics, or doc text.
++                let mut matches = Vec::new();
++                for ldid in tcx.hir_crate_items(()).definitions() {
++                    // `def_span` is only an impl header; the HIR item span covers
++                    // the exact authored owner, including its closing brace.
++                    let rustc_hir::Node::Item(item) =
++                        tcx.hir_node(tcx.local_def_id_to_hir_id(ldid))
++                    else {
++                        continue;
++                    };
++                    let span = item.span;
++                    if span.is_dummy() {
++                        continue;
++                    }
++                    if ctx.matches_source_owner(&owner, span)
++                        || (span.from_expansion()
++                            && ctx.matches_source_owner(&owner, span.source_callsite()))
++                    {
++                        matches.push((ldid, span));
++                    }
++                }
++                if matches.len() != 1 {
++                    register_error!(
++                        ctx,
++                        Span::dummy(),
++                        "source-owner root {owner:?} matched {} local owners; expected exactly one",
++                        matches.len()
++                    );
++                    continue;
++                }
++                let (ldid, span) = matches[0];
++                if span.from_expansion()
++                    || !matches!(
++                        tcx.def_kind(ldid),
++                        rustc_hir::def::DefKind::Impl { of_trait: true }
++                    )
++                    || tcx.impl_polarity(ldid) != ty::ImplPolarity::Positive
++                {
++                    let error_span = ctx.translate_span(&span);
++                    register_error!(
++                        ctx,
++                        error_span,
++                        "source-owner root requires a non-expanded positive trait impl"
++                    );
++                    continue;
++                }
++                let def_id: hax::DefId = ldid.to_def_id().sinto(&ctx.hax_state);
++                ctx.enqueue_module_item(&def_id, true);
++            }
+             StartFrom::Attribute(attr_name) => {
+                 let attr_path = attr_name
+                     .split("::")
 --- a/src/bin/charon-driver/translate/translate_items.rs
 +++ b/src/bin/charon-driver/translate/translate_items.rs
 @@ -900,6 +900,12 @@
@@ -80,37 +193,178 @@ diff --git a/src/bin/charon-driver/translate/translate_items.rs b/src/bin/charon
                      let binder_kind = BinderKind::TraitMethod(trait_id, trait_method_id);
                      let bound_fn_ref = match &impl_item.value {
                          Some(value) => {
-diff --git a/src/bin/charon-driver/translate/translate_crate.rs b/src/bin/charon-driver/translate/translate_crate.rs
---- a/src/bin/charon-driver/translate/translate_crate.rs
-+++ b/src/bin/charon-driver/translate/translate_crate.rs
-@@ -1034,6 +1034,30 @@
-         kind: TransItemSourceKind,
-         enqueue: bool,
-     ) -> Result<RegionBinder<FnPtr>, Error> {
-+        // A provided method omitted from its trait dictionary cannot be called. Check the
-+        // compiler-resolved declaration, including inherited and overridden implementations,
-+        // before translating its signature. Impl discovery uses the no-enqueue path.
-+        if enqueue && let hax::FullDefKind::AssocFn(f) = self.poly_hax_def(&item.def_id)?.kind() {
-+            let declaration_id = f.associated_item().implemented_trait_item_id();
-+            let declaration = self.poly_hax_def(declaration_id)?;
-+            if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
-+                && declaration.associated_item().has_value
-+                && matches!(
-+                    &declaration.associated_item().container,
-+                    hax::AssocItemContainer::TraitContainer { .. }
-+                )
-+            {
-+                let source = TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
-+                let name = self.translate_name(&source)?;
-+                if self.opacity_for_name(&name).is_invisible() {
-+                    charon_lib::errors::raise_error!(
-+                        self,
-+                        span,
-+                        "referenced excluded provided trait method"
-+                    );
+--- a/src/options.rs
++++ b/src/options.rs
+@@ -89,6 +89,9 @@
+     /// A list of item paths to use as starting points for the translation. We will translate these
+     /// items and any items they refer to, according to the opacity rules. When absent, we start
+     /// from the path `crate` (which translates the whole crate).
++    /// An exact local positive trait impl can instead be selected with
++    /// `@span:FILE:BEGIN_BYTE:END_BYTE`, using its full authored HIR item span.
++    /// FILE is normalized crate-relative; offsets are UTF-8 bytes, end exclusive.
+     #[clap(long, value_delimiter = ',')]
+     #[serde(default)]
+     pub start_from: Vec<String>,
+@@ -675,6 +678,43 @@
+     }
+ }
+ 
++/// Exact source owner selector; deliberately independent of Rust name/type spelling.
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct SourceOwnerSpan {
++    pub file: PathBuf,
++    pub beg: u32,
++    pub end: u32,
++}
++
++impl SourceOwnerSpan {
++    fn parse(value: &str) -> Result<Self, String> {
++        let parts = value.rsplitn(3, ':').collect_vec();
++        if parts.len() != 3 {
++            return Err("expected FILE:BEGIN_BYTE:END_BYTE".into());
++        }
++        let number = |s: &str| {
++            s.parse::<u32>()
++                .map_err(|_| "invalid coordinate".to_owned())
++        };
++        let file = PathBuf::from(parts[2]);
++        // No path aliases: admission can compare the requested owner list literally.
++        if file.as_os_str().is_empty()
++            || file.components().collect::<PathBuf>().as_os_str() != file.as_os_str()
++            || file
++                .components()
++                .any(|c| !matches!(c, std::path::Component::Normal(_)))
++        {
++            return Err("FILE must be a normalized crate-relative path".into());
++        }
++        let beg = number(parts[1])?;
++        let end = number(parts[0])?;
++        if beg >= end {
++            return Err("expected a nonempty, ordered byte span".into());
++        }
++        Ok(Self { file, beg, end })
++    }
++}
++
+ /// Predicates that determine wihch items to use as starting point for translation.
+ #[derive(Debug, Clone, EnumAsGetters)]
+ pub enum StartFrom {
+@@ -683,6 +723,8 @@
+     Pattern { pattern: NamePattern, strict: bool },
+     /// Item annotated with the given attribute.
+     Attribute(String),
++    /// Exact local positive trait-impl owner.
++    SourceSpan(SourceOwnerSpan),
+     /// Item marked `pub`. Note that this does not take accessibility into account; a
+     /// non-reexported `pub` item will be included here.
+     Pub,
+@@ -784,32 +826,55 @@
+ 
+ impl TranslateOptions {
+     pub fn new(error_ctx: &mut ErrorCtx, options: &CliOpts) -> Self {
+-        let mut parse_pattern = |s: &str| -> Result<_, Error> {
++        fn parse_pattern(error_ctx: &mut ErrorCtx, s: &str) -> Result<NamePattern, Error> {
+             match NamePattern::parse(s) {
+                 Ok(p) => Ok(p),
+                 Err(e) => raise_error!(error_ctx, no_crate, "failed to parse pattern `{s}` ({e})"),
+             }
+-        };
++        }
+ 
+         let mut mir_level = options.mir.unwrap_or(MirLevel::Promoted);
+         if options.precise_drops {
+             mir_level = std::cmp::max(mir_level, MirLevel::Elaborated);
+         }
+ 
+-        let mut start_from = options
+-            .start_from
+-            .iter()
+-            .filter_map(|path| parse_pattern(path).ok())
+-            .map(|p| StartFrom::Pattern {
+-                pattern: p,
+-                strict: true,
+-            })
+-            .collect_vec();
++        let mut start_from = Vec::new();
++        for value in &options.start_from {
++            if let Some(value) = value.strip_prefix("@span:") {
++                match SourceOwnerSpan::parse(value) {
++                    Ok(span) => {
++                        if start_from.iter().any(
++                            |root| matches!(root, StartFrom::SourceSpan(other) if other == &span),
++                        ) {
++                            register_error!(
++                                error_ctx,
++                                no_crate,
++                                "duplicate source-owner root `{value}`"
++                            );
++                        } else {
++                            start_from.push(StartFrom::SourceSpan(span));
++                        }
++                    }
++                    Err(message) => {
++                        register_error!(
++                            error_ctx,
++                            no_crate,
++                            "invalid source-owner root `{value}`: {message}"
++                        );
++                    }
 +                }
++            } else if let Ok(pattern) = parse_pattern(error_ctx, value) {
++                start_from.push(StartFrom::Pattern {
++                    pattern,
++                    strict: true,
++                });
 +            }
 +        }
-         if let Some(fn_ptr) = self.translate_callable_method_fn_ptr(span, item)? {
-             return Ok(fn_ptr);
+         start_from.extend(
+             options
+                 .start_from_if_exists
+                 .iter()
+-                .filter_map(|path| parse_pattern(path).ok())
++                .filter_map(|path| parse_pattern(error_ctx, path).ok())
+                 .map(|p| StartFrom::Pattern {
+                     pattern: p,
+                     strict: false,
+@@ -821,9 +886,10 @@
+         if options.start_from_pub {
+             start_from.push(StartFrom::Pub);
          }
+-        if start_from.is_empty() {
++        // An invalid explicit root must never fall back to extracting the whole crate.
++        if start_from.is_empty() && options.start_from.is_empty() {
+             start_from.push(StartFrom::Pattern {
+-                pattern: parse_pattern("crate").unwrap(),
++                pattern: parse_pattern(error_ctx, "crate").unwrap(),
+                 strict: true,
+             });
+         }
+@@ -840,7 +906,7 @@
+             .into_iter()
+             .flatten()
+             .chain(options.hide_allocator.then_some("core::alloc::Allocator"))
+-            .filter_map(|s| parse_pattern(s).ok())
++            .filter_map(|s| parse_pattern(error_ctx, s).ok())
+             .collect_vec();
+ 
+         let item_opacities = {
+@@ -887,7 +953,9 @@
+                 .map(|pat| (pat, Invisible));
+             opacities
+                 .into_iter()
+-                .filter_map(|(s, opacity)| parse_pattern(&s).ok().map(|pat| (pat, opacity)))
++                .filter_map(|(s, opacity)| {
++                    parse_pattern(error_ctx, &s).ok().map(|pat| (pat, opacity))
++                })
+                 .chain(hide_traits)
+                 .collect()
+         };
+@@ -895,7 +963,7 @@
+         let lift_associated_types = options
+             .lift_associated_types
+             .iter()
+-            .filter_map(|s| parse_pattern(s).ok())
++            .filter_map(|s| parse_pattern(error_ctx, s).ok())
+             .collect();
+ 
+         TranslateOptions {

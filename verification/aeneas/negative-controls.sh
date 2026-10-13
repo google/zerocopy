@@ -22,6 +22,8 @@ provided_controls=$(mktemp -d)
 trap 'rm -rf "$provided_controls"' EXIT
 python3 -B verification/aeneas/tests/provided_method_controls.py \
     "$tools_dir/charon" "$provided_controls" "$repo" "$tools_dir/rust/lib"
+python3 -B verification/aeneas/tests/impl_root_controls.py \
+    "$tools_dir/charon" "$provided_controls/impl-roots" "$repo" "$tools_dir/rust/lib"
 rm -rf "$provided_controls"
 trap - EXIT
 # Golden and live projects have separate generated sources, caches, and
@@ -150,6 +152,83 @@ PYCONTROL
 has_model() {
     has_binding function "Zerocopy.$1"
 }
+# Native dictionaries remain an independent coverage boundary. These controls
+# change only the manifest, so the compiled implementation and its valid proof
+# stay available: rejection must come from the binding/coverage audit itself.
+if [[ -f TraitLaws.lean ]]; then
+    trait_impls=$(python3 - <<'PYCONTROL'
+import json
+from pathlib import Path
+manifest = json.loads(Path("bindings.json").read_text())
+if not isinstance(manifest.get("trait_impl_laws"), list):
+    raise SystemExit("Missing mandatory trait implementation coverage")
+print(len(manifest["trait_impl_laws"]))
+PYCONTROL
+    )
+    if [[ $trait_impls != 0 ]]; then
+        audit > "$backup/trait-audit-baseline.log" 2>&1 || {
+            cat "$backup/trait-audit-baseline.log" >&2; exit 1;
+        }
+        for mutation in omitted-impl wrong-proof wrong-count; do
+            python3 - "$mutation" <<'PYCONTROL'
+from pathlib import Path
+import json, sys
+path = Path("bindings.json")
+manifest = json.loads(path.read_text())
+if sys.argv[1] == 'omitted-impl':
+    manifest['trait_impl_laws'].pop()
+elif sys.argv[1] == 'wrong-proof':
+    manifest['trait_impl_laws'][0]['proof'] = 'Zerocopy.Proofs.missing_trait_law'
+elif sys.argv[1] == 'wrong-count':
+    candidates = [entry for entry in manifest['bindings'].values()
+                  if entry['kind'] == 'function' and entry['dictionary_count'] > 0]
+    if not candidates:
+        raise SystemExit("Missing generic trait consumer control")
+    candidates[0]['dictionary_count'] -= 1
+else:
+    raise SystemExit("Unknown trait coverage control")
+path.write_text(json.dumps(manifest))
+PYCONTROL
+            case $mutation in
+                omitted-impl) diagnostic="Compiled trait implementations disagree with required law coverage" ;;
+                wrong-proof) diagnostic="Missing ordinary trait implementation theorem" ;;
+                wrong-count) diagnostic="changed its source model or original input prefix" ;;
+            esac
+            expect_failure "trait coverage mutation $mutation" trait-coverage.log audit
+            grep -Fq "$diagnostic" "$backup/trait-coverage.log" || {
+                cat "$backup/trait-coverage.log" >&2; exit 1;
+            }
+            # No source or compiled declaration changed in this control.
+            cp "$backup/bindings.json" bindings.json
+        done
+        # A valid authored proof and native dictionary are not enough: the
+        # generated ordinary theorem must bind the two through the kernel.
+        # Removing its command must still leave Required well formed, so the
+        # final compiled audit supplies this independent rejection boundary.
+        python3 - <<'PYCONTROL'
+from pathlib import Path
+import json
+row = json.loads(Path("bindings.json").read_text())["trait_impl_laws"][0]
+command = f"check_trait_law @{row['law']} for @{row['dictionary']} using @{row['proof']}\n"
+path = Path("Required.lean")
+text = path.read_text()
+if text.count(command) != 1:
+    raise SystemExit("Missing exact implementation witness control")
+path.write_text(text.replace(command, ""))
+PYCONTROL
+        build_required > "$backup/trait-witness-build.log" 2>&1 || {
+            cat "$backup/trait-witness-build.log" >&2; exit 1;
+        }
+        expect_failure "a removed trait implementation witness" trait-witness.log audit
+        grep -Fq "Missing kernel-checked trait implementation witness" "$backup/trait-witness.log" || {
+            cat "$backup/trait-witness.log" >&2; exit 1;
+        }
+        cp "$backup/Required.lean" Required.lean
+        build_required > "$backup/trait-witness-restored.log" 2>&1 || {
+            cat "$backup/trait-witness-restored.log" >&2; exit 1;
+        }
+    fi
+fi
 # A constrained mathematical value can still break an operation promise or its
 # required raw input domain. Probe the unchanged constructor source fence in an
 # isolated module so reorganizing helper proofs does not change these controls.

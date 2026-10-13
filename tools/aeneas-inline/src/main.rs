@@ -36,6 +36,8 @@ struct Functions<'a> {
     functions: Vec<Value>,
     implementations: Vec<Value>,
     types: Vec<Value>,
+    traits: Vec<Value>,
+    trait_impls: Vec<Value>,
     macros: Vec<Value>,
     attributes: Vec<Value>,
 }
@@ -145,13 +147,13 @@ impl Functions<'_> {
         if let syn::ReturnType::Type(_, ty) = &sig.output {
             supported &= !unsupported_borrow(ty, false);
         }
-        supported &= sig.generics.where_clause.is_none();
+        let (bounds, bounds_supported) = trait_bounds(&sig.generics);
+        supported &= bounds_supported;
         let mut generics = if method { self.impl_generics.clone() } else { Vec::new() };
         for parameter in &sig.generics.params {
             match parameter {
                 syn::GenericParam::Type(parameter) => {
                     generics.push(parameter.ident.to_string());
-                    supported &= parameter.bounds.is_empty();
                 }
                 syn::GenericParam::Lifetime(_) => {}
                 syn::GenericParam::Const(_) => supported = false,
@@ -165,8 +167,65 @@ impl Functions<'_> {
             "close": self.offset(block.brace_token.span.close().end()),
             "supported": supported, "inputs": inputs, "generics": generics,
             "method": method, "impl_type": self.impl_type, "inherent": self.inherent,
+            "trait_bounds": bounds,
         }));
     }
+}
+
+// These spellings propose source ownership only. The compiler's resolved
+// predicates, not names from syn, decide which trait dictionary is required.
+fn trait_bounds(generics: &syn::Generics) -> (Vec<Value>, bool) {
+    fn bound(subject: &str, bound: &syn::TypeParamBound) -> Option<Value> {
+        let syn::TypeParamBound::Trait(bound) = bound else { return None };
+        if bound.lifetimes.is_some()
+            || !matches!(bound.modifier, syn::TraitBoundModifier::None)
+            || bound.path.segments.iter().any(|s| !matches!(s.arguments, syn::PathArguments::None))
+        {
+            return None;
+        }
+        Some(json!({"subject": subject,
+            "trait": bound.path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::")}))
+    }
+    let mut bounds = Vec::new();
+    // Only usize const parameters have a supported native dictionary carrier.
+    // Function annotations reject const parameters separately; impl markers
+    // retain them so a generic proof cannot specialize an array length.
+    let mut supported = generics.const_params().all(|parameter| {
+        matches!(&parameter.ty, syn::Type::Path(ty) if ty.qself.is_none() && ty.path.is_ident("usize"))
+    });
+    for parameter in generics.type_params() {
+        for predicate in &parameter.bounds {
+            match bound(&parameter.ident.to_string(), predicate) {
+                Some(value) => bounds.push(value),
+                None => supported = false,
+            }
+        }
+    }
+    if let Some(clause) = &generics.where_clause {
+        for predicate in &clause.predicates {
+            let syn::WherePredicate::Type(predicate) = predicate else {
+                supported = false;
+                continue;
+            };
+            let syn::Type::Path(subject) = &predicate.bounded_ty else {
+                supported = false;
+                continue;
+            };
+            let Some(subject) = subject.path.get_ident().filter(|_| subject.qself.is_none()) else {
+                supported = false;
+                continue;
+            };
+            supported &= predicate.lifetimes.is_none()
+                && generics.type_params().any(|p| p.ident == *subject);
+            for predicate in &predicate.bounds {
+                match bound(&subject.to_string(), predicate) {
+                    Some(value) => bounds.push(value),
+                    None => supported = false,
+                }
+            }
+        }
+    }
+    (bounds, supported)
 }
 
 // Literal source docs own annotations. Other computed docs remain ordinary
@@ -412,6 +471,25 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_impl(&mut self, item: &'ast syn::ItemImpl) {
+        if let Some((negative, trait_path, _)) = &item.trait_ {
+            let (computed_docs, include_str_docs) = doc_flags(&item.attrs);
+            let (bounds, supported) = trait_bounds(&item.generics);
+            // rustc's owner span starts at `unsafe` when present, excluding
+            // attributes. Preserve that exact declaration span for impl roots.
+            let begin = item.unsafety.as_ref().map_or(item.impl_token.span, |token| token.span);
+            let start = self.offset(begin.start());
+            self.trait_impls.push(json!({
+                "path": format!("__trait_impl_{start}"), "kind": "trait-impl",
+                "start": start, "close": self.offset(item.span().end()),
+                "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
+                "include_str_docs": include_str_docs, "inputs": [],
+                "generics": item.generics.type_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
+                "supported": self.unsupported == 0 && supported && negative.is_none(),
+                "const_generics": item.generics.const_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
+                "trait_path": trait_path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::"),
+                "trait_bounds": bounds,
+            }));
+        }
         let previous_type = self.impl_type.clone();
         let previous_inherent = self.inherent;
         let previous_generics = self.impl_generics.clone();
@@ -494,6 +572,19 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_trait(&mut self, item: &'ast syn::ItemTrait) {
+        let mut path = self.modules.clone();
+        path.push(item.ident.to_string());
+        let (computed_docs, include_str_docs) = doc_flags(&item.attrs);
+        self.traits.push(json!({
+            "path": path.join("::"), "kind": "trait",
+            "start": self.offset(item.trait_token.span.start()),
+            "close": self.offset(item.span().end()), "inputs": [],
+            "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
+            "include_str_docs": include_str_docs,
+            "generics": std::iter::once("Self".to_string()).chain(item.generics.type_params().map(|p| p.ident.to_string())).collect::<Vec<_>>(),
+            "supported": self.unsupported == 0 && item.generics.params.is_empty()
+                && item.generics.where_clause.is_none(),
+        }));
         self.unsupported += 1;
         visit::visit_item_trait(self, item);
         self.unsupported -= 1;
@@ -526,12 +617,15 @@ fn inspect(source: &str) -> Result<Value, syn::Error> {
         functions: Vec::new(),
         implementations: Vec::new(),
         types: Vec::new(),
+        traits: Vec::new(),
+        trait_impls: Vec::new(),
         macros: Vec::new(),
         attributes: Vec::new(),
     };
     visitor.visit_file(&syntax);
     Ok(json!({"source": source, "comments": comments, "functions": visitor.functions,
               "implementations": visitor.implementations, "types": visitor.types,
+              "traits": visitor.traits, "trait_impls": visitor.trait_impls,
               "macros": visitor.macros,
               "attributes": visitor.attributes}))
 }

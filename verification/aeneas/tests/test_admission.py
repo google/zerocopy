@@ -48,6 +48,73 @@ class AdmissionTests(unittest.TestCase):
         self.assertIn('zerocopy::util::transmute_unchecked',
                       [row['rust'] for row in report['executions']])
 
+    def abstract_trait_fixture(self):
+        checked = admission.Admission(self.data, self.registry, ['zerocopy::Codec'])
+        params = {'types': [], 'regions': [], 'const_generics': [], 'trait_clauses': []}
+        signature = {'abi': 'Rust', 'is_variadic': False, 'is_unsafe': False,
+                     'inputs': [], 'output': {'Untagged': {'Scalar': 'Bool'}}}
+        trait = {'def_id': 0, 'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
+            {'Ident': ['Codec', 0]}]}, 'methods': [{'params': params,
+                'kind': {'TraitMethod': [0, 0]}, 'skip_binder': {'signature': signature,
+                    'item_meta': {'has_errors': False, 'is_extern': False}}}]}
+        checked.crate['trait_decls'] = [trait]
+        poly = {'regions': [], 'skip_binder': {'id': 0, 'generics': {
+            'types': [{'Untagged': {'TypeVar': {'Free': 0}}}], 'regions': [],
+            'const_generics': [], 'trait_refs': []}}}
+        checked.current_function = {'generics': {'trait_clauses': [{'clause_id': 3, 'trait_': poly}]}}
+        reference = {'kind': {'Clause': {'Free': 3}}, 'trait_decl_ref': poly}
+        return checked, trait, reference
+
+    def test_abstract_dispatch_is_an_exact_declared_generic_input(self):
+        checked, trait, reference = self.abstract_trait_fixture()
+        checked.trait_call([reference, 0], {'types': [], 'regions': [],
+            'const_generics': [], 'trait_refs': []}, [])
+        self.assertEqual(checked.calls[0]['method'], 0)
+        reference['kind']['Clause']['Free'] = 8
+        with self.assertRaisesRegex(ValueError, 'outside the exact generic clauses'):
+            checked.abstract_dictionary(reference)
+        reference['kind']['Clause']['Free'] = 3
+        with self.assertRaisesRegex(ValueError, 'declared method'):
+            checked.trait_call([reference, 1], {}, [])
+        checked.law_traits.clear()
+        with self.assertRaisesRegex(ValueError, 'lacks an admitted trait law'):
+            checked.abstract_dictionary(reference)
+
+    def test_trait_impl_methods_remain_executable_admission_roots(self):
+        checked, trait, _ = self.abstract_trait_fixture()
+        ident = next(iter(checked.functions))
+        function = checked.functions[ident]
+        function['src'] = {'TraitImpl': {'impl_ref': {'id': 0},
+                                       'trait_ref': {'id': 0}, 'item_id': 0}}
+        function['body']['Unstructured']['body'][0]['terminator']['kind'] = {'InlineAsm': {
+            'asm': '', 'kind': 'Normal', 'targets': [], 'on_unwind': 0}}
+        implementation = {'def_id': 0, 'methods': [{'kind': {'TraitMethod': [0, 0]},
+                                                  'skip_binder': {'id': ident}}]}
+        with self.assertRaisesRegex(ValueError, 'InlineAsm'):
+            checked.audit_implementation(implementation, trait)
+        implementation['methods'] = []
+        with self.assertRaisesRegex(ValueError, 'missing a method body'):
+            checked.audit_implementation(implementation, trait)
+        implementation['methods'] = [{'kind': {'TraitMethod': [0, 1]}, 'skip_binder': {'id': ident}}]
+        with self.assertRaisesRegex(ValueError, 'wrong compiler owner'):
+            checked.audit_implementation(implementation, trait)
+
+    def test_supertrait_dispatch_preserves_original_clause_and_parent_application(self):
+        checked, trait, reference = self.abstract_trait_fixture()
+        child_reference = copy.deepcopy(reference)
+        child_reference['trait_decl_ref']['skip_binder']['id'] = 1
+        checked.current_function['generics']['trait_clauses'][0]['trait_'] = child_reference['trait_decl_ref']
+        parent_clause = {'clause_id': 6, 'trait_': copy.deepcopy(reference['trait_decl_ref'])}
+        parent_clause['trait_']['skip_binder']['generics']['types'] = [{'TypeVar': {'Bound': [1, 0]}}]
+        child = {'def_id': 1, 'methods': [], 'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
+                 {'Ident': ['Child', 0]}]}, 'implied_clauses': [parent_clause]}
+        checked.crate['trait_decls'].append(child)
+        reference['kind'] = {'ParentClause': [child_reference, 6]}
+        self.assertIs(checked.abstract_dictionary(reference), trait)
+        reference['kind']['ParentClause'][1] = 7
+        with self.assertRaisesRegex(ValueError, 'declared parent clause'):
+            checked.abstract_dictionary(reference)
+
     def test_unreviewed_exclusions_fail_closed(self):
         for exclusions in ([], [*admission.EXCLUDED_PROVIDED_METHODS, 'zerocopy::unsafe_helper']):
             self.data['translated']['options']['exclude'] = exclusions

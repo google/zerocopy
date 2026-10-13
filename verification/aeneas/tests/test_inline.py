@@ -78,6 +78,120 @@ class InlineTests(unittest.TestCase):
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
 
+    def test_trait_law_and_impl_proof_ownership(self):
+        source = ('/// ```aeneas\n/// invariant marker for self => Self = Self\n/// ```\n'
+                  '#[doc = concat!("ordinary", " documentation")]\ntrait Marker {}\n'
+                  '/// ```aeneas\n/// invariant_proof\n/// ```\nimpl Marker for u8 {}')
+        declarations = self.parse(source)
+        self.assertEqual([d['kind'] for d in declarations], ['trait', 'trait-impl'])
+        self.assertEqual(declarations[0]['generics'], ['Self'])
+        self.assertEqual(declarations[0]['predicate'], 'Self = Self')
+        self.assertIsNone(declarations[1]['theorem'])
+        self.assertEqual(len(self.parse(source.replace('impl Marker', 'impl crate::Marker'))), 2)
+        with self.assertRaisesRegex(ValueError, 'nameless'):
+            self.parse(source.replace('invariant_proof', 'invariant_proof marker_u8'))
+        with self.assertRaisesRegex(ValueError, 'Unsupported|unsupported|computed|Computed'):
+            self.parse(source.replace('concat!("ordinary", " documentation")', 'include_str!("hidden.rs")'))
+
+    def test_nameless_marker_owns_generic_array_impl(self):
+        source = ('const _: () = unsafe {\n'
+                  '    /// ```aeneas\n    /// invariant_proof\n    /// ```\n'
+                  '    #[allow(non_local_definitions)]\n'
+                  '    unsafe impl<const N: usize, T: Marker> Marker for [T; N] {}\n};')
+        [marker] = self.parse(source)
+        self.assertEqual(marker['generics'], ['T'])
+        self.assertEqual(marker['const_generics'], ['N'])
+        self.assertEqual((marker['open_line'], marker['open_col']), (6, 4))
+        with self.assertRaisesRegex(ValueError, 'ASCII without tabs'):
+            self.parse(source.replace('    unsafe impl', '\tunsafe impl'))
+        with self.assertRaisesRegex(ValueError, 'unsupported'):
+            self.parse(source.replace('N: usize', 'N: u32'))
+
+    def test_impl_marker_requests_extraction_without_a_caller(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = ('/// ```aeneas\n/// invariant marker for self => True\n/// ```\n'
+                      'trait Marker {}\n'
+                      '/// ```aeneas\n/// invariant_proof\n/// ```\n'
+                      'unsafe impl<const N: usize, T: Marker> Marker for [T; N] {}\n')
+            annotations = fixture(root, source)
+            work = root / 'work'
+            work.mkdir()
+            inline.write_scan(annotations, work)
+            self.assertEqual((work / 'roots.txt').read_text(), '\n')
+            [marker] = annotations.trait_proofs
+            expected = ('@span:src/util/mod.rs:' + str(source.index('unsafe impl'))
+                        + ':' + str(source.index('}', source.index('unsafe impl')) + 1))
+            self.assertEqual((work / 'impl-roots.txt').read_text(), expected + '\n')
+
+    def test_trait_law_is_dependency_not_root_and_still_requires_binding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trait = 'zerocopy::util::Marker'
+            source = ('/// ```aeneas\n'
+                      '/// invariant marker for self => Self = Self\n'
+                      '/// ```\ntrait Marker {}\n'
+                      + BLOCK + 'fn f<T: Marker>(x: usize) {}\n')
+            annotations = fixture(root, source)
+            work = root / 'work'
+            work.mkdir()
+            inline.write_scan(annotations, work)
+            self.assertEqual((work / 'roots.txt').read_text(), RUST + '\n')
+            scanned = json.loads((work / 'annotations.json').read_text())
+            self.assertEqual(scanned[trait]['kind'], 'trait')
+            self.assertEqual(scanned[trait]['theorem'], 'marker')
+
+            data = llbc(annotations[RUST], source)
+            function = data['translated']['fun_decls'][0]
+            function['def_id'] = 1
+            function['generics']['types'] = [{'name': 'T'}]
+            function['generics']['trait_clauses'] = [{
+                'clause_id': 7, 'trait_': {'regions': [], 'skip_binder': {
+                    'id': 0, 'generics': {'regions': [], 'const_generics': [],
+                        'trait_refs': [], 'types': [{'TypeVar': {'Free': 0}}]}}}}]
+            declaration = copy.deepcopy(function)
+            declaration.pop('signature')
+            declaration.pop('body')
+            declaration['def_id'] = 0
+            declaration['generics'] = {'types': [{'name': 'Self'}],
+                'const_generics': [], 'trait_clauses': []}
+            declaration['item_meta']['name'] = [
+                {'Ident': [part, 0]} for part in trait.split('::')]
+            declaration['item_meta']['started_from'] = False
+            declaration['item_meta']['span']['Untagged']['data']['end'] = {
+                'line': annotations[trait]['end_line'],
+                'col': annotations[trait]['end_col']}
+            data['translated']['trait_decls'] = [declaration]
+            before = copy.deepcopy(data)
+            bound = before['translated']['fun_decls'][0]['generics']['trait_clauses'][0]
+            bound['clause_id'] = 2
+            bound['trait_']['skip_binder']['generics']['types'] = [
+                {'TypeVar': {'Bound': [1, 0]}}]
+            (work / 'zerocopy.before.ullbc').write_text(json.dumps(before))
+            path = work / 'zerocopy.llbc'
+            path.write_text(json.dumps(data))
+            inline.check_bindings(root, annotations, path)
+            self.assertEqual(annotations.function_dictionaries[RUST], [{
+                'rust': trait, 'arguments': [['parameter', 0]], 'clause_id': 7}])
+
+            # Dropping the non-root trait must still reject the extraction.
+            data['translated']['trait_decls'] = []
+            path.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'Extracted type roots do not match'):
+                inline.check_bindings(root, annotations, path)
+
+    def test_generic_trait_bound_source_evidence(self):
+        for signature in ('fn f<T: Marker>(x: usize) {}',
+                          'fn f<T>(x: usize) where T: crate::Marker {}'):
+            declaration = self.parse(BLOCK + signature)[0]
+            self.assertEqual(declaration['generics'], ['T'])
+            self.assertEqual(declaration['trait_bounds'][0]['subject'], 'T')
+        for signature in ('fn f<T: Marker<u8>>(x: usize) {}',
+                          'fn f<T: ?Sized>(x: usize) {}',
+                          'fn f<T>(x: usize) where T::Assoc: Marker {}'):
+            with self.assertRaisesRegex(ValueError, 'unsupported Rust owner'):
+                self.parse(BLOCK + signature)
+
     def test_doc_ownership_crlf_unicode_attributes_and_source_map(self):
         for eol in ('\n', '\r\n'):
             source = ('const 雪: u8 = 0;\n/// Normal documentation.\n' + BLOCK +
