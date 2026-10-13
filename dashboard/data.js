@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791558449796,
+  "lastUpdate": 1791894838640,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23497,6 +23497,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 622,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "28fbee87ab2473706ba242f2594de8d540525483",
+          "message": "[CI] Bump the all-actions group with 6 updates (#3856)\n\nBumps the all-actions group with 6 updates:\n\n| Package | From | To |\n| --- | --- | --- |\n| [actions/upload-artifact](https://github.com/actions/upload-artifact) | `7.0.1` | `7.0.2` |\n| [actions/download-artifact](https://github.com/actions/download-artifact) | `8.0.1` | `8.0.2` |\n| [DeterminateSystems/determinate-nix-action](https://github.com/determinatesystems/determinate-nix-action) | `3.23.0` | `3.23.1` |\n| [dtolnay/rust-toolchain](https://github.com/dtolnay/rust-toolchain) | `7e38f4b43b4db5c8dd498af069a4f6196df1d067` | `e2a55d2ffb04f378e9626c28d38b36d230d1e12f` |\n| [step-security/harden-runner](https://github.com/step-security/harden-runner) | `2.21.1` | `2.22.1` |\n| [github/codeql-action/upload-sarif](https://github.com/github/codeql-action) | `4.38.2` | `4.38.3` |\n\n\nUpdates `actions/upload-artifact` from 7.0.1 to 7.0.2\n- [Release notes](https://github.com/actions/upload-artifact/releases)\n- [Commits](https://github.com/actions/upload-artifact/compare/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a...cf430e030ddbb5b0abf93d22962f4752f3646cd9)\n\nUpdates `actions/download-artifact` from 8.0.1 to 8.0.2\n- [Release notes](https://github.com/actions/download-artifact/releases)\n- [Commits](https://github.com/actions/download-artifact/compare/3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c...9000827ccba6bdab643e8b6fd33ac0654aef8333)\n\nUpdates `DeterminateSystems/determinate-nix-action` from 3.23.0 to 3.23.1\n- [Release notes](https://github.com/determinatesystems/determinate-nix-action/releases)\n- [Commits](https://github.com/determinatesystems/determinate-nix-action/compare/4d65ea9cab522b6d9f29a170aed23ededc1b27af...d0c908e6cbe9f89f36ed8205a3ab6f092636916a)\n\nUpdates `dtolnay/rust-toolchain` from 7e38f4b43b4db5c8dd498af069a4f6196df1d067 to e2a55d2ffb04f378e9626c28d38b36d230d1e12f\n- [Release notes](https://github.com/dtolnay/rust-toolchain/releases)\n- [Commits](https://github.com/dtolnay/rust-toolchain/compare/7e38f4b43b4db5c8dd498af069a4f6196df1d067...e2a55d2ffb04f378e9626c28d38b36d230d1e12f)\n\nUpdates `step-security/harden-runner` from 2.21.1 to 2.22.1\n- [Release notes](https://github.com/step-security/harden-runner/releases)\n- [Commits](https://github.com/step-security/harden-runner/compare/e14015d583714f6e62063499dc959a02595150a1...ccd8616d44fd3846e67624a50d5aad6d37bf2d25)\n\nUpdates `github/codeql-action/upload-sarif` from 4.38.2 to 4.38.3\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2...24c54180a607b1449ed407dd24f251e4e9147c8d)\n\n---\nupdated-dependencies:\n- dependency-name: actions/upload-artifact\n  dependency-version: 7.0.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: actions/download-artifact\n  dependency-version: 8.0.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: DeterminateSystems/determinate-nix-action\n  dependency-version: 3.23.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: dtolnay/rust-toolchain\n  dependency-version: e2a55d2ffb04f378e9626c28d38b36d230d1e12f\n  dependency-type: direct:production\n  dependency-group: all-actions\n- dependency-name: step-security/harden-runner\n  dependency-version: 2.22.1\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: all-actions\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.38.3\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-10-13T11:48:10Z",
+          "tree_id": "03c4241927c828a123c024367684f70f143d4c94",
+          "url": "https://github.com/google/zerocopy/commit/28fbee87ab2473706ba242f2594de8d540525483"
+        },
+        "date": 1791894836931,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 476,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 615,
             "unit": "seconds"
           }
         ]
