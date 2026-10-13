@@ -82,9 +82,14 @@ not to replace the universal algebra proof.
 ## External inputs and trust
 
 Aeneas erases ABI layout information from generic Rust type parameters.
-`Zerocopy.RustLayout.size` and `Zerocopy.RustLayout.align` are therefore
+`Zerocopy.RustLayout.size` and `Zerocopy.RustLayout.alignInput` are
 uninterpreted **data inputs**, each of type `Type → Usize`. No proposition
-about their values is an axiom. The constructors' contracts explicitly
+about their values is an axiom. `RustLayout.align` uses alignment one for the
+concrete byte carrier `U8` and the abstract alignment input for every other
+carrier. That byte interpretation is an explicit compiler-correspondence
+premise, checked by a Rust compile-time assertion. It allows the concrete
+`u8: Unaligned` dictionary to discharge its trait law without assuming that
+all types have alignment one. The constructors' contracts explicitly
 require the relevant primitive reads and alignment properties. The audit
 admits exactly these two names and verifies their signatures. Changing an
 input to a proposition, or adding another axiom, fails the audit.
