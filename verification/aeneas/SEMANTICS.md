@@ -34,10 +34,20 @@ several different metadata values can have the same complete padded size.
 metadata value. It uses each field's complete size, without manipulating the
 normalization's base, phase, or size alignment. `recordState_refinement` proves
 that the normalized prefix fold agrees with this direct rule for arbitrary
-field lists in the construction domain. These are mathematical theorems. The contracts at this stage do not
-establish conformance of an extracted record constructor to this rule.
+field lists in the construction domain. `constructor_matches_record` connects
+the extracted, terminating record constructor to this rule and final rounding.
 
 ## Explicit Rust premise
+
+The Rust reference in `zerocopy/src/layout/nested_reference.rs` follows the same
+recursive rule using checked machine arithmetic and remainder-based rounding.
+`assert_matches_dst_layout` compares its complete optional size with the
+production layout for arbitrary nesting and metadata. A total unit contract
+checks the assertions themselves, including equality when both computations
+overflow. Its early returns describe the construction domain in Rust. Other
+Rust harnesses compare primitive fields, trailing sizes, capacity, metadata,
+and cast results. They make these application claims readable without inspecting
+the out-of-line Lean proofs that establish them.
 
 The mathematical statements do not certify a compiler implementation. Their
 application to Rust assumes the following bridge for the exact compiler,
@@ -104,9 +114,9 @@ bits. Lean's representation permits zero in the external wrapper, so contracts
 using mathematical models reject that zero representation through the native
 NonZero decoder. Its mathematical output carries positivity and machine bounds.
 The rounding decoder accepts every positive representable word and decomposes
-it into a power-of-two alignment and bounded phase; structural layout models
-reuse that shared pair. This admission law has an ordinary Lean proof and does
-not change the extracted raw implementation.
+it into a power-of-two alignment and a bounded phase; structural layout models
+reuse that shared pair. This admission law requires its ordinary Lean proof and
+does not change the extracted raw implementation.
 
 The extracted cast metadata helper uses Rust's unsafe `usize::unchecked_mul`
 and `usize::unchecked_add`. Their handwritten external models use Aeneas's
@@ -127,6 +137,7 @@ correspondences above, the Lean kernel, and specification adequacy. Both
 golden and live extraction must independently satisfy the required theorem
 types, axiom audit, and proof dependency checks. Fuzzy textual equivalence
 alone establishes none of these semantic claims.
+
 
 ## Mathematical model and ghost domain
 
