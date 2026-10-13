@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791922988003,
+  "lastUpdate": 1791926215757,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23599,6 +23599,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 621,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+          "message": "Update Anneal to Aeneas ca282ec and Lean 4.31 (#3822)\n\nAnneal's older extraction toolchain cannot share the newer backend used by\nzerocopy verification. Pin Aeneas ca282ec2312a96f6a985a4d23a663690816d3f3e\nand derive Charon, Rust and Lean versions from that upstream source and lock.\nCheck V1's embedded version metadata against the archive builder.\n\nRetain all four release platforms, building and signing the missing Intel\nMac archive from pinned source. Normalize downloaded Mathlib build inputs\nand rebuild relocatable caches for the updated toolchain.\n\nKeep V1's SpecificationHolds interface as an alias for Aeneas WP.spec.\nAn exhaustive, kernel-checked comparison establishes equivalence to the\nprevious success/failure/divergence predicate without using V1's Rust\naxioms. Compile the actual embedded prelude in the relocated archive test\nand refresh the extraction and diagnostic fixtures for the new versions.\n\ngherrit-pr-id: G7btlodhfbdy3pcw7qjdrj2okvowiex7l\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-10-13T19:44:36Z",
+          "tree_id": "3813fe25cc2c548c419b216dcc5981932abf0f45",
+          "url": "https://github.com/google/zerocopy/commit/8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+        },
+        "date": 1791926213653,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1551,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1708,
             "unit": "seconds"
           }
         ]
