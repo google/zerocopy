@@ -197,6 +197,13 @@ class CopyBackTests(unittest.TestCase):
         self.edit('Models', 'decode self =>\n  self', 'decode self => self')
         self.fails_without_writes(TYPE, message='body on separate lines indented by two spaces')
 
+    def test_trait_projection_edits_are_never_silently_discarded(self):
+        self.generate()
+        (self.work / 'TraitLaws.lean').write_text('module\n-- edited trait law\n')
+        self.fails_without_writes(message='TraitLaws.lean copy-back is unsupported')
+        with self.assertRaisesRegex(ValueError, 'TraitLaws.lean copy-back is unsupported'):
+            workspace.protect_projections(self.work)
+
     def test_original_rust_spec_trailing_blanks_remain_readable_and_noop_preserved(self):
         source = BLOCK.replace('/// ```\n', '/// \n/// \n/// ```\n') + 'fn f(x: usize) {}\n'
         self.generate(source)

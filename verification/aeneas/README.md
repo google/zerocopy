@@ -54,8 +54,10 @@ each tool answers a different question:
    Before Aeneas runs, `admission.py` follows every executable dependency from
    every discovered specification in two snapshots: original promoted MIR as
    imported by Charon, and final LLBC. Annotation status never exempts a callee.
-   Unsupported drops, raw pointers, indirect calls, foreign code, and unknown
-   effects reject extraction. This prevents an operation from being accepted
+   Unsupported drops, raw pointers, arbitrary indirect calls, foreign code,
+   and unknown effects reject extraction. Calls through original trait
+   dictionaries are admitted only through the checked trait-law boundary
+   described below. This prevents an operation from being accepted
    simply because a later lowering forgets it. The small Charon snapshot patch
    preserves evidence; it changes neither Aeneas nor the execution semantics.
 3. Our Lean declarations describe how extracted values are interpreted as
@@ -118,8 +120,9 @@ Each proof check rebuilds the proof package and the shared Lean packages authore
 in this checkout. Lake may reuse the pinned compiler and dependency artifacts;
 it must not reuse an earlier compiled meaning of an edited shared model.
 
-The checked-in `projections/ModelShapes.lean`, `projections/Models.lean`, and
-`projections/Specs.lean` expose the Lean source assembled from Rust annotations.
+The checked-in `projections/ModelShapes.lean`, `projections/Models.lean`,
+`projections/Specs.lean`, and `projections/TraitLaws.lean` expose the Lean source
+assembled from Rust annotations.
 CI regenerates these files in both proof projects and requires exact equality,
 including comments and whitespace. They make generator changes reviewable even
 when the Rust annotations are unchanged. They contain macro invocations, not
@@ -318,14 +321,56 @@ Annotations are outer Rust doc attributes before the decorated item. The Rust
 parser owns the association, including attributes between docs and the item.
 Every reserved fence is accounted for: malformed or misspelled fences, unsupported
 owners, duplicate declarations, and orphaned annotations fail. Literal `#[doc]`
-attributes are also supported. An owner with a literal Aeneas annotation cannot
-also carry computed doc strings. Direct `include_str!` in owner doc expressions
+attributes are also supported. Annotated functions and model types cannot also
+carry computed doc strings. Trait declarations may retain ordinary computed documentation alongside their
+literal invariant fence. Direct `include_str!` in owner doc expressions
 is rejected, including nested, qualified, and conditional invocations. Visible
 reserved literal fragments in computed docs are rejected even when split across
 strings. Conditional and inner doc forms with reserved fences also fail.
 Unannotated computed documentation otherwise retains its ordinary Rust meaning.
 Macro-produced documentation is outside the annotation language: the checker
 does not expand macros or claim to inspect arbitrary external text they produce.
+
+A trait fence declares a law on its exact extracted dictionary:
+
+````rust
+/// ```aeneas
+/// invariant byte_roundtrip for self =>
+///   ∀ byte, (do let encoded ← self.encode byte; self.decode encoded)
+///     ⦃ result => result = byte ⦄
+/// ```
+trait ByteCodec { /* ... */ }
+````
+
+The generated law class uses the native trait parameters and dictionary. A
+generic function specification receives law assumptions for its original
+dictionary inputs, including unused bounds and retained supertraits. These
+computational dictionaries remain outside Rust value decoding. This checks
+selected extraction roots and their dependencies, rather than certifying every
+implementation in the crate or every possible external implementation. Each
+extracted local implementation requires a checked proof for that exact native
+dictionary;
+an implementation fence may select it with `invariant_proof name`. Otherwise the
+proof name is `Zerocopy.Proofs.` followed by the emitted dictionary name without
+its `Zerocopy.` prefix and with `_law` appended. CI also inspects every extracted
+implementation method body in the original and final ASTs, even when only the
+law refers to the method.
+
+This initial bridge accepts traits with only their `Self` parameter and simple
+generic bounds. It compares compiler-resolved original and final type
+applications, rather than matching clause ordinals. Associated types, higher
+ranked bounds, transformed carrier identities, and bounds on nominal model
+definitions fail closed. The compiled audit independently enumerates
+implementation dictionaries and
+requires the same complete set of proof obligations. Omitting or swapping a
+native JSON binding cannot leave an extracted implementation unchecked.
+The native dictionary translation remains a compiler correspondence premise;
+an empty dictionary alone does not distinguish Rust
+types whose Lean carriers coincide. Trait laws have a compiled CI check and an
+exact review projection. Development regeneration and reverse copy-back of
+trait projections are unsupported and reject such edits; edit the Rust invariant
+fence directly. Existing function and model editing baselines retain their
+original three-module authority.
 
 ````rust
 /// ```aeneas
@@ -460,7 +505,11 @@ The elaborated call must pass exactly its original Rust input
 variables, with no swapping, coercion, or substitution. Introduced signatures are
 inspectable in the generated Lean propositions and native editor.
 
-The source annotations determine the extraction roots. Removing an annotation
+Function and nominal-model annotations determine the extraction roots. Trait
+invariants remain required annotations but bind dictionaries reached from those
+roots; a trait name is not itself a root, because that would also select default
+method bodies outside the supported subset. A present trait invariant whose
+dictionary is absent from extraction still fails binding. Removing an annotation
 and its associated proof intentionally removes that claim from the checked set;
 the source and generated golden changes make the reduced coverage reviewable.
 There is no separately maintained function or type coverage roster. Nominal

@@ -93,7 +93,7 @@ export CHARON_ADMISSION_SNAPSHOT="$work/zerocopy.before.ullbc"
 python3 verification/aeneas/prepare.py llbc "$work/zerocopy.llbc"
 "${inline_cmd[@]}" bindings "${inline_args[@]}" --work "$work"
 "$tools_dir/aeneas" -backend lean -namespace Zerocopy -dest "$work/Zerocopy" \
-    -split-files -abort-on-error -warnings-as-errors -no-progress-bar \
+    -split-files -emit-json -abort-on-error -warnings-as-errors -no-progress-bar \
     -use-tuple-structs false \
     "$work/zerocopy.llbc"
 unset CHARON_ADMISSION_SNAPSHOT

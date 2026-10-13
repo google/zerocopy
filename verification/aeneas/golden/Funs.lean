@@ -642,6 +642,71 @@ def byteorder.verification.set_u32_be
       value n
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
+/-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}::decode]:
+    Source: 'src/trait_checks.rs', lines 38:4-40:5 -/
+def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.decode
+  (byte : Std.U8) : Result Std.U8 := do
+  ok (byte ^^^ 170#u8)
+
+/-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}::encode]:
+    Source: 'src/trait_checks.rs', lines 34:4-36:5 -/
+def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.encode
+  (byte : Std.U8) : Result Std.U8 := do
+  ok (byte ^^^ 170#u8)
+
+/-- Trait implementation: [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}]
+    Source: 'src/trait_checks.rs', lines 33:0-41:1 -/
+@[reducible]
+def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec :
+  trait_checks.ByteCodec trait_checks.XorCodec := {
+  encode := trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.encode
+  decode := trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.decode
+}
+
+/-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}::decode]:
+    Source: 'src/trait_checks.rs', lines 51:4-53:5 -/
+def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.decode
+  {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
+  Result Std.U8
+  := do
+  ByteCodecInst.decode byte
+
+/-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}::encode]:
+    Source: 'src/trait_checks.rs', lines 47:4-49:5 -/
+def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.encode
+  {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
+  Result Std.U8
+  := do
+  ByteCodecInst.encode byte
+
+/-- Trait implementation: [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}]
+    Source: 'src/trait_checks.rs', lines 46:0-54:1 -/
+@[reducible]
+def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec {C : Type}
+  (ByteCodecInst : trait_checks.ByteCodec C) : trait_checks.ByteCodec
+  (trait_checks.Forward C) := {
+  encode := trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.encode
+    ByteCodecInst
+  decode := trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.decode
+    ByteCodecInst
+}
+
+/-- [zerocopy::trait_checks::byte_codec_roundtrip]:
+    Source: 'src/trait_checks.rs', lines 60:0-62:1 -/
+def trait_checks.byte_codec_roundtrip
+  {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
+  Result Std.U8
+  := do
+  let i ← ByteCodecInst.encode byte
+  ByteCodecInst.decode i
+
+/-- [zerocopy::trait_checks::forwarded_byte_codec]:
+    Source: 'src/trait_checks.rs', lines 70:0-72:1 -/
+def trait_checks.forwarded_byte_codec (byte : Std.U8) : Result Std.U8 := do
+  trait_checks.byte_codec_roundtrip
+    (trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec
+    trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec) byte
+
 /-- [zerocopy::util::padding_needed_for]:
     Source: 'src/util/mod.rs', lines 163:0-223:1 -/
 def util.padding_needed_for

@@ -69,7 +69,7 @@ def fields(value, expected):
 
 
 class Admission:
-    def __init__(self, data, registry):
+    def __init__(self, data, registry, law_traits=()):
         if data.get('has_errors') is not False or data.get('charon_version') != '0.1.276':
             raise ValueError('Admission requires successful LLBC from the reviewed Charon schema')
         self.crate = data['translated']
@@ -80,6 +80,8 @@ class Admission:
         self.calls = []
         self.globals = set()
         self.current = None
+        self.current_function = None
+        self.law_traits = set(law_traits)
         self.locals = {}
         self.checked_types = set()
         options = self.crate['options']
@@ -131,6 +133,8 @@ class Admission:
             tag, body = variant(element)
             if tag == 'Ident' and body[1] == 0:
                 parts.append(body[0])
+            elif tag == 'Ident' and body[0] == '_' and isinstance(body[1], int) and body[1] > 0:
+                parts.append('_{' + str(body[1]) + '}')
             elif tag == 'Impl':
                 if 'Ty' in body:
                     parts.append('{' + self.ty_name(body['Ty']['skip_binder']) + '}')
@@ -281,8 +285,9 @@ class Admission:
         if self.contains_reference(function['signature']['output']):
             raise ValueError(f'Escaping borrow is unsupported: {name}')
         self.visited[index] = {'rust': name, 'origin': 'body'}
-        previous = self.current, self.locals
+        previous = self.current, self.locals, self.current_function
         self.current = name
+        self.current_function = function
         self.locals = {local['index']: local for local in body['locals']['locals']}
         for local in self.locals.values():
             self.ty_name(local['ty'])
@@ -296,7 +301,7 @@ class Admission:
         except ValueError as error:
             raise ValueError(f'{name}: {error}') from error
         finally:
-            self.current, self.locals = previous
+            self.current, self.locals, self.current_function = previous
 
     def contains_reference(self, value, seen=None):
         seen = set() if seen is None else seen
@@ -433,26 +438,137 @@ class Admission:
 
     def dictionary(self, reference):
         # The pinned dictionaries explicitly name their implementations. A
-        # type-variable clause is acceptable only for marker traits with no
-        # executable methods; never for a callback chosen by a caller.
+        # type-variable clause is retained only when its exact original bound
+        # is known. Executable trait methods additionally need an annotated
+        # law; arbitrary caller-chosen callbacks are not admitted.
         reference = untag(reference)
         kind = reference['kind']
         tag, body = variant(kind)
         if tag == 'TraitImpl':
             index = body['id']
             impl = self.crate['trait_impls'][index]
+            if impl is None or impl['def_id'] != index:
+                raise ValueError('Missing concrete trait implementation metadata')
+            declared = reference['trait_decl_ref']['skip_binder']['id']
+            if declared != impl['impl_trait']['id']:
+                raise ValueError('Concrete dictionary names the wrong implemented trait')
+            trait = self.crate['trait_decls'][declared]
+            if self.name(trait['item_meta']['name']) in self.law_traits:
+                self.audit_implementation(impl, trait)
             for method in impl['methods']:
                 if method is not None:
                     self.visit(method['skip_binder']['id'])
         elif tag in {'BuiltinOrAuto', 'Clause'}:
             trait = self.crate['trait_decls'][reference['trait_decl_ref']['skip_binder']['id']]
-            if trait['methods']:
-                raise ValueError(f'Unresolved dictionary with executable methods {tag}')
+            if trait['methods'] or self.name(trait['item_meta']['name']) in self.law_traits:
+                self.abstract_dictionary(reference)
             # Method-free dictionaries supply typed, evaluated constant data.
             # Compiler CTFE validity remains an explicit normalization premise.
             return
+        elif tag == 'ParentClause':
+            self.abstract_dictionary(reference)
         else:
             raise ValueError(f'Unresolved executable dictionary {tag}')
+
+    def abstract_dictionary(self, reference, require_law=True):
+        """Authorize an exact original generic input, not an arbitrary callback.
+
+        The native Lean call still has an execution WP. Trait laws supply
+        assumptions on this same dictionary; they do not exempt method bodies.
+        Rust/functional dictionary correspondence remains a lowering premise.
+        """
+        reference = untag(reference)
+        tag, variable = variant(reference['kind'])
+        if tag == 'ParentClause':
+            base, index = variable
+            parent = self.abstract_dictionary(base, require_law=False)
+            matches = [c for c in parent.get('implied_clauses', []) if c['clause_id'] == index]
+            if len(matches) != 1:
+                raise ValueError('Supertrait dictionary lacks its declared parent clause')
+            import trait_invariants as traits
+            proposed = traits.predicate(matches[0], self.crate)
+            actual = traits.predicate({'clause_id': index, 'trait_': reference['trait_decl_ref']}, self.crate)
+            base_args = traits.predicate({'clause_id': 0,
+                'trait_': untag(base)['trait_decl_ref']}, self.crate)['arguments']
+
+            def instantiate(value):
+                if isinstance(value, list):
+                    if len(value) == 2 and value[0] == 'parameter':
+                        if not isinstance(value[1], int) or not 0 <= value[1] < len(base_args):
+                            raise ValueError('Supertrait parameter is outside the original dictionary')
+                        return base_args[value[1]]
+                    return [instantiate(v) for v in value]
+                return value
+
+            if proposed['rust'] != actual['rust'] or instantiate(proposed['arguments']) != actual['arguments']:
+                raise ValueError('Supertrait dictionary has the wrong instantiated parent trait')
+            trait = self.crate['trait_decls'][reference['trait_decl_ref']['skip_binder']['id']]
+            if require_law and self.name(trait['item_meta']['name']) not in self.law_traits:
+                raise ValueError('Executable abstract dictionary lacks an admitted trait law')
+            return trait
+        if tag != 'Clause' or self.current_function is None:
+            raise ValueError('Only an original generic Clause dictionary is admitted')
+        kind, index = variant(variable)
+        if kind == 'Bound' and index[0] == 0:
+            index = index[1]
+        elif kind != 'Free':
+            raise ValueError('Higher-ranked executable trait clauses are unsupported')
+        clauses = self.current_function['generics']['trait_clauses']
+        matches = [c for c in clauses if c['clause_id'] == index]
+        if len(matches) != 1 or matches[0]['trait_'] != reference['trait_decl_ref']:
+            raise ValueError('Executable dictionary is outside the exact generic clauses')
+        trait = self.crate['trait_decls'][reference['trait_decl_ref']['skip_binder']['id']]
+        if require_law and self.name(trait['item_meta']['name']) not in self.law_traits:
+            raise ValueError('Executable abstract dictionary lacks an admitted trait law')
+        return trait
+
+    def trait_call(self, dispatch, generics, arguments):
+        reference, method_id = dispatch
+        reference = untag(reference)
+        tag, detail = variant(reference['kind'])
+        if tag in {'Clause', 'ParentClause'}:
+            trait = self.abstract_dictionary(reference)
+        elif tag == 'TraitImpl':
+            self.dictionary(reference)
+            trait = self.crate['trait_decls'][reference['trait_decl_ref']['skip_binder']['id']]
+        else:
+            raise ValueError('Unsupported trait method dispatch path')
+        methods = trait['methods']
+        if not isinstance(method_id, int) or not 0 <= method_id < len(methods) or methods[method_id] is None:
+            raise ValueError('Trait dispatch does not identify a declared method')
+        method = methods[method_id]
+        if method.get('kind') != {'TraitMethod': [trait['def_id'], method_id]}:
+            raise ValueError('Trait method has the wrong compiler declaration owner')
+        if any(method['params'].get(k) for k in ('types', 'regions', 'const_generics', 'trait_clauses')):
+            raise ValueError('Generic trait methods are unsupported')
+        if any(generics.get(k) for k in ('types', 'regions', 'const_generics', 'trait_refs')):
+            raise ValueError('Unexpected trait method instantiation arguments')
+        signature = method['skip_binder']['signature']
+        metadata = method['skip_binder']['item_meta']
+        if metadata.get('has_errors') or metadata.get('is_extern'):
+            raise ValueError('Untranslated or foreign trait method declaration')
+        if signature['abi'] != 'Rust' or signature['is_variadic'] or signature['is_unsafe']:
+            raise ValueError('Unsupported abstract trait method ABI')
+        if len(signature['inputs']) != len(arguments):
+            raise ValueError('Trait method call arguments disagree with its declaration')
+        self.calls.append({'caller': self.current, 'trait': self.name(trait['item_meta']['name']),
+                           'method': method_id, 'dictionary': reference['kind']})
+
+    def audit_implementation(self, implementation, trait):
+        for index, method in enumerate(trait['methods']):
+            if method is None:
+                continue
+            methods = implementation['methods']
+            if index >= len(methods) or methods[index] is None:
+                raise ValueError('Annotated trait implementation is missing a method body')
+            entry = methods[index]
+            function = self.functions.get(entry['skip_binder']['id'])
+            source = function.get('src', {}).get('TraitImpl') if function else None
+            if (entry.get('kind') != {'TraitMethod': [trait['def_id'], index]}
+                    or source is None or source['impl_ref']['id'] != implementation['def_id']
+                    or source['trait_ref']['id'] != trait['def_id'] or source['item_id'] != index):
+                raise ValueError('Trait implementation method has the wrong compiler owner')
+            self.visit(entry['skip_binder']['id'])
 
     def rvalue(self, rvalue):
         tag, body = variant(rvalue)
@@ -564,10 +680,12 @@ class Admission:
                 fields(body, 'call on_unwind')
                 call = body['call']; fields(call, 'func args dest')
                 category, fn = variant(call['func'])
-                if category != 'Regular' or variant(fn['kind'])[0] != 'Fun':
+                if category != 'Regular':
                     raise ValueError('Unresolved trait, callback, or indirect call')
                 fields(fn, 'kind generics')
-                callee = fn['kind']['Fun']
+                kind, callee = variant(fn['kind'])
+                if kind not in {'Fun', 'Trait'}:
+                    raise ValueError('Unresolved trait, callback, or indirect call')
                 for operand in call['args']:
                     self.operand(operand)
                 self.place(call['dest'])
@@ -575,6 +693,10 @@ class Admission:
                     self.ty_name(ty)
                 for ref in fn['generics']['trait_refs']:
                     self.dictionary(ref)
+                if kind == 'Trait':
+                    self.trait_call(callee, fn['generics'], call['args'])
+                    self.block(body['on_unwind'], True)
+                    continue
                 target = self.functions[callee]
                 name = self.name(target['item_meta']['name'])
                 if name == 'zerocopy::util::transmute_unchecked':
@@ -676,6 +798,13 @@ class Admission:
             if len(matches) != 1:
                 raise ValueError(f'Missing or ambiguous specification root {root}')
             self.visit(matches[0])
+        for implementation in self.crate.get('trait_impls', []):
+            if not implementation or implementation['item_meta']['is_local'] is not True:
+                continue
+            trait = self.crate['trait_decls'][implementation['impl_trait']['id']]
+            if self.name(trait['item_meta']['name']) not in self.law_traits:
+                continue
+            self.audit_implementation(implementation, trait)
         return {'roots': sorted(roots), 'executions': list(self.visited.values()),
                 'calls': self.calls}
 
@@ -737,7 +866,7 @@ def input_identity(root):
             'runtime': digest(tools / 'aeneas-build.json')}
 
 
-def inspect(root, work, roots, sources, body_digests=None):
+def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
     registry_path = root / 'verification/aeneas/external.json'
     registry = json.loads(registry_path.read_text())
     reports = {}
@@ -745,7 +874,7 @@ def inspect(root, work, roots, sources, body_digests=None):
         path = work / filename
         if not path.is_file():
             raise ValueError(f'Missing mandatory {stage} admission snapshot: {path}')
-        checked = Admission(json.loads(path.read_text()), registry)
+        checked = Admission(json.loads(path.read_text()), registry, law_traits)
         if checked.before != (stage == 'before'):
             raise ValueError(f'Wrong AST stage for mandatory {stage} snapshot')
         reports[stage] = checked.audit(roots)
@@ -763,7 +892,7 @@ def inspect(root, work, roots, sources, body_digests=None):
                if row.get('opaque') or row['signature']['unsafe']}
     def guarded_calls(stage):
         return Counter((call['caller'], call['callee']) for call in stage['calls']
-                       if call['callee'] in guarded)
+                       if call.get('callee') in guarded)
     missing = guarded_calls(reports['before']) - guarded_calls(reports['llbc'])
     if missing:
         raise ValueError(f'Normalization lost a guarded call boundary: {list(missing)}')
