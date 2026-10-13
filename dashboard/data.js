@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791894838640,
+  "lastUpdate": 1791909473298,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23531,6 +23531,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 615,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "neonjavadev@gmail.com",
+            "name": "Hemanth",
+            "username": "neonjava"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "449226514e6b53741c178b7e8323c18f9c035120",
+          "message": "[ci] Check packaged licenses (#3857)\n\nPackage both crates without a lockfile and compare all three license files\nin each archive with the repository copies. Excluding the lockfile lets the\ncheck run before a new derive version is available from the registry.\n\nMakes progress on #192",
+          "timestamp": "2026-10-13T15:59:20Z",
+          "tree_id": "cc06cbcfeab4f474847139b2d93f6281e62aa5e7",
+          "url": "https://github.com/google/zerocopy/commit/449226514e6b53741c178b7e8323c18f9c035120"
+        },
+        "date": 1791909470435,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 325,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 434,
             "unit": "seconds"
           }
         ]
