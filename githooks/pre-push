@@ -54,7 +54,7 @@ for f in ./ci/*; do
 done
 # We don't want to run release_crate_version or the expensive package check
 # here, and zerocopy/ci/check_fmt.sh is called by ci/check_fmt.sh above.
-GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt|check_package_licenses).sh"
+GLOBIGNORE="./zerocopy/ci/@(release_crate_version|check_fmt|check_packaging).sh"
 for f in ./zerocopy/ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
