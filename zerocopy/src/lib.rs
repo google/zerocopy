@@ -6546,6 +6546,9 @@ pub use zerocopy_derive::Unaligned;
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(Unaligned)]` to `{Self}`")
 )]
+/// ```aeneas
+/// invariant unaligned for self => Zerocopy.RustLayout.align Self = 1#usize
+/// ```
 pub unsafe trait Unaligned {
     // The `Self: Sized` bound makes it so that `Unaligned` is still object
     // safe.
