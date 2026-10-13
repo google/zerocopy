@@ -9,7 +9,7 @@
  29 │ ///   · exact {}
     ╰────
 
-  × Goal is not a `spec m P`
+  × Exists is not a supported spec statement
     ╭─[[PROJECT_ROOT]/src/lib.rs:28:7]
  27 │ ///   unfold test_slice at *
  28 │ ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, i_post ⟩

@@ -942,7 +942,7 @@ fn patch_funs(content: &str) -> String {
     let mut lines: Vec<&str> = content.split('\n').collect();
     let mut insert_idx = 0;
     for (i, line) in lines.iter().enumerate() {
-        if line.starts_with("import ") {
+        if line.starts_with("import ") || line.starts_with("public import ") {
             insert_idx = i + 1;
         }
     }
