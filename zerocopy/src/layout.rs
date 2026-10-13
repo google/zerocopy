@@ -2332,6 +2332,110 @@ mod tests {
     use super::*;
     use crate::PointerMetadata as _;
 
+    // The MSRV's dead-code analysis does not follow uses in unnamed consts.
+    #[allow(dead_code)]
+    const fn sized_size(layout: DstLayout) -> usize {
+        match layout.size_info {
+            SizeInfo::Sized { size } => size,
+            SizeInfo::SliceDst(_) => const_panic!("expected a sized layout"),
+        }
+    }
+
+    // Compare reconstructed layouts directly with rustc's size and alignment
+    // of the complete type.
+    #[allow(dead_code)]
+    const fn assert_compiler_layout<T>(layout: DstLayout) {
+        const_assert!(layout.align.get() == mem::align_of::<T>());
+        const_assert!(sized_size(layout) == mem::size_of::<T>());
+    }
+
+    // Keep the type declaration, ordered field reconstruction, and compiler
+    // comparisons together. Evaluating the associated constants below checks
+    // those concrete generic instantiations without generic const expressions
+    // on the MSRV.
+    macro_rules! assert_repr_c_layout {
+        ($name:ident, $repr:meta, $align:expr, $packed:expr) => {
+            #[derive(crate::KnownLayout)]
+            #[$repr]
+            struct $name<T, const N: usize> {
+                prefix: u8,
+                data: [T; N],
+                tag: u16,
+                tail: T,
+            }
+
+            impl<T: crate::KnownLayout, const N: usize> $name<T, N> {
+                #[allow(dead_code)]
+                const ASSERT_LAYOUT: () = {
+                    let reconstructed = DstLayout::for_repr_c_struct(
+                        $align,
+                        $packed,
+                        &[
+                            DstLayout::for_type::<u8>(),
+                            DstLayout::for_type::<[T; N]>(),
+                            DstLayout::for_type::<u16>(),
+                            DstLayout::for_type::<T>(),
+                        ],
+                    );
+                    assert_compiler_layout::<Self>(reconstructed);
+                    assert_compiler_layout::<Self>(<Self as crate::KnownLayout>::LAYOUT);
+                };
+
+                #[rustversion::since(1.77)]
+                const ASSERT_OFFSETS: () = {
+                    let prefix =
+                        DstLayout::new_zst($align).extend(DstLayout::for_type::<u8>(), $packed);
+                    let data = prefix.extend(DstLayout::for_type::<[T; N]>(), $packed);
+                    let tag = data.extend(DstLayout::for_type::<u16>(), $packed);
+                    let tail = tag.extend(DstLayout::for_type::<T>(), $packed);
+                    const_assert!(mem::offset_of!(Self, prefix) == 0);
+                    // `extend` has not added trailing padding, so subtracting
+                    // the last field's size gives its reconstructed offset.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    {
+                        const_assert!(
+                            mem::offset_of!(Self, data)
+                                == sized_size(data) - mem::size_of::<[T; N]>()
+                        );
+                        const_assert!(
+                            mem::offset_of!(Self, tag) == sized_size(tag) - mem::size_of::<u16>()
+                        );
+                        const_assert!(
+                            mem::offset_of!(Self, tail) == sized_size(tail) - mem::size_of::<T>()
+                        );
+                    }
+                };
+            }
+
+            const _: () = $name::<u64, 3>::ASSERT_LAYOUT;
+            const _: () = $name::<[u8; 3], 2>::ASSERT_LAYOUT;
+            const _: () = $name::<(), 0>::ASSERT_LAYOUT;
+
+            #[rustversion::since(1.77)]
+            const _: () = $name::<u64, 3>::ASSERT_OFFSETS;
+            #[rustversion::since(1.77)]
+            const _: () = $name::<[u8; 3], 2>::ASSERT_OFFSETS;
+            #[rustversion::since(1.77)]
+            const _: () = $name::<(), 0>::ASSERT_OFFSETS;
+        };
+    }
+
+    assert_repr_c_layout!(NativeC, repr(C), None, None);
+    assert_repr_c_layout!(NativeAlignedC, repr(C, align(16)), NonZeroUsize::new(16), None);
+    assert_repr_c_layout!(NativePackedC, repr(C, packed(2)), None, NonZeroUsize::new(2));
+
+    #[derive(crate::KnownLayout, crate::Unaligned)]
+    #[repr(C)]
+    struct UnalignedByte {
+        byte: u8,
+    }
+
+    const _: () = {
+        const_assert!(mem::align_of::<u8>() == 1);
+        const_assert!(mem::align_of::<UnalignedByte>() == 1);
+        assert_compiler_layout::<UnalignedByte>(<UnalignedByte as crate::KnownLayout>::LAYOUT);
+    };
+
     /// Models the size of nested `repr(C)` structs ending in a slice.
     ///
     /// `leading` lists structs from outermost to innermost. Each tuple gives
