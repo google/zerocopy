@@ -33,10 +33,14 @@ manifest = json.loads(Path(sys.argv[1]).read_text())
 if manifest.get('version') != 3 or manifest.get('mode') != 'verified-live':
     raise SystemExit('Invalid verified bindings for extraction controls')
 functions = {row['raw'] for row in manifest['bindings'].values() if row['kind'] == 'function'}
+print('nonzero' if 'Zerocopy.trait_checks.divide_by_unaligned' in functions else '')
 print('storage' if 'Zerocopy.util.safety_checks.checked_bool' in functions else '')
 print('into-bytes' if any(row['rust'] == 'zerocopy::IntoBytes' for row in manifest['trait_laws']) else '')
 PY
 )
+if [[ $capabilities == *nonzero* ]]; then
+    run python3 -B verification/aeneas/tests/nonzero_instantiation_controls.py "$project"
+fi
 if [[ $capabilities == *into-bytes* ]]; then
     run python3 -B verification/aeneas/tests/trait_const_binding_controls.py "$project"
     run python3 -B verification/aeneas/tests/unemitted_type_controls.py "$project"

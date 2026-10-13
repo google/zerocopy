@@ -70,6 +70,17 @@ axiom core.num.nonzero.NonZero.new
   core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
   T → Result (Option (core.num.nonzero.NonZero T Clause0_NonZeroInner))
 
+/-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::new_unchecked]:
+    Source: '/rustc/library/core/src/num/nonzero.rs', lines 405:4-405:51
+    Name pattern: [core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new_unchecked]
+    Visibility: public -/
+@[rust_fun
+  "core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::new_unchecked"]
+axiom core.num.nonzero.NonZero.new_unchecked
+  {T : Type} {Clause0_NonZeroInner : Type} (ZeroablePrimitiveInst :
+  core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
+  T → Result (core.num.nonzero.NonZero T Clause0_NonZeroInner)
+
 /-- [core::num::nonzero::{core::num::nonzero::NonZero<T, Clause0_NonZeroInner>}::get]:
     Source: '/rustc/library/core/src/num/nonzero.rs', lines 467:4-467:31
     Name pattern: [core::num::nonzero::{core::num::nonzero::NonZero<@T, @Clause0_NonZeroInner>}::get]
