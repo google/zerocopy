@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791909473298,
+  "lastUpdate": 1791922988003,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23565,6 +23565,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 434,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c55af491426ef53f35fb8c6e83f220fa07712e66",
+          "message": "Release 0.8.63 with packaged SPDX header checks (#3859)\n\n* [ci] Check SPDX headers in packaged production sources\n\nCloses #3858\n\n* Release 0.8.63\n\n* [ci] Rename package checks to check_packaging",
+          "timestamp": "2026-10-13T19:18:09Z",
+          "tree_id": "7570ee1a77aea4e33ca8e5eb32dba7cb93580849",
+          "url": "https://github.com/google/zerocopy/commit/c55af491426ef53f35fb8c6e83f220fa07712e66"
+        },
+        "date": 1791922984639,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 397,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 621,
             "unit": "seconds"
           }
         ]
