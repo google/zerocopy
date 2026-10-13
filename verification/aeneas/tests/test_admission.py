@@ -214,6 +214,24 @@ class AdmissionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'compiler override RUSTFLAGS'):
                 admission.input_identity(ROOT)
 
+    def test_nonzero_constructor_template_preserves_guarded_result_and_dictionary(self):
+        leaf = 'core.num.nonzero.NonZero.new_unchecked'
+        evidence = {'stages': {'llbc': {'executions': [{'rust': 'std constructor', 'lean': leaf}]}}}
+        signature = ('axiom ' + leaf + ' {T : Type} {Clause0_NonZeroInner : Type} '
+            '(ZeroablePrimitiveInst : core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) : '
+            'T → Result (core.num.nonzero.NonZero T Clause0_NonZeroInner)')
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            (work / 'Zerocopy').mkdir()
+            template = work / 'Zerocopy/FunsExternal_Template.lean'
+            template.write_text(signature)
+            admission.check_translation(work, evidence)
+            for mutant in [signature.replace('Result (', '('),
+                    signature.replace('ZeroablePrimitive T', 'ZeroablePrimitive Bool'), '']:
+                template.write_text(mutant)
+                with self.assertRaisesRegex(ValueError, 'failure-capable signature'):
+                    admission.check_translation(work, evidence)
+
     def test_input_identity_covers_the_full_source_tree_and_shared_models(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

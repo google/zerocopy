@@ -22,6 +22,50 @@ substitute implementation. None of these adapters executes the function.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 
+@[contract_simps] theorem required_unaligned_alignment (T : Type) (dictionary : Unaligned T)
+    (run : Result Usize)
+    (provided : Specs.unaligned_alignment_spec_contract T dictionary run) :
+    Obligations.unaligned_alignment_spec_contract T dictionary run := by
+  intro law
+  letI : RustModel T := ⟨T, some⟩
+  letI := law
+  apply WP.spec_mono provided
+  rintro alignment ⟨mathematical, decoded, one⟩
+  apply UScalar.eq_of_val_eq
+  have numeric := (decodeUScalar_iff alignment mathematical).mp decoded
+  change alignment.val = 1
+  exact numeric.trans one
+
+@[contract_simps] theorem required_unaligned_check (T : Type) (dictionary : Unaligned T)
+    (run : Result Unit) (provided : Specs.unaligned_check_spec_contract T dictionary run) :
+    Obligations.unaligned_check_spec_contract T dictionary run := by
+  intro law
+  letI : RustModel T := ⟨T, some⟩
+  letI := law
+  apply WP.spec_mono provided
+  intro _ _
+  trivial
+
+@[contract_simps] theorem required_unused_unaligned_bound (T : Type)
+    (dictionary : Unaligned T) (value : Usize) (run : Result Usize)
+    (provided : Specs.unused_unaligned_bound_spec_contract T dictionary value run) :
+    Obligations.unused_unaligned_bound_spec_contract T dictionary value run := by
+  intro law
+  letI : RustModel T := ⟨T, some⟩
+  letI := law
+  apply WP.spec_mono (provided (unsignedWord value) rfl)
+  rintro result ⟨mathematical, decoded, same⟩
+  apply UScalar.eq_of_val_eq
+  exact ((decodeUScalar_iff result mathematical).mp decoded).trans
+    (congrArg UnsignedWord.value same)
+
+@[contract_simps] theorem required_concrete_unaligned_check (run : Result Unit)
+    (provided : Specs.concrete_unaligned_check_spec_contract run) :
+    Obligations.concrete_unaligned_check_spec_contract run := by
+  apply WP.spec_mono provided
+  intro _ _
+  trivial
+
 @[contract_simps] theorem required_byte_codec_roundtrip (C : Type)
     (dictionary : trait_checks.ByteCodec C) (byte : U8) (run : Result U8)
     (provided : Specs.byte_codec_roundtrip_spec_contract C dictionary byte run) :
@@ -30,6 +74,29 @@ namespace Zerocopy.Proofs
   letI : RustModel C := ⟨C, some⟩
   letI := law
   apply WP.spec_mono (provided (unsignedWord byte) rfl)
+  rintro result ⟨mathematical, decoded, same⟩
+  apply UScalar.eq_of_val_eq
+  exact ((decodeUScalar_iff result mathematical).mp decoded).trans
+    (congrArg UnsignedWord.value same)
+
+@[contract_simps] theorem required_divide_by_unaligned (T : Type)
+    (dictionary : Unaligned T) (x : Usize) (run : Result Usize)
+    (provided : Specs.divide_by_unaligned_spec_contract T dictionary x run) :
+    Obligations.divide_by_unaligned_spec_contract T dictionary x run := by
+  intro law
+  letI : RustModel T := ⟨T, some⟩
+  letI := law
+  apply WP.spec_mono (provided (unsignedWord x) rfl)
+  rintro result ⟨mathematical, decoded, same⟩
+  apply UScalar.eq_of_val_eq
+  exact ((decodeUScalar_iff result mathematical).mp decoded).trans
+    (congrArg UnsignedWord.value same)
+
+@[contract_simps] theorem required_divide_by_byte_alignment (x : Usize)
+    (run : Result Usize)
+    (provided : Specs.divide_by_byte_alignment_spec_contract x run) :
+    Obligations.divide_by_byte_alignment_spec_contract x run := by
+  apply WP.spec_mono (provided (unsignedWord x) rfl)
   rintro result ⟨mathematical, decoded, same⟩
   apply UScalar.eq_of_val_eq
   exact ((decodeUScalar_iff result mathematical).mp decoded).trans

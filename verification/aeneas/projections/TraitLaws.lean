@@ -17,7 +17,11 @@ namespace Zerocopy.TraitLaws
 trait_dictionary @Zerocopy.core.num.nonzero.ZeroablePrimitive
 trait_dictionary @Zerocopy.byteorder.private.Sealed
 trait_dictionary @Zerocopy.byteorder.ByteOrder
+trait_dictionary @Zerocopy.Unaligned
 trait_dictionary @Zerocopy.trait_checks.ByteCodec
+trait_invariant unaligned for @Zerocopy.Unaligned with 1 type parameters where self =>
+  Zerocopy.RustLayout.align Self = 1#usize
+
 trait_invariant byte_roundtrip for @Zerocopy.trait_checks.ByteCodec with 1 type parameters where self =>
   ∀ byte, (do let encoded ← self.encode byte; self.decode encoded)
       ⦃ result => result = byte ⦄

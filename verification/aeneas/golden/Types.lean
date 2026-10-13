@@ -130,24 +130,30 @@ structure layout.DstLayout where
   statically_shallow_unpadded : Bool
 
 /-- [zerocopy::layout::nested_reference::NestedLayer]
-    Source: 'src/layout/nested_reference.rs', lines 27:0-31:1 -/
+    Source: 'src/layout/nested_reference.rs', lines 29:0-33:1 -/
 structure layout.nested_reference.NestedLayer where
   packed : Std.Usize
   min_align : Std.Usize
   prefix_bytes : Std.Usize
 
+/-- Trait declaration: [zerocopy::Unaligned]
+    Source: 'src/lib.rs', lines 6548:0-6555:1
+    Visibility: public -/
+structure Unaligned (Self : Type) where
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
-    Source: 'src/trait_checks.rs', lines 24:0-27:1 -/
+    Source: 'src/trait_checks.rs', lines 97:0-100:1 -/
 structure trait_checks.ByteCodec (Self : Type) where
   encode : Std.U8 → Result Std.U8
   decode : Std.U8 → Result Std.U8
 
 /-- [zerocopy::trait_checks::XorCodec]
-    Source: 'src/trait_checks.rs', lines 29:0-29:16 -/
+    Source: 'src/trait_checks.rs', lines 102:0-102:16 -/
 structure trait_checks.XorCodec where
 
 /-- [zerocopy::trait_checks::Forward]
-    Source: 'src/trait_checks.rs', lines 42:0-42:34 -/
+    Source: 'src/trait_checks.rs', lines 115:0-115:34 -/
 structure trait_checks.Forward (C : Type) where
   _0 : core.marker.PhantomData C
 

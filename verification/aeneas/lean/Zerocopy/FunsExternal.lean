@@ -85,7 +85,20 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
 -- every consumer must prove its contract under explicit size/alignment inputs.
 -- The axiom audit admits exactly these signatures, never arbitrary axioms.
 axiom Zerocopy.RustLayout.size (T : Type) : Usize
-axiom Zerocopy.RustLayout.align (T : Type) : Usize
+axiom Zerocopy.RustLayout.alignInput (T : Type) : Usize
+
+-- The byte primitive has compiler alignment one. Its native compile-time
+-- assertion lives beside the Rust layout fixtures. This is a concrete external
+-- interpretation, not a proof of an arbitrary ABI fact; generic types retain
+-- the original unconstrained data input. Keep this one case explicit rather
+-- than inferring physical layout from a Lean type's mathematical meaning.
+noncomputable def Zerocopy.RustLayout.align (T : Type) : Usize := by
+  classical
+  exact if T = U8 then 1#usize else Zerocopy.RustLayout.alignInput T
+
+@[simp] theorem Zerocopy.RustLayout.align_u8 :
+    Zerocopy.RustLayout.align U8 = 1#usize := by
+  simp [Zerocopy.RustLayout.align]
 
 @[simp] noncomputable def core.mem.size_of (T : Type) : Result Usize := by
   classical
@@ -104,4 +117,16 @@ axiom Zerocopy.RustLayout.align (T : Type) : Usize
   classical
   exact if h : T = Usize then
     if (cast h x : Usize) = 0#usize then .ok none else .ok (some ⟨x⟩)
+  else forbiddenExecution
+
+-- The pinned std contract requires a nonzero argument. Guard the execution
+-- before producing even a raw wrapper: zero is forbidden, including when a
+-- caller discards the result. Only Usize is reviewed, and admission checks its
+-- original Rust type and lifted NonZeroUsizeInner argument independently.
+@[simp] noncomputable def core.num.nonzero.NonZero.new_unchecked
+    {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
+    (x : T) : Result (core.num.nonzero.NonZero T Inner) := by
+  classical
+  exact if h : T = Usize then
+    if (cast h x : Usize) = 0#usize then forbiddenExecution else .ok ⟨x⟩
   else forbiddenExecution

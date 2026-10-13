@@ -274,6 +274,54 @@ spec empty_layout_checks_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.empty_layout_checks_spec for Zerocopy.layout.primitive_checks.check_empty_layout with 1
 
+check_model_inputs Zerocopy.trait_checks.unaligned_alignment with 1 type parameters
+aeneas_spec_begin
+spec unaligned_alignment_spec
+  for @Zerocopy.trait_checks.unaligned_alignment with 1 type parameters
+  ensures alignment => (alignment : Nat) = 1
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.unaligned_alignment_spec for Zerocopy.trait_checks.unaligned_alignment with 2
+
+check_model_inputs Zerocopy.trait_checks.check_unaligned with 1 type parameters
+aeneas_spec_begin
+spec unaligned_check_spec
+  for @Zerocopy.trait_checks.check_unaligned with 1 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.unaligned_check_spec for Zerocopy.trait_checks.check_unaligned with 2
+
+check_model_inputs Zerocopy.trait_checks.unused_unaligned_bound with 1 type parameters
+aeneas_spec_begin
+spec unused_unaligned_bound_spec
+  for @Zerocopy.trait_checks.unused_unaligned_bound with 1 type parameters
+  ensures result => result = value
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.unused_unaligned_bound_spec for Zerocopy.trait_checks.unused_unaligned_bound with 3
+
+check_model_inputs Zerocopy.trait_checks.check_byte_unaligned with 0 type parameters
+aeneas_spec_begin
+spec concrete_unaligned_check_spec
+  for @Zerocopy.trait_checks.check_byte_unaligned with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.concrete_unaligned_check_spec for Zerocopy.trait_checks.check_byte_unaligned with 0
+
+check_model_inputs Zerocopy.trait_checks.divide_by_unaligned with 1 type parameters
+aeneas_spec_begin
+spec divide_by_unaligned_spec
+  for @Zerocopy.trait_checks.divide_by_unaligned with 1 type parameters
+  ensures result => result = x
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.divide_by_unaligned_spec for Zerocopy.trait_checks.divide_by_unaligned with 3
+
+check_model_inputs Zerocopy.trait_checks.divide_by_byte_alignment with 0 type parameters
+aeneas_spec_begin
+spec divide_by_byte_alignment_spec
+  for @Zerocopy.trait_checks.divide_by_byte_alignment with 0 type parameters
+  ensures result => result = x
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.divide_by_byte_alignment_spec for Zerocopy.trait_checks.divide_by_byte_alignment with 1
+
 check_model_inputs Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
 aeneas_spec_begin
 spec byte_codec_roundtrip_spec
