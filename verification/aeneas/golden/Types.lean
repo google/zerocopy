@@ -303,18 +303,24 @@ structure FromBytes (Self : Type) where
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
+/-- Trait declaration: [zerocopy::Unaligned]
+    Source: 'src/lib.rs', lines 6564:0-6571:1
+    Visibility: public -/
+structure Unaligned (Self : Type) where
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
-    Source: 'src/trait_checks.rs', lines 26:0-29:1 -/
+    Source: 'src/trait_checks.rs', lines 97:0-100:1 -/
 structure trait_checks.ByteCodec (Self : Type) where
   encode : Std.U8 → Result Std.U8
   decode : Std.U8 → Result Std.U8
 
 /-- [zerocopy::trait_checks::XorCodec]
-    Source: 'src/trait_checks.rs', lines 31:0-31:16 -/
+    Source: 'src/trait_checks.rs', lines 102:0-102:16 -/
 structure trait_checks.XorCodec where
 
 /-- [zerocopy::trait_checks::Forward]
-    Source: 'src/trait_checks.rs', lines 47:0-47:34 -/
+    Source: 'src/trait_checks.rs', lines 118:0-118:34 -/
 structure trait_checks.Forward (C : Type) where
   _0 : core.marker.PhantomData C
 
