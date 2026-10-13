@@ -26,9 +26,13 @@ trait_dictionary @Zerocopy.TryFromBytes
 trait_dictionary @Zerocopy.FromZeros
 trait_dictionary @Zerocopy.FromBytes
 trait_dictionary @Zerocopy.IntoBytes
+trait_dictionary @Zerocopy.Unaligned
 trait_dictionary @Zerocopy.trait_checks.ByteCodec
 trait_invariant from_zeros_valid for @Zerocopy.FromZeros with 1 type parameters where self =>
   AeneasSpecs.RustModel.zeroRepresentation Self
+
+trait_invariant unaligned for @Zerocopy.Unaligned with 1 type parameters where self =>
+  Zerocopy.RustLayout.align Self = 1#usize
 
 trait_invariant byte_roundtrip for @Zerocopy.trait_checks.ByteCodec with 1 type parameters where self =>
   ∀ byte, (do let encoded ← self.encode byte; self.decode encoded)
