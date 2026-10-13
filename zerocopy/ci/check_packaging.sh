@@ -11,7 +11,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Check that both package archives contain unmodified copies of every license.
+# Check that both package archives contain unmodified copies of every license
+# and SPDX headers in production sources and the rustdoc stylesheet.
 # Excluding the lockfile permits packaging before a new derive version is
 # available from the registry.
 ./cargo.sh +stable package --allow-dirty --no-verify \
@@ -28,4 +29,26 @@ for crate in zerocopy zerocopy-derive; do
   for license in LICENSE-APACHE LICENSE-BSD LICENSE-MIT; do
     tar -xOzf "$archive" "$crate-$version/$license" | cmp - "../$license"
   done
+
+  packaged_files=$(tar -tzf "$archive")
+  while IFS= read -r file; do
+    path=${file#"$crate-$version/"}
+    case "$path" in
+      # Derive-output tests include generated Rust snapshots, not production
+      # sources. Other test fixtures, benchmarks, and metadata are out of scope.
+      src/output_tests/*) continue ;;
+      src/*.rs|build.rs|rustdoc/style.css) ;;
+      *) continue ;;
+    esac
+
+    # Do not use grep -q: reading the entire stream avoids a SIGPIPE in tar
+    # when a header matches before the end of a large file.
+    if ! tar -xOzf "$archive" "$file" | \
+      grep -Fx -e '// SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT' \
+        -e '/* SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT */' \
+        > /dev/null; then
+      echo "Missing SPDX license header: $file" >&2
+      exit 1
+    fi
+  done <<< "$packaged_files"
 done
