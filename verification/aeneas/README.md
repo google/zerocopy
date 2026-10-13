@@ -967,6 +967,19 @@ records but does not formally prove:
   Rust values by admitting zero; the generated conditional contracts assume
   successful recursive decoding of inputs and prove it for returned values.
   This introduces no axiom asserting that every modeled wrapper is nonzero.
+- The guarded `NonZeroUsize::new_unchecked` interpretation returns its input
+  in the raw wrapper only when that input is nonzero. Zero and unsupported
+  native types produce forbidden execution (`fail undef`), including when the
+  result is ignored. Admission checks the original Rust `usize` instantiation
+  and its lifted `NonZeroUsizeInner` argument; the compiled audit compares the
+  whole definition independently of successful-input proofs. The pinned std
+  contract (`core/src/num/nonzero.rs`, nightly-2026-09-17, lines 394–399) says
+  that zero causes undefined behavior and requires a nonzero argument. Its
+  Rust-to-model correspondence remains a primitive boundary premise. The
+  `divide_by_unaligned` body stays extracted: the exact dictionary's law proves
+  alignment one, hence `1 / alignment = 1`, establishing constructor safety
+  before the final checked division. The concrete `u8` caller discharges its
+  implementation law. These proofs concern values and arithmetic, not memory.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
