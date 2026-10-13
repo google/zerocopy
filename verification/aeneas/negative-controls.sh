@@ -256,6 +256,52 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# A successful nonzero caller cannot detect a changed zero branch. Mutate only
+# this leaf, verify that the mutation still typechecks, and require the whole
+# definition audit and the zero-execution tests to reject it independently.
+if has_model trait_checks.divide_by_unaligned; then
+    python3 -B "$repo/verification/aeneas/tests/nonzero_instantiation_controls.py" \
+        "$repo/target/aeneas/verification"
+    [[ -f NonZeroSafetyTests.lean ]] || {
+        echo "Unchecked NonZero construction requires NonZeroSafetyTests.lean" >&2; exit 1;
+    }
+    for outcome in panic success; do
+        python3 - "$outcome" <<'PYCONTROL'
+from pathlib import Path
+import sys
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+before = "if (cast h x : Usize) = 0#usize then forbiddenExecution else .ok ⟨x⟩"
+replacement = ".fail .panic" if sys.argv[1] == "panic" else ".ok ⟨x⟩"
+after = before.replace("then forbiddenExecution", "then " + replacement)
+if s.count(before) != 1:
+    raise SystemExit("Unchecked NonZero zero-branch control no longer matches")
+p.write_text(s.replace(before, after, 1))
+PYCONTROL
+        check_model_mutant "zero NonZero constructor modeled as $outcome" Zerocopy.FunsExternal
+        expect_failure "zero NonZero constructor modeled as $outcome" nonzero-audit.log audit
+        if ! grep -Fq 'NonZero::new_unchecked changed its complete forbidden-execution interpretation' "$backup/nonzero-audit.log"; then
+            cat "$backup/nonzero-audit.log" >&2; exit 1
+        fi
+        expect_failure "zero NonZero constructor modeled as $outcome in the kernel" nonzero-proof.log \
+            aeneas_lake env lean -DwarningAsError=true NonZeroSafetyTests.lean
+        restore_build
+    done
+    cat > NegativeControl.lean <<'LEAN'
+import Proofs.TraitChecks
+open Aeneas Aeneas.Std AeneasSpecs Zerocopy
+-- A model dictionary supplies no proof of the original trait dictionary's law.
+example (T : Type) (dictionary : Unaligned T) (x : Usize) [RustModel T] : True := by
+  have _ := Zerocopy.Proofs.divide_by_unaligned_spec T dictionary x
+  trivial
+LEAN
+    expect_failure "the generic unsafe caller without its Unaligned law" nonzero-law.log \
+        aeneas_lake env lean -DwarningAsError=true NegativeControl.lean
+    if ! grep -Fq 'TraitLaws.unaligned' "$backup/nonzero-law.log"; then
+        cat "$backup/nonzero-law.log" >&2; exit 1
+    fi
+fi
+
 # Original usize const identities must survive real compiler simplification.
 # This is selected by the annotated trait, not by a fixed implementation name.
 into_bytes=$(python3 - <<'PYCONTROL'
@@ -731,7 +777,7 @@ def replace(old, new):
         raise SystemExit("External-input negative control no longer matches: " + old)
     s = s.replace(old, new)
 size = 'axiom Zerocopy.RustLayout.size (T : Type) : Usize'
-align = 'axiom Zerocopy.RustLayout.align (T : Type) : Usize'
+align = 'axiom Zerocopy.RustLayout.alignInput (T : Type) : Usize'
 mutation = sys.argv[1]
 if mutation in ('missing-size', 'missing-align', 'missing-both'):
     if mutation != 'missing-align':
@@ -739,8 +785,7 @@ if mutation in ('missing-size', 'missing-align', 'missing-both'):
         replace('Zerocopy.RustLayout.size T', '0#usize')
     if mutation != 'missing-size':
         replace(align, '')
-        replace('Zerocopy.RustLayout.align T', '1#usize')
-        replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+        replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'wrong-kind':
     replace(size, 'def Zerocopy.RustLayout.size (_T : Type) : Usize := 0#usize')
 elif mutation == 'wrong-signature':
@@ -749,6 +794,8 @@ elif mutation == 'wrong-signature':
 elif mutation == 'ignored-align':
     replace('Zerocopy.RustLayout.align T', '1#usize')
     replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+elif mutation == 'ignored-align-input':
+    replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'ignored-size':
     replace('Zerocopy.RustLayout.size T', '0#usize')
 elif mutation == 'wrong-pointer-width':
@@ -768,7 +815,7 @@ PYCONTROL
     reject_abi "a missing generic ABI size input" missing-size \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a missing generic ABI alignment input" missing-align \
-        "Missing external layout input Zerocopy.RustLayout.align"
+        "Missing external layout input Zerocopy.RustLayout.alignInput"
     reject_abi "both generic ABI inputs missing" missing-both \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a definition replacing an arbitrary ABI data input" wrong-kind \
@@ -777,6 +824,8 @@ PYCONTROL
         "External layout input Zerocopy.RustLayout.size changed its data-only signature"
     reject_abi "an alignment read ignoring its ABI input" ignored-align \
         "External alignment read changed its data-input interpretation"
+    reject_abi "an alignment interpretation ignoring its abstract input" ignored-align-input \
+        "External alignment model changed its concrete or generic interpretation"
     reject_abi "a generic size read ignoring its ABI input" ignored-size \
         "External size read changed its data-input interpretation"
     reject_abi "an incorrect Usize pointer-width read" wrong-pointer-width \

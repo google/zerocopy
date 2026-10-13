@@ -28,7 +28,7 @@ useful layout properties.
 
 run_elab do
   let env ← getEnv
-  let layoutInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.align]
+  let layoutInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.alignInput]
   -- Generic alignment reads identify the ABI-capable model. Earlier models
   -- may have only the pointer-width size read and require no generic ABI inputs.
   let hasLayoutReads := env.contains `core.mem.align_of
@@ -54,6 +54,17 @@ run_elab do
     unless ← Meta.isDefEq info.type expected do
       throwError "External layout input {input} changed its data-only signature"
   if hasLayoutReads then
+    -- The concrete byte case is part of the external primitive interpretation.
+    -- Audit its whole definition independently, including the generic fallback;
+    -- a true concrete trait law must not bless unrelated type alignments.
+    let alignment ← Term.elabTerm (← `(
+      fun (T : Type) => by
+        classical
+        exact if T = Aeneas.Std.U8 then 1#usize
+          else Zerocopy.RustLayout.alignInput T)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `Zerocopy.RustLayout.align) (← instantiateMVars alignment) do
+      throwError "External alignment model changed its concrete or generic interpretation"
     -- Independently state each primitive interpretation. Keeping the data
     -- axioms while ignoring them must not silently shrink the modeled domain.
     let alignRead ← Term.elabTerm (← `(
@@ -124,6 +135,21 @@ run_elab do
     Term.synthesizeSyntheticMVarsNoPostponing
     unless ← Meta.isDefEq (mkConst `util.validity.read_byte) (← instantiateMVars expected) do
       throwError "External candidate byte read changed its complete guarded interpretation"
+  if env.contains `core.num.nonzero.NonZero.new_unchecked then
+    -- A successful caller proves only its nonzero branch. Independently audit
+    -- the complete leaf, including zero and unsupported native carriers.
+    let expected ← Term.elabTerm (← `(fun {T Inner : Type}
+        (_inst : Zerocopy.core.num.nonzero.ZeroablePrimitive T Inner) (x : T) => by
+      classical
+      exact if h : T = Aeneas.Std.Usize then
+        if (cast h x : Aeneas.Std.Usize) = 0#usize then
+          Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+        else Aeneas.Std.Result.ok (⟨x⟩ : core.num.nonzero.NonZero T Inner)
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `core.num.nonzero.NonZero.new_unchecked)
+        (← instantiateMVars expected) do
+      throwError "External NonZero::new_unchecked changed its complete forbidden-execution interpretation"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.

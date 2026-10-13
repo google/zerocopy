@@ -703,6 +703,16 @@ class Admission:
                     actual = [self.ty_name(ty) for ty in fn['generics']['types']]
                     if actual != ['u8', 'bool']:
                         raise ValueError(f'Unsupported transmute instantiation {actual}')
+                if name in {
+                        'core::num::nonzero::{core::num::nonzero::NonZero<T0>}::new_unchecked',
+                        'core::num::nonzero::{core::num::nonzero::NonZero<T0,T1>}::new_unchecked'}:
+                    # Audit original Rust types as well as the guarded Lean
+                    # leaf: its carrier equality is not a Rust type identity.
+                    actual = [self.ty_name(ty) for ty in fn['generics']['types']]
+                    expected = ['usize'] if self.before else [
+                        'usize', 'core::num::niche_types::NonZeroUsizeInner']
+                    if actual != expected:
+                        raise ValueError(f'Unsupported NonZero::new_unchecked instantiation {actual}')
                 self.calls.append({'caller': self.current, 'callee': name})
                 self.visit(callee)
                 self.block(body['on_unwind'], True)
@@ -926,6 +936,8 @@ def check_translation(work, evidence):
             'axiom core.num.Usize.unchecked_add : Std.Usize → Std.Usize → Result Std.Usize',
         'core.num.Usize.unchecked_mul':
             'axiom core.num.Usize.unchecked_mul : Std.Usize → Std.Usize → Result Std.Usize',
+        'core.num.nonzero.NonZero.new_unchecked':
+            'axiom core.num.nonzero.NonZero.new_unchecked {T : Type} {Clause0_NonZeroInner : Type} (ZeroablePrimitiveInst : core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) : T → Result (core.num.nonzero.NonZero T Clause0_NonZeroInner)',
     }
     normalized = ' '.join(text.split())
     for selected in evidence['stages']['llbc']['executions']:

@@ -1069,20 +1069,83 @@ def layout.primitive_checks.check_empty_layout
     massert empty.statically_shallow_unpadded
   else ok ()
 
+/-- [zerocopy::trait_checks::unaligned_alignment]:
+    Source: 'src/trait_checks.rs', lines 25:0-27:1 -/
+def trait_checks.unaligned_alignment
+  {T : Type} (UnalignedInst : Unaligned T) : Result Std.Usize := do
+  core.mem.align_of T
+
+/-- [zerocopy::trait_checks::check_unaligned]:
+    Source: 'src/trait_checks.rs', lines 35:0-37:1 -/
+def trait_checks.check_unaligned
+  {T : Type} (UnalignedInst : Unaligned T) : Result Unit := do
+  let i ← trait_checks.unaligned_alignment UnalignedInst
+  massert (i = 1#usize)
+
+/-- [zerocopy::trait_checks::unused_unaligned_bound]:
+    Source: 'src/trait_checks.rs', lines 48:0-50:1 -/
+def trait_checks.unused_unaligned_bound
+  {T : Type} (UnalignedInst : Unaligned T) (value : Std.Usize) :
+  Result Std.Usize
+  := do
+  ok value
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::Unaligned for u8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 161:8-161:62
+    Visibility: public -/
+def U8.Insts.ZerocopyUnaligned.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::Unaligned for u8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U8.Insts.ZerocopyUnaligned : Unaligned Std.U8 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U8.Insts.ZerocopyUnaligned.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::trait_checks::check_byte_unaligned]:
+    Source: 'src/trait_checks.rs', lines 58:0-60:1 -/
+def trait_checks.check_byte_unaligned : Result Unit := do
+  trait_checks.check_unaligned U8.Insts.ZerocopyUnaligned
+
+/-- [zerocopy::trait_checks::divide_by_unaligned]:
+    Source: 'src/trait_checks.rs', lines 71:0-78:1 -/
+def trait_checks.divide_by_unaligned
+  {T : Type} (UnalignedInst : Unaligned T) (x : Std.Usize) :
+  Result Std.Usize
+  := do
+  let i ← core.mem.align_of T
+  let divisor ← 1#usize / i
+  let divisor1 ←
+    core.num.nonzero.NonZero.new_unchecked
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner divisor
+  let i1 ←
+    core.num.nonzero.NonZero.get
+      Usize.Insts.CoreNumNonzeroZeroablePrimitiveNonZeroUsizeInner divisor1
+  x / i1
+
+/-- [zerocopy::trait_checks::divide_by_byte_alignment]:
+    Source: 'src/trait_checks.rs', lines 86:0-88:1 -/
+def trait_checks.divide_by_byte_alignment
+  (x : Std.Usize) : Result Std.Usize := do
+  trait_checks.divide_by_unaligned U8.Insts.ZerocopyUnaligned x
+
 /-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}::decode]:
-    Source: 'src/trait_checks.rs', lines 38:4-40:5 -/
+    Source: 'src/trait_checks.rs', lines 109:4-111:5 -/
 def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.decode
   (byte : Std.U8) : Result Std.U8 := do
   ok (byte ^^^ 170#u8)
 
 /-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}::encode]:
-    Source: 'src/trait_checks.rs', lines 34:4-36:5 -/
+    Source: 'src/trait_checks.rs', lines 105:4-107:5 -/
 def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.encode
   (byte : Std.U8) : Result Std.U8 := do
   ok (byte ^^^ 170#u8)
 
 /-- Trait implementation: [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}]
-    Source: 'src/trait_checks.rs', lines 33:0-41:1 -/
+    Source: 'src/trait_checks.rs', lines 104:0-112:1 -/
 @[reducible]
 def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec :
   trait_checks.ByteCodec trait_checks.XorCodec := {
@@ -1091,7 +1154,7 @@ def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec :
 }
 
 /-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}::decode]:
-    Source: 'src/trait_checks.rs', lines 51:4-53:5 -/
+    Source: 'src/trait_checks.rs', lines 122:4-124:5 -/
 def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.decode
   {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
   Result Std.U8
@@ -1099,7 +1162,7 @@ def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.decode
   ByteCodecInst.decode byte
 
 /-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}::encode]:
-    Source: 'src/trait_checks.rs', lines 47:4-49:5 -/
+    Source: 'src/trait_checks.rs', lines 118:4-120:5 -/
 def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.encode
   {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
   Result Std.U8
@@ -1107,7 +1170,7 @@ def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec.encode
   ByteCodecInst.encode byte
 
 /-- Trait implementation: [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::Forward<C>}]
-    Source: 'src/trait_checks.rs', lines 46:0-54:1 -/
+    Source: 'src/trait_checks.rs', lines 117:0-125:1 -/
 @[reducible]
 def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec {C : Type}
   (ByteCodecInst : trait_checks.ByteCodec C) : trait_checks.ByteCodec
@@ -1119,7 +1182,7 @@ def trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec {C : Type}
 }
 
 /-- [zerocopy::trait_checks::byte_codec_roundtrip]:
-    Source: 'src/trait_checks.rs', lines 60:0-62:1 -/
+    Source: 'src/trait_checks.rs', lines 131:0-133:1 -/
 def trait_checks.byte_codec_roundtrip
   {C : Type} (ByteCodecInst : trait_checks.ByteCodec C) (byte : Std.U8) :
   Result Std.U8
@@ -1128,14 +1191,14 @@ def trait_checks.byte_codec_roundtrip
   ByteCodecInst.decode i
 
 /-- [zerocopy::trait_checks::forwarded_byte_codec]:
-    Source: 'src/trait_checks.rs', lines 70:0-72:1 -/
+    Source: 'src/trait_checks.rs', lines 141:0-143:1 -/
 def trait_checks.forwarded_byte_codec (byte : Std.U8) : Result Std.U8 := do
   trait_checks.byte_codec_roundtrip
     (trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec
     trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec) byte
 
 /-- [zerocopy::trait_checks::require_into_bytes]:
-    Source: 'src/trait_checks.rs', lines 74:0-74:47 -/
+    Source: 'src/trait_checks.rs', lines 145:0-145:47 -/
 def trait_checks.require_into_bytes
   {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
   ok ()
@@ -1205,7 +1268,7 @@ def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
 }
 
 /-- [zerocopy::trait_checks::check_array_into_bytes]:
-    Source: 'src/trait_checks.rs', lines 89:0-95:1 -/
+    Source: 'src/trait_checks.rs', lines 160:0-166:1 -/
 def trait_checks.check_array_into_bytes : Result Unit := do
   trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
     Bool.Insts.ZerocopyIntoBytes)

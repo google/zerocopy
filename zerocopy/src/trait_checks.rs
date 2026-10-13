@@ -14,7 +14,78 @@
 //! the law of its exact Rust dictionary. A concrete caller must discharge that
 //! law for the selected implementation before reusing the consumer.
 
-use core::marker::PhantomData;
+use core::{marker::PhantomData, mem, num::NonZeroUsize};
+
+use crate::Unaligned;
+
+/// ```aeneas
+/// spec unaligned_alignment_spec
+///   ensures alignment => (alignment : Nat) = 1
+/// ```
+fn unaligned_alignment<T: Unaligned>() -> usize {
+    mem::align_of::<T>()
+}
+
+/// The assertion consumes the callee's checked contract.
+///
+/// ```aeneas
+/// spec unaligned_check_spec
+///   ensures _ => True
+/// ```
+fn check_unaligned<T: Unaligned>() {
+    assert!(unaligned_alignment::<T>() == 1);
+}
+
+/// An unused trait bound must still contribute its invariant.
+///
+/// ```aeneas
+/// spec unused_unaligned_bound_spec
+///   ensures result => result = value
+/// ```
+// Keep T unused so extraction must preserve the bound's law independently
+// of runtime arguments or method calls.
+#[allow(clippy::extra_unused_type_parameters)]
+fn unused_unaligned_bound<T: Unaligned>(value: usize) -> usize {
+    value
+}
+
+/// This call also checks the concrete built-in `u8` implementation's law.
+///
+/// ```aeneas
+/// spec concrete_unaligned_check_spec
+///   ensures _ => True
+/// ```
+fn check_byte_unaligned() {
+    check_unaligned::<u8>();
+}
+
+/// Trait evidence establishes the unsafe constructor's precondition.
+///
+/// ```aeneas
+/// spec divide_by_unaligned_spec
+///   ensures result => result = x
+/// ```
+// Both divisions have divisor one by the Unaligned contract.
+// Keep get explicit so extraction checks both standard-library boundaries.
+#[allow(clippy::arithmetic_side_effects, clippy::needless_nonzero_get)]
+fn divide_by_unaligned<T: Unaligned>(x: usize) -> usize {
+    let divisor = 1 / mem::align_of::<T>();
+    // SAFETY: Unaligned requires T to have alignment one, so the preceding
+    // division computes 1 / 1 = 1. NonZeroUsize::new_unchecked requires a
+    // nonzero argument, which divisor = 1 satisfies.
+    let divisor = unsafe { NonZeroUsize::new_unchecked(divisor) };
+    x / divisor.get()
+}
+
+/// The concrete call discharges the actual built-in u8 dictionary's law.
+///
+/// ```aeneas
+/// spec divide_by_byte_alignment_spec
+///   ensures result => result = x
+/// ```
+fn divide_by_byte_alignment(x: usize) -> usize {
+    divide_by_unaligned::<u8>(x)
+}
 
 /// Encoding and decoding form one total round trip on every byte.
 ///
@@ -100,6 +171,13 @@ mod tests {
 
     #[test]
     fn trait_law_examples() {
+        check_byte_unaligned();
+        assert_eq!(unaligned_alignment::<u8>(), 1);
+        assert_eq!(unused_unaligned_bound::<u8>(37), 37);
+        for value in [0, 1, 2, 37, usize::MAX - 1, usize::MAX].iter().copied() {
+            assert_eq!(divide_by_unaligned::<u8>(value), value);
+            assert_eq!(divide_by_byte_alignment(value), value);
+        }
         for byte in 0..=u8::MAX {
             assert_eq!(forwarded_byte_codec(byte), byte);
         }
