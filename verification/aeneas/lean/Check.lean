@@ -32,6 +32,17 @@ run_elab do
   -- may have only the pointer-width size read and require no generic ABI inputs.
   let hasLayoutReads := env.contains `core.mem.align_of
   let modelInputs := if hasLayoutReads then layoutInputs else #[]
+  -- ByteOrder carries formatting dictionaries even when a numerical method
+  -- never formats a value. The backend leaves Formatter's representation
+  -- abstract. Admit this exact opaque type, with no axiom about its values or
+  -- behavior; changing it into a proposition or a function is an error.
+  let opaqueCarriers := #[`Aeneas.Std.core.fmt.Formatter]
+  let expectedCarrier ← Term.elabType (← `(Type))
+  for carrier in opaqueCarriers do
+    let some (.axiomInfo info) := env.find? carrier
+      | throwError "Missing pinned opaque carrier {carrier}"
+    unless info.levelParams.isEmpty && (← Meta.isDefEq info.type expectedCarrier) do
+      throwError "Opaque carrier {carrier} changed its type-only signature"
   -- ABI inputs are functions returning data, with no proposition asserting
   -- alignment, size, or correctness. A changed type could smuggle a theorem
   -- into the allowed axiom list, so check their exact compiled signatures.
@@ -359,11 +370,11 @@ run_elab do
       let used ← collectAxioms declName
       for ax in used do
         -- These are Lean's permitted logical axioms. The only additional
-        -- allowances are the ABI data inputs whose exact signatures were
-        -- checked above. They supply no proposition;
+        -- allowances are the ABI data inputs and opaque carrier whose exact
+        -- signatures were checked above. Neither supplies a proposition;
         -- sorryAx and user-defined proof axioms remain errors.
         unless #[`propext, `Classical.choice, `Quot.sound].contains ax ||
-            modelInputs.contains ax do
+            modelInputs.contains ax || opaqueCarriers.contains ax do
           throwError "{declName} depends on unapproved axiom {ax}"
       audited := audited + 1
   IO.FS.writeFile "proof-dependencies.json" (Json.arr graph).pretty
