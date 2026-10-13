@@ -223,7 +223,10 @@ run_elab do
       let (boundModel, boundInputs) ← AeneasSpecs.specBinding specName
       -- This also rejects a same-arity call on replaced or reordered inputs:
       -- specBinding already checked each argument's original variable identity.
-      unless boundModel == rawName && boundInputs == generics.size + sourceInputs.size do
+      let .ok dictionaryCount := entry.getObjValAs? Nat "dictionary_count"
+        | throwError "Function binding for {rustName} must count its original trait dictionaries"
+      unless boundModel == rawName &&
+          boundInputs == generics.size + dictionaryCount + sourceInputs.size do
         throwError "Compiled specification {specName} changed its source model or original input prefix"
     else if kind == "type" then
       if expectedTypes.contains rawName then
@@ -318,6 +321,101 @@ run_elab do
   let extraTypes := imageTypes.filter (!actualTypes.contains ·)
   unless missingTypes.isEmpty && extraTypes.isEmpty do
     throwError "Compiled raw types disagree with classified extraction image: missing {missingTypes}; unexpected {extraTypes}"
+  -- Trait registrations are a closed image, too. A missing registration must
+  -- not make a computational dictionary look like an ordinary runtime value,
+  -- and a law class must belong to the module generated from Rust annotations.
+  let .ok dictionaries := bindings.getObjValAs? (Array Json) "trait_dictionaries"
+    | throwError "Model bindings must contain their native trait dictionary image"
+  let .ok laws := bindings.getObjValAs? (Array Json) "trait_laws"
+    | throwError "Model bindings must contain their annotated trait laws"
+  let .ok implementations := bindings.getObjValAs? (Array Json) "trait_impl_laws"
+    | throwError "Model bindings must contain their required trait implementations"
+  let some lawsModule := env.getModuleIdx? `TraitLaws
+    | throwError "Trait laws must be imported from their generated module"
+  -- Test modules have their own miniature dictionaries. Only the compiled
+  -- extraction's carriers participate in the production binding comparison.
+  let registered := (← AeneasSpecs.traitLawBindings).filter
+    (fun entry => env.getModuleIdxFor? entry.raw == some typesModule)
+  let mut expectedDictionaries : Array Name := #[]
+  for row in dictionaries do
+    let .ok raw := row.getObjValAs? String "raw"
+      | throwError "Native trait dictionary must name its compiled carrier"
+    let rawName := raw.toName
+    if expectedDictionaries.contains rawName then
+      throwError "Native trait dictionary image repeats {rawName}"
+    expectedDictionaries := expectedDictionaries.push rawName
+    unless registered.any (·.raw == rawName) do
+      throwError "Native trait dictionary lacks its compiled registration: {rawName}"
+    let some (.inductInfo _) := env.find? rawName
+      | throwError "Native trait dictionary is not an inductive carrier: {rawName}"
+    -- Generated dictionaries must be classified as such, rather than merely
+    -- borrowing the name of a local data structure from the type image.
+    if env.getModuleIdxFor? rawName == some typesModule then
+      unless image.any (fun entry => entry.getObjValAs? String "raw" == .ok raw &&
+          entry.getObjValAs? String "category" == .ok "trait-dictionary") do
+        throwError "Native trait dictionary has the wrong raw image category: {rawName}"
+  unless registered.size == expectedDictionaries.size &&
+      registered.all (fun entry => expectedDictionaries.contains entry.raw) do
+    throwError "Compiled trait dictionary registrations disagree with native bindings"
+  let mut expectedLaws : Array Name := #[]
+  for row in laws do
+    let .ok raw := row.getObjValAs? String "raw"
+      | throwError "Annotated trait must name its exact dictionary"
+    let .ok law := row.getObjValAs? String "law"
+      | throwError "Annotated trait must name its generated law class"
+    let .ok count := row.getObjValAs? Nat "generic_count"
+      | throwError "Annotated trait must count its original type parameters"
+    let lawName := law.toName
+    if expectedLaws.contains lawName then throwError "Repeated trait law {lawName}"
+    expectedLaws := expectedLaws.push lawName
+    unless registered.any (fun entry => entry.raw == raw.toName && entry.law == some lawName) do
+      throwError "Compiled trait law disagrees with its exact Rust dictionary: {lawName}"
+    let some (.inductInfo info) := env.find? lawName
+      | throwError "Trait law is not a compiled class: {lawName}"
+    unless env.getModuleIdxFor? lawName == some lawsModule && info.numParams == count + 1 &&
+        (← Meta.forallTelescope info.type fun _ result => pure (result.consumeMData == mkSort .zero)) do
+      throwError "Trait law changed its generated ownership or original dictionary prefix: {lawName}"
+  let actualLaws := registered.filterMap (·.law)
+  unless actualLaws.size == expectedLaws.size && actualLaws.all expectedLaws.contains do
+    throwError "Compiled trait laws disagree with annotated Rust traits"
+  let some funsModule := env.getModuleIdx? `Zerocopy.Funs
+    | throwError "Extracted implementation dictionaries must be imported"
+  let mut requiredImplementations : Array Name := #[]
+  for row in implementations do
+    let .ok dictionary := row.getObjValAs? String "dictionary"
+      | throwError "Required trait implementation must name its exact dictionary"
+    let .ok law := row.getObjValAs? String "law"
+      | throwError "Required trait implementation must name its law class"
+    let .ok proof := row.getObjValAs? String "proof"
+      | throwError "Required trait implementation must name its proof"
+    let dictionaryName := dictionary.toName
+    let proofName := proof.toName
+    if requiredImplementations.contains dictionaryName then
+      throwError "Repeated required trait implementation {dictionaryName}"
+    requiredImplementations := requiredImplementations.push dictionaryName
+    unless expectedLaws.contains law.toName &&
+        env.getModuleIdxFor? dictionaryName == some funsModule do
+      throwError "Trait implementation has an unexpected law or compiled owner: {dictionaryName}"
+    let some (.thmInfo proofInfo) := env.find? proofName
+      | throwError "Missing ordinary trait implementation theorem {proofName}"
+    unless (env.getModuleIdxFor? proofName).any proofModules.contains do
+      throwError "Trait implementation theorem must belong to a configured proof module: {proofName}"
+    let expected ← AeneasSpecs.traitImplementationObligation law.toName dictionaryName
+    unless ← Meta.isDefEq proofInfo.type expected do
+      throwError "Trait implementation theorem changed its exact dictionary or premises: {proofName}"
+  -- Enumerate the compiled dictionaries independently of Aeneas's JSON names.
+  -- Even a swapped name or omitted row in that metadata cannot leave an actual
+  -- extracted implementation of an annotated trait without its checked law.
+  let mut actualImplementations : Array Name := #[]
+  for (declName, info) in env.constants.toList do
+    if env.getModuleIdxFor? declName != some funsModule then continue
+    let .defnInfo info := info | continue
+    let annotated ← Meta.forallTelescope info.type fun _ result => do
+      return ((← AeneasSpecs.traitDictionary? result).bind (·.law)).isSome
+    if annotated then actualImplementations := actualImplementations.push declName
+  unless actualImplementations.size == requiredImplementations.size &&
+      actualImplementations.all requiredImplementations.contains do
+    throwError "Compiled trait implementations disagree with required law coverage: actual {actualImplementations}; required {requiredImplementations}"
   -- Compare registered providers too: a raw type can be present in extraction
   -- and the manifest while its full mathematical provider is absent or extra.
   let actualOwners := (← AeneasSpecs.modelOwnerNames).filter

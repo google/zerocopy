@@ -28,13 +28,17 @@ import tempfile
 import golden
 from copy_back import MODULES as PROJECTIONS, STATE as PROJECTION_STATE
 
-GENERATED = {'Specs.lean', 'ModelShapes.lean', 'Models.lean', 'Invariants.lean', 'Required.lean', 'lakefile.lean'} | {
+GENERATED = {'Specs.lean', 'ModelShapes.lean', 'Models.lean', 'Invariants.lean', 'TraitLaws.lean', 'Required.lean', 'lakefile.lean'} | {
     'Zerocopy/' + name for name in golden.FILES
 }
 
 
 def protect_projections(work):
     """Fail before development regeneration can destroy an edited projection."""
+    import copy_back
+    # Existing baselines certify only the original three editor projections.
+    # A new trait projection must never be silently overwritten using them.
+    copy_back.protect_trait_projection(work.absolute(), work.absolute())
     state_path = work / PROJECTION_STATE
     state = json.loads(state_path.read_text()) if state_path.exists() else None
     if state is not None and (not isinstance(state, dict) or state.get('version') not in (1, 2) or
@@ -308,7 +312,7 @@ def inspect_spec(root, work, spec):
     source = (root / 'verification/aeneas/lean/InspectSpec.lean').read_text()
     with tempfile.TemporaryDirectory(prefix='aeneas-inspect-') as directory:
         path = Path(directory) / 'Inspect.lean'
-        count = len(entry['generics']) + len(entry['inputs'])
+        count = len(entry['generics']) + entry.get('dictionary_count', 0) + len(entry['inputs'])
         path.write_text(source + f'\ncheck_spec_binding {name} for {entry["raw"]} with {count}\n' +
                         'inspect_spec ' + name + '\n')
         run_checked(['lake', 'env', 'lean', '-DwarningAsError=true', str(path)], root, work)

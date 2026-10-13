@@ -10,6 +10,7 @@ module
 public import ModelPrelude
 public import ModelCompletion
 public meta import Lean
+public import TraitLawsSupport
 public section
 
 /-!
@@ -499,9 +500,10 @@ elab "check_model_inputs " functionId:ident " with " count:num " type " "paramet
     let function ← realizeGlobalConstNoOverloadWithInfo functionId
     forallTelescope (← getConstInfo function).type fun inputs result => do
       unless count.getNat ≤ inputs.size do throwError "Invalid Rust generic prefix count"
+      let traitCount ← traitDictionaryCount inputs count.getNat
       let params := inputs.extract 0 count.getNat
       withModelDictionaries params fun dicts => do
-        for input in inputs.extract count.getNat inputs.size do
+        for input in inputs.extract (count.getNat + traitCount) inputs.size do
           let _ ← boundModelProvider (← inferType input) params dicts
         let result ← whnf result
         unless result.isAppOfArity ``Aeneas.Std.Result 1 do

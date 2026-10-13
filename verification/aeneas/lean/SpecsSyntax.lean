@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import DeriveModels
+public import TraitLawsSupport
 public meta import Lean
 public section
 
@@ -209,36 +210,39 @@ private meta def postcondition (posts : Array Syntax) (raws maths : Array Expr)
         throwErrorAt function "Extracted function must return an Aeneas execution Result"
       let rawOutputType := returnType.appArg!
       let params := originals.extract 0 count.getNat
-      let raws := originals.extract count.getNat originals.size
+      let traitCount ← traitDictionaryCount originals count.getNat
+      let computationalDictionaries := originals.extract count.getNat (count.getNat + traitCount)
+      let raws := originals.extract (count.getNat + traitCount) originals.size
       let inputNames ← raws.mapM fun raw => return (← raw.fvarId!.getDecl).userName
-      withModelDictionaries params fun dictionaries => do
-        -- Fix all automatic providers before introducing decoded witnesses,
-        -- dependent ghosts, requirements, or their local instances.
-        let providers ← raws.mapM fun raw => do
-          boundModelProvider (← Meta.inferType raw) params dictionaries
-        let outputProvider ← boundModelProvider rawOutputType params dictionaries
-        withDecodedInputs raws providers 0 #[] #[] fun maths equations => do
-          let decodedPrefix := (maths.zip equations).foldl
-            (fun inputs pair => inputs ++ #[pair.1, pair.2]) #[]
-          let boundPrefix := originals ++ dictionaries ++ decodedPrefix
-          withClauseScope raws maths false <| Elab.Term.elabBinders ghosts fun ghostInputs => do
-            -- Restore raw names as the baseline for each clause-specific scope.
-            let mut lctx ← getLCtx
-            for i in [:raws.size] do
-              lctx := lctx.setUserName raws[i]!.fvarId! inputNames[i]!
-              lctx := lctx.setUserName maths[i]!.fvarId! (Name.mkSimple s!"_mathInput{i}")
-            Meta.withLCtx' lctx do
-              checkFreshNames boundPrefix ghostInputs
-              withRequirements requirements 0 raws maths (boundPrefix ++ ghostInputs) fun inputs => do
-                let post ← postcondition posts raws maths rawOutputType outputProvider
-                -- Execute on the untouched raw prefix. Total WP.spec excludes
-                -- panic and divergence; partial WP.dspec allows divergence but
-                -- still checks every successful return and excludes panic.
-                let call := mkAppN functionExpr originals
-                let wp := if mode.getNat == 0 then ``WP.spec else ``WP.dspec
-                let body ← Meta.mkAppM wp #[call, post]
-                Elab.Term.synthesizeSyntheticMVarsNoPostponing
-                Elab.Term.levelMVarToParam (← Meta.mkForallFVars inputs (← instantiateMVars body))
+      withModelDictionaries params fun dictionaries =>
+        withTraitLawAssumptions computationalDictionaries fun traitEvidence => do
+          -- Fix all automatic providers before introducing decoded witnesses,
+          -- dependent ghosts, requirements, or their local instances.
+          let providers ← raws.mapM fun raw => do
+            boundModelProvider (← Meta.inferType raw) params dictionaries
+          let outputProvider ← boundModelProvider rawOutputType params dictionaries
+          withDecodedInputs raws providers 0 #[] #[] fun maths equations => do
+            let decodedPrefix := (maths.zip equations).foldl
+              (fun inputs pair => inputs ++ #[pair.1, pair.2]) #[]
+            let boundPrefix := originals ++ dictionaries ++ traitEvidence ++ decodedPrefix
+            withClauseScope raws maths false <| Elab.Term.elabBinders ghosts fun ghostInputs => do
+              -- Restore raw names as the baseline for each clause-specific scope.
+              let mut lctx ← getLCtx
+              for i in [:raws.size] do
+                lctx := lctx.setUserName raws[i]!.fvarId! inputNames[i]!
+                lctx := lctx.setUserName maths[i]!.fvarId! (Name.mkSimple s!"_mathInput{i}")
+              Meta.withLCtx' lctx do
+                checkFreshNames boundPrefix ghostInputs
+                withRequirements requirements 0 raws maths (boundPrefix ++ ghostInputs) fun inputs => do
+                  let post ← postcondition posts raws maths rawOutputType outputProvider
+                  -- Execute on the untouched raw prefix. Total WP.spec excludes
+                  -- panic and divergence; partial WP.dspec allows divergence but
+                  -- still checks every successful return and excludes panic.
+                  let call := mkAppN functionExpr originals
+                  let wp := if mode.getNat == 0 then ``WP.spec else ``WP.dspec
+                  let body ← Meta.mkAppM wp #[call, post]
+                  Elab.Term.synthesizeSyntheticMVarsNoPostponing
+                  Elab.Term.levelMVarToParam (← Meta.mkForallFVars inputs (← instantiateMVars body))
   | _ => throwError "Unexpected specification syntax: {repr stx}"
 
 syntax "aeneas_spec_decl " ident " := " term : command
