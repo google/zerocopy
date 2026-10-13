@@ -99,4 +99,19 @@ structure byteorder.U32 (O : Type) where
   _0 : Array Std.U8 4#usize
   _1 : core.marker.PhantomData O
 
+/-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
+    Source: 'src/trait_checks.rs', lines 24:0-27:1 -/
+structure trait_checks.ByteCodec (Self : Type) where
+  encode : Std.U8 → Result Std.U8
+  decode : Std.U8 → Result Std.U8
+
+/-- [zerocopy::trait_checks::XorCodec]
+    Source: 'src/trait_checks.rs', lines 29:0-29:16 -/
+structure trait_checks.XorCodec where
+
+/-- [zerocopy::trait_checks::Forward]
+    Source: 'src/trait_checks.rs', lines 42:0-42:34 -/
+structure trait_checks.Forward (C : Type) where
+  _0 : core.marker.PhantomData C
+
 end Zerocopy

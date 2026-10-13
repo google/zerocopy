@@ -141,6 +141,57 @@ PYCONTROL
 has_model() {
     has_binding function "Zerocopy.$1"
 }
+# Native dictionaries remain an independent coverage boundary. These controls
+# change only the manifest, so the compiled implementation and its valid proof
+# stay available: rejection must come from the binding/coverage audit itself.
+if [[ -f TraitLaws.lean ]]; then
+    trait_impls=$(python3 - <<'PYCONTROL'
+import json
+from pathlib import Path
+manifest = json.loads(Path("bindings.json").read_text())
+if not isinstance(manifest.get("trait_impl_laws"), list):
+    raise SystemExit("Missing mandatory trait implementation coverage")
+print(len(manifest["trait_impl_laws"]))
+PYCONTROL
+    )
+    if [[ $trait_impls != 0 ]]; then
+        audit > "$backup/trait-audit-baseline.log" 2>&1 || {
+            cat "$backup/trait-audit-baseline.log" >&2; exit 1;
+        }
+        for mutation in omitted-impl wrong-proof wrong-count; do
+            python3 - "$mutation" <<'PYCONTROL'
+from pathlib import Path
+import json, sys
+path = Path("bindings.json")
+manifest = json.loads(path.read_text())
+if sys.argv[1] == 'omitted-impl':
+    manifest['trait_impl_laws'].pop()
+elif sys.argv[1] == 'wrong-proof':
+    manifest['trait_impl_laws'][0]['proof'] = 'Zerocopy.Proofs.missing_trait_law'
+elif sys.argv[1] == 'wrong-count':
+    candidates = [entry for entry in manifest['bindings'].values()
+                  if entry['kind'] == 'function' and entry['dictionary_count'] > 0]
+    if not candidates:
+        raise SystemExit("Missing generic trait consumer control")
+    candidates[0]['dictionary_count'] -= 1
+else:
+    raise SystemExit("Unknown trait coverage control")
+path.write_text(json.dumps(manifest))
+PYCONTROL
+            case $mutation in
+                omitted-impl) diagnostic="Compiled trait implementations disagree with required law coverage" ;;
+                wrong-proof) diagnostic="Missing ordinary trait implementation theorem" ;;
+                wrong-count) diagnostic="changed its source model or original input prefix" ;;
+            esac
+            expect_failure "trait coverage mutation $mutation" trait-coverage.log audit
+            grep -Fq "$diagnostic" "$backup/trait-coverage.log" || {
+                cat "$backup/trait-coverage.log" >&2; exit 1;
+            }
+            # No source or compiled declaration changed in this control.
+            cp "$backup/bindings.json" bindings.json
+        done
+    fi
+fi
 # A constrained mathematical value can still break an operation promise or its
 # required raw input domain. Probe the unchanged constructor source fence in an
 # isolated module so reorganizing helper proofs does not change these controls.

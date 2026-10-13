@@ -11,6 +11,7 @@ public import Zerocopy.Funs
 public import SpecPrelude
 public import SpecsSyntax
 public import Models
+public import TraitLaws
 @[expose] public section
 
 open Aeneas Aeneas.Std
@@ -120,6 +121,22 @@ spec set_u32_be_spec
   ensures r => r = n
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
+
+check_model_inputs Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
+aeneas_spec_begin
+spec byte_codec_roundtrip_spec
+  for @Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
+  ensures result => result = byte
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.byte_codec_roundtrip_spec for Zerocopy.trait_checks.byte_codec_roundtrip with 3
+
+check_model_inputs Zerocopy.trait_checks.forwarded_byte_codec with 0 type parameters
+aeneas_spec_begin
+spec forwarded_byte_codec_spec
+  for @Zerocopy.trait_checks.forwarded_byte_codec with 0 type parameters
+  ensures result => result = byte
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.forwarded_byte_codec_spec for Zerocopy.trait_checks.forwarded_byte_codec with 1
 
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin

@@ -78,6 +78,30 @@ class InlineTests(unittest.TestCase):
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
 
+    def test_trait_law_and_impl_proof_ownership(self):
+        source = ('/// ```aeneas\n/// invariant marker for self => Self = Self\n/// ```\n'
+                  '#[doc = concat!("ordinary", " documentation")]\ntrait Marker {}\n'
+                  '/// ```aeneas\n/// invariant_proof marker_u8\n/// ```\nimpl Marker for u8 {}')
+        declarations = self.parse(source)
+        self.assertEqual([d['kind'] for d in declarations], ['trait', 'trait-impl'])
+        self.assertEqual(declarations[0]['generics'], ['Self'])
+        self.assertEqual(declarations[0]['predicate'], 'Self = Self')
+        self.assertEqual(declarations[1]['theorem'], 'marker_u8')
+        with self.assertRaisesRegex(ValueError, 'Unsupported|unsupported|computed|Computed'):
+            self.parse(source.replace('concat!("ordinary", " documentation")', 'include_str!("hidden.rs")'))
+
+    def test_generic_trait_bound_source_evidence(self):
+        for signature in ('fn f<T: Marker>(x: usize) {}',
+                          'fn f<T>(x: usize) where T: crate::Marker {}'):
+            declaration = self.parse(BLOCK + signature)[0]
+            self.assertEqual(declaration['generics'], ['T'])
+            self.assertEqual(declaration['trait_bounds'][0]['subject'], 'T')
+        for signature in ('fn f<T: Marker<u8>>(x: usize) {}',
+                          'fn f<T: ?Sized>(x: usize) {}',
+                          'fn f<T>(x: usize) where T::Assoc: Marker {}'):
+            with self.assertRaisesRegex(ValueError, 'unsupported Rust owner'):
+                self.parse(BLOCK + signature)
+
     def test_doc_ownership_crlf_unicode_attributes_and_source_map(self):
         for eol in ('\n', '\r\n'):
             source = ('const 雪: u8 = 0;\n/// Normal documentation.\n' + BLOCK +

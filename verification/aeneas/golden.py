@@ -23,8 +23,9 @@ from pathlib import Path
 
 FILES = ("Types.lean", "Funs.lean", "TypesExternal_Template.lean",
          "FunsExternal_Template.lean")
-PROJECTIONS = ("ModelShapes.lean", "Models.lean", "Specs.lean")
+PROJECTIONS = ("ModelShapes.lean", "Models.lean", "Specs.lean", "TraitLaws.lean")
 HANDWRITTEN = {"TypesExternal.lean", "FunsExternal.lean"}
+NATIVE_METADATA = {'translation.json'}
 CHAR = re.compile(r"'(?:\\(?:u\{[0-9a-fA-F]+\}|.)|[^'\\\r\n])'")
 HEADER = """/- Copyright 2026 The Fuchsia Authors
 
@@ -35,6 +36,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 """
+EMPTY_TRAIT_LAWS = HEADER + 'module\n'
 
 
 def normalize(source):
@@ -132,6 +134,9 @@ def files(directory, live=False, *, names=FILES):
     actual = {str(p.relative_to(directory)) for p in directory.rglob("*") if p.is_file()}
     if live:
         actual -= HANDWRITTEN
+        # The backend's identity map is consumed by checked bindings, not Lean
+        # source comparison. It is emitted beside these four native modules.
+        actual -= NATIVE_METADATA
     if actual != set(names):
         raise ValueError(f"Unexpected generated file set in {directory}: "
                          f"missing={sorted(set(names) - actual)}, "
