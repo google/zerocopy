@@ -42,6 +42,52 @@ def array_into_bytes_spec_contract (run : Result Unit) : Prop :=
 def array_into_bytes_spec : Prop :=
   array_into_bytes_spec_contract trait_checks.check_array_into_bytes
 
+def unaligned_alignment_spec_contract (T : Type) (dictionary : Unaligned T)
+    (run : Result Usize) : Prop :=
+  TraitLaws.unaligned T dictionary → run ⦃ alignment => alignment = 1#usize ⦄
+
+def unaligned_alignment_spec : Prop :=
+  ∀ (T : Type) (dictionary : Unaligned T),
+    unaligned_alignment_spec_contract T dictionary (trait_checks.unaligned_alignment dictionary)
+
+def unaligned_check_spec_contract (T : Type) (dictionary : Unaligned T)
+    (run : Result Unit) : Prop :=
+  TraitLaws.unaligned T dictionary → run ⦃ _ => True ⦄
+
+def unaligned_check_spec : Prop :=
+  ∀ (T : Type) (dictionary : Unaligned T),
+    unaligned_check_spec_contract T dictionary (trait_checks.check_unaligned dictionary)
+
+def unused_unaligned_bound_spec_contract (T : Type) (dictionary : Unaligned T)
+    (value : Usize) (run : Result Usize) : Prop :=
+  TraitLaws.unaligned T dictionary → run ⦃ result => result = value ⦄
+
+def unused_unaligned_bound_spec : Prop :=
+  ∀ (T : Type) (dictionary : Unaligned T) (value : Usize),
+    unused_unaligned_bound_spec_contract T dictionary value
+      (trait_checks.unused_unaligned_bound dictionary value)
+
+def concrete_unaligned_check_spec_contract (run : Result Unit) : Prop :=
+  run ⦃ _ => True ⦄
+
+def concrete_unaligned_check_spec : Prop :=
+  concrete_unaligned_check_spec_contract trait_checks.check_byte_unaligned
+
+def divide_by_unaligned_spec_contract (T : Type) (dictionary : Unaligned T)
+    (x : Usize) (run : Result Usize) : Prop :=
+  TraitLaws.unaligned T dictionary → run ⦃ result => result = x ⦄
+
+def divide_by_unaligned_spec : Prop :=
+  ∀ (T : Type) (dictionary : Unaligned T) (x : Usize),
+    divide_by_unaligned_spec_contract T dictionary x
+      (trait_checks.divide_by_unaligned dictionary x)
+
+def divide_by_byte_alignment_spec_contract (x : Usize) (run : Result Usize) : Prop :=
+  run ⦃ result => result = x ⦄
+
+def divide_by_byte_alignment_spec : Prop :=
+  ∀ (x : Usize), divide_by_byte_alignment_spec_contract x
+    (trait_checks.divide_by_byte_alignment x)
 
 def byte_codec_roundtrip_spec_contract (C : Type) (dictionary : trait_checks.ByteCodec C)
     (byte : U8) (run : Result U8) : Prop :=

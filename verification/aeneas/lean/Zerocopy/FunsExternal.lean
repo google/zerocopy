@@ -118,3 +118,15 @@ noncomputable def Zerocopy.RustLayout.align (T : Type) : Usize := by
   exact if h : T = Usize then
     if (cast h x : Usize) = 0#usize then .ok none else .ok (some ⟨x⟩)
   else forbiddenExecution
+
+-- The pinned std contract requires a nonzero argument. Guard the execution
+-- before producing even a raw wrapper: zero is forbidden, including when a
+-- caller discards the result. Only Usize is reviewed, and admission checks its
+-- original Rust type and lifted NonZeroUsizeInner argument independently.
+@[simp] noncomputable def core.num.nonzero.NonZero.new_unchecked
+    {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
+    (x : T) : Result (core.num.nonzero.NonZero T Inner) := by
+  classical
+  exact if h : T = Usize then
+    if (cast h x : Usize) = 0#usize then forbiddenExecution else .ok ⟨x⟩
+  else forbiddenExecution

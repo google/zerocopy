@@ -329,7 +329,8 @@ the library already models every part of Rust's abstract machine.
   const generics, associated-type trait laws, higher-ranked bounds, bounded
   nominal models, and escaping borrow reconstruction remain unsupported with
   explicit errors. The first trait-law bridge supports `Self`-only traits and
-  simple generic bounds, with a total byte codec as a checked example. Add semantics and admission checks before accepting
+  simple generic bounds, with `Unaligned` and a total byte codec as checked
+  examples. Add semantics and admission checks before accepting
   them. Stateful or nondeterministic APIs may need observable traces and
   effects, rather than only result contracts.
 - **Abstract storage and bit validity.** Check byte-to-value production before
