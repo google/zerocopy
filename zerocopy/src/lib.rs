@@ -1325,7 +1325,8 @@ pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID:
     /// # Safety
     ///
     /// The returned pointer refers to a non-strict subset of the bytes of
-    /// `slf`'s referent, and has the same provenance as `slf`.
+    /// `slf`'s referent, and has the same provenance as `slf`. The
+    /// implementation must not modify the referent.
     #[must_use]
     fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type;
 }
