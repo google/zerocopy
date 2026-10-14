@@ -1,0 +1,118 @@
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L2227-L2246
+2227:       let rmw_amo_read sz rmw =
+2228:         let open AArch64 in
+2229:         let open Annot in
+2230:         match rmw with
+2231:         | RMW_A|RMW_AL -> do_read_mem_ret sz XA aexp
+2232:         | RMW_L|RMW_P  -> do_read_mem_ret sz X aexp
+2233: 
+2234:       and rmw_amo_write sz rmw =
+2235:         let open AArch64 in
+2236:         let open Annot in
+2237:         match rmw with
+2238:         | RMW_L|RMW_AL -> do_write_mem sz XL aexp
+2239:         | RMW_P|RMW_A  -> do_write_mem sz X aexp
+2240: 
+2241:       let rmw_to_read rmw =
+2242:         let open AArch64 in
+2243:         let open Annot in
+2244:         match rmw with
+2245:         | RMW_P | RMW_L -> N
+2246:         | RMW_A | RMW_AL -> A
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L2328-L2369
+2328:       let cas sz rmw rs rt rn ii =
+2329:         let an = rmw_to_read rmw in
+2330:         let read_rs = read_reg_data_sz sz rs ii
+2331:         and write_rs v = write_reg_sz sz rs v ii in
+2332:         let noret = match rs with | AArch64.ZR -> true | _ -> false in
+2333:         let branch a =
+2334:           let cond = Printf.sprintf "[%s]==%d:%s" (V.pp_v a) ii.A.proc (A.pp_reg rs) in
+2335:             commit_pred_txt (Some cond) ii in
+2336:         let mop_fail_no_wb ac ma _ =
+2337:           (* CAS fails, there is no Explicit Write Effect *)
+2338:           let read_mem a =
+2339:             if noret then do_read_mem_ret sz Annot.NoRet aexp ac a ii
+2340:             else do_read_mem_ret sz an aexp ac a ii in
+2341:           let noact _ _ = M.mk_singleton_es Act.NoAction ii in
+2342:           M.aarch64_cas_no (Access.is_physical ac) ma read_rs write_rs read_mem
+2343:             noact branch neqT
+2344:         in
+2345:         let mop_fail_with_wb ac ma _ =
+2346:           (* CAS fails, there is an Explicit Write Effect writing back *)
+2347:           (* the value that is already in memory                       *)
+2348:           let read_mem a =
+2349:             if noret then do_read_mem_ret sz Annot.NoRet aexp ac a ii
+2350:             else rmw_amo_read sz rmw ac a ii
+2351:           and write_mem a v = rmw_amo_write sz rmw ac a v ii in
+2352:           M.aarch64_cas_no (Access.is_physical ac) ma read_rs write_rs
+2353:             read_mem write_mem branch neqT
+2354:         in
+2355:         let mop_success ac ma mv =
+2356:           (* CAS succeeds, there is an Explicit Write Effect *)
+2357:            (* mv is read new value from reg, not important
+2358:               as this code is not executed in morello mode *)
+2359:           let read_rt = mv
+2360:           and read_mem a =
+2361:             if noret then do_read_mem_ret sz Annot.NoRet aexp ac a ii
+2362:             else rmw_amo_read sz rmw ac a ii
+2363:           and write_mem a v = rmw_amo_write sz rmw ac a v ii in
+2364:           M.aarch64_cas_ok (Access.is_physical ac) ma read_rs read_rt write_rs
+2365:                                 read_mem write_mem branch M.eqT
+2366:         in
+2367:         let ma = read_reg_addr rn ii
+2368:         and mv = read_reg_data_sz sz rt ii in
+2369:         do_cas sz an rn ma mv mop_success mop_fail_with_wb mop_fail_no_wb memtag ii
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L2464-L2502
+2464:       let ldop op sz rmw rs rt rn ii =
+2465:         let open AArch64 in
+2466: 
+2467:         let tr_input = match op with
+2468:           |A_SMIN|A_SMAX ->
+2469:             (* For int64 signed comparison to work on int32, int16, int8 *)
+2470:             sxt_op sz
+2471:           |A_ADD|A_EOR|A_SET|A_CLR|A_UMAX|A_UMIN -> M.unitT in
+2472: 
+2473:         let an = rmw_to_read rmw in
+2474:         lift_memop rn Dir.W true memtag
+2475:           (fun ac ma mv ->
+2476:             let noret = match rt with | ZR -> true | _ -> false in
+2477:             let op = match op with
+2478:             | A_ADD -> Op.Add
+2479:             | A_EOR -> Op.Xor
+2480:             | A_SET -> Op.Or
+2481:             | A_CLR -> Op.AndNot2
+2482:             | A_SMAX -> Op.Max
+2483:             | A_SMIN -> Op.Min
+2484:             | A_UMAX -> Op.UMax
+2485:             | A_UMIN -> Op.UMin in
+2486:             let read_mem =
+2487:               if noret then
+2488:                 fun sz ->
+2489:                 do_read_mem_ret sz Annot.NoRet aexp ac
+2490:               else fun sz -> rmw_amo_read sz rmw ac
+2491:             and write_mem = fun sz -> rmw_amo_write sz rmw ac in
+2492:             M.amo_strict (Access.is_physical ac) op
+2493:               ma
+2494:               (fun a -> read_mem sz a ii >>= tr_input) mv
+2495:               (fun a v -> write_mem sz a v ii)
+2496:               (fun w ->
+2497:                 if noret then M.unitT ()
+2498:                 else  write_reg_sz sz rt w ii))
+2499:           (to_perms "rw" sz)
+2500:           (read_reg_addr rn ii)
+2501:           (read_reg_data_sz sz rs ii >>= tr_input)
+2502:           an ii
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L5030-L5039
+5030:            >>= fun v -> write_reg_dest rd v ii
+5031:            >>= nextSet rd
+5032:         (* Barrier *)
+5033:         | I_FENCE b ->
+5034:             begin match b with
+5035:             | AArch64Base.GCSB -> check_gcs inst
+5036:             | _ -> ()
+5037:             end;
+5038:             !(create_barrier b ii)
+5039:               (* Conditional selection *)

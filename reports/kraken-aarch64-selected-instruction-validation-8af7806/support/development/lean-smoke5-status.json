@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "lean",
+    "--run",
+    "InstructionEval.lean",
+    "smoke.tsv"
+  ],
+  "cwd": ".",
+  "LEAN_PATH": "<pinned Kraken build library>",
+  "exit": 0,
+  "elapsed_seconds": 1.9110731250000002
+}

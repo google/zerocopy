@@ -1,0 +1,10 @@
+"Generate co's"
+
+if "cos-opt"
+  include "cos-ok-opt.cat"
+else
+  include "cos-no-opt.cat"
+end
+
+(*** Coherence-after ***)
+let ca = fr | co

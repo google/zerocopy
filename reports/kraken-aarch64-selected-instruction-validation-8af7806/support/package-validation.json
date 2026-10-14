@@ -1,0 +1,7 @@
+{
+  "validator": "reference-candidate/tools/reference.py::_load_report, called read-only without bytecode output",
+  "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+  "report_loaded": true,
+  "problems": [],
+  "scope": "package structure and strict metadata only; no candidate catalog publication"
+}

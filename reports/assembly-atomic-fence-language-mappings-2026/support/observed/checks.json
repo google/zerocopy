@@ -1,0 +1,639 @@
+{
+  "status": "pass",
+  "function_rows": 51,
+  "predicate_checks": 167,
+  "function_counts": {
+    "x86_64": 17,
+    "aarch64": 17,
+    "aarch64-lse": 17
+  },
+  "failed": [],
+  "rows": [
+    {
+      "configuration": "x86_64",
+      "function": "load_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "load_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "load_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "store_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "store_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 release, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "store_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "add_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "add_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 acq_rel, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "add_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "cas_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%5 = cmpxchg ptr %0, i64 %4, i64 %2 acq_rel acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "fence_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence acquire"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "fence_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence release"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "fence_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence acq_rel"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "fence_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence seq_cst"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "signal_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence syncscope(\"singlethread\") seq_cst"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "compiler_barrier",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"\", \"~{memory},~{dirflag},~{fpsr},~{flags}\"() #4, !srcloc !4"
+      ]
+    },
+    {
+      "configuration": "x86_64",
+      "function": "explicit_hw_fence",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"mfence\", \"~{memory},~{dirflag},~{fpsr},~{flags}\"() #4, !srcloc !5"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "load_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "load_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "load_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "store_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "store_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 release, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "store_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "add_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "exclusive_store": true,
+        "retry_branch": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "add_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "exclusive_store": true,
+        "retry_branch": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 acq_rel, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "add_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "exclusive_store": true,
+        "retry_branch": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "cas_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "exclusive_store": true,
+        "mismatch_clears_exclusive": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%5 = cmpxchg ptr %0, i64 %4, i64 %2 acq_rel acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "fence_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence acquire"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "fence_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence release"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "fence_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence acq_rel"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "fence_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence seq_cst"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "signal_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence syncscope(\"singlethread\") seq_cst"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "compiler_barrier",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"\", \"~{memory}\"() #4, !srcloc !5"
+      ]
+    },
+    {
+      "configuration": "aarch64",
+      "function": "explicit_hw_fence",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"dmb ish\", \"~{memory}\"() #4, !srcloc !6"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "load_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "load_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "load_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%2 = load atomic i64, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "store_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "store_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 release, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "store_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "store atomic i64 %1, ptr %0 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "add_relaxed",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 monotonic, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "add_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 acq_rel, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "add_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%3 = atomicrmw add ptr %0, i64 %1 seq_cst, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "cas_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "%5 = cmpxchg ptr %0, i64 %4, i64 %2 acq_rel acquire, align 8"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "fence_acquire",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence acquire"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "fence_release",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence release"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "fence_acq_rel",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence acq_rel"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "fence_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true
+      },
+      "critical_ir": [
+        "fence seq_cst"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "signal_seq_cst",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true
+      },
+      "critical_ir": [
+        "fence syncscope(\"singlethread\") seq_cst"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "compiler_barrier",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "return_only_no_hardware_barrier": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"\", \"~{memory}\"() #4, !srcloc !5"
+      ]
+    },
+    {
+      "configuration": "aarch64-lse",
+      "function": "explicit_hw_fence",
+      "checks": {
+        "ir_order_or_effect": true,
+        "no_external_call": true,
+        "selected_machine_sequence": true,
+        "ir_memory_clobber": true
+      },
+      "critical_ir": [
+        "tail call void asm sideeffect \"dmb ish\", \"~{memory}\"() #4, !srcloc !6"
+      ]
+    }
+  ]
+}

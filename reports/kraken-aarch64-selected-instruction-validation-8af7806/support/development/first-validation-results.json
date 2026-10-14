@@ -1,0 +1,61 @@
+{
+  "status": "STOPPED_FOR_DIAGNOSIS",
+  "observation_date": "2026-10-14",
+  "commands": [
+    {
+      "argv": [
+        "lean",
+        "--version"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.27737404099999996,
+      "log": "lean-version.log",
+      "log_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--version",
+        "--verbose"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.14518120900000003,
+      "log": "rustc-version.log",
+      "log_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+    },
+    {
+      "argv": [
+        "lean",
+        "--run",
+        "InstructionEval.lean",
+        "cases.tsv"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 4.339285374999999,
+      "log": "kraken.tsv",
+      "log_sha256": "9962a3b19b153fd776679718fcb3a7f3aea897902d2c1a6decc8feb46a171c90",
+      "LEAN_PATH": "<pinned Kraken build library>"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=0",
+        "--emit",
+        "asm=<artifact-dir>/native-O0.s,link=<artifact-dir>/native-O0",
+        "native.rs"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.5609261249999999,
+      "log": "native-O0-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "kraken_compared_before_native": true,
+  "error": "unexpected native asm-block count"
+}

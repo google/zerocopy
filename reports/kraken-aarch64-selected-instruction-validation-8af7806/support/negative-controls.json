@@ -1,0 +1,138 @@
+{
+  "clear_signed_overflow": {
+    "case": [
+      "24",
+      "adds64",
+      1,
+      9223372036854775807,
+      0
+    ],
+    "correct": [
+      9223372036854775808,
+      9
+    ],
+    "mutant": [
+      9223372036854775808,
+      8
+    ]
+  },
+  "clear_output_carry": {
+    "case": [
+      "27",
+      "adds64",
+      1,
+      18446744073709551615,
+      0
+    ],
+    "correct": [
+      0,
+      6
+    ],
+    "mutant": [
+      0,
+      4
+    ]
+  },
+  "ignore_input_carry": {
+    "case": [
+      "226",
+      "adcs64",
+      0,
+      0,
+      1
+    ],
+    "correct": [
+      1,
+      0
+    ],
+    "mutant": [
+      0,
+      4
+    ]
+  },
+  "preserve_old_destination_upper32": {
+    "case": [
+      "675",
+      "add32",
+      0,
+      0,
+      0
+    ],
+    "correct": [
+      0,
+      6
+    ],
+    "mutant": [
+      18446744069414584320,
+      6
+    ]
+  },
+  "unmasked_shift_64": {
+    "case": [
+      "919",
+      "lslv64",
+      1,
+      64,
+      0
+    ],
+    "correct": [
+      1,
+      6
+    ],
+    "mutant": [
+      0,
+      6
+    ]
+  },
+  "unmasked_shift_32": {
+    "case": [
+      "1096",
+      "lslv32",
+      1,
+      32,
+      0
+    ],
+    "correct": [
+      1,
+      6
+    ],
+    "mutant": [
+      0,
+      6
+    ]
+  },
+  "reverse_bits_instead_of_bytes_64": {
+    "case": [
+      "1261",
+      "rev64",
+      1,
+      0,
+      0
+    ],
+    "correct": [
+      72057594037927936,
+      6
+    ],
+    "mutant": [
+      9223372036854775808,
+      6
+    ]
+  },
+  "reverse_bits_instead_of_bytes_32": {
+    "case": [
+      "1276",
+      "rev32",
+      1,
+      0,
+      0
+    ],
+    "correct": [
+      16777216,
+      6
+    ],
+    "mutant": [
+      2147483648,
+      6
+    ]
+  }
+}

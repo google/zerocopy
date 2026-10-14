@@ -1,0 +1,192 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * memory-model@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ * https://developer.arm.com/documentation/ddi0487/
+ *
+ * Authors:
+ * Will Deacon <will.deacon@arm.com>
+ * Jade Alglave <jade.alglave@arm.com>
+ * Nikos Nikoleris <nikos.nikoleris@arm.com>
+ * Artem Khyzha <artem.khyzha@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+
+catdep (* This option says that the cat file computes dependencies *)
+
+include "aarch64hwreqs.cat"
+
+(*** TLBI-after, DC-after, IC-after ***)
+include "enumerations.cat"
+with TLBI-after from (all-TLBI-Imp_TTD_R-enums local-hw-reqs)
+with DC-after from (all-DC-Exp_W-enums local-hw-reqs)
+with IC-after from (all-IC-Imp_Instr_R-enums local-hw-reqs)
+
+(*** Hazard-ordered-before ***)
+
+(** Explicitly-hazard-ordered-before **)
+let Exp-haz-ob =
+  [Exp & R]; (po & same-loc); [Exp & R]; sca-class?; [Exp & R]; (ca & ext); [Exp & W | Imp & TTD & W]; sca-class?; [Exp & W | Imp & TTD & W]
+
+(** TLBI-ordered-before **)
+
+(* TTD-read-ordered-before *)
+let TTD-read-ordered-before =
+  TLBI-after; [TLBI]; DSB-ob
+  | TLBI-after; [TLBI]; IFB-ob
+
+let TTD-in-same-scope =
+  [Imp & TTD & R]; tr-ib; [Exp & M]; same-low-order-bits; [Exp & M]; tr-ib^-1; [Imp & TTD & R]
+  | [Imp & TTD & R]; tr-ib; [Imp & Tag & R]; same-low-order-bits; [Imp & Tag & R]; tr-ib^-1; [Imp & TTD & R]
+
+(* TLBI-ordered-before *)
+let TLBI-ob =
+     TTD-read-ordered-before
+   | tr-ib^-1; TTD-read-ordered-before & ext
+   | TTD-in-same-scope & same-translation-context & po; TTD-read-ordered-before & ext
+
+(** IC-ordered-before **)
+
+(* Instr-read-ordered-before *)
+let Instr-read-ordered-before =
+  IC-after; [IC]; DSB-ob
+  | IC-after; [IC]; IFB-ob
+  | (if "DIC" then ca else 0)
+
+(* IC-ordered-before *)
+let IC-ob = [Imp & Instr & R]; po; [Imp & Instr & R]; Instr-read-ordered-before
+
+(* Hazard-ordered-before *)
+let haz-ob =
+  Exp-haz-ob | TLBI-ob | IC-ob
+
+(*** Hardware-required-ordered-before ***)
+let hw-reqs = local-hw-reqs | haz-ob
+
+(*** Observed-by ***)
+
+(** Explicitly-observed-by **)
+let Exp-obs = 
+  [Exp & M]; rf & ext; [Exp & M]
+  | [Exp & M]; ca & ext; [Exp & M]
+
+(** Tag-observed-by **)
+let Tag-obs =
+   [Exp & W]; rf & ext; [Imp & Tag & R]
+   | [Imp & Tag & R]; ca & ext; [Exp & W]
+
+(** TTD-observed-by **)
+
+(* TLBUncacheable-coherence-after *)
+let TLBuncacheable-ca =
+  [range([TLBUncacheable & FAULT]; tr-ib^-1; [Imp & TTD & R])]; ca; [Exp & W | Imp & TTD & W]
+
+(* Hardware-update-coherence-after *)
+let HU-ca =
+  [Exp & R]; ca; [Imp & TTD & W]
+
+(* TLBI-coherence-after *)
+let TLBI-ca =
+   [TLBI]; TLBI-after; [Imp & TTD & R]; ca; [W]
+
+(* TTD-observed-by *)
+let TTD-obs =
+    [Imp & TTD]; rf | rf; [Imp & TTD]
+    | TLBuncacheable-ca
+    | HU-ca
+    | [Imp & TTD & W]; ca; [W] | [W]; ca; [Imp & TTD & W]
+    | TLBI-ca
+
+(** Instr-observed-by **)
+
+(* IC-coherence-after *)
+let IC-ca =
+    (if not "DIC" && not "IDC" then [IC]; IC-after; [Imp & Instr & R]; ca; [W]; DC-after; [DC.CVAU] else 0)
+    | (if not "DIC" && "IDC" then [IC]; IC-after; [Imp & Instr & R]; ca; [W] else 0)
+    | (if "DIC" && "IDC" then [Imp & Instr & R]; ca; [W] else 0)
+
+(* Instr-observed-by *)
+let Instr-obs =
+    rf; [Imp & Instr & R]
+    | IC-after
+    | [DC.CVAU]; DC-after; [W] | [W]; DC-after; [DC.CVAU]
+    | IC-ca
+
+(** Observed-by **)
+let obs =
+    Exp-obs; sca-class?
+    | Tag-obs; sca-class?
+    | TTD-obs
+    | Instr-obs
+
+(*** Ordered-before ***)
+let rec ob =
+    hw-reqs
+    | obs
+    | ob; ob
+
+(*** External visibility requirement ***)
+irreflexive ob as external
+
+(*** Internal visibility requirements ***)
+irreflexive [Exp & R]; ((po & same-loc) | rmw); [Exp & W]; rfi; [Exp & R] as coRW1-Exp
+irreflexive [Imp & Tag & R]; (po & same-loc); [Exp & Tag & W]; rfi; [Imp & Tag & R] as coRW1-MTE
+irreflexive [Exp & W]; (po & same-loc); [Exp & W]; (ca & int); [Exp & W] as coWW-Exp
+irreflexive [Exp & W]; (po & same-loc); [Exp & R]; (ca & int); [Exp & W] as coWR-Exp
+irreflexive [Exp & Tag & W]; (po & same-loc); [Imp & Tag & R]; (ca & int) as coWR-MTE
+
+(*** Atomic: LDXR/STXR, AMO and HU constraint to forbid intervening writes. ***)
+empty (rmw & (fr; co)) \ (([Exp]; rmw; [Exp]) & (fri ; [Exp & W]; coi)) as atomic
+
+(*** Break Before Make ***)
+let BBM = [TLBCacheableTTD]; ca; [TLBUncacheableTTD]; ob; [TLBI]; ob & inv-scope; [TLBCacheableTTD]
+flag ~empty (TTD-update-needsBBM \ BBM) as Warning-BBM-expected
+
+(*** Additional synchronisation requirements for CMODX ***)
+let CMODX-conflicts = same-loc & (
+  (Imp & Instr & R & Within-CMODX-List) * W
+  | (Imp & Instr & R) * (Within-CMODX-List & W)
+  | W * (Within-CMODX-List & Imp & Instr & R)
+  | (Within-CMODX-List & W) * (Imp & Instr & R)
+  )
+
+let CMODX-ordering =
+  [Imp & Instr & R]; ob; [W]
+  | [W]; ob; [Imp & Instr & R]
+
+let CMODX-unordered-conflicts =
+  CMODX-conflicts \ (CMODX-ordering | CMODX-ordering^-1)
+
+flag ~empty CMODX-unordered-conflicts as violates-CMODX-requirements

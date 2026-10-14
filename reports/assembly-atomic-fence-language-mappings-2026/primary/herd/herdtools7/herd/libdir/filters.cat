@@ -1,0 +1,26 @@
+filters
+(* Define filter functions (backward compatibility) *)
+
+let A = (try X with {})|(try A with {})
+let P = M \ A
+
+let WW(r) = r & (W * W)
+and WR(r) = r & (W * R)
+and RW(r) = r & (R * W)
+and RR(r) = r & (R * R)
+and RM(r) = r & (R * M)
+and MR(r) = r & (M * R)
+and WM(r) = r & (W * M)
+and MW(r) = r & (M * W)
+and MM(r) = r & (M * M)
+and AA(r) = r & (A * A)
+and AP(r) = r & (A * P)
+and PA(r) = r & (P * A)
+and PP(r) = r & (P * P)
+and AM(r) = r & (A * M)
+and MA(r) = r & (M * A)
+
+let noid(r)= r \ id
+let invrf = rf^-1
+
+let atom = [A]

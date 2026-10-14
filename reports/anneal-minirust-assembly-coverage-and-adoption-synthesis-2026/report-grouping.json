@@ -1,0 +1,33 @@
+{
+  "grouping_status": "Candidate grouping, revisable with discoveries; stable MR/AS identities retained.",
+  "packages": {
+    "bridge": "minirust-rustbelt-spatial-linking-obligations-2026",
+    "specr": "specr-import-nondeterminism-source-adequacy-15200eb",
+    "repr": "minirust-representation-copy-provenance-laws-d821c6e",
+    "tb": "minirust-tree-borrows-logic-correspondence-d821c6e",
+    "target": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+    "race": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+    "unwind": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+    "effects": "modular-semantics-state-alias-effects-popl2025",
+    "core": "minirust-actual-core-disagreement-evidence-d821c6e",
+    "primitive": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+    "static": "minirust-static-judgments-and-open-contract-controls-2026",
+    "closure": "kraken-selected-theorem-closure-8af7806",
+    "parser": "kraken-parser-layout-fragment-boundaries-8af7806",
+    "sail": "sail-islaris-compcert-access-foundations",
+    "comparative": "jasmin-vale-s2n-artifact-and-access-boundaries",
+    "inline": "rust-inline-assembly-contracts-2dafab9",
+    "abi": "rust-function-abi-witnesses-b940084",
+    "resource": "rust-machine-resource-linking-and-equivalence",
+    "a64": "kraken-rust-assembly-pilot-8af7806",
+    "x64": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+    "isa": "kraken-aarch64-selected-instruction-validation-8af7806",
+    "frontier": "assembly-tcb-concurrency-security-platform-frontiers",
+    "other": "machine-code-foundations-and-environment-selection-2026",
+    "atomic": "assembly-atomic-fence-language-mappings-2026",
+    "platform_unwind": "rust-assembly-platform-unwind-contracts-2026",
+    "synthesis": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026"
+  },
+  "many_to_many": true,
+  "reports_excluding_agenda": 26
+}

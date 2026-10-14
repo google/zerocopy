@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 625,
+      "sha256": "295516170ae8670dca036040c5c8251fee95820e195c3ed03278b94911ec99c1"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 5076,
+      "sha256": "5c8f4c2f184dc047cce31ee298d2501cb764bb3fa302780a059b45e173cc7039"
+    },
+    {
+      "path": "questions.json",
+      "bytes": 48622,
+      "sha256": "54d7cab6b7bc6478bea854d36a63197102e7024fd54551005c9a28a0fb29c0a5"
+    },
+    {
+      "path": "report-map.json",
+      "bytes": 5836,
+      "sha256": "a5293269a8c13f9ff9441ee36ea42cdaf9a3fbeb88ac037fc9d41ba00db0f806"
+    }
+  ]
+}

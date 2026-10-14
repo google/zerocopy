@@ -1,0 +1,10 @@
+{
+  "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+  "structural_subset_pass": true,
+  "owned_probe_replay_match": true,
+  "all_recorded_command_exits_zero": true,
+  "commands": 11,
+  "support_input_hashes_match": true,
+  "public_scratch_absolute_paths": [],
+  "scope": "Structural/owned checks only; parent owns canonical validation and prose/source review."
+}

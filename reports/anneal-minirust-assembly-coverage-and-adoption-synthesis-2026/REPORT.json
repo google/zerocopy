@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal/research",
+    "minirust/adoption",
+    "assembly/adoption",
+    "verification/tcb",
+    "research/coverage"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust research agenda",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3873",
+        "question-identities": "MR01–MR24"
+      }
+    },
+    {
+      "name": "Assembly research agenda",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3874",
+        "question-identities": "AS01–AS28"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Kraken",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "name": "clang-version",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "--version"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "x86_64-asm",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-S",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/x86_64.s"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "x86_64-ir",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-S",
+      "-emit-llvm",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/x86_64.ll"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "aarch64-asm",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-march=armv8-a",
+      "-mno-outline-atomics",
+      "-S",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/aarch64.s"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "aarch64-ir",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-march=armv8-a",
+      "-mno-outline-atomics",
+      "-S",
+      "-emit-llvm",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/aarch64.ll"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "aarch64-lse-asm",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-march=armv8.1-a+lse",
+      "-mno-outline-atomics",
+      "-S",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/aarch64-lse.s"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "aarch64-lse-ir",
+    "argv": [
+      "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-stack-protector",
+      "-march=armv8.1-a+lse",
+      "-mno-outline-atomics",
+      "-S",
+      "-emit-llvm",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/atomics.c",
+      "-o",
+      "<task-workspace>/work/research/phase2-minirust-foundations/assembly-atomic-fence-language-mappings-2026/support/observed/aarch64-lse.ll"
+    ],
+    "returncode": 0
+  }
+]

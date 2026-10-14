@@ -1,0 +1,13 @@
+warning: field `pointer` is never read
+ --> primitive.rs:6:37
+  |
+6 | #[derive(Clone, Copy)] union Wide { pointer: *const [u8] }
+  |                              ----   ^^^^^^^
+  |                              |
+  |                              field in this union
+  |
+  = note: `Wide` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

@@ -1,0 +1,22 @@
+{
+  "agenda_ids": [
+    "AS23",
+    "AS18",
+    "AS24",
+    "AS27",
+    "AS28"
+  ],
+  "answered_scope": "Named decoder, rewrite-validation, phase/call and environment mechanisms; selected concrete instance restrictions; prior HOL lifting/hardware interfaces reused with their exact bounds.",
+  "evidence_roles": [
+    "source",
+    "documentation",
+    "owned finite execution",
+    "derived comparison"
+  ],
+  "stronger_unestablished": [
+    "Upstream proof/build replay",
+    "Complete architecture/Rust resource relation",
+    "Full common-program ports/cost ranking",
+    "Selected processor and device refinement"
+  ]
+}

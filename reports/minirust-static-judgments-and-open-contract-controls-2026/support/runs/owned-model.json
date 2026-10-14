@@ -1,0 +1,111 @@
+{
+  "identity_controls": [
+    {
+      "field": "declaration",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "body",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "impl",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "ty",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "const",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "lifetime",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "target",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "config",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "generated_owner",
+      "wrong_subject_admitted": false
+    },
+    {
+      "field": "abi",
+      "wrong_subject_admitted": false
+    }
+  ],
+  "selected_instance_results": [
+    {
+      "impl": "A",
+      "const": 1,
+      "result": 11,
+      "claimed_11": true
+    },
+    {
+      "impl": "B",
+      "const": 1,
+      "result": 21,
+      "claimed_11": false
+    },
+    {
+      "impl": "A",
+      "const": 2,
+      "result": 12,
+      "claimed_11": false
+    }
+  ],
+  "valid_bool_domain": [
+    0,
+    1
+  ],
+  "mutated_unsafe_trait_extra_invalid_values": 254,
+  "wrong_law_domain_rejected": true,
+  "vacuous_domain_rejected": true,
+  "vec_like_initialization_control": {
+    "truthful_get3": null,
+    "lying_get4": "Uninit",
+    "truthful_prefix": [
+      10,
+      11,
+      12
+    ]
+  },
+  "callback_resource_controls": [
+    {
+      "case": "normal",
+      "accepted": true
+    },
+    {
+      "case": "exceptional-restored",
+      "accepted": true
+    },
+    {
+      "case": "premature-recovery",
+      "accepted": false
+    },
+    {
+      "case": "retained-mutable-alias",
+      "accepted": false
+    },
+    {
+      "case": "overlapping-return",
+      "accepted": false
+    },
+    {
+      "case": "lost-resource",
+      "accepted": false
+    },
+    {
+      "case": "broken-invariant",
+      "accepted": false
+    }
+  ],
+  "scope": "Owned candidate contract checks; no full Rust/MiniRust linking theorem"
+}

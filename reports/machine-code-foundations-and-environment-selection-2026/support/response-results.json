@@ -1,0 +1,63 @@
+{
+  "response_sets": [
+    {
+      "allowed": [],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        0
+      ],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        7
+      ],
+      "accepted": true
+    },
+    {
+      "allowed": [
+        42
+      ],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        0,
+        7
+      ],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        0,
+        42
+      ],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        7,
+        42
+      ],
+      "accepted": false
+    },
+    {
+      "allowed": [
+        0,
+        7,
+        42
+      ],
+      "accepted": false
+    }
+  ],
+  "controls": {
+    "empty_rejected": true,
+    "one_good_does_not_cover_bad": true,
+    "candidate_result_accepted": true,
+    "omitted_event_rejected": true,
+    "omitted_memory_update_rejected": true
+  },
+  "scope": "Owned finite quantifier/effect fixtures only; not upstream Coq or hardware execution"
+}

@@ -1,0 +1,12 @@
+{
+  "topics": ["minirust", "rust/static-semantics", "rust/elaboration", "rust/unsafe-traits", "verification/linking"],
+  "subjects": [
+    {"name": "a-mir-formality judgments and MiniRust code generation", "identity": {"repository": "rust-lang/a-mir-formality", "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"}},
+    {"name": "MiniRust runtime/import boundary", "identity": {"repository": "minirust/minirust", "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"}},
+    {"name": "Rust compiler used for new safe controls", "identity": {"repository": "rust-lang/rust", "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4", "version": "1.99.0"}},
+    {"name": "Charon feature-boundary comparison", "identity": {"repository": "AeneasVerif/charon", "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0", "version": "0.1.210"}},
+    {"name": "Rust unsafe-trait contract comparison", "identity": {"repository": "rust-lang/reference", "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"}},
+    {"name": "End-to-End Executable Rust Specification plan", "identity": {"url": "https://goals.rust-lang.org/2026/executable-spec.html", "retrieved": "2026-10-14"}}
+  ],
+  "observed_at": "2026-10-14"
+}

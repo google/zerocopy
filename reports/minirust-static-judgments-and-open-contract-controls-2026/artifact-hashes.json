@@ -1,0 +1,142 @@
+[
+  {
+    "path": "REPORT.json",
+    "bytes": 1202,
+    "sha256": "7254a4a6f574b22d1fe9fc825d232c568a28425e18efaabc669a2cf99ab26654"
+  },
+  {
+    "path": "REPORT.md",
+    "bytes": 22126,
+    "sha256": "091413f11805ae38e18b0de0a2edbe19005dd6160e94175d8cea8667b8dcabee"
+  },
+  {
+    "path": "coverage.json",
+    "bytes": 4750,
+    "sha256": "134ef9ab17ddc1c8f3925512c76e796c10d07dbfeabc66c5acc4eb2402daf346"
+  },
+  {
+    "path": "reused-evidence.json",
+    "bytes": 25565,
+    "sha256": "feb67a8aa7e02199826dba49713eac01cd79efd2a95ba8ee12b0293b6075ccfb"
+  },
+  {
+    "path": "source-evidence.json",
+    "bytes": 28126,
+    "sha256": "d1d7a8c50cbf4db2a0cb1a6ad76ffaa2fa826484f44fa4378332d39266b55bc5"
+  },
+  {
+    "path": "support/contract_model.py",
+    "bytes": 4531,
+    "sha256": "5966c4f73a7318f06eb1b714bc16de80e37a3a8e466f3270cc62e791a81d77f0"
+  },
+  {
+    "path": "support/open_contract.rs",
+    "bytes": 4444,
+    "sha256": "f60816b62b9536a966f9bc029f389e2b31358946dd436b63844b1a1b911595d3"
+  },
+  {
+    "path": "support/revalidate.py",
+    "bytes": 2215,
+    "sha256": "14afafa03762ca7b9bda5596eeafb7f25f0a61b47b5e05f9046dd9c5be92dc6d"
+  },
+  {
+    "path": "support/runs/commands.json",
+    "bytes": 1068,
+    "sha256": "c5510a42ad278e7369c215d2c6d8bc9f01714be6db08b0f9735d74b9073880a6"
+  },
+  {
+    "path": "support/runs/default-build.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/default-build.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/default-run.stderr",
+    "bytes": 169,
+    "sha256": "a1b50958cb251f3226fcdcc7ecd5eb410c3feff9e61c1c9d4557d557796f261e"
+  },
+  {
+    "path": "support/runs/default-run.stdout",
+    "bytes": 253,
+    "sha256": "6b57bdaccc7872c4e6ab8f12e5eb89cf32d3fd447934e15c2117d179122b87ad"
+  },
+  {
+    "path": "support/runs/default.mir",
+    "bytes": 58618,
+    "sha256": "07e1a1ffb64d388eed363c90041019a5dc99eb3387cfa904a308c12357bd825d"
+  },
+  {
+    "path": "support/runs/flipped-build.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/flipped-build.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/flipped-run.stderr",
+    "bytes": 169,
+    "sha256": "58438a9e27e671260f15c4c9dec913d45f2312241e23b5b943c06ed41c6234ab"
+  },
+  {
+    "path": "support/runs/flipped-run.stdout",
+    "bytes": 254,
+    "sha256": "f114476c95e02d874c0a62b808c34cbf48a2f468dbc62ccb4ed47574e063f8b2"
+  },
+  {
+    "path": "support/runs/flipped.mir",
+    "bytes": 58728,
+    "sha256": "b9b98b8b3f0e0127554edfc507ab9bcb600a768e14bed06759192baed44a4a83"
+  },
+  {
+    "path": "support/runs/owned-model.json",
+    "bytes": 2065,
+    "sha256": "7cf5d3eeb6a462638aefb6b47acf9f596ae69f357519267152ac68dffc786568"
+  },
+  {
+    "path": "support/runs/owned-model.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/owned-model.stdout",
+    "bytes": 2065,
+    "sha256": "7cf5d3eeb6a462638aefb6b47acf9f596ae69f357519267152ac68dffc786568"
+  },
+  {
+    "path": "support/runs/python-version.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/python-version.stdout",
+    "bytes": 13,
+    "sha256": "fd0fd4290ad100adc37e4a82e45f821faeacbecae70f4d3eba08e85be138c632"
+  },
+  {
+    "path": "support/runs/results.json",
+    "bytes": 1239,
+    "sha256": "6e509a6a568eae07ad2d18496a9638cd7e5f37dcac0fd3de983ccd4d43fd50cc"
+  },
+  {
+    "path": "support/runs/rust-version.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "support/runs/rust-version.stdout",
+    "bytes": 192,
+    "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+  },
+  {
+    "path": "validation.json",
+    "bytes": 386,
+    "sha256": "d55572aa073b3d876c24704aa4283e4ea00a37366d86b1aa93b8a7347c26598d"
+  }
+]

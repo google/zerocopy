@@ -1,0 +1,424 @@
+{
+  "observed_at": "2026-10-14",
+  "reports": [
+    {
+      "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+      "report_sha256": "f43c51e56b2b18277c4c5aad6f00158eea71533a07046edb1f8f081c8dd07b28",
+      "metadata_sha256": "ba7285faf998bbb1bf40a380dea5acc9e62ea7e3eb9a77f3409ba70e09f45043",
+      "metadata": {
+        "topics": [
+          "minirust/target",
+          "rust/layout",
+          "rust/dst",
+          "rust/intrinsics",
+          "rust/allocators"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust atomic documentation",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+              "path": "library/core/src/sync/atomic.rs"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Reviewed Target/bounded-int, dynamic-tail/pointee/retag-mask and allocation reuse/failure source and owned probe results.",
+      "limits_retained": "Earlier probes are reconstructed formulas, not actual targets or interpreter execution."
+    },
+    {
+      "package": "zerocopy-two-target-byte-and-layout-controls-2026-10-14",
+      "report_sha256": "238e3b7e7ed764e18c6fb7039091610437eeca4f0f4cf1b8cb5625391923a6b1",
+      "metadata_sha256": "b596f46c85598fb6a693d6529fc868355179d063b22e50b68a54e0c55f51bf14",
+      "metadata": {
+        "topics": [
+          "anneal",
+          "rust/unsafe",
+          "zerocopy/validity",
+          "zerocopy/bytes",
+          "rust/layout",
+          "verification/cross-target",
+          "verification/costs"
+        ],
+        "subjects": [
+          {
+            "name": "Zerocopy selected library",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+            }
+          },
+          {
+            "name": "Rust1.99.0",
+            "identity": {
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "host_target": "aarch64-apple-darwin",
+              "second_target": "wasm32-unknown-unknown"
+            }
+          },
+          {
+            "name": "Official Rust wasm32 standard library",
+            "identity": {
+              "version": "1.99.0",
+              "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+            }
+          },
+          {
+            "name": "Node/WebAssembly runtime",
+            "identity": {
+              "node": "24.21.0",
+              "v8": "13.6.233.17-node.53",
+              "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Read complete report and fixture/run/results: native/wasm bool/endian/alignment/write/ZST controls and target layouts.",
+      "limits_retained": "Not rerun here; finite exact zerocopy cce761ad/compiler/runtime evidence, not language theorem."
+    },
+    {
+      "package": "rust-layout-runtime-may-september-2026-10-01",
+      "report_sha256": "db81528b6dd41c7e805a350f35579313399f9c1959917251e6d43c1c8ac9637d",
+      "metadata_sha256": "dd5cfa907568bb6a0c9e478792c984ed5bc71a13b869c39182ecfc7998f0aeda",
+      "metadata": {
+        "topics": [
+          "rust",
+          "rust/layout",
+          "rust/abi",
+          "rust/version-difference"
+        ],
+        "subjects": [
+          {
+            "name": "Rust nightly 2026-05-31 rustc",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+              "version": "1.98.0-nightly",
+              "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+            }
+          },
+          {
+            "name": "Rust nightly 2026-09-30 rustc",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+              "version": "1.101.0-nightly",
+              "rustc_sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d"
+            }
+          }
+        ],
+        "observed_at": "2026-10-01"
+      },
+      "reviewed_use": "Reviewed exact selected layouts including Option and wide/DST pointer size; numeric equality does not establish niches or portable layout.",
+      "limits_retained": "Older native compiler pins, finite output, no general representation/niche proof."
+    },
+    {
+      "package": "scalars-values-storage-and-access-side-conditions",
+      "report_sha256": "940af000a3503a836001d1c0202d492f5af64ecf7134477c102120037498b940",
+      "metadata_sha256": "7ddef52644c152867a156607e390a948e3c09e0fdd2870e6b4ee632317f5e548",
+      "metadata": {
+        "topics": [
+          "rust/semantics",
+          "anneal/correspondence",
+          "certificates/values",
+          "certificates/memory",
+          "rust/provenance"
+        ],
+        "subjects": [
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust core pointer, initialization and cell contracts",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+            }
+          },
+          {
+            "name": "Charon value/type import",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+            }
+          },
+          {
+            "name": "Aeneas scalar model and symbolic conversion",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+            }
+          },
+          {
+            "name": "Rust mathematical memory/storage and consumer semantics",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "paths": "anneal/lean/Rust/Memory.lean;anneal/lean/Rust/Storage.lean;verification/aeneas/SEMANTICS.md"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Reviewed value/storage/access separation and current pointer API source; byte validity is not whole library invariant.",
+      "limits_retained": "No all-FP semantics or complete source/core adequacy result."
+    },
+    {
+      "package": "exact-and-rounded-numerical-proof-witnesses-2026-10-14",
+      "report_sha256": "7db1ac1130f0578cb87d106f8982d680ba4942ddf8cbd1f1d61bfdc640515987",
+      "metadata_sha256": "819cea821a1d41bbf27eaf592d98ca18f98a9d7981cd5fbf3df14c63dab6c3b2",
+      "metadata": {
+        "topics": [
+          "anneal",
+          "automation/numerical",
+          "proof/certificates",
+          "proof/floating-point"
+        ],
+        "subjects": [
+          {
+            "name": "leanprover-community/mathlib4",
+            "identity": {
+              "repository": "leanprover-community/mathlib4",
+              "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40"
+            }
+          },
+          {
+            "name": "jrh13/hol-light",
+            "identity": {
+              "repository": "jrh13/hol-light",
+              "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+            }
+          },
+          {
+            "name": "ufmg-smite/carcara",
+            "identity": {
+              "repository": "ufmg-smite/carcara",
+              "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+            }
+          },
+          {
+            "name": "SMTCoq/smtcoq",
+            "identity": {
+              "repository": "SMTCoq/smtcoq",
+              "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+            }
+          },
+          {
+            "name": "FloVer FMCAD 2018 paper",
+            "identity": {
+              "title": "A Verified Certificate Checker for Finite-Precision Error Bounds in Coq and HOL4",
+              "venue": "FMCAD 2018",
+              "url": "https://www.cs.utexas.edu/~hunt/FMCAD/FMCAD18/papers/paper2.pdf"
+            }
+          },
+          {
+            "name": "Gappa upstream integration documentation",
+            "identity": {
+              "url": "https://gappa.gitlabpages.inria.fr/gappa/tools.html",
+              "observed": "2026-10-14"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Reviewed exact/real versus rounded numerical witness boundary before selecting explicit Rust FP controls.",
+      "limits_retained": "Numerical certification examples do not define MiniRust FP or prove Rust FP correctness."
+    },
+    {
+      "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+      "report_sha256": "87444376c357884443552bcf111fc81869b9cf7874d6fba253cdf1211c977bc1",
+      "metadata_sha256": "2324510d2f127bb0989730c807f950fbac6de68500343b219f641e4d21f7dad8",
+      "metadata": {
+        "topics": [
+          "minirust/unwinding",
+          "rust/drop-elaboration",
+          "rust/static-semantics",
+          "rust/library-soundness",
+          "rust/callbacks"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "a-mir-formality",
+            "identity": {
+              "repository": "rust-lang/a-mir-formality",
+              "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+            }
+          },
+          {
+            "name": "Rust compiler native specimen",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0"
+            }
+          },
+          {
+            "name": "RustBelt POPL 2018 source archive",
+            "identity": {
+              "artifact": "lambda-rust-popl18.tar.gz",
+              "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+            }
+          },
+          {
+            "name": "Formalization of Rust Drop Elaboration thesis",
+            "identity": {
+              "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+              "author": "Viktor Fukala",
+              "date": "2024-08-05",
+              "reported_development_revision": "120d9b3d1e868ddd00ce9163b2bb53d099154247"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Reviewed implemented unwind operations, importer Drop cleanup mismatch and source/runtime contract boundary.",
+      "limits_retained": "No full cleanup/compiler or open-client theorem."
+    },
+    {
+      "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+      "report_sha256": "28d79ea48d5860703e2486439d8ec5e7809a43db15a0a35cb1d61a03d4b8e4ac",
+      "metadata_sha256": "8caf8ea637cbba9a561be65f3920d7daa7a89404b8e16ae2e1b77b939abfb1d8",
+      "metadata": {
+        "topics": [
+          "minirust",
+          "verification/differential-testing",
+          "verification/evidence-classification",
+          "rust/representation",
+          "specr/generation"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust actual-core source",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+              "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+            }
+          },
+          {
+            "name": "Specr transpiler and libspecr",
+            "identity": {
+              "repository": "minirust/specr",
+              "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+              "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220"
+            }
+          },
+          {
+            "name": "Requested nightly successful core compiler",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+              "version": "1.97.0-nightly",
+              "distribution_date": "2026-05-01"
+            }
+          },
+          {
+            "name": "Alternate-host compiler incompatibility observation",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0"
+            }
+          },
+          {
+            "name": "Cargo used for exact locked closure",
+            "identity": {
+              "repository": "rust-lang/cargo",
+              "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+              "version": "1.99.0"
+            }
+          },
+          {
+            "name": "Owned probe",
+            "identity": {
+              "artifact": "support/actual_core_probe.rs",
+              "sha256": "63206f5c4b4f6bef4ff3bc1ed48d1041634f210c182552e093dcea349ac8365f"
+            }
+          },
+          {
+            "name": "Actual generated interpreter module",
+            "identity": {
+              "artifact": "support/generated/lang.rs",
+              "sha256": "106b8d33a2a99a87028e4f3771171447775f507825aa595f62fb6c1fd6cd5450"
+            }
+          },
+          {
+            "name": "Actual generated interpreter module",
+            "identity": {
+              "artifact": "support/generated/mem.rs",
+              "sha256": "bcfbed6c1d8f5bedafa282b7e55e7d3f12378540ff3653839209d7a92d73e421"
+            }
+          },
+          {
+            "name": "Actual generated interpreter module",
+            "identity": {
+              "artifact": "support/generated/prelude.rs",
+              "sha256": "a145fcbf99688857fad7f7feb438da4af8e4b8b69680af7f0707e06402426a35"
+            }
+          },
+          {
+            "name": "Actual generated interpreter module",
+            "identity": {
+              "artifact": "support/generated/lib.rs",
+              "sha256": "e3de42b4c496ea7a440724d350763bbea52048767cd5b5b6e69ddd698581db9d"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Read Finding6, actual_core_probe.rs, actual-results.json and owned-run.log; candidate union one/two-word chunk control.",
+      "limits_retained": "Coordinated author execution, not rerun by this package; generated core BasicMem modeled x86_64, not minimize output.",
+      "reviewed_files": [
+        {
+          "file": "support/actual_core_probe.rs",
+          "sha256": "63206f5c4b4f6bef4ff3bc1ed48d1041634f210c182552e093dcea349ac8365f"
+        },
+        {
+          "file": "support/actual-results.json",
+          "sha256": "2d43f0a932f6c27a5b187e380b9a52ab5784b217421b951096dfdc1379855cf3"
+        },
+        {
+          "file": "support/logs/owned-run.log",
+          "sha256": "31e3dadc769f5d91cfc8d2364d0659e21d68e4c5240eb9b1879047632b71eb2f"
+        }
+      ]
+    }
+  ],
+  "core_support_note": "Copied probe/results unchanged for review; complete exact core generation/replay remains in the referenced report package."
+}

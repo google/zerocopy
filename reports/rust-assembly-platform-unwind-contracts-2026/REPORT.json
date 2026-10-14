@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust/assembly",
+    "assembly/unwinding",
+    "assembly/windows-x64",
+    "rust/abi",
+    "assembly/artifact-binding"
+  ],
+  "subjects": [
+    {
+      "name": "Microsoft Windows x64 unwind and prologue/epilogue rules",
+      "identity": {
+        "repository": "MicrosoftDocs/cpp-docs",
+        "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+      }
+    },
+    {
+      "name": "Rust Reference unwind and assembly interfaces",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Apple clang cross-target Windows specimen compiler",
+      "identity": {
+        "version": "21.0.0",
+        "build": "clang-2100.3.34.2",
+        "target": "x86_64-pc-windows-msvc"
+      }
+    },
+    {
+      "name": "Rust compiler for Apple AArch64 cleanup specimen",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "target": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

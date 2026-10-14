@@ -1,0 +1,70 @@
+{
+  "observation_date": "2026-10-14",
+  "kraken": {
+    "repository": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "files": [
+      {
+        "path": "Kraken/AArch64/Semantics.lean",
+        "sha256": "6836d7e542cacdffb8d67070fe1d69d402503788ee6f3010c514f28bdd442be7"
+      },
+      {
+        "path": "Kraken/AArch64/Syntax.lean",
+        "sha256": "0ed1b015319d1c72e364a4796b4e0729656657ca2ee8b77b3b66bc59694e5b05"
+      },
+      {
+        "path": "Kraken/AArch64/Parser.lean",
+        "sha256": "84407963f198e18b130b2a2ca7faa085b5a27a4651ad59f6d28c34e5f98ceb99"
+      },
+      {
+        "path": "Kraken/AArch64/Parser/Basic.lean",
+        "sha256": "f3ca9783e39cdd11f2c19941418bd1071538b3fa260c9749f8d1fee237b11dbe"
+      },
+      {
+        "path": "Kraken/Layout.lean",
+        "sha256": "b14d53739de354670f6996cb0ec596897be0276fbe2b4d358cb3e5e3e7168d6b"
+      },
+      {
+        "path": "Kraken/Mem.lean",
+        "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01"
+      },
+      {
+        "path": "lean-toolchain",
+        "sha256": "c7d3be4f231b7173b248710c425d8b406df756ed3de889895999a9a7b2518add"
+      }
+    ]
+  },
+  "documents": [
+    {
+      "name": "Arm A64 instruction descriptions, selected ADDS/ADCS entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622",
+        "revision": "2025-09_rel",
+        "build_timestamp": "2025-09-23 11:45:10"
+      }
+    },
+    {
+      "name": "Arm A64 instruction descriptions, selected LSLV/REV entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+        "revision": "aarchmrs v2025-03_rel, pseudocode v2025-03_rel",
+        "build_timestamp": "2025-03-21T17:41"
+      }
+    },
+    {
+      "name": "Armv8-A Instruction Set Architecture guide",
+      "identity": {
+        "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154",
+        "document": "ARM062-948681440-3280",
+        "issue": "1.1",
+        "date": "2020-07-03"
+      }
+    }
+  ],
+  "owned_sources": {
+    "InstructionEval.lean": "699801d81600b12ccf4f1845dd7444a1bd0f243b6a43b1a239e387ab9450e5b8",
+    "native.rs": "6b3da3fecc080bf02a7dc99543ed8f018affedea1ea99bed99d68f5280af30ca",
+    "validate.py": "ac17261926aadebafb7d7ff68633658fe9bd41bb4798309f2dab865420bb1786"
+  },
+  "document_access": "Primary indexed text for selected A64 reference entries; full15.3MB 2025-03 PDF not fetched (web size rejection). Full short39page guide read through web text. No local large manuals downloaded. Reference URLs/version footers identify observations, without full-document hash."
+}

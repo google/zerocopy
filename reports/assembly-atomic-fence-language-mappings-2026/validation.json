@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "errors": [],
+  "source_entries": 43,
+  "full_git_blobs": 37,
+  "excerpts": 6,
+  "compiler_commands": 14,
+  "direct_function_pairs": 51,
+  "direct_computed_predicates": 167,
+  "relation_cases": 10,
+  "dispatcher_direct_bodies_equal": true,
+  "compiled_execution": "none",
+  "shared_writes": "none"
+}

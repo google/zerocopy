@@ -1,0 +1,252 @@
+{
+  "status": "pass",
+  "scope": "fixed-candidate four-event ordering relation projection, not herd execution or complete model validation",
+  "cases": [
+    {
+      "name": "x86 plain MOV: no preserved WR edges",
+      "order_edges": [],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    },
+    {
+      "name": "x86 MFENCE in both threads: ghb mfence edges",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": true,
+      "expected_cycle_fixture": true,
+      "fixture_agrees": true,
+      "self_edges": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "name": "x86 one MFENCE missing: one order edge only",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    },
+    {
+      "name": "x86 locked SC stores: implied AM WR edges",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": true,
+      "expected_cycle_fixture": true,
+      "fixture_agrees": true,
+      "self_edges": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "name": "A64 STR/LDR: no bob WR edges",
+      "order_edges": [],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    },
+    {
+      "name": "A64 DMB ISH in both threads: bob full edges",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": true,
+      "expected_cycle_fixture": true,
+      "fixture_agrees": true,
+      "self_edges": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "name": "A64 one DMB missing: one order edge only",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    },
+    {
+      "name": "A64 DMB ISHLD after stores: no preceding-read edges",
+      "order_edges": [],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    },
+    {
+      "name": "A64 STLR/LDAR: bob L-po-A edges",
+      "order_edges": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d"
+        ]
+      ],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": true,
+      "expected_cycle_fixture": true,
+      "fixture_agrees": true,
+      "self_edges": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "name": "empty compiler memory-clobber asm: no hardware event",
+      "order_edges": [],
+      "from_read_edges": [
+        [
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a"
+        ]
+      ],
+      "cyclic": false,
+      "expected_cycle_fixture": false,
+      "fixture_agrees": true,
+      "self_edges": []
+    }
+  ]
+}

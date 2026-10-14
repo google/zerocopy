@@ -1,0 +1,655 @@
+{
+  "observed_at": "2026-10-14",
+  "reports": [
+    {
+      "package": "functions-generics-and-environment-certificate-closure",
+      "report_sha256": "8eec0f7b0f650549377973bb01b6d928937252bb3a880fe9ce2d9da3a1a4cbd7",
+      "metadata_sha256": "d59a1797d4cf3eed50031bdcaf5825062dd89ab2926388cd7ace7a526505ee6d",
+      "metadata": {
+        "topics": [
+          "anneal/correspondence",
+          "certificates/composition",
+          "rust/generics",
+          "semantics/open-modules",
+          "certificates/dependency-closure"
+        ],
+        "subjects": [
+          {
+            "name": "Charon generic and dispatch transformations",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+            }
+          },
+          {
+            "name": "Aeneas dependency/context/effect analysis",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+            }
+          },
+          {
+            "name": "Rust destructor requirements",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+              "path": "src/destructors.md"
+            }
+          },
+          {
+            "name": "Anneal current consumer and admission contracts",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "paths": "verification/aeneas/ADMISSION_DESIGN.md;verification/aeneas/SEMANTICS.md"
+            }
+          },
+          {
+            "name": "Original checked generic prefix-composition specimen",
+            "identity": {
+              "artifact": "PrefixCertificate.lean",
+              "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Callable declaration/instance/environment identity, family law, generated/drop/const closure obligations.",
+      "limits_retained": "Proposed closure/admission architecture, not a full frontend proof."
+    },
+    {
+      "package": "rust-gat-laws-and-selected-implementation-evidence-2026",
+      "report_sha256": "c2ff99b2ade0ad5ed22784be4861f5e90e651c2b931533217ccecc93eae24d04",
+      "metadata_sha256": "8a8e23587092e12cd2d1a315b64b3d11f7e97bb1df2d903883dc8b374969995e",
+      "metadata": {
+        "observed_at": "2026-10-14",
+        "topics": [
+          "rust/traits",
+          "rust/gat",
+          "rust/coinduction",
+          "rust/specialization",
+          "verification/trait-evidence",
+          "refinedrust/trait-extraction"
+        ],
+        "subjects": [
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust compiler source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+            }
+          },
+          {
+            "name": "Rust nightly observed toolchain and matching library source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "release": "1.101.0-nightly",
+              "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+            }
+          },
+          {
+            "name": "rustc development guide",
+            "identity": {
+              "repository": "rust-lang/rustc-dev-guide",
+              "revision": "bfbca953b5d4a3596081360a1c79ad88f31e7d60"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 artifact, selected trait frontend",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+            }
+          }
+        ]
+      },
+      "reviewed_use": "GAT family/where/lifetime quantifiers; selected impl and specialization tests at exact pins.",
+      "limits_retained": "Selected new/older compiler controls differ; RefinedRust family acceptance not proved."
+    },
+    {
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "report_sha256": "2eab0d0a03c2f10621b4a9e57307ea3161bf09f8394ef4d01ec9ca1be2320bfa",
+      "metadata_sha256": "f98ba6c754646773cfe21ade8ebd93abbe4605a06bf9adb8440aa5bfcc95f465",
+      "metadata": {
+        "topics": [
+          "rust/pin",
+          "rust/async",
+          "rust/ffi",
+          "rust/volatile",
+          "rust/hardware",
+          "certificates/progress"
+        ],
+        "subjects": [
+          {
+            "name": "Rust standard-library contracts",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+            "identity": {
+              "arxiv": "2610.09198v1",
+              "submitted": "2026-10-06",
+              "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30"
+            }
+          },
+          {
+            "name": "A Complete Formal Semantics for Rust Source Code",
+            "identity": {
+              "arxiv": "2610.06003v1",
+              "submitted": "2026-10-05",
+              "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d"
+            }
+          },
+          {
+            "name": "Native async drop probe compiler",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0",
+              "host": "aarch64-apple-darwin"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Pin address/drop guarantee, Future/waker/repoll boundary and prior async drop controls.",
+      "limits_retained": "No scheduler, Pin projection or whole async safety theorem."
+    },
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "report_sha256": "f268c114dac6988f45d774132a8cdff894c04b8f1d6aae1230c0b4134f03b321",
+      "metadata_sha256": "15ca36bd77b805fb42573a2b5d5458af910c2587c886d5e45df7a373f7fbf44e",
+      "metadata": {
+        "topics": [
+          "rust/capture",
+          "rust/implicit-operations",
+          "rust/ctfe",
+          "rust/thread-local",
+          "translation/serialization",
+          "verification/obligation-generation",
+          "certificates/aggregation"
+        ],
+        "subjects": [
+          {
+            "name": "rust-lang/reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+              "paths": "conditional-compilation;type-coercions;method-call-expr;const_eval;static-items"
+            }
+          },
+          {
+            "name": "rust-lang/rust",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+              "paths": "library/std/src/thread/local.rs;compiler/rustc_middle/src/ty/adjustment.rs;compiler/rustc_ast_lowering/src/expr.rs;compiler/rustc_mir_build/src/thir/cx/expr.rs;compiler/rustc_mir_build/src/builder/expr/{as_rvalue,as_place}.rs;builder/scope.rs;compiler/rustc_const_eval/src/const_eval/eval_queries.rs;interpret/{intern,validity}.rs;compiler/rustc_middle/src/mir/interpret/allocation.rs"
+            }
+          },
+          {
+            "name": "AeneasVerif/charon",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+              "paths": "driver.rs;get_mir.rs;export.rs;charon-ml/src/OfJson.ml"
+            }
+          },
+          {
+            "name": "AeneasVerif/aeneas",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+              "path": "src/llbc/LlbcOfJson.ml"
+            }
+          },
+          {
+            "name": "Original ObligationPilot.lean",
+            "identity": {
+              "artifact": "ObligationPilot.lean",
+              "sha256": "17149fd58168fce0120c9814b6aedb14b74d107ce2390627889ceb9bb140c545",
+              "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+            }
+          },
+          {
+            "name": "Original subject.rs",
+            "identity": {
+              "artifact": "subject.rs",
+              "sha256": "28f24a9ad2101629774e8bb53510a2467bef0fe85846e520e46e4d5fdb6c1200",
+              "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+            }
+          },
+          {
+            "name": "Lean 4.31 observation",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+              "version": "4.31.0",
+              "runtime_identity": "Executable, Init.olean and libleanshared.dylib hashes in lean-check.json",
+              "boundary": "Parent-reviewed missing nested-inductive validation; no exploit executed"
+            }
+          },
+          {
+            "name": "Official Lean 4.32.2 soundness-fix note",
+            "identity": {
+              "primary_url": "https://lean-lang.org/doc/reference/latest/releases/v4.32.2/",
+              "version": "4.32.2",
+              "coordinates": "Soundness bug note, issue14576 and PR14577; release2026-07-28"
+            }
+          },
+          {
+            "name": "Owned inline-control",
+            "identity": {
+              "artifact": "support/inline-control/Inline.lean",
+              "sha256": "fcd32005109d87f4b00f7748101c85a976f72d855de2f80d0f631043d31ff94a",
+              "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+            }
+          },
+          {
+            "name": "Owned modular-control",
+            "identity": {
+              "artifact": "support/modular-control/Modular.lean",
+              "sha256": "b4768930f94676ce96fdb2808e3e755552b7e85e6f80f723f1c762e2b570396f",
+              "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+            }
+          },
+          {
+            "name": "Owned attachment-control",
+            "identity": {
+              "artifact": "support/attachment-control/probe.rs",
+              "sha256": "3a48e47e5e080dc997532b4794d0ffe3f760cc03109146c9a815a5e6c8d8c4b0",
+              "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+            }
+          },
+          {
+            "name": "Lean4.34 parent controls",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+              "version": "4.34.1"
+            }
+          },
+          {
+            "name": "Rust attachment compiler",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "version": "1.101.0-nightly"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Configuration/macro/build/generated-item owner and independent required obligation domain.",
+      "limits_retained": "Source closure is a design obligation; report is not all-current-feature capture proof."
+    },
+    {
+      "package": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29",
+      "report_sha256": "583d625357e0ac6f8e4b5fc0d92de715b065a1ab63b5534a67f33c7fcd0caf71",
+      "metadata_sha256": "cd2d0ca352b9fc05b4e571cdffee45f200e77cf3dd4a0b7724186cd2d4753784",
+      "metadata": {
+        "topics": [
+          "rust/annotations",
+          "rust/cargo",
+          "charon",
+          "lean/projection"
+        ],
+        "subjects": [
+          {
+            "name": "Rust nightly rustc",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "version": "nightly-2026-05-31",
+              "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+            }
+          },
+          {
+            "name": "Cargo nightly",
+            "identity": {
+              "repository": "rust-lang/cargo",
+              "version": "nightly-2026-05-31",
+              "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+            }
+          },
+          {
+            "name": "Charon executable",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+            }
+          },
+          {
+            "name": "Lean 4",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "version": "v4.30.0-rc2",
+              "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+            }
+          },
+          {
+            "name": "Minimal annotation fixture model",
+            "identity": {
+              "artifact": "support/probe.py",
+              "sha256": "d600c58b12e0f2b95aeb1194780e396725024de16d7ee58d1066f30de6b3de71"
+            }
+          }
+        ],
+        "observed_at": "2026-09-29"
+      },
+      "reviewed_use": "Actual configured owner/range/duplicate/move and comment-dependent effects evidence.",
+      "limits_retained": "Invented locator and old pins do not establish actual Anneal or MiniRust complete attachment."
+    },
+    {
+      "package": "rust-const-eval-const-functions-nightly-2026-05-31",
+      "report_sha256": "5d16a0a0c33cfe170692344e789b2f7e2428fd4db341035064ba22d092ce24c7",
+      "metadata_sha256": "092e67706e7df12ce48be430ebe0964814cde0fbf4361883c63606f00a4237d2",
+      "metadata": {
+        "topics": [
+          "rust/const-eval",
+          "rust/const-fn",
+          "rustc/ctfe",
+          "rustc/mir"
+        ],
+        "subjects": [
+          {
+            "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "toolchain-date": "2026-05-31"
+            }
+          },
+          {
+            "name": "Rust Reference bundled by the compiler revision",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+            }
+          }
+        ],
+        "observed_at": "2026-09-26"
+      },
+      "reviewed_use": "Target CTFE subject, runtime/const implementation split, required failure and panic distinction.",
+      "limits_retained": "Exact older source/compiler identities kept; no Rust1.99 CTFE suite rerun."
+    },
+    {
+      "package": "charon-traits-generics-nightly-2026-06-03",
+      "report_sha256": "27907d07b90f9bb3a01dd4bd65a376a79f0e4f1b2c85976a37c348ac33ed20d7",
+      "metadata_sha256": "12976783e51839419e055b69cd2bb3a3e617f8f53a7faeed139948b765742ad8",
+      "metadata": {
+        "topics": [
+          "charon/traits",
+          "charon/generics",
+          "charon/where-clauses",
+          "charon/trait-proofs",
+          "charon/associated-items",
+          "charon/auto-traits"
+        ],
+        "subjects": [
+          {
+            "name": "Charon trait and generic representation",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+              "version": "0.1.210",
+              "rust-toolchain": "nightly-2026-05-31"
+            }
+          }
+        ],
+        "observed_at": "2026-09-26"
+      },
+      "reviewed_use": "Explicit trait proof/impl/associated/generic binder identities and omission boundaries.",
+      "limits_retained": "Translation structure not semantic trait-law proof."
+    },
+    {
+      "package": "rust-unsafe-trait-invariants-nightly-2026-05-31",
+      "report_sha256": "b9efeb7d896aaada8bf09666d0029f142fcc2fff0ae04214372805bd4fb9a987",
+      "metadata_sha256": "fc377cb304f3b2d6f645e7d27682aa6fe9ec75860cadc1367ac3c92b16e4ca02",
+      "metadata": {
+        "topics": [
+          "rust/unsafe-traits",
+          "rust/unsafe",
+          "rust/traits",
+          "rust/auto-traits",
+          "rust/send-sync",
+          "rust/safety-invariants",
+          "anneal/verification-surface"
+        ],
+        "subjects": [
+          {
+            "name": "Rust compiler behind nightly-2026-05-31",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "toolchain": "nightly-2026-05-31"
+            }
+          },
+          {
+            "name": "Rust Reference used for exact unsafe-trait language rules",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reviewed_use": "Normative implementor obligations versus safe client use; syntactic safety gate, marker/TrustedLen examples.",
+      "limits_retained": "No third-party implementation proof or new current unsafe impl execution."
+    },
+    {
+      "package": "charon-closures-nightly-2026-06-03",
+      "report_sha256": "80ecd7209c9ec1c848fa0fdab1743b297c7bb94cb7ad4b790c074d80ff02e6a7",
+      "metadata_sha256": "cbd91cf553eb6b03a65f1012e55662c530dea5c49840a01cbf24533d06f805e8",
+      "metadata": {
+        "topics": [
+          "charon",
+          "charon/captures",
+          "charon/closures",
+          "charon/fn-traits",
+          "charon/function-pointers",
+          "charon/lifetimes",
+          "charon/traits",
+          "rust/closures"
+        ],
+        "subjects": [
+          {
+            "name": "Charon closure representation and translation",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+              "version": "0.1.210",
+              "rust-toolchain": "nightly-2026-05-31"
+            }
+          }
+        ],
+        "observed_at": "2026-09-26"
+      },
+      "reviewed_use": "State/capture/Fn modes, tuple ABI, binder distinctions, consuming shims and body opacity.",
+      "limits_retained": "Pinned source/golden output, not physical layout or coroutine support."
+    },
+    {
+      "package": "charon-async-coroutines-0-1-210",
+      "report_sha256": "b31753bf45415ca376a4da414458a3dd447cc47d95537b56ee6039510ad1813e",
+      "metadata_sha256": "02b6c311c6bea43d29dfb0b3cd5ed99bddcb4da0009a75f33ef3ceee979d25b4",
+      "metadata": {
+        "topics": [
+          "charon",
+          "charon/async",
+          "charon/coroutines",
+          "charon/generators",
+          "rust/async"
+        ],
+        "subjects": [
+          {
+            "name": "Charon async/coroutine support",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+              "version": "0.1.210",
+              "rust-toolchain": "nightly-2026-05-31"
+            }
+          }
+        ],
+        "observed_at": "2026-09-26"
+      },
+      "reviewed_use": "Explicit coroutine type/aggregate/yield/drop/resumed-state rejection and known-failure source.",
+      "limits_retained": "No new Charon execution; no support conclusion for another revision."
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "report_sha256": "bb477105aceba5537bfd3b2b2a8d50fbf644253306ac1e8fcb2d87ee858146b8",
+      "metadata_sha256": "3ef39bc8e36ccb606f4a4a683976da719a8fc42e535bad01e19a0bcbf61eddf6",
+      "metadata": {
+        "topics": [
+          "rust/admission",
+          "verification/diagnostics",
+          "verification/specification-adequacy",
+          "verification/proof-transport",
+          "verification/smt-certificates",
+          "verification/effects"
+        ],
+        "subjects": [
+          {
+            "name": "zerocopy PR stack source",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+            }
+          },
+          {
+            "name": "SMTCoq",
+            "identity": {
+              "repository": "smtcoq/smtcoq",
+              "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+            }
+          },
+          {
+            "name": "Carcara",
+            "identity": {
+              "repository": "ufmg-smite/carcara",
+              "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+            }
+          },
+          {
+            "name": "LFSC checker",
+            "identity": {
+              "repository": "cvc5/LFSC",
+              "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Independently required domain, selected dictionary/local law, exact source checker controls.",
+      "limits_retained": "No complete Lean negative suite/source theorem established."
+    },
+    {
+      "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+      "report_sha256": "90c642b83024d76718e9c44a5ce8c183ffcf4eeefd1a055fb19b2631b44d4688",
+      "metadata_sha256": "96388616a86d4553dda184e765e660ec48eb6a89386a32699433c599d73c4173",
+      "metadata": {
+        "topics": [
+          "minirust",
+          "rustbelt",
+          "refinedrust",
+          "verification/linking",
+          "verification/source-safety",
+          "rust/interior-mutability"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust operational specification",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "RustBelt original LambdaRust source archive",
+            "identity": {
+              "archive": "lambda-rust-popl18.tar.gz",
+              "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+              "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 source artifact",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+            }
+          },
+          {
+            "name": "Aeneas configuration and prior-corpus comparison",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+            }
+          },
+          {
+            "name": "Gillian dual contract emitter",
+            "identity": {
+              "repository": "GillianPlatform/gillian-rust",
+              "revision": "83d739e83034d71162fb66b569041cf301123df7"
+            }
+          },
+          {
+            "name": "Rust compiler used for safe client probe",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0"
+            }
+          },
+          {
+            "name": "Lean proof checker",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+              "version": "4.34.1"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/Bridge.lean",
+              "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/safe_clients.rs",
+              "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "reviewed_use": "Reviewed conditional bridge and erasure counterexamples; premise binding and source/core limits.",
+      "limits_retained": "No actual Iris allocation/Cell/split proof port or full linking theorem."
+    }
+  ],
+  "review_role": "Substantive source/report/result review, not automatic inheritance of support claims across revisions."
+}

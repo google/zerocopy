@@ -1,0 +1,130 @@
+{
+  "topics": [
+    "assembly/atomics",
+    "assembly/fences",
+    "rust/memory-model",
+    "rust/inline-assembly",
+    "x86/tso",
+    "aarch64/memory-model",
+    "verification/compilation"
+  ],
+  "subjects": [
+    {
+      "name": "herdtools7 named x86-TSO and Arm models",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+      }
+    },
+    {
+      "name": "Rust atomic access and fence API",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Rust inline assembly contract",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "IMM selected model and compilation theorem source",
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      }
+    },
+    {
+      "name": "LLVM atomic concurrency guide",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "llvmorg-21.1.0"
+      }
+    },
+    {
+      "name": "Kraken sequential memory/effect semantics",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Apple Clang compiler binary",
+      "identity": {
+        "version": "21.0.0 (clang-2100.3.34.2)",
+        "artifact": "CommandLineTools/usr/bin/clang",
+        "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+      }
+    },
+    {
+      "name": "C++ working draft",
+      "identity": {
+        "document": "WG21 N4868",
+        "date": "2020-10-18",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4868.pdf"
+      }
+    },
+    {
+      "name": "x86-TSO programmer model paper",
+      "identity": {
+        "publication": "CACM 53(7), July2010",
+        "url": "https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf"
+      }
+    },
+    {
+      "name": "Mathematizing C++ Concurrency",
+      "identity": {
+        "doi": "10.1145/1926385.1926394",
+        "publication": "POPL2011"
+      }
+    },
+    {
+      "name": "Simplifying ARM Concurrency",
+      "identity": {
+        "doi": "10.1145/3158107",
+        "publication": "POPL2018"
+      }
+    },
+    {
+      "name": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models",
+      "identity": {
+        "doi": "10.1145/3290382",
+        "publication": "POPL2019"
+      }
+    },
+    {
+      "name": "Owned compile-only or relation investigation",
+      "identity": {
+        "artifact": "support/atomics.c",
+        "sha256": "70f3aaabb9c84b6dcbad33675981395c1864e04fc5654b77bc3e898f1a55b9aa"
+      }
+    },
+    {
+      "name": "Owned compile-only or relation investigation",
+      "identity": {
+        "artifact": "support/compile.py",
+        "sha256": "51164c91bd66b127150986a19990ddacda844ede2d2184986885eea9a56b0514"
+      }
+    },
+    {
+      "name": "Owned compile-only or relation investigation",
+      "identity": {
+        "artifact": "support/check.py",
+        "sha256": "abc879fed8c342f4b0a5562417c7c796e4748c5967a618912cb5e0880e533582"
+      }
+    },
+    {
+      "name": "Owned compile-only or relation investigation",
+      "identity": {
+        "artifact": "support/sb_projection.py",
+        "sha256": "468326373a9e2343136cdab537ac62adb8862c02fdc03ee912396ec6a5cbfb43"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "assembly/alternative-foundations",
+    "acl2/x86isa",
+    "k/x86",
+    "bedrock2",
+    "riscv/environment"
+  ],
+  "subjects": [
+    {
+      "name": "acl2/acl2",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
+      }
+    },
+    {
+      "name": "kframework/X86-64-semantics",
+      "identity": {
+        "repository": "kframework/X86-64-semantics",
+        "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+      }
+    },
+    {
+      "name": "mit-plv/bedrock2",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      }
+    },
+    {
+      "name": "mit-plv/riscv-coq",
+      "identity": {
+        "repository": "mit-plv/riscv-coq",
+        "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

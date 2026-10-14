@@ -1,0 +1,22 @@
+warning: field `pointer` is never read
+ --> primitive.rs:6:37
+  |
+6 | #[derive(Clone, Copy)] union Wide { pointer: *const [u8] }
+  |                              ----   ^^^^^^^
+  |                              |
+  |                              field in this union
+  |
+  = note: `Wide` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+error: linking with `rust-lld` failed: signal: 6 (SIGABRT)
+  |
+  = note:  "rust-lld" "-flavor" "wasm" "--export" "primitive_case" "-z" "stack-size=1048576" "--stack-first" "--no-demangle" "--no-entry" "<1 object files omitted>" "<sysroot>/lib/rustlib/wasm32-unknown-unknown/lib/{libcore-*,libcompiler_builtins-*}.rlib" "-L" "<sysroot>/lib/rustlib/wasm32-unknown-unknown/lib/self-contained" "-o" "runs/primitive.wasm" "--gc-sections" "--no-entry" "-O0"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: dyld[19334]: Library not loaded: @rpath/libLLVM.dylib
+            Referenced from: <2442F359-EAEC-394D-B79A-DADEA4B0B7D8> <rust-toolchains>/1.99.0-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/rust-lld
+            Reason: tried: '<rust-toolchains>/1.99.0-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/../lib/libLLVM.dylib' (no such file), '/Users/runner/work/rust/rust/build/aarch64-apple-darwin/llvm/lib/libLLVM.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/runner/work/rust/rust/build/aarch64-apple-darwin/llvm/lib/libLLVM.dylib' (no such file), '<rust-toolchains>/1.99.0-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/../lib/libLLVM.dylib' (no such file), '/Users/runner/work/rust/rust/build/aarch64-apple-darwin/llvm/lib/libLLVM.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/runner/work/rust/rust/build/aarch64-apple-darwin/llvm/lib/libLLVM.dylib' (no such file)
+          
+
+error: aborting due to 1 previous error; 1 warning emitted
+

@@ -1,0 +1,1595 @@
+{
+  "purpose": "Exact final research-report navigation. This does not promote source inspections or owned probes to upstream theorems. Own report/metadata hashes are noncircular; this index is bound by the package manifest.",
+  "reports": [
+    {
+      "package": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026",
+      "report": "../anneal-minirust-assembly-coverage-and-adoption-synthesis-2026/REPORT.md",
+      "report_sha256": "7631f666509a21bb49987edcb7960a61f853f6a3cec78d8b6ae73eeb77215914",
+      "metadata_sha256": "5c0c1f72535e5af20301ccd7ccb612842ea961594a92a34e253f95050de3e61a",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust research agenda",
+          "identity": {
+            "repository": "google/zerocopy",
+            "issue": "3873",
+            "question-identities": "MR01–MR24"
+          }
+        },
+        {
+          "name": "Assembly research agenda",
+          "identity": {
+            "repository": "google/zerocopy",
+            "issue": "3874",
+            "question-identities": "AS01–AS28"
+          }
+        },
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR24",
+        "AS24",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "assembly-atomic-fence-language-mappings-2026",
+      "report": "../assembly-atomic-fence-language-mappings-2026/REPORT.md",
+      "report_sha256": "d24b9cfcd4c3ef9debbf29ea4e5d6094b8f3f9d49aceda15f3e224743dbb68e7",
+      "metadata_sha256": "f5eddf4b38be9cd4d01bd6fdf380eaf02e05cd3baf8849ca8021b3d26ab2d30a",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "herdtools7 named x86-TSO and Arm models",
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+          }
+        },
+        {
+          "name": "Rust atomic access and fence API",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Rust inline assembly contract",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "IMM selected model and compilation theorem source",
+          "identity": {
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          }
+        },
+        {
+          "name": "LLVM atomic concurrency guide",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+            "version": "llvmorg-21.1.0"
+          }
+        },
+        {
+          "name": "Kraken sequential memory/effect semantics",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Apple Clang compiler binary",
+          "identity": {
+            "version": "21.0.0 (clang-2100.3.34.2)",
+            "artifact": "CommandLineTools/usr/bin/clang",
+            "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+          }
+        },
+        {
+          "name": "C++ working draft",
+          "identity": {
+            "document": "WG21 N4868",
+            "date": "2020-10-18",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4868.pdf"
+          }
+        },
+        {
+          "name": "x86-TSO programmer model paper",
+          "identity": {
+            "publication": "CACM 53(7), July2010",
+            "url": "https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf"
+          }
+        },
+        {
+          "name": "Mathematizing C++ Concurrency",
+          "identity": {
+            "doi": "10.1145/1926385.1926394",
+            "publication": "POPL2011"
+          }
+        },
+        {
+          "name": "Simplifying ARM Concurrency",
+          "identity": {
+            "doi": "10.1145/3158107",
+            "publication": "POPL2018"
+          }
+        },
+        {
+          "name": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models",
+          "identity": {
+            "doi": "10.1145/3290382",
+            "publication": "POPL2019"
+          }
+        },
+        {
+          "name": "Owned compile-only or relation investigation",
+          "identity": {
+            "artifact": "support/atomics.c",
+            "sha256": "70f3aaabb9c84b6dcbad33675981395c1864e04fc5654b77bc3e898f1a55b9aa"
+          }
+        },
+        {
+          "name": "Owned compile-only or relation investigation",
+          "identity": {
+            "artifact": "support/compile.py",
+            "sha256": "51164c91bd66b127150986a19990ddacda844ede2d2184986885eea9a56b0514"
+          }
+        },
+        {
+          "name": "Owned compile-only or relation investigation",
+          "identity": {
+            "artifact": "support/check.py",
+            "sha256": "abc879fed8c342f4b0a5562417c7c796e4748c5967a618912cb5e0880e533582"
+          }
+        },
+        {
+          "name": "Owned compile-only or relation investigation",
+          "identity": {
+            "artifact": "support/sb_projection.py",
+            "sha256": "468326373a9e2343136cdab537ac62adb8862c02fdc03ee912396ec6a5cbfb43"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR15",
+        "AS09",
+        "AS25"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "assembly-tcb-concurrency-security-platform-frontiers",
+      "report": "../assembly-tcb-concurrency-security-platform-frontiers/REPORT.md",
+      "report_sha256": "ecfca9c3faba7336a7d7748fe112f064b19e452b630008bd874690d50f7bf3b3",
+      "metadata_sha256": "d81178adf93a38fcb319c90e2cb01c6e3d53a369b850e7f5e3a797a0f290625c",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Rust compiler and library 1.99.0",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "s2n-bignum soundness analysis",
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          }
+        },
+        {
+          "name": "Intel DOIT guidance",
+          "identity": {
+            "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html",
+            "observed-date": "2026-10-14",
+            "updated-date": "2025-09-10"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR24",
+        "AS09",
+        "AS24",
+        "AS25",
+        "AS26",
+        "AS27"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+      "report": "../jasmin-vale-s2n-artifact-and-access-boundaries/REPORT.md",
+      "report_sha256": "8b562965e25b94097796c85866ad6e7f4798763db69aef45d88b3779f5539997",
+      "metadata_sha256": "fe712826f9d35521a306274029d27e22e095589e22824ba4c4191f7e2109632c",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Jasmin",
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          }
+        },
+        {
+          "name": "Vale",
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          }
+        },
+        {
+          "name": "s2n-bignum",
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          }
+        },
+        {
+          "name": "Apple clang 21.0.0",
+          "identity": {
+            "version": "clang-2100.3.34.2",
+            "artifact": "/usr/bin/clang",
+            "target": "x86_64-unknown-linux-gnu",
+            "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+          }
+        },
+        {
+          "name": "Assembled bignum_add ELF object",
+          "identity": {
+            "artifact": "support/bignum_add.o",
+            "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+            "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+            "format": "ELF64LE x86_64 relocatable"
+          }
+        }
+      ],
+      "question_bindings": [
+        "AS03",
+        "AS05",
+        "AS16",
+        "AS20",
+        "AS21",
+        "AS22",
+        "AS23",
+        "AS26",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+      "report": "../kraken-aarch64-selected-instruction-validation-8af7806/REPORT.md",
+      "report_sha256": "c3de49c80a8d111a388d643836bfab4a5fc31771af865a7b30efe9d146ff7f36",
+      "metadata_sha256": "b5fe1bb0650c316d895a8e8d620a3432c8f7d23c72422844ed84c9b5ef8d8237",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken AArch64 model",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Lean used to execute selected model",
+          "identity": {
+            "version": "4.34.1",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target": "arm64-apple-darwin24.6.0"
+          }
+        },
+        {
+          "name": "Rust compiler used for native register probes",
+          "identity": {
+            "version": "1.99.0",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "host": "aarch64-apple-darwin",
+            "llvm": "23.1.1"
+          }
+        },
+        {
+          "name": "Arm A64 instruction descriptions, selected ADDS/ADCS entries",
+          "identity": {
+            "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622",
+            "revision": "2025-09_rel",
+            "build_timestamp": "2025-09-23 11:45:10"
+          }
+        },
+        {
+          "name": "Arm A64 instruction descriptions, selected LSLV/REV entries",
+          "identity": {
+            "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+            "revision": "aarchmrs v2025-03_rel, pseudocode v2025-03_rel",
+            "build_timestamp": "2025-03-21T17:41"
+          }
+        },
+        {
+          "name": "Armv8-A Instruction Set Architecture guide",
+          "identity": {
+            "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154",
+            "document": "ARM062-948681440-3280",
+            "issue": "1.1",
+            "date": "2020-07-03"
+          }
+        }
+      ],
+      "question_bindings": [
+        "AS01",
+        "AS02",
+        "AS04",
+        "AS08",
+        "AS14",
+        "AS18",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+      "report": "../kraken-parser-layout-fragment-boundaries-8af7806/REPORT.md",
+      "report_sha256": "65379391360a7416f56816d0ba1f45fe41ee1ac0cc6c5f3de658610ae26aa9b6",
+      "metadata_sha256": "8b49c492c20d1ab3885941236c7a3292582531f54baa3738d9a6f118512910f5",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          }
+        }
+      ],
+      "question_bindings": [
+        "AS02",
+        "AS03",
+        "AS16",
+        "AS17"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "kraken-rust-assembly-pilot-8af7806",
+      "report": "../kraken-rust-assembly-pilot-8af7806/REPORT.md",
+      "report_sha256": "9505e4bfb3c5ca9ea6e3955f01557aa21c41beee42c0596062863ed80a589b51",
+      "metadata_sha256": "7f2f04cf64e453d7442187147b7935513c5ce187722cfd3e60f026a49c2e959b",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Rust compiler and library 1.99.0",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "LLVM ThinLTO documentation",
+          "identity": {
+            "url": "https://clang.llvm.org/docs/ThinLTO.html",
+            "observed-date": "2026-10-14"
+          }
+        },
+        {
+          "name": "LLD linking concepts",
+          "identity": {
+            "url": "https://lld.llvm.org/NewLLD.html",
+            "observed-date": "2026-10-14"
+          }
+        },
+        {
+          "name": "RISC-V ELF linker relaxation",
+          "identity": {
+            "url": "https://docs.riscv.org/reference/abi/riscv-elf-linker-relaxation.html",
+            "observed-date": "2026-10-14"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR23",
+        "AS01",
+        "AS03",
+        "AS06",
+        "AS08",
+        "AS10",
+        "AS11",
+        "AS12",
+        "AS14",
+        "AS16",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "kraken-selected-theorem-closure-8af7806",
+      "report": "../kraken-selected-theorem-closure-8af7806/REPORT.md",
+      "report_sha256": "3d7c8b6c845c8ad481a899514e5f159890adab3bdac56cb8b5b502c047d0a975",
+      "metadata_sha256": "17902d13a1c5e96422be08424cce4fcbd1670641d183e2bd98209b71f5c57b47",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          }
+        }
+      ],
+      "question_bindings": [
+        "AS01",
+        "AS04",
+        "AS05",
+        "AS09",
+        "AS24"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+      "report": "../kraken-x64-sysv-leaf-return-and-cross-foundation-pilot/REPORT.md",
+      "report_sha256": "1e56daf1fc68a1bde7a9c3d203728f1bb6bba9d7d9511e6645c058e1fba88645",
+      "metadata_sha256": "7682cf967990890413074e03a7ffd487a1ab6f782fe9480c2cc5475633369052",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          }
+        },
+        {
+          "name": "s2n-bignum",
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          }
+        },
+        {
+          "name": "Preserved bignum_add ELF object",
+          "identity": {
+            "artifact": "companion jasmin-vale-s2n-artifact-and-access-boundaries/support/bignum_add.o",
+            "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+            "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR23",
+        "AS01",
+        "AS04",
+        "AS05",
+        "AS07",
+        "AS11",
+        "AS14",
+        "AS17",
+        "AS22",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "machine-code-foundations-and-environment-selection-2026",
+      "report": "../machine-code-foundations-and-environment-selection-2026/REPORT.md",
+      "report_sha256": "c1712c9cf8e3b94e9a006dae195b8d9051429ad6aa5ba7acaee7c72c07b72bb5",
+      "metadata_sha256": "e4a68497b2a61af93ba2dd2584284cb4eeea8544f93edca1c334f5a63d5d04b6",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "acl2/acl2",
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
+          }
+        },
+        {
+          "name": "kframework/X86-64-semantics",
+          "identity": {
+            "repository": "kframework/X86-64-semantics",
+            "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+          }
+        },
+        {
+          "name": "mit-plv/bedrock2",
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          }
+        },
+        {
+          "name": "mit-plv/riscv-coq",
+          "identity": {
+            "repository": "mit-plv/riscv-coq",
+            "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR24",
+        "AS18",
+        "AS20",
+        "AS23",
+        "AS24",
+        "AS27"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+      "report": "../minirust-actual-core-disagreement-evidence-d821c6e/REPORT.md",
+      "report_sha256": "10462bc3426ea05ec35382db65031a4ad50bce4e0919e2f8eddd76fe5ff85e1e",
+      "metadata_sha256": "8caf8ea637cbba9a561be65f3920d7daa7a89404b8e16ae2e1b77b939abfb1d8",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust actual-core source",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+          }
+        },
+        {
+          "name": "Specr transpiler and libspecr",
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220"
+          }
+        },
+        {
+          "name": "Requested nightly successful core compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+            "version": "1.97.0-nightly",
+            "distribution_date": "2026-05-01"
+          }
+        },
+        {
+          "name": "Alternate-host compiler incompatibility observation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Cargo used for exact locked closure",
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Owned probe",
+          "identity": {
+            "artifact": "support/actual_core_probe.rs",
+            "sha256": "63206f5c4b4f6bef4ff3bc1ed48d1041634f210c182552e093dcea349ac8365f"
+          }
+        },
+        {
+          "name": "Actual generated interpreter module",
+          "identity": {
+            "artifact": "support/generated/lang.rs",
+            "sha256": "106b8d33a2a99a87028e4f3771171447775f507825aa595f62fb6c1fd6cd5450"
+          }
+        },
+        {
+          "name": "Actual generated interpreter module",
+          "identity": {
+            "artifact": "support/generated/mem.rs",
+            "sha256": "bcfbed6c1d8f5bedafa282b7e55e7d3f12378540ff3653839209d7a92d73e421"
+          }
+        },
+        {
+          "name": "Actual generated interpreter module",
+          "identity": {
+            "artifact": "support/generated/prelude.rs",
+            "sha256": "a145fcbf99688857fad7f7feb438da4af8e4b8b69680af7f0707e06402426a35"
+          }
+        },
+        {
+          "name": "Actual generated interpreter module",
+          "identity": {
+            "artifact": "support/generated/lib.rs",
+            "sha256": "e3de42b4c496ea7a440724d350763bbea52048767cd5b5b6e69ddd698581db9d"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR03",
+        "MR06",
+        "MR07",
+        "MR10",
+        "MR20",
+        "MR24",
+        "AS06"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+      "report": "../minirust-primitive-lowering-and-layout-frontier-d821c6e/REPORT.md",
+      "report_sha256": "1d6aa43fd3e915bcf90f12cefd15c37031e50a66548a02747d886d914c94bd9e",
+      "metadata_sha256": "bd062af731c4d2c40373938d97c9a92b5b2c634e9eb2ae5fb2abe1ce2413aa8d",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust core and minimize importer",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Rust compiler and core/alloc source",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Rust wasm32 standard-library component",
+          "identity": {
+            "artifact": "rust-std-1.99.0-wasm32-unknown-unknown.tar.xz",
+            "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+          }
+        },
+        {
+          "name": "Node WebAssembly execution environment",
+          "identity": {
+            "version": "24.21.0",
+            "v8": "13.6.233.17-node.53"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR02",
+        "MR05",
+        "MR06",
+        "MR07",
+        "MR09",
+        "MR10",
+        "MR17",
+        "MR20",
+        "AS06",
+        "AS28"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+      "report": "../minirust-race-alias-and-weak-memory-boundaries-d821c6e/REPORT.md",
+      "report_sha256": "e89f1540c436fd6594e1d5dac28dc07d757131e33a3d3a03c602eeb05eaf5f35",
+      "metadata_sha256": "739f446fcb820d366c71642faa07972e7a32041f0d8739530715453c7d2d6d2b",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Miri Tree Borrows",
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+          }
+        },
+        {
+          "name": "GPFSL-derived 2024 adequacy",
+          "identity": {
+            "repository": "kaist-cp/relaxed-memory-separation-logic",
+            "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+          }
+        },
+        {
+          "name": "Rust atomic documentation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+            "path": "library/core/src/sync/atomic.rs"
+          }
+        },
+        {
+          "name": "RustBelt Meets Relaxed Memory",
+          "identity": {
+            "doi": "10.1145/3371102",
+            "publication": "PACMPL 4 POPL Article 34"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR11",
+        "MR14",
+        "MR15",
+        "AS25"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-representation-copy-provenance-laws-d821c6e",
+      "report": "../minirust-representation-copy-provenance-laws-d821c6e/REPORT.md",
+      "report_sha256": "e954f1a5bd6bb843b43e411f02bddb7ff5ae64d1eeda849e5d223525a7442c2f",
+      "metadata_sha256": "0843d423b02eaebb0f198ace71382a936748773fd5e2de6f759a2331592761e5",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust operational specification",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "RefinedRust 2026 source artifact",
+          "identity": {
+            "zenodo": "21636474",
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+          }
+        },
+        {
+          "name": "Rust exposed-provenance API documentation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0",
+            "url": "https://doc.rust-lang.org/std/ptr/fn.with_exposed_provenance.html"
+          }
+        },
+        {
+          "name": "Lean proof checker",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "89d8c1111825049296abb845f47451cdfb8685561e8296f8184a3aef46eedeac"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/enum_wf_probe.py",
+            "sha256": "6ed461bbb3ed08b0cceb147ea5c0ef173934dbece2dff200250a9a952cd33b05"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/Representation.lean",
+            "sha256": "d573f64e1ebb9117376be9dfb0d057795fd4c2a73ee87fc37b88d882e983fd3c"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/EnumCoherence.lean",
+            "sha256": "fcc40a8d7c108e1cdb9de885cbdf8435163c780e68f5600914f4587c50bdcbcc"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR01",
+        "MR04",
+        "MR06",
+        "MR07",
+        "MR08",
+        "MR18",
+        "AS06",
+        "AS07"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+      "report": "../minirust-rustbelt-spatial-linking-obligations-2026/REPORT.md",
+      "report_sha256": "58248a059cafa373b803f01e851e09673e96c94712e9e6b025ac675dce80050a",
+      "metadata_sha256": "96388616a86d4553dda184e765e660ec48eb6a89386a32699433c599d73c4173",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust operational specification",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "RustBelt original LambdaRust source archive",
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          }
+        },
+        {
+          "name": "RefinedRust 2026 source artifact",
+          "identity": {
+            "zenodo": "21636474",
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+          }
+        },
+        {
+          "name": "Aeneas configuration and prior-corpus comparison",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          }
+        },
+        {
+          "name": "Gillian dual contract emitter",
+          "identity": {
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          }
+        },
+        {
+          "name": "Rust compiler used for safe client probe",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Lean proof checker",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/Bridge.lean",
+            "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/safe_clients.rs",
+            "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR01",
+        "MR12",
+        "MR18",
+        "MR22",
+        "MR24",
+        "AS15"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-static-judgments-and-open-contract-controls-2026",
+      "report": "../minirust-static-judgments-and-open-contract-controls-2026/REPORT.md",
+      "report_sha256": "091413f11805ae38e18b0de0a2edbe19005dd6160e94175d8cea8667b8dcabee",
+      "metadata_sha256": "7254a4a6f574b22d1fe9fc825d232c568a28425e18efaabc669a2cf99ab26654",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "a-mir-formality judgments and MiniRust code generation",
+          "identity": {
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+          }
+        },
+        {
+          "name": "MiniRust runtime/import boundary",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Rust compiler used for new safe controls",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Charon feature-boundary comparison",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Rust unsafe-trait contract comparison",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "End-to-End Executable Rust Specification plan",
+          "identity": {
+            "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+            "retrieved": "2026-10-14"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR05",
+        "MR13",
+        "MR18",
+        "MR21",
+        "MR22",
+        "AS12",
+        "AS15"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+      "report": "../minirust-target-dst-and-intrinsic-contracts-d821c6e/REPORT.md",
+      "report_sha256": "f43c51e56b2b18277c4c5aad6f00158eea71533a07046edb1f8f081c8dd07b28",
+      "metadata_sha256": "ba7285faf998bbb1bf40a380dea5acc9e62ea7e3eb9a77f3409ba70e09f45043",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Rust atomic documentation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+            "path": "library/core/src/sync/atomic.rs"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR02",
+        "MR09",
+        "MR10",
+        "MR17"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+      "report": "../minirust-tree-borrows-logic-correspondence-d821c6e/REPORT.md",
+      "report_sha256": "a5813f1f323a8dca9627a2134dd11bd5ce979bd71b717017ff0ebbe17bd165ad",
+      "metadata_sha256": "3fd4da3468f4b2178835efc246c3fa3e0cadc79cd24e860d14831a274f66cfba",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Miri Tree Borrows",
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+          }
+        },
+        {
+          "name": "Tree Borrows PLDI 2025",
+          "identity": {
+            "doi": "10.1145/3735592",
+            "publication": "PACMPL 9 PLDI Article 188"
+          }
+        },
+        {
+          "name": "Rudy Peterson λTB thesis",
+          "identity": {
+            "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Rudy-Thesis.pdf",
+            "year": "2025",
+            "reported_development_revision": "ccca9f325f909dceed4fd88008862f64296dbfd9"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR01",
+        "MR08",
+        "MR11",
+        "MR12",
+        "MR13",
+        "MR14",
+        "MR20",
+        "AS07"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+      "report": "../minirust-unwind-elaboration-and-open-client-obligations-d821c6e/REPORT.md",
+      "report_sha256": "87444376c357884443552bcf111fc81869b9cf7874d6fba253cdf1211c977bc1",
+      "metadata_sha256": "2324510d2f127bb0989730c807f950fbac6de68500343b219f641e4d21f7dad8",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "a-mir-formality",
+          "identity": {
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+          }
+        },
+        {
+          "name": "Rust compiler native specimen",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "RustBelt POPL 2018 source archive",
+          "identity": {
+            "artifact": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+          }
+        },
+        {
+          "name": "Formalization of Rust Drop Elaboration thesis",
+          "identity": {
+            "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+            "author": "Viktor Fukala",
+            "date": "2024-08-05",
+            "reported_development_revision": "120d9b3d1e868ddd00ce9163b2bb53d099154247"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR05",
+        "MR13",
+        "MR16",
+        "MR17",
+        "MR21",
+        "AS13"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "modular-semantics-state-alias-effects-popl2025",
+      "report": "../modular-semantics-state-alias-effects-popl2025/REPORT.md",
+      "report_sha256": "15aa5be5d1a3a9219e55a2038fb45dda6a25170747cd5bb165da06f00c79f2a2",
+      "metadata_sha256": "b6790e70ed6eba828a2d5e018d36fa99356c6490099570a6658ce0dfc2d8c88f",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Program Logics a la Carte source artifact",
+          "identity": {
+            "zenodo": "14180355",
+            "version": "v2",
+            "archive": "the_artifact.zip",
+            "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378"
+          }
+        },
+        {
+          "name": "Logical Relations a la Carte thesis",
+          "identity": {
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf",
+            "document_date": "March 2026",
+            "source_commit_cited_not_accessed": "5ed76562ee78badeb8768e7cb00c1ea37557b709"
+          }
+        },
+        {
+          "name": "MiniRust memory interface",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Owned interacting-effect mechanization",
+          "identity": {
+            "artifact": "support/Effects.lean",
+            "sha256": "cde672ee06dc661982178a12dc8d4bf011c8cdc264426861e132bc8542330d88"
+          }
+        },
+        {
+          "name": "Lean",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR03",
+        "MR04",
+        "MR12",
+        "MR19",
+        "MR24"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "rust-assembly-platform-unwind-contracts-2026",
+      "report": "../rust-assembly-platform-unwind-contracts-2026/REPORT.md",
+      "report_sha256": "4940dc2b4370744198314918d9246086ec3d839e869248cbc41384b207cc9723",
+      "metadata_sha256": "d8a945abcc1a825fc99a43029728fce7f0256dd368ef9a2d5bea5a8a18484710",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Microsoft Windows x64 unwind and prologue/epilogue rules",
+          "identity": {
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+          }
+        },
+        {
+          "name": "Rust Reference unwind and assembly interfaces",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Apple clang cross-target Windows specimen compiler",
+          "identity": {
+            "version": "21.0.0",
+            "build": "clang-2100.3.34.2",
+            "target": "x86_64-pc-windows-msvc"
+          }
+        },
+        {
+          "name": "Rust compiler for Apple AArch64 cleanup specimen",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0",
+            "target": "aarch64-apple-darwin"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR16",
+        "AS11",
+        "AS13",
+        "AS27"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "rust-function-abi-witnesses-b940084",
+      "report": "../rust-function-abi-witnesses-b940084/REPORT.md",
+      "report_sha256": "f5a6f99e86c8205abd9d4eaf57ce104e7a7553256e0ad9d21a048c44a2840f3f",
+      "metadata_sha256": "6199a9921610d1e594d7d7f279d3cefaaea2bf51e0a46a085310562292793311",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Rust compiler and library 1.99.0",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "AAPCS64",
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264"
+          }
+        },
+        {
+          "name": "Microsoft x64 calling convention",
+          "identity": {
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+          }
+        },
+        {
+          "name": "Apple ARM64 ABI documentation",
+          "identity": {
+            "url": "https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms",
+            "observed-date": "2026-10-14"
+          }
+        },
+        {
+          "name": "Apple clang",
+          "identity": {
+            "version": "21.0.0 (clang-2100.3.34.2)",
+            "target": "arm64-apple-darwin27.0.0"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR23",
+        "AS06",
+        "AS10",
+        "AS11",
+        "AS12",
+        "AS13",
+        "AS16"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "rust-inline-assembly-contracts-2dafab9",
+      "report": "../rust-inline-assembly-contracts-2dafab9/REPORT.md",
+      "report_sha256": "4093eeb6e3b2666c8da228e013eec935c7cfa5d699bdbd8130f8beb3ec6ae462",
+      "metadata_sha256": "3455db1d3a2657e75777feda3c8e31cc73cd7000c675d29026929994b0f25927",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Rust compiler and library 1.99.0",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR23",
+        "AS06",
+        "AS08",
+        "AS09",
+        "AS10"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "rust-machine-resource-linking-and-equivalence",
+      "report": "../rust-machine-resource-linking-and-equivalence/REPORT.md",
+      "report_sha256": "7d389ae461dd5cec1cd60266f54cb19e115964f69222620d43dc258de5d8c52c",
+      "metadata_sha256": "2a7d6511f6e2a616488b2065623b1f5c8d982fb4b29f38aad2c8e4ad03009eee",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Kraken",
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "DimSum POPL 2023",
+          "identity": {
+            "doi": "10.1145/3571220",
+            "url": "https://plv.mpi-sws.org/dimsum/paper.pdf"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR22",
+        "MR23",
+        "AS05",
+        "AS07",
+        "AS10",
+        "AS13",
+        "AS14",
+        "AS15",
+        "AS19",
+        "AS26"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "sail-islaris-compcert-access-foundations",
+      "report": "../sail-islaris-compcert-access-foundations/REPORT.md",
+      "report_sha256": "9f8bfd661dd57017fc10d63a353db9240ed20c915a8c97e6ed0ba3c28bd11306",
+      "metadata_sha256": "9c34c82c3998f61b16c3c22a6438b49df4a87d9219b5dde61da96eb19d57140e",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "Sail",
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
+          }
+        },
+        {
+          "name": "Islaris",
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          }
+        },
+        {
+          "name": "CompCert 3.18",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Islaris PLDI 2022 paper",
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "publication": "PLDI 2022"
+          }
+        }
+      ],
+      "question_bindings": [
+        "AS18",
+        "AS19",
+        "AS23",
+        "AS27"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    },
+    {
+      "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+      "report": "../specr-import-nondeterminism-source-adequacy-15200eb/REPORT.md",
+      "report_sha256": "1a77a5432dde099618fb3d2324a44482485b862ec1ee055d06a63d2857058935",
+      "metadata_sha256": "a47ad32d189bb92764f6f9e83d8b3444aeef8c20c60fab287ae5e8e13d32327c",
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "name": "MiniRust operational specification",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Specr Rust transpiler and executable support",
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "version": "0.1.41"
+          }
+        },
+        {
+          "name": "Rust Reference comparison",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "A Type-Checker for Specr thesis",
+          "identity": {
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Philipp-Thesis.pdf",
+            "document_date": "2025-02-08"
+          }
+        },
+        {
+          "name": "Specr Compiler project description",
+          "identity": {
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/PracticalWork-reports/2025-Jakub-Description.pdf",
+            "document_date": "2025-03-24"
+          }
+        },
+        {
+          "name": "Accepted executable Rust specification goal",
+          "identity": {
+            "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+            "goal_period": "2026",
+            "observed_document": "2026-10-14"
+          }
+        },
+        {
+          "name": "Lean proof checker",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/Choices.lean",
+            "sha256": "d084b2a332bc4cd849b026be005e8ac0c282b575a55639ffcdd6b7e8546d7dfd"
+          }
+        },
+        {
+          "name": "Owned investigation fragment",
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "6306465ab2b89108bcfb32c3aeead927606d27e16e13278579ee5314a9f5e9f0"
+          }
+        }
+      ],
+      "question_bindings": [
+        "MR02",
+        "MR03",
+        "MR04",
+        "MR05",
+        "MR08",
+        "MR19",
+        "MR21",
+        "MR24"
+      ],
+      "evidence_scope": "Applicability, Findings, Boundaries and Evidence in the hash-bound report; roles and theorem/execution status remain claim-specific.",
+      "coverage": "coverage-matrix.json"
+    }
+  ]
+}

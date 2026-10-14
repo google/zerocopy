@@ -1,0 +1,10 @@
+family=3
+instances=11,21
+resolved_len=99
+macro_word=8
+temporary_drops=[10, 1, 2, 20]
+pattern_drops=[30, 3, 40, 4, 50, 60]
+callback_retained=1,bytes=[9, 1, 2, 3, 8, 5]
+panic_restored=true,retained=2
+capacity_overflow_preserves=true
+pending_future_drops=1

@@ -1,0 +1,39 @@
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Arch_herd.ml#L1-L20
+1: (****************************************************************************)
+2: (*                           the diy toolsuite                              *)
+3: (*                                                                          *)
+4: (* Jade Alglave, University College London, UK.                             *)
+5: (* Luc Maranget, INRIA Paris-Rocquencourt, France.                          *)
+6: (*                                                                          *)
+7: (* Copyright 2015-present Institut National de Recherche en Informatique et *)
+8: (* en Automatique, ARM Ltd and the authors. All rights reserved.            *)
+9: (*                                                                          *)
+10: (* This software is governed by the CeCILL-B license under French law and   *)
+11: (* abiding by the rules of distribution of free software. You can use,      *)
+12: (* modify and/ or redistribute the software under the terms of the CeCILL-B *)
+13: (* license as circulated by CEA, CNRS and INRIA at the following URL        *)
+14: (* "http://www.cecill.info". We also give a copy in LICENSE.txt.            *)
+15: (****************************************************************************)
+16: 
+17: module Types = struct
+18:   type annot = AArch64Annot.t
+19:   type nexp =  AArch64Explicit.nexp
+20:   type explicit = AArch64Explicit.explicit
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Arch_herd.ml#L150-L165
+150:           (tag,p)::k)
+151:         (IC.fold_op
+152:         (fun op1 k ->
+153:           let tag = IC.pp_dot op1 in
+154:           let p = function
+155:             | CMO.IC op2 -> IC.equal op1 op2
+156:             | _ -> false in
+157:           (tag,p)::k) [])
+158: 
+159: 
+160:     let annot_sets = AArch64Annot.sets
+161: 
+162:     let explicit_sets = [
+163:       "AF", is_af;
+164:       "DB", is_db;
+165:     ]

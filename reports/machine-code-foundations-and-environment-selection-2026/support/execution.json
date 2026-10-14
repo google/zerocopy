@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "response_contract.py"
+  ],
+  "exit": 0,
+  "stdout_sha256": "b23e9e1ebdad8461628fa34f7f484c99c7400b512bb40830eb2d37b078d5c46d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

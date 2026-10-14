@@ -1,0 +1,32 @@
+{
+  "package": "rust-assembly-platform-unwind-contracts-2026",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS13",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / Windows recovery rules have a different subject from normal return",
+        "Findings / An actual object carries matching fixed-frame records",
+        "Findings / Metadata-only controls preserve return instructions but break recovery",
+        "Findings / Rust distinguishes ordinary inline unwind from whole-function ABI policy"
+      ],
+      "answered_scope": [
+        "Pinned primary Windows x64 UNWIND_INFO/RUNTIME_FUNCTION and prologue/epilogue rule analysis with explicit object-vs-loaded-image boundary",
+        "Actual compile-only77byte nonleaf function, real .xdata/.pdata and relocation records;5positive prologue/body contexts and3metadata-only mutants in owned recovery subset",
+        "Pinned Rust ordinary-asm prohibition, naked metadata rule and C-unwind behavior; actual Apple AArch64 safe Rust cleanup/personality/LSDA/resume assembly inspection"
+      ],
+      "stronger_unestablished_claims": [
+        "Verified COFF/PE importer or Windows unwinder, language-personality cleanup correctness, or complete Rust/assembly contextual linking theorem",
+        "Windows x64 metadata applies unchanged to Apple AArch64, or correct metadata permits ordinary asm to unwind",
+        "Actual helper/callback safety or native/platform unwind execution demonstrated"
+      ],
+      "unexamined_gaps": [
+        "Full epilogue recognizer, chained/handler/XMM/large-allocation/machine-frame/v3 cases and PE link/load registration are outside the selected V1 subset",
+        "Apple compact-unwind/DWARF runtime interpretation and Windows Rust cleanup code generation are not inspected",
+        "Actual verified helper/callback assembly integration and stripped-CFI native unwinding remain unperformed optional prototypes; no invalid/native unwind was executed"
+      ]
+    }
+  ],
+  "interpretation": "Completes selected platform-unwind research slice of AS13; companion contract/resource reports cover its other bounded topics. Universal language/ABI/environment proofs remain future outcomes."
+}

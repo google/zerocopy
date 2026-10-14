@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "metadata_validator": "reference-candidate/tools/reference.py::_load_report (read-only, no bytecode)",
+  "private_user_paths": 0,
+  "execution_source_output_log_hashes": "all match",
+  "prior_six_files_unchanged": 139,
+  "runtime_execution": false
+}

@@ -1,0 +1,132 @@
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L1-L16
+1: (****************************************************************************)
+2: (*                           the diy toolsuite                              *)
+3: (*                                                                          *)
+4: (* Jade Alglave, University College London, UK.                             *)
+5: (* Luc Maranget, INRIA Paris-Rocquencourt, France.                          *)
+6: (*                                                                          *)
+7: (* Copyright 2015-present Institut National de Recherche en Informatique et *)
+8: (* en Automatique, ARM Ltd and the authors. All rights reserved.            *)
+9: (*                                                                          *)
+10: (* This software is governed by the CeCILL-B license under French law and   *)
+11: (* abiding by the rules of distribution of free software. You can use,      *)
+12: (* modify and/ or redistribute the software under the terms of the CeCILL-B *)
+13: (* license as circulated by CEA, CNRS and INRIA at the following URL        *)
+14: (* "http://www.cecill.info". We also give a copy in LICENSE.txt.            *)
+15: (****************************************************************************)
+16: 
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L2043-L2072
+2043:       let ldxp sz t rd1 rd2 rs ii =
+2044:         let open AArch64 in
+2045:         let open Annot in
+2046:         let an = match t with XP -> EX | AXP -> EXA in
+2047:         do_ldr rs sz an
+2048:           (fun ac a ->
+2049:             read_mem_reserve sz an aexp ac rd1 a ii >>||
+2050:             begin
+2051:               add_size a sz >>= fun a ->
+2052:               do_read_mem sz an aexp ac rd2 a ii
+2053:             end)
+2054:           (read_reg_addr rs ii) ii
+2055: 
+2056:       and ldar sz t rd rs ii =
+2057:         let open AArch64 in
+2058:         let an = match t with
+2059:         | XX -> Annot.EX
+2060:         | AA -> Annot.A
+2061:         | AX -> Annot.EXA
+2062:         | AQ -> Annot.Q in
+2063:         do_ldr rs sz an
+2064:           (fun ac a ->
+2065:             let read =
+2066:               match t with
+2067:               | XX -> read_mem_reserve sz Annot.EX
+2068:               | AA -> read_mem_acquire sz
+2069:               | AX -> read_mem_reserve sz Annot.EXA
+2070:               | AQ -> read_mem_acquire_pc sz in
+2071:             read aexp ac rd a ii)
+2072:           (read_reg_addr rs ii)  ii
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L2173-L2198
+2173:       let stlr sz rs rd ii =
+2174:         do_str rd (do_write_mem sz Annot.L aexp) sz Annot.L
+2175:           (read_reg_addr rd ii) (read_reg_data_sz sz rs ii) ii
+2176: 
+2177:       and do_stxr ms mw sz t rr rd ii  =
+2178:         let open AArch64Base in
+2179:         let an = match t with
+2180:           | YY -> Annot.EX
+2181:           | LY -> Annot.EXL in
+2182:         lift_memop rd Dir.W true memtag
+2183:           (fun ac ma mv ->
+2184:             let must_fail =
+2185:               begin
+2186:                 let open AArch64 in
+2187:                 match ii.env.lx_sz with
+2188:                 | None -> true (* No LoadExcl at all. always fail *)
+2189:                 | Some szr ->
+2190:                    (* Some, must fail when size differ *)
+2191:                    not (MachSize.equal szr sz)
+2192:               end in
+2193:             M.aarch64_store_conditional must_fail
+2194:               (read_reg_ord ResAddr ii)
+2195:               mv ma
+2196:               (write_reg ResAddr V.zero ii)
+2197:               (fun v -> write_reg rr v ii)
+2198:               (mw an ac))
+
+### https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml#L4220-L4272
+4220:         | I_LDRBH (bh, rd, rs, e) ->
+4221:             let sz = bh_to_sz bh in
+4222:             ldr sz rd rs e ii
+4223:         | I_LDRS ((v, bh), rd, rs, e) ->
+4224:             let sz = bh_to_sz bh in
+4225:             ldrs sz (tr_variant v) rd rs e ii
+4226:         | I_LDUR(var,rd,rs,k) ->
+4227:             let sz = tr_variant var in
+4228:             ldr sz rd rs (MemExt.k2idx k) ii
+4229:         | I_LDAR(var,t,rd,rs) ->
+4230:             let sz = tr_variant var in
+4231:             ldar sz t rd rs ii
+4232:         | I_LDARBH(bh,t,rd,rs) ->
+4233:             let sz = bh_to_sz bh in
+4234:             ldar sz t rd rs ii
+4235:         | I_STR(var,rs,rd,e) ->
+4236:             str (tr_variant var) rs rd e ii
+4237:         | I_STRBH(bh,rs,rd,e) ->
+4238:             str (bh_to_sz bh) rs rd e ii
+4239:         | I_STLR(var,rs,rd) ->
+4240:             stlr (tr_variant var) rs rd ii
+4241: 
+4242:         | I_STLRBH(bh,rs,rd) ->
+4243:             stlr (bh_to_sz bh) rs rd ii
+4244: 
+4245:         | I_STZG(rt,rn,(k,Idx)) ->
+4246:             check_memtag "STZG" ;
+4247:             stzg rt rn k ii
+4248:         | I_STZ2G(rt,rn,(k,Idx)) ->
+4249:             check_memtag "STZ2G" ;
+4250:             check_mixed "STZ2G" ;
+4251:             stz2g rt rn k ii
+4252: 
+4253:         | I_STG(rt,rn,(k,Idx)) ->
+4254:             check_memtag "STG" ;
+4255:             stg Once rt rn k ii
+4256:         | I_ST2G(rt,rn,(k,Idx)) ->
+4257:           check_memtag "ST2G" ;
+4258:           check_mixed "ST2G" ;
+4259:           st2g rt rn k ii
+4260:         | I_LDG (rt,rn,k) ->
+4261:             check_memtag "LDG" ;
+4262:             ldg rt rn k ii
+4263:         | I_IRG (rd,rn,rm) ->
+4264:             check_memtag "IRG" ;
+4265:             irg rd rn rm ii
+4266:         | I_STXR(var,t,rr,rs,rd) ->
+4267:             stxr (tr_variant var) t rr rs rd ii
+4268:         | I_STXRBH(bh,t,rr,rs,rd) ->
+4269:             stxr (bh_to_sz bh) t rr rs rd ii
+4270: 
+4271:         (* Neon operations *)
+4272:         | I_ADDV(var,r1,r2) ->

@@ -1,0 +1,381 @@
+{
+  "arithmetic": [
+    {
+      "bits": 4,
+      "signed": false,
+      "max_plus_one": 0,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 4,
+      "signed": true,
+      "max_plus_one": -8,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 8,
+      "signed": false,
+      "max_plus_one": 0,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 8,
+      "signed": true,
+      "max_plus_one": -128,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 32,
+      "signed": false,
+      "max_plus_one": 0,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 32,
+      "signed": true,
+      "max_plus_one": -2147483648,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 64,
+      "signed": false,
+      "max_plus_one": 0,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    },
+    {
+      "bits": 64,
+      "signed": true,
+      "max_plus_one": -9223372036854775808,
+      "unchecked_add_reject": true,
+      "normal_shift_at_width": 1,
+      "unchecked_shift_at_width_reject": true
+    }
+  ],
+  "dst": [
+    {
+      "bits": 32,
+      "case": "valid-slice",
+      "accepted": true
+    },
+    {
+      "bits": 32,
+      "case": "oversize-slice",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "usize-overflow-meta",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "zst-no-provenance",
+      "accepted": true
+    },
+    {
+      "bits": 32,
+      "case": "zst-null",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "valid-meta-no-provenance",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "valid-meta-dead",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "valid-meta-unaligned",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "raw-null-valid-meta",
+      "accepted": true
+    },
+    {
+      "bits": 32,
+      "case": "wrong-kind",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "dyn-good",
+      "accepted": true
+    },
+    {
+      "bits": 32,
+      "case": "dyn-wrong-trait",
+      "accepted": false
+    },
+    {
+      "bits": 32,
+      "case": "dyn-good-meta-bad-data",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "valid-slice",
+      "accepted": true
+    },
+    {
+      "bits": 64,
+      "case": "oversize-slice",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "usize-overflow-meta",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "zst-no-provenance",
+      "accepted": true
+    },
+    {
+      "bits": 64,
+      "case": "zst-null",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "valid-meta-no-provenance",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "valid-meta-dead",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "valid-meta-unaligned",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "raw-null-valid-meta",
+      "accepted": true
+    },
+    {
+      "bits": 64,
+      "case": "wrong-kind",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "dyn-good",
+      "accepted": true
+    },
+    {
+      "bits": 64,
+      "case": "dyn-wrong-trait",
+      "accepted": false
+    },
+    {
+      "bits": 64,
+      "case": "dyn-good-meta-bad-data",
+      "accepted": false
+    }
+  ],
+  "overlap": {
+    "cases": 285,
+    "streaming_mutant_disagreements": 34,
+    "zero_cases": 81,
+    "first_counterexample": {
+      "src": 0,
+      "dest": 1,
+      "length": 2
+    }
+  },
+  "union_wide_pointer": [
+    {
+      "word_bytes": 4,
+      "endian": "little",
+      "imported_chunks": [
+        [
+          0,
+          4
+        ]
+      ],
+      "wide_layout_size": 8,
+      "metadata_after_union_copy": [
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit"
+      ],
+      "coherent_chunks": [
+        [
+          0,
+          8
+        ]
+      ],
+      "coherent_length": 3
+    },
+    {
+      "word_bytes": 4,
+      "endian": "big",
+      "imported_chunks": [
+        [
+          0,
+          4
+        ]
+      ],
+      "wide_layout_size": 8,
+      "metadata_after_union_copy": [
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit"
+      ],
+      "coherent_chunks": [
+        [
+          0,
+          8
+        ]
+      ],
+      "coherent_length": 3
+    },
+    {
+      "word_bytes": 8,
+      "endian": "little",
+      "imported_chunks": [
+        [
+          0,
+          8
+        ]
+      ],
+      "wide_layout_size": 16,
+      "metadata_after_union_copy": [
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit"
+      ],
+      "coherent_chunks": [
+        [
+          0,
+          16
+        ]
+      ],
+      "coherent_length": 3
+    },
+    {
+      "word_bytes": 8,
+      "endian": "big",
+      "imported_chunks": [
+        [
+          0,
+          8
+        ]
+      ],
+      "wide_layout_size": 16,
+      "metadata_after_union_copy": [
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit",
+        "Uninit"
+      ],
+      "coherent_chunks": [
+        [
+          0,
+          16
+        ]
+      ],
+      "coherent_length": 3
+    }
+  ],
+  "wrapped_niche_domain": {
+    "invalid_count": 244,
+    "valid_count": 12,
+    "tag0": "None",
+    "fallback": "Some"
+  },
+  "candidate_realloc_contract": [
+    {
+      "case": "failure",
+      "old_live": true,
+      "old_bytes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "new": null
+    },
+    {
+      "case": "in-place",
+      "old_live": false,
+      "new_id": 2,
+      "old_id": 1,
+      "same_address": true,
+      "new_bytes": [
+        1,
+        2,
+        3,
+        4,
+        "Uninit",
+        "Uninit"
+      ]
+    },
+    {
+      "case": "moved",
+      "old_live": false,
+      "new_id": 2,
+      "old_id": 1,
+      "same_address": false,
+      "new_bytes": [
+        1,
+        2,
+        3,
+        4,
+        "Uninit",
+        "Uninit"
+      ]
+    },
+    {
+      "case": "shrink",
+      "old_live": false,
+      "new_id": 2,
+      "old_id": 1,
+      "same_address": false,
+      "new_bytes": [
+        1,
+        2
+      ]
+    },
+    {
+      "case": "zero-size",
+      "rejected_precondition": true
+    }
+  ],
+  "scope": "Owned selected-rule models; no MiniRust interpreter or compiler import executed"
+}

@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "assembly/isa-validation",
+    "kraken/aarch64",
+    "assembly/condition-flags",
+    "assembly/partial-registers",
+    "assembly/byte-order",
+    "rust/inline-assembly"
+  ],
+  "subjects": [
+    {
+      "name": "Kraken AArch64 model",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean used to execute selected model",
+      "identity": {
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "arm64-apple-darwin24.6.0"
+      }
+    },
+    {
+      "name": "Rust compiler used for native register probes",
+      "identity": {
+        "version": "1.99.0",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "host": "aarch64-apple-darwin",
+        "llvm": "23.1.1"
+      }
+    },
+    {
+      "name": "Arm A64 instruction descriptions, selected ADDS/ADCS entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622",
+        "revision": "2025-09_rel",
+        "build_timestamp": "2025-09-23 11:45:10"
+      }
+    },
+    {
+      "name": "Arm A64 instruction descriptions, selected LSLV/REV entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+        "revision": "aarchmrs v2025-03_rel, pseudocode v2025-03_rel",
+        "build_timestamp": "2025-03-21T17:41"
+      }
+    },
+    {
+      "name": "Armv8-A Instruction Set Architecture guide",
+      "identity": {
+        "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154",
+        "document": "ARM062-948681440-3280",
+        "issue": "1.1",
+        "date": "2020-07-03"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

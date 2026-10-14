@@ -1,0 +1,12 @@
+{
+  "/usr/bin/clang": {
+    "resolved": "/usr/bin/clang",
+    "bytes": 200560,
+    "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+  },
+  "/Library/Developer/CommandLineTools/usr/bin/clang": {
+    "resolved": "/Library/Developer/CommandLineTools/usr/bin/clang",
+    "bytes": 124676976,
+    "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+  }
+}

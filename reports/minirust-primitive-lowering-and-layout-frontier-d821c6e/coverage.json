@@ -1,0 +1,43 @@
+{
+  "agenda_source": "minirust-followup-issue.md observed 2026-10-14",
+  "coverage_kind": "bounded research findings and executed controls; no whole-ID theorem-completion claim",
+  "ids": {
+    "MR09": {
+      "sections": ["F1", "F2"],
+      "scope": "MiniRust d821c6e integer/import source; explicit Rust1.99 FP rules and32 native/wasm cases; owned32/64-bit little/big-endian formulas; reviewed prior target/cross-target reports",
+      "subquestions": [
+        {"question": "Address widths, endianness, alignment and supported atomics", "answer": "F1/F2 plus earlier Target report: actual word/layout/cfg evidence for two little-endian targets; atomic cfg only, per-operation support not inferred from MAX_ATOMIC_SIZE"},
+        {"question": "Fixed-width overflow/shifts versus specification or host arithmetic", "answer": "F1 exact source and owned arithmetic model; safe Rust wrapping/checked boundary controls; unchecked failures are modeled or separately reused core evidence, never invalid Rust"},
+        {"question": "Floating-point behavior under explicit semantics", "answer": "F1 source-defined Rust FP/NaN/cast rules and F2 cases; MiniRust FP absent atpin, not replaced by reals"},
+        {"question": "32/64-bit, endian, packed/ZST and portable theorem versus target certificate", "answer": "F2 native/wasm, F3 owned metadata/ZST/union families and earlier report; target-specific observations distinguished from universal target-parametric proof"}
+      ],
+      "stronger_unestablished": ["Target-parametric arithmetic/layout/representation theorem", "MiniRust FP extension and Rust FP adequacy", "All-target atomic operation compatibility"],
+      "genuinely_unexamined": ["Big-endian Rust runtime/compiler controls", "All FP operators/rounding modes/optimization configurations and allowed NaN-set completeness", "All atomic-operation availability families"]
+    },
+    "MR10": {
+      "sections": ["F3", "Applicability"],
+      "scope": "Compiler-supplied enum/niche/chunk lowering source; mixed-metadata owned cases; reviewed generated-core wide-union discriminator and earlier dynamic-layout/retag masks",
+      "subquestions": [
+        {"question": "Metadata, dynamic size/alignment, dereferenceability, retag ranges and dispatch", "answer": "F3 and earlier Target F2 separate check layers and dynamic tail/retag/vtable obligations; metadata validity is not recursive pointee or library validity"},
+        {"question": "Niches, enum discriminants, unsized tails, recursive layout and generated metadata", "answer": "F3 exact enum import and char/pattern/str limitations; wrapping niche control is owned, not rustc layout; earlier report supplies source dynamic-tail/recursive PointeeInfo boundary"},
+        {"question": "Oversized/ZST slices, valid metadata with invalid data and wrong trait", "answer": "26 owned cases in support/runs/owned-model.json, no malformed Rust executed"},
+        {"question": "Wide pair representation safety", "answer": "Source-derived one-word union chunk candidate; reviewed actual generated-core UB versus two-word control; explicit minimize-output gap"}
+      ],
+      "stronger_unestablished": ["Compiler-layout extraction correctness", "Enum/union representation coherence over accepted core types", "Dynamic metadata/layout/retag simulation and contextual dispatch theorem"],
+      "genuinely_unexamined": ["Actual minimize output for the wide-pointer union", "Complete rustc niche and recursive-DST shape families", "Malformed dynamic UnsafeCell mask invariants and physical Rust access refinement"]
+    },
+    "MR17": {
+      "sections": ["F4", "F5"],
+      "scope": "Rust1.99 library/compiler routes compared with different pinned MiniRust importer; owned overlap/realloc contracts; prior allocation/unwind and new callback reports reused",
+      "subquestions": [
+        {"question": "Verified expansion versus external contracts", "answer": "F4 classifies constituent core definitions, explicit rejection and unexecuted complete routes separately; no verified std expansion claimed"},
+        {"question": "Unaligned/copy/realloc actual paths", "answer": "Alignment-one Unaligned typed read/write and transmute_neo; CopyNonOverlapping MIR rejection; copy intrinsic fallback conditional on surviving lowering; foreign __rust_realloc wrapper/default method distinguished"},
+        {"question": "Alignment, zero size and overlap", "answer": "F3 pointer controls, F4 285 snapshot cases incl81 zero,34 streaming-mutant differences; safe Rust overlap controls"},
+        {"question": "Allocation failure/reuse", "answer": "F5 five candidate realloc controls and documented old/new capability contract; MiniRust exhaustion limit; previous finite address-reuse control; capacity overflow explicitly not OOM"},
+        {"question": "Callbacks, panic runtime and foreign/environment behavior", "answer": "F5 explicit environment contract and companion static report F5 controls; prior unwind report source/cleanup limit; foreign item rejection is not foreign semantics"}
+      ],
+      "stronger_unestablished": ["Verified std/allocator/runtime implementation", "Source-to-core primitive refinement with provenance/alias/initialization preservation", "Allocator failure and environment adequacy"],
+      "genuinely_unexamined": ["Requested-compiler/sysroot minimize execution of selected library routes", "Physical OOM or allocator fault injection", "Actual foreign callbacks and their ABI/resource relation"]
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "purpose": "Explicit display-path privacy projection. Historical producer hashes and process statuses remain original observations; regenerated package manifest binds public bytes. Source/program bytes unchanged.",
+  "replacements": [
+    {
+      "meaning": "task workspace",
+      "public": "<task-workspace>"
+    },
+    {
+      "meaning": "Rust toolchain home",
+      "public": "<rust-toolchains>"
+    },
+    {
+      "meaning": "Lean toolchain home",
+      "public": "<lean-toolchains>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/independent-replay/commands.json",
+      "raw_sha256": "5d8def7316529c4db698eac68cdd312d2c270558cc0e8c571de0cde4fa7e9110",
+      "public_sha256": "da5759c12583f992d702b776776f18d911ddab5113c6c167ca48447efd045c37",
+      "raw_bytes": 2038,
+      "public_bytes": 2024
+    },
+    {
+      "path": "support/independent-replay/original-linker-abort.stderr",
+      "raw_sha256": "7fe88be05f222cde5e8e93eff0472ce556125da1ee188da7ef63ab157d7e5637",
+      "public_sha256": "119b2604433ce30d7b3a0a4a9e3634527fe83a742761c07c3500f7d71acb63db",
+      "raw_bytes": 2065,
+      "public_bytes": 2023
+    },
+    {
+      "path": "support/independent-replay/rust-sysroot.stdout",
+      "raw_sha256": "90395156492742dae6a0b41e1f5e911027f414db41e1f7f909673caf71ca245e",
+      "public_sha256": "a46925e78f7ef9812d9ce187ddbc2175c4fa0600457f94edd98a99875f208655",
+      "raw_bytes": 60,
+      "public_bytes": 46
+    }
+  ]
+}

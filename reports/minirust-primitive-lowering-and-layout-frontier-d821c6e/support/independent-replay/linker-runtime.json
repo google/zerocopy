@@ -1,0 +1,5 @@
+{
+  "policy": "Darwin subprocess-only DYLD_LIBRARY_PATH selects the same rustc sysroot/lib; no global changes",
+  "libLLVM_sha256": "0a09edaac7d0047e8db420bb9594359c73e602a2138def76f51197f1afd39252",
+  "libLLVM_bytes": 143609472
+}

@@ -1,0 +1,106 @@
+{
+  "status": "passed",
+  "native_execution": false,
+  "commands": [
+    {
+      "argv": [
+        "clang",
+        "--version"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.006605375,
+      "log": "clang-version.log",
+      "log_sha256": "a856ec74c559401131ad608625ef252fb2db6c78bc0c480c1c4c782ee4896db1"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--version",
+        "--verbose"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.03194325,
+      "log": "rustc-version.log",
+      "log_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+    },
+    {
+      "argv": [
+        "clang",
+        "--target=x86_64-pc-windows-msvc",
+        "-O1",
+        "-fno-omit-frame-pointer",
+        "-funwind-tables",
+        "-S",
+        "specimen.c",
+        "-o",
+        "specimen.s"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.013687041999999996,
+      "log": "specimen.s.build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "clang",
+        "--target=x86_64-pc-windows-msvc",
+        "-O1",
+        "-fno-omit-frame-pointer",
+        "-funwind-tables",
+        "-c",
+        "specimen.c",
+        "-o",
+        "specimen.obj"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.013342500000000007,
+      "log": "specimen.obj.build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "--emit=asm",
+        "-Copt-level=1",
+        "-Cpanic=unwind",
+        "cleanup.rs",
+        "-o",
+        "cleanup.s"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.05242512500000002,
+      "log": "cleanup.build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "python3",
+        "check_unwind.py"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.027611916999999986,
+      "log": "check-unwind.log",
+      "log_sha256": "c75c43ba8fe80e859228f81ce72229e333286f2f3d859c592184ad40dc2552c5"
+    }
+  ],
+  "owned_source_hashes": {
+    "specimen.c": "64859c9ebb1208392f3dff6c61739f22597936e0de8307903b1311323d0d6999",
+    "cleanup.rs": "15e9f024c6cccdcc4aa7baedc06bfb01810113467db03059676b18beba65681e",
+    "check_unwind.py": "f373274c2cba6eb0321d1d08d919ad1fc215d5cdbd18895399e436ecbd36903d",
+    "revalidate.py": "0d9f74e17bcfb689e4ac5b7e93e4ba057d719c869e183f617a1b8708f3e6faa1"
+  },
+  "outputs": {
+    "specimen.s": "cf770e948d71c1aae581b7d16bf872fe5dfd891924f3afbbc9306954dfd405b9",
+    "specimen.obj": "4af061446c6ca67a8c936c39cd514d5fa2152e6c85f0dc5c08be9033c30e574d",
+    "cleanup.s": "1b6c4faa11e08c4eb1c17faa692049bc65c4857c0028fa44a6b11b16605e94f3",
+    "unwind-results.json": "4c6383fcb472ab28ee8691b3f29efde629a528dd284eb96103c0d25a6d5bb070"
+  }
+}

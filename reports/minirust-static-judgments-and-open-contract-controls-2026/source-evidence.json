@@ -1,0 +1,197 @@
+{
+  "observed_at": "2026-10-14",
+  "source": [
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/check/mod.rs",
+      "git_blob_sha": "f8439864231e3b367ec6fe7ef8e142ab8f77b9ea",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/check/mod.rs",
+      "excerpts": [
+        {
+          "start_line": 32,
+          "end_line": 80,
+          "text": "\n/// Prepend the core crate if the first crate isn't already named `core`.\npub fn with_core_crate(crates: &Crates) -> Crates {\n    let Crates { mut crates } = crates.clone();\n    if Some(\"core\") != crates.first().map(|first| &**first.id) {\n        crates.insert(0, core_crate::krate());\n    }\n    Crates { crates }\n}\n\njudgment_fn! {\n    pub fn check_all_crates(\n        crates: Crates,\n    ) => () {\n        debug(crates)\n\n        (\n            (let crates = with_core_crate(&crates))\n            // Check that all crates up to and including crate #i are valid.\n            // Crate #i will be considered the \"current crate\".\n            (for_all(i in 0..crates.len())\n                (let program = crates.prefix(i).to_prove_decls())\n                (check_crate(program, &crates.crates[i]) => ()))\n            ------------------------------------------------------------ (\"check all prefixes\")\n            (check_all_crates(crates) => ())\n        )\n    }\n}\n\njudgment_fn! {\n    /// Check that the current crate `c` is valid,\n    /// given the complete program (which includes dependencies).\n    fn check_crate(\n        program: Program,\n        c: Crate,\n    ) => () {\n        debug(program, c)\n\n        (\n            (check_for_duplicate_items(program) => ())\n            (check_for_non_lifetime_binders(c) => ())\n            (for_all(item in &c.items)\n                (check_crate_item(program, item, &c.id) => ()))\n            (check_coherence(program, c) => ())\n            ------------------------------------------------------------ (\"check crate\")\n            (check_crate(program, Crate { id: _id, items: _items }) => ())\n        )\n    }\n}"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/check/fns.rs",
+      "git_blob_sha": "cfb957f7b4224ea25dff19446e0cc49dfe8057ce",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/check/fns.rs",
+      "excerpts": [
+        {
+          "start_line": 36,
+          "end_line": 92,
+          "text": "    /// * `f` -- the function definition\n    pub(crate) fn check_fn(\n        program: Program,\n        env: Env,\n        assumptions: Predicates,\n        f: Fn,\n        crate_id: CrateId,\n    ) => () {\n        debug(f, crate_id, env, assumptions, program)\n        assert(env.only_universal_variables() && env.encloses((assumptions, f)))\n\n        (\n            (let (env, bound_data) = env.instantiate_universally(&f.binder))\n            (let FnBoundData { input_args, output_ty, where_clauses, body } = bound_data)\n            (let assumptions: Predicates = (assumptions, where_clauses).to_predicates())\n            (prove_where_clauses_well_formed(program, env, assumptions, where_clauses) => ())\n            (for_all(input_arg in input_args)\n                (prove_goal(program, env, assumptions, AtomicPredicate::well_formed(&input_arg.ty)) => ()))\n            (prove_goal(program, env, assumptions, AtomicPredicate::well_formed(output_ty)) => ())\n            (check_fn_body(program, env, assumptions, body, input_args, output_ty) => ())\n            ------------------------------------------------------------ (\"check fn\")\n            (check_fn(program, env, assumptions, f, crate_id) => ())\n        )\n    }\n}\n\njudgment_fn! {\n    /// Check the function body, dispatching to the borrow checker for expression bodies.\n    fn check_fn_body(\n        program: Program,\n        env: Env,\n        assumptions: Predicates,\n        body: MaybeFnBody,\n        input_args: Vec<crate::grammar::InputArg>,\n        output_ty: crate::grammar::Ty,\n    ) => () {\n        debug(body, assumptions, env, program)\n\n        (\n            // No fn body occurs in trait definitions only.\n            ------------------------------------------------------------ (\"no fn body\")\n            (check_fn_body(program, env, assumptions, MaybeFnBody::NoFnBody, input_args, output_ty) => ())\n        )\n\n        (\n            // A trusted function body is assumed to be valid.\n            ------------------------------------------------------------ (\"trusted fn body\")\n            (check_fn_body(program, env, assumptions, MaybeFnBody::FnBody(FnBody::TrustedFnBody), input_args, output_ty) => ())\n        )\n\n        (\n            // Type-check an expression body via the borrow checker.\n            (let typeck_env = TypeckEnv::for_fn_body(env, program, output_ty))\n            (let initial_state = FlowState::for_fn_body(env, input_args)?)\n            (borrow_check(typeck_env, assumptions, initial_state, block) => ())\n            ------------------------------------------------------------ (\"expr fn body\")\n            (check_fn_body(program, env, assumptions, MaybeFnBody::FnBody(FnBody::Expr(block)), input_args, output_ty) => ())"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/check/impls.rs",
+      "git_blob_sha": "2d29b487fb36daa32afcccdf2dbf5abf5f06451d",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/check/impls.rs",
+      "excerpts": [
+        {
+          "start_line": 76,
+          "end_line": 117,
+          "text": "judgment_fn! {\n    /// Validate that the declared safety of an impl matches the one from the trait declaration.\n    fn check_safety_matches(\n        trait_decl: Trait,\n        trait_impl: TraitImpl,\n    ) => () {\n        debug(trait_decl, trait_impl)\n        (\n            (if trait_decl.safety == trait_impl.safety)\n            ---- (\"safety matches\")\n            (check_safety_matches(trait_decl, trait_impl) => ())\n        )\n    }\n}\n\n/// Check that every required trait item has a corresponding impl item.\n/// A trait fn is required if it has no default body (`NoFnBody`).\n/// Associated types are always required (no defaults supported yet).\nfn check_all_required_items_present(\n    trait_items: &[TraitItem],\n    impl_items: &[ImplItem],\n) -> Fallible<ProofTree> {\n    for trait_item in trait_items {\n        match trait_item {\n            TraitItem::Fn(trait_fn) => {\n                let (_, bound_data) = trait_fn.binder.open();\n                if matches!(bound_data.body, MaybeFnBody::NoFnBody) {\n                    if !impl_items\n                        .iter()\n                        .downcasted::<Fn>()\n                        .any(|impl_fn| impl_fn.id == trait_fn.id)\n                    {\n                        bail!(\n                            \"not all trait items implemented, missing: `{:?}`\",\n                            trait_fn.id\n                        );\n                    }\n                }\n            }\n            TraitItem::AssociatedTy(trait_assoc_ty) => {\n                if !impl_items\n                    .iter()"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/prove/prove_normalize.rs",
+      "git_blob_sha": "93e23740ed86bfbfa2b57da5c17c0d491362ec89",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/prove/prove_normalize.rs",
+      "excerpts": [
+        {
+          "start_line": 22,
+          "end_line": 55,
+          "text": "    /// Normalize `p` one step, returning a set of constraints and a new parameter `q` that is\n    /// semantically equivalent to `p`. e.g., if p is `<Vec<T> as IntoIterator>::Item`, this would\n    /// return `T`.\n    pub fn prove_normalize(\n        _decls: Program,\n        env: Env,\n        assumptions: Predicates,\n        p: Parameter,\n    ) => Constrained<Parameter> {\n        debug(p, assumptions, env)\n\n        (\n            (a in assumptions)!\n            (prove_normalize_via(decls, env, assumptions, a, goal) => c)\n            ----------------------------- (\"normalize-via-assumption\")\n            (prove_normalize(decls, env, assumptions, goal) => c)\n        )\n\n        (\n            (decl in decls.alias_eq_decls(&a.name))\n            (let (env, subst) = env.existential_substitution(&decl.binder))\n            (let decl = decl.binder.instantiate_with(&subst).unwrap())\n            (let AliasEqDeclBoundData { alias: AliasTy { name, parameters }, ty, where_clause } = decl)\n            (assert a.name == *name)\n            (prove(decls, env, assumptions, Predicates::all_eq(&a.parameters, &parameters)) => c)\n            (prove_after(decls, c, assumptions, &where_clause) => c)\n            (let ty = c.substitution().apply(ty))\n            (let c = c.pop_subst(&subst))\n            (assert c.env().encloses(&ty))\n            ----------------------------- (\"normalize-via-impl\")\n            (prove_normalize(decls, env, assumptions, Ty::AliasTy(a)) => Constrained(ty, c))\n        )\n    }\n}"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/check/borrow_check/nll.rs",
+      "git_blob_sha": "bed3123fb49d63c776d0651a7672db4ce0292914",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/check/borrow_check/nll.rs",
+      "excerpts": [
+        {
+          "start_line": 147,
+          "end_line": 173,
+          "text": "    fn borrow_check_block(\n        env: TypeckEnv,\n        assumptions: Predicates,\n        state: FlowState,\n        block: Block,\n        places_live_on_exit: LivePlaces,\n    ) => FlowState {\n        debug(assumptions, env, state, block)\n        assert(state.check_invariants())\n\n        (\n            (let state = state.push_scope(&env.env, label, places_live_on_exit)?)\n            (for_all(i in 0..stmts.len()) with(env, state)\n                (borrow_check_statement(\n                    env,\n                    assumptions,\n                    state,\n                    &stmts[i],\n                    stmts[i+1..].live_before(env, &state, places_live_on_exit),\n                ) => (env, state)))\n            // Drop locals declared in this scope (reverse declaration order)\n            (let locals_to_drop = state.locals_dropped_in_innermost_scope())\n            (drop_places(env, assumptions, state, locals_to_drop, places_live_on_exit) => state)\n            (let state = state.pop_scope(label))\n            ------------------------------------------------------------ (\"basic block\")\n            (borrow_check_block(env, assumptions, state, Block { label, stmts }, places_live_on_exit) => state)\n        )"
+        },
+        {
+          "start_line": 419,
+          "end_line": 448,
+          "text": "            // Check the callee\n            (borrow_check_expr(\n                env,\n                assumptions,\n                state,\n                callee,\n                args.live_before(env, &state, places_live),\n            ) => (callee_ty, state))\n\n            // We only support calling FnDef right now\n            (prove_ty_is_rigid(env, assumptions, state, callee_ty) => (RigidTy { name: RigidName::FnDef(fn_id), parameters }, state))\n\n            // Find the function declaration and instantiate it\n            (let Fn { id: _, safety, binder } = env.crates().fn_named(fn_id)?)\n            // FIXME: add `unsafe` blocks and only allow calling unsafe functions from there.\n            (ProvenSet::singleton((safety, ProofTree::leaf(\"safety\"))) => Safety::Safe)\n            (let FnBoundData { input_args, output_ty, where_clauses, body: _ } =\n                binder.instantiate_with(parameters)?)\n\n            // Check argument count matches\n            (let input_tys: Vec<Ty> = input_args.iter().map(|a| a.ty.clone()).collect())\n            (if input_tys.len() == args.len())\n\n            (for_all(i in 0..args.len()) with(state)\n                (borrow_check_expr_has_ty(env, assumptions, state, &args[i], &input_tys[i], places_live) => state))\n\n            (prove_where_clauses(env, assumptions, state, where_clauses) => state)\n            ------------------------------------------------------------ (\"call\")\n            (borrow_check_expr(env, assumptions, state, Expr::Call { callee, args }, places_live) => (output_ty, state))\n        )"
+        },
+        {
+          "start_line": 977,
+          "end_line": 1020,
+          "text": "    ///\n    /// A place is movable if it is not behind a reference. When a `Deref` is\n    /// encountered, the deref'd type must be an \"owned deref\" (e.g., `Box`).\n    /// Since we don't model owned deref types yet, all derefs through\n    /// references (`&T` / `&mut T`) will cause this judgment to fail.\n    fn prove_place_is_movable(\n        env: TypeckEnv,\n        assumptions: Predicates,\n        state: FlowState,\n        place: TypedPlaceExpr,\n    ) => FlowState {\n        debug(env, assumptions, state, place)\n\n        (\n            ------------------------------------------------------------ (\"local\")\n            (prove_place_is_movable(\n                _env,\n                _assumptions,\n                state,\n                TypedPlaceExpressionData::Local(_),\n            ) => state)\n        )\n\n        (\n            (if let None = env.program.find_drop_impl(adt_id))\n            (prove_place_is_movable(env, assumptions, state, prefix) => state)\n            ------------------------------------------------------------ (\"field\")\n            (prove_place_is_movable(\n                env,\n                assumptions,\n                state,\n                TypedPlaceExpressionData::Field(prefix, _, adt_id, _),\n            ) => state)\n        )\n\n        (\n            (prove_ty_is_copy(env, assumptions, state, &place.ty) => state)\n            ------------------------------------------------------------ (\"copy\")\n            (prove_place_is_movable(env, assumptions, state, place) => state)\n        )\n\n        // For a deref of a non-Copy type, we would need to prove the prefix type\n        // is an \"owned deref\" (e.g., Box). Since no owned deref types exist yet,\n        // this rule has no matching cases and derefs through references naturally"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/grammar/expr/mod.rs",
+      "git_blob_sha": "aee375abad321172bbc9fbc76d22a86c56de0ce7",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/grammar/expr/mod.rs",
+      "excerpts": [
+        {
+          "start_line": 62,
+          "end_line": 140,
+          "text": "    }\n}\n\n/// A statement within a block.\n#[term]\npub enum Stmt {\n    /// `let id: ty = expr;` or `let 'a: id: ty = expr;` or `let id: ty;`\n    ///\n    /// Bind a variable, optionally with an initializer.\n    /// If no label is given, the variable is bound in the innermost\n    /// enclosing block. If a label is given, the variable is bound\n    /// in the named block and dropped when that block exits.\n    /// If no initializer is given, the variable is uninitialized\n    /// and must be assigned before use.\n    #[grammar(let $?label $id : $ty $?init ;)]\n    Let {\n        label: Option<Label>,\n        id: ValueId,\n        ty: Ty,\n        init: Option<Init>,\n    },\n\n    /// `if condition { then }` or `if condition { then } else { else }`\n    ///\n    /// Conditional statement. The else branch is optional; when absent it behaves like an empty block\n    #[grammar(if $condition $then_block $?else_block)]\n    If {\n        condition: Expr,\n        then_block: Block,\n        else_block: ElseBlock,\n    },\n\n    /// `expr;`\n    ///\n    /// Evaluate an expression as a statement (discards the result).\n    #[grammar($expr ;)]\n    Expr { expr: Expr },\n\n    /// `label: loop { body }` or `loop { body }`\n    ///\n    /// A loop. The optional label can be targeted by break/continue.\n    #[grammar($?label loop $body)]\n    Loop { label: Option<Label>, body: Block },\n\n    /// `break label;`\n    ///\n    /// Break out of the labeled block or loop.\n    #[grammar(break $label ;)]\n    Break { label: LabelId },\n\n    /// `continue label;`\n    ///\n    /// Jump to the top of the labeled loop.\n    #[grammar(continue $label ;)]\n    Continue { label: LabelId },\n\n    /// `return expr;`\n    ///\n    /// Return from the current function.\n    #[grammar(return $expr ;)]\n    Return { expr: Expr },\n\n    /// `{ stmts }`\n    ///\n    /// A nested block. Creates a new scope; locals declared\n    /// inside are dropped when the block exits.\n    #[cast]\n    Block(Block),\n\n    /// `exists<'a, 'b> { stmts }`\n    ///\n    /// Introduce existential variables (e.g., lifetime inference variables)\n    /// over a block of statements.\n    #[grammar(exists $binder)]\n    Exists { binder: Binder<Block> },\n\n    /// `println!(expr);`\n    ///\n    /// Print a value to stdout (for testing)."
+        },
+        {
+          "start_line": 142,
+          "end_line": 205,
+          "text": "    Print { expr: Expr },\n}\n\n#[term]\npub enum Expr {\n    /// `place = expr`\n    ///\n    /// Assign a value to a place expression. Evaluates to `()`.\n    /// The left-hand side must be a place expression (variable, deref, field).\n    #[grammar($place = $expr)]\n    Assign { place: PlaceExpr, expr: Arc<Expr> },\n\n    /// `call callee<tys>(args)`\n    ///\n    /// Call a function. The callee is a named function reference.\n    /// Returns the call's result as a value.\n    #[grammar($callee ($,args))]\n    Call { callee: Arc<Expr>, args: Vec<Expr> },\n\n    #[cast]\n    Literal(Literal),\n\n    /// `true`\n    #[grammar(true)]\n    True,\n\n    /// `false`\n    #[grammar(false)]\n    False,\n\n    /// `&'lt expr` or `&'lt mut expr`\n    ///\n    /// Create a reference. The operand must be a place expression.\n    #[grammar(& $lt $?kind $place)]\n    Ref {\n        kind: RefKind,\n        lt: Lt,\n        place: PlaceExpr,\n    },\n\n    /// A place expression used as a value.\n    #[cast]\n    Place(PlaceExpr),\n\n    #[grammar($id::<$,args>)]\n    Turbofish { id: ValueId, args: Vec<Parameter> },\n\n    /// `$adt_id { exprs }`\n    ///\n    /// Construct an aggregate (struct) value.\n    #[grammar($adt_id $?turbofish { $,field_exprs })]\n    Struct {\n        field_exprs: Vec<FieldExpr>,\n        adt_id: AdtId,\n        turbofish: Turbofish,\n    },\n}\n\n// ANCHOR: PlaceExpr\n#[term]\npub enum PlaceExpr {\n    /// `x`\n    ///\n    /// A variable reference. Whether this is a place (lvalue) or"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/codegen/mod.rs",
+      "git_blob_sha": "8f83fc22a529e83625a75f75be6841f5227555b4",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/codegen/mod.rs",
+      "excerpts": [
+        {
+          "start_line": 32,
+          "end_line": 60,
+          "text": "pub fn codegen_program(crates: &Crates) -> Fallible<lang::Program> {\n    let crates = crate::check::with_core_crate(crates);\n    let mut g = CodegenGlobal::new(&crates);\n    let main_key = MonoKey {\n        id: crate::rust::term(\"main\"),\n        args: vec![],\n    };\n    let (main_fn_name, g2) = g.ensure_fn(main_key);\n    g = g2;\n    let mut functions: Map<lang::FnName, lang::Function> = Map::new();\n    while let Some((key, fn_name)) = g.next_pending(&functions) {\n        let function;\n        (function, g) = unwrap_proven(codegen_function(g, key))?;\n        functions.insert(fn_name, function.into());\n    }\n    let main_ret_ty = functions\n        .get(main_fn_name)\n        .map(|f| f.locals.get(f.ret).unwrap())\n        .unwrap();\n    let (start_fn_name, start_fn) = build_start_function(&mut g, main_fn_name, main_ret_ty);\n    functions.insert(start_fn_name, start_fn);\n    Ok(lang::Program {\n        functions,\n        start: start_fn_name,\n        globals: Map::new(),\n        traits: Map::new(),\n        vtables: Map::new(),\n    })\n}"
+        },
+        {
+          "start_line": 307,
+          "end_line": 333,
+          "text": "            (codegen_expr_into(global, cfn, scope, target, Expr::Turbofish { .. }) => (\n                code.assign(target, unit_value()),\n                global,\n                cfn,\n            ))\n        )\n\n        (\n            // Get the type of the calleee. This rule expects static dispatch,\n            // so we require that the callee has a zero-sized `FnDef` type that\n            // uniquely identifies a callee.\n            (type_expr(cfn, scope, callee) => callee_ty)\n            (resolve_rigid(cfn, scope, callee_ty) => RigidTy { name: RigidName::FnDef(fn_id), parameters })\n            (let (fn_name, global) = global.ensure_fn(MonoKey::new(fn_id, parameters)))\n            // Evaluate callee for side effects (value is zero-sized for FnDef).\n            (let (callee_temp, cfn) = cfn.alloc_temp(&callee_ty)?)\n            (codegen_expr_into(global, cfn, scope, callee_temp, callee) => (code, global, cfn))\n            // Evaluate arguments into temporaries.\n            (let (temps, cfn) = alloc_temps_for_args(cfn, scope, args)?)\n            (for_all(i in 0..args.len()) with(code, global, cfn)\n                (codegen_expr_into(global, cfn, scope, &temps[i], &args[i]) => (arg_code, global, cfn))\n                (let (code, cfn) = cfn.append_from(code, arg_code)))\n            // Construct the minirust function call.\n            (let (code, cfn) = cfn.call(code, fn_name, temps, target)?)\n            ---- (\"call\")\n            (codegen_expr_into(global, cfn, scope, target, Expr::Call { callee, args }) => (code, global, cfn))\n        )"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "crates/formality-rust/src/codegen/helpers.rs",
+      "git_blob_sha": "f87e459d073fe33a9bdecaadeb048d4e6f6430f2",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/crates/formality-rust/src/codegen/helpers.rs",
+      "excerpts": [
+        {
+          "start_line": 104,
+          "end_line": 130,
+          "text": "/// Resolve a MonoKey to its FnData and body block.\npub(super) fn resolve_fn_body(\n    g: &CodegenGlobal,\n    key: &MonoKey,\n) -> Fallible<(grammar::FnBoundData, Block)> {\n    let fn_def = g.crates.fn_named(&key.id)?;\n    let fn_data = fn_def.binder.instantiate_with(&key.args)?;\n    let body = match &fn_data.body {\n        grammar::MaybeFnBody::FnBody(grammar::FnBody::Expr(b)) => b.clone(),\n        _ => anyhow::bail!(\"function {:?} must have expression body\", key.id),\n    };\n    Ok((fn_data, body))\n}\n\n/// Extract the single result from a ProvenSet, or error.\npub(super) fn unwrap_proven<T: std::fmt::Debug + Clone + Ord>(\n    ps: formality_core::ProvenSet<T>,\n) -> Fallible<T> {\n    let proven = ps\n        .into_singleton()\n        .map_err(|e| anyhow::anyhow!(\"{}\", e.format_leaves()))?;\n    Ok(proven.0)\n}\n\n// ===========================================================================\n// Borrow-checker wrappers\n// ==========================================================================="
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "src/lib.rs",
+      "git_blob_sha": "453cf3965747a17f3e0a5cc88bb805c8d2ce0d99",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/src/lib.rs",
+      "excerpts": [
+        {
+          "start_line": 35,
+          "end_line": 50,
+          "text": "    let args = Args::parse();\n    let input: String = std::fs::read_to_string(&args.input_path)?;\n    let program: Crates = try_term(&input)?;\n\n    if args.print_rust {\n        eprintln!(\"{:#?}\", program);\n    }\n\n    let _proof_tree = check_all_crates(&program).check_proven()?;\n    Ok(())\n}\n\npub fn test_program_ok(input: &str) -> anyhow::Result<ProofTree> {\n    let program: Crates = try_term(input)?;\n    let proof_tree = check_all_crates(&program).check_proven()?;\n    Ok(proof_tree)"
+        },
+        {
+          "start_line": 82,
+          "end_line": 85,
+          "text": "        .unwrap_or(Ok(0))\n        .unwrap_or_default()\n}\n"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "Cargo.toml",
+      "git_blob_sha": "702381b0c9e10f431923210f580bcad677591792",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/Cargo.toml",
+      "excerpts": [
+        {
+          "start_line": 27,
+          "end_line": 38,
+          "text": "expect-test = \"1.4.0\"\n\n[workspace]\nmembers = [\n    \"crates/formality-macros\",\n    \"crates/formality-core\",\n    \"crates/formality-rust\",\n    \"crates/formality-mdbook\",\n    \"crates/formality-coverage\",\n    \"crates/minirust-rs\",\n]\n"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "tests/codegen.rs",
+      "git_blob_sha": "c640a987d8ab215421cea73d66d7eee4b0e90935",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/tests/codegen.rs",
+      "excerpts": [
+        {
+          "start_line": 57,
+          "end_line": 88,
+          "text": "        }\n        fn main() -> () {\n            let y: i32 = add_one(1_i32);\n            println!(y);\n        }\n    }])\n    .expect_output(\"1\\n\")\n    .ok()\n}\n\n#[test]\nfn generic_function_calls() {\n    FormalityTest::new(crates![crate test {\n        fn identity<T>(x: T) -> T {\n            return x;\n        }\n        fn main() -> () {\n            let y: i32 = identity::<i32>(42_i32);\n            println!(y);\n        }\n    }])\n    .expect_output(\"42\\n\")\n    .ok()\n}\n\n#[test]\nfn if_statements() {\n    FormalityTest::new(crates![crate test {\n        fn main() -> () {\n            let x: i32 = 1_i32;\n            if true {\n                println!(x);"
+        }
+      ]
+    }
+  ],
+  "tree_inventory": {
+    "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+    "truncated": false,
+    "blob_count": 254,
+    "formal_extension_hits": [],
+    "scope": "No independent kernel checked soundness theorem located in examined sources or by listed extension inventory; this is a bounded search, not proof no theorem exists elsewhere."
+  },
+  "goal_page": {
+    "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+    "retrieved": "2026-10-14",
+    "role": "Accepted plan; mutable page no immutable revision acquired"
+  },
+  "source_relation": "a-mir-formality ships vendored crates/minirust-rs; not identified with current MiniRust d821c6e"
+}

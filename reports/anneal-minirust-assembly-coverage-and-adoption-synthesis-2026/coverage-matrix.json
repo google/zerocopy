@@ -1,0 +1,1246 @@
+{
+  "purpose": "Semantic research crosswalk. This does not assert every suggested experiment ran or every stronger theorem was proved.",
+  "source_questions": "../anneal-minirust-assembly-research-agenda-2026/questions.json",
+  "entries": [
+    {
+      "id": "MR01",
+      "issue": 3873,
+      "question_title": "The precise RustBelt → MiniRust bridge",
+      "original_question_sha256": "bece1d16db6f914940df8a9acd1cf9093640e23879c156a5ea7ddc3179fe3fea",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Original value-cell λRust, concrete Radium and MiniRust preserve different operational distinctions. Reusable Iris/lifetime infrastructure still requires a new representation/alias relation and a safety/fundamental theorem; finite abstraction failures demonstrate lost information.",
+      "report_bindings": [
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No full allocation/split/interior-mutability library proof port or MiniRust safe-client fundamental theorem."
+    },
+    {
+      "id": "MR02",
+      "issue": 3873,
+      "question_title": "MiniRust, the Rust Reference and an end-to-end executable specification",
+      "original_question_sha256": "a222ee5127cae37052ace2d2ca85b595460233447a316387b9e749045a4dba09",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "A five-case Reference-linked corpus separates authority/policy from core behavior for raw places, invalid referents, zero-size operations, metadata and unions. The executable-spec plan is a direction, not current authority over all Rust.",
+      "report_bindings": [
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete authoritative surface specification; disputed validity policy is not settled by interpreter output."
+    },
+    {
+      "id": "MR03",
+      "issue": 3873,
+      "question_title": "Specr semantics, elaboration and formal backends",
+      "original_question_sha256": "2ba2feed3d0023f8508a7a05720f1aa2b05e2ac293b922713360e394baaf52b9",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Exact fence extraction, transform order, name-resolution limitations, effect wrappers and formal-backend artifact status are inspected. Real pinned transpilation/build is reproduced; successful generated Rust checking is distinct from import correctness.",
+      "report_bindings": [
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "modular-semantics-state-alias-effects-popl2025",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No verified formal Specr backend/import theorem; inaccessible Specr2 work remains unknown."
+    },
+    {
+      "id": "MR04",
+      "issue": 3873,
+      "question_title": "Angelic and demonic nondeterminism, UB and executability",
+      "original_question_sha256": "4665f3f9fce9a0fe6b6fe9f025ef71db8ca9bc6c259b87ab62f4126a6163beec",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Demonic safety, empty behavior, angelic witness/continuation and failed sampling are distinguished. Checked finite quantifier/certificate controls reject omitted bad branches and scope swaps; handler constructors expose additional choice-domain conditions.",
+      "report_bindings": [
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "modular-semantics-state-alias-effects-popl2025",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No full predictive mixed-choice game semantics or actual exposed-predict execution."
+    },
+    {
+      "id": "MR05",
+      "issue": 3873,
+      "question_title": "Rust → MIR → MiniRust source-safety correspondence",
+      "original_question_sha256": "3d4d1524a5e05bf83b8a2313c78951ae8d68370a87bb41da307084be3b4c3b6a",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Effective MIR flags, retags, Copy/Move loads, cleanup-edge loss, unsupported branches and compiler-supplied layouts identify concrete source-safety obligations. An erasure countermodel distinguishes safe-source refinement from safety reflection.",
+      "report_bindings": [
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "Actual minimize paired-source/intermediate-pass corpus and all constants remain unexecuted; P127 remains open."
+    },
+    {
+      "id": "MR06",
+      "issue": 3873,
+      "question_title": "Mechanized representation laws for zerocopy contracts",
+      "original_question_sha256": "31275e94e878ce9367c4d6312263b4fef60c27c751a89f446949d372cf9fd441",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Mechanized owned codec/copy laws retain initialization/provenance/validity hypotheses. Actual core execution refutes generic enum roundtrip under present WF alone: tagger/discriminator coherence is required.",
+      "report_bindings": [
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No universal scalar/array/enum/union law over full MiniRust or physical-access interpretation; P131 remains open."
+    },
+    {
+      "id": "MR07",
+      "issue": 3873,
+      "question_title": "Typed copies, byte copies and observations of storage",
+      "original_question_sha256": "e91ecf563525d6038c263363830438f4f1cef968a478854c99a7114bcd46e6ae",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Source rules and actual padding/provenance tests distinguish typed copies, integer rewrites and union chunk preservation. Snapshot-copy controls expose overlap errors; actual short wide-pointer chunk loses metadata.",
+      "report_bindings": [
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No arbitrary typed-to-byte-copy refinement, compiler-produced union counterexample or complete storage-observation theorem."
+    },
+    {
+      "id": "MR08",
+      "issue": 3873,
+      "question_title": "Strict provenance, exposed provenance and aliasing jointly",
+      "original_question_sha256": "52cf3728dbfce3741e1706949e9fd7c75b1986e8fea73120a8e7a2089d3a1f5e",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Address, provenance, exposure and alias permission are separate inputs. Finite tag/address and quantifier witnesses explain why an exposed-provenance choice must retain a permitted continuation and cannot invent authority.",
+      "report_bindings": [
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "Wildcard exactness, all deallocation/reuse paths and a full provenance/alias compatibility theorem remain unproved."
+    },
+    {
+      "id": "MR09",
+      "issue": 3873,
+      "question_title": "Target parameters, numeric semantics and portable claims",
+      "original_question_sha256": "042bd488ceefadf8f914a09cd58b8e5c63150379aa8101307652102c374d95a9",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Target parameters and bounded integer semantics are inventoried; mathematical32/64 little/big-endian controls are distinguished from real ARM64/wasm execution.32 numeric/layout cases pass on each real target; FP rules are explicitly outside MiniRust's type fragment.",
+      "report_bindings": [
+        {
+          "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No big-endian Rust run, full FP MiniRust extension or all-target numeric/layout theorem."
+    },
+    {
+      "id": "MR10",
+      "issue": 3873,
+      "question_title": "Dynamic layout, DSTs, vtables and validity",
+      "original_question_sha256": "ef260f182ea0f02b5d2c357111c29e200ca4e5bc2d1c63c8c7ad08e23cd3fb18",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Metadata, dynamic layout, referent validity and retag masks are separate. Oversized/ZST/wrong-trait controls, niche lowering and the actual union-metadata consequence expose concrete supplied invariants.",
+      "report_bindings": [
+        {
+          "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete recursive-DST/niche/mask invariant or compiler-layout/vtable extraction theorem."
+    },
+    {
+      "id": "MR11",
+      "issue": 3873,
+      "question_title": "Correspondence among the Tree Borrows calculus, MiniRust and Miri",
+      "original_question_sha256": "0bfbc5cb5aadc6130be0e3bd4a6968621914b485ae89fbe31fa7aa6574425aac",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Owned transcriptions of pinned per-location MiniRust/Miri permission presentations agree on81915 bounded traces after normalization. Retag, protector release, masks, wildcard and race hooks are compared operation by operation with explicit differences.",
+      "report_bindings": [
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No unbounded tree/memory simulation or full upstream-interpreter equivalence."
+    },
+    {
+      "id": "MR12",
+      "issue": 3873,
+      "question_title": "An Iris program logic for byte- and alias-sensitive MiniRust memory",
+      "original_question_sha256": "6a4b7f136fa596eb73217905143029839b3af8a13101e87af9e9370ce43c2763",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "The λTB thesis's simplified Iris resources/adequacy and lateral separation are assessed against byte/full-protector MiniRust obligations; handler adequacy shows where coupled state invariants belong.",
+      "report_bindings": [
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "modular-semantics-state-alias-effects-popl2025",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "Exact inaccessible λTB source closure and a full byte/alias MiniRust lifetime logic are not established; split/recombine, recursive-reborrow and callback proof ports remain unperformed."
+    },
+    {
+      "id": "MR13",
+      "issue": 3873,
+      "question_title": "Protectors, `UnsafeCell` and field-sensitive invariants",
+      "original_question_sha256": "11b9eb5b6cc5e400a4245f90e85058800cfb2305e33d0df76852e064afa3c333",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Field masks, freeze/unpin/protector settings, exit effects and allowed retained Cell aliases constrain resource contracts. Computed masks and safe callback/returned-view controls distinguish premature recovery from legal sharing.",
+      "report_bindings": [
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No Iris protector/callback theorem, arbitrary nested masks or full exceptional permission restoration proof."
+    },
+    {
+      "id": "MR14",
+      "issue": 3873,
+      "question_title": "Composing byte-level race detection with alias-sensitive memory",
+      "original_question_sha256": "e4362745ca14819df303ed048550e14883c265cd3a57bbad54b91a679cf09f84",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Current race access lists, previous-step/all-schedules distinction, implicit alias-event hooks and access widths are inspected.6400 range pairs expose198 empty-range formula disagreements without claiming a universal race bug.",
+      "report_bindings": [
+        {
+          "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No alias-sensitive race completeness/commutation or machine adequacy theorem."
+    },
+    {
+      "id": "MR15",
+      "issue": 3873,
+      "question_title": "Extending toward relaxed memory",
+      "original_question_sha256": "614fe6107a71bdcc6f332da7221147c51f72a7d72a5e05fd8c3ff0fadb93da58",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "ORC11/Iris view-sensitive ownership and adequacy scope are compared with MiniRust SC atomicity; message-passing/view controls show the synchronization premise. Named hardware/mapping research separately constrains a future extension.",
+      "report_bindings": [
+        {
+          "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "assembly-atomic-fence-language-mappings-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No byte/alias relaxed-memory logic, native reclamation proof or automatic transfer of C11 mapping theorems to Rust."
+    },
+    {
+      "id": "MR16",
+      "issue": 3873,
+      "question_title": "Unwinding, drop elaboration and resource restoration",
+      "original_question_sha256": "76aeab11cf061020074ed1a0e5f4153ee10632f6999b66919554fe48a1ee20b6",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual core unwind/end-call operations and the concrete Drop importer omission are compared with safe cleanup/MIR traces. Thesis scalar proof and unfinished tuple extension are kept distinct; platform unwinding is a separate interface.",
+      "report_bindings": [
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-assembly-platform-unwind-contracts-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete source drop/unwind reflection, double-panic/runtime fidelity or protected-resource restoration theorem."
+    },
+    {
+      "id": "MR17",
+      "issue": 3873,
+      "question_title": "Intrinsics, allocation and standard-library/environment contracts",
+      "original_question_sha256": "2f6a072df31c0cf49051e322c14c50a222236e91ab6d72f5a7e7b4653a1c3d0d",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual intrinsic/allocation inventory and current read/write-unaligned, copy and realloc source routes are inspected. Failure/zero-size/capability and overlap controls retain implementation/environment premises.",
+      "report_bindings": [
+        {
+          "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No actual minimize of every library route, physical OOM/foreign callback or verified allocator/runtime contract."
+    },
+    {
+      "id": "MR18",
+      "issue": 3873,
+      "question_title": "Linking functional safe-code proofs with spatial unsafe-code proofs",
+      "original_question_sha256": "800e01f2103f547aeab3e95eebf5e8146bfaad75a645ca56bf6cd1224461a40e",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Functional parser/view/callback examples and checked abstraction counterexamples identify the spatial facts a value contract may forget. Aeneas/Charon, Radium and other corpus results are compared specifically at that interface.",
+      "report_bindings": [
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No automatic transport of an existing functional or RustBelt proof to a full MiniRust unsafe API theorem."
+    },
+    {
+      "id": "MR19",
+      "issue": 3873,
+      "question_title": "Modular semantics and reusable proof components",
+      "original_question_sha256": "9eb86af9dbd6936991c89a0269c159adb99bf2604d43465a4b0b8f4ea14bf044",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual ITree/Iris handler, translation and operational adequacy interfaces are inspected. A checked finite-trace joint byte/permission handler agrees with a direct model; omitting a read's alias effect is refuted.",
+      "report_bindings": [
+        {
+          "package": "modular-semantics-state-alias-effects-popl2025",
+          "section": "Findings"
+        },
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No MiniRust handler instantiation, full concurrent composition or fresh Rocq artifact replay."
+    },
+    {
+      "id": "MR20",
+      "issue": 3873,
+      "question_title": "Disagreement-driven validation and evidence classification",
+      "original_question_sha256": "904e256909f4069a71fd310988e0fbb60b344f6d1f3582a4a843a9d01b058002",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Real pinned generation/core execution,23 upstream tests and8 owned core cases are retained with compiler-incompatibility/tool-availability/IllFormed/Ub/MachineStop classes. Independent package-only replay reproduces all8 cases.",
+      "report_bindings": [
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No actual Miri differential run, universal allocation-choice safety or minimize/source correspondence."
+    },
+    {
+      "id": "MR21",
+      "issue": 3873,
+      "question_title": "Static semantics, elaboration and the full Rust feature boundary",
+      "original_question_sha256": "22793598ce494464513791251cdb0817bf7c1b655000d9f5d5238115b7c31af6",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual a-mir-formality checking/normalization/codegen and trusted-body/FnDef boundaries are examined. Configured method, GAT/generic, macro, pattern/temporary, callback and manual Future controls expose elaboration/owner obligations.",
+      "report_bindings": [
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No execution or adequacy of formality itself, complete surface desugaring, generated async or source-item census."
+    },
+    {
+      "id": "MR22",
+      "issue": 3873,
+      "question_title": "Open libraries, unsafe traits and contextual API soundness",
+      "original_question_sha256": "e075f2b5c6a63f7f899890a34451caaf8f284bb8ef7a39047fbbcb8f68e4f203",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Safe-client/library/unsafe-trait quantifiers are explicit. Wrong-instance, weakened Boolean law/domain, Vec-initialization and callback/return-resource controls show why implementation premises and public domains must be independent.",
+      "report_bindings": [
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No full Vec/zerocopy/contextual soundness theorem, arbitrary foreign/reentrant clients or proof port."
+    },
+    {
+      "id": "MR23",
+      "issue": 3873,
+      "question_title": "MiniRust memory at an ABI or assembly boundary",
+      "original_question_sha256": "bcde490821c1186fc017aff06a6c16c95347b3de7a780af7953805910e1edad9",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Concrete bytes, entry/return placements and logical allocation/borrow resources are related as separate obligations. Same-value/dead-resource and final-frame/trace witnesses refute byte-only composition; actual leaf frames provide one small operational endpoint.",
+      "report_bindings": [
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-inline-assembly-contracts-2dafab9",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete MiniRust↔Kraken ABI/resource/context relation or pointer-return proof."
+    },
+    {
+      "id": "MR24",
+      "issue": 3873,
+      "question_title": "Adoption alternatives, internal TCB and shared benchmark decisions",
+      "original_question_sha256": "e7bc42c7fe0ce3ba5be23dbd5069b1687652303c5844a2869b9b38814ff6a5d4",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Five adoption routes are compared by exact available artifacts, missing arrows, internal trust and measured versus unmeasured costs. Common byte/alias/control workloads and rejection controls define a conditional evaluation plan.",
+      "report_bindings": [
+        {
+          "package": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "modular-semantics-state-alias-effects-popl2025",
+          "section": "Findings"
+        },
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No architecture selected or matched full-verifier performance ranking; R095/P127/P131 stay separate."
+    },
+    {
+      "id": "AS01",
+      "issue": 3874,
+      "question_title": "Kraken capability, semantic coverage and theorem closure",
+      "original_question_sha256": "dd57a62c5a5479fe875c4ce4f377f0b6edf97be1018c8c6642b8953d70f9ee34",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Both architecture states, syntax, access interpretation, selected proof statements and closures are inventoried. Closed, admitted and native-verifier-axiom examples are distinguished; fresh whole-state leaf results exercise actual models.",
+      "report_bindings": [
+        {
+          "package": "kraken-selected-theorem-closure-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No ISA-wide coverage/fidelity theorem or proof on the requested Kraken nightly."
+    },
+    {
+      "id": "AS02",
+      "issue": 3874,
+      "question_title": "Assembly source → checked AST fidelity",
+      "original_question_sha256": "87781de8cf778db6c46cc77a2bccf76c67980d0cac375dca1617716f0a40b2f9",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual X64 direct/file parsing and directive erasure are executed; data/alignment changes can disappear from the AST. Selected AArch64 instruction parses are retained separately from native output.",
+      "report_bindings": [
+        {
+          "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No general macro/preprocessor/printer fidelity or complete arbitrary-assembly importer."
+    },
+    {
+      "id": "AS03",
+      "issue": 3874,
+      "question_title": "AST, encoding, decoding and executable layout certificates",
+      "original_question_sha256": "ccad813062f9b43de1d3c10ba049fa84bcf7241aa0ad225212c932ebaed86206",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Externally supplied layout, zero sizes, duplicate/missing labels and address wrap are probed. Tiny manufactured importer and real MachO/ELF binding controls separate bytes, decoded claim, sizes and symbol identity.",
+      "report_bindings": [
+        {
+          "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No universal Kraken AST/decoder/layout theorem or general relocation-aware loader."
+    },
+    {
+      "id": "AS04",
+      "issue": 3874,
+      "question_title": "Kraken instructions versus authoritative/reference ISA semantics",
+      "original_question_sha256": "e31b6c21508cdde815ec31e144570689db31e8f1cc4cccbeda8a3d789b787939",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Seven actual AArch64 forms agree with an independent arithmetic/byte oracle and nativeO0/O3 on1290 cases includingNZCV;8 wrong-rule discriminators and full concrete model frame checks pass.",
+      "report_bindings": [
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-selected-theorem-closure-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No universal ISA simulation, independent formal ASL/Sail execution, X64/fault/SIMD correspondence or all overlap ASTs."
+    },
+    {
+      "id": "AS05",
+      "issue": 3874,
+      "question_title": "Complete access traces, permission checks and frame preservation",
+      "original_question_sha256": "ffaeab98f0a0eec2e5a8c39d0ed4ee39a7a9ad6656e24b81ac2fdbb1ed0c2098",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Default All ignores authority; stricter interpretation and actual leaf iff require complete RET read/execute ranges. Vector request-width mismatch and final-frame countermodels distinguish map membership, access trace and logical authority.",
+      "report_bindings": [
+        {
+          "package": "kraken-selected-theorem-closure-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No generic producer trace adequacy, full vector repair or Rust/page permission relation."
+    },
+    {
+      "id": "AS06",
+      "issue": 3874,
+      "question_title": "Rust values, validity and register/byte representations",
+      "original_question_sha256": "285bd4cff272822bdb748f7ec3fe3282cb31bf6c72bc4bc1a5d3b5a1da412872",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Representation validity, initialization, padding, niches and discriminants are separate from ABI placement, as the codec/core/primitive controls demonstrate. Rust type/layout, FnAbi passing/attributes, platform conventions and inline/naked entry forms are separated. Actual signatures and four-target C witnesses expose hidden results, split values and platform register differences.",
+      "report_bindings": [
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-inline-assembly-contracts-2dafab9",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No verified ABI exporter/classifier or compiler/source-to-machine theorem."
+    },
+    {
+      "id": "AS07",
+      "issue": 3874,
+      "question_title": "Rust allocation, provenance and borrows versus machine addresses",
+      "original_question_sha256": "9bbcb46826917f6bc7e5c490ba08129500ea70082d9b0d9d992f01f91a2a36f1",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Allocation liveness, provenance, aliasing, initialization and logical resources cannot be reconstructed from equal numeric bytes. Checked negative states and actual map-cell/footprint proofs identify the relation needed for Rust continuation safety.",
+      "report_bindings": [
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-representation-copy-provenance-laws-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete live-region/alias resource interpretation or pointer-returning assembly theorem."
+    },
+    {
+      "id": "AS08",
+      "issue": 3874,
+      "question_title": "Inline operands, register allocation and overlap",
+      "original_question_sha256": "0295299ce67b3f1c64701ba5edc99950cbe869143ff92f49770d08e065347bfd",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "A checked owned allocation/frame theorem and early-overwrite counterexample distinguish universal template correctness from a fixed emitted assignment. Actual generated inline blocks include documented legal overlap.",
+      "report_bindings": [
+        {
+          "package": "rust-inline-assembly-contracts-2dafab9",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete rustc allocation theorem or exhaustive target register/subregister contract formalization."
+    },
+    {
+      "id": "AS09",
+      "issue": 3874,
+      "question_title": "Proving compiler-facing inline effect options",
+      "original_question_sha256": "2a148ea8a3f34daef8192a0681c8b3cb2df0ab46fdef36d6c1de6bc239c9d4a3",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Normative effect promises become distinct access/determinism/flags/stack/control obligations. False nomem/preserves_flags specimens compile only; trace/frame and permission controls demonstrate missing guarantees.",
+      "report_bindings": [
+        {
+          "package": "rust-inline-assembly-contracts-2dafab9",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-selected-theorem-closure-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        },
+        {
+          "package": "assembly-atomic-fence-language-mappings-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No production checker for every option, implicit state or synchronizing assembly block."
+    },
+    {
+      "id": "AS10",
+      "issue": 3874,
+      "question_title": "Inline stack, exits and surrounding continuations",
+      "original_question_sha256": "2ed4df98c683d0716aba54ca39c34a2ee4fd4bd3c60ab96a5bd76aa92eded40e",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Compiler-managed continuations, scratch stack and exits differ from function-call ABIs. Normative label/nonreturn/unwind/motion rules and checked actual return frames state necessary continuation obligations.",
+      "report_bindings": [
+        {
+          "package": "rust-inline-assembly-contracts-2dafab9",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No general inline-label/context-switch/duplication theorem or all proposed wrong-exit native tests."
+    },
+    {
+      "id": "AS11",
+      "issue": 3874,
+      "question_title": "Whole-function contracts for named platform ABIs",
+      "original_question_sha256": "4d8ad61f790ee579703ff67356cac78a8cb9b6effb15179a8800ac58cb8e0cd4",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Named platform conventions, stack/return witnesses and full modeled frames are studied. Actual X64 hidden-clobber/wrong-return/short-stack negatives and ARM64 whole-state leaf proofs distinguish call/ret semantics from ABI conformance.",
+      "report_bindings": [
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-assembly-platform-unwind-contracts-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No all-platform vector/vararg/shadow-space classification or formal complete ABI relation."
+    },
+    {
+      "id": "AS12",
+      "issue": 3874,
+      "question_title": "Native Rust ABI, `FnAbi` witnesses and wrapper alternatives",
+      "original_question_sha256": "7832dd6035406a1ea72cd091988299812f290aeb5e7bc334555105ece19f1a7c",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Native Rust instability and naked restrictions motivate exact FnAbi/configuration/instance witnesses or C wrappers. Actual pair/triple/slice/unit signatures and wrong-instance controls expose omitted hidden facts.",
+      "report_bindings": [
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No independently checked native-Rust FnAbi exporter or universal ABI stability claim."
+    },
+    {
+      "id": "AS13",
+      "issue": 3874,
+      "question_title": "Verified callees, callbacks, panic and unwinding",
+      "original_question_sha256": "76306a04a78995944beb4de8d9d5ce65874a236277a40ccca819fb33486b72b2",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Rust ordinary-inline unwind restrictions, permitted whole-function ABI exits, callbacks/reentrancy and concrete platform unwind metadata are examined separately. Cleanup traces and metadata/resource controls retain all-exit obligations.",
+      "report_bindings": [
+        {
+          "package": "rust-assembly-platform-unwind-contracts-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete verified callee/callback chain, real platform unwinder proof or arbitrary forced-unwind/nonlocal-jump support."
+    },
+    {
+      "id": "AS14",
+      "issue": 3874,
+      "question_title": "What “behaviorally identical to pure Rust” must mean",
+      "original_question_sha256": "499b0a4d15dba3f676239cafd36c2c7a16239239ec6ef0a611e279416f75523c",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "A common exact wrapping specification yields equality only under a shared domain/observation mapping. Checked loose-spec, overflow-policy and resource counterexamples supplement actual arithmetic comparisons; refinement directions are explicit.",
+      "report_bindings": [
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No complete bidirectional Rust/machine contextual equivalence, divergence or source-safety proof."
+    },
+    {
+      "id": "AS15",
+      "issue": 3874,
+      "question_title": "Linking an assembly certificate into Anneal's Rust semantics",
+      "original_question_sha256": "15b4d5122b4b8f88750de2dc81e1de41735dea530a206629c2233a8f9af729b4",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "DimSum and semantic-type approaches identify entry, prefix safety, execution correspondence and context closure. A generic checked composition theorem exposes its hypotheses rather than instantiating them invisibly.",
+      "report_bindings": [
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-static-judgments-and-open-contract-controls-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No ready MiniRust/Kraken mixed-language semantics, full callback relation or arbitrary safe-context theorem."
+    },
+    {
+      "id": "AS16",
+      "issue": 3874,
+      "question_title": "Object files, linking, loading and deployed-code identity",
+      "original_question_sha256": "803d932f36c3b6e7d07be2770d8ab76c45ef5c1849eda2f92cdaf681fb47b0a5",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual final MachO symbol ranges and pinned ELF literal bytes are bound; one-byte/wrong-symbol/function/target/truncation and actual ADD→SUB stale-claim controls reject mismatches. Linker/LTO/relocation/dispatch mechanisms are explicitly analyzed.",
+      "report_bindings": [
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-function-abi-witnesses-b940084",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No verified general decoder/loader, relocation-parametric proof, dispatch-branch or live-patching deployment theorem."
+    },
+    {
+      "id": "AS17",
+      "issue": 3874,
+      "question_title": "Kraken fragment/WP/frame infrastructure and upstream evolution",
+      "original_question_sha256": "da43204fe76aecfb49a306af1aa7c3dac6cbf7d6916ff54799d645d3b3ddd3c6",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Baseline eventuality/separation mechanisms and live PR-specific scopes are distinguished. Fixed host identity/entry, two actual step1 composition and exact permission iff are checked for a concrete embedding.",
+      "report_bindings": [
+        {
+          "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No arbitrary-host/escape/overlap/loop/relocation proof or assumed adoption of open PR heads."
+    },
+    {
+      "id": "AS18",
+      "issue": 3874,
+      "question_title": "Sail and generated ISA definitions, especially Lean",
+      "original_question_sha256": "800486bc4a21ba143d402fa57165c43267566708cd13583e76fb364eccf3e141",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Actual Sail Lean rewrite/support/configuration interfaces are inspected, including FakeReal selection and effects. Direct generated-model versus Kraken/reference refinement routes have separate trust obligations.",
+      "report_bindings": [
+        {
+          "package": "sail-islaris-compcert-access-foundations",
+          "section": "Findings"
+        },
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No generated ISA import/build or selected Sail proof; no assumption that generated syntax proves backend/hardware correctness."
+    },
+    {
+      "id": "AS19",
+      "issue": 3874,
+      "question_title": "Isla/Islaris and Iris reasoning over realistic machine code",
+      "original_question_sha256": "955b6d015b5200390df111c0119781fb181223117bc898621fc59776445cd9af",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Islaris trace adequacy, operational access branches and path coverage are inspected. Published RISC-V optional validation is separated from admitted Arm experimental bridge and trusted basic Isla/SMT path.",
+      "report_bindings": [
+        {
+          "package": "sail-islaris-compcert-access-foundations",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No fresh trace/ISA validation or shared upstream proof port; feasible-path completeness remains a required theorem."
+    },
+    {
+      "id": "AS20",
+      "issue": 3874,
+      "question_title": "Jasmin and verified compilation from an assembly-oriented language",
+      "original_question_sha256": "71fe662b45596a11bd58c068b2126b5b7c13c603fd13c9a2258cbad064e1daa2",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Jasmin's actual formal assembly relation, pre/post/context premises and proved/validated/trusted passes are examined. Controlled source generation closes a different arrow from importing arbitrary assembly.",
+      "report_bindings": [
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No fresh common-program Jasmin port, all-pass closure or final-byte/Rust caller theorem."
+    },
+    {
+      "id": "AS21",
+      "issue": 3874,
+      "question_title": "Vale, F*/Dafny and verified cryptographic assembly",
+      "original_question_sha256": "26ab6619a23c092c4159e031468616bf8a2e9dd3a2f0502794577e30e63e3f00",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Vale procedure/state/specification and backend boundaries are inspected precisely; the selected Dafny64 arithmetic updater rejects heap/stack while MOV uses another supported updater.",
+      "report_bindings": [
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No fresh Vale/Dafny/F* proof, universal backend support or arbitrary Rust inline contract."
+    },
+    {
+      "id": "AS22",
+      "issue": 3874,
+      "question_title": "HOL Light/s2n-bignum: actual bytes, subroutine contracts and access safety",
+      "original_question_sha256": "61d18337dade5a2171fd52bb4cd8ca8128086780b27d31498a83a69e6bbed170",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Selected s2n literal/core/subroutine/Windows statements and frame/access/security distinctions are examined. Actual assembled ELF symbol185 bytes equals the complete proof literal; three identity mutants reject.",
+      "report_bindings": [
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No fresh HOL proof/axiom replay, selected safety theorem or final downstream caller/deployment proof."
+    },
+    {
+      "id": "AS23",
+      "issue": 3874,
+      "question_title": "Other machine-code foundations and lifting/validation techniques",
+      "original_question_sha256": "7812884b9bf9ba06dbe0ada04aeb17d16af8719886d657372d2986920b2d6e06",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "ACL2 decode/views, K rewrite/co-simulation, Bedrock2 phase/call, concrete RISC-V environment, CompCert full-range access and prior HOL lifting/hardware mechanisms are selected for concrete missing arrows.",
+      "report_bindings": [
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "sail-islaris-compcert-access-foundations",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No full cross-prover ports or rankings; original decoder/ISA/Rust-resource and environment assumptions remain explicit."
+    },
+    {
+      "id": "AS24",
+      "issue": 3874,
+      "question_title": "Internal TCB and proof-producing assembly adapters",
+      "original_question_sha256": "3204f13c93094177177426a64a940415612a59b5631e1e757f0895ef3c723d5f",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Kernel axioms, native reduction, semantic definitions, source/byte import, ABI/resources and deployed identity form separate trust classes. Checked proofs and independent mutant families show what an exact consumer must bind.",
+      "report_bindings": [
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        },
+        {
+          "package": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-selected-theorem-closure-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No theorem that a clean axiom list verifies the kernel, semantic model, producer coverage or every malicious input."
+    },
+    {
+      "id": "AS25",
+      "issue": 3874,
+      "question_title": "Atomics, fences and Rust/hardware weak-memory compatibility",
+      "original_question_sha256": "3e1d5bdea26fdb361fc933d8b7c5ab6ce40f0e5e786e9fed81b643d5bc39c026",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Named language/hardware models, actual selected compiler atomic/fence mappings, Rust access/mixed-width rules and compiler-facing asm effects are compared; finite litmus evidence remains separately labeled.",
+      "report_bindings": [
+        {
+          "package": "assembly-atomic-fence-language-mappings-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+          "section": "Findings"
+        },
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No full Rust/LLVM/hardware mapping proof, actual herd invocation or concurrent assembly wrapper verification."
+    },
+    {
+      "id": "AS26",
+      "issue": 3874,
+      "question_title": "Constant-time and other security properties beyond functional equivalence",
+      "original_question_sha256": "a8c1e568e82ef136c660e13a8fdb2a50cb03885e04214c92f9aade37f66db5a7",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Two-run observation models, s2n security analysis and selected Jasmin/Vale comparative contract/code-generation scopes distinguish functional equality, access safety and architectural constant-time. Checked same-result/address-leak witnesses and vendor timing limits preserve the security domain.",
+      "report_bindings": [
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-machine-resource-linking-and-equivalence",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No physical side-channel/speculation/fault-injection proof or constant-time claim for the native pilot."
+    },
+    {
+      "id": "AS27",
+      "issue": 3874,
+      "question_title": "Platform and privileged extensions: explicit scope and environment contracts",
+      "original_question_sha256": "0a530a7d120b699e0d524c496813721c6662aba689820d0ac9a9846c0cb5a16a",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "Interrupt/device/TLS/VM/control-flow/security extensions are conditional environment obligations. Actual Kraken nonmemory effect and owned device response, concrete MinimalMMIO restrictions and platform unwind rules make omissions consequential.",
+      "report_bindings": [
+        {
+          "package": "assembly-tcb-concurrency-security-platform-frontiers",
+          "section": "Findings"
+        },
+        {
+          "package": "sail-islaris-compcert-access-foundations",
+          "section": "Findings"
+        },
+        {
+          "package": "machine-code-foundations-and-environment-selection-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "rust-assembly-platform-unwind-contracts-2026",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No privileged/device/hardware environment implementation theorem, full interruption/reentry or Rust ownership transfer."
+    },
+    {
+      "id": "AS28",
+      "issue": 3874,
+      "question_title": "Shared pilot corpus, costs and conditional architecture decision",
+      "original_question_sha256": "84d31ac741424c4f9b0a286f52bc4b5819e9c04016e323e0eae09b24107de1f2",
+      "research_result": "bounded investigation with explicit evidence and remaining scope",
+      "answered_scope": "A shared evidence matrix aligns wrapping arithmetic/carry/REV, bounded bytes, real zerocopy target cases, frames/accesses and actual byte controls. Generation/checking/build/binding costs and controlled source/configuration invalidation are separated.",
+      "report_bindings": [
+        {
+          "package": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-rust-assembly-pilot-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+          "section": "Findings"
+        },
+        {
+          "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+          "section": "Findings"
+        },
+        {
+          "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+          "section": "Findings"
+        },
+        {
+          "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+          "section": "Findings"
+        }
+      ],
+      "unperformed_or_unestablished": "No all-case multiply/copy/pointer/helper/SIMD proof suite or matched whole-system proof-generation/repair benchmark across every backend."
+    }
+  ]
+}

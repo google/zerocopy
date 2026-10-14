@@ -1,0 +1,109 @@
+{
+  "observed_at": "2026-10-14",
+  "git_sources": [
+    "herd/herdtools7@9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "weakmemory/imm@4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "rust-lang/rust@b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "rust-lang/reference@2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1"
+  ],
+  "papers": [
+    {
+      "title": "x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors",
+      "version": "CACM 53(7), July 2010",
+      "url": "https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf",
+      "locators": [
+        "intended scope, printed p2",
+        "section3.1 FIFO buffers/MFENCE/locked instructions",
+        "HOL4 operational/axiomatic equivalence"
+      ]
+    },
+    {
+      "title": "Mathematizing C++ Concurrency",
+      "version": "POPL2011",
+      "url": "https://www.cl.cam.ac.uk/~pes20/cpp/popl085ap-sewell.pdf",
+      "locators": [
+        "section5",
+        "Theorem3",
+        "candidate-execution mapping and proof outline, PDFpp9\u201310",
+        "SC load/store implementation discussion"
+      ]
+    },
+    {
+      "title": "Simplifying ARM Concurrency",
+      "version": "POPL2018, DOI10.1145/3158107",
+      "url": "https://www.cl.cam.ac.uk/~pes20/armv8-mca/armv8-mca-draft.pdf",
+      "locators": [
+        "PDFp3 Caveats",
+        "section7 axiomatic model",
+        "section8 equivalence"
+      ]
+    },
+    {
+      "title": "Simplifying ARM Concurrency errata",
+      "url": "https://www.cl.cam.ac.uk/~pes20/armv8-mca/errata.html",
+      "locators": [
+        "coherence footprint correction",
+        "load/store exclusive pairing/success text",
+        "fixed-write text correction"
+      ]
+    },
+    {
+      "title": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models",
+      "version": "POPL2019, Article69, DOI10.1145/3290382",
+      "url": "https://plv.mpi-sws.org/imm/Podkopaev-al-POPL19_full.pdf",
+      "locators": [
+        "section4.2 Figure5/Theorem4.5",
+        "section5 C11/RC11 without non-atomic and SC accesses",
+        "strong RMW extra ld fence"
+      ]
+    },
+    {
+      "title": "C/C++11 mappings to processors",
+      "url": "https://www.cl.cam.ac.uk/~pes20/cpp/cpp0xmappings.html",
+      "locators": [
+        "opening disclaimer discussion/nondefinitive",
+        "x86 table + locked identity alternate and interworking caveat",
+        "AArch64 table"
+      ]
+    },
+    {
+      "title": "C++ Working Draft",
+      "version": "N4868,2020-10-18",
+      "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4868.pdf",
+      "locators": [
+        "6.9.2.2 intro.races, PDFpp90\u201393",
+        "31.4 atomics.order, PDFpp1551\u20131552",
+        "31.11 atomics.fences, PDFpp1577\u20131578"
+      ]
+    }
+  ],
+  "not_run": [
+    "herd7",
+    "rmem",
+    "Coq/Rocq",
+    "native or emulated concurrent witnesses"
+  ],
+  "ordinary_read_errors": [
+    {
+      "repository": "weakmemory/imm",
+      "path": "LICENSE",
+      "status": "404; corrected to tree-listed LICENSE.md"
+    },
+    {
+      "repository": "weakmemory/imm",
+      "path": "src/imm/Events.v",
+      "status": "404; corrected to tree-listed src/basic/Events.v"
+    }
+  ],
+  "artifact_scope": "Primary paper URLs/revision identifiers and locators retained; no PDF byte hashes or standalone archival snapshots claimed.",
+  "copy_validation_incident": {
+    "status": "resolved-before-freeze",
+    "file": "primary/llvm/llvm-project/llvm/LICENSE.TXT",
+    "cause": "trimEnd removed one of two terminal newlines",
+    "observed_bytes": 15140,
+    "expected_bytes": 15141,
+    "restored_git_blob": "fa6ac540007032cbd0ec772a1c72e6cb5527a4fe",
+    "scope": "owned evidence copy only; no compiler/model/proof executed from source"
+  }
+}

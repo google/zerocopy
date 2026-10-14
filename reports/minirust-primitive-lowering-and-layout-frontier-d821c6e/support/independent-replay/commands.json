@@ -1,0 +1,132 @@
+[
+  {
+    "name": "python-version",
+    "argv": [
+      "python3",
+      "--version"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "rust-version",
+    "argv": [
+      "rustc",
+      "-vV"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "node-version",
+    "argv": [
+      "node",
+      "--version"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "node-runtime",
+    "argv": [
+      "node",
+      "-p",
+      "JSON.stringify(process.versions)"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "native-cfg",
+    "argv": [
+      "rustc",
+      "--print",
+      "cfg"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "owned-model",
+    "argv": [
+      "python3",
+      "primitive_model.py"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "native-build",
+    "argv": [
+      "rustc",
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "primitive.rs",
+      "-o",
+      "runs/primitive-native"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "native-run",
+    "argv": [
+      "./runs/primitive-native"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wasm-cfg",
+    "argv": [
+      "rustc",
+      "--print",
+      "cfg",
+      "--target",
+      "wasm32-unknown-unknown"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "rust-sysroot",
+    "argv": [
+      "rustc",
+      "--print",
+      "sysroot"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wasm-linker-version",
+    "argv": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/rust-lld",
+      "-flavor",
+      "wasm",
+      "--version"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wasm-build",
+    "argv": [
+      "rustc",
+      "--edition=2024",
+      "--target",
+      "wasm32-unknown-unknown",
+      "--sysroot=runs/sysroot",
+      "--crate-type=cdylib",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "primitive.rs",
+      "-o",
+      "runs/primitive.wasm"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wasm-run",
+    "argv": [
+      "node",
+      "primitive-check.mjs",
+      "runs/primitive.wasm"
+    ],
+    "exit": 0
+  }
+]

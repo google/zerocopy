@@ -1,0 +1,225 @@
+{
+  "status": "passed",
+  "observation_date": "2026-10-14",
+  "commands": [
+    {
+      "argv": [
+        "lean",
+        "--version"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.306864125,
+      "log": "lean-version.log",
+      "log_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--version",
+        "--verbose"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.27513329200000003,
+      "log": "rustc-version.log",
+      "log_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+    },
+    {
+      "argv": [
+        "lean",
+        "--run",
+        "InstructionEval.lean",
+        "--describe"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 6.540906208,
+      "log": "parsed-programs.log",
+      "log_sha256": "a68efc67bc552cc69cbc547e1bc6302b2974cd1811753ca08f2c0d3aa9289dfd",
+      "LEAN_PATH": "<pinned Kraken build library>"
+    },
+    {
+      "argv": [
+        "lean",
+        "--run",
+        "InstructionEval.lean",
+        "cases.tsv"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 1.4658064999999993,
+      "log": "kraken.tsv",
+      "log_sha256": "9962a3b19b153fd776679718fcb3a7f3aea897902d2c1a6decc8feb46a171c90",
+      "LEAN_PATH": "<pinned Kraken build library>"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=0",
+        "--emit",
+        "asm=<artifact-dir>/native-O0.s,link=<artifact-dir>/native-O0",
+        "native.rs"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.5359855840000005,
+      "log": "native-O0-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "<artifact-dir>/native-O0",
+        "cases.tsv"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.03167149999999985,
+      "log": "native-O0.tsv",
+      "log_sha256": "9962a3b19b153fd776679718fcb3a7f3aea897902d2c1a6decc8feb46a171c90"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=3",
+        "--emit",
+        "asm=<artifact-dir>/native-O3.s,link=<artifact-dir>/native-O3",
+        "native.rs"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.31556974999999987,
+      "log": "native-O3-build.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "<artifact-dir>/native-O3",
+        "cases.tsv"
+      ],
+      "cwd": ".",
+      "exit": 0,
+      "elapsed_seconds": 0.02497183299999861,
+      "log": "native-O3.tsv",
+      "log_sha256": "9962a3b19b153fd776679718fcb3a7f3aea897902d2c1a6decc8feb46a171c90"
+    }
+  ],
+  "kraken_compared_before_native": true,
+  "case_count": 1290,
+  "per_op": {
+    "adds64": 225,
+    "adcs64": 450,
+    "add32": 225,
+    "lslv64": 180,
+    "lslv32": 180,
+    "rev64": 15,
+    "rev32": 15
+  },
+  "nzcv_values": {
+    "adds64": [
+      0,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "adcs64": [
+      0,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "add32": [
+      6
+    ],
+    "lslv64": [
+      6
+    ],
+    "lslv32": [
+      6
+    ],
+    "rev64": [
+      6
+    ],
+    "rev32": [
+      6
+    ]
+  },
+  "native_builds": [
+    {
+      "opt_level": 0,
+      "binary_sha256": "feba638eccd341dbbfefd4efc414f5146b37d4c2ec91ad3419b97baacbd49897",
+      "assembly_sha256": "202e407ba56617104571433f0bcc149f7f027a92f01ec5a09fa56b17a33e9b4d",
+      "asm_blocks": 7,
+      "case_count": 1290,
+      "all_equal_oracle_and_kraken": true
+    },
+    {
+      "opt_level": 3,
+      "binary_sha256": "c77df97d344005cb8d59dd50bc3784ff28c2ef62efa972d441fa80610e510c30",
+      "assembly_sha256": "135cd0015910fb4fb07e615b658791384cec350c635181ced0ab99cc71f23ba5",
+      "asm_blocks": 7,
+      "case_count": 1290,
+      "all_equal_oracle_and_kraken": true
+    }
+  ],
+  "negative_control_count": 8,
+  "input_edges": [
+    0,
+    1,
+    2,
+    255,
+    256,
+    2147483647,
+    2147483648,
+    4294967295,
+    4294967296,
+    9223372036854775807,
+    9223372036854775808,
+    18446744073709551614,
+    18446744073709551615,
+    81985529216486895,
+    9295148697369326404
+  ],
+  "shift_counts": [
+    0,
+    1,
+    7,
+    31,
+    32,
+    33,
+    63,
+    64,
+    65,
+    127,
+    128,
+    18446744073709551615
+  ],
+  "cases_sha256": "f7ddbe98dcdf40f93e8c654e1fcad32b54eb1befd63b26736dbd9beb1ebb19f5",
+  "oracle_sha256": "9962a3b19b153fd776679718fcb3a7f3aea897902d2c1a6decc8feb46a171c90",
+  "frame_check": "Kraken equality to initial full data with only X0/status replacements; PC4/one exec[0,4)",
+  "environment": {
+    "host": "arm64",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "lean": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1"
+  },
+  "owned_sources": {
+    "InstructionEval.lean": "699801d81600b12ccf4f1845dd7444a1bd0f243b6a43b1a239e387ab9450e5b8",
+    "native.rs": "6b3da3fecc080bf02a7dc99543ed8f018affedea1ea99bed99d68f5280af30ca",
+    "validate.py": "ac17261926aadebafb7d7ff68633658fe9bd41bb4798309f2dab865420bb1786"
+  }
+}

@@ -1,0 +1,28 @@
+Cross
+(* Utilities for combining co's *)
+
+(* Compute linearisations per locations *)
+let co_locs (pco,wss) =
+  let rec do_locs wss = match wss with
+  || {} -> {}
+  || ws ++ wss ->
+      linearisations(ws,pco) ++ do_locs(wss)
+  end in do_locs(wss)
+
+(* Cross product linearisations *)
+let cross =
+  let rec do_cross (k,ys,oss) = match oss with
+  || {} -> ys ++ k
+  || os ++ oss ->
+       let rec call_rec (k,os) = match os with
+       || {} -> k
+       || o ++ os ->
+           call_rec (do_cross (k,o | ys,oss),os)
+       end in
+       call_rec (k,os)
+  end in
+  fun oss -> do_cross ({},0,oss)
+
+(* Generate co's that extend partial order pco *)
+let generate_orders(s,pco) = cross (co_locs (pco,partition s))
+let generate_cos(pco) = generate_orders(W,pco)

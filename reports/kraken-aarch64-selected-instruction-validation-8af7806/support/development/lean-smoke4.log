@@ -1,0 +1,22 @@
+InstructionEval.lean:11:48: error(lean.unknownIdentifier): Unknown identifier `Program`
+
+Note: A public declaration `Program` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+InstructionEval.lean:23:30: error(lean.unknownIdentifier): Unknown identifier `Effects`
+
+Note: A public declaration `Effects` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+InstructionEval.lean:23:56: error(lean.unknownIdentifier): Unknown identifier `MachineState`
+
+Note: A public declaration `MachineState` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+InstructionEval.lean:40:15: error(lean.unknownIdentifier): Unknown identifier `StatusFlags`
+
+Note: A public declaration `StatusFlags` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+InstructionEval.lean:51:15: error(lean.unknownIdentifier): Unknown identifier `Kraken.Layout`
+
+Note: A public declaration `Kraken.Layout` exists but is imported privately; consider adding `public import Kraken.Layout`.
+InstructionEval.lean:52:16: error(lean.unknownIdentifier): Unknown identifier `MachineData`
+
+Note: A public declaration `MachineData` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+InstructionEval.lean:55:38: error(lean.unknownIdentifier): Unknown identifier `Executable.straightline`
+
+Note: A public declaration `Executable.straightline` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+InstructionEval.lean:58:23: error: `sorryAx` is not a structure

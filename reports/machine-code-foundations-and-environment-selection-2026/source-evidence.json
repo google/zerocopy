@@ -1,0 +1,269 @@
+{
+  "observed_at": "2026-10-14",
+  "identity_policy": "Immutable repository/revision/path plus hashes of exact text returned by GitHub connector. Git blob hash is computed from that text, not independently read Git server blob metadata. No claim of a source build or theorem closure.",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/acl2/acl2/2df7fd8b81f0f36964114b09007c17dc7f8d2d28/books/projects/x86isa/doc.lisp",
+      "bytes_of_returned_text": 23402,
+      "sha256_of_returned_text": "0b4e0b573b8c45e27c10d99cfca73a9fa0793d65f450bd01de4d9dbe81343e62",
+      "git_blob_of_returned_text": "548b3e17a358e8ac4fb81d1caced39b80d730dbc",
+      "coordinates": [
+        {
+          "symbol_or_text": "app-view",
+          "line_starts": [
+            238,
+            240,
+            244,
+            254,
+            261,
+            282,
+            297,
+            313
+          ]
+        },
+        {
+          "symbol_or_text": "application-level view",
+          "line_starts": [
+            220,
+            227,
+            276
+          ]
+        },
+        {
+          "symbol_or_text": "X86ISA_EXEC",
+          "line_starts": [
+            239,
+            242,
+            262,
+            267,
+            274,
+            281,
+            285,
+            290
+          ]
+        },
+        {
+          "symbol_or_text": "ttags",
+          "line_starts": [
+            44,
+            45,
+            46,
+            47,
+            50,
+            52,
+            54,
+            59
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/acl2/acl2/2df7fd8b81f0f36964114b09007c17dc7f8d2d28/books/projects/x86isa/machine/x86.lisp",
+      "bytes_of_returned_text": 37437,
+      "sha256_of_returned_text": "e73251b5ea07fdb524d3530006ed268be9ebe1756d9e85abb29d34d08c006f85",
+      "git_blob_of_returned_text": "3787268a3ef05ce8aa79bee58f4a31a1af1ca63d",
+      "coordinates": [
+        {
+          "symbol_or_text": "app-view",
+          "line_starts": [
+            63,
+            166,
+            172,
+            294,
+            502,
+            541,
+            557,
+            593
+          ]
+        },
+        {
+          "symbol_or_text": "read-tty",
+          "line_starts": [
+            133,
+            152,
+            154,
+            155,
+            200
+          ]
+        },
+        {
+          "symbol_or_text": "write-tty",
+          "line_starts": [
+            123,
+            194
+          ]
+        },
+        {
+          "symbol_or_text": "ttags",
+          "line_starts": [
+            47,
+            48,
+            49
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/kframework/X86-64-semantics/592380aea04820ea11cfa5475b343f0257f2474e/semantics/x86-memory.k",
+      "bytes_of_returned_text": 10282,
+      "sha256_of_returned_text": "0f470d108904587afef051df2d3cc33be0fada6a3330ea5ff283b82e140909c1",
+      "git_blob_of_returned_text": "780f85cb1ff9ae3f7665f23cfcb08bce8b0cc5c6",
+      "coordinates": [
+        {
+          "symbol_or_text": "fromBytes",
+          "line_starts": [
+            170,
+            173,
+            174,
+            176
+          ]
+        },
+        {
+          "symbol_or_text": "getDefaultAbstractValue",
+          "line_starts": [
+            113
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mit-plv/bedrock2/757f17c6083bf8d43b5293a0db545c8d0aa32a13/compiler/src/compiler/Pipeline.v",
+      "bytes_of_returned_text": 37416,
+      "sha256_of_returned_text": "514ccfb970f014443ffc9657022b4cd889d04888d079e5939daff6ceba7c9575",
+      "git_blob_of_returned_text": "06aefd8036a84df20aa55dfcb4244236414cdff1",
+      "coordinates": [
+        {
+          "symbol_or_text": "phase_correct",
+          "line_starts": [
+            79,
+            102,
+            118,
+            119,
+            120,
+            274,
+            342,
+            391
+          ]
+        },
+        {
+          "symbol_or_text": "Lemma compiler_correct",
+          "line_starts": [
+            682,
+            764
+          ]
+        },
+        {
+          "symbol_or_text": "composed_compiler_correct",
+          "line_starts": [
+            634,
+            681,
+            733
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mit-plv/riscv-coq/45dc8dfc17c77aabb433355b9d39edc6bfd429ae/src/riscv/Spec/Machine.v",
+      "bytes_of_returned_text": 5497,
+      "sha256_of_returned_text": "4e060e1dfed5eca5d4bf5da6c40aa00074973377d7fc6fbf85d928d0cb5c9271",
+      "git_blob_of_returned_text": "2a1565a9d479dda4cd18fe76dc5cc9654a79d842",
+      "coordinates": [
+        {
+          "symbol_or_text": "Class RiscvProgram",
+          "line_starts": [
+            35,
+            70
+          ]
+        },
+        {
+          "symbol_or_text": "Class RiscvMachine",
+          "line_starts": [
+            78
+          ]
+        },
+        {
+          "symbol_or_text": "DefaultRiscvState",
+          "line_starts": [
+            136,
+            160
+          ]
+        },
+        {
+          "symbol_or_text": "raiseExceptionWithInfo",
+          "line_starts": [
+            112,
+            126
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mit-plv/riscv-coq/45dc8dfc17c77aabb433355b9d39edc6bfd429ae/src/riscv/Platform/MinimalMMIO.v",
+      "bytes_of_returned_text": 13933,
+      "sha256_of_returned_text": "41cac74deb80a5de531c9f21bb758b4821af04cadcfdfcbc600b50fc9bb455f6",
+      "git_blob_of_returned_text": "a9e35a20992db9c461dd2a97c55e647269de23c3",
+      "coordinates": [
+        {
+          "symbol_or_text": "Definition nonmem_load",
+          "line_starts": [
+            66
+          ]
+        },
+        {
+          "symbol_or_text": "Definition interpret_action",
+          "line_starts": [
+            96
+          ]
+        },
+        {
+          "symbol_or_text": "MMIOSpec",
+          "line_starts": [
+            26,
+            52
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/acl2/acl2/2df7fd8b81f0f36964114b09007c17dc7f8d2d28/README.md",
+      "bytes_of_returned_text": 4114,
+      "sha256_of_returned_text": "24a575b28c23c6adbc4544fe0185e10a92e21b062a0b4d986a26ae1674a57dd0",
+      "git_blob_of_returned_text": "c8ea77bfb9e56d77438d300844e6ae9844dccfc7",
+      "coordinates": []
+    },
+    {
+      "url": "https://raw.githubusercontent.com/kframework/X86-64-semantics/592380aea04820ea11cfa5475b343f0257f2474e/README.md",
+      "bytes_of_returned_text": 5874,
+      "sha256_of_returned_text": "b7c55eace9818b1b8d0a48f57982f10c7b009320dfcaa8249927caea52b690e3",
+      "git_blob_of_returned_text": "bdd0e80f85565f45333051bd4619c9865185b7fd",
+      "coordinates": [
+        {
+          "symbol_or_text": "3155",
+          "line_starts": [
+            6
+          ]
+        },
+        {
+          "symbol_or_text": "45a4243",
+          "line_starts": [
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mit-plv/bedrock2/757f17c6083bf8d43b5293a0db545c8d0aa32a13/README.md",
+      "bytes_of_returned_text": 8393,
+      "sha256_of_returned_text": "87770eee3b9dd59fe0a7421035af82c36c952fb2c50e2f7aa12e053752b6b7de",
+      "git_blob_of_returned_text": "47245e3be54f2a9beec2dcf4fc00be0e753a8500",
+      "coordinates": []
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mit-plv/riscv-coq/45dc8dfc17c77aabb433355b9d39edc6bfd429ae/README.md",
+      "bytes_of_returned_text": 998,
+      "sha256_of_returned_text": "e918b882330f9bb9cac60025f8002b36c5fbb2017c8177fed3813e4719cf467c",
+      "git_blob_of_returned_text": "174fba709e82043780955c44894c876ee146c014",
+      "coordinates": []
+    }
+  ]
+}

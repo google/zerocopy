@@ -1,21 +1,304 @@
 {
-  "candidate_grouping": true,
-  "reports": {
-    "minirust-rustbelt-spatial-linking-obligations-2026": [
-      "MR01",
-      "MR18"
-    ],
-    "specr-import-nondeterminism-source-adequacy-15200eb": [
-      "MR02",
-      "MR03",
-      "MR04",
-      "MR05"
-    ],
-    "minirust-representation-copy-provenance-laws-d821c6e": [
-      "MR06",
-      "MR07",
-      "MR08"
-    ]
-  },
-  "scope": "Published bounded foundation investigations; not full52-question completion"
+  "grouping": "candidate and revisable",
+  "synthesis": "../anneal-minirust-assembly-coverage-and-adoption-synthesis-2026/REPORT.md",
+  "reports": [
+    {
+      "package": "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026",
+      "questions": [
+        "MR24",
+        "AS24",
+        "AS28"
+      ]
+    },
+    {
+      "package": "assembly-atomic-fence-language-mappings-2026",
+      "questions": [
+        "MR15",
+        "AS09",
+        "AS25"
+      ]
+    },
+    {
+      "package": "assembly-tcb-concurrency-security-platform-frontiers",
+      "questions": [
+        "MR24",
+        "AS09",
+        "AS24",
+        "AS25",
+        "AS26",
+        "AS27"
+      ]
+    },
+    {
+      "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+      "questions": [
+        "AS03",
+        "AS05",
+        "AS16",
+        "AS20",
+        "AS21",
+        "AS22",
+        "AS23",
+        "AS26",
+        "AS28"
+      ]
+    },
+    {
+      "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+      "questions": [
+        "AS01",
+        "AS02",
+        "AS04",
+        "AS08",
+        "AS14",
+        "AS18",
+        "AS28"
+      ]
+    },
+    {
+      "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+      "questions": [
+        "AS02",
+        "AS03",
+        "AS16",
+        "AS17"
+      ]
+    },
+    {
+      "package": "kraken-rust-assembly-pilot-8af7806",
+      "questions": [
+        "MR23",
+        "AS01",
+        "AS03",
+        "AS06",
+        "AS08",
+        "AS10",
+        "AS11",
+        "AS12",
+        "AS14",
+        "AS16",
+        "AS28"
+      ]
+    },
+    {
+      "package": "kraken-selected-theorem-closure-8af7806",
+      "questions": [
+        "AS01",
+        "AS04",
+        "AS05",
+        "AS09",
+        "AS24"
+      ]
+    },
+    {
+      "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+      "questions": [
+        "MR23",
+        "AS01",
+        "AS04",
+        "AS05",
+        "AS07",
+        "AS11",
+        "AS14",
+        "AS17",
+        "AS22",
+        "AS28"
+      ]
+    },
+    {
+      "package": "machine-code-foundations-and-environment-selection-2026",
+      "questions": [
+        "MR24",
+        "AS18",
+        "AS20",
+        "AS23",
+        "AS24",
+        "AS27"
+      ]
+    },
+    {
+      "package": "minirust-actual-core-disagreement-evidence-d821c6e",
+      "questions": [
+        "MR03",
+        "MR06",
+        "MR07",
+        "MR10",
+        "MR20",
+        "MR24",
+        "AS06"
+      ]
+    },
+    {
+      "package": "minirust-primitive-lowering-and-layout-frontier-d821c6e",
+      "questions": [
+        "MR02",
+        "MR05",
+        "MR06",
+        "MR07",
+        "MR09",
+        "MR10",
+        "MR17",
+        "MR20",
+        "AS06",
+        "AS28"
+      ]
+    },
+    {
+      "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+      "questions": [
+        "MR11",
+        "MR14",
+        "MR15",
+        "AS25"
+      ]
+    },
+    {
+      "package": "minirust-representation-copy-provenance-laws-d821c6e",
+      "questions": [
+        "MR01",
+        "MR04",
+        "MR06",
+        "MR07",
+        "MR08",
+        "MR18",
+        "AS06",
+        "AS07"
+      ]
+    },
+    {
+      "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+      "questions": [
+        "MR01",
+        "MR12",
+        "MR18",
+        "MR22",
+        "MR24",
+        "AS15"
+      ]
+    },
+    {
+      "package": "minirust-static-judgments-and-open-contract-controls-2026",
+      "questions": [
+        "MR05",
+        "MR13",
+        "MR18",
+        "MR21",
+        "MR22",
+        "AS12",
+        "AS15"
+      ]
+    },
+    {
+      "package": "minirust-target-dst-and-intrinsic-contracts-d821c6e",
+      "questions": [
+        "MR02",
+        "MR09",
+        "MR10",
+        "MR17"
+      ]
+    },
+    {
+      "package": "minirust-tree-borrows-logic-correspondence-d821c6e",
+      "questions": [
+        "MR01",
+        "MR08",
+        "MR11",
+        "MR12",
+        "MR13",
+        "MR14",
+        "MR20",
+        "AS07"
+      ]
+    },
+    {
+      "package": "minirust-unwind-elaboration-and-open-client-obligations-d821c6e",
+      "questions": [
+        "MR05",
+        "MR13",
+        "MR16",
+        "MR17",
+        "MR21",
+        "AS13"
+      ]
+    },
+    {
+      "package": "modular-semantics-state-alias-effects-popl2025",
+      "questions": [
+        "MR03",
+        "MR04",
+        "MR12",
+        "MR19",
+        "MR24"
+      ]
+    },
+    {
+      "package": "rust-assembly-platform-unwind-contracts-2026",
+      "questions": [
+        "MR16",
+        "AS11",
+        "AS13",
+        "AS27"
+      ]
+    },
+    {
+      "package": "rust-function-abi-witnesses-b940084",
+      "questions": [
+        "MR23",
+        "AS06",
+        "AS10",
+        "AS11",
+        "AS12",
+        "AS13",
+        "AS16"
+      ]
+    },
+    {
+      "package": "rust-inline-assembly-contracts-2dafab9",
+      "questions": [
+        "MR23",
+        "AS06",
+        "AS08",
+        "AS09",
+        "AS10"
+      ]
+    },
+    {
+      "package": "rust-machine-resource-linking-and-equivalence",
+      "questions": [
+        "MR22",
+        "MR23",
+        "AS05",
+        "AS07",
+        "AS10",
+        "AS13",
+        "AS14",
+        "AS15",
+        "AS19",
+        "AS26"
+      ]
+    },
+    {
+      "package": "sail-islaris-compcert-access-foundations",
+      "questions": [
+        "AS18",
+        "AS19",
+        "AS23",
+        "AS27"
+      ]
+    },
+    {
+      "package": "specr-import-nondeterminism-source-adequacy-15200eb",
+      "questions": [
+        "MR02",
+        "MR03",
+        "MR04",
+        "MR05",
+        "MR08",
+        "MR19",
+        "MR21",
+        "MR24"
+      ]
+    }
+  ],
+  "interpretation": "Navigation only; bounded findings and stronger/unperformed frontiers in synthesis, not proof completion."
 }

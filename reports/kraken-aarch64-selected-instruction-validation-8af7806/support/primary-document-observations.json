@@ -1,0 +1,53 @@
+{
+  "observed_at": "2026-10-14",
+  "role": "owned paraphrase of primary documentation, not copied manual or executable oracle",
+  "entries": [
+    {
+      "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622",
+      "revision": "2025-09_rel",
+      "sections": [
+        "ADCS p18",
+        "ADDS (shifted register) p28"
+      ],
+      "observation": "ADCS takes two width-selected registers and PSTATE.C, calls AddWithCarry, writes destination and NZCV. ADDS shifted-register uses carry input zero; omitted shift defaults to LSL zero.",
+      "access": "Primary indexed entry text; not full-document retrieval."
+    },
+    {
+      "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+      "revision": "aarchmrs/pseudocode2025-03_rel",
+      "sections": [
+        "LSLV p626",
+        "REV p758"
+      ],
+      "observation": "LSLV reduces the second operand modulo register width; LSL register is an alias. REV reverses byte order for32/64-bit selected forms; operation reverses8-bit groups.",
+      "access": "Primary indexed entry text. Full PDF open rejected as15314151bytes; no local download."
+    },
+    {
+      "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154",
+      "revision": "Issue1.1/2020-07-03",
+      "sections": [
+        "7.1 p14",
+        "9.2 p28",
+        "check-your-knowledge p36"
+      ],
+      "observation": "Writing a W destination clears the upper half of the corresponding X register. S variants update arithmetic flags; ADD does not. N/Z/C/V mean negative/zero/carry/overflow.",
+      "access": "Web-extracted full short PDF text."
+    },
+    {
+      "url": "https://doc.rust-lang.org/reference/inline-assembly.html",
+      "sections": [
+        "asm.operand-type.supported-operands.out",
+        "asm.operand-type.supported-operands.lateout",
+        "asm.options.nomem",
+        "asm.options.nostack"
+      ],
+      "observation": "Early out separates prewritten output from inputs; lateout permits reuse only after all input reads. Probe blocks declare outputs and flag effects and restrict themselves to register/flag instructions.",
+      "access": "Current primary reference text, observed2026-10-14; compiler identity pinned independently."
+    }
+  ],
+  "limitations": [
+    "The short compiler-guide LSL web URL returned no extracted body; it is not used as inspected evidence.",
+    "Indexed instruction descriptions were reviewed only for the listed entries, not all manual sections or shared pseudocode.",
+    "Python is an independently authored bounded arithmetic oracle, not an execution of Arm ASL/Sail or a verified translation."
+  ]
+}

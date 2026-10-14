@@ -1,0 +1,35 @@
+{
+  "observations": {
+    "default": [
+      "family=3",
+      "instances=11,21",
+      "resolved_len=2",
+      "macro_word=8",
+      "temporary_drops=[10, 1, 2, 20]",
+      "pattern_drops=[30, 3, 40, 4, 50, 60]",
+      "callback_retained=1,bytes=[9, 1, 2, 3, 8, 5]",
+      "panic_restored=true,retained=2",
+      "capacity_overflow_preserves=true",
+      "pending_future_drops=1"
+    ],
+    "flipped": [
+      "family=3",
+      "instances=11,21",
+      "resolved_len=99",
+      "macro_word=8",
+      "temporary_drops=[10, 1, 2, 20]",
+      "pattern_drops=[30, 3, 40, 4, 50, 60]",
+      "callback_retained=1,bytes=[9, 1, 2, 3, 8, 5]",
+      "panic_restored=true,retained=2",
+      "capacity_overflow_preserves=true",
+      "pending_future_drops=1"
+    ]
+  },
+  "same_source_configuration_pair": true,
+  "expected_panic": "Both executions deliberately panic inside catch_unwind; default hook retained, exit0 and guard restoration checked.",
+  "input_sha256": {
+    "revalidate.py": "14afafa03762ca7b9bda5596eeafb7f25f0a61b47b5e05f9046dd9c5be92dc6d",
+    "open_contract.rs": "f60816b62b9536a966f9bc029f389e2b31358946dd436b63844b1a1b911595d3",
+    "contract_model.py": "5966c4f73a7318f06eb1b714bc16de80e37a3a8e466f3270cc62e791a81d77f0"
+  }
+}

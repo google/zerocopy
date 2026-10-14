@@ -1,0 +1,260 @@
+{
+  "status": "passed",
+  "scope": "one COFF function, V1 flags0/PUSH_RBP/ALLOC_SMALL/SET_FPREG, fixed body and prologue contexts; owned non-OS reconstruction",
+  "object_sha256": "4af061446c6ca67a8c936c39cd514d5fa2152e6c85f0dc5c08be9033c30e574d",
+  "text_sha256": "f8cb6d59576072def3548aaf1b5159a9e09561bfda362028efb4d43ffd169d39",
+  "text_bytes": 77,
+  "xdata_hex": "010a03550a03059201500000",
+  "runtime_function_object_addends": [
+    0,
+    77,
+    0
+  ],
+  "runtime_function_relocations": [
+    {
+      "offset": 0,
+      "kind": 3,
+      "symbol": {
+        "name": ".text",
+        "value": 0,
+        "section": 1,
+        "type": 0,
+        "storage": 3
+      }
+    },
+    {
+      "offset": 4,
+      "kind": 3,
+      "symbol": {
+        "name": ".text",
+        "value": 0,
+        "section": 1,
+        "type": 0,
+        "storage": 3
+      }
+    },
+    {
+      "offset": 8,
+      "kind": 3,
+      "symbol": {
+        "name": ".xdata",
+        "value": 0,
+        "section": 4,
+        "type": 0,
+        "storage": 3
+      }
+    }
+  ],
+  "unwind_info": {
+    "version": 1,
+    "flags": 0,
+    "prolog_size": 10,
+    "count": 3,
+    "frame_register": "RBP",
+    "frame_offset": 80,
+    "codes": [
+      {
+        "code_offset": 10,
+        "op": 3,
+        "info": 0,
+        "kind": "set_fp",
+        "offset": 80
+      },
+      {
+        "code_offset": 5,
+        "op": 2,
+        "info": 9,
+        "kind": "alloc",
+        "bytes": 80
+      },
+      {
+        "code_offset": 1,
+        "op": 0,
+        "info": 5,
+        "kind": "push_rbp"
+      }
+    ]
+  },
+  "expected_caller": {
+    "rip": 305419896,
+    "rsp": 4112,
+    "rbp": 1431633920
+  },
+  "positive_contexts": [
+    {
+      "pc_offset": 0,
+      "context": {
+        "rsp": 4104,
+        "rbp": 1431633920
+      },
+      "recovered": {
+        "rip": 305419896,
+        "rsp": 4112,
+        "rbp": 1431633920
+      }
+    },
+    {
+      "pc_offset": 1,
+      "context": {
+        "rsp": 4096,
+        "rbp": 1431633920
+      },
+      "recovered": {
+        "rip": 305419896,
+        "rsp": 4112,
+        "rbp": 1431633920
+      }
+    },
+    {
+      "pc_offset": 5,
+      "context": {
+        "rsp": 4016,
+        "rbp": 1431633920
+      },
+      "recovered": {
+        "rip": 305419896,
+        "rsp": 4112,
+        "rbp": 1431633920
+      }
+    },
+    {
+      "pc_offset": 10,
+      "context": {
+        "rsp": 4016,
+        "rbp": 4096
+      },
+      "recovered": {
+        "rip": 305419896,
+        "rsp": 4112,
+        "rbp": 1431633920
+      }
+    },
+    {
+      "pc_offset": 43,
+      "context": {
+        "rsp": 4016,
+        "rbp": 4096
+      },
+      "recovered": {
+        "rip": 305419896,
+        "rsp": 4112,
+        "rbp": 1431633920
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "name": "wrong_frame_offset",
+      "object_sha256": "aa303af90a7eaa221b9f0269b5f77860394032b7fc8e37e251513e8526058786",
+      "text_unchanged": true,
+      "normal_epilogue_recovered": {
+        "rbp": 1431633920,
+        "rip": 305419896,
+        "rsp": 4112
+      },
+      "unwind_recovered": {
+        "rip": 1879052312,
+        "rsp": 4128,
+        "rbp": 1879052304
+      },
+      "correct_unwind_rejected": true
+    },
+    {
+      "name": "wrong_alloc_size",
+      "object_sha256": "2faba5c2e1c121c26ef7f5850d972908be9c4ce4ef982b3c5966e186e47cb3a0",
+      "text_unchanged": true,
+      "normal_epilogue_recovered": {
+        "rbp": 1431633920,
+        "rip": 305419896,
+        "rsp": 4112
+      },
+      "unwind_recovered": {
+        "rip": 1431633920,
+        "rsp": 4104,
+        "rbp": 1879052280
+      },
+      "correct_unwind_rejected": true
+    },
+    {
+      "name": "stripped_pdata",
+      "object_sha256": "ca634206db70a66dbf747ab26b523458ecad9e25c8760875d52bfd028d3e199c",
+      "text_unchanged": true,
+      "normal_epilogue_recovered": {
+        "rbp": 1431633920,
+        "rip": 305419896,
+        "rsp": 4112
+      },
+      "unwind_recovered": {
+        "rip": 1879052208,
+        "rsp": 4024,
+        "rbp": 4096
+      },
+      "correct_unwind_rejected": true
+    }
+  ],
+  "section_summary": [
+    {
+      "name": ".text",
+      "number": 1,
+      "header": 20,
+      "data_offset": 300,
+      "size": 77,
+      "reloc_offset": 377,
+      "reloc_count": 1
+    },
+    {
+      "name": ".data",
+      "number": 2,
+      "header": 60,
+      "data_offset": 387,
+      "size": 0,
+      "reloc_offset": 0,
+      "reloc_count": 0
+    },
+    {
+      "name": ".bss",
+      "number": 3,
+      "header": 100,
+      "data_offset": 0,
+      "size": 0,
+      "reloc_offset": 0,
+      "reloc_count": 0
+    },
+    {
+      "name": ".xdata",
+      "number": 4,
+      "header": 140,
+      "data_offset": 387,
+      "size": 12,
+      "reloc_offset": 0,
+      "reloc_count": 0
+    },
+    {
+      "name": ".debug$S",
+      "number": 5,
+      "header": 180,
+      "data_offset": 399,
+      "size": 100,
+      "reloc_offset": 0,
+      "reloc_count": 0
+    },
+    {
+      "name": ".pdata",
+      "number": 6,
+      "header": 220,
+      "data_offset": 499,
+      "size": 12,
+      "reloc_offset": 511,
+      "reloc_count": 3
+    },
+    {
+      "name": ".llvm_addrsig",
+      "number": 7,
+      "header": 260,
+      "data_offset": 541,
+      "size": 0,
+      "reloc_offset": 0,
+      "reloc_count": 0
+    }
+  ]
+}

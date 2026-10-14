@@ -1,0 +1,241 @@
+{
+  "x86_64": {
+    "load_relaxed": [
+      "movq\t(%rdi), %rax",
+      "retq"
+    ],
+    "load_acquire": [
+      "movq\t(%rdi), %rax",
+      "retq"
+    ],
+    "load_seq_cst": [
+      "movq\t(%rdi), %rax",
+      "retq"
+    ],
+    "store_relaxed": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+    ],
+    "store_release": [
+      "movq\t%rsi, (%rdi)",
+      "retq"
+    ],
+    "store_seq_cst": [
+      "xchgq\t%rsi, (%rdi)",
+      "retq"
+    ],
+    "add_relaxed": [
+      "movq\t%rsi, %rax",
+      "lock\t\txaddq\t%rax, (%rdi)",
+      "retq"
+    ],
+    "add_acq_rel": [
+      "movq\t%rsi, %rax",
+      "lock\t\txaddq\t%rax, (%rdi)",
+      "retq"
+    ],
+    "add_seq_cst": [
+      "movq\t%rsi, %rax",
+      "lock\t\txaddq\t%rax, (%rdi)",
+      "retq"
+    ],
+    "cas_acq_rel": [
+      "movq\t(%rsi), %rax",
+      "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+      "sete\t%cl",
+      "je\t.LBB9_2",
+      "movq\t%rax, (%rsi)",
+      "movl\t%ecx, %eax",
+      "retq"
+    ],
+    "fence_acquire": [
+      "retq"
+    ],
+    "fence_release": [
+      "retq"
+    ],
+    "fence_acq_rel": [
+      "retq"
+    ],
+    "fence_seq_cst": [
+      "lock\t\torl\t$0, -64(%rsp)",
+      "retq"
+    ],
+    "signal_seq_cst": [
+      "retq"
+    ],
+    "compiler_barrier": [
+      "retq"
+    ],
+    "explicit_hw_fence": [
+      "mfence",
+      "retq"
+    ]
+  },
+  "aarch64": {
+    "load_relaxed": [
+      "ldr\tx0, [x0]",
+      "ret"
+    ],
+    "load_acquire": [
+      "ldar\tx0, [x0]",
+      "ret"
+    ],
+    "load_seq_cst": [
+      "ldar\tx0, [x0]",
+      "ret"
+    ],
+    "store_relaxed": [
+      "str\tx1, [x0]",
+      "ret"
+    ],
+    "store_release": [
+      "stlr\tx1, [x0]",
+      "ret"
+    ],
+    "store_seq_cst": [
+      "stlr\tx1, [x0]",
+      "ret"
+    ],
+    "add_relaxed": [
+      "mov\tx8, x0",
+      "ldxr\tx0, [x8]",
+      "add\tx9, x0, x1",
+      "stxr\tw10, x9, [x8]",
+      "cbnz\tw10, .LBB6_1",
+      "ret"
+    ],
+    "add_acq_rel": [
+      "mov\tx8, x0",
+      "ldaxr\tx0, [x8]",
+      "add\tx9, x0, x1",
+      "stlxr\tw10, x9, [x8]",
+      "cbnz\tw10, .LBB7_1",
+      "ret"
+    ],
+    "add_seq_cst": [
+      "mov\tx8, x0",
+      "ldaxr\tx0, [x8]",
+      "add\tx9, x0, x1",
+      "stlxr\tw10, x9, [x8]",
+      "cbnz\tw10, .LBB8_1",
+      "ret"
+    ],
+    "cas_acq_rel": [
+      "ldr\tx9, [x1]",
+      "ldaxr\tx8, [x0]",
+      "cmp\tx8, x9",
+      "b.ne\t.LBB9_4",
+      "stlxr\tw10, x2, [x0]",
+      "cbnz\tw10, .LBB9_1",
+      "mov\tw0, #1                          // =0x1",
+      "tbz\tw0, #0, .LBB9_5",
+      "b\t.LBB9_6",
+      "mov\tw0, wzr",
+      "clrex",
+      "tbnz\tw0, #0, .LBB9_6",
+      "str\tx8, [x1]",
+      "ret"
+    ],
+    "fence_acquire": [
+      "dmb\tishld",
+      "ret"
+    ],
+    "fence_release": [
+      "dmb\tish",
+      "ret"
+    ],
+    "fence_acq_rel": [
+      "dmb\tish",
+      "ret"
+    ],
+    "fence_seq_cst": [
+      "dmb\tish",
+      "ret"
+    ],
+    "signal_seq_cst": [
+      "ret"
+    ],
+    "compiler_barrier": [
+      "ret"
+    ],
+    "explicit_hw_fence": [
+      "dmb\tish",
+      "ret"
+    ]
+  },
+  "aarch64-lse": {
+    "load_relaxed": [
+      "ldr\tx0, [x0]",
+      "ret"
+    ],
+    "load_acquire": [
+      "ldar\tx0, [x0]",
+      "ret"
+    ],
+    "load_seq_cst": [
+      "ldar\tx0, [x0]",
+      "ret"
+    ],
+    "store_relaxed": [
+      "str\tx1, [x0]",
+      "ret"
+    ],
+    "store_release": [
+      "stlr\tx1, [x0]",
+      "ret"
+    ],
+    "store_seq_cst": [
+      "stlr\tx1, [x0]",
+      "ret"
+    ],
+    "add_relaxed": [
+      "ldadd\tx1, x0, [x0]",
+      "ret"
+    ],
+    "add_acq_rel": [
+      "ldaddal\tx1, x0, [x0]",
+      "ret"
+    ],
+    "add_seq_cst": [
+      "ldaddal\tx1, x0, [x0]",
+      "ret"
+    ],
+    "cas_acq_rel": [
+      "ldr\tx9, [x1]",
+      "mov\tx8, x9",
+      "casal\tx8, x2, [x0]",
+      "cmp\tx8, x9",
+      "cset\tw0, eq",
+      "b.eq\t.LBB9_2",
+      "str\tx8, [x1]",
+      "ret"
+    ],
+    "fence_acquire": [
+      "dmb\tishld",
+      "ret"
+    ],
+    "fence_release": [
+      "dmb\tish",
+      "ret"
+    ],
+    "fence_acq_rel": [
+      "dmb\tish",
+      "ret"
+    ],
+    "fence_seq_cst": [
+      "dmb\tish",
+      "ret"
+    ],
+    "signal_seq_cst": [
+      "ret"
+    ],
+    "compiler_barrier": [
+      "ret"
+    ],
+    "explicit_hw_fence": [
+      "dmb\tish",
+      "ret"
+    ]
+  }
+}

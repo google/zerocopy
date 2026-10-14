@@ -1,0 +1,34 @@
+{
+  "agenda_source": "minirust-followup-issue.md observed 2026-10-14",
+  "coverage_kind": "bounded source/feature/contract investigation; no complete frontend or open-library theorem claimed",
+  "ids": {
+    "MR21": {
+      "sections": ["F1", "F2", "F3"],
+      "scope": "a-mir-formality71dc31 rules/codegen actual source; reviewed pinned feature/capture corpus; safe Rust1.99 configured feature, pattern and lifetime pairs with emitted MIR",
+      "subquestions": [
+        {"question": "a-mir-formality rules and theorem status", "answer": "F1 crate/function/normalization/safety/NLL/FnDef/codegen/trusted-body paths inspected beyondREADME; bounded theorem search and vendored MiniRust identity kept explicit"},
+        {"question": "Trait solving, method resolution and auto-deref", "answer": "F1 normalization/FnDef requirements; F3 cfg pair same .len source2/99; source selection must precede core dispatch"},
+        {"question": "Pattern matching and temporary lifetimes", "answer": "F2 explicit grammar scope and absent general match constructor; F3 safe wildcard/binding and extended-reference/method-result pairs, exact drop logs and MIR"},
+        {"question": "Generics, GAT, const evaluation and macros", "answer": "F2 reviewed exact family/CTFE/configuration reports; F3 selected instances, GAT view and macro-generated callable; no cross-pin support inheritance"},
+        {"question": "Pin/async/generators and closures", "answer": "F2 reviewed Pin/Future and Charon ordinary-closure versus explicit coroutine rejection; F5 manual pinned pending/drop control; generated state/shim/drop obligations explicit"},
+        {"question": "Whole-item/generated-code coverage and accepted specification plan", "answer": "F2 goal source and reviewed capture/annotation reports; F3 emitted MIR includes macro function, promoted constants, closure/destructor bodies and cleanup edges; no complete census inferred"}
+      ],
+      "stronger_unestablished": ["Sound/complete surface-to-core frontend", "Trait solver/normalization correctness", "Source/compiler-generated body completeness and safety-reflecting lowering into selected MiniRust"],
+      "genuinely_unexamined": ["Execution of examined formality rules/codegen incl trusted-body accepted-check/rejected-codegen pair", "Translation of these new fixtures into current MiniRust", "Compiler-generated !Unpin/self-referential async abstraction in selected pipeline"]
+    },
+    "MR22": {
+      "sections": ["F3", "F4", "F5"],
+      "scope": "Independent subject/domain/trait-law/resource candidate controls; concrete safe callbacks, returned views, Vec capacity error and pending drop; reviewed conditional linking corpus",
+      "subquestions": [
+        {"question": "Safe clients, invariants and lifetime/trait/dictionary assumptions", "answer": "F4 states proposed selected-fragment/environment quantification and state relation; no closed-run-to-open-theorem inference"},
+        {"question": "Wrong monomorphization/unsafe-trait negative controls", "answer": "F3 actual11/21 and model11/21/12 outcomes; ten identity mutations; F4 all256 bytes,254 newly invalid values and vacuous/wrong domain rejection"},
+        {"question": "Vec-like storage and zerocopy implementations", "answer": "F4 owned truthful/lying initialized-length model plus safe Vec capacity-overflow control; Boolean law is zerocopy-style, no actual unsafe impl proved or invalid Rust run"},
+        {"question": "Reentrant callbacks, retained aliases and returned resources", "answer": "F5 actual retained Cell, split/returned/reborrowed mutable views, rejected reentrant acquisition, normal/panic restoration; seven token-protocol controls distinguish allowed Cell alias from forbidden mutable capability"},
+        {"question": "Unsafe caller violation versus safe API permitting invalid state", "answer": "F4 lying initialization/trait premise exposes invalid state to safe client; F5 foreign callers require separate ABI contract, not rustc safe-client assumption"},
+        {"question": "Fundamental/linking theorem over MiniRust", "answer": "F4 explicit proposed obligation with exact dependency/implementation identity; reviewed foundation conditional bridge, no adequacy theorem established"}
+      ],
+      "stronger_unestablished": ["All-safe-client fundamental/contextual linking theorem", "Lifetime-indexed spatial/alias/exceptional resource adequacy", "Full Vec/zerocopy unsafe abstraction soundness and external callback refinement"],
+      "genuinely_unexamined": ["Concrete raw Vec/zerocopy proof port to selected byte/alias model", "Actual foreign callback and caller-state protocol", "Iris/lambdaTB proof of new callback/returned-resource fixture rather than an owned token protocol"]
+    }
+  }
+}

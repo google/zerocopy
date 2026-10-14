@@ -1,0 +1,49 @@
+AArch64Fences
+
+(* Protection against running tests of other architecture *)
+let DMB.NSH = try DMB.NSH with emptyset
+let DMB.NSHLD = try DMB.NSHLD with emptyset
+let DMB.NSHST = try DMB.NSHST with emptyset
+let DMB.ISH = try DMB.ISH with emptyset
+let DMB.ISHLD = try DMB.ISHLD with emptyset
+let DMB.ISHST = try DMB.ISHST with emptyset
+let DMB.OSH = try DMB.OSH with emptyset
+let DMB.OSHLD = try DMB.OSHLD with emptyset
+let DMB.OSHST = try DMB.OSHST with emptyset
+let DMB.SY = try DMB.SY with emptyset
+let DMB.ST = try DMB.ST with emptyset
+let DMB.LD = try DMB.LD with emptyset
+
+let DSB.NSH = try DSB.NSH with emptyset
+let DSB.NSHLD = try DSB.NSHLD with emptyset
+let DSB.NSHST = try DSB.NSHST with emptyset
+let DSB.ISH = try DSB.ISH with emptyset
+let DSB.ISHLD = try DSB.ISHLD with emptyset
+let DSB.ISHST = try DSB.ISHST with emptyset
+let DSB.SY = try DSB.SY with emptyset
+let DSB.ST = try DSB.ST with emptyset
+let DSB.LD = try DSB.LD with emptyset
+let DSB.OSH = try DSB.OSH with emptyset
+let DSB.OSHLD = try DSB.OSHLD with emptyset
+let DSB.OSHST = try DSB.OSHST with emptyset
+
+let ISB = try ISB with emptyset
+
+let A = try A & (Exp & M) with emptyset
+and L = try L & (Exp & M) with emptyset
+and Q = try Q & (Exp & M) with emptyset
+and NoRet = try NoRet with emptyset
+
+let dmb.full = DMB.NSH | DMB.ISH | DMB.OSH | DMB.SY
+let dmb.ld = DMB.NSHLD | DMB.ISHLD | DMB.OSHLD | DMB.LD
+let dmb.st = DMB.NSHST | DMB.ISHST | DMB.OSHST | DMB.ST
+flag ~empty (DMB.NSH | DMB.ISH | DMB.OSH |
+             DMB.NSHLD | DMB.ISHLD | DMB.OSHLD |
+             DMB.NSHST | DMB.ISHST | DMB.OSHST) as Shareability-argument-for-DMB-is-deprecated
+
+let dsb.full = DSB.NSH | DSB.ISH | DSB.OSH | DSB.SY
+let dsb.ld = DSB.NSHLD | DSB.ISHLD | DSB.OSHLD | DSB.LD
+flag ~empty (DSB.NSHLD | DSB.ISHLD | DSB.OSHLD) as Maintenance-scope-for-DSB-LD-is-deprecated
+let dsb.st = DSB.NSHST | DSB.ISHST | DSB.OSHST | DSB.ST
+flag ~empty (DSB.NSHST | DSB.ISHST | DSB.OSHST) as Maintenance-scope-for-DSB-ST-is-deprecated
+

@@ -1,0 +1,117 @@
+{
+  "observed_at": "2026-10-14",
+  "primary_sources": [
+    {
+      "path": "exception-handling-x64.md",
+      "sha": "efb1eac2d73c4da6974c63edf1f80690d2520d10",
+      "url": "https://github.com/MicrosoftDocs/cpp-docs/blob/281a0a0eae55fe97f5decd244db18ed5096d4687/docs/build/exception-handling-x64.md",
+      "sha256": "27e90966096db5da3740c22955e2bc9b89a65835294bf403fe53581723b2263d",
+      "bytes": 30012,
+      "sections": [
+        {
+          "heading": "## Unwind data for exception handling and debugger support",
+          "line": 12
+        },
+        {
+          "heading": "### struct RUNTIME_FUNCTION",
+          "line": 20
+        },
+        {
+          "heading": "### struct UNWIND_INFO",
+          "line": 32
+        },
+        {
+          "heading": "### struct UNWIND_CODE",
+          "line": 110
+        },
+        {
+          "heading": "#### Offset in prolog",
+          "line": 122
+        },
+        {
+          "heading": "#### Unwind operation code",
+          "line": 126
+        },
+        {
+          "heading": "#### Operation info",
+          "line": 217
+        },
+        {
+          "heading": "### Chained unwind info structures",
+          "line": 233
+        },
+        {
+          "heading": "## Unwind procedure",
+          "line": 247
+        },
+        {
+          "heading": "## Language-specific handler",
+          "line": 271
+        },
+        {
+          "heading": "## Unwind helpers for MASM",
+          "line": 321
+        },
+        {
+          "heading": "### Raw pseudo-operations",
+          "line": 325
+        },
+        {
+          "heading": "### MASM macros",
+          "line": 389
+        },
+        {
+          "heading": "## Unwind data definitions in C",
+          "line": 430
+        },
+        {
+          "heading": "## See also",
+          "line": 500
+        }
+      ],
+      "preservation": "Exact source inspected in owned excluded cache; immutable upstream coordinates+hash retained. No complete Microsoft prose copied into report."
+    },
+    {
+      "path": "prolog-and-epilog.md",
+      "sha": "56b27b056b1ae19cbc2cc56b062a3856e6e69825",
+      "url": "https://github.com/MicrosoftDocs/cpp-docs/blob/281a0a0eae55fe97f5decd244db18ed5096d4687/docs/build/prolog-and-epilog.md",
+      "sha256": "833e743f220caf1875c3b5403d53f2b584faff8729b5dad5d8f73a213a984ce1",
+      "bytes": 6179,
+      "sections": [
+        {
+          "heading": "## Prolog code",
+          "line": 14
+        },
+        {
+          "heading": "## Epilog code",
+          "line": 46
+        },
+        {
+          "heading": "## See also",
+          "line": 90
+        }
+      ],
+      "preservation": "Exact source inspected in owned excluded cache; immutable upstream coordinates+hash retained. No complete Microsoft prose copied into report."
+    }
+  ],
+  "rust_sources": [
+    {
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md",
+      "sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "git_blob": "8f7e5355205fa037b08e587d4f9ee7d54f3e4890",
+      "sections": [
+        "asm.rules.unwind",
+        "asm.naked-rules.unwind",
+        "asm.target-specific-directives.dwarf-unwinding"
+      ]
+    },
+    {
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/items/functions.md",
+      "sha256": "9dcf49ccf23e4b8c1123466626e08750c4186fb21d28fbec3a67194d0c82e905",
+      "git_blob": "25ae723a20aab7f31df481a51a81eeecee5bfe46",
+      "sections": [
+        "items.fn.extern.unwind"
+      ]
+    }
+  ]
+}

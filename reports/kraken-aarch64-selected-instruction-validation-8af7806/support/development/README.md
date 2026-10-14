@@ -1,0 +1,5 @@
+# Development diagnostics
+
+The four failed smoke attempts and one successful smoke check retain exact command status and output. Failed source snapshots were not retained; their logs are diagnostic history, not independent replay inputs. The report describes the small module/import/pattern fixes. The final successful source is fully preserved and its hash is bound to the final replay results.
+
+`first-validation-results.json` records a deliberate harness diagnostic stop after the complete Kraken/oracle comparison and first native compilation, before any native execution. The extractor originally searched for `;APP`/`;NO_APP`; Apple LLVM emits `; InlineAsm Start`/`; InlineAsm End` and includes an unrelated empty runtime block. Manual inspection found the seven intended NZCV-reading blocks. The final extractor uses those observed delimiters and selects NZCV-reading blocks. Both final optimization configurations passed afterward. This stop did not represent a model/oracle/native disagreement.

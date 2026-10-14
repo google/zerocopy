@@ -11153,6 +11153,48 @@
         "macos/relocation"
       ]
     },
+    "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3873",
+            "question-identities": "MR01\u2013MR24",
+            "repository": "google/zerocopy"
+          },
+          "name": "MiniRust research agenda"
+        },
+        {
+          "identity": {
+            "issue": "3874",
+            "question-identities": "AS01\u2013AS28",
+            "repository": "google/zerocopy"
+          },
+          "name": "Assembly research agenda"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        }
+      ],
+      "topics": [
+        "anneal/research",
+        "minirust/adoption",
+        "assembly/adoption",
+        "verification/tcb",
+        "research/coverage"
+      ]
+    },
     "anneal-minirust-assembly-research-agenda-2026": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -12274,6 +12316,136 @@
         "verification/hazard-pointers",
         "verification/rcu",
         "verification/adequacy"
+      ]
+    },
+    "assembly-atomic-fence-language-mappings-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+          },
+          "name": "herdtools7 named x86-TSO and Arm models"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust atomic access and fence API"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust inline assembly contract"
+        },
+        {
+          "identity": {
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          },
+          "name": "IMM selected model and compilation theorem source"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+            "version": "llvmorg-21.1.0"
+          },
+          "name": "LLVM atomic concurrency guide"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken sequential memory/effect semantics"
+        },
+        {
+          "identity": {
+            "artifact": "CommandLineTools/usr/bin/clang",
+            "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+            "version": "21.0.0 (clang-2100.3.34.2)"
+          },
+          "name": "Apple Clang compiler binary"
+        },
+        {
+          "identity": {
+            "date": "2020-10-18",
+            "document": "WG21 N4868",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4868.pdf"
+          },
+          "name": "C++ working draft"
+        },
+        {
+          "identity": {
+            "publication": "CACM 53(7), July2010",
+            "url": "https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf"
+          },
+          "name": "x86-TSO programmer model paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926394",
+            "publication": "POPL2011"
+          },
+          "name": "Mathematizing C++ Concurrency"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158107",
+            "publication": "POPL2018"
+          },
+          "name": "Simplifying ARM Concurrency"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290382",
+            "publication": "POPL2019"
+          },
+          "name": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models"
+        },
+        {
+          "identity": {
+            "artifact": "support/atomics.c",
+            "sha256": "70f3aaabb9c84b6dcbad33675981395c1864e04fc5654b77bc3e898f1a55b9aa"
+          },
+          "name": "Owned compile-only or relation investigation"
+        },
+        {
+          "identity": {
+            "artifact": "support/compile.py",
+            "sha256": "51164c91bd66b127150986a19990ddacda844ede2d2184986885eea9a56b0514"
+          },
+          "name": "Owned compile-only or relation investigation"
+        },
+        {
+          "identity": {
+            "artifact": "support/check.py",
+            "sha256": "abc879fed8c342f4b0a5562417c7c796e4748c5967a618912cb5e0880e533582"
+          },
+          "name": "Owned compile-only or relation investigation"
+        },
+        {
+          "identity": {
+            "artifact": "support/sb_projection.py",
+            "sha256": "468326373a9e2343136cdab537ac62adb8862c02fdc03ee912396ec6a5cbfb43"
+          },
+          "name": "Owned compile-only or relation investigation"
+        }
+      ],
+      "topics": [
+        "assembly/atomics",
+        "assembly/fences",
+        "rust/memory-model",
+        "rust/inline-assembly",
+        "x86/tso",
+        "aarch64/memory-model",
+        "verification/compilation"
       ]
     },
     "assembly-isa-proof-boundaries-2013-2026": {
@@ -16628,6 +16800,68 @@
         "anneal/interactive"
       ]
     },
+    "kraken-aarch64-selected-instruction-validation-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken AArch64 model"
+        },
+        {
+          "identity": {
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target": "arm64-apple-darwin24.6.0",
+            "version": "4.34.1"
+          },
+          "name": "Lean used to execute selected model"
+        },
+        {
+          "identity": {
+            "host": "aarch64-apple-darwin",
+            "llvm": "23.1.1",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler used for native register probes"
+        },
+        {
+          "identity": {
+            "build_timestamp": "2025-09-23 11:45:10",
+            "revision": "2025-09_rel",
+            "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622"
+          },
+          "name": "Arm A64 instruction descriptions, selected ADDS/ADCS entries"
+        },
+        {
+          "identity": {
+            "build_timestamp": "2025-03-21T17:41",
+            "revision": "aarchmrs v2025-03_rel, pseudocode v2025-03_rel",
+            "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85"
+          },
+          "name": "Arm A64 instruction descriptions, selected LSLV/REV entries"
+        },
+        {
+          "identity": {
+            "date": "2020-07-03",
+            "document": "ARM062-948681440-3280",
+            "issue": "1.1",
+            "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154"
+          },
+          "name": "Armv8-A Instruction Set Architecture guide"
+        }
+      ],
+      "topics": [
+        "assembly/isa-validation",
+        "kraken/aarch64",
+        "assembly/condition-flags",
+        "assembly/partial-registers",
+        "assembly/byte-order",
+        "rust/inline-assembly"
+      ]
+    },
     "kraken-parser-layout-fragment-boundaries-8af7806": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19487,6 +19721,46 @@
         "lean/server"
       ]
     },
+    "machine-code-foundations-and-environment-selection-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
+          },
+          "name": "acl2/acl2"
+        },
+        {
+          "identity": {
+            "repository": "kframework/X86-64-semantics",
+            "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+          },
+          "name": "kframework/X86-64-semantics"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          },
+          "name": "mit-plv/bedrock2"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/riscv-coq",
+            "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+          },
+          "name": "mit-plv/riscv-coq"
+        }
+      ],
+      "topics": [
+        "assembly/alternative-foundations",
+        "acl2/x86isa",
+        "k/x86",
+        "bedrock2",
+        "riscv/environment"
+      ]
+    },
     "make-ninja-narrow-build-tool-boundaries-1979-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -19948,6 +20222,54 @@
         "semantics/correspondence"
       ]
     },
+    "minirust-primitive-lowering-and-layout-frontier-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust core and minimize importer"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler and core/alloc source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "artifact": "rust-std-1.99.0-wasm32-unknown-unknown.tar.xz",
+            "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+          },
+          "name": "Rust wasm32 standard-library component"
+        },
+        {
+          "identity": {
+            "v8": "13.6.233.17-node.53",
+            "version": "24.21.0"
+          },
+          "name": "Node WebAssembly execution environment"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "minirust/translation",
+        "rust/floating-point",
+        "rust/layout",
+        "rust/intrinsics"
+      ]
+    },
     "minirust-race-alias-and-weak-memory-boundaries-d821c6e": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -20147,6 +20469,62 @@
         "verification/linking",
         "verification/source-safety",
         "rust/interior-mutability"
+      ]
+    },
+    "minirust-static-judgments-and-open-contract-controls-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+          },
+          "name": "a-mir-formality judgments and MiniRust code generation"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust runtime/import boundary"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler used for new safe controls"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon feature-boundary comparison"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust unsafe-trait contract comparison"
+        },
+        {
+          "identity": {
+            "retrieved": "2026-10-14",
+            "url": "https://goals.rust-lang.org/2026/executable-spec.html"
+          },
+          "name": "End-to-End Executable Rust Specification plan"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "rust/static-semantics",
+        "rust/elaboration",
+        "rust/unsafe-traits",
+        "verification/linking"
       ]
     },
     "minirust-target-dst-and-intrinsic-contracts-d821c6e": {
@@ -22982,6 +23360,49 @@
         "rust/layout",
         "rust/memory",
         "rust/unsafe"
+      ]
+    },
+    "rust-assembly-platform-unwind-contracts-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+          },
+          "name": "Microsoft Windows x64 unwind and prologue/epilogue rules"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference unwind and assembly interfaces"
+        },
+        {
+          "identity": {
+            "build": "clang-2100.3.34.2",
+            "target": "x86_64-pc-windows-msvc",
+            "version": "21.0.0"
+          },
+          "name": "Apple clang cross-target Windows specimen compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "target": "aarch64-apple-darwin",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler for Apple AArch64 cleanup specimen"
+        }
+      ],
+      "topics": [
+        "rust/assembly",
+        "assembly/unwinding",
+        "assembly/windows-x64",
+        "rust/abi",
+        "assembly/artifact-binding"
       ]
     },
     "rust-atomics-memory-orderings-nightly-2026-05-31": {

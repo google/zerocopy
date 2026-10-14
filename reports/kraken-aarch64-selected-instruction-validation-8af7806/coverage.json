@@ -1,0 +1,51 @@
+{
+  "package": "kraken-aarch64-selected-instruction-validation-8af7806",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS04",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / A concrete instruction corpus has three independent observations",
+        "Findings / The source and reference rules distinguish the tested seams",
+        "Boundaries"
+      ],
+      "answered_scope": [
+        "Detailed primary Arm selected-entry review for carry/flags, W writes, variable shift masking and byte reversal, tied to exact Kraken definitions and parsed ASTs",
+        "Actual 1,290-case differential validation of seven selected AArch64 instruction/width forms against independent mathematical oracle and native AArch64 Opt0/3",
+        "Whole concrete model-frame and emitted-exec-shape checks plus eight discriminating wrong-semantics controls; no actual disagreement"
+      ],
+      "stronger_unestablished_claims": [
+        "Universal instruction equivalence/refinement to authoritative ISA, or correctness of Lean runtime/native compiler/oracle",
+        "Kraken AST-to-native encoding correspondence or end-to-end Rust contextual safety",
+        "ISA-wide completeness or correctness beyond exact tested forms and finite cases"
+      ],
+      "unexamined_gaps": [
+        "Kraken destination/source operand-overlap variants were not separately exercised; native allocator overlap in ADDS/ADCS is recorded but does not establish those AST variants",
+        "Memory alignment/faults, privileged/configuration-dependent behavior, X64 flags/partial registers, and SIMD/FP instruction correspondence were outside this register-only selection",
+        "No authoritative ASL/Sail model was executed or formal relation proved; building/checking that relation remains future implementation work"
+      ]
+    },
+    {
+      "id": "AS28",
+      "status": "partial",
+      "sections": [
+        "Findings / The cases detect concrete wrong alternatives",
+        "Evidence"
+      ],
+      "answered_scope": [
+        "Actual carry/overflow and zerocopy-style REV32/64 pilot cases with exact observed model/native outputs and compiler configuration",
+        "Bounded per-route execution/build timing and same corpus at Opt0/3; preserves evidence types separately from existing universal addition/frame proofs"
+      ],
+      "stronger_unestablished_claims": [
+        "Complete matched cross-foundation pilot/cost ranking or production architecture decision",
+        "Universal Kraken carry/REV theorem or pureRust equivalence/context bridge"
+      ],
+      "unexamined_gaps": [
+        "No new carry/REV theorem, source/ABI/version repair measurement, or controlled proof-production cost comparison",
+        "Multiply/copy/pointer-return/helper-call pilots and adequate SIMD cases remain for broader matched suite"
+      ]
+    }
+  ],
+  "interpretation": "Bounded-complete closes the explicitly selected AS04 validation investigation. Stronger universal implementation outcomes and genuinely unexamined instruction families remain separately listed; no ISA-wide completion is implied."
+}

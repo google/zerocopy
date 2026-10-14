@@ -1,0 +1,7 @@
+X86Fences
+
+let mfence = try fencerel(MFENCE) with 0
+let lfence = try fencerel(LFENCE) with 0
+let sfence = try fencerel(SFENCE) with 0
+
+show data,addr,ctrl

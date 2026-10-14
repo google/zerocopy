@@ -1,0 +1,14 @@
+{
+  "architecture": "arm64",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "cpu_model_query": {
+    "argv": [
+      "sysctl",
+      "-n",
+      "machdep.cpu.brand_string"
+    ],
+    "exit": 1,
+    "output": "sysctl: sysctl fmt -1 1024 1: Operation not permitted\n",
+    "implication": "No exact physical CPU/core model claimed; no escalation or workaround attempted."
+  }
+}

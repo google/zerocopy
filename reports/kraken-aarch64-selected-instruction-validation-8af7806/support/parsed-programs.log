@@ -1,0 +1,44 @@
+adds64	[Directive.instr
+   { operation_size := RegWidth.W64,
+     operation := Operation.ADDS_s
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W64))
+                    { reg := RegOrZr.low (XRegOrXzr.reg (XReg.X2)) (RegWidth.W64),
+                      amount := 0,
+                      shift := ShiftType.LSL } }]
+adcs64	[Directive.instr
+   { operation_size := RegWidth.W64,
+     operation := Operation.ADCS
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X2)) (RegWidth.W64)) }]
+add32	[Directive.instr
+   { operation_size := RegWidth.W32,
+     operation := Operation.ADD_s
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W32))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W32))
+                    { reg := RegOrZr.low (XRegOrXzr.reg (XReg.X2)) (RegWidth.W32),
+                      amount := 0,
+                      shift := ShiftType.LSL } }]
+lslv64	[Directive.instr
+   { operation_size := RegWidth.W64,
+     operation := Operation.LSLV
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X2)) (RegWidth.W64)) }]
+lslv32	[Directive.instr
+   { operation_size := RegWidth.W32,
+     operation := Operation.LSLV
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W32))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W32))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X2)) (RegWidth.W32)) }]
+rev64	[Directive.instr
+   { operation_size := RegWidth.W64,
+     operation := Operation.REV
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W64))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W64)) }]
+rev32	[Directive.instr
+   { operation_size := RegWidth.W32,
+     operation := Operation.REV
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X0)) (RegWidth.W32))
+                    (RegOrZr.low (XRegOrXzr.reg (XReg.X1)) (RegWidth.W32)) }]

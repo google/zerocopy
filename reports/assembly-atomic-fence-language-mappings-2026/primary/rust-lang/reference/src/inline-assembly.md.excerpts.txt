@@ -1,0 +1,53 @@
+### https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md#L1077-L1105
+1077: 
+1078: r[asm.options.supported-options-pure]
+1079: - `pure`: The assembly code has no side effects, must eventually return, and its outputs depend only on its direct inputs (i.e. the values themselves, not what they point to) or values read from memory (unless the `nomem` options is also set). This allows the compiler to execute the assembly code fewer times than specified in the program (e.g. by hoisting it out of a loop) or even eliminate it entirely if the outputs are not used. The `pure` option must be combined with either the `nomem` or `readonly` options, otherwise a compile-time error is emitted.
+1080: 
+1081: ```rust
+1082: # #[cfg(target_arch = "x86_64")] {
+1083: let x: i32 = 0;
+1084: let z: i32;
+1085: // pure can be used to optimize by assuming the assembly has no side effects
+1086: unsafe { core::arch::asm!("inc {}", inout(reg) x => z, options(pure, nomem)); }
+1087: assert_eq!(z, 1);
+1088: # }
+1089: ```
+1090: 
+1091: ```rust,compile_fail
+1092: # #[cfg(target_arch = "x86_64")] {
+1093: let x: i32 = 0;
+1094: let z: i32;
+1095: // Either nomem or readonly must be satisfied, to indicate whether or not
+1096: // memory is allowed to be read
+1097: unsafe { core::arch::asm!("inc {}", inout(reg) x => z, options(pure)); }
+1098: // ERROR: the `pure` option must be combined with either `nomem` or `readonly`
+1099: assert_eq!(z, 0);
+1100: # }
+1101: # #[cfg(not(target_arch = "x86_64"))] core::compile_error!("Test not supported on this arch");
+1102: ```
+1103: 
+1104: r[asm.options.supported-options-nomem]
+1105: - `nomem`: The assembly code does not read from or write to any memory accessible outside of the assembly code. This allows the compiler to cache the values of modified global variables in registers across execution of the assembly code since it knows that they are not read from or written to by it. The compiler also assumes that the assembly code does not perform any kind of synchronization with other threads, e.g. via fences.
+
+### https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md#L1150-L1151
+1150: r[asm.options.supported-options-readonly]
+1151: - `readonly`: The assembly code does not write to any memory accessible outside of the assembly code. This allows the compiler to cache the values of unmodified global variables in registers across execution of the assembly code since it knows that they are not written to by it. The compiler also assumes that this assembly code does not perform any kind of synchronization with other threads, e.g. via fences.
+
+### https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md#L1330-L1345
+1330: - Any registers not specified as outputs must have the same value upon exiting the assembly code as they had on entry, otherwise behavior is undefined.
+1331:   - This only applies to registers which can be specified as an input or output. Other registers follow target-specific rules.
+1332:   - Note that a `lateout` may be allocated to the same register as an `in`, in which case this rule does not apply. Code should not rely on this however since it depends on the results of register allocation.
+1333: 
+1334: r[asm.rules.unwind]
+1335: - Behavior is undefined if execution unwinds out of the assembly code.
+1336:   - This also applies if the assembly code calls a function which then unwinds.
+1337: 
+1338: r[asm.rules.mem-same-as-ffi]
+1339: - The set of memory locations that assembly code is allowed to read and write are the same as those allowed for an FFI function.
+1340:   - If the `readonly` option is set, then only memory reads are allowed.
+1341:   - If the `nomem` option is set then no reads or writes to memory are allowed.
+1342:   - These rules do not apply to memory which is private to the assembly code, such as stack space allocated within it.
+1343: 
+1344: r[asm.rules.black-box]
+1345: - The compiler cannot assume that the instructions in the assembly code are the ones that will actually end up executed.
+

@@ -1,0 +1,1959 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at open_contract.rs:12:1: 12:40>::view(_1: &Store<N>) -> &[u8] {
+    debug self => _1;
+    let mut _0: &[u8];
+    let _2: &[u8; N];
+
+    bb0: {
+        _2 = &((*_1).0: [u8; N]);
+        _0 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:18:1: 18:17>::value() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 10_u32;
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:19:1: 19:17>::value() -> u32 {
+    let mut _0: u32;
+
+    bb0: {
+        _0 = const 20_u32;
+        return;
+    }
+}
+
+fn instance() -> u32 {
+    let mut _0: u32;
+    let mut _1: u32;
+    let mut _2: (u32, bool);
+
+    bb0: {
+        _1 = <T as Value>::value() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = AddWithOverflow(copy _1, const N);
+        assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, const N) -> [success: bb2, unwind continue];
+    }
+
+    bb2: {
+        _0 = move (_2.0: u32);
+        return;
+    }
+}
+
+const Wrapper::0::{constant#0}: usize = const 2_usize;
+
+fn <impl at open_contract.rs:22:1: 22:23>::deref(_1: &Wrapper) -> &[u8] {
+    debug self => _1;
+    let mut _0: &[u8];
+    let _2: &[u8; 2];
+
+    bb0: {
+        _2 = &((*_1).0: [u8; 2]);
+        _0 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:24:1: 24:13>::len(_1: &Wrapper) -> usize {
+    debug self => _1;
+    let mut _0: usize;
+
+    bb0: {
+        _0 = const 99_usize;
+        return;
+    }
+}
+
+fn generated_count() -> usize {
+    let mut _0: usize;
+
+    bb0: {
+        _0 = std::mem::size_of::<usize>() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:29:1: 29:15>::id(_1: &Stamp<'_>) -> u8 {
+    debug self => _1;
+    let mut _0: u8;
+
+    bb0: {
+        _0 = copy ((*_1).1: u8);
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:30:1: 30:24>::drop(_1: &mut Stamp<'_>) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let mut _2: &mut std::vec::Vec<u8>;
+    let mut _3: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _4: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _5: u8;
+    let mut _6: &std::cell::RefCell<std::vec::Vec<u8>>;
+
+    bb0: {
+        _6 = no_retag copy ((*_1).0: &std::cell::RefCell<std::vec::Vec<u8>>);
+        _4 = RefCell::<Vec<u8>>::borrow_mut(copy _6) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _3 = &mut _4;
+        _2 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _3) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        _5 = copy ((*_1).1: u8);
+        _0 = Vec::<u8>::push(copy _2, move _5) -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        drop(_4) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_4) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}
+
+fn <impl at open_contract.rs:33:1: 33:23>::drop(_1: &mut Busy<'_>) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let mut _2: &std::cell::Cell<bool>;
+
+    bb0: {
+        _2 = no_retag copy ((*_1).0: &std::cell::Cell<bool>);
+        _0 = Cell::<bool>::set(copy _2, const false) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn acquire(_1: &Cell<bool>) -> Option<Busy<'_>> {
+    debug flag => _1;
+    let mut _0: std::option::Option<Busy<'_>>;
+    let mut _2: bool;
+    let mut _3: Busy<'_>;
+
+    bb0: {
+        _2 = Cell::<bool>::replace(copy _1, const true) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(move _2) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        _0 = Option::<Busy<'_>>::None;
+        goto -> bb4;
+    }
+
+    bb3: {
+        _3 = Busy::<'_>(copy _1);
+        _0 = Option::<Busy<'_>>::Some(move _3);
+        goto -> bb4;
+    }
+
+    bb4: {
+        return;
+    }
+}
+
+fn relay1(_1: &mut [u8]) -> &mut [u8] {
+    debug s => _1;
+    let mut _0: &mut [u8];
+    let mut _2: std::ops::RangeFrom<usize>;
+
+    bb0: {
+        _2 = std::ops::RangeFrom::<usize> { start: const 1_usize };
+        _0 = <[u8] as IndexMut<std::ops::RangeFrom<usize>>>::index_mut(copy _1, move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn relay2(_1: &mut [u8]) -> &mut [u8] {
+    debug s => _1;
+    let mut _0: &mut [u8];
+    let mut _2: &mut [u8];
+
+    bb0: {
+        _2 = relay1(copy _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = relay1(copy _2) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        return;
+    }
+}
+
+fn callback_and_return(_1: &mut [u8], _2: impl FnOnce(&mut [u8])) -> &mut [u8] {
+    debug s => _1;
+    debug callback => _2;
+    let mut _0: &mut [u8];
+    let _3: &mut [u8];
+    let mut _4: (&mut [u8], &mut [u8]);
+    let _5: ();
+    let mut _6: impl FnOnce(&mut [u8]);
+    let mut _7: (&mut [u8],);
+    let mut _8: bool;
+    scope 1 {
+        debug left => _3;
+        debug right => _0;
+    }
+
+    bb0: {
+        _8 = const false;
+        _8 = const true;
+        _4 = core::slice::<impl [u8]>::split_at_mut(copy _1, const 2_usize) -> [return: bb1, unwind: bb5];
+    }
+
+    bb1: {
+        _3 = move (_4.0: &mut [u8]);
+        _0 = move (_4.1: &mut [u8]);
+        _8 = const false;
+        _6 = move _2;
+        _7 = (copy _3,);
+        _5 = <impl FnOnce(&mut [u8]) as FnOnce<(&mut [u8],)>>::call_once(move _6, move _7) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        resume;
+    }
+
+    bb4 (cleanup): {
+        drop(_2) -> [return: bb3, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        switchInt(copy _8) -> [0: bb3, otherwise: bb4];
+    }
+}
+
+fn <impl at open_contract.rs:42:14: 42:32>::wake(_1: Arc<Noop>) -> () {
+    debug self => _1;
+    let mut _0: ();
+
+    bb0: {
+        drop(_1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn <impl at open_contract.rs:46:1: 46:22>::drop(_1: &mut TwoPoll) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let mut _2: &mut u32;
+    let mut _3: &mut std::sync::MutexGuard<'_, u32>;
+    let mut _4: std::sync::MutexGuard<'_, u32>;
+    let mut _5: std::result::Result<std::sync::MutexGuard<'_, u32>, std::sync::PoisonError<std::sync::MutexGuard<'_, u32>>>;
+    let mut _6: &std::sync::Mutex<u32>;
+    let _7: &CellLike;
+    let mut _8: &std::sync::Arc<CellLike>;
+    let mut _9: (u32, bool);
+
+    bb0: {
+        _8 = &((*_1).1: std::sync::Arc<CellLike>);
+        _7 = <Arc<CellLike> as Deref>::deref(move _8) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _6 = &((*_7).0: std::sync::Mutex<u32>);
+        _5 = std::sync::Mutex::<u32>::lock(move _6) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _4 = Result::<std::sync::MutexGuard<'_, u32>, PoisonError<std::sync::MutexGuard<'_, u32>>>::unwrap(move _5) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _3 = &mut _4;
+        _2 = <std::sync::MutexGuard<'_, u32> as DerefMut>::deref_mut(move _3) -> [return: bb4, unwind: bb7];
+    }
+
+    bb4: {
+        _9 = AddWithOverflow(copy (*_2), const 1_u32);
+        assert(!move (_9.1: bool), "attempt to compute `{} + {}`, which would overflow", copy (*_2), const 1_u32) -> [success: bb5, unwind: bb7];
+    }
+
+    bb5: {
+        (*_2) = move (_9.0: u32);
+        drop(_4) -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        return;
+    }
+
+    bb7 (cleanup): {
+        drop(_4) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+}
+
+fn <impl at open_contract.rs:47:1: 47:24>::poll(_1: Pin<&mut TwoPoll>, _2: &mut Context<'_>) -> Poll<u8> {
+    debug self => _1;
+    let mut _0: std::task::Poll<u8>;
+    let _3: &mut TwoPoll;
+    let mut _4: (u8, bool);
+    let mut _5: bool;
+    let mut _6: u8;
+    scope 1 {
+        debug me => _3;
+    }
+
+    bb0: {
+        _3 = Pin::<&mut TwoPoll>::get_mut(copy _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = AddWithOverflow(copy ((*_3).0: u8), const 1_u8);
+        assert(!move (_4.1: bool), "attempt to compute `{} + {}`, which would overflow", copy ((*_3).0: u8), const 1_u8) -> [success: bb2, unwind continue];
+    }
+
+    bb2: {
+        ((*_3).0: u8) = move (_4.0: u8);
+        _6 = copy ((*_3).0: u8);
+        _5 = Eq(move _6, const 1_u8);
+        switchInt(move _5) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        _0 = Poll::<u8>::Pending;
+        goto -> bb5;
+    }
+
+    bb4: {
+        _0 = Poll::<u8>::Ready(const 7_u8);
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: Store<3>;
+    let mut _2: [u8; 3];
+    let _3: ();
+    let mut _4: std::fmt::Arguments<'_>;
+    let mut _6: &usize;
+    let _7: usize;
+    let _8: &[u8];
+    let _9: &[u8];
+    let mut _10: &Store<3>;
+    let mut _12: core::fmt::rt::Argument<'_>;
+    let mut _13: &[u8; 12];
+    let _14: &[core::fmt::rt::Argument<'_>; 1];
+    let _15: ();
+    let mut _16: std::fmt::Arguments<'_>;
+    let mut _18: &u32;
+    let _19: u32;
+    let mut _20: &u32;
+    let _21: u32;
+    let mut _23: core::fmt::rt::Argument<'_>;
+    let mut _24: core::fmt::rt::Argument<'_>;
+    let mut _25: &[u8; 18];
+    let _26: &[core::fmt::rt::Argument<'_>; 2];
+    let _27: ();
+    let mut _28: std::fmt::Arguments<'_>;
+    let mut _30: &usize;
+    let _31: usize;
+    let mut _32: &Wrapper;
+    let mut _34: core::fmt::rt::Argument<'_>;
+    let mut _35: &[u8; 18];
+    let _36: &[core::fmt::rt::Argument<'_>; 1];
+    let _37: ();
+    let mut _38: std::fmt::Arguments<'_>;
+    let mut _40: &usize;
+    let _41: usize;
+    let mut _43: core::fmt::rt::Argument<'_>;
+    let mut _44: &[u8; 16];
+    let _45: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _47: std::vec::Vec<u8>;
+    let _49: Stamp<'_>;
+    let _50: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _51: ();
+    let mut _52: &mut std::vec::Vec<u8>;
+    let mut _53: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _54: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _55: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _57: &Stamp<'_>;
+    let _58: Stamp<'_>;
+    let _59: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _60: ();
+    let mut _61: &mut std::vec::Vec<u8>;
+    let mut _62: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _63: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _64: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _65: ();
+    let mut _66: std::fmt::Arguments<'_>;
+    let mut _68: &std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let _69: std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let mut _70: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let mut _72: core::fmt::rt::Argument<'_>;
+    let mut _73: &[u8; 21];
+    let _74: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _76: std::vec::Vec<u8>;
+    let _77: ();
+    let mut _78: std::option::Option<Stamp<'_>>;
+    let mut _79: Stamp<'_>;
+    let _80: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let mut _81: isize;
+    let mut _82: &mut std::vec::Vec<u8>;
+    let mut _83: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _84: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _85: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _86: ();
+    let mut _87: &mut std::vec::Vec<u8>;
+    let mut _88: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _89: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _90: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _91: ();
+    let mut _92: std::option::Option<Stamp<'_>>;
+    let mut _93: Stamp<'_>;
+    let _94: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let mut _95: isize;
+    let _97: ();
+    let mut _98: &mut std::vec::Vec<u8>;
+    let mut _99: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _100: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _101: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _102: ();
+    let mut _103: &mut std::vec::Vec<u8>;
+    let mut _104: &mut std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _105: std::cell::RefMut<'_, std::vec::Vec<u8>>;
+    let mut _106: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let _107: ();
+    let mut _108: std::fmt::Arguments<'_>;
+    let mut _110: &std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let _111: std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let mut _112: &std::cell::RefCell<std::vec::Vec<u8>>;
+    let mut _114: core::fmt::rt::Argument<'_>;
+    let mut _115: &[u8; 19];
+    let _116: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _121: &mut [u8];
+    let mut _122: &mut [u8; 6];
+    let mut _123: {closure@open_contract.rs:72:49: 72:55};
+    let mut _124: &std::cell::Cell<bool>;
+    let mut _125: &std::cell::Cell<u32>;
+    let mut _126: &mut [u8];
+    let _127: usize;
+    let mut _128: *const [u8];
+    let mut _129: usize;
+    let mut _130: bool;
+    let mut _131: bool;
+    let mut _132: &std::cell::Cell<bool>;
+    let mut _133: !;
+    let _134: ();
+    let mut _135: std::fmt::Arguments<'_>;
+    let mut _137: &u32;
+    let _138: u32;
+    let mut _139: &std::cell::Cell<u32>;
+    let mut _140: &[u8; 6];
+    let mut _142: core::fmt::rt::Argument<'_>;
+    let mut _143: core::fmt::rt::Argument<'_>;
+    let mut _144: &[u8; 32];
+    let _145: &[core::fmt::rt::Argument<'_>; 2];
+    let mut _147: std::panic::AssertUnwindSafe<{closure@open_contract.rs:81:46: 81:48}>;
+    let mut _148: {closure@open_contract.rs:81:46: 81:48};
+    let mut _149: &std::cell::Cell<bool>;
+    let mut _150: &std::cell::Cell<u32>;
+    let mut _151: bool;
+    let mut _152: &std::result::Result<!, std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let mut _153: bool;
+    let mut _154: &std::cell::Cell<bool>;
+    let mut _155: !;
+    let _156: ();
+    let mut _157: std::fmt::Arguments<'_>;
+    let mut _159: &bool;
+    let _160: bool;
+    let mut _161: bool;
+    let mut _162: &std::cell::Cell<bool>;
+    let mut _163: &u32;
+    let _164: u32;
+    let mut _165: &std::cell::Cell<u32>;
+    let mut _167: core::fmt::rt::Argument<'_>;
+    let mut _168: core::fmt::rt::Argument<'_>;
+    let mut _169: &[u8; 32];
+    let _170: &[core::fmt::rt::Argument<'_>; 2];
+    let mut _172: std::boxed::Box<std::mem::MaybeUninit<[u8; 3]>>;
+    let mut _174: &std::result::Result<(), std::collections::TryReserveError>;
+    let _175: std::result::Result<(), std::collections::TryReserveError>;
+    let mut _176: &mut std::vec::Vec<u8>;
+    let mut _177: (&std::vec::Vec<u8>, &[u8; 3]);
+    let mut _178: &std::vec::Vec<u8>;
+    let mut _179: &[u8; 3];
+    let mut _182: bool;
+    let _184: !;
+    let mut _185: std::option::Option<std::fmt::Arguments<'_>>;
+    let _186: ();
+    let mut _187: std::fmt::Arguments<'_>;
+    let mut _189: &bool;
+    let mut _191: core::fmt::rt::Argument<'_>;
+    let mut _192: &[u8; 33];
+    let _193: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _195: CellLike;
+    let mut _196: std::sync::Mutex<u32>;
+    let mut _198: std::sync::Arc<Noop>;
+    let _200: &std::task::Waker;
+    let mut _202: TwoPoll;
+    let mut _203: std::sync::Arc<CellLike>;
+    let mut _204: &std::sync::Arc<CellLike>;
+    let mut _205: bool;
+    let mut _206: &std::task::Poll<u8>;
+    let _207: std::task::Poll<u8>;
+    let mut _208: std::pin::Pin<&mut TwoPoll>;
+    let mut _209: &mut std::pin::Pin<std::boxed::Box<TwoPoll>>;
+    let mut _210: &mut std::task::Context<'_>;
+    let mut _211: !;
+    let _212: ();
+    let mut _213: std::pin::Pin<std::boxed::Box<TwoPoll>>;
+    let mut _214: (&u32, &u32);
+    let _215: &u32;
+    let mut _216: &std::sync::MutexGuard<'_, u32>;
+    let _217: std::sync::MutexGuard<'_, u32>;
+    let mut _218: std::result::Result<std::sync::MutexGuard<'_, u32>, std::sync::PoisonError<std::sync::MutexGuard<'_, u32>>>;
+    let mut _219: &std::sync::Mutex<u32>;
+    let _220: &CellLike;
+    let mut _221: &std::sync::Arc<CellLike>;
+    let mut _222: &u32;
+    let mut _225: bool;
+    let mut _226: u32;
+    let mut _227: u32;
+    let _229: !;
+    let mut _230: std::option::Option<std::fmt::Arguments<'_>>;
+    let _231: ();
+    let mut _232: std::fmt::Arguments<'_>;
+    let _234: &u32;
+    let mut _235: &std::sync::MutexGuard<'_, u32>;
+    let _236: std::sync::MutexGuard<'_, u32>;
+    let mut _237: std::result::Result<std::sync::MutexGuard<'_, u32>, std::sync::PoisonError<std::sync::MutexGuard<'_, u32>>>;
+    let mut _238: &std::sync::Mutex<u32>;
+    let _239: &CellLike;
+    let mut _240: &std::sync::Arc<CellLike>;
+    let mut _242: core::fmt::rt::Argument<'_>;
+    let mut _243: &[u8; 26];
+    let _244: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _245: &usize;
+    let mut _246: &u32;
+    let mut _247: &u32;
+    let mut _248: &usize;
+    let mut _249: &usize;
+    let mut _250: &std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let mut _251: &std::cell::Ref<'_, std::vec::Vec<u8>>;
+    let mut _252: &u32;
+    let mut _253: &[u8; 6];
+    let mut _254: &bool;
+    let mut _255: &u32;
+    let mut _256: &bool;
+    let mut _257: &u32;
+    let mut _258: bool;
+    let mut _259: *const std::mem::MaybeUninit<[u8; 3]>;
+    scope 1 {
+        debug store => _1;
+        let _5: (&usize,);
+        let _17: (&u32, &u32);
+        let _29: (&usize,);
+        let _39: (&usize,);
+        let _46: std::cell::RefCell<std::vec::Vec<u8>>;
+        scope 2 {
+            debug args => _5;
+            let _11: [core::fmt::rt::Argument<'_>; 1];
+            scope 3 {
+                debug args => _11;
+            }
+        }
+        scope 4 {
+            debug args => _17;
+            let _22: [core::fmt::rt::Argument<'_>; 2];
+            scope 5 {
+                debug args => _22;
+            }
+        }
+        scope 6 {
+            debug args => _29;
+            let _33: [core::fmt::rt::Argument<'_>; 1];
+            scope 7 {
+                debug args => _33;
+            }
+        }
+        scope 8 {
+            debug args => _39;
+            let _42: [core::fmt::rt::Argument<'_>; 1];
+            scope 9 {
+                debug args => _42;
+            }
+        }
+        scope 10 {
+            debug temporary_log => _46;
+            let _48: &Stamp<'_>;
+            let _56: u8;
+            let _67: (&std::cell::Ref<'_, std::vec::Vec<u8>>,);
+            let _75: std::cell::RefCell<std::vec::Vec<u8>>;
+            scope 11 {
+                debug _extended => _48;
+            }
+            scope 12 {
+                debug _value => _56;
+            }
+            scope 13 {
+                debug args => _67;
+                let _71: [core::fmt::rt::Argument<'_>; 1];
+                scope 14 {
+                    debug args => _71;
+                }
+            }
+            scope 15 {
+                debug pattern_log => _75;
+                let _96: Stamp<'_>;
+                let _109: (&std::cell::Ref<'_, std::vec::Vec<u8>>,);
+                let _117: std::cell::Cell<u32>;
+                scope 16 {
+                    debug value => _96;
+                }
+                scope 17 {
+                    debug args => _109;
+                    let _113: [core::fmt::rt::Argument<'_>; 1];
+                    scope 18 {
+                        debug args => _113;
+                    }
+                }
+                scope 19 {
+                    debug retained => _117;
+                    let _118: std::cell::Cell<bool>;
+                    scope 20 {
+                        debug busy => _118;
+                        let mut _119: [u8; 6];
+                        scope 21 {
+                            debug bytes => _119;
+                            let _120: &mut [u8];
+                            scope 22 {
+                                debug returned => _120;
+                                let _136: (&u32, &[u8; 6]);
+                                let _146: std::result::Result<!, std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+                                scope 23 {
+                                    debug args => _136;
+                                    let _141: [core::fmt::rt::Argument<'_>; 2];
+                                    scope 24 {
+                                        debug args => _141;
+                                    }
+                                }
+                                scope 25 {
+                                    debug result => _146;
+                                    let _158: (&bool, &u32);
+                                    let mut _171: std::vec::Vec<u8>;
+                                    let mut _260: *const ();
+                                    let mut _261: usize;
+                                    let mut _262: usize;
+                                    let mut _263: usize;
+                                    let mut _264: bool;
+                                    let mut _265: *const ();
+                                    let mut _266: usize;
+                                    let mut _267: bool;
+                                    let mut _268: bool;
+                                    let mut _269: bool;
+                                    let mut _270: bool;
+                                    scope 26 {
+                                        debug args => _158;
+                                        let _166: [core::fmt::rt::Argument<'_>; 2];
+                                        scope 27 {
+                                            debug args => _166;
+                                        }
+                                    }
+                                    scope 28 {
+                                        debug v => _171;
+                                        let _173: bool;
+                                        scope 29 {
+                                            debug capacity_error => _173;
+                                            let _180: &std::vec::Vec<u8>;
+                                            let _181: &[u8; 3];
+                                            let _188: (&bool,);
+                                            let _194: std::sync::Arc<CellLike>;
+                                            scope 30 {
+                                                debug left_val => _180;
+                                                debug right_val => _181;
+                                                let _183: core::panicking::AssertKind;
+                                                scope 31 {
+                                                    debug kind => _183;
+                                                }
+                                            }
+                                            scope 32 {
+                                                debug args => _188;
+                                                let _190: [core::fmt::rt::Argument<'_>; 1];
+                                                scope 33 {
+                                                    debug args => _190;
+                                                }
+                                            }
+                                            scope 34 {
+                                                debug drops => _194;
+                                                let _197: std::task::Waker;
+                                                scope 35 {
+                                                    debug waker => _197;
+                                                    let mut _199: std::task::Context<'_>;
+                                                    scope 36 {
+                                                        debug cx => _199;
+                                                        let mut _201: std::pin::Pin<std::boxed::Box<TwoPoll>>;
+                                                        scope 37 {
+                                                            debug future => _201;
+                                                            let _223: &u32;
+                                                            let _224: &u32;
+                                                            let _233: (&u32,);
+                                                            scope 38 {
+                                                                debug left_val => _223;
+                                                                debug right_val => _224;
+                                                                let _228: core::panicking::AssertKind;
+                                                                scope 39 {
+                                                                    debug kind => _228;
+                                                                }
+                                                            }
+                                                            scope 40 {
+                                                                debug args => _233;
+                                                                let _241: [core::fmt::rt::Argument<'_>; 1];
+                                                                scope 41 {
+                                                                    debug args => _241;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _258 = const false;
+        _2 = [const 1_u8, const 2_u8, const 3_u8];
+        _1 = Store::<3>(move _2);
+        _10 = &_1;
+        _9 = <Store<3> as Family>::view(move _10) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _8 = <[u8] as AsRef<[u8]>>::as_ref(copy _9) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _7 = PtrMetadata(copy _8);
+        _6 = &_7;
+        _5 = (move _6,);
+        _245 = no_retag copy (_5.0: &usize);
+        _12 = core::fmt::rt::Argument::<'_>::new_display::<usize>(copy _245) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _11 = [move _12];
+        _13 = const b"\x07family=\xc0\x01\n\x00";
+        _14 = &_11;
+        _4 = Arguments::<'_>::new::<12, 1>(move _13, copy _14) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        _3 = std::io::_print(move _4) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        _19 = instance::<A, 1>() -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        _18 = &_19;
+        _21 = instance::<B, 1>() -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        _20 = &_21;
+        _17 = (move _18, move _20);
+        _246 = no_retag copy (_17.0: &u32);
+        _23 = core::fmt::rt::Argument::<'_>::new_display::<u32>(copy _246) -> [return: bb8, unwind continue];
+    }
+
+    bb8: {
+        _247 = no_retag copy (_17.1: &u32);
+        _24 = core::fmt::rt::Argument::<'_>::new_display::<u32>(copy _247) -> [return: bb9, unwind continue];
+    }
+
+    bb9: {
+        _22 = [move _23, move _24];
+        _25 = const b"\ninstances=\xc0\x01,\xc0\x01\n\x00";
+        _26 = &_22;
+        _16 = Arguments::<'_>::new::<18, 2>(move _25, copy _26) -> [return: bb10, unwind continue];
+    }
+
+    bb10: {
+        _15 = std::io::_print(move _16) -> [return: bb11, unwind continue];
+    }
+
+    bb11: {
+        _32 = const main::promoted[2];
+        _31 = Wrapper::len(move _32) -> [return: bb12, unwind continue];
+    }
+
+    bb12: {
+        _30 = &_31;
+        _29 = (move _30,);
+        _248 = no_retag copy (_29.0: &usize);
+        _34 = core::fmt::rt::Argument::<'_>::new_display::<usize>(copy _248) -> [return: bb13, unwind continue];
+    }
+
+    bb13: {
+        _33 = [move _34];
+        _35 = const b"\rresolved_len=\xc0\x01\n\x00";
+        _36 = &_33;
+        _28 = Arguments::<'_>::new::<18, 1>(move _35, copy _36) -> [return: bb14, unwind continue];
+    }
+
+    bb14: {
+        _27 = std::io::_print(move _28) -> [return: bb15, unwind continue];
+    }
+
+    bb15: {
+        _41 = generated_count() -> [return: bb16, unwind continue];
+    }
+
+    bb16: {
+        _40 = &_41;
+        _39 = (move _40,);
+        _249 = no_retag copy (_39.0: &usize);
+        _43 = core::fmt::rt::Argument::<'_>::new_display::<usize>(copy _249) -> [return: bb17, unwind continue];
+    }
+
+    bb17: {
+        _42 = [move _43];
+        _44 = const b"\x0bmacro_word=\xc0\x01\n\x00";
+        _45 = &_42;
+        _38 = Arguments::<'_>::new::<16, 1>(move _44, copy _45) -> [return: bb18, unwind continue];
+    }
+
+    bb18: {
+        _37 = std::io::_print(move _38) -> [return: bb19, unwind continue];
+    }
+
+    bb19: {
+        _47 = Vec::<u8>::new() -> [return: bb20, unwind continue];
+    }
+
+    bb20: {
+        _46 = RefCell::<Vec<u8>>::new(move _47) -> [return: bb21, unwind continue];
+    }
+
+    bb21: {
+        _50 = &_46;
+        _49 = Stamp::<'_>(copy _50, const 1_u8);
+        _48 = &_49;
+        _55 = &_46;
+        _54 = RefCell::<Vec<u8>>::borrow_mut(move _55) -> [return: bb22, unwind: bb152];
+    }
+
+    bb22: {
+        _53 = &mut _54;
+        _52 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _53) -> [return: bb23, unwind: bb151];
+    }
+
+    bb23: {
+        _51 = Vec::<u8>::push(copy _52, const 10_u8) -> [return: bb24, unwind: bb151];
+    }
+
+    bb24: {
+        drop(_54) -> [return: bb25, unwind: bb152];
+    }
+
+    bb25: {
+        drop(_49) -> [return: bb26, unwind: bb153];
+    }
+
+    bb26: {
+        _59 = &_46;
+        _58 = Stamp::<'_>(copy _59, const 2_u8);
+        _57 = &_58;
+        _56 = Stamp::<'_>::id(copy _57) -> [return: bb27, unwind: bb150];
+    }
+
+    bb27: {
+        drop(_58) -> [return: bb28, unwind: bb153];
+    }
+
+    bb28: {
+        _64 = &_46;
+        _63 = RefCell::<Vec<u8>>::borrow_mut(move _64) -> [return: bb29, unwind: bb153];
+    }
+
+    bb29: {
+        _62 = &mut _63;
+        _61 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _62) -> [return: bb30, unwind: bb149];
+    }
+
+    bb30: {
+        _60 = Vec::<u8>::push(copy _61, const 20_u8) -> [return: bb31, unwind: bb149];
+    }
+
+    bb31: {
+        drop(_63) -> [return: bb32, unwind: bb153];
+    }
+
+    bb32: {
+        _70 = &_46;
+        _69 = RefCell::<Vec<u8>>::borrow(move _70) -> [return: bb33, unwind: bb153];
+    }
+
+    bb33: {
+        _68 = &_69;
+        _67 = (move _68,);
+        _250 = no_retag copy (_67.0: &std::cell::Ref<'_, std::vec::Vec<u8>>);
+        _72 = core::fmt::rt::Argument::<'_>::new_debug::<Ref<'_, Vec<u8>>>(copy _250) -> [return: bb34, unwind: bb148];
+    }
+
+    bb34: {
+        _71 = [move _72];
+        _73 = const b"\x10temporary_drops=\xc0\x01\n\x00";
+        _74 = &_71;
+        _66 = Arguments::<'_>::new::<21, 1>(move _73, copy _74) -> [return: bb35, unwind: bb148];
+    }
+
+    bb35: {
+        _65 = std::io::_print(move _66) -> [return: bb36, unwind: bb148];
+    }
+
+    bb36: {
+        drop(_69) -> [return: bb37, unwind: bb153];
+    }
+
+    bb37: {
+        _76 = Vec::<u8>::new() -> [return: bb38, unwind: bb153];
+    }
+
+    bb38: {
+        _75 = RefCell::<Vec<u8>>::new(move _76) -> [return: bb39, unwind: bb153];
+    }
+
+    bb39: {
+        _80 = &_75;
+        _79 = Stamp::<'_>(copy _80, const 3_u8);
+        _78 = Option::<Stamp<'_>>::Some(move _79);
+        _81 = discriminant(_78);
+        switchInt(move _81) -> [0: bb45, 1: bb41, otherwise: bb40];
+    }
+
+    bb40: {
+        unreachable;
+    }
+
+    bb41: {
+        _85 = &_75;
+        _84 = RefCell::<Vec<u8>>::borrow_mut(move _85) -> [return: bb42, unwind: bb146];
+    }
+
+    bb42: {
+        _83 = &mut _84;
+        _82 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _83) -> [return: bb43, unwind: bb145];
+    }
+
+    bb43: {
+        _77 = Vec::<u8>::push(copy _82, const 30_u8) -> [return: bb44, unwind: bb145];
+    }
+
+    bb44: {
+        drop(_84) -> [return: bb45, unwind: bb146];
+    }
+
+    bb45: {
+        drop(_78) -> [return: bb46, unwind: bb147];
+    }
+
+    bb46: {
+        _90 = &_75;
+        _89 = RefCell::<Vec<u8>>::borrow_mut(move _90) -> [return: bb47, unwind: bb147];
+    }
+
+    bb47: {
+        _88 = &mut _89;
+        _87 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _88) -> [return: bb48, unwind: bb144];
+    }
+
+    bb48: {
+        _86 = Vec::<u8>::push(copy _87, const 40_u8) -> [return: bb49, unwind: bb144];
+    }
+
+    bb49: {
+        drop(_89) -> [return: bb50, unwind: bb147];
+    }
+
+    bb50: {
+        _94 = &_75;
+        _93 = Stamp::<'_>(copy _94, const 4_u8);
+        _92 = Option::<Stamp<'_>>::Some(move _93);
+        _95 = discriminant(_92);
+        switchInt(move _95) -> [0: bb56, 1: bb51, otherwise: bb40];
+    }
+
+    bb51: {
+        _96 = move ((_92 as Some).0: Stamp<'_>);
+        _97 = std::mem::drop::<Stamp<'_>>(copy _96) -> [return: bb52, unwind: bb147];
+    }
+
+    bb52: {
+        _101 = &_75;
+        _100 = RefCell::<Vec<u8>>::borrow_mut(move _101) -> [return: bb53, unwind: bb147];
+    }
+
+    bb53: {
+        _99 = &mut _100;
+        _98 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _99) -> [return: bb54, unwind: bb143];
+    }
+
+    bb54: {
+        _91 = Vec::<u8>::push(copy _98, const 50_u8) -> [return: bb55, unwind: bb143];
+    }
+
+    bb55: {
+        drop(_100) -> [return: bb56, unwind: bb147];
+    }
+
+    bb56: {
+        _106 = &_75;
+        _105 = RefCell::<Vec<u8>>::borrow_mut(move _106) -> [return: bb57, unwind: bb147];
+    }
+
+    bb57: {
+        _104 = &mut _105;
+        _103 = <RefMut<'_, Vec<u8>> as DerefMut>::deref_mut(move _104) -> [return: bb58, unwind: bb142];
+    }
+
+    bb58: {
+        _102 = Vec::<u8>::push(copy _103, const 60_u8) -> [return: bb59, unwind: bb142];
+    }
+
+    bb59: {
+        drop(_105) -> [return: bb60, unwind: bb147];
+    }
+
+    bb60: {
+        _112 = &_75;
+        _111 = RefCell::<Vec<u8>>::borrow(move _112) -> [return: bb61, unwind: bb147];
+    }
+
+    bb61: {
+        _110 = &_111;
+        _109 = (move _110,);
+        _251 = no_retag copy (_109.0: &std::cell::Ref<'_, std::vec::Vec<u8>>);
+        _114 = core::fmt::rt::Argument::<'_>::new_debug::<Ref<'_, Vec<u8>>>(copy _251) -> [return: bb62, unwind: bb141];
+    }
+
+    bb62: {
+        _113 = [move _114];
+        _115 = const b"\x0epattern_drops=\xc0\x01\n\x00";
+        _116 = &_113;
+        _108 = Arguments::<'_>::new::<19, 1>(move _115, copy _116) -> [return: bb63, unwind: bb141];
+    }
+
+    bb63: {
+        _107 = std::io::_print(move _108) -> [return: bb64, unwind: bb141];
+    }
+
+    bb64: {
+        drop(_111) -> [return: bb65, unwind: bb147];
+    }
+
+    bb65: {
+        _117 = Cell::<u32>::new(const 0_u32) -> [return: bb66, unwind: bb147];
+    }
+
+    bb66: {
+        _118 = Cell::<bool>::new(const false) -> [return: bb67, unwind: bb147];
+    }
+
+    bb67: {
+        _119 = [const 0_u8, const 1_u8, const 2_u8, const 3_u8, const 4_u8, const 5_u8];
+        _122 = &mut _119;
+        _121 = copy _122 as &mut [u8] (PointerCoercion(Unsize, Implicit));
+        _124 = &_118;
+        _125 = &_117;
+        _123 = {closure@open_contract.rs:72:49: 72:55} { busy: move _124, retained: move _125 };
+        _120 = callback_and_return::<{closure@open_contract.rs:72:49: 72:55}>(move _121, move _123) -> [return: bb68, unwind: bb147];
+    }
+
+    bb68: {
+        _126 = relay2(copy _120) -> [return: bb69, unwind: bb147];
+    }
+
+    bb69: {
+        _127 = const 0_usize;
+        _128 = &raw const (fake) (*_126);
+        _129 = PtrMetadata(move _128);
+        _130 = Lt(copy _127, copy _129);
+        assert(move _130, "index out of bounds: the length is {} but the index is {}", move _129, copy _127) -> [success: bb70, unwind: bb147];
+    }
+
+    bb70: {
+        (*_126)[_127] = const 8_u8;
+        _132 = &_118;
+        _131 = Cell::<bool>::get(move _132) -> [return: bb71, unwind: bb147];
+    }
+
+    bb71: {
+        switchInt(move _131) -> [0: bb73, otherwise: bb72];
+    }
+
+    bb72: {
+        _133 = core::panicking::panic(const "assertion failed: !busy.get()") -> bb147;
+    }
+
+    bb73: {
+        _139 = &_117;
+        _138 = Cell::<u32>::get(move _139) -> [return: bb74, unwind: bb147];
+    }
+
+    bb74: {
+        _137 = &_138;
+        _140 = &_119;
+        _136 = (move _137, move _140);
+        _252 = no_retag copy (_136.0: &u32);
+        _142 = core::fmt::rt::Argument::<'_>::new_display::<u32>(copy _252) -> [return: bb75, unwind: bb147];
+    }
+
+    bb75: {
+        _253 = no_retag copy (_136.1: &[u8; 6]);
+        _143 = core::fmt::rt::Argument::<'_>::new_debug::<[u8; 6]>(copy _253) -> [return: bb76, unwind: bb147];
+    }
+
+    bb76: {
+        _141 = [move _142, move _143];
+        _144 = const b"\x12callback_retained=\xc0\x07,bytes=\xc0\x01\n\x00";
+        _145 = &_141;
+        _135 = Arguments::<'_>::new::<32, 2>(move _144, copy _145) -> [return: bb77, unwind: bb147];
+    }
+
+    bb77: {
+        _134 = std::io::_print(move _135) -> [return: bb78, unwind: bb147];
+    }
+
+    bb78: {
+        _149 = &_118;
+        _150 = &_117;
+        _148 = {closure@open_contract.rs:81:46: 81:48} { busy: move _149, retained: move _150 };
+        _147 = AssertUnwindSafe::<{closure@open_contract.rs:81:46: 81:48}>(move _148);
+        _146 = std::panic::catch_unwind::<AssertUnwindSafe<{closure@open_contract.rs:81:46: 81:48}>, !>(move _147) -> [return: bb79, unwind: bb147];
+    }
+
+    bb79: {
+        _152 = &_146;
+        _151 = Result::<!, Box<dyn Any + Send>>::is_err(move _152) -> [return: bb80, unwind: bb140];
+    }
+
+    bb80: {
+        switchInt(move _151) -> [0: bb84, otherwise: bb81];
+    }
+
+    bb81: {
+        _154 = &_118;
+        _153 = Cell::<bool>::get(move _154) -> [return: bb82, unwind: bb140];
+    }
+
+    bb82: {
+        switchInt(move _153) -> [0: bb83, otherwise: bb84];
+    }
+
+    bb83: {
+        _162 = &_118;
+        _161 = Cell::<bool>::get(move _162) -> [return: bb85, unwind: bb140];
+    }
+
+    bb84: {
+        _155 = core::panicking::panic(const "assertion failed: result.is_err() && !busy.get()") -> bb140;
+    }
+
+    bb85: {
+        _160 = Not(move _161);
+        _159 = &_160;
+        _165 = &_117;
+        _164 = Cell::<u32>::get(move _165) -> [return: bb86, unwind: bb140];
+    }
+
+    bb86: {
+        _163 = &_164;
+        _158 = (move _159, move _163);
+        _254 = no_retag copy (_158.0: &bool);
+        _167 = core::fmt::rt::Argument::<'_>::new_display::<bool>(copy _254) -> [return: bb87, unwind: bb140];
+    }
+
+    bb87: {
+        _255 = no_retag copy (_158.1: &u32);
+        _168 = core::fmt::rt::Argument::<'_>::new_display::<u32>(copy _255) -> [return: bb88, unwind: bb140];
+    }
+
+    bb88: {
+        _166 = [move _167, move _168];
+        _169 = const b"\x0fpanic_restored=\xc0\n,retained=\xc0\x01\n\x00";
+        _170 = &_166;
+        _157 = Arguments::<'_>::new::<32, 2>(move _169, copy _170) -> [return: bb89, unwind: bb140];
+    }
+
+    bb89: {
+        _156 = std::io::_print(move _157) -> [return: bb90, unwind: bb140];
+    }
+
+    bb90: {
+        _172 = Box::<[u8; 3]>::new_uninit() -> [return: bb91, unwind: bb140];
+    }
+
+    bb91: {
+        _259 = copy (_172.0: std::ptr::Unique<std::mem::MaybeUninit<[u8; 3]>>) as *const std::mem::MaybeUninit<[u8; 3]> (BoxDerefTransmute);
+        _260 = copy _259 as *const () (PtrToPtr);
+        _261 = copy _260 as usize (Transmute);
+        _262 = Sub(const <std::mem::MaybeUninit<[u8; 3]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _263 = BitAnd(copy _261, copy _262);
+        _264 = Eq(copy _263, const 0_usize);
+        assert(copy _264, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[u8; 3]> as std::mem::SizedTypeProperties>::ALIGN, copy _261) -> [success: bb157, unwind unreachable];
+    }
+
+    bb92: {
+        _176 = &mut _171;
+        _175 = Vec::<u8>::try_reserve(move _176, const core::num::<impl usize>::MAX) -> [return: bb93, unwind: bb139];
+    }
+
+    bb93: {
+        _174 = &_175;
+        _173 = Result::<(), TryReserveError>::is_err(move _174) -> [return: bb94, unwind: bb139];
+    }
+
+    bb94: {
+        _178 = &_171;
+        _179 = const main::promoted[1];
+        _177 = (move _178, move _179);
+        _180 = copy (_177.0: &std::vec::Vec<u8>);
+        _181 = copy (_177.1: &[u8; 3]);
+        _182 = <Vec<u8> as PartialEq<[u8; 3]>>::eq(copy _180, copy _181) -> [return: bb95, unwind: bb139];
+    }
+
+    bb95: {
+        switchInt(move _182) -> [0: bb97, otherwise: bb96];
+    }
+
+    bb96: {
+        _189 = &_173;
+        _188 = (move _189,);
+        _256 = no_retag copy (_188.0: &bool);
+        _191 = core::fmt::rt::Argument::<'_>::new_display::<bool>(copy _256) -> [return: bb98, unwind: bb139];
+    }
+
+    bb97: {
+        _183 = core::panicking::AssertKind::Eq;
+        _185 = Option::<Arguments<'_>>::None;
+        _184 = core::panicking::assert_failed::<Vec<u8>, [u8; 3]>(copy _183, copy _180, copy _181, move _185) -> bb139;
+    }
+
+    bb98: {
+        _190 = [move _191];
+        _192 = const b"\x1ccapacity_overflow_preserves=\xc0\x01\n\x00";
+        _193 = &_190;
+        _187 = Arguments::<'_>::new::<33, 1>(move _192, copy _193) -> [return: bb99, unwind: bb139];
+    }
+
+    bb99: {
+        _186 = std::io::_print(move _187) -> [return: bb100, unwind: bb139];
+    }
+
+    bb100: {
+        _196 = std::sync::Mutex::<u32>::new(const 0_u32) -> [return: bb101, unwind: bb139];
+    }
+
+    bb101: {
+        _195 = CellLike(move _196);
+        _194 = Arc::<CellLike>::new(move _195) -> [return: bb102, unwind: bb139];
+    }
+
+    bb102: {
+        _198 = Arc::<Noop>::new(const Noop) -> [return: bb103, unwind: bb138];
+    }
+
+    bb103: {
+        _197 = <Waker as From<Arc<Noop>>>::from(move _198) -> [return: bb104, unwind: bb138];
+    }
+
+    bb104: {
+        _200 = &_197;
+        _199 = Context::<'_>::from_waker(copy _200) -> [return: bb105, unwind: bb137];
+    }
+
+    bb105: {
+        _204 = &_194;
+        _203 = <Arc<CellLike> as Clone>::clone(move _204) -> [return: bb106, unwind: bb137];
+    }
+
+    bb106: {
+        _202 = TwoPoll { state: const 0_u8, drops: move _203 };
+        _201 = Box::<TwoPoll>::pin(move _202) -> [return: bb107, unwind: bb137];
+    }
+
+    bb107: {
+        _258 = const true;
+        _209 = &mut _201;
+        _208 = Pin::<Box<TwoPoll>>::as_mut(move _209) -> [return: bb108, unwind: bb156];
+    }
+
+    bb108: {
+        _210 = &mut _199;
+        _207 = <TwoPoll as Future>::poll(move _208, copy _210) -> [return: bb109, unwind: bb156];
+    }
+
+    bb109: {
+        _206 = &_207;
+        _205 = Poll::<u8>::is_pending(move _206) -> [return: bb110, unwind: bb156];
+    }
+
+    bb110: {
+        switchInt(move _205) -> [0: bb112, otherwise: bb111];
+    }
+
+    bb111: {
+        _258 = const false;
+        _213 = move _201;
+        _212 = std::mem::drop::<Pin<Box<TwoPoll>>>(move _213) -> [return: bb113, unwind: bb156];
+    }
+
+    bb112: {
+        _211 = core::panicking::panic(const "assertion failed: future.as_mut().poll(&mut cx).is_pending()") -> bb156;
+    }
+
+    bb113: {
+        _221 = &_194;
+        _220 = <Arc<CellLike> as Deref>::deref(move _221) -> [return: bb114, unwind: bb156];
+    }
+
+    bb114: {
+        _219 = &((*_220).0: std::sync::Mutex<u32>);
+        _218 = std::sync::Mutex::<u32>::lock(move _219) -> [return: bb115, unwind: bb156];
+    }
+
+    bb115: {
+        _217 = Result::<std::sync::MutexGuard<'_, u32>, PoisonError<std::sync::MutexGuard<'_, u32>>>::unwrap(move _218) -> [return: bb116, unwind: bb156];
+    }
+
+    bb116: {
+        _216 = &_217;
+        _215 = <std::sync::MutexGuard<'_, u32> as Deref>::deref(move _216) -> [return: bb117, unwind: bb136];
+    }
+
+    bb117: {
+        _222 = const main::promoted[0];
+        _214 = (copy _215, move _222);
+        _223 = copy (_214.0: &u32);
+        _224 = copy (_214.1: &u32);
+        _226 = copy (*_223);
+        _227 = copy (*_224);
+        _225 = Eq(move _226, move _227);
+        switchInt(move _225) -> [0: bb119, otherwise: bb118];
+    }
+
+    bb118: {
+        drop(_217) -> [return: bb120, unwind: bb156];
+    }
+
+    bb119: {
+        _228 = core::panicking::AssertKind::Eq;
+        _230 = Option::<Arguments<'_>>::None;
+        _229 = core::panicking::assert_failed::<u32, u32>(copy _228, copy _223, copy _224, move _230) -> bb136;
+    }
+
+    bb120: {
+        _240 = &_194;
+        _239 = <Arc<CellLike> as Deref>::deref(move _240) -> [return: bb121, unwind: bb156];
+    }
+
+    bb121: {
+        _238 = &((*_239).0: std::sync::Mutex<u32>);
+        _237 = std::sync::Mutex::<u32>::lock(move _238) -> [return: bb122, unwind: bb156];
+    }
+
+    bb122: {
+        _236 = Result::<std::sync::MutexGuard<'_, u32>, PoisonError<std::sync::MutexGuard<'_, u32>>>::unwrap(move _237) -> [return: bb123, unwind: bb156];
+    }
+
+    bb123: {
+        _235 = &_236;
+        _234 = <std::sync::MutexGuard<'_, u32> as Deref>::deref(move _235) -> [return: bb124, unwind: bb135];
+    }
+
+    bb124: {
+        _233 = (copy _234,);
+        _257 = no_retag copy (_233.0: &u32);
+        _242 = core::fmt::rt::Argument::<'_>::new_display::<u32>(copy _257) -> [return: bb125, unwind: bb135];
+    }
+
+    bb125: {
+        _241 = [move _242];
+        _243 = const b"\x15pending_future_drops=\xc0\x01\n\x00";
+        _244 = &_241;
+        _232 = Arguments::<'_>::new::<26, 1>(move _243, copy _244) -> [return: bb126, unwind: bb135];
+    }
+
+    bb126: {
+        _231 = std::io::_print(move _232) -> [return: bb127, unwind: bb135];
+    }
+
+    bb127: {
+        drop(_236) -> [return: bb128, unwind: bb156];
+    }
+
+    bb128: {
+        _258 = const false;
+        drop(_197) -> [return: bb129, unwind: bb138];
+    }
+
+    bb129: {
+        drop(_194) -> [return: bb130, unwind: bb139];
+    }
+
+    bb130: {
+        drop(_171) -> [return: bb131, unwind: bb140];
+    }
+
+    bb131: {
+        drop(_146) -> [return: bb132, unwind: bb147];
+    }
+
+    bb132: {
+        drop(_75) -> [return: bb133, unwind: bb153];
+    }
+
+    bb133: {
+        drop(_46) -> [return: bb134, unwind continue];
+    }
+
+    bb134: {
+        return;
+    }
+
+    bb135 (cleanup): {
+        drop(_236) -> [return: bb156, unwind terminate(cleanup)];
+    }
+
+    bb136 (cleanup): {
+        drop(_217) -> [return: bb156, unwind terminate(cleanup)];
+    }
+
+    bb137 (cleanup): {
+        drop(_197) -> [return: bb138, unwind terminate(cleanup)];
+    }
+
+    bb138 (cleanup): {
+        drop(_194) -> [return: bb139, unwind terminate(cleanup)];
+    }
+
+    bb139 (cleanup): {
+        drop(_171) -> [return: bb140, unwind terminate(cleanup)];
+    }
+
+    bb140 (cleanup): {
+        drop(_146) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb141 (cleanup): {
+        drop(_111) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb142 (cleanup): {
+        drop(_105) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb143 (cleanup): {
+        drop(_100) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb144 (cleanup): {
+        drop(_89) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb145 (cleanup): {
+        drop(_84) -> [return: bb146, unwind terminate(cleanup)];
+    }
+
+    bb146 (cleanup): {
+        drop(_78) -> [return: bb147, unwind terminate(cleanup)];
+    }
+
+    bb147 (cleanup): {
+        drop(_75) -> [return: bb153, unwind terminate(cleanup)];
+    }
+
+    bb148 (cleanup): {
+        drop(_69) -> [return: bb153, unwind terminate(cleanup)];
+    }
+
+    bb149 (cleanup): {
+        drop(_63) -> [return: bb153, unwind terminate(cleanup)];
+    }
+
+    bb150 (cleanup): {
+        drop(_58) -> [return: bb153, unwind terminate(cleanup)];
+    }
+
+    bb151 (cleanup): {
+        drop(_54) -> [return: bb152, unwind terminate(cleanup)];
+    }
+
+    bb152 (cleanup): {
+        drop(_49) -> [return: bb153, unwind terminate(cleanup)];
+    }
+
+    bb153 (cleanup): {
+        drop(_46) -> [return: bb154, unwind terminate(cleanup)];
+    }
+
+    bb154 (cleanup): {
+        resume;
+    }
+
+    bb155 (cleanup): {
+        drop(_201) -> [return: bb137, unwind terminate(cleanup)];
+    }
+
+    bb156 (cleanup): {
+        switchInt(copy _258) -> [0: bb137, otherwise: bb155];
+    }
+
+    bb157: {
+        _265 = copy _259 as *const () (PtrToPtr);
+        _266 = copy _265 as usize (Transmute);
+        _267 = Ne(const <std::mem::MaybeUninit<[u8; 3]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _268 = Eq(copy _266, const 0_usize);
+        _269 = BitAnd(copy _268, copy _267);
+        _270 = Not(copy _269);
+        assert(copy _270, "null pointer dereference occurred") -> [success: bb158, unwind unreachable];
+    }
+
+    bb158: {
+        ((((*_259).1: std::mem::ManuallyDrop<[u8; 3]>).0: std::mem::MaybeDangling<[u8; 3]>).0: [u8; 3]) = [const 1_u8, const 2_u8, const 3_u8];
+        _171 = std::boxed::box_assume_init_into_vec_unsafe::<u8, 3>(copy _172) -> [return: bb92, unwind: bb140];
+    }
+}
+
+alloc13 (size: 26, align: 1) {
+    0x00 │ 15 70 65 6e 64 69 6e 67 5f 66 75 74 75 72 65 5f │ .pending_future_
+    0x10 │ 64 72 6f 70 73 3d c0 01 0a 00                   │ drops=....
+}
+
+alloc12 (size: 60, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 66 75 74 75 72 65 2e 61 73 5f 6d 75 74 28 │ : future.as_mut(
+    0x20 │ 29 2e 70 6f 6c 6c 28 26 6d 75 74 20 63 78 29 2e │ ).poll(&mut cx).
+    0x30 │ 69 73 5f 70 65 6e 64 69 6e 67 28 29             │ is_pending()
+}
+
+alloc11 (size: 33, align: 1) {
+    0x00 │ 1c 63 61 70 61 63 69 74 79 5f 6f 76 65 72 66 6c │ .capacity_overfl
+    0x10 │ 6f 77 5f 70 72 65 73 65 72 76 65 73 3d c0 01 0a │ ow_preserves=...
+    0x20 │ 00                                              │ .
+}
+
+alloc10 (size: 32, align: 1) {
+    0x00 │ 0f 70 61 6e 69 63 5f 72 65 73 74 6f 72 65 64 3d │ .panic_restored=
+    0x10 │ c0 0a 2c 72 65 74 61 69 6e 65 64 3d c0 01 0a 00 │ ..,retained=....
+}
+
+alloc9 (size: 48, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 72 65 73 75 6c 74 2e 69 73 5f 65 72 72 28 │ : result.is_err(
+    0x20 │ 29 20 26 26 20 21 62 75 73 79 2e 67 65 74 28 29 │ ) && !busy.get()
+}
+
+alloc8 (size: 32, align: 1) {
+    0x00 │ 12 63 61 6c 6c 62 61 63 6b 5f 72 65 74 61 69 6e │ .callback_retain
+    0x10 │ 65 64 3d c0 07 2c 62 79 74 65 73 3d c0 01 0a 00 │ ed=..,bytes=....
+}
+
+alloc7 (size: 29, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 21 62 75 73 79 2e 67 65 74 28 29          │ : !busy.get()
+}
+
+alloc6 (size: 19, align: 1) {
+    0x00 │ 0e 70 61 74 74 65 72 6e 5f 64 72 6f 70 73 3d c0 │ .pattern_drops=.
+    0x10 │ 01 0a 00                                        │ ...
+}
+
+alloc5 (size: 21, align: 1) {
+    0x00 │ 10 74 65 6d 70 6f 72 61 72 79 5f 64 72 6f 70 73 │ .temporary_drops
+    0x10 │ 3d c0 01 0a 00                                  │ =....
+}
+
+alloc4 (size: 16, align: 1) {
+    0b 6d 61 63 72 6f 5f 77 6f 72 64 3d c0 01 0a 00 │ .macro_word=....
+}
+
+alloc3 (size: 18, align: 1) {
+    0x00 │ 0d 72 65 73 6f 6c 76 65 64 5f 6c 65 6e 3d c0 01 │ .resolved_len=..
+    0x10 │ 0a 00                                           │ ..
+}
+
+alloc2 (size: 18, align: 1) {
+    0x00 │ 0a 69 6e 73 74 61 6e 63 65 73 3d c0 01 2c c0 01 │ .instances=..,..
+    0x10 │ 0a 00                                           │ ..
+}
+
+alloc1 (size: 12, align: 1) {
+    07 66 61 6d 69 6c 79 3d c0 01 0a 00             │ .family=....
+}
+
+const main::promoted[0]: &u32 = {
+    let mut _0: &u32;
+    let mut _1: u32;
+
+    bb0: {
+        _1 = const 1_u32;
+        _0 = &_1;
+        return;
+    }
+}
+
+const main::promoted[1]: &[u8; 3] = {
+    let mut _0: &[u8; 3];
+    let mut _1: [u8; 3];
+
+    bb0: {
+        _1 = [const 1_u8, const 2_u8, const 3_u8];
+        _0 = &_1;
+        return;
+    }
+}
+
+const main::promoted[2]: &Wrapper = {
+    let mut _0: &Wrapper;
+    let mut _1: Wrapper;
+    let mut _2: [u8; 2];
+
+    bb0: {
+        _2 = [const 1_u8, const 2_u8];
+        _1 = Wrapper(move _2);
+        _0 = &_1;
+        return;
+    }
+}
+
+const main::{constant#0}: u32 = const 1_u32;
+
+const main::{constant#1}: u32 = const 1_u32;
+
+fn main::{closure#0}(_1: {closure@open_contract.rs:72:49: 72:55}, _2: &mut [u8]) -> () {
+    debug left => _2;
+    debug busy => (*(_1.0: &std::cell::Cell<bool>));
+    debug retained => (*(_1.1: &std::cell::Cell<u32>));
+    let mut _0: ();
+    let _3: Busy<'_>;
+    let mut _4: std::option::Option<Busy<'_>>;
+    let mut _5: bool;
+    let mut _6: &std::option::Option<Busy<'_>>;
+    let _7: std::option::Option<Busy<'_>>;
+    let mut _8: !;
+    let _9: ();
+    let mut _10: u32;
+    let mut _11: u32;
+    let mut _12: (u32, bool);
+    let _13: usize;
+    let mut _14: *const [u8];
+    let mut _15: usize;
+    let mut _16: bool;
+    let mut _17: &std::cell::Cell<bool>;
+    let mut _18: &std::cell::Cell<bool>;
+    let mut _19: &std::cell::Cell<u32>;
+    let mut _20: &std::cell::Cell<u32>;
+    scope 1 {
+        debug _guard => _3;
+    }
+
+    bb0: {
+        _17 = no_retag copy (_1.0: &std::cell::Cell<bool>);
+        _4 = acquire(copy _17) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _3 = Option::<Busy<'_>>::unwrap(move _4) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _18 = no_retag copy (_1.0: &std::cell::Cell<bool>);
+        _7 = acquire(copy _18) -> [return: bb3, unwind: bb15];
+    }
+
+    bb3: {
+        _6 = &_7;
+        _5 = Option::<Busy<'_>>::is_none(move _6) -> [return: bb4, unwind: bb14];
+    }
+
+    bb4: {
+        switchInt(move _5) -> [0: bb6, otherwise: bb5];
+    }
+
+    bb5: {
+        drop(_7) -> [return: bb8, unwind: bb15];
+    }
+
+    bb6: {
+        drop(_7) -> [return: bb7, unwind: bb15];
+    }
+
+    bb7: {
+        _8 = core::panicking::panic(const "assertion failed: acquire(&busy).is_none()") -> bb15;
+    }
+
+    bb8: {
+        _19 = no_retag copy (_1.1: &std::cell::Cell<u32>);
+        _20 = no_retag copy (_1.1: &std::cell::Cell<u32>);
+        _11 = Cell::<u32>::get(copy _20) -> [return: bb9, unwind: bb15];
+    }
+
+    bb9: {
+        _12 = AddWithOverflow(copy _11, const 1_u32);
+        assert(!move (_12.1: bool), "attempt to compute `{} + {}`, which would overflow", move _11, const 1_u32) -> [success: bb10, unwind: bb15];
+    }
+
+    bb10: {
+        _10 = move (_12.0: u32);
+        _9 = Cell::<u32>::set(copy _19, move _10) -> [return: bb11, unwind: bb15];
+    }
+
+    bb11: {
+        _13 = const 0_usize;
+        _14 = &raw const (fake) (*_2);
+        _15 = PtrMetadata(move _14);
+        _16 = Lt(copy _13, copy _15);
+        assert(move _16, "index out of bounds: the length is {} but the index is {}", move _15, copy _13) -> [success: bb12, unwind: bb15];
+    }
+
+    bb12: {
+        (*_2)[_13] = const 9_u8;
+        drop(_3) -> [return: bb13, unwind continue];
+    }
+
+    bb13: {
+        return;
+    }
+
+    bb14 (cleanup): {
+        drop(_7) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        drop(_3) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        resume;
+    }
+}
+
+alloc14 (size: 42, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 61 63 71 75 69 72 65 28 26 62 75 73 79 29 │ : acquire(&busy)
+    0x20 │ 2e 69 73 5f 6e 6f 6e 65 28 29                   │ .is_none()
+}
+
+fn main::{closure#1}(_1: &{closure@open_contract.rs:81:46: 81:48}) -> ! {
+    debug busy => (*((*_1).0: &std::cell::Cell<bool>));
+    debug retained => (*((*_1).1: &std::cell::Cell<u32>));
+    let mut _0: !;
+    let _2: Busy<'_>;
+    let mut _3: std::option::Option<Busy<'_>>;
+    let _4: ();
+    let mut _5: u32;
+    let mut _6: u32;
+    let mut _7: (u32, bool);
+    let _8: !;
+    let mut _9: std::fmt::Arguments<'_>;
+    let mut _10: &std::cell::Cell<bool>;
+    let mut _11: &std::cell::Cell<u32>;
+    let mut _12: &std::cell::Cell<u32>;
+    scope 1 {
+        debug _guard => _2;
+    }
+
+    bb0: {
+        _10 = no_retag copy ((*_1).0: &std::cell::Cell<bool>);
+        _3 = acquire(copy _10) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = Option::<Busy<'_>>::unwrap(move _3) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _11 = no_retag copy ((*_1).1: &std::cell::Cell<u32>);
+        _12 = no_retag copy ((*_1).1: &std::cell::Cell<u32>);
+        _6 = Cell::<u32>::get(copy _12) -> [return: bb3, unwind: bb7];
+    }
+
+    bb3: {
+        _7 = AddWithOverflow(copy _6, const 1_u32);
+        assert(!move (_7.1: bool), "attempt to compute `{} + {}`, which would overflow", move _6, const 1_u32) -> [success: bb4, unwind: bb7];
+    }
+
+    bb4: {
+        _5 = move (_7.0: u32);
+        _4 = Cell::<u32>::set(copy _11, move _5) -> [return: bb5, unwind: bb7];
+    }
+
+    bb5: {
+        _9 = Arguments::<'_>::from_str(const "owned expected callback panic") -> [return: bb6, unwind: bb7];
+    }
+
+    bb6: {
+        _8 = std::rt::panic_fmt(move _9) -> bb7;
+    }
+
+    bb7 (cleanup): {
+        drop(_2) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+}
+
+alloc15 (size: 29, align: 1) {
+    0x00 │ 6f 77 6e 65 64 20 65 78 70 65 63 74 65 64 20 63 │ owned expected c
+    0x10 │ 61 6c 6c 62 61 63 6b 20 70 61 6e 69 63          │ allback panic
+}
+
+fn Store(_1: [u8; N]) -> Store<N> {
+    let mut _0: Store<N>;
+
+    bb0: {
+        _0 = Store::<N>(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Store(_1: [u8; N]) -> Store<N> {
+    let mut _0: Store<N>;
+
+    bb0: {
+        _0 = Store::<N>(move _1);
+        return;
+    }
+}
+
+fn Wrapper(_1: [u8; 2]) -> Wrapper {
+    let mut _0: Wrapper;
+
+    bb0: {
+        _0 = Wrapper(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Wrapper(_1: [u8; 2]) -> Wrapper {
+    let mut _0: Wrapper;
+
+    bb0: {
+        _0 = Wrapper(move _1);
+        return;
+    }
+}
+
+fn Stamp(_1: &RefCell<Vec<u8>>, _2: u8) -> Stamp<'_> {
+    let mut _0: Stamp<'_>;
+
+    bb0: {
+        _0 = Stamp::<'_>(move _1, move _2);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Stamp(_1: &RefCell<Vec<u8>>, _2: u8) -> Stamp<'_> {
+    let mut _0: Stamp<'_>;
+
+    bb0: {
+        _0 = Stamp::<'_>(move _1, move _2);
+        return;
+    }
+}
+
+fn Busy(_1: &Cell<bool>) -> Busy<'_> {
+    let mut _0: Busy<'_>;
+
+    bb0: {
+        _0 = Busy::<'_>(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Busy(_1: &Cell<bool>) -> Busy<'_> {
+    let mut _0: Busy<'_>;
+
+    bb0: {
+        _0 = Busy::<'_>(move _1);
+        return;
+    }
+}
+
+fn CellLike(_1: std::sync::Mutex<u32>) -> CellLike {
+    let mut _0: CellLike;
+
+    bb0: {
+        _0 = CellLike(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn CellLike(_1: std::sync::Mutex<u32>) -> CellLike {
+    let mut _0: CellLike;
+
+    bb0: {
+        _0 = CellLike(move _1);
+        return;
+    }
+}

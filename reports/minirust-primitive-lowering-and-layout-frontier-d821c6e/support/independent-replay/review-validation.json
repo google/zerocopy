@@ -1,0 +1,31 @@
+{
+  "verdict": "accept-corrected-integrated-primitive-and-static-report",
+  "original_package_bytes_unchanged": true,
+  "corrected_primitive_commands": 13,
+  "native_cases": 32,
+  "wasm_cases": 32,
+  "native_matches_stored": true,
+  "wasm_matches_stored": true,
+  "wasm_artifact_hash_matches_stored": true,
+  "computed_model_matches_stored": true,
+  "corrected_manifest_all_match": true,
+  "corrected_input_sha256": {
+    "revalidate.py": "9c06303b59464050eb0bf0b7739ec409e01b1977b4daf76065f377f859627047",
+    "primitive_model.py": "05bdb4615bfcf46c64a7d12388f0f83b82113afd703659e0f0cddc0abff00b71"
+  },
+  "linker_runtime": {
+    "policy": "Darwin subprocess-only DYLD_LIBRARY_PATH selects the same rustc sysroot/lib; no global changes",
+    "libLLVM_sha256": "0a09edaac7d0047e8db420bb9594359c73e602a2138def76f51197f1afd39252",
+    "libLLVM_bytes": 143609472
+  },
+  "linker_version": "LLD 23.1.1 (https://github.com/rust-lang/llvm-project.git 1b9c0d5ff9bbe7634aead059efe6b11a7eeba145)",
+  "static_commands": 7,
+  "source_entries": 32,
+  "source_excerpts": 67,
+  "primary_remote_files": 19,
+  "formality_tree_blobs": 254,
+  "formality_tree_truncated": false,
+  "reused_report_identities": 19,
+  "negative_wasm_abort_preserved": true,
+  "negative_wasm_generated_no_output": true
+}

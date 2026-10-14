@@ -1,0 +1,70 @@
+[
+  {
+    "name": "python-version",
+    "argv": [
+      "python3",
+      "--version"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "rust-version",
+    "argv": [
+      "rustc",
+      "-vV"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "owned-model",
+    "argv": [
+      "python3",
+      "contract_model.py"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "default-build",
+    "argv": [
+      "rustc",
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=unwind",
+      "open_contract.rs",
+      "--emit=link=runs/default,mir=runs/default.mir"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "default-run",
+    "argv": [
+      "./runs/default"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "flipped-build",
+    "argv": [
+      "rustc",
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=unwind",
+      "--cfg",
+      "feature_flip",
+      "open_contract.rs",
+      "--emit=link=runs/flipped,mir=runs/flipped.mir"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "flipped-run",
+    "argv": [
+      "./runs/flipped"
+    ],
+    "exit": 0
+  }
+]
