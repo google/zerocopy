@@ -54,6 +54,7 @@ impl Tool {
 
 const AENEAS_DIR: &str = "aeneas";
 const RUST_SYSROOT: &str = "rust";
+const RUST_MODEL_DIR: &str = "rust-model";
 const AENEAS_BIN_DIR: &str = "bin";
 const RUST_BIN_DIR: &str = "bin";
 const RUST_LIB_DIR: &str = "lib";
@@ -82,6 +83,10 @@ impl Toolchain {
 
     pub fn rust_sysroot(&self) -> std::path::PathBuf {
         self.root.join(RUST_SYSROOT)
+    }
+
+    pub fn rust_lean_dir(&self) -> std::path::PathBuf {
+        self.root.join(RUST_MODEL_DIR)
     }
 
     pub fn rust_bin(&self) -> std::path::PathBuf {

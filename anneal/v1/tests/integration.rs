@@ -311,9 +311,11 @@ fn assert_archive_lake_cache_reuse(
     let aeneas_root = toolchain_root.join("aeneas");
     let aeneas_lean = aeneas_root.join("backends/lean");
     let lean_root = toolchain_root.join("lean");
+    let rust_model = toolchain_root.join("rust-model");
     let workspace = temp_root.join("generated-workspace");
 
     assert_no_write_bits(&aeneas_root)?;
+    assert_no_write_bits(&rust_model)?;
 
     fs::create_dir_all(workspace.join("generated"))?;
     fs::copy(aeneas_lean.join("lean-toolchain"), workspace.join("lean-toolchain"))?;
@@ -333,6 +335,8 @@ fn assert_archive_lake_cache_reuse(
 open Lake DSL
 
 require aeneas from "{}"
+require rust_model from "{}"
+require rust_model_aeneas from "{}"
 
 package anneal_verification
 
@@ -341,10 +345,12 @@ lean_lib Generated where
   srcDir := "generated"
   roots := #[`Generated, `Anneal, `SpecificationHolds]
 "#,
-            lake_string(&aeneas_lean)
+            lake_string(&aeneas_lean),
+            lake_string(&rust_model),
+            lake_string(&rust_model.join("aeneas")),
         ),
     )?;
-    write_relative_archive_manifest(&workspace, &aeneas_lean)?;
+    write_relative_archive_manifest(&workspace, &aeneas_lean, &rust_model)?;
 
     // This mirrors v1's generated workspace contract with the Nix-built
     // archive: dependency paths are locked relative to the workspace, package
@@ -382,6 +388,7 @@ fn assert_no_write_bits(root: &Path) -> Result<(), Box<dyn std::error::Error>> {
 fn write_relative_archive_manifest(
     workspace: &Path,
     aeneas_lean: &Path,
+    rust_model: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let aeneas_lean = fs::canonicalize(aeneas_lean)?;
     let workspace = fs::canonicalize(workspace)?;
@@ -401,6 +408,16 @@ fn write_relative_archive_manifest(
         "dir": aeneas_dir,
         "inherited": false,
     })];
+
+    for (name, path) in
+        [("rust_model", rust_model.to_path_buf()), ("rust_model_aeneas", rust_model.join("aeneas"))]
+    {
+        let path = fs::canonicalize(path)?;
+        packages.push(json!({
+            "type": "path", "name": name,
+            "dir": relative_manifest_string(&path, &workspace)?, "inherited": false,
+        }));
+    }
 
     for entry in aeneas_packages {
         let mut entry = entry
