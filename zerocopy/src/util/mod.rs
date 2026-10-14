@@ -297,6 +297,10 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 
 /// Copies `src` into the prefix of `dst`.
 ///
+/// Aeneas models this as a trusted byte-copy boundary registered in
+/// `verification/aeneas/external.json`; it does not extract this pointer body.
+/// The model checks the length guard and retains the updated destination.
+///
 /// # Safety
 ///
 /// The caller guarantees that `src.len() <= dst.len()`.
@@ -319,6 +323,10 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
 }
 
 /// Unsafely transmutes the given `src` into a type `Dst`.
+///
+/// Aeneas admits only the `u8` to `bool` instantiation as a trusted boundary
+/// registered in `verification/aeneas/external.json`. Its model checks bit
+/// validity before constructing a Boolean; this union body is not extracted.
 ///
 /// # Safety
 ///
