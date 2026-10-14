@@ -1,0 +1,112 @@
+{
+  "R019": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+      "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Actual Rust atomic contract, Arc orderings, SC hazard proof versus native barriers, weak-RCU SC-fence extension and adequacy endpoints; compiler/race boundaries."
+    ],
+    "remaining_research": [
+      "Precise current Rust/compiler relation to these proof languages not established; full SC-operation coverage beyond artifact fences not examined."
+    ],
+    "future_engineering": [
+      "For selected operations prove execution observation/race/order reflection and instantiate source atomic/fence contracts."
+    ]
+  },
+  "R076": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+      "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Send/Sync payload premises; Arc ownership/lifetime/count protocol; whole hazard/Harris and RCU/traversal/Harris/queue records; retirement/access invariants."
+    ],
+    "remaining_research": [
+      "Compiled assumption closures and replay not acquired; exact native algorithm correspondence unknown here; dedicated whole-algorithm progress theorem not inspected."
+    ],
+    "future_engineering": [
+      "Instantiate payload/access/retirement resources and bridge exact native algorithms and compiler configurations."
+    ]
+  },
+  "R099": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Concrete source cases for atomic reference counting, hazard-pointer optimistic traversal and fenced epoch reclamation expose sequential versus interference/model boundaries."
+    ],
+    "remaining_research": [
+      "Async cancellation and FFI portions of the broader question are outside this package."
+    ],
+    "future_engineering": [
+      "Implement a selected concurrent case certificate; separate safety, ordering, progress, scheduler and external-effect premises."
+    ]
+  },
+  "T090": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Actual interference/guard/resource and weak-memory/fence interpretation with precise adequate NotStuck endpoint and initial-state premises."
+    ],
+    "remaining_research": [
+      "Effect-handler interpretation is not examined in this reclamation supplement."
+    ],
+    "future_engineering": [
+      "Compose chosen handler/native concurrency interpretation with language adequacy and source correspondence."
+    ]
+  },
+  "P098": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+      "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Ordering/view/fence requirements and explicit operational SC-fence model; acquire/release interfaces do not imply Rust-model equivalence."
+    ],
+    "remaining_research": [
+      "All-input native/compiler correspondence for these algorithms not established."
+    ],
+    "future_engineering": [
+      "Preserve allowed observations and synchronization/access-size relations for selected source primitives."
+    ]
+  },
+  "P099": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+      "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+      "F3. Hazard protection requires validation, not merely announcing an address",
+      "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+      "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+    ],
+    "answered_subquestions": [
+      "Ownership transfer, managed/protected/retired resource distinctions, payload Send/Sync and race-exclusion premises beyond sequential equality."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Connect selected source shared-memory accesses and reclamation events to proved protocol resources and race freedom."
+    ]
+  }
+}

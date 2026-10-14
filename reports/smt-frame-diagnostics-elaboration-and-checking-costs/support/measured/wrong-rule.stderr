@@ -1,0 +1,4 @@
+error: reflexivity failed with terms '(select (store before changed value) framed)' and '(select before framed)'
+  [34m-->[39m in file [4m[34m<measurement-output>/wrong-rule.alethe[39m[0m
+  [1mnote:[0m checking failed on step [33mt0[39m with rule [33mrefl[39m
+

@@ -1,0 +1,9 @@
+{
+  "phase": "read-back elaborated proof",
+  "expected": "proof text alone",
+  "observed": "valid verdict prefix followed by proof",
+  "exit": 1,
+  "error": "unexpected token valid",
+  "effects": "private proof/log files only; no accepted certificate or publication",
+  "recovery": "preserve initial raw proof; require exact valid verdict and separate nonempty proof payload; regression rejects holey/nonzero/empty/unknown before strict recheck"
+}

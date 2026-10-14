@@ -1,0 +1,7 @@
+sat
+(
+(define-fun before () (Array (_ BitVec 8) (_ BitVec 8)) (store ((as const (Array (_ BitVec 8) (_ BitVec 8))) #b00000000) #b11111111 #b11111110))
+(define-fun changed () (_ BitVec 8) #b11111111)
+(define-fun framed () (_ BitVec 8) #b11111111)
+(define-fun value () (_ BitVec 8) #b11111111)
+)

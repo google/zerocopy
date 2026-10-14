@@ -1,0 +1,47 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "owned_input_sha256": {
+    "lib.rs": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa",
+    "main.rs": "2e220ca3e0a9ea5e106646ffcccb4ef5393605b1b0aec2f7c646c56e1cd2bdf3",
+    "check-wasm.mjs": "450209cffda3bf4ccecc868433e85bac9e1b73a3ce21b912ed5d3913c82f33d0",
+    "run_cross.py": "a7f5ae10a47c498b18253fe0e743d7f38901397c491a2e96871c31bb6f21ee24"
+  },
+  "commands": [
+    {
+      "name": "rust-version",
+      "exit": 0,
+      "elapsed_ns": 34744708,
+      "argv": [
+        "rustc",
+        "-vV"
+      ]
+    },
+    {
+      "name": "node-version",
+      "exit": 0,
+      "elapsed_ns": 151593417,
+      "argv": [
+        "node",
+        "--version"
+      ]
+    },
+    {
+      "name": "native-build",
+      "exit": 101,
+      "elapsed_ns": 2096894083,
+      "argv": [
+        "cargo",
+        "build",
+        "--bin",
+        "packet-api-controls",
+        "--offline",
+        "--quiet"
+      ]
+    }
+  ],
+  "wasm_sha256": null,
+  "wasm_bytes": null,
+  "scope": "Concrete composed packet API controls; separate logical model certificates are measured by another driver",
+  "network": "Cargo offline; official target component acquired separately"
+}

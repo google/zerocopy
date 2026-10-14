@@ -1,0 +1,408 @@
+{
+  "interpretation": "Scoped findings/controls; full Rust/compiled theorem closures and framework GAT acceptance remain explicit limits.",
+  "reports": {
+    "rust-gat-laws-and-selected-implementation-evidence-2026": {
+      "R066": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A GAT contract is a conditional family law",
+          "F2. Coinduction for auto traits is not a cyclic proof of arbitrary contracts",
+          "F3. Default bodies, blanket implementations, and specialization select different evidence",
+          "F4. The framework interface has useful laws but no measured GAT acceptance here",
+          "F5. Dynamic and open-client closure must preserve the callable environment"
+        ],
+        "answered_subquestions": [
+          "Associated-family laws and exact selected implementation/substitution evidence; auto-trait coinduction versus arbitrary unsafe-trait laws; specialization and downstream conditional dictionaries."
+        ],
+        "remaining_research": [
+          "Actual RefinedRust GAT-family translation acceptance and generated law were not tested."
+        ],
+        "future_engineering": [
+          "Bind chosen source implementation, associated-family equations, and unsafe-trait/method laws into checked dictionaries for the intended client scope."
+        ]
+      },
+      "R074": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A GAT contract is a conditional family law",
+          "F3. Default bodies, blanket implementations, and specialization select different evidence",
+          "F4. The framework interface has useful laws but no measured GAT acceptance here",
+          "F5. Dynamic and open-client closure must preserve the callable environment"
+        ],
+        "answered_subquestions": [
+          "GAT lifetime-indexed family, universal versus selected instantiation evidence, dyn-compatibility restriction, framework representation/resolution interface."
+        ],
+        "remaining_research": [
+          "Const-generic GAT and higher-ranked callback translation acceptance are not measured here."
+        ],
+        "future_engineering": [
+          "Implement a quantified family/callback certificate or enumerate a declared monomorphized scope, preserving substitutions and lifetimes."
+        ]
+      },
+      "T079": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A GAT contract is a conditional family law",
+          "F2. Coinduction for auto traits is not a cyclic proof of arbitrary contracts",
+          "F3. Default bodies, blanket implementations, and specialization select different evidence",
+          "F4. The framework interface has useful laws but no measured GAT acceptance here"
+        ],
+        "answered_subquestions": [
+          "Exact trait/implementation law fields and recursive marker-resolution distinction; active specialization resolution source."
+        ],
+        "remaining_research": [
+          "No semantic recursive unsafe-trait proof or GAT frontend acceptance experiment here."
+        ],
+        "future_engineering": [
+          "Check implementation law witnesses and resolution/subsumption obligations in the chosen pipeline."
+        ]
+      },
+      "T080": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A GAT contract is a conditional family law",
+          "F3. Default bodies, blanket implementations, and specialization select different evidence",
+          "F5. Dynamic and open-client closure must preserve the callable environment"
+        ],
+        "answered_subquestions": [
+          "Conditional open-client certificate shape with selected implementations, family equations, and permitted instantiations; finite compiler control boundary."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Establish universal conditional theorem or declared closed instantiation set and module invariant preservation for the chosen implementation."
+        ]
+      },
+      "P107": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A GAT contract is a conditional family law",
+          "F3. Default bodies, blanket implementations, and specialization select different evidence",
+          "F4. The framework interface has useful laws but no measured GAT acceptance here",
+          "F5. Dynamic and open-client closure must preserve the callable environment"
+        ],
+        "answered_subquestions": [
+          "Abstract method specification must match actual selected defining node/substitutions; compiler example returns different default/blanket/specialized bodies."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Carry and check exact implementation binding and contract proof at each generic call."
+        ]
+      },
+      "P108": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F5. Dynamic and open-client closure must preserve the callable environment"
+        ],
+        "answered_subquestions": [
+          "GAT dyn rejection observed; separate callable identity/environment/ownership certificate shape for a permitted dynamic interface."
+        ],
+        "remaining_research": [
+          "Actual vtable, closure and higher-ranked callback extraction/proof acceptance are not exercised by these controls."
+        ],
+        "future_engineering": [
+          "Implement the chosen dynamic dispatch certificate and preserve environment lifetime and call contract."
+        ]
+      }
+    },
+    "rust-neon-vector-and-union-representation-control-1d81eb4": {
+      "R018": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Representation equality has alignment and padding premises",
+          "F3. Union storage must be interpreted at the selected field type",
+          "F4. A bounded primitive certificate can separate four obligations"
+        ],
+        "answered_subquestions": [
+          "Concrete vector versus array size/alignment and C-union layout; target/compiler premises preserved."
+        ],
+        "remaining_research": [
+          "No other SIMD representation, vector ABI, non-power-of-two or cross-target execution in this bounded supplement."
+        ],
+        "future_engineering": [
+          "Prove exact target-layout and lowering correspondence for selected library uses."
+        ]
+      },
+      "R073": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Representation equality has alignment and padding premises",
+          "F2. The primitive contract includes overflow and feature behavior",
+          "F3. Union storage must be interpreted at the selected field type",
+          "F4. A bounded primitive certificate can separate four obligations"
+        ],
+        "answered_subquestions": [
+          "One exact NEON integer intrinsic, portable-SIMD source interpretation, union field validity, target-feature gate, and concrete representation observations."
+        ],
+        "remaining_research": [
+          "ISA/backend all-input correspondence and other intrinsic classes remain unexamined here."
+        ],
+        "future_engineering": [
+          "Instantiate checked primitive/layout contracts for the selected compilation rather than trusting convenient pure replacement specifications."
+        ]
+      },
+      "P075": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F3. Union storage must be interpreted at the selected field type",
+          "F4. A bounded primitive certificate can separate four obligations"
+        ],
+        "answered_subquestions": [
+          "Concrete union has no active constructor; tagged union must branch before destination-valid field access; match lowering cannot assume validity."
+        ],
+        "remaining_research": [
+          "No actual tagged-enum lowering proof in this union/vector control."
+        ],
+        "future_engineering": [
+          "Bind source tag and payload bytes to model constructors with validity and evaluation-order evidence."
+        ]
+      },
+      "P076": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F2. The primitive contract includes overflow and feature behavior",
+          "F4. A bounded primitive certificate can separate four obligations"
+        ],
+        "answered_subquestions": [
+          "Exact primitive replacement obligations, target feature and initialized memory premises; actual 64-case result comparison."
+        ],
+        "remaining_research": [
+          "All-input backend/native correspondence theorem remains unexamined."
+        ],
+        "future_engineering": [
+          "Prove/attach chosen primitive contract and acceptance policy."
+        ]
+      },
+      "P091": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F2. The primitive contract includes overflow and feature behavior",
+          "F4. A bounded primitive certificate can separate four obligations"
+        ],
+        "answered_subquestions": [
+          "Actual checked-add versus wrapping-vector overflow mismatch, so successful-result equality is insufficient."
+        ],
+        "remaining_research": [
+          "Division, shifts and floating-point/NaN failure semantics are outside this bounded addition case."
+        ],
+        "future_engineering": [
+          "Preserve selected operation overflow/failure mode or prove its required no-overflow domain."
+        ]
+      }
+    },
+    "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026": {
+      "R019": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+          "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Actual Rust atomic contract, Arc orderings, SC hazard proof versus native barriers, weak-RCU SC-fence extension and adequacy endpoints; compiler/race boundaries."
+        ],
+        "remaining_research": [
+          "Precise current Rust/compiler relation to these proof languages not established; full SC-operation coverage beyond artifact fences not examined."
+        ],
+        "future_engineering": [
+          "For selected operations prove execution observation/race/order reflection and instantiate source atomic/fence contracts."
+        ]
+      },
+      "R076": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+          "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Send/Sync payload premises; Arc ownership/lifetime/count protocol; whole hazard/Harris and RCU/traversal/Harris/queue records; retirement/access invariants."
+        ],
+        "remaining_research": [
+          "Compiled assumption closures and replay not acquired; exact native algorithm correspondence unknown here; dedicated whole-algorithm progress theorem not inspected."
+        ],
+        "future_engineering": [
+          "Instantiate payload/access/retirement resources and bridge exact native algorithms and compiler configurations."
+        ]
+      },
+      "R099": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Concrete source cases for atomic reference counting, hazard-pointer optimistic traversal and fenced epoch reclamation expose sequential versus interference/model boundaries."
+        ],
+        "remaining_research": [
+          "Async cancellation and FFI portions of the broader question are outside this package."
+        ],
+        "future_engineering": [
+          "Implement a selected concurrent case certificate; separate safety, ordering, progress, scheduler and external-effect premises."
+        ]
+      },
+      "T090": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Actual interference/guard/resource and weak-memory/fence interpretation with precise adequate NotStuck endpoint and initial-state premises."
+        ],
+        "remaining_research": [
+          "Effect-handler interpretation is not examined in this reclamation supplement."
+        ],
+        "future_engineering": [
+          "Compose chosen handler/native concurrency interpretation with language adequacy and source correspondence."
+        ]
+      },
+      "P098": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+          "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Ordering/view/fence requirements and explicit operational SC-fence model; acquire/release interfaces do not imply Rust-model equivalence."
+        ],
+        "remaining_research": [
+          "All-input native/compiler correspondence for these algorithms not established."
+        ],
+        "future_engineering": [
+          "Preserve allowed observations and synchronization/access-size relations for selected source primitives."
+        ]
+      },
+      "P099": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. Rust atomic and Send/Sync premises are separate from ownership protocols",
+          "F2. Arc proves a counter-and-lifetime protocol, with concrete implementation differences",
+          "F3. Hazard protection requires validation, not merely announcing an address",
+          "F4. The weak-memory RCU artifact includes an SC-fence protocol",
+          "F5. Adequacy establishes modeled safety/results, not unconditional progress"
+        ],
+        "answered_subquestions": [
+          "Ownership transfer, managed/protected/retired resource distinctions, payload Send/Sync and race-exclusion premises beyond sequential equality."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Connect selected source shared-memory accesses and reclamation events to proved protocol resources and race freedom."
+        ]
+      }
+    },
+    "finite-pointer-lease-and-reconstruction-control-2026": {
+      "R096": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A registered lease adds obligations absent from geometry",
+          "F2. Splitting, projection, and consumption change authority while framing bytes",
+          "F3. Negative controls identify lifetime, alias, and alignment gates",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+          "F5. Safe native and compiler controls separate raw addresses from references",
+          "F6. The proof observation includes checker status and kernel trust"
+        ],
+        "answered_subquestions": [
+          "Actual 19-endpoint four-cell Lean construction/split/projection/cast/reconstruction case, wrong-lifetime/alias controls, weakened-gate sensitivity, safe Rust/compiler controls and pinned Ptr source trace."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Generalize and connect the finite interpretation to selected source pointer operations, including raw escapes, dynamic allocation, validity and loan return."
+        ]
+      },
+      "T076": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A registered lease adds obligations absent from geometry",
+          "F2. Splitting, projection, and consumption change authority while framing bytes",
+          "F3. Negative controls identify lifetime, alias, and alignment gates",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+          "F5. Safe native and compiler controls separate raw addresses from references"
+        ],
+        "answered_subquestions": [
+          "Concrete authority registry and scoped split/restore transitions; lifetime countercontrol; source reborrow/reference gates and native safe restoration."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Prove general loan-closing/restoration from returned children and preserve it across the chosen functionalization."
+        ]
+      },
+      "T078": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A registered lease adds obligations absent from geometry",
+          "F3. Negative controls identify lifetime, alias, and alignment gates",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+          "F5. Safe native and compiler controls separate raw addresses from references"
+        ],
+        "answered_subquestions": [
+          "Geometry counterexample; allocation death, authority, alignment, validity and initialization premises exposed rather than hidden; raw cast equality boundary."
+        ],
+        "remaining_research": [
+          "Strict/exposed provenance and full Stacked/Tree Borrows correspondence are not modeled."
+        ],
+        "future_engineering": [
+          "Bind allocation identity/alignment/validation evidence to actual source state and cover retained raw access paths."
+        ]
+      },
+      "P080": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F1. A registered lease adds obligations absent from geometry",
+          "F2. Splitting, projection, and consumption change authority while framing bytes",
+          "F3. Negative controls identify lifetime, alias, and alignment gates",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges"
+        ],
+        "answered_subquestions": [
+          "Checked finite owner/ticket and split/disjointness obligations; stale/duplicate/overlap rejection rather than numerical bounds alone."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Attach source resource transitions and prove generic transfer rules for the chosen heap interpretation."
+        ]
+      },
+      "P082": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F3. Negative controls identify lifetime, alias, and alignment gates",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+          "F5. Safe native and compiler controls separate raw addresses from references"
+        ],
+        "answered_subquestions": [
+          "Actual raw packed-field read_unaligned success versus E0793 reference-formation rejection; cast alignment gate rejects insufficient authority."
+        ],
+        "remaining_research": [],
+        "future_engineering": [
+          "Certify chosen packed projections, typed validity and primitive load contracts."
+        ]
+      },
+      "P088": {
+        "status": "bounded-scope-answered-with-constraints",
+        "sections": [
+          "F2. Splitting, projection, and consumption change authority while framing bytes",
+          "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+          "F5. Safe native and compiler controls separate raw addresses from references"
+        ],
+        "answered_subquestions": [
+          "All five finite slice split positions observed; source general-DST trailing-padding overlap prevents an unconditional separation import."
+        ],
+        "remaining_research": [
+          "ZST special-address behavior and general DST metadata validity are not investigated by these controls."
+        ],
+        "future_engineering": [
+          "Implement metadata/extent and padding-aware splitting certificates for intended source cases."
+        ]
+      }
+    }
+  }
+}

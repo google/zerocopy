@@ -1,0 +1,22 @@
+[
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/traits/registry.rs",
+    "sha256": "034441c445035cf4755684edc729129e1064d6fefd666bc7175e60f41e6c4e12",
+    "size": 76825
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/traits/resolution.rs",
+    "sha256": "0c268c8a5de0dc0da6b494bd696a9c1b7380cb70b4078a6d1cc766f964809ae3",
+    "size": 14025
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/traits/requirements.rs",
+    "sha256": "e150c4d706c57886b9b31e85b9387c34b9b6f93c143195bc6b9a5f2dcbe37c70",
+    "size": 10581
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/radium/src/specs/traits.rs",
+    "sha256": "fe722313cd9b196b0eccb6136929650edcca89447e0c82ba1562ae71f9381344",
+    "size": 76916
+  }
+]

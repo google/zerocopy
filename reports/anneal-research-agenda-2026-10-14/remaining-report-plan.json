@@ -1,8 +1,8 @@
 {
-  "revision": 2,
+  "revision": 3,
   "published_reports_at_plan": 65,
   "published_reference_commit": "4802237a045e8dd642d26e190a1ffb5757bf30a8",
-  "interpretation": "Candidate grouping after final 65-package semantic audits. Six reports are included in this candidate, fourteen are in research, and four remain planned. These dispositions are publication organization, not whole-question completion. Boundaries may change.",
+  "interpretation": "Candidate grouping after nine tranches:13 of24 reports included,11 remain in final research/review. These report counts are separate from semantic question coverage and future engineering.",
   "reports": [
     {
       "candidate_report": 1,
@@ -215,7 +215,7 @@
     {
       "candidate_report": 17,
       "title": "GAT, coinductive traits and specialization laws",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R066",
         "R074",
@@ -228,7 +228,7 @@
     {
       "candidate_report": 18,
       "title": "Vector and union primitive interpretations",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R018",
         "R073",
@@ -240,7 +240,7 @@
     {
       "candidate_report": 19,
       "title": "Arc, hazard-pointer and RCU proof protocols",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R019",
         "R076",
@@ -253,7 +253,7 @@
     {
       "candidate_report": 20,
       "title": "Pointer capability, lifetime and alias cases",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R096",
         "T076",
@@ -266,7 +266,7 @@
     {
       "candidate_report": 21,
       "title": "Owned storage, panic restoration and growth cases",
-      "disposition": "planned",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P085",
         "P086",
@@ -282,7 +282,7 @@
     {
       "candidate_report": 22,
       "title": "Realistic source certificates across targets and reuse costs",
-      "disposition": "planned",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P075",
         "P076",
@@ -302,7 +302,7 @@
     {
       "candidate_report": 23,
       "title": "Source diagnostics and matched SMT replay costs",
-      "disposition": "planned",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R081",
         "R084",

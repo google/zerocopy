@@ -1,0 +1,30 @@
+[
+  {
+    "name": "check-frame",
+    "exit": 0,
+    "elapsed_ns": 4034167,
+    "stdout": "valid\n",
+    "stderr": ""
+  },
+  {
+    "name": "check-hole",
+    "exit": 0,
+    "elapsed_ns": 3256667,
+    "stdout": "holey\n",
+    "stderr": ""
+  },
+  {
+    "name": "source-mismatch",
+    "exit": 1,
+    "elapsed_ns": 3242791,
+    "stdout": "invalid\n",
+    "stderr": "error: could not match term to any of the original problem premises: (not (= changed framed))\n  \u001b[34m-->\u001b[39m in file \u001b[4m\u001b[34mwork/research/parent/smt-costs/frame-not-equality.alethe\u001b[39m\u001b[0m\n  \u001b[1mnote:\u001b[0m checking failed on step \u001b[33ma0\u001b[39m with rule \u001b[33massume\u001b[39m\n\n"
+  },
+  {
+    "name": "sat-model",
+    "exit": 0,
+    "elapsed_ns": 32776458,
+    "stdout": "sat\n(\n(define-fun before () (Array (_ BitVec 8) (_ BitVec 8)) (store ((as const (Array (_ BitVec 8) (_ BitVec 8))) #b00000000) #b11111111 #b11111110))\n(define-fun changed () (_ BitVec 8) #b11111111)\n(define-fun framed () (_ BitVec 8) #b11111111)\n(define-fun value () (_ BitVec 8) #b11111111)\n)\n",
+    "stderr": ""
+  }
+]

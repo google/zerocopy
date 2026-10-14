@@ -1,0 +1,21 @@
+{
+  "source_sha256": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa",
+  "model_sha256": "fe92f8e5ade090df4331b32238fe46f760895cdfff15c8bff0e8478baf8924e4",
+  "max_payload": 64,
+  "targets": {
+    "aarch64-apple-darwin": [
+      8,
+      4,
+      1,
+      2,
+      1
+    ],
+    "wasm32-unknown-unknown": [
+      4,
+      4,
+      1,
+      2,
+      1
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+'Ownership.move_one_owner' depends on axioms: [propext]
+'Ownership.update_restored' does not depend on any axioms
+'Ownership.update_one_owner' depends on axioms: [propext]
+'Ownership.missing_cleanup_loses_target' does not depend on any axioms
+'Ownership.wrong_copy_duplicates_owner' depends on axioms: [propext]
+'Ownership.insertion_zero_budget' depends on axioms: [propext]
+'Ownership.insertion_at_end' depends on axioms: [propext]
+'Ownership.reserve_failure_preserves' does not depend on any axioms

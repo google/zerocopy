@@ -1,0 +1,9 @@
+{
+  "carcara_revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+  "profile": "release",
+  "cargo": "build --locked --offline after locked fetch in task-local CARGO_HOME",
+  "build_exit": 0,
+  "scope": "current source built with Rust1.99; no global install; no correctness proof of checker compilation",
+  "cvc5_release": "cvc5-1.4.2",
+  "archive_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c"
+}

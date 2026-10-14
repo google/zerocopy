@@ -1,0 +1,38 @@
+{
+  "observed_at": "2026-10-14",
+  "topics": [
+    "rust/simd",
+    "rust/union",
+    "rust/layout",
+    "rust/intrinsics",
+    "verification/primitive-correspondence",
+    "verification/failure-behavior"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust nightly observed toolchain and matching library source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "release": "1.101.0-nightly",
+        "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+      }
+    },
+    {
+      "name": "Matching Arm-shared NEON generated source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "path": "library/stdarch/crates/core_arch/src/arm_shared/neon/generated.rs",
+        "sha256": "bcc351aa3331769468fc886aca610fc61af89ce10915a4f16493ad0f85517482"
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "R018": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Representation equality has alignment and padding premises",
+      "F3. Union storage must be interpreted at the selected field type",
+      "F4. A bounded primitive certificate can separate four obligations"
+    ],
+    "answered_subquestions": [
+      "Concrete vector versus array size/alignment and C-union layout; target/compiler premises preserved."
+    ],
+    "remaining_research": [
+      "No other SIMD representation, vector ABI, non-power-of-two or cross-target execution in this bounded supplement."
+    ],
+    "future_engineering": [
+      "Prove exact target-layout and lowering correspondence for selected library uses."
+    ]
+  },
+  "R073": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. Representation equality has alignment and padding premises",
+      "F2. The primitive contract includes overflow and feature behavior",
+      "F3. Union storage must be interpreted at the selected field type",
+      "F4. A bounded primitive certificate can separate four obligations"
+    ],
+    "answered_subquestions": [
+      "One exact NEON integer intrinsic, portable-SIMD source interpretation, union field validity, target-feature gate, and concrete representation observations."
+    ],
+    "remaining_research": [
+      "ISA/backend all-input correspondence and other intrinsic classes remain unexamined here."
+    ],
+    "future_engineering": [
+      "Instantiate checked primitive/layout contracts for the selected compilation rather than trusting convenient pure replacement specifications."
+    ]
+  },
+  "P075": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F3. Union storage must be interpreted at the selected field type",
+      "F4. A bounded primitive certificate can separate four obligations"
+    ],
+    "answered_subquestions": [
+      "Concrete union has no active constructor; tagged union must branch before destination-valid field access; match lowering cannot assume validity."
+    ],
+    "remaining_research": [
+      "No actual tagged-enum lowering proof in this union/vector control."
+    ],
+    "future_engineering": [
+      "Bind source tag and payload bytes to model constructors with validity and evaluation-order evidence."
+    ]
+  },
+  "P076": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F2. The primitive contract includes overflow and feature behavior",
+      "F4. A bounded primitive certificate can separate four obligations"
+    ],
+    "answered_subquestions": [
+      "Exact primitive replacement obligations, target feature and initialized memory premises; actual 64-case result comparison."
+    ],
+    "remaining_research": [
+      "All-input backend/native correspondence theorem remains unexamined."
+    ],
+    "future_engineering": [
+      "Prove/attach chosen primitive contract and acceptance policy."
+    ]
+  },
+  "P091": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F2. The primitive contract includes overflow and feature behavior",
+      "F4. A bounded primitive certificate can separate four obligations"
+    ],
+    "answered_subquestions": [
+      "Actual checked-add versus wrapping-vector overflow mismatch, so successful-result equality is insufficient."
+    ],
+    "remaining_research": [
+      "Division, shifts and floating-point/NaN failure semantics are outside this bounded addition case."
+    ],
+    "future_engineering": [
+      "Preserve selected operation overflow/failure mode or prove its required no-overflow domain."
+    ]
+  }
+}

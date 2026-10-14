@@ -1,0 +1,103 @@
+{
+  "R066": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A GAT contract is a conditional family law",
+      "F2. Coinduction for auto traits is not a cyclic proof of arbitrary contracts",
+      "F3. Default bodies, blanket implementations, and specialization select different evidence",
+      "F4. The framework interface has useful laws but no measured GAT acceptance here",
+      "F5. Dynamic and open-client closure must preserve the callable environment"
+    ],
+    "answered_subquestions": [
+      "Associated-family laws and exact selected implementation/substitution evidence; auto-trait coinduction versus arbitrary unsafe-trait laws; specialization and downstream conditional dictionaries."
+    ],
+    "remaining_research": [
+      "Actual RefinedRust GAT-family translation acceptance and generated law were not tested."
+    ],
+    "future_engineering": [
+      "Bind chosen source implementation, associated-family equations, and unsafe-trait/method laws into checked dictionaries for the intended client scope."
+    ]
+  },
+  "R074": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A GAT contract is a conditional family law",
+      "F3. Default bodies, blanket implementations, and specialization select different evidence",
+      "F4. The framework interface has useful laws but no measured GAT acceptance here",
+      "F5. Dynamic and open-client closure must preserve the callable environment"
+    ],
+    "answered_subquestions": [
+      "GAT lifetime-indexed family, universal versus selected instantiation evidence, dyn-compatibility restriction, framework representation/resolution interface."
+    ],
+    "remaining_research": [
+      "Const-generic GAT and higher-ranked callback translation acceptance are not measured here."
+    ],
+    "future_engineering": [
+      "Implement a quantified family/callback certificate or enumerate a declared monomorphized scope, preserving substitutions and lifetimes."
+    ]
+  },
+  "T079": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A GAT contract is a conditional family law",
+      "F2. Coinduction for auto traits is not a cyclic proof of arbitrary contracts",
+      "F3. Default bodies, blanket implementations, and specialization select different evidence",
+      "F4. The framework interface has useful laws but no measured GAT acceptance here"
+    ],
+    "answered_subquestions": [
+      "Exact trait/implementation law fields and recursive marker-resolution distinction; active specialization resolution source."
+    ],
+    "remaining_research": [
+      "No semantic recursive unsafe-trait proof or GAT frontend acceptance experiment here."
+    ],
+    "future_engineering": [
+      "Check implementation law witnesses and resolution/subsumption obligations in the chosen pipeline."
+    ]
+  },
+  "T080": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A GAT contract is a conditional family law",
+      "F3. Default bodies, blanket implementations, and specialization select different evidence",
+      "F5. Dynamic and open-client closure must preserve the callable environment"
+    ],
+    "answered_subquestions": [
+      "Conditional open-client certificate shape with selected implementations, family equations, and permitted instantiations; finite compiler control boundary."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Establish universal conditional theorem or declared closed instantiation set and module invariant preservation for the chosen implementation."
+    ]
+  },
+  "P107": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A GAT contract is a conditional family law",
+      "F3. Default bodies, blanket implementations, and specialization select different evidence",
+      "F4. The framework interface has useful laws but no measured GAT acceptance here",
+      "F5. Dynamic and open-client closure must preserve the callable environment"
+    ],
+    "answered_subquestions": [
+      "Abstract method specification must match actual selected defining node/substitutions; compiler example returns different default/blanket/specialized bodies."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Carry and check exact implementation binding and contract proof at each generic call."
+    ]
+  },
+  "P108": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F5. Dynamic and open-client closure must preserve the callable environment"
+    ],
+    "answered_subquestions": [
+      "GAT dyn rejection observed; separate callable identity/environment/ownership certificate shape for a permitted dynamic interface."
+    ],
+    "remaining_research": [
+      "Actual vtable, closure and higher-ranked callback extraction/proof acceptance are not exercised by these controls."
+    ],
+    "future_engineering": [
+      "Implement the chosen dynamic dispatch certificate and preserve environment lifetime and call contract."
+    ]
+  }
+}

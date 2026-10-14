@@ -1,0 +1,7 @@
+{
+  "cvc5_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c",
+  "cvc5_release": "cvc5-1.4.2",
+  "cvc5_commit": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+  "carcara_commit": "20bf49c5ce31089ac83118574c888669355aaae1",
+  "carcara_archive_sha256": "a806ddeafb8b85d854b18facc839095a6dabf6e1154dea76b67a5985cfa5a14e"
+}

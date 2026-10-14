@@ -1,0 +1,79 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "owned_input_sha256": {
+    "lib.rs": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa",
+    "main.rs": "0696fb3beeb92024604aecc42fdc12396c6f8d827d2cfa97e18c8009a663795d",
+    "check-wasm.mjs": "450209cffda3bf4ccecc868433e85bac9e1b73a3ce21b912ed5d3913c82f33d0",
+    "run_cross.py": "a7f5ae10a47c498b18253fe0e743d7f38901397c491a2e96871c31bb6f21ee24"
+  },
+  "commands": [
+    {
+      "name": "rust-version",
+      "exit": 0,
+      "elapsed_ns": 36553500,
+      "argv": [
+        "rustc",
+        "-vV"
+      ]
+    },
+    {
+      "name": "node-version",
+      "exit": 0,
+      "elapsed_ns": 26180917,
+      "argv": [
+        "node",
+        "--version"
+      ]
+    },
+    {
+      "name": "native-build",
+      "exit": 0,
+      "elapsed_ns": 2266101042,
+      "argv": [
+        "cargo",
+        "build",
+        "--bin",
+        "packet-api-controls",
+        "--offline",
+        "--quiet"
+      ]
+    },
+    {
+      "name": "native-check",
+      "exit": 0,
+      "elapsed_ns": 130407166,
+      "argv": [
+        "<private-extraction>/target/debug/packet-api-controls"
+      ]
+    },
+    {
+      "name": "wasm-build",
+      "exit": 0,
+      "elapsed_ns": 2230421708,
+      "argv": [
+        "cargo",
+        "build",
+        "--lib",
+        "--target",
+        "wasm32-unknown-unknown",
+        "--offline",
+        "--quiet"
+      ]
+    },
+    {
+      "name": "wasm-check",
+      "exit": 0,
+      "elapsed_ns": 183308375,
+      "argv": [
+        "node",
+        "<support>/check-wasm.mjs",
+        "<private-extraction>/target/wasm32-unknown-unknown/debug/packet_api_controls.wasm"
+      ]
+    }
+  ],
+  "wasm_sha256": "7a5c57ee805215d4c887000089ec69140adf15ba2bd6fbc0bd185bd04669d637",
+  "wasm_bytes": 1975955,
+  "scope": "Concrete composed packet API controls; separate logical model certificates are measured by another driver",
+  "network": "Cargo offline; official target component acquired separately"
+}

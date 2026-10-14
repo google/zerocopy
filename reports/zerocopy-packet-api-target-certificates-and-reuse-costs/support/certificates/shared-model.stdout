@@ -1,0 +1,6 @@
+'Packet.write_success' depends on axioms: [propext]
+'Packet.write_short' depends on axioms: [propext]
+'Packet.write_frame' depends on axioms: [propext]
+'Packet.invalid_flags_no_write' depends on axioms: [propext]
+'Packet.missing_payload_no_write' depends on axioms: [propext]
+'Packet.pipeline_success' depends on axioms: [propext]

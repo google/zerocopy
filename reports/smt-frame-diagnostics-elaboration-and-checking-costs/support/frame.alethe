@@ -1,0 +1,9 @@
+(
+(assume a0 (! (distinct changed framed) :named @p_1))
+(assume a1 (! (not (! (= (select (store before changed value) framed) (select before framed)) :named @p_2)) :named @p_3))
+(step t0 (cl (not (! (= @p_1 (! (not (= changed framed)) :named @p_4)) :named @p_5)) (not @p_1) @p_4) :rule equiv_pos2)
+(step t1 (cl @p_5) :rule hole :args ("untranslated rewrite"))
+(step t2 (cl @p_4) :rule resolution :premises (t0 t1 a0))
+(step t3 (cl @p_2) :rule arrays_row :premises (t2))
+(step t4 (cl) :rule resolution :premises (a1 t3))
+)

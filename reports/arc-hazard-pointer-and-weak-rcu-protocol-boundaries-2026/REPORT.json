@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "rust/concurrency",
+    "rust/arc",
+    "iris/reclamation",
+    "iris/weak-memory",
+    "verification/hazard-pointers",
+    "verification/rcu",
+    "verification/adequacy"
+  ],
+  "subjects": [
+    {
+      "name": "Rust current Arc and atomics source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+      }
+    },
+    {
+      "name": "RustBelt relaxed-memory Arc model",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/lambda-rust",
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+        "archive_sha256": "679846f8108325af762fbb86dd090514465e7e99059a4322e4e69565087d7ba0"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "pdf_sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      }
+    },
+    {
+      "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic artifact",
+      "identity": {
+        "zenodo": "15167032",
+        "archive": "pldi25-3-artifact.zip",
+        "sha256": "e3c6379299ab1227479ed789822c450044ff15ac59b69b83761a680376297f08"
+      }
+    },
+    {
+      "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic paper",
+      "identity": {
+        "doi": "10.1145/3729246",
+        "pdf_sha256": "8d93b9c8f475ce0ae033480ce2699f286632ce544c9995ac0047df2ba47906ab"
+      }
+    },
+    {
+      "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals artifact",
+      "identity": {
+        "zenodo": "15183251",
+        "archive": "immut-artifact.zip",
+        "sha256": "485a24c8a9ab826729006861df2bb04405d61e1d27bd8da4de4316ec75eca7c4"
+      }
+    },
+    {
+      "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals paper",
+      "identity": {
+        "doi": "10.1145/3729247",
+        "pdf_sha256": "3765c92355575e61755b21f70bb42e7363102d0c6ee6f8d7606938fc57f316ad"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

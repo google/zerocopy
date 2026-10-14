@@ -1,0 +1,50 @@
+[
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/items/associated-items.md",
+    "git_blob": "7bcfa5b0eae233a3803971b8aca7acd041a68b1f"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/items/traits.md",
+    "git_blob": "043c1773a445f9ec8e18ca675f893a0cf5405e31"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/items/implementations.md",
+    "git_blob": "967d87bc5bc652203e0c0fcc6b627d578c727701"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/special-types-and-traits.md",
+    "git_blob": "8e2885c0b6bdc3a8f60f80debc32efe2e7b473c1"
+  },
+  {
+    "repository": "rust-lang/rustc-dev-guide",
+    "revision": "bfbca953b5d4a3596081360a1c79ad88f31e7d60",
+    "path": "src/solve/coinduction.md",
+    "git_blob": "8e5a09a6cab1e1ca7d5cf2eb45a36fdac6223128"
+  },
+  {
+    "repository": "rust-lang/rustc-dev-guide",
+    "revision": "bfbca953b5d4a3596081360a1c79ad88f31e7d60",
+    "path": "src/traits/specialization.md",
+    "git_blob": "99b3cda27fb31f319059db38cc140984b68d3273"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f",
+    "path": "compiler/rustc_next_trait_solver/src/solve/trait_goals.rs",
+    "git_blob": "1d3008da399dcaf06177dcca17accd5ef7a7619d"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f",
+    "path": "src/doc/unstable-book/src/language-features/auto-traits.md",
+    "git_blob": "014e15d1ada6833d828961f1e5879cf333611a96"
+  }
+]

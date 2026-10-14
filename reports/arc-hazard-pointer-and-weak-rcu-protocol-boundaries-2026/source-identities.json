@@ -1,0 +1,14 @@
+[
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f",
+    "path": "library/alloc/src/rcs/arc.rs",
+    "git_blob": "b852891076e29f877fa45ee6a602eb3581e9074f"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f",
+    "path": "library/core/src/sync/atomic.rs",
+    "git_blob": "14e33019a45ff25f2107f175d6c9b26b9731cbfc"
+  }
+]

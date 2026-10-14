@@ -1,0 +1,23 @@
+{
+  "fix": {
+    "url": "https://github.com/leanprover/lean4/pull/14577",
+    "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808",
+    "body": "This PR fixes a kernel bug where a nested inductive datatype whose parametric arguments are ill typed could be accepted.\r\n\r\nWhen eliminating a nested occurrence `I Ds is`, the parametric arguments `Ds` are dropped from the generated auxiliary types, so they used to escape type checking. We now type check them once the inductive types being declared are available.\r\n\r\nCloses #14576\r\n",
+    "merged_at": "2026-07-28T13:39:08Z"
+  },
+  "source_comparison": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+      "path": "src/kernel/inductive.cpp",
+      "git_blob": "7a09077a769a0a21a6a8820bc6277b20cc753d65"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/kernel/inductive.cpp",
+      "git_blob": "438f92d3f6df654dbd6bb1a131fd5a15997620e6"
+    }
+  ],
+  "no_exploit_executed": true
+}

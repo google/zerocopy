@@ -1,0 +1,94 @@
+{
+  "samples": [
+    {
+      "phase": "generate",
+      "sample": 0,
+      "exit": 0,
+      "elapsed_ns": 6011667,
+      "stdout_bytes": 287
+    },
+    {
+      "phase": "check",
+      "sample": 0,
+      "exit": 0,
+      "elapsed_ns": 3360041,
+      "stdout_bytes": 6
+    },
+    {
+      "phase": "elaborate",
+      "sample": 0,
+      "exit": 0,
+      "elapsed_ns": 3309375,
+      "stdout_bytes": 271
+    },
+    {
+      "phase": "recheck-elaborated",
+      "sample": 0,
+      "exit": 0,
+      "elapsed_ns": 2935042,
+      "stdout_bytes": 6
+    },
+    {
+      "phase": "generate",
+      "sample": 1,
+      "exit": 0,
+      "elapsed_ns": 5649250,
+      "stdout_bytes": 287
+    },
+    {
+      "phase": "check",
+      "sample": 1,
+      "exit": 0,
+      "elapsed_ns": 2935625,
+      "stdout_bytes": 6
+    },
+    {
+      "phase": "elaborate",
+      "sample": 1,
+      "exit": 0,
+      "elapsed_ns": 2974583,
+      "stdout_bytes": 271
+    },
+    {
+      "phase": "recheck-elaborated",
+      "sample": 1,
+      "exit": 0,
+      "elapsed_ns": 2873625,
+      "stdout_bytes": 6
+    },
+    {
+      "phase": "generate",
+      "sample": 2,
+      "exit": 0,
+      "elapsed_ns": 5181542,
+      "stdout_bytes": 287
+    },
+    {
+      "phase": "check",
+      "sample": 2,
+      "exit": 0,
+      "elapsed_ns": 2951542,
+      "stdout_bytes": 6
+    },
+    {
+      "phase": "elaborate",
+      "sample": 2,
+      "exit": 0,
+      "elapsed_ns": 3003750,
+      "stdout_bytes": 271
+    },
+    {
+      "phase": "recheck-elaborated",
+      "sample": 2,
+      "exit": 0,
+      "elapsed_ns": 2684834,
+      "stdout_bytes": 6
+    }
+  ],
+  "semantic_mutant_exit": 1,
+  "proof_bytes": 281,
+  "elaborated_bytes": 265,
+  "cvc5_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d",
+  "carcara_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f",
+  "scope": "Three process-start-inclusive samples, one small array obligation, uncontrolled caches/load. Elaborator and checker share implementation."
+}

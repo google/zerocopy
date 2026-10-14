@@ -1,0 +1,8 @@
+{
+  "phase": "archive extraction before compilation",
+  "python": "default 3.9.6",
+  "exit": 1,
+  "error": "extractall() got unexpected keyword argument filter",
+  "effects": "empty task-local native/source directory; no compiler/native control executed",
+  "recovery": "preserved initial directory; fresh native2 with existing Python3.14 supports data filter"
+}

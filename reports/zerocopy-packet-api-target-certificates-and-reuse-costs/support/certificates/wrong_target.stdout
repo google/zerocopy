@@ -1,0 +1,14 @@
+wrong_target.lean:6:0: error: Not a definitional equality: the left-hand side
+  observedLayout
+is not definitionally equal to the right-hand side
+  Packet.expectedLayout 4
+wrong_target.lean:6:68: error: Type mismatch
+  rfl
+has type
+  ?m.5 = ?m.5
+but is expected to have type
+  observedLayout = Packet.expectedLayout 4
+'Receipt.layout_agrees' depends on axioms: [sorryAx]
+'Receipt.source_index' does not depend on any axioms
+'Receipt.bounded_machine_length' depends on axioms: [propext, Quot.sound]
+'Receipt.all_payloads' depends on axioms: [propext]

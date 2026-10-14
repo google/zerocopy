@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "anneal",
+    "automation/smt",
+    "proof/elaboration",
+    "proof/costs",
+    "verification/diagnostics"
+  ],
+  "subjects": [
+    {
+      "name": "Owned input bundle",
+      "identity": {
+        "source_sha256": "f6db0f454be824e8bd7a48a6a4434afd963d3dac9edac3ac447c4dbec77f6f09"
+      }
+    },
+    {
+      "name": "Carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "release": "1.4.2",
+        "archive_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c"
+      }
+    },
+    {
+      "name": "Rust1.99",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "SMT-LIB ArraysEx",
+      "identity": {
+        "version": "2.7",
+        "release": "2024-07-21",
+        "definition_url": "https://smt-lib.org/theories-ArraysEx.shtml"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

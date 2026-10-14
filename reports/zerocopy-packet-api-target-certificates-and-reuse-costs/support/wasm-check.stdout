@@ -1,0 +1,1 @@
+{"cases":58240,"flag_controls":1024,"out_of_domain":2,"all_match":true,"layout":[4,4,1,2,1],"imports":[],"runtime_ms":92.263542,"wasm_bytes":1975955,"node":"v24.21.0","v8":"13.6.233.17-node.53"}

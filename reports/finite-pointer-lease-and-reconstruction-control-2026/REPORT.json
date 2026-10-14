@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "rust/pointers",
+    "zerocopy/ptr",
+    "verification/pointer-capability",
+    "verification/lifetime",
+    "verification/aliasing",
+    "verification/packed-access",
+    "lean/proof-control",
+    "lean/kernel-trust"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy PR-stack pointer source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust nightly control compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+      }
+    },
+    {
+      "name": "Lean 4.31 installed checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+        "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 installed checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+        "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+      }
+    },
+    {
+      "name": "Owned finite pointer lease probe",
+      "identity": {
+        "file": "PointerLease.lean",
+        "sha256": "9be4abb255fea836a0a2df97c2bf7088c0b681876fb759c30fb4ab95af328e00"
+      }
+    },
+    {
+      "name": "Lean nested-inductive kernel fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808",
+        "pull_request": "14577"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

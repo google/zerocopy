@@ -1,0 +1,104 @@
+{
+  "source_sha256": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa",
+  "model_sha256": "fe92f8e5ade090df4331b32238fe46f760895cdfff15c8bff0e8478baf8924e4",
+  "runs": [
+    {
+      "phase": "shared-model",
+      "exit": 0,
+      "elapsed_ns": 1200406875
+    },
+    {
+      "phase": "generate",
+      "target": "aarch64-apple-darwin",
+      "sample": 0,
+      "elapsed_ns": 117625,
+      "certificate_bytes": 972
+    },
+    {
+      "phase": "aarch64_apple_darwin_0",
+      "exit": 0,
+      "elapsed_ns": 364275667
+    },
+    {
+      "phase": "generate",
+      "target": "aarch64-apple-darwin",
+      "sample": 1,
+      "elapsed_ns": 163292,
+      "certificate_bytes": 972
+    },
+    {
+      "phase": "aarch64_apple_darwin_1",
+      "exit": 0,
+      "elapsed_ns": 367043125
+    },
+    {
+      "phase": "generate",
+      "target": "aarch64-apple-darwin",
+      "sample": 2,
+      "elapsed_ns": 131209,
+      "certificate_bytes": 972
+    },
+    {
+      "phase": "aarch64_apple_darwin_2",
+      "exit": 0,
+      "elapsed_ns": 351099458
+    },
+    {
+      "phase": "generate",
+      "target": "wasm32-unknown-unknown",
+      "sample": 0,
+      "elapsed_ns": 112208,
+      "certificate_bytes": 962
+    },
+    {
+      "phase": "wasm32_unknown_unknown_0",
+      "exit": 0,
+      "elapsed_ns": 334902166
+    },
+    {
+      "phase": "generate",
+      "target": "wasm32-unknown-unknown",
+      "sample": 1,
+      "elapsed_ns": 114000,
+      "certificate_bytes": 962
+    },
+    {
+      "phase": "wasm32_unknown_unknown_1",
+      "exit": 0,
+      "elapsed_ns": 331609125
+    },
+    {
+      "phase": "generate",
+      "target": "wasm32-unknown-unknown",
+      "sample": 2,
+      "elapsed_ns": 123083,
+      "certificate_bytes": 962
+    },
+    {
+      "phase": "wasm32_unknown_unknown_2",
+      "exit": 0,
+      "elapsed_ns": 337427000
+    },
+    {
+      "phase": "wrong_target",
+      "exit": 1,
+      "elapsed_ns": 322663667
+    },
+    {
+      "phase": "wrong_type",
+      "exit": 1,
+      "elapsed_ns": 305019750
+    }
+  ],
+  "compiled_receipt_sizes": {
+    "aarch64-apple-darwin": 46096,
+    "wasm32-unknown-unknown": 44904
+  },
+  "binding_controls": {
+    "source_change_rejected": true,
+    "narrow_domain_rejected": true,
+    "different_model_rejected": true
+  },
+  "model_olean_bytes": 64008,
+  "scope": "Template generation and model/ABI theorem checking; manual Rust import, raw observations and compiler/runtime remain trusted. Native loops are not logical proofs. Three samples, uncontrolled shared caches/load."
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/items/unions.md",
+    "git_blob": "7b3d836e08dba7da2ebc125f8a8f6090089b2714"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/type-layout.md",
+    "git_blob": "9d56ea757019745702ab5b50c04e129a073bee5d"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/behavior-considered-undefined.md",
+    "git_blob": "ff34d0af28ca3ec42f548abf6cd3bce5840a6798"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+    "path": "library/portable-simd/crates/core_simd/src/vector.rs",
+    "git_blob": "55de9dac4637f9842259213ea599bfe0ddfe393f"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+    "path": "library/portable-simd/crates/core_simd/src/ops.rs",
+    "git_blob": "c0a06ed46512915993370fe2c0dc52bc1606bb2c"
+  }
+]

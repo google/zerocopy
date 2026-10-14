@@ -1,0 +1,29 @@
+error[E0277]: expected an `FnMut({integer})` closure, found `extern "C" fn(u32) -> u32 {layout}`
+ --> src/main.rs:7:35
+  |
+7 | println!("layout={:?}",(0..5).map(subject::layout).collect::<Vec<_>>());println!("runtime_ns={}",start.elapsed().as_nanos());}
+  |                               --- ^^^^^^^^^^^^^^^ expected an `FnMut({integer})` closure, found `extern "C" fn(u32) -> u32 {layout}`
+  |                               |
+  |                               required by a bound introduced by this call
+  |
+  = help: the trait `FnMut({integer})` is not implemented for fn item `extern "C" fn(u32) -> u32 {layout}`
+note: required by a bound in `map`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/iter/traits/iterator.rs:831:4
+
+error[E0599]: the method `collect` exists for struct `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {layout}>`, but its trait bounds were not satisfied
+ --> src/main.rs:7:52
+  |
+7 | println!("layout={:?}",(0..5).map(subject::layout).collect::<Vec<_>>());println!("runtime_ns={}",start.elapsed().as_nanos());}
+  |                                                    ^^^^^^^ method cannot be called due to unsatisfied trait bounds
+  |
+  = note: the following trait bounds were not satisfied:
+          `<extern "C" fn(u32) -> u32 {layout} as FnOnce<({integer},)>>::Output = _`
+          which is required by `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {layout}>: Iterator`
+          `extern "C" fn(u32) -> u32 {layout}: FnMut<({integer},)>`
+          which is required by `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {layout}>: Iterator`
+          `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {layout}>: Iterator`
+          which is required by `&mut Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {layout}>: Iterator`
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `packet-api-controls` (bin "packet-api-controls") due to 2 previous errors

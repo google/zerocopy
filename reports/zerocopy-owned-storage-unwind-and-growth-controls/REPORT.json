@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal",
+    "proof/certificates",
+    "rust/ownership"
+  ],
+  "subjects": [
+    {
+      "name": "Owned input bundle",
+      "identity": {
+        "source_sha256": "75a13d53c6848933548808660af50b58637387840f5aeec89a380ecb184b907e"
+      }
+    },
+    {
+      "name": "zerocopy PR3846 source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+      }
+    },
+    {
+      "name": "Lean4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust1.99",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

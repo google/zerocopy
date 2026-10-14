@@ -1,0 +1,21 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "runs": [
+    {
+      "name": "version",
+      "exit": 0,
+      "elapsed_ns": 148891334
+    },
+    {
+      "name": "compile",
+      "exit": 0,
+      "elapsed_ns": 2443191833
+    },
+    {
+      "name": "native",
+      "exit": 0,
+      "elapsed_ns": 52003709
+    }
+  ]
+}

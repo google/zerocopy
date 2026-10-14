@@ -1,0 +1,4 @@
+'Receipt.layout_agrees' does not depend on any axioms
+'Receipt.source_index' does not depend on any axioms
+'Receipt.bounded_machine_length' depends on axioms: [propext, Quot.sound]
+'Receipt.all_payloads' depends on axioms: [propext]

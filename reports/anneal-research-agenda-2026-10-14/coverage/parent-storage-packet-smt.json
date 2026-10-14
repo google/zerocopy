@@ -1,0 +1,78 @@
+{
+  "interpretation": "Bounded completed experiments/mechanism questions; exact scopes and residual import/runtime obligations are in Findings/Boundaries. Native enumerations and source-index equations are not general Rust proofs.",
+  "reports": {
+    "zerocopy-owned-storage-unwind-and-growth-controls": {
+      "F1. Unalign restores ownership before safe code resumes": [
+        "R098",
+        "R099",
+        "T077",
+        "T084",
+        "T087",
+        "P085",
+        "P095"
+      ],
+      "F2. Conditional conversion and rejected growth preserve their source": [
+        "R070",
+        "R098",
+        "T084",
+        "P086",
+        "P095"
+      ],
+      "F3. The proof interfaces constrain abstraction and compiler certificates": [
+        "P085",
+        "P086",
+        "P095",
+        "T077",
+        "T087"
+      ]
+    },
+    "zerocopy-packet-api-target-certificates-and-reuse-costs": {
+      "F1. The workload exercises actual validation, error and write paths": [
+        "R095",
+        "P125",
+        "P131",
+        "P138"
+      ],
+      "F2. Mathematical laws expose the source bridge rather than hiding it": [
+        "R095",
+        "P077",
+        "P084",
+        "P131",
+        "T085"
+      ],
+      "F3. Observed layout and small machine bounds are independently scoped": [
+        "P075",
+        "P076",
+        "P130",
+        "P134",
+        "T085",
+        "T086"
+      ],
+      "F4. Measured generation, checking and reuse have a concrete cost boundary": [
+        "P125",
+        "P130",
+        "P138"
+      ]
+    },
+    "smt-frame-diagnostics-elaboration-and-checking-costs": {
+      "F1. Exact solver input and result category are part of proof meaning": [
+        "R081",
+        "R084",
+        "T012"
+      ],
+      "F2. Elaborator output can be checked without treating elaboration as authority": [
+        "R084",
+        "T014"
+      ],
+      "F3. A false frame claim, incomplete proof and mismatch need different diagnostics": [
+        "R081",
+        "T012"
+      ],
+      "F4. Generation, elaboration and checking costs are separate measured phases": [
+        "R084",
+        "T012",
+        "T014"
+      ]
+    }
+  }
+}

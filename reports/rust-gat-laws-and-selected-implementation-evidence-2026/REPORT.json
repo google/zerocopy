@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-10-14",
+  "topics": [
+    "rust/traits",
+    "rust/gat",
+    "rust/coinduction",
+    "rust/specialization",
+    "verification/trait-evidence",
+    "refinedrust/trait-extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+      }
+    },
+    {
+      "name": "Rust nightly observed toolchain and matching library source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "release": "1.101.0-nightly",
+        "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+      }
+    },
+    {
+      "name": "rustc development guide",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "bfbca953b5d4a3596081360a1c79ad88f31e7d60"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 artifact, selected trait frontend",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    }
+  ]
+}
