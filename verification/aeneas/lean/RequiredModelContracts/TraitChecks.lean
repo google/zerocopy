@@ -22,6 +22,14 @@ substitute implementation. None of these adapters executes the function.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 
+@[contract_simps] theorem required_array_into_bytes (run : Result Unit)
+    (provided : Specs.array_into_bytes_spec_contract run) :
+    Obligations.array_into_bytes_spec_contract run := by
+  apply WP.spec_mono provided
+  rintro _ ⟨_, _, boolean, byte, unit, empty, nested⟩
+  exact ⟨boolean, byte, unit, empty, nested⟩
+
+
 @[contract_simps] theorem required_byte_codec_roundtrip (C : Type)
     (dictionary : trait_checks.ByteCodec C) (byte : U8) (run : Result U8)
     (provided : Specs.byte_codec_roundtrip_spec_contract C dictionary byte run) :

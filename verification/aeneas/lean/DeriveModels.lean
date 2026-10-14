@@ -105,10 +105,17 @@ meta partial def boundModelProvider (raw : Expr) (params dicts : Array Expr) : M
     mkAppOptM n (xs.map some)
   if head.isConstOf ``UScalar then return ← app ``modelUScalar args
   if head.isConstOf ``IScalar then return ← app ``modelIScalar args
+  if head.isConstOf ``Char then return mkConst ``modelChar
   -- PhantomData has no stored child value: select its fixed empty provider
   -- without demanding a model for the type named by its phantom parameter.
   if head.isConstOf ``Zerocopy.core.marker.PhantomData then
     return ← app ``modelPhantomData args
+  for (carrier, provider) in #[
+      (``core.mem.manually_drop.ManuallyDrop, ``modelManuallyDrop),
+      (``core.cell.Cell, ``modelCell), (``core.cell.UnsafeCell, ``modelUnsafeCell)] do
+    if head.isConstOf carrier then
+      let child ← boundModelProvider args[0]! params dicts
+      return ← app provider (args ++ #[child])
   if head.isConstOf ``Bool then return mkConst ``modelBool
   if head.isConstOf ``Nat then return mkConst ``modelNat
   if head.isConstOf ``Int then return mkConst ``modelInt
@@ -121,6 +128,15 @@ meta partial def boundModelProvider (raw : Expr) (params dicts : Array Expr) : M
     return ← app (if head.isConstOf ``Prod then ``modelProd else ``modelRustResult)
       (args ++ #[ma, mb])
   if head.isConstOf ``Option || head.isConstOf ``List || head.isConstOf ``Slice then
+    if head.isConstOf ``Option then
+      let child ← whnf args[0]!
+      if child.getAppFn.isConstOf ``core.num.nonzero.NonZero then
+        let fields := child.getAppArgs
+        let word ← whnf fields[0]!
+        if word.getAppFn.isConstOf ``UScalar then
+          return ← app ``modelOptionNonZeroUScalar #[word.appArg!, fields[1]!]
+        if word.getAppFn.isConstOf ``IScalar then
+          return ← app ``modelOptionNonZeroIScalar #[word.appArg!, fields[1]!]
     let ma ← boundModelProvider args[0]! params dicts
     let provider := if head.isConstOf ``Option then ``modelOption
       else if head.isConstOf ``List then ``modelList else ``modelSlice
@@ -361,7 +377,8 @@ that wrapper's decomposition, and finally register the complete RustModel.
 An absent local decoder is structural identity. An infallible authored decoder
 returns a model; a fallible one returns Option model and can restrict admission. -/
 private meta def deriveProvider (raw : Name) (count : Nat)
-    (localDecoder : Option (Name × Syntax × Bool)) : TermElabM Unit := do
+    (localDecoder : Option (Name × Syntax × Bool))
+    (physicalPayload : Option Nat := none) : TermElabM Unit := do
   let info ← nominal raw count
   let some b := (modelExtension.getState (← getEnv)).find? raw
     | throwError "Missing Fields/model shape for {raw}"
@@ -448,8 +465,41 @@ private meta def deriveProvider (raw : Name) (count : Nat)
     addDecl (.thmDecl {
       «name» := raw ++ `decode_decompose, levelParams := info.levelParams,
       «type» := (← inferType decomposition), value := decomposition }) (forceExpose := true)
+    let bitDecoderTy ← mkAppM ``Rust.Storage.BitDecoder #[rawTy]
+    let representation ← match physicalPayload with
+      | none => mkAppOptM ``Option.none #[some bitDecoderTy]
+      | some payload => do
+        -- LLBC validation authorizes only named builtin storage wrappers. Lean
+        -- independently checks that reconstruction uses the actual raw fields.
+        let some structureInfo := getStructureInfo? (← getEnv) raw
+          | throwError "Physical wrappers must be structures: {raw}"
+        let supported := #[`Zerocopy.wrappers.Unalign,
+          `Zerocopy.wrappers.read_only_def.ReadOnly]
+        let byteorder := raw.getPrefix == `Zerocopy.byteorder &&
+          #[`U16, `U32, `U64, `U128, `Usize, `I16, `I32, `I64, `I128,
+            `Isize, `F32, `F64].contains (Name.mkSimple raw.getString!)
+        unless supported.contains raw || byteorder do
+          throwError "Unsupported physical wrapper owner: {raw}"
+        unless payload == 0 && structureInfo.fieldNames.size == (if byteorder then 2 else 1) do
+          throwError "Physical wrapper field shape changed: {raw}"
+        let ctor := mkAppN (mkConst info.ctors.head! levels) params
+        forallTelescope (← inferType ctor) fun fields _ => do
+          let fieldTy ← inferType fields[payload]!
+          let child ← boundModelProvider fieldTy params dicts
+          let wrap ← withLocalDeclD `payload fieldTy fun value => do
+            let mut values := #[]
+            for i in [:fields.size] do
+              if i == payload then values := values.push value
+              else
+                let ty ← whnf (← inferType fields[i]!)
+                unless ty.getAppFn.isConstOf ``Zerocopy.core.marker.PhantomData do
+                  throwError "Only PhantomData may accompany a physical payload: {raw}"
+                values := values.push (← mkAppOptM ``Zerocopy.core.marker.PhantomData.mk
+                  (ty.getAppArgs.map some))
+            mkLambdaFVars #[value] (mkAppN ctor values)
+          mkAppOptM ``wrapperRepresentation #[some fieldTy, some rawTy, some child, some wrap]
     let provider ← mkAppOptM ``RustModel.mk #[some rawTy, some modelTy,
-      some (mkAppN (mkConst b.decoder levels) all)]
+      some (mkAppN (mkConst b.decoder levels) all), some representation]
     addDefinition b.provider info.levelParams (← mkLambdaFVars all provider)
   setReducibilityStatus b.provider .reducible
   addInstance b.provider .global 1000
@@ -467,6 +517,23 @@ elab "derive_rust_model " rawId:ident " with " count:num " type " "parameters"
     " decode? " self:ident " => " body:term : command => Command.liftTermElabM do
   deriveProvider (← realizeGlobalConstNoOverloadWithInfo rawId) count.getNat
     (some (self.getId, body, true))
+
+elab "derive_rust_model " rawId:ident " with " count:num " type " "parameters"
+    " with_physical " payloadIndex:num : command => Command.liftTermElabM do
+  deriveProvider (← realizeGlobalConstNoOverloadWithInfo rawId) count.getNat none
+    (some payloadIndex.getNat)
+
+elab "derive_rust_model " rawId:ident " with " count:num " type " "parameters"
+    " with_physical " payloadIndex:num " decode " self:ident " => " body:term : command =>
+  Command.liftTermElabM do
+    deriveProvider (← realizeGlobalConstNoOverloadWithInfo rawId) count.getNat
+      (some (self.getId, body, false)) (some payloadIndex.getNat)
+
+elab "derive_rust_model " rawId:ident " with " count:num " type " "parameters"
+    " with_physical " payloadIndex:num " decode? " self:ident " => " body:term : command =>
+  Command.liftTermElabM do
+    deriveProvider (← realizeGlobalConstNoOverloadWithInfo rawId) count.getNat
+      (some (self.getId, body, true)) (some payloadIndex.getNat)
 
 /-- Audit the elaborated provider against its registered raw owner, mathematical
 type, full decoder, and generic count. Definitional equality unfolds actual

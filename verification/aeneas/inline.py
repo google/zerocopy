@@ -980,6 +980,15 @@ def save_bindings(root, annotations, work, development=False):
                           'file': source['file'], 'syntax': source['syntax'],
                           'open_line': source['open_line'], 'end_line': source['end_line'], 'end_col': source['end_col']}
     physical_plans = {}
+    if (not development and (work / 'zerocopy.llbc').is_file()
+            and (work / 'zerocopy.before.ullbc').is_file()):
+        import physical_models
+        final = json.loads((work / 'zerocopy.llbc').read_text())['translated']
+        before = json.loads((work / 'zerocopy.before.ullbc').read_text())['translated']
+        physical_plans = physical_models.validate_physical_wrapper_plans(final, before)
+        for rust, entry in bindings.items():
+            if rust in physical_plans:
+                entry['physical_model'] = physical_plans[rust]
     type_image = list(native_omissions)
     classes = getattr(annotations, 'type_classes', None) if not development else None
     if not development and types.exists() and classes is None:

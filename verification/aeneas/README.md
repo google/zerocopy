@@ -583,6 +583,50 @@ fence is the reserved CI-checked convention. Near-miss guard detection and the
 independent policy protect that convention without treating all mathematical
 prose as annotations.
 
+## Array `IntoBytes` initialization law
+
+The `IntoBytes` fence in [`lib.rs`](../../zerocopy/src/lib.rs) requires every
+accepted physical representation byte to be initialized. A byte in
+[`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) is either initialized with
+an eight-bit value or uninitialized. Each physical decoder has a fixed width;
+a successful run must consume exactly that width. The law covers the entire
+accepted byte list, including any padding within an element representation.
+
+This physical decoder is separate from `RustModel.decode`, which interprets a
+typed value for library contracts. `RustModel.initializedRepresentation`
+quantifies over every successful physical decoding, even when the library
+model rejects that value. A missing physical decoder makes the law `False`.
+The current physical models cover `bool`, `u8`, `()`, and arrays recursively
+built from them; other mathematical models do not acquire a byte law by default.
+
+`arrayDecoder_initialized` proves that arrays inherit this law from their
+element decoder for every element count. The decoder splits the representation
+into consecutive chunks of the element width and requires an empty final
+remainder. An empty array accepts only an empty byte list. Zero-sized elements
+use empty chunks, so positive counts of `()` also have no representation bytes.
+The concrete checks in
+[`trait_checks.rs`](../../zerocopy/src/trait_checks.rs) exercise primitive,
+empty, zero-sized, and nested arrays; the extracted generic implementation law
+supplies the result for arbitrary counts under the element's law.
+
+Applying the theorem to Rust requires a correspondence premise for the physical
+decoder. Its width must equal Rust's size, and it must admit every language-valid
+representation. The [Rust Reference array layout rules](https://doc.rust-lang.org/reference/type-layout.html#array-layout)
+give size `N * size_of::<T>()`, alignment equal to `T`'s alignment, and element
+`k` at byte offset `k * size_of::<T>()`. These rules leave no padding between
+complete element representations; padding already included in `size_of::<T>()`
+still needs the element's initialization law. The [validity rules](https://doc.rust-lang.org/reference/behavior-considered-undefined.html#invalid-values)
+require valid array elements, restrict `bool` to zero and one, and require
+initialized integers. The primitive layouts give `bool` and `u8` one byte and
+`()` zero bytes. These language facts justify the current decoder choices;
+Lean checks the initialization and array composition laws within that model.
+
+This proof establishes the array trait law under those correspondence premises.
+The pure representation model does not track runtime storage, typed transfers,
+or pointer provenance. `IntoBytes::as_bytes` retains its Rust safety argument;
+its pointer implementation is not proved by this array law. See
+[LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the remaining lowering boundaries.
+
 ## Native Lean proofs and independent checks
 
 `Specs.lean` is generated from the Rust comments in a fixed context containing

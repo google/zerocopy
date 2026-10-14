@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import ModelPrelude
+public import ContractSimps
 @[expose] public section
 
 /-!
@@ -47,6 +48,27 @@ theorem admitted_dite {α : Type} (P : Prop) [Decidable P] (value : P → α) :
 @[simp] theorem option_valid_iff {α : Type} [RustModel α] (raw : Option α) :
     isValid raw ↔ ∀ x ∈ raw, isValid x := by
   cases raw <;> simp [isValid, RustModel.decode, modelOption, Option.map_eq_some_iff]
+
+-- Niche-aware providers change physical storage, while retaining ordinary
+-- Option admission. State that observation explicitly so proofs need not
+-- unfold the physical decoder to recover their mathematical input domain.
+@[simp, contract_simps] theorem option_nonzero_unsigned_decode_eq (ty : UScalarTy) (Inner : Type)
+    (raw : Option (core.num.nonzero.NonZero (UScalar ty) Inner)) :
+    RustModel.decode raw = (modelOption (ma := modelNonZeroUScalar ty Inner)).decode raw := rfl
+
+@[simp, contract_simps] theorem option_nonzero_signed_decode_eq (ty : IScalarTy) (Inner : Type)
+    (raw : Option (core.num.nonzero.NonZero (IScalar ty) Inner)) :
+    RustModel.decode raw = (modelOption (ma := modelNonZeroIScalar ty Inner)).decode raw := rfl
+
+@[simp, contract_simps] theorem option_nonzero_unsigned_valid_iff (ty : UScalarTy) (Inner : Type)
+    (raw : Option (core.num.nonzero.NonZero (UScalar ty) Inner)) :
+    isValid raw ↔ ∀ x ∈ raw, isValid x := by
+  exact @option_valid_iff _ (modelNonZeroUScalar ty Inner) raw
+
+@[simp, contract_simps] theorem option_nonzero_signed_valid_iff (ty : IScalarTy) (Inner : Type)
+    (raw : Option (core.num.nonzero.NonZero (IScalar ty) Inner)) :
+    isValid raw ↔ ∀ x ∈ raw, isValid x := by
+  exact @option_valid_iff _ (modelNonZeroIScalar ty Inner) raw
 
 @[simp] theorem prod_valid_iff {α β : Type} [RustModel α] [RustModel β]
     (raw : α × β) : isValid raw ↔ isValid raw.1 ∧ isValid raw.2 := by
