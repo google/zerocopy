@@ -707,6 +707,90 @@ def trait_checks.forwarded_byte_codec (byte : Std.U8) : Result Std.U8 := do
     (trait_checks.Forward.Insts.ZerocopyTrait_checksByteCodec
     trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec) byte
 
+/-- [zerocopy::trait_checks::require_into_bytes]:
+    Source: 'src/trait_checks.rs', lines 77:0-77:47 -/
+def trait_checks.require_into_bytes
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#23::{impl zerocopy::IntoBytes for [T; N]}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Array.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (N : Std.Usize) (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#23::{impl zerocopy::IntoBytes for [T; N]}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def Array.Insts.ZerocopyIntoBytes {T : Type} (N : Std.Usize) (IntoBytesInst :
+  IntoBytes T) : IntoBytes (Array T N) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Array.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    N IntoBytesInst
+}
+
+/-- [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Tuple.Insts.ZerocopyIntoBytes : IntoBytes Unit := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U8.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U8.Insts.ZerocopyIntoBytes : IntoBytes Std.U8 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U8.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::trait_checks::check_array_into_bytes]:
+    Source: 'src/trait_checks.rs', lines 92:0-98:1 -/
+def trait_checks.check_array_into_bytes : Result Unit := do
+  trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
+    Bool.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
+    U8.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 4#usize
+    Tuple.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 0#usize
+    Bool.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
+    (Array.Insts.ZerocopyIntoBytes 2#usize Bool.Insts.ZerocopyIntoBytes))
+
 /-- [zerocopy::util::padding_needed_for]:
     Source: 'src/util/mod.rs', lines 163:0-223:1 -/
 def util.padding_needed_for
