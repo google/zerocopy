@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "flux",
+    "thrust",
+    "rusthorn",
+    "prusti",
+    "verification/refinement-inference",
+    "verification/horn-clauses",
+    "verification/lean-vc-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Flux source",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "6769bb9cbd1216380f542349494efafafd6104a3"
+      }
+    },
+    {
+      "name": "Thrust source",
+      "identity": {
+        "repository": "coord-e/thrust",
+        "revision": "187a1e975edece50b896f1ee478ab665d7a1204e"
+      }
+    },
+    {
+      "name": "RustHorn source",
+      "identity": {
+        "repository": "hopv/Rust-horn",
+        "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52"
+      }
+    },
+    {
+      "name": "Prusti source",
+      "identity": {
+        "repository": "prusti/prusti",
+        "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+      }
+    },
+    {
+      "name": "Flux PLDI 2023 author paper",
+      "identity": {
+        "doi": "10.1145/3591283",
+        "sha256": "69cae6293c84a7f42e90a883d6d4645449b7216e00c80219e262609528c52b51"
+      }
+    },
+    {
+      "name": "Thrust PLDI 2025 author paper",
+      "identity": {
+        "doi": "10.1145/3729333",
+        "sha256": "adc13d87e09a61e5ef42057c61c5602a38c5befa1416f0b76ba7edc919882695"
+      }
+    },
+    {
+      "name": "RustHorn updated author full-version paper",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

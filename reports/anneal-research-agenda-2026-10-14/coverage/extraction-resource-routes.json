@@ -1,0 +1,367 @@
+{
+  "observed_at": "2026-10-14",
+  "assignment": "Bounded extraction, resource/effect, and modular foreign routes research",
+  "interpretation": "answered means the identified literature/mechanism comparison is answered within its explicit source scope; partial records unresolved research; not_examined records absent investigation. Future engineering is separate and is not a blanket reason to downgrade literature questions.",
+  "reference_baseline": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+  "anneal_subject": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "packages": [
+    "aeneas-charon-functionalization-and-spatial-boundaries",
+    "hax-eurydice-and-rust-c-extraction-frontiers",
+    "modular-foreign-contracts-and-open-execution",
+    "resource-logics-effects-and-compilation-interfaces"
+  ],
+  "question_coverage": [
+    {
+      "id": "R013",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "What the formal results conclude"
+        }
+      ],
+      "remaining_gap": "None for the scoped distinction between modeled LLBC results and inspected implementation evidence. Full implementation verification is not asserted.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R049",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "Frames and failure are part of the spatial judgment"
+        }
+      ],
+      "remaining_gap": "Memory granularity, effect judgments, raw-dereference boundary, and frame quantification inspected; complete adequacy/dependency closure and actual functional-to-concrete-memory bridge were not audited.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R050",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "hax-eurydice-and-rust-c-extraction-frontiers",
+          "section": "hax has distinct backend routes"
+        }
+      ],
+      "remaining_gap": "Lean and F* dispatch/phases plus rejection gates inspected; current Rocq phase path and exhaustive backend feature/error behavior not inspected.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R051",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "hax-eurydice-and-rust-c-extraction-frontiers",
+          "section": "Borrowing, drops, and representation have concrete lowering seams"
+        }
+      ],
+      "remaining_gap": "Pointer/drop lowering seams and conditional informal guarantee inspected; complete Rust/C borrowing, layout, destructor, provenance and UB preservation argument not established.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R055",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "RefinedC and CN have different checking foundations"
+        }
+      ],
+      "remaining_gap": "None for the publication-scoped ownership/Iris/Lithium architecture and transferable resource obligations. Current RefinedC executable claims were not made.",
+      "future_engineering": "Select a current artifact and apply its logic to Rust operations before implementation adoption; no current executable identity was acquired here."
+    },
+    {
+      "id": "R056",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "RefinedC and CN have different checking foundations"
+        }
+      ],
+      "remaining_gap": "Kernel calculus and proof/implementation distinction inspected; current testing, diagnostics, inference, footprint analysis, and solver path not audited.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R057",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "VST: quantified safety under an external specification"
+        },
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "CompCert: compose with proved source safety"
+        }
+      ],
+      "remaining_gap": "None for the scoped foundational C safety/compiler/ABI boundary analysis. The proposed Rust/C route is a list of required bridges, not an established new end-to-end theorem.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R058",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "Steel/PulseCore: scoped soundness and intrinsic effect interfaces"
+        }
+      ],
+      "remaining_gap": "PulseCore resource/effect and predicativity mechanisms plus migrated source inspected; complete current Steel comparison, Iris tradeoffs, automation and compilation path not audited.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R059",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "Derived Anneal architecture and maintenance implications"
+        }
+      ],
+      "remaining_gap": "No dynamic-frame/implicit-frame/first-order/higher-order comparison on actual Anneal examples performed; the report supplies only design criteria.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "R078",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Open simulations quantify over compatible foreign interaction"
+        }
+      ],
+      "remaining_gap": "FFI contracts and query/reply continuations inspected; concrete assembly, volatile, MMIO, DMA, asynchronous mutation and callback artifacts not investigated.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "T038",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "resource-logics-effects-and-compilation-interfaces",
+          "section": "Steel/PulseCore: scoped soundness and intrinsic effect interfaces"
+        }
+      ],
+      "remaining_gap": "Selected intrinsic semantic and checker-result interfaces inspected; native plugin checking, full elaboration proof dependencies, encoding soundness and executable extraction not audited.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "T069",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "The implemented pipeline has several independent interfaces"
+        }
+      ],
+      "remaining_gap": "Actual boundary inventory and required certificate proposition roles identified; individual pass relations and their semantic lemmas not constructed.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "T070",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "Derived Anneal adoption and maintenance gates"
+        }
+      ],
+      "remaining_gap": "Formal/implementation distinction and backward-update obligation identified; exact join/loop algorithms and generated pure-rewrite certificates not examined.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P030",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "hax-eurydice-and-rust-c-extraction-frontiers",
+          "section": "A current RustCompCert statement resolves direction separately from its paper"
+        }
+      ],
+      "remaining_gap": "Current simulation direction and active/commented admission distinctions resolved; source frontend fragment, complete borrow-checker assumptions and checked dependency closure not audited.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P039",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Open simulations quantify over compatible foreign interaction"
+        }
+      ],
+      "remaining_gap": "None for the scoped compatible-environment mechanism: query/reply and continuation relations explicitly quantify over compatible interactions. This does not claim a new theorem for all safe Rust contexts.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P067",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "The implemented pipeline has several independent interfaces"
+        }
+      ],
+      "remaining_gap": "Pipeline interfaces and certificate roles mapped; complete per-pass AST relation and semantic lemma inventory, including all pure passes, not extracted.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P073",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "What the formal results conclude"
+        }
+      ],
+      "remaining_gap": "Returned-borrow forward/backward reconstruction mechanism identified; the formal correspondence theorem for actual emitted functions remains to be established.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P077",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "The implemented pipeline has several independent interfaces"
+        }
+      ],
+      "remaining_gap": "Symbolic/pure/backend boundaries and failure obligations identified; emitted-definition denotation and source preservation not checked for a concrete program.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P103",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Derived interface requirements for a future Anneal certificate"
+        }
+      ],
+      "remaining_gap": "Reusable semantic contract fields identified; exact machine-checkable certificate format and composition/checking rules not defined.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P104",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Derived interface requirements for a future Anneal certificate"
+        }
+      ],
+      "remaining_gap": "Universal safe-caller obligation stated explicitly; no concrete API domain/caller-coverage proof constructed.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P105",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Derived interface requirements for a future Anneal certificate"
+        }
+      ],
+      "remaining_gap": "None for the conceptual separation of legitimate unsafe requirements, hidden narrowed-domain assumptions and caller discharge. No concrete Rust API discharge proof is claimed.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P106",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Linking, specialization, and cycles require evidence closure"
+        }
+      ],
+      "remaining_gap": "No concrete parametric versus per-instantiation certificate comparison; only required target/layout premises identified.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P107",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Linking, specialization, and cycles require evidence closure"
+        }
+      ],
+      "remaining_gap": "No concrete trait-contract/selected-implementation certificate inspected.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P108",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Open simulations quantify over compatible foreign interaction"
+        }
+      ],
+      "remaining_gap": "Quantified foreign reply/continuation contracts inspected; Rust vtables, function pointers, closure captures and concrete callback protocols not investigated.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P109",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Pure models and C specifications are separate artifacts"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism comparison of representation, calling-convention relations, foreign behavior specifications and local C implementation proofs. Current whole-pipeline foundational closure is explicitly not asserted.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P110",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Linking, specialization, and cycles require evidence closure"
+        }
+      ],
+      "remaining_gap": "Open interaction compatibility exposed; actual separate-compilation/linking/specialization certificate-preservation theorem and linked artifact not examined.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P111",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "modular-foreign-contracts-and-open-execution",
+          "section": "Linking, specialization, and cycles require evidence closure"
+        }
+      ],
+      "remaining_gap": "No simultaneous certificate-cycle proof rule or concrete recursive dependency artifact inspected.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P128",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "The implemented pipeline has several independent interfaces"
+        }
+      ],
+      "remaining_gap": "No actual zerocopy before/after Charon artifacts or pass-sequence certificate experiment produced.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    },
+    {
+      "id": "P129",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+          "section": "Derived Anneal adoption and maintenance gates"
+        }
+      ],
+      "remaining_gap": "No actual Aeneas borrow/update certificate prototype produced.",
+      "future_engineering": "No new Anneal implementation or full build is claimed; implementation work is separate from this research answer."
+    }
+  ]
+}

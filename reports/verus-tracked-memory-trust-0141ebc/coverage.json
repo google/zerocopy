@@ -1,0 +1,119 @@
+{
+  "coverage_kind": "bounded source and formal-core comparison",
+  "topics": {
+    "R039": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Modes and erasure define an accepted program different from plain source text"
+      ],
+      "remaining_research": [
+        "Complete accepted-language/feature inventory beyond the inspected modes, ghost erasure and memory wrappers."
+      ],
+      "answered_subquestions": [
+        "Modes and erasure define an accepted program different from plain source text"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R040": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Raw-pointer support is a permission interface with abstract provenance"
+      ],
+      "remaining_research": [
+        "Byte-preserving operations and primitive/alias/provenance correspondence beyond selected raw-pointer APIs."
+      ],
+      "answered_subquestions": [
+        "Raw-pointer support is a permission interface with abstract provenance"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R041": {
+      "status": "answered-with-known-constraints",
+      "issue": 3865,
+      "sections": [
+        "Tracked values enforce resource transfer within the checked boundary"
+      ],
+      "remaining_research": [],
+      "answered_subquestions": [
+        "Tracked values enforce resource transfer within the checked boundary"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ],
+      "scope": "The pinned interfaces and theorem/acceptance boundaries stated in the referenced sections; no general feature-parity or future integration-success claim."
+    },
+    "R042": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Concurrent resources require invariant and atomic-operation discipline"
+      ],
+      "remaining_research": [
+        "Complete state-machine generation and other memory-ordering/concurrency interfaces beyond selected SC wrappers."
+      ],
+      "answered_subquestions": [
+        "Concurrent resources require invariant and atomic-operation discipline"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R090": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Formal core safety and SMT acceptance cover different subjects"
+      ],
+      "remaining_research": [
+        "Complete certificate/Lean encoding, allowed-assumption and compatible resource/source-semantics audit beyond the inspected VC acceptance route."
+      ],
+      "answered_subquestions": [
+        "Formal core safety and SMT acceptance cover different subjects"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R092": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Tracked values enforce resource transfer within the checked boundary",
+        "Raw-pointer support is a permission interface with abstract provenance"
+      ],
+      "remaining_research": [
+        "Determine the minimal closed sequential resource/operational interface and which richer borrow/invariant/concurrency extensions preserve it."
+      ],
+      "answered_subquestions": [
+        "Tracked values enforce resource transfer within the checked boundary",
+        "Raw-pointer support is a permission interface with abstract provenance"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "T035": {
+      "status": "answered-with-known-constraints",
+      "issue": 3866,
+      "sections": [
+        "Modes and erasure define an accepted program different from plain source text",
+        "Formal core safety and SMT acceptance cover different subjects"
+      ],
+      "remaining_research": [],
+      "answered_subquestions": [
+        "Modes and erasure define an accepted program different from plain source text",
+        "Formal core safety and SMT acceptance cover different subjects"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ],
+      "scope": "The pinned interfaces and theorem/acceptance boundaries stated in the referenced sections; no general feature-parity or future integration-success claim."
+    }
+  }
+}

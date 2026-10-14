@@ -1,0 +1,87 @@
+{
+  "repository": "verus-lang/verus",
+  "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+  "tree": "43160bdd14f8504f6875b8826834a17e78850c51",
+  "date": "2026-10-14T14:39:53Z",
+  "role": "source and upstream documentation; no execution",
+  "files": [
+    {
+      "path": "README.md",
+      "git_blob_sha": "98824cddc06c022c4d3e2cead3573f0121f12e5a",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/README.md",
+      "lines": 72
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "git_blob_sha": "f1e482076d4eb83a1ed5881b07529f70748bb858",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/rust-toolchain.toml",
+      "lines": 4
+    },
+    {
+      "path": "source/docs/guide/src/modes.md",
+      "git_blob_sha": "e09b2a2e63c1c45d643049d42f0ec0a6095914f6",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/docs/guide/src/modes.md",
+      "lines": 38
+    },
+    {
+      "path": "source/docs/guide/src/erasure.md",
+      "git_blob_sha": "eae0f0bcd7cfadf96af098dc2203afffce395f76",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/docs/guide/src/erasure.md",
+      "lines": 89
+    },
+    {
+      "path": "source/vstd/raw_ptr.rs",
+      "git_blob_sha": "b5fede9da14044826b20a22bbb932415b5e4727a",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/raw_ptr.rs",
+      "lines": 1054
+    },
+    {
+      "path": "source/vstd/simple_pptr.rs",
+      "git_blob_sha": "5b1bd1d73895c2cb71a24dc6ba5f2d49ac168915",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/simple_pptr.rs",
+      "lines": 601
+    },
+    {
+      "path": "source/vstd/atomic.rs",
+      "git_blob_sha": "ae8c4081b6559c9aec47aff480f1da8f8764e7ef",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/atomic.rs",
+      "lines": 1220
+    },
+    {
+      "path": "source/vstd/invariant.rs",
+      "git_blob_sha": "927650bf00fb98826a14104425241de88fa36fee",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/invariant.rs",
+      "lines": 652
+    },
+    {
+      "path": "source/vir/src/modes.rs",
+      "git_blob_sha": "b98a15b6d1fc69a0cd74306d08e082f0f39648bf",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vir/src/modes.rs",
+      "lines": 4102
+    },
+    {
+      "path": "source/air/src/context.rs",
+      "git_blob_sha": "6305861f76243504f07bf7f46506fb2a56853930",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/air/src/context.rs",
+      "lines": 606
+    },
+    {
+      "path": "source/air/src/smt_verify.rs",
+      "git_blob_sha": "d2d9b2e1b9ce9ad096531cdfedf52fea7a03eff3",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/air/src/smt_verify.rs",
+      "lines": 576
+    },
+    {
+      "path": "source/rust_verify/src/verifier.rs",
+      "git_blob_sha": "5edb7ad6cb5e16b61dc3f032d9a94f49c6b2efb7",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/rust_verify/src/verifier.rs",
+      "lines": 3366
+    },
+    {
+      "path": "source/builtin/src/lib.rs",
+      "git_blob_sha": "3a176d6fba98b902a847ca23d5e82a447a4380da",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/builtin/src/lib.rs",
+      "lines": 2562
+    }
+  ]
+}

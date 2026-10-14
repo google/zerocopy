@@ -1,0 +1,93 @@
+{
+  "repository": "creusot-rs/creusot",
+  "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+  "tree": "17603a4aec9465774557063db984bbc98932d779",
+  "date": "2026-10-14T12:56:57Z",
+  "role": "source and upstream documentation; no execution",
+  "files": [
+    {
+      "path": "ARCHITECTURE.md",
+      "git_blob_sha": "725a255368de003275d276de654d743e75b8f0ab",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/ARCHITECTURE.md",
+      "lines": 204
+    },
+    {
+      "path": "README.md",
+      "git_blob_sha": "c31a3174ffb594128352dcdb011cd77980bffdc0",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/README.md",
+      "lines": 99
+    },
+    {
+      "path": "rust-toolchain",
+      "git_blob_sha": "770b1ab711df7e7964112226c264541bb8ebde84",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/rust-toolchain",
+      "lines": 4
+    },
+    {
+      "path": "creusot-deps.opam",
+      "git_blob_sha": "a7cbb136ac85a98c8ee27dc985d27af2b0358eb1",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-deps.opam",
+      "lines": 23
+    },
+    {
+      "path": "why3find.json",
+      "git_blob_sha": "f4b3620ce7a633814a4fce101aa7bc37c0d1e187",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/why3find.json",
+      "lines": 17
+    },
+    {
+      "path": "creusot-std/src/ghost/perm.rs",
+      "git_blob_sha": "a732c1165b5074d2052b81b092dd7fdbde99982a",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/ghost/perm.rs",
+      "lines": 179
+    },
+    {
+      "path": "creusot-std/src/ghost/lifetime_logic.rs",
+      "git_blob_sha": "3c7bb5cd7ce875cb1837fcf1560a363d90f6e5f6",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/ghost/lifetime_logic.rs",
+      "lines": 427
+    },
+    {
+      "path": "creusot-std/src/ghost/invariant.rs",
+      "git_blob_sha": "b44c30ba0dd8a981e9b876ca83554058e78619b7",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/ghost/invariant.rs",
+      "lines": 604
+    },
+    {
+      "path": "creusot-std/src/std/ptr.rs",
+      "git_blob_sha": "9b59bd0aee99d00d40ab785504c124452230852f",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/ptr.rs",
+      "lines": 970
+    },
+    {
+      "path": "creusot-std/src/std/sync/atomic_sc.rs",
+      "git_blob_sha": "8592cf212844611e0324ca27e297f29f038024e1",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/sync/atomic_sc.rs",
+      "lines": 230
+    },
+    {
+      "path": "creusot-std/src/std/sync/atomic.rs",
+      "git_blob_sha": "b031a881b98df6e4a6006321cb329ac93c292ad4",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/sync/atomic.rs",
+      "lines": 343
+    },
+    {
+      "path": "cargo-creusot/src/main.rs",
+      "git_blob_sha": "217dc2ef57086c83f38bfbf9d4d3bf512bac3d6e",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/cargo-creusot/src/main.rs",
+      "lines": 559
+    },
+    {
+      "path": "cargo-creusot/src/why3find_wrapper.rs",
+      "git_blob_sha": "45b0c1a4d5212efa2729a8cbdc2d2d112a15de3a",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/cargo-creusot/src/why3find_wrapper.rs",
+      "lines": 350
+    },
+    {
+      "path": "creusot/src/backend/program.rs",
+      "git_blob_sha": "bb21006283320b397a12e4350e1dca24e9470398",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot/src/backend/program.rs",
+      "lines": 1484
+    }
+  ]
+}

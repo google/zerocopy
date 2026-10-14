@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "gillian-rust",
+    "verification/symbolic-resources",
+    "verification/hybrid-contracts",
+    "iris/parametric-prophecy",
+    "verification/replay-trust"
+  ],
+  "subjects": [
+    {
+      "name": "Gillian-Rust source",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Gillian-Rust extended PLDI 2025 paper",
+      "identity": {
+        "arxiv": "2403.15122v3",
+        "doi": "10.1145/3729289",
+        "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

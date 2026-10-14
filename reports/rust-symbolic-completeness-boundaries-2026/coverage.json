@@ -1,0 +1,93 @@
+{
+  "coverage_kind": "bounded symbolic-result and model-interface comparison",
+  "topics": {
+    "R052": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Kani completeness is conditional on harness bounds and enabled obligations",
+        "Kani UB checks and contracts have explicit model and assumption limits"
+      ],
+      "remaining_research": [
+        "Full implementation coverage of every listed UB class and reachable contract/stub behavior."
+      ],
+      "future_engineering": [
+        "Run a selected real harness and implement acceptance preserving bounds/configuration/coverage; independently check evidence if required."
+      ],
+      "answered_subquestions": [
+        "Kani completeness is conditional on harness bounds and enabled obligations",
+        "Kani UB checks and contracts have explicit model and assumption limits"
+      ]
+    },
+    "R053": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Crux-MIR's structured references and overrides determine its subject"
+      ],
+      "remaining_research": [
+        "SAW compositional/equivalence implementation and its accepted proof/model evidence."
+      ],
+      "future_engineering": [
+        "Run a selected real harness and implement acceptance preserving bounds/configuration/coverage; independently check evidence if required."
+      ],
+      "answered_subquestions": [
+        "Crux-MIR's structured references and overrides determine its subject"
+      ]
+    },
+    "R054": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Soteria approximation mode controls what solver uncertainty means",
+        "Soteria exposes alias rules and incomplete coverage as configuration",
+        "Partial exploration can still produce a zero exit code"
+      ],
+      "remaining_research": [
+        "Current Git source access, all library specifications/operation coverage and artifact-to-latest differences."
+      ],
+      "future_engineering": [
+        "Run a selected real harness and implement acceptance preserving bounds/configuration/coverage; independently check evidence if required."
+      ],
+      "answered_subquestions": [
+        "Soteria approximation mode controls what solver uncertainty means",
+        "Soteria exposes alias rules and incomplete coverage as configuration",
+        "Partial exploration can still produce a zero exit code"
+      ]
+    },
+    "T018": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Kani completeness is conditional on harness bounds and enabled obligations",
+        "Model results, certificates and source guarantees are distinct artifacts"
+      ],
+      "remaining_research": [
+        "IC3/PDR/inductive/liveness certificate mechanisms and checker requirements beyond selected bounded interfaces."
+      ],
+      "future_engineering": [
+        "Run a selected real harness and implement acceptance preserving bounds/configuration/coverage; independently check evidence if required."
+      ],
+      "answered_subquestions": [
+        "Kani completeness is conditional on harness bounds and enabled obligations",
+        "Model results, certificates and source guarantees are distinct artifacts"
+      ]
+    },
+    "T019": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Model results, certificates and source guarantees are distinct artifacts"
+      ],
+      "remaining_research": [
+        "Concrete certified abstract-interpretation/invariant-certificate literature and checking theorems were not examined; only the proposed-solution versus acceptance distinction is established."
+      ],
+      "future_engineering": [
+        "Run a selected real harness and implement acceptance preserving bounds/configuration/coverage; independently check evidence if required."
+      ],
+      "answered_subquestions": [
+        "Model results, certificates and source guarantees are distinct artifacts"
+      ]
+    }
+  }
+}

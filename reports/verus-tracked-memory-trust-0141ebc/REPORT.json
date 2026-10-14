@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "verus",
+    "verification/linear-ghost",
+    "verification/erasure",
+    "rust/raw-pointer",
+    "verification/concurrency",
+    "verification/smt-trust"
+  ],
+  "subjects": [
+    {
+      "name": "Verus source",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Verus linear-ghost core paper",
+      "identity": {
+        "arxiv": "2303.05491v2",
+        "sha256": "05aa2097cf5740f2d1119426fbc1066277a010b7e8e1239095684c7931b14849"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

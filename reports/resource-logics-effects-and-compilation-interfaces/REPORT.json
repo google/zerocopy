@@ -1,0 +1,107 @@
+{
+  "topics": [
+    "verification/resource-logics",
+    "vst",
+    "bedrock2",
+    "refinedc",
+    "cn",
+    "fstar/pulse",
+    "lowstar"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert C compiler formal endpoint",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+      }
+    },
+    {
+      "name": "VST Verifiable C",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      }
+    },
+    {
+      "name": "Bedrock2",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      }
+    },
+    {
+      "name": "CN current documentation source",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d"
+      }
+    },
+    {
+      "name": "FStar current migrated Pulse source",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d"
+      }
+    },
+    {
+      "name": "Former Pulse repository migration notice",
+      "identity": {
+        "repository": "FStarLang/pulse",
+        "revision": "c35460e00483be17a38397b1594c29a9bf29df15"
+      }
+    },
+    {
+      "name": "RefinedC PLDI 2021 paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+      }
+    },
+    {
+      "name": "CN POPL 2023 paper",
+      "identity": {
+        "publication": "POPL 2023",
+        "url": "https://www.cl.cam.ac.uk/~cp526/popl23.pdf"
+      }
+    },
+    {
+      "name": "CN kernel definitions supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary definitions",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_defns.pdf",
+        "pages": "107"
+      }
+    },
+    {
+      "name": "CN soundness supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary soundness proof",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_soundness.pdf",
+        "pages": "44"
+      }
+    },
+    {
+      "name": "Verified Low-Level Programming Embedded in FStar",
+      "identity": {
+        "arxiv": "1703.00053v6",
+        "doi": "10.1145/3110261",
+        "url": "https://arxiv.org/pdf/1703.00053v6"
+      }
+    },
+    {
+      "name": "A Dependently Typed Stratified Separation Logic",
+      "identity": {
+        "url": "https://fstar-lang.org/papers/pulsecore.pdf",
+        "pages": "27"
+      }
+    },
+    {
+      "name": "Steel primary author paper",
+      "identity": {
+        "url": "https://www.fstar-lang.org/papers/steel/steel.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

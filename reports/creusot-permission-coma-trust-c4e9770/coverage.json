@@ -1,0 +1,110 @@
+{
+  "coverage_kind": "bounded source, workflow and core-theorem investigation",
+  "topics": {
+    "R043": {
+      "status": "answered-with-known-constraints",
+      "issue": 3865,
+      "sections": [
+        "Pearlite logical values and ghost resources have different disciplines",
+        "Coma correctness is partial correctness of its formal core"
+      ],
+      "remaining_research": [],
+      "answered_subquestions": [
+        "Pearlite logical values and ghost resources have different disciplines",
+        "Coma correctness is partial correctness of its formal core"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ],
+      "scope": "The pinned interfaces and theorem/acceptance boundaries stated in the referenced sections; no general feature-parity or future integration-success claim."
+    },
+    "R044": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Pointer and interior-mutability support comes through trusted permission APIs",
+        "Atomic contracts are sensitive to features and memory ordering"
+      ],
+      "remaining_research": [
+        "Detailed raw-byte/initializedness/provenance intrinsic encoding and primitive weak-memory/resource assumptions beyond selected API source."
+      ],
+      "answered_subquestions": [
+        "Pointer and interior-mutability support comes through trusted permission APIs",
+        "Atomic contracts are sensitive to features and memory ordering"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R045": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "MIR extraction and primitive assumptions precede VC proving",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "remaining_research": [
+        "Why3 implementation/transformations/drivers and optional independently checked proof routes."
+      ],
+      "answered_subquestions": [
+        "MIR extraction and primitive assumptions precede VC proving",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R091": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "MIR extraction and primitive assumptions precede VC proving",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "remaining_research": [
+        "Reconcile exact current Creusot contract/resource interpretation with the historical Gillian bridge and intended Anneal acceptance rules."
+      ],
+      "answered_subquestions": [
+        "MIR extraction and primitive assumptions precede VC proving",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "R092": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Pearlite logical values and ghost resources have different disciplines"
+      ],
+      "remaining_research": [
+        "Determine the minimal closed sequential resource/operational interface and which richer borrow/invariant/concurrency extensions preserve it."
+      ],
+      "answered_subquestions": [
+        "Pearlite logical values and ghost resources have different disciplines"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    },
+    "T036": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Coma correctness is partial correctness of its formal core",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "remaining_research": [
+        "End-to-end independently checked transformation/prover evidence and source relation."
+      ],
+      "answered_subquestions": [
+        "Coma correctness is partial correctness of its formal core",
+        "Why3find sessions and replay are not a Lean checking boundary by themselves"
+      ],
+      "future_engineering": [
+        "Implement/check the chosen Anneal integration and measure it on a real target; source/model correspondence remains an acceptance premise."
+      ]
+    }
+  }
+}

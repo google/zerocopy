@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "creusot",
+    "verification/pearlite",
+    "verification/coma",
+    "verification/permissions",
+    "rust/unsafe",
+    "verification/why3-trust"
+  ],
+  "subjects": [
+    {
+      "name": "Creusot source",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "Coma ESOP 2025 author paper",
+      "identity": {
+        "url": "https://paulpatault.fr/pdfs/papers/esop2025.pdf",
+        "sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

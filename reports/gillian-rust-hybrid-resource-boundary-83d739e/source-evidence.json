@@ -1,0 +1,81 @@
+{
+  "repository": "GillianPlatform/gillian-rust",
+  "revision": "83d739e83034d71162fb66b569041cf301123df7",
+  "tree": "803e20052948f4f5445a6e8c3e7accc23840bed1",
+  "date": "2025-05-21T13:39:14Z",
+  "role": "source and upstream documentation; no execution",
+  "files": [
+    {
+      "path": "README.md",
+      "git_blob_sha": "63c5701236f33d7341b67b04034890ee674c15f4",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/README.md",
+      "lines": 68
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "git_blob_sha": "a11eeafca1ef0911b23da269224ababbe4f28b80",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/rust-toolchain.toml",
+      "lines": 14
+    },
+    {
+      "path": "Gillian-Rust/gillian-rust.opam",
+      "git_blob_sha": "9852c4d7e9d922b9a23d6325c78cfcf989b57ed7",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian-rust.opam",
+      "lines": 35
+    },
+    {
+      "path": "Gillian-Rust/gillian_rust/lib/symbolic/memory.ml",
+      "git_blob_sha": "bac4f651008381b439e2434f9765bb33edffcac1",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/memory.ml",
+      "lines": 575
+    },
+    {
+      "path": "Gillian-Rust/gillian_rust/lib/symbolic/lft_ctx.ml",
+      "git_blob_sha": "4d6d7b573f760a8e33f2f1a05c21b41b9649a6f3",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/lft_ctx.ml",
+      "lines": 62
+    },
+    {
+      "path": "Gillian-Rust/gillian_rust/lib/symbolic/heap.ml",
+      "git_blob_sha": "22f90be0970ac4c72de57ac4b4be3ea320ca0245",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/heap.ml",
+      "lines": 2452
+    },
+    {
+      "path": "Gillian-Rust/gillian_rust/lib/symbolic/prophecies.ml",
+      "git_blob_sha": "6d66ba2aae180471a960ce41769b6ed93243592b",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/prophecies.ml",
+      "lines": 273
+    },
+    {
+      "path": "gilogic/src/prophecies.rs",
+      "git_blob_sha": "de0942c9600e9c788d87e94e30fa367fb4865fc7",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/gilogic/src/prophecies.rs",
+      "lines": 265
+    },
+    {
+      "path": "lib_rust_to_gil/src/codegen/memory.rs",
+      "git_blob_sha": "f23507cb93228ced4d5cb105d4fd7f19d22a08ff",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/lib_rust_to_gil/src/codegen/memory.rs",
+      "lines": 149
+    },
+    {
+      "path": "creusillian/src/lib.rs",
+      "git_blob_sha": "9a8373bafad8216117c99257bc99af3f4d7031c0",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/creusillian/src/lib.rs",
+      "lines": 257
+    },
+    {
+      "path": "creusillian/src/anf.rs",
+      "git_blob_sha": "d6a6cb9f1e9b29f66d118e1002cbc97d7ff80666",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/creusillian/src/anf.rs",
+      "lines": 734
+    },
+    {
+      "path": "tests/proph/creusot_dummy.rs",
+      "git_blob_sha": "8657418ed7d91188f5ae1e8a53d5b5c7601e2330",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/tests/proph/creusot_dummy.rs",
+      "lines": 44
+    }
+  ]
+}

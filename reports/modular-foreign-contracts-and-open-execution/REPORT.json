@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "verification/ffi",
+    "verification/open-modules",
+    "veriffi",
+    "translation/calling-conventions"
+  ],
+  "subjects": [
+    {
+      "name": "VeriFFI current selected source",
+      "identity": {
+        "repository": "CertiRocq/VeriFFI",
+        "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+      }
+    },
+    {
+      "name": "VeriFFI POPL 2025 publication interface",
+      "identity": {
+        "doi": "10.1145/3704860",
+        "publication": "POPL 2025 article 24",
+        "inspected_part": "primary publication abstract/interface description"
+      }
+    },
+    {
+      "name": "RustCompCert developing formal artifact",
+      "identity": {
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+      }
+    },
+    {
+      "name": "VST Verifiable C",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

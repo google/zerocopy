@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "rust/extraction",
+    "hax",
+    "eurydice",
+    "rustcompcert",
+    "translation/semantic-preservation"
+  ],
+  "subjects": [
+    {
+      "name": "hax implementation",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Eurydice implementation",
+      "identity": {
+        "repository": "AeneasVerif/eurydice",
+        "revision": "7332393a18a20baae808d8783266acd15121ddd2"
+      }
+    },
+    {
+      "name": "Charon assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "RustCompCert developing formal artifact",
+      "identity": {
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+      }
+    },
+    {
+      "name": "RustCompCert short preprint",
+      "identity": {
+        "arxiv": "2602.07455v1",
+        "url": "https://arxiv.org/html/2602.07455v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

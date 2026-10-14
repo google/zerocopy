@@ -1,0 +1,172 @@
+{
+  "role": "source and upstream documentation; no execution",
+  "repositories": [
+    {
+      "repository": "model-checking/kani",
+      "revision": "9461e07af7ec929f050aa4192f29363c9be07779",
+      "tree": "ab6a74a2ef332374dc0aad539bdcd929599a7e75",
+      "date": "2026-10-14T09:05:40Z",
+      "files": [
+        {
+          "path": "docs/src/undefined-behaviour.md",
+          "git_blob_sha": "236efe8f5cc363a1e9849b6f3a028632b2519dc2",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/docs/src/undefined-behaviour.md",
+          "lines": 43
+        },
+        {
+          "path": "docs/src/verification-results.md",
+          "git_blob_sha": "970cf6d2c56c5c2c3eeee9f0b5c93c9ee065ea53",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/docs/src/verification-results.md",
+          "lines": 178
+        },
+        {
+          "path": "docs/src/tutorial-loop-unwinding.md",
+          "git_blob_sha": "1f07f6050c9a8990f85b60c2405d146e40303f53",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/docs/src/tutorial-loop-unwinding.md",
+          "lines": 149
+        },
+        {
+          "path": "docs/src/reference/experimental/contracts.md",
+          "git_blob_sha": "92954b680bc5b42370f1cea93beb625bbcae3484",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/docs/src/reference/experimental/contracts.md",
+          "lines": 75
+        },
+        {
+          "path": "docs/src/reference/experimental/stubbing.md",
+          "git_blob_sha": "d3781d878e2b46a60ac86485105f72a3a50c4675",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/docs/src/reference/experimental/stubbing.md",
+          "lines": 366
+        },
+        {
+          "path": "kani-driver/src/call_cbmc.rs",
+          "git_blob_sha": "937695950896f0de30717ea2fdbad7d2c027d240",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/kani-driver/src/call_cbmc.rs",
+          "lines": 1049
+        },
+        {
+          "path": "kani-compiler/src/kani_middle/transform/check_uninit/mod.rs",
+          "git_blob_sha": "dbb8c6ed087ecffb472d24ebc40182e5b81b0232",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/kani-compiler/src/kani_middle/transform/check_uninit/mod.rs",
+          "lines": 738
+        },
+        {
+          "path": "kani-compiler/src/kani_middle/transform/contracts.rs",
+          "git_blob_sha": "59baadbab4e653a68ce0b1296975bee8be79eb9a",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/kani-compiler/src/kani_middle/transform/contracts.rs",
+          "lines": 854
+        },
+        {
+          "path": "rust-toolchain.toml",
+          "git_blob_sha": "056736a9964440eda0225c349061493cbcd1f6ea",
+          "url": "https://github.com/model-checking/kani/blob/9461e07af7ec929f050aa4192f29363c9be07779/rust-toolchain.toml",
+          "lines": 7
+        }
+      ]
+    },
+    {
+      "repository": "GaloisInc/crucible",
+      "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4",
+      "tree": "61adb976824513d7615a6b43a45d9ebb574fdb0f",
+      "date": "2026-10-12T18:43:16Z",
+      "files": [
+        {
+          "path": "crux-mir/README.md",
+          "git_blob_sha": "933a37f1cc55b5fa9cae594302f54030c73c993d",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crux-mir/README.md",
+          "lines": 376
+        },
+        {
+          "path": "crux-mir/src/Mir/Overrides.hs",
+          "git_blob_sha": "d77456739ba7f7b675d8a348fe07ff314ca884dd",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crux-mir/src/Mir/Overrides.hs",
+          "lines": 676
+        },
+        {
+          "path": "crux-mir/src/Mir/Generate.hs",
+          "git_blob_sha": "97bdd94e0878a1fe1d8466a8de8bdb0f16f67ef7",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crux-mir/src/Mir/Generate.hs",
+          "lines": 214
+        },
+        {
+          "path": "crux-mir/src/Mir/Options.hs",
+          "git_blob_sha": "d139a4c365e50ad77adb2c94a77bf0c9f1dbf1ef",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crux-mir/src/Mir/Options.hs",
+          "lines": 106
+        },
+        {
+          "path": "crucible-mir/src/Mir/Intrinsics/Reference.hs",
+          "git_blob_sha": "18ffebe43efc8a08bcacc859e75a9544cd17b7e3",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crucible-mir/src/Mir/Intrinsics/Reference.hs",
+          "lines": 2032
+        },
+        {
+          "path": "crucible-mir/src/Mir/Intrinsics/MethodSpec.hs",
+          "git_blob_sha": "8a5c86011add85a6182373a4a030f9982e251e9e",
+          "url": "https://github.com/GaloisInc/crucible/blob/7f49dac06c656f7b92c8b6cc054f47c63b60abe4/crucible-mir/src/Mir/Intrinsics/MethodSpec.hs",
+          "lines": 148
+        }
+      ]
+    }
+  ],
+  "soteria_archive": {
+    "archive_url": "https://zenodo.org/api/records/19080425/files/soteria-pldi26-artifact.zip/content",
+    "archive_sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2",
+    "members": [
+      {
+        "path": "soteria/soteria/lib/symex/approx.ml",
+        "sha256": "2764052faffab8684c573387150bdaec9e8b644cf2ff4284dcd6b476a62fe6ec",
+        "lines": 18
+      },
+      {
+        "path": "soteria/soteria/lib/symex/solver_result.ml",
+        "sha256": "4ecf8e72201ffed31b32d89c0f07956441675e42fb375ac2e96c65a711783203",
+        "lines": 31
+      },
+      {
+        "path": "soteria/soteria/lib/symex/fuel_gauge.ml",
+        "sha256": "54abfde8629119500f57c6fdcc7fea95022754669d03d145f9bee76754811f75",
+        "lines": 142
+      },
+      {
+        "path": "soteria/soteria/lib/symex/symex.ml",
+        "sha256": "5895f88e4db19c372bdea3ca5a1435e8047ea1162403945b306fd61f002496d7",
+        "lines": 942
+      },
+      {
+        "path": "soteria/soteria-rust/lib/config.ml",
+        "sha256": "c024156488c22cd3d87561522775415065d6cff61e7ff38e36437ea02149f34b",
+        "lines": 146
+      },
+      {
+        "path": "soteria/soteria-rust/lib/tree_borrow.ml",
+        "sha256": "ab19493a606c92256cc521392bd61eec3f4ce6acd470c3fcef733abf613a16a9",
+        "lines": 188
+      },
+      {
+        "path": "soteria/soteria-rust/lib/interp.ml",
+        "sha256": "c2ee50dd4aeea1dada5dc9912b3aa104e9f301124a4b7dee6373f76b7e64121b",
+        "lines": 1173
+      },
+      {
+        "path": "soteria/soteria-rust/lib/state/tree_state.ml",
+        "sha256": "b63717d4b74c63c4589b794dff8334308c5f1488dc36f81f5e7ad711d80a041e",
+        "lines": 934
+      },
+      {
+        "path": "soteria/soteria-rust/lib/sptr.ml",
+        "sha256": "195ab61311dca9fb3de1a3607dedd8bdb0ef6a3806b29a5528233993c3ec37f1",
+        "lines": 338
+      },
+      {
+        "path": "soteria/soteria-rust/lib/analyses/wpst.ml",
+        "sha256": "8a43e1737eec80fc9c102554805016056483f43da2ba61408f5dc5b505247358",
+        "lines": 174
+      },
+      {
+        "path": "soteria/soteria-rust/lib/analyses/outcome.ml",
+        "sha256": "761f2e0a95bd6f35bc10dc2bb5eb2d0fdf44cf65868177868ab6c4858d8513d9",
+        "lines": 20
+      }
+    ]
+  }
+}

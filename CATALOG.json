@@ -156,6 +156,61 @@
         "anneal/llbc"
       ]
     },
+    "aeneas-charon-functionalization-and-spatial-boundaries": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          },
+          "name": "Aeneas assigned implementation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          },
+          "name": "Charon assigned implementation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "92552f503cd19ca023ae9897cf521db49ee8d887"
+          },
+          "name": "Aeneas spatial PR1352 draft head"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185v2",
+            "doi": "10.1145/3547647",
+            "url": "https://arxiv.org/pdf/2206.07185v2"
+          },
+          "name": "Aeneas 2022 paper"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.02680v2",
+            "url": "https://arxiv.org/pdf/2404.02680v2"
+          },
+          "name": "Aeneas 2024 LLBC/PL long paper"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Read-only Anneal proof/admission documents"
+        }
+      ],
+      "topics": [
+        "rust/extraction",
+        "aeneas",
+        "charon",
+        "verification/separation-logic",
+        "translation/certificates"
+      ]
+    },
     "aeneas-compatible-bundle-source-drift-2026-09-30": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -13491,6 +13546,33 @@
         "anneal/translation"
       ]
     },
+    "creusot-permission-coma-trust-c4e9770": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          },
+          "name": "Creusot source"
+        },
+        {
+          "identity": {
+            "sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e",
+            "url": "https://paulpatault.fr/pdfs/papers/esop2025.pdf"
+          },
+          "name": "Coma ESOP 2025 author paper"
+        }
+      ],
+      "topics": [
+        "creusot",
+        "verification/pearlite",
+        "verification/coma",
+        "verification/permissions",
+        "rust/unsafe",
+        "verification/why3-trust"
+      ]
+    },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -14480,6 +14562,33 @@
         "anneal/coverage"
       ]
     },
+    "gillian-rust-hybrid-resource-boundary-83d739e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          },
+          "name": "Gillian-Rust source"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.15122v3",
+            "doi": "10.1145/3729289",
+            "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
+          },
+          "name": "Gillian-Rust extended PLDI 2025 paper"
+        }
+      ],
+      "topics": [
+        "gillian-rust",
+        "verification/symbolic-resources",
+        "verification/hybrid-contracts",
+        "iris/parametric-prophecy",
+        "verification/replay-trust"
+      ]
+    },
     "gopls-snapshots-views-workspace-evolution-2018-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -14625,6 +14734,53 @@
         "haskell/hie-bios",
         "haskell/hls",
         "ide/incremental-analysis"
+      ]
+    },
+    "hax-eurydice-and-rust-c-extraction-frontiers": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cryspen/hax",
+            "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+          },
+          "name": "hax implementation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/eurydice",
+            "revision": "7332393a18a20baae808d8783266acd15121ddd2"
+          },
+          "name": "Eurydice implementation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          },
+          "name": "Charon assigned implementation"
+        },
+        {
+          "identity": {
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+          },
+          "name": "RustCompCert developing formal artifact"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.07455v1",
+            "url": "https://arxiv.org/html/2602.07455v1"
+          },
+          "name": "RustCompCert short preprint"
+        }
+      ],
+      "topics": [
+        "rust/extraction",
+        "hax",
+        "eurydice",
+        "rustcompcert",
+        "translation/semantic-preservation"
       ]
     },
     "hol-proof-producing-synthesis-and-binary-lifting": {
@@ -18118,6 +18274,46 @@
         "semantics/correspondence"
       ]
     },
+    "modular-foreign-contracts-and-open-execution": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CertiRocq/VeriFFI",
+            "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+          },
+          "name": "VeriFFI current selected source"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704860",
+            "inspected_part": "primary publication abstract/interface description",
+            "publication": "POPL 2025 article 24"
+          },
+          "name": "VeriFFI POPL 2025 publication interface"
+        },
+        {
+          "identity": {
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+          },
+          "name": "RustCompCert developing formal artifact"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          },
+          "name": "VST Verifiable C"
+        }
+      ],
+      "topics": [
+        "verification/ffi",
+        "verification/open-modules",
+        "veriffi",
+        "translation/calling-conventions"
+      ]
+    },
     "mvcc-snapshot-isolation-proof-work-consistency-1981-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -19246,6 +19442,69 @@
         "verification/cross-prover"
       ]
     },
+    "refinement-horn-and-lean-vc-boundaries-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "6769bb9cbd1216380f542349494efafafd6104a3"
+          },
+          "name": "Flux source"
+        },
+        {
+          "identity": {
+            "repository": "coord-e/thrust",
+            "revision": "187a1e975edece50b896f1ee478ab665d7a1204e"
+          },
+          "name": "Thrust source"
+        },
+        {
+          "identity": {
+            "repository": "hopv/Rust-horn",
+            "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52"
+          },
+          "name": "RustHorn source"
+        },
+        {
+          "identity": {
+            "repository": "prusti/prusti",
+            "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+          },
+          "name": "Prusti source"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591283",
+            "sha256": "69cae6293c84a7f42e90a883d6d4645449b7216e00c80219e262609528c52b51"
+          },
+          "name": "Flux PLDI 2023 author paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3729333",
+            "sha256": "adc13d87e09a61e5ef42057c61c5602a38c5befa1416f0b76ba7edc919882695"
+          },
+          "name": "Thrust PLDI 2025 author paper"
+        },
+        {
+          "identity": {
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9",
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf"
+          },
+          "name": "RustHorn updated author full-version paper"
+        }
+      ],
+      "topics": [
+        "flux",
+        "thrust",
+        "rusthorn",
+        "prusti",
+        "verification/refinement-inference",
+        "verification/horn-clauses",
+        "verification/lean-vc-checking"
+      ]
+    },
     "refinement-policy-and-safety-direction-comparison": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19414,6 +19673,113 @@
         "logic/separation",
         "proof/extensions",
         "verification/invariants"
+      ]
+    },
+    "resource-logics-effects-and-compilation-interfaces": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+          },
+          "name": "CompCert C compiler formal endpoint"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          },
+          "name": "VST Verifiable C"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          },
+          "name": "Bedrock2"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d"
+          },
+          "name": "CN current documentation source"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d"
+          },
+          "name": "FStar current migrated Pulse source"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/pulse",
+            "revision": "c35460e00483be17a38397b1594c29a9bf29df15"
+          },
+          "name": "Former Pulse repository migration notice"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+          },
+          "name": "RefinedC PLDI 2021 paper"
+        },
+        {
+          "identity": {
+            "publication": "POPL 2023",
+            "url": "https://www.cl.cam.ac.uk/~cp526/popl23.pdf"
+          },
+          "name": "CN POPL 2023 paper"
+        },
+        {
+          "identity": {
+            "pages": "107",
+            "publication": "CN POPL 2023 supplementary definitions",
+            "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_defns.pdf"
+          },
+          "name": "CN kernel definitions supplement"
+        },
+        {
+          "identity": {
+            "pages": "44",
+            "publication": "CN POPL 2023 supplementary soundness proof",
+            "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_soundness.pdf"
+          },
+          "name": "CN soundness supplement"
+        },
+        {
+          "identity": {
+            "arxiv": "1703.00053v6",
+            "doi": "10.1145/3110261",
+            "url": "https://arxiv.org/pdf/1703.00053v6"
+          },
+          "name": "Verified Low-Level Programming Embedded in FStar"
+        },
+        {
+          "identity": {
+            "pages": "27",
+            "url": "https://fstar-lang.org/papers/pulsecore.pdf"
+          },
+          "name": "A Dependently Typed Stratified Separation Logic"
+        },
+        {
+          "identity": {
+            "url": "https://www.fstar-lang.org/papers/steel/steel.pdf"
+          },
+          "name": "Steel primary author paper"
+        }
+      ],
+      "topics": [
+        "verification/resource-logics",
+        "vst",
+        "bedrock2",
+        "refinedc",
+        "cn",
+        "fstar/pulse",
+        "lowstar"
       ]
     },
     "rls-rust-analyzer-architecture-evolution-2015-2026": {
@@ -21030,6 +21396,49 @@
         "rustc/source-map",
         "rustc/hygiene",
         "charon/source-spans"
+      ]
+    },
+    "rust-symbolic-completeness-boundaries-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+          },
+          "name": "Kani source"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/crucible",
+            "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4"
+          },
+          "name": "Crux-MIR and Crucible source"
+        },
+        {
+          "identity": {
+            "archive": "soteria-pldi26-artifact.zip",
+            "sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2",
+            "zenodo": "19080425"
+          },
+          "name": "Soteria PLDI 2026 source artifact"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.08729v6",
+            "doi": "10.1145/3808306",
+            "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+          },
+          "name": "Soteria extended paper"
+        }
+      ],
+      "topics": [
+        "kani",
+        "crux-mir",
+        "soteria",
+        "verification/bounded-symbolic",
+        "verification/completeness",
+        "verification/model-checking-evidence"
       ]
     },
     "rust-transmute-nightly-2026-05-31": {
@@ -22668,6 +23077,33 @@
         "compilation/bootstrap",
         "checking/executable-boundary",
         "certirocq"
+      ]
+    },
+    "verus-tracked-memory-trust-0141ebc": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus source"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.05491v2",
+            "sha256": "05aa2097cf5740f2d1119426fbc1066277a010b7e8e1239095684c7931b14849"
+          },
+          "name": "Verus linear-ghost core paper"
+        }
+      ],
+      "topics": [
+        "verus",
+        "verification/linear-ghost",
+        "verification/erasure",
+        "rust/raw-pointer",
+        "verification/concurrency",
+        "verification/smt-trust"
       ]
     },
     "why3-durable-proof-sessions-2011-2025": {

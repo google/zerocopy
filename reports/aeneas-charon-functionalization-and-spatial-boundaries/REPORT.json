@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "rust/extraction",
+    "aeneas",
+    "charon",
+    "verification/separation-logic",
+    "translation/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Charon assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas spatial PR1352 draft head",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "92552f503cd19ca023ae9897cf521db49ee8d887"
+      }
+    },
+    {
+      "name": "Aeneas 2022 paper",
+      "identity": {
+        "arxiv": "2206.07185v2",
+        "doi": "10.1145/3547647",
+        "url": "https://arxiv.org/pdf/2206.07185v2"
+      }
+    },
+    {
+      "name": "Aeneas 2024 LLBC/PL long paper",
+      "identity": {
+        "arxiv": "2404.02680v2",
+        "url": "https://arxiv.org/pdf/2404.02680v2"
+      }
+    },
+    {
+      "name": "Read-only Anneal proof/admission documents",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

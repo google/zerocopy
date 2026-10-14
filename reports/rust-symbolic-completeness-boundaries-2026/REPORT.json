@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "kani",
+    "crux-mir",
+    "soteria",
+    "verification/bounded-symbolic",
+    "verification/completeness",
+    "verification/model-checking-evidence"
+  ],
+  "subjects": [
+    {
+      "name": "Kani source",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+      }
+    },
+    {
+      "name": "Crux-MIR and Crucible source",
+      "identity": {
+        "repository": "GaloisInc/crucible",
+        "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4"
+      }
+    },
+    {
+      "name": "Soteria PLDI 2026 source artifact",
+      "identity": {
+        "zenodo": "19080425",
+        "archive": "soteria-pldi26-artifact.zip",
+        "sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2"
+      }
+    },
+    {
+      "name": "Soteria extended paper",
+      "identity": {
+        "arxiv": "2511.08729v6",
+        "doi": "10.1145/3808306",
+        "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,96 @@
+{
+  "coverage_kind": "bounded implementation and hybrid-architecture reconstruction",
+  "topics": {
+    "R035": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "The Rust instantiation retains a structured heap and logical resource state",
+        "Lifetime and prophecy actions enforce local resource conditions",
+        "The publication explicitly leaves foundation and language gaps"
+      ],
+      "remaining_research": [
+        "Additional unsafe operation/heap-rule coverage beyond selected primitives; external foundational artifacts."
+      ],
+      "future_engineering": [
+        "Implement and check an Anneal-compatible acceptance interface; reproduce one end-to-end case."
+      ],
+      "answered_subquestions": [
+        "The Rust instantiation retains a structured heap and logical resource state",
+        "Lifetime and prophecy actions enforce local resource conditions",
+        "The publication explicitly leaves foundation and language gaps"
+      ]
+    },
+    "R036": {
+      "status": "answered-with-known-constraints",
+      "issue": 3865,
+      "sections": [
+        "Creusillian emits two interpretations of one restricted contract",
+        "A hybrid acceptance boundary should share meaning and record assumptions"
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Implement and check an Anneal-compatible acceptance interface; reproduce one end-to-end case."
+      ],
+      "answered_subquestions": [
+        "Creusillian emits two interpretations of one restricted contract",
+        "A hybrid acceptance boundary should share meaning and record assumptions"
+      ],
+      "scope": "The pinned interfaces and theorem/acceptance boundaries stated in the referenced sections; no general feature-parity or future integration-success claim."
+    },
+    "R091": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Creusillian emits two interpretations of one restricted contract",
+        "A hybrid acceptance boundary should share meaning and record assumptions"
+      ],
+      "remaining_research": [
+        "Reconcile exact current Creusot contract/resource interpretation with the historical Gillian bridge and intended Anneal acceptance rules."
+      ],
+      "future_engineering": [
+        "Implement and check an Anneal-compatible acceptance interface; reproduce one end-to-end case."
+      ],
+      "answered_subquestions": [
+        "Creusillian emits two interpretations of one restricted contract",
+        "A hybrid acceptance boundary should share meaning and record assumptions"
+      ]
+    },
+    "R092": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Lifetime and prophecy actions enforce local resource conditions",
+        "The publication explicitly leaves foundation and language gaps"
+      ],
+      "remaining_research": [
+        "Determine the minimal closed sequential resource/operational interface and which richer borrow/invariant/concurrency extensions preserve it."
+      ],
+      "future_engineering": [
+        "Implement and check an Anneal-compatible acceptance interface; reproduce one end-to-end case."
+      ],
+      "answered_subquestions": [
+        "Lifetime and prophecy actions enforce local resource conditions",
+        "The publication explicitly leaves foundation and language gaps"
+      ]
+    },
+    "T037": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Replay would need primitive and entailment evidence as well as symbolic paths",
+        "The publication explicitly leaves foundation and language gaps"
+      ],
+      "remaining_research": [
+        "Locate/propose proof-bearing replay interfaces and audit their primitive/entailment checking."
+      ],
+      "future_engineering": [
+        "Implement and check an Anneal-compatible acceptance interface; reproduce one end-to-end case."
+      ],
+      "answered_subquestions": [
+        "Replay would need primitive and entailment evidence as well as symbolic paths",
+        "The publication explicitly leaves foundation and language gaps"
+      ]
+    }
+  }
+}

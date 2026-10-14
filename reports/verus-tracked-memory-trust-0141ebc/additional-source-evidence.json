@@ -1,0 +1,21 @@
+{
+  "role": "source and upstream documentation; no execution",
+  "repository": "verus-lang/verus",
+  "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+  "tree": "43160bdd14f8504f6875b8826834a17e78850c51",
+  "date": "2026-10-14T14:39:53Z",
+  "files": [
+    {
+      "path": "source/state_machines_macros/src/token_transition_checks.rs",
+      "git_blob_sha": "de342fc0c21f50d8d4555b3324ba73b356db5e49",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/state_machines_macros/src/token_transition_checks.rs",
+      "lines": 184
+    },
+    {
+      "path": "source/docs/state_machines/src/token-exchanges-as-transitions.md",
+      "git_blob_sha": "0e9f569d19251b7c47b1bea6082f105077a32365",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/docs/state_machines/src/token-exchanges-as-transitions.md",
+      "lines": 11
+    }
+  ]
+}

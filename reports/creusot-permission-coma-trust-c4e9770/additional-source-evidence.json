@@ -1,0 +1,27 @@
+{
+  "role": "source and upstream documentation; no execution",
+  "repository": "creusot-rs/creusot",
+  "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+  "tree": "17603a4aec9465774557063db984bbc98932d779",
+  "date": "2026-10-14T12:56:57Z",
+  "files": [
+    {
+      "path": "creusot-std/src/cell/permcell.rs",
+      "git_blob_sha": "bb9a9d825a35d80960f738ef94952788e204782d",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/cell/permcell.rs",
+      "lines": 229
+    },
+    {
+      "path": "creusot-std/src/std/sync/view.rs",
+      "git_blob_sha": "1de3cd670bee0abf09b7ba61eba600f3752a4c69",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/sync/view.rs",
+      "lines": 250
+    },
+    {
+      "path": "creusot-std/src/std/sync/committer.rs",
+      "git_blob_sha": "37032a218796fee9e5d4f38659ff96b419b8d26a",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/sync/committer.rs",
+      "lines": 225
+    }
+  ]
+}
