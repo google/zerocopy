@@ -138,6 +138,19 @@ spec forwarded_byte_codec_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.forwarded_byte_codec_spec for Zerocopy.trait_checks.forwarded_byte_codec with 1
 
+check_model_inputs Zerocopy.trait_checks.check_array_into_bytes with 0 type parameters
+aeneas_spec_begin
+spec array_into_bytes_spec
+  for @Zerocopy.trait_checks.check_array_into_bytes with 0 type parameters
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Bool 3#usize)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array U8 3#usize)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Unit 4#usize)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Bool 0#usize)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation
+    (Aeneas.Std.Array (Aeneas.Std.Array Bool 2#usize) 3#usize)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.array_into_bytes_spec for Zerocopy.trait_checks.check_array_into_bytes with 0
+
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin
 spec padding_lt_alignment
