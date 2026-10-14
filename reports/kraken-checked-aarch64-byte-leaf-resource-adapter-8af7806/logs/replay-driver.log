@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "lean_version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1",
+  "kernel_checked_declarations": 40,
+  "admitted_instruction_family_offsets": 4096,
+  "accepted_leaf_bytes": "00004039c0035fd6",
+  "compiled_slices": 4,
+  "single_byte_mutants_rejected": 2040,
+  "native": [
+    {
+      "optimization": 0,
+      "cases": 16640,
+      "checksum": "9369878136d25c80",
+      "valid_reference_only": true
+    },
+    {
+      "optimization": 3,
+      "cases": 16640,
+      "checksum": "9369878136d25c80",
+      "valid_reference_only": true
+    }
+  ],
+  "no_installs_or_upstream_builds": true,
+  "no_invalid_or_mutated_native_execution": true,
+  "remaining_arrows": [
+    "Arm formal-reference relation",
+    "verified Mach-O importer/loader",
+    "Rust/MiniRust reference/provenance/alias adequacy",
+    "compiler/caller adequacy"
+  ]
+}

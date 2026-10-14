@@ -1,0 +1,60 @@
+{
+  "status": "pass",
+  "source_files_unchanged": 166,
+  "source_changes": [],
+  "build_commands": 40,
+  "build_elapsed_seconds_sum": 39.51982170899999,
+  "proof_commands": 6,
+  "proof_elapsed_seconds_sum": 7.148964166,
+  "audited_declarations": 72,
+  "owned_pilot_declarations_with_only_foundational_axioms": 61,
+  "upstream_extra_axioms": [
+    {
+      "declaration": "_private.Kraken.AArch64.Examples.Examples.0.arith_shift_correct",
+      "extra": [
+        "arith_shift_correct._native.bv_decide.ax_1_10"
+      ]
+    },
+    {
+      "declaration": "_private.Kraken.X64.Examples.Examples.0.p3_correct",
+      "extra": [
+        "sorryAx"
+      ]
+    },
+    {
+      "declaration": "_private.Kraken.X64.Examples.Examples.0.dynamic_stack_example_correct",
+      "extra": [
+        "sorryAx"
+      ]
+    }
+  ],
+  "diagnostic_log_occurrences": [
+    {
+      "log": "logs/build-Kraken-AArch64-Examples-Examples.log",
+      "raw_occurrences": 2,
+      "note": "Lake may replay cached diagnostic log entries; occurrences are not unique source failures"
+    },
+    {
+      "log": "logs/build-Kraken-X64-Examples-Examples.log",
+      "raw_occurrences": 4,
+      "note": "Lake may replay cached diagnostic log entries; occurrences are not unique source failures"
+    },
+    {
+      "log": "logs/build-KrakenAArch64.log",
+      "raw_occurrences": 2,
+      "note": "Lake may replay cached diagnostic log entries; occurrences are not unique source failures"
+    },
+    {
+      "log": "logs/build-Kraken.log",
+      "raw_occurrences": 4,
+      "note": "Lake may replay cached diagnostic log entries; occurrences are not unique source failures"
+    }
+  ],
+  "diagnostic_projection_reproduction_exit": 0,
+  "diagnostic_projection_result": "outside context fallback; inside context detached_x.value = detached_x.value; diagnostic_only no axioms",
+  "diagnostic_initial_elaboration_exit": 1,
+  "unexpected_panic_assertion_or_semantic_disagreement": false,
+  "frozen_4_34_1_files_unchanged": 97,
+  "owned_scratch_bytes": 84749391,
+  "owned_limit_bytes": 524288000
+}

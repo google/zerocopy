@@ -1,0 +1,49 @@
+support/Adapter.lean:115:9: error: unsolved goals
+case none
+a b c d e f g h : UInt8
+off : Nat
+hl : decodeWord (wordLE a b c d) = none
+⊢ ¬(match decodeWord (wordLE a b c d), decodeWord (wordLE e f g h) with
+      | some (Decoded.loadByte off), some Decoded.retLR => some off
+      | x, x_1 => none) =
+      some off
+support/Adapter.lean:118:11: error: unsolved goals
+case some.loadByte.none
+a b c d e f g h : UInt8
+off offset✝ : Nat
+hl : decodeWord (wordLE a b c d) = some (Decoded.loadByte offset✝)
+hr : decodeWord (wordLE e f g h) = none
+⊢ ¬(match decodeWord (wordLE a b c d), decodeWord (wordLE e f g h) with
+      | some (Decoded.loadByte off), some Decoded.retLR => some off
+      | x, x_1 => none) =
+      some off
+support/Adapter.lean:118:11: error: unsolved goals
+case some.retLR.none
+a b c d e f g h : UInt8
+off : Nat
+hl : decodeWord (wordLE a b c d) = some Decoded.retLR
+hr : decodeWord (wordLE e f g h) = none
+⊢ ¬(match decodeWord (wordLE a b c d), decodeWord (wordLE e f g h) with
+      | some (Decoded.loadByte off), some Decoded.retLR => some off
+      | x, x_1 => none) =
+      some off
+support/Adapter.lean:123:20: error(lean.unknownIdentifier): Unknown constant `_private.support.Adapter.0.CheckedByteLeaf.decodeLeaf.induct`
+support/Adapter.lean:157:0: warning: Definition `_private.support.Adapter.0.CheckedByteLeaf.fixedLayout` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+support/Adapter.lean:187:6: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Kraken.Layout ?m.50
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+support/Adapter.lean:185:76: error: unsolved goals
+pc : Int64
+d : MachineData
+v : BitVec 8
+hload : Mem.loadInt d.dmem d.regs.X0.toBitVec 1 = some v.toInt
+⊢ (have this := Executable.labels (Kraken.Layout.apply (fixedLayout pc) (program 0));
+    Directives.interp
+      ((Kraken.Layout.apply (fixedLayout pc) (program 0)).directivesFromAddress { data := d, pc := pc }.pc)
+      { data := d, pc := pc }.data { data := d, pc := pc }.pc fun pc s => Effects.done { data := s, pc := pc }) =
+    require_exec_access (pc...pc + 4) fun x =>
+      require_read_access d.regs.X0.toBitVec MemWidth.W8 fun x =>
+        require_exec_access ((pc + 4)...pc + 4 + 4) fun x =>
+          Effects.done { data := resultData d v, pc := Int64.ofBitVec d.regs.X30.toBitVec }

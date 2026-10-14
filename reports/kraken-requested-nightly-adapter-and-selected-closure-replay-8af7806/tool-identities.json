@@ -1,0 +1,60 @@
+{
+  "toolchain": "leanprover/lean4:nightly-2026-09-21",
+  "version": "4.36.0-nightly-2026-09-21",
+  "revision": "ca39d2bc730f0382e4897ce314b93a4f168ff15e",
+  "installed_components": [
+    {
+      "path": "bin/lean",
+      "bytes": 49968,
+      "sha256": "a4c5d3dfc1672faf014e59bd17724035259ff0d22a4ffbdf5a75e142f564817e"
+    },
+    {
+      "path": "bin/lake",
+      "bytes": 51664,
+      "sha256": "a0e516de0ba03a26cb90c80f06666022ef9de3f0943f8b26e9b902d229b43ebe"
+    },
+    {
+      "path": "lib/lean/Init.olean",
+      "bytes": 5632,
+      "sha256": "8a3ffce02840787c104614f3669027b4ef0679d08155e82182af2ef9a414c6d7"
+    }
+  ],
+  "fresh_library_identities": [
+    {
+      "path": "Kraken/AArch64/Syntax.olean",
+      "bytes": 5563152,
+      "sha256": "9c8c876cae4c4a8ab3091e7b4867268b76095a928acf04139d5e0a8515a71dfc"
+    },
+    {
+      "path": "Kraken/AArch64/Semantics.olean",
+      "bytes": 2170616,
+      "sha256": "c0a5419a5ebe3e8e9f95cbf8282b359169ca3a3ecaae020ead93043c669a8070"
+    },
+    {
+      "path": "Kraken/AArch64/OmniSemantics.olean",
+      "bytes": 33896,
+      "sha256": "489028a517a07a4ddee707d9a774035ba8f8091f6bbf55c794bd5d8b57afe076"
+    },
+    {
+      "path": "Kraken/Layout.olean",
+      "bytes": 134528,
+      "sha256": "140f693afcc9d692d3bbed36cb55f1482fd4d9069ee296b803e6d4d28c5ddcf5"
+    },
+    {
+      "path": "Kraken/Mem.olean",
+      "bytes": 47680,
+      "sha256": "b9bbc7b2c23bdf46442051601405708b766948b114c18f5b2242d2259c8a9312"
+    },
+    {
+      "path": "Kraken/ToBytes.olean",
+      "bytes": 94928,
+      "sha256": "9e70b14f4b39e76ce61e9c751741ebcf7423c68aa192119678cac4b1abb2f038"
+    },
+    {
+      "path": "Kraken/SeparationMem.olean",
+      "bytes": 37120,
+      "sha256": "b6ac8066687a7a09fbb2d2c8bbb0f8c1aeb79a10fa0623c9ac6bf1450c0f2670"
+    }
+  ],
+  "no_4_34_object_reuse": true
+}

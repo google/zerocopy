@@ -1,0 +1,18 @@
+support/Adapter.lean:32:2: error: unsolved goals
+case isTrue
+word offset : Nat
+h : word = 3596551104
+⊢ offset < 4096 → ¬3596551104 = 960495616 + offset * 1024
+support/Adapter.lean:42:6: error: `simp` made no progress
+support/Adapter.lean:52:2: error: No goals to be solved
+support/Adapter.lean:75:49: error(lean.invalidField): Invalid field `injEq`: The environment does not contain `List.injEq`, so it is not possible to project the field `injEq` from an expression
+  []
+of type `List ?m.20`
+support/Adapter.lean:77:10: error(lean.unknownIdentifier): Unknown constant `UInt8.eq_of_toNat_eq`
+support/Adapter.lean:78:4: error: No goals to be solved
+support/Adapter.lean:81:10: error(lean.unknownIdentifier): Unknown constant `UInt8.eq_of_toNat_eq`
+support/Adapter.lean:82:4: error: No goals to be solved
+support/Adapter.lean:85:10: error(lean.unknownIdentifier): Unknown constant `UInt8.eq_of_toNat_eq`
+support/Adapter.lean:86:4: error: No goals to be solved
+support/Adapter.lean:88:10: error(lean.unknownIdentifier): Unknown constant `UInt8.eq_of_toNat_eq`
+support/Adapter.lean:89:4: error: No goals to be solved

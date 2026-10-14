@@ -1,0 +1,6 @@
+⚠ [8/9] Built Kraken.SeparationMem (298ms)
+warning: Kraken/SeparationMem.lean:86:74: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+Build completed successfully (9 jobs).

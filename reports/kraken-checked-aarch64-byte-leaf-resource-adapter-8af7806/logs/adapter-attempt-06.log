@@ -1,0 +1,49 @@
+support/Adapter.lean:145:28: error(lean.unknownIdentifier): Unknown identifier `Instr`
+
+Note: A public declaration `Instr` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:150:15: error(lean.unknownIdentifier): Unknown identifier `Instr`
+
+Note: A public declaration `Instr` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:151:26: error(lean.unknownIdentifier): Unknown identifier `Program`
+
+Note: A public declaration `Program` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:151:38: error(lean.invalidDottedIdent): Invalid dotted identifier notation: The expected type of `.instr` could not be determined
+
+Hint: Using `Directive.instr would be unambiguous:
+  [apply] `Directive.instr`
+support/Adapter.lean:151:62: error(lean.invalidDottedIdent): Invalid dotted identifier notation: The expected type of `.instr` could not be determined
+
+Hint: Using `Directive.instr would be unambiguous:
+  [apply] `Directive.instr`
+support/Adapter.lean:152:34: error(lean.unknownIdentifier): Unknown identifier `Layout`
+
+Note: A public declaration `Layout` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+support/Adapter.lean:153:42: error(lean.unknownIdentifier): Unknown identifier `Executable`
+
+Note: A public declaration `Executable` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:155:59: error(lean.unknownIdentifier): Unknown identifier `Executable`
+
+Note: A public declaration `Executable` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:158:63: error(lean.unknownIdentifier): Unknown identifier `Executable`
+
+Note: A public declaration `Executable` exists but is imported privately; consider adding `public import Kraken.AArch64.Syntax`.
+support/Adapter.lean:170:20: error(lean.unknownIdentifier): Unknown identifier `MachineData`
+
+Note: A public declaration `MachineData` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+support/Adapter.lean:170:50: error(lean.unknownIdentifier): Unknown identifier `MachineData`
+
+Note: A public declaration `MachineData` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+support/Adapter.lean:171:2: error: `sorryAx` is not a structure
+support/Adapter.lean:174:41: error(lean.unknownIdentifier): Unknown identifier `MachineData`
+
+Note: A public declaration `MachineData` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+support/Adapter.lean:175:13: error(lean.unknownIdentifier): Unknown identifier `Mem.loadInt`
+
+Note: A public declaration `Mem.loadInt` exists but is imported privately; consider adding `public import Kraken.Mem`.
+support/Adapter.lean:176:4: error(lean.unknownIdentifier): Unknown identifier `Executable.straightline`
+
+Note: A public declaration `Executable.straightline` exists but is imported privately; consider adding `public import Kraken.AArch64.Semantics`.
+support/Adapter.lean:177:6: error(lean.invalidDottedIdent): Invalid dotted identifier notation: The expected type of `.require_exec_access` could not be determined
+
+Hint: Using `Effects.require_exec_access would be unambiguous:
+  [apply] `Effects.require_exec_access`

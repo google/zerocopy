@@ -1,0 +1,41 @@
+{
+  "upstream_revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+  "built_with": "Lean4.34.1",
+  "olean_files": [
+    {
+      "path": "Kraken/AArch64/Syntax.olean",
+      "sha256": "d82ff938dbb3b6ff7bd15b7eea567674509a311b45123a742a1f9e012f183e4c",
+      "bytes": 5619128
+    },
+    {
+      "path": "Kraken/AArch64/Semantics.olean",
+      "sha256": "d97fcbcf3434647271ea13dce84dd6c54a6d3a85a7d6d083772eca5ad225d010",
+      "bytes": 2180072
+    },
+    {
+      "path": "Kraken/AArch64/OmniSemantics.olean",
+      "sha256": "4678ff0ead5d8b1a664c39b0636ba50ff5f43e424523e867271e1a36a005c4bf",
+      "bytes": 34152
+    },
+    {
+      "path": "Kraken/Layout.olean",
+      "sha256": "da594ff220b149fa63d45a2e7131fe027e9892dee5680b4d38b76b8d5b9022d9",
+      "bytes": 138720
+    },
+    {
+      "path": "Kraken/Mem.olean",
+      "sha256": "25ab61b92b8cf69906a809b5c8ec363723a400159dc4badcf84811f67d5c0ddb",
+      "bytes": 49840
+    },
+    {
+      "path": "Kraken/ToBytes.olean",
+      "sha256": "b19751f255e40b3aa12bc041c6567e24f33084f620b294892cb6e97340b9a7f9",
+      "bytes": 100472
+    },
+    {
+      "path": "Kraken/SeparationMem.olean",
+      "sha256": "895121ebedee1db74fc1a27bd0b88b17de294b6c049944f11b55667b74396668",
+      "bytes": 39456
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+[
+  {
+    "path": "sources/prerequisites/rems-project--islaris--islaris.opam",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "c568b6823d81bd326d1cac442cb8586e7b7257700618a9fce71583c85de44570",
+    "after_sha256": "73698a8ef01363603e56fddb112ad82d550b50f78761316a33409b9cca156cee",
+    "verified_git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899"
+  },
+  {
+    "path": "sources/prerequisites/rems-project--sail--sail.opam",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "4eaf3107bdd26afad2bad4d54ffa4230796eb9b9932f86483eebe77d23394fbe",
+    "after_sha256": "cd2b06c1d003570ec70a000324f53afcd085b1c0165c3eff4a712689e1cdc7a1",
+    "verified_git_blob": "6444d998072f8609c63eb73257e10a90ceb2966d"
+  },
+  {
+    "path": "sources/prerequisites/jasmin-lang--jasmin--README.md",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "73f3897718aaf72894f752d8494b1bc2bf04cb64fd1b05aa971c33407a35bd61",
+    "after_sha256": "552eb09fc2e70d970379338442ea7151735b67c78eb13a36377190db596f41ae",
+    "verified_git_blob": "ca2223a24e9e97f620bd8abfcce72d91548f7f20"
+  },
+  {
+    "path": "sources/prerequisites/project-everest--vale--INSTALL.md",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "7438f4c9d1ed7ee400f375ccbdc0cfbe0d684607666062eb86239f977413d6d4",
+    "after_sha256": "88ea13155dec6e3155c2450a39758f21a80632f84147a2d72d41056d89c97499",
+    "verified_git_blob": "42883955b329ab1d223b5490808fc5ca6841661b"
+  },
+  {
+    "path": "sources/prerequisites/awslabs--s2n-bignum--README.md",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "6b55c8e9f372b1a9bef3db1b72bc1a1f6616b22c5207051dff7c856bb40c3f61",
+    "after_sha256": "cbf4021ffc2626c39645d11a34c136b8ec293cdb2dce770af7eeade26653fea8",
+    "verified_git_blob": "660d370be6d332f45b1489e6b54849fc764f4912"
+  },
+  {
+    "path": "sources/prerequisites/rems-project--sail--libsail.opam",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "978c27c082bd9e233a74570141b2102d591088bd0bd108715f1e048071a0051e",
+    "after_sha256": "7ca2bca4400219b2c2a4fa99b0d95398df71683a216587ee04f762c2697339c2",
+    "verified_git_blob": "795f01368d2b127ec6a84c027cd9a39fde4e4eb7"
+  },
+  {
+    "path": "sources/prerequisites/jasmin-lang--jasmin--docs--source--misc--installation_guide.md",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "abf34471fac16ee82237302dcb660c88ba32ba480569dcf497a9638d1fdbeb4e",
+    "after_sha256": "1b84c4817ea69180a149a2875584b2dc07e78996d77580d15e213a28c0a47464",
+    "verified_git_blob": "bd6c5387b9a0aab8b963ececdbd385b0a4ff2619"
+  },
+  {
+    "path": "sources/prerequisites/awslabs--s2n-bignum--x86--Makefile",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "f8e24ca3b4bbe0f25d71a46445eb1a2245774f48e232b0354eda2374edbb226c",
+    "after_sha256": "93f4778c7aec49ae72824d74ce77a2086a5022cdf508312cd179c3032c11aec4",
+    "verified_git_blob": "c35a6a2a5d4431f02ade423eb87d5fa359ffe4da"
+  },
+  {
+    "path": "sources/prerequisites/project-everest--vale--SConstruct",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "48a071c967834cdc8a93fcdc6011fa4966a273e37dc2c0d30900b8ca1514bcf3",
+    "after_sha256": "5b045f16bbb873932752be90670455eebd1fa91e4fe2a4451825021bae9993c3",
+    "verified_git_blob": "331c1ec49ab45aceed9f7908b3444ce73150b498"
+  },
+  {
+    "path": "sources/prerequisites/jasmin-lang--jasmin--compiler--jasmin.opam",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "b8a75cf3ab3e097103e64a65155877031c2473ddcc4d62e581114a35108628e9",
+    "after_sha256": "05bf4c75b91466cc68f94477e73fc15e5951ceed348a921146cae21d66f7cdf5",
+    "verified_git_blob": "28767d384b83f7e503e826f3314aa6ce2c006682"
+  },
+  {
+    "path": "sources/prerequisites/jasmin-lang--jasmin--default.nix",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "769043f3d065bedb43e75ef9ed00033a2c583d8fa2dd9c272119df659d4a7dc0",
+    "after_sha256": "fb50e40bbb899deeb7b1d14668703f71c52810ac812bc8cb9ec6717e94493578",
+    "verified_git_blob": "215b65344356ff5c2a49215782295bf39a662ef0"
+  },
+  {
+    "path": "sources/prerequisites/project-everest--vale--.docker--build--config.json",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "53b4e3c92a55a5babe4f503ee2bd49ed4fbc90f48a97a159aa11972adb3ebf49",
+    "after_sha256": "4ea509547e798e4e48e218c5210d7ae41b331a7508815550910ee4dc43fa1197",
+    "verified_git_blob": "796eaacae927b9451d14c3792237d186c0087e00"
+  },
+  {
+    "path": "sources/prerequisites/awslabs--s2n-bignum--tools--build-proof.sh",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "83e3f523af4f037363a92209624f730628933d89c31923bbdce382f249fec82a",
+    "after_sha256": "c3b340c3d577331613df636f5880e6eb250abb48783a37d3ea36b7142c00af64",
+    "verified_git_blob": "39d7243340e2a6580a9d584a895a9396d6f2131f"
+  },
+  {
+    "path": "sources/prerequisites/awslabs--s2n-bignum--tools--run-proof.sh",
+    "cause": "AddFile patch had appended one extra LF; removed exactly that LF after matching upstream Git blob",
+    "before_sha256": "8708cfdce4ce81ca9727f3366a220b4cb748a7593986c67c188c940b02f09326",
+    "after_sha256": "b62b01592220366e9460a29168b9b900be5c9e69867bf5664c8e150ade9d0bfe",
+    "verified_git_blob": "784a32989a3465eacddf6b93a5e702f1882b0e40"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "executed_build_helper_sha256": "e3962036fc25525ab5d188d00e1e475ba487641313d72ed1bdad5bca5b88116f",
+  "executed_proof_helper_sha256": "7175646c7f0fb80227add60b60f37121be393f27356b8f86e215e60b78e13c8d",
+  "build_dependency_parser_scope": "The initial helper parsed ordinary/public/meta import lines. build-order-audit.json independently verified the completed order against all98 local import edges including import-all; no ordering violations and max1 newly built module per log.",
+  "tool_environment": {
+    "LEAN_NUM_THREADS": "2",
+    "LEAN_SYSROOT": "<exact-requested-nightly-root>",
+    "ELAN_HOME": "<task-private-elan-root>",
+    "LEAN_PATH_build": "unset",
+    "LEAN_PATH_proofs": "kraken-source/.lake/build/lib/lean:support"
+  },
+  "no_installs_or_old_build_cache_imports": true
+}

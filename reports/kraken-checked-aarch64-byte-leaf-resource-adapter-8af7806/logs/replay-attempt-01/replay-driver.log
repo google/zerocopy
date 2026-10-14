@@ -1,0 +1,1 @@
+Stopped affected path for diagnosis: {"tool": "rustc", "argv": ["--edition=2024", "-C", "opt-level=0", "-C", "panic=abort", "--emit=obj", "support/leaf.rs", "-o", "artifacts/leaf-O0.o"], "cwd": ".", "exit": 1, "log": "logs/rust-O0-obj.log", "native_execution": false, "output_sha256": "abbb29ac5a7b41b780e92e10c7d7ad006d6ac3d0e539b3c99249a370e4573ce8"}

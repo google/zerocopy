@@ -1,0 +1,393 @@
+{
+  "observed_at": "2026-10-14",
+  "primary_sources": [
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/AArch64/Syntax.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/Syntax.lean",
+      "sha256": "0ed1b015319d1c72e364a4796b4e0729656657ca2ee8b77b3b66bc59694e5b05",
+      "bytes": 28892,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/AArch64/Semantics.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/Semantics.lean",
+      "sha256": "6836d7e542cacdffb8d67070fe1d69d402503788ee6f3010c514f28bdd442be7",
+      "bytes": 42881,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/AArch64/OmniSemantics.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/OmniSemantics.lean",
+      "sha256": "bfdd4e19572558f28f08bc68ddb6715ff32634c5acc23cadb073c6250d636608",
+      "bytes": 894,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/Layout.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Layout.lean",
+      "sha256": "b14d53739de354670f6996cb0ec596897be0276fbe2b4d358cb3e5e3e7168d6b",
+      "bytes": 3201,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/Mem.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Mem.lean",
+      "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01",
+      "bytes": 5902,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/ToBytes.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/ToBytes.lean",
+      "sha256": "27a606d299e0dd9ebda0667aeae619e6492c287226d3715951aa7c1efea3fc79",
+      "bytes": 13909,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/SeparationMem.lean",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/SeparationMem.lean",
+      "sha256": "cb04e13771966794e8d025d32fc565dc37d5db42d4bf61cc0c652a94065f5ccd",
+      "bytes": 5459,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "lean-toolchain",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/lean-toolchain",
+      "sha256": "c7d3be4f231b7173b248710c425d8b406df756ed3de889895999a9a7b2518add",
+      "bytes": 36,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "lake-manifest.json",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/lake-manifest.json",
+      "sha256": "db51a3a80296f33075d6a48b94b66b6b66f632a085790a952edc7d79d6ca96f9",
+      "bytes": 112,
+      "preservation": "shared source read-only; immutable coordinates+hash"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "islaris.opam",
+      "git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/islaris.opam",
+      "local": "sources/prerequisites/rems-project--islaris--islaris.opam",
+      "status": "full_primary_file",
+      "sha256": "73698a8ef01363603e56fddb112ad82d550b50f78761316a33409b9cca156cee",
+      "bytes": 1001,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "sail.opam",
+      "git_blob": "6444d998072f8609c63eb73257e10a90ceb2966d",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/sail.opam",
+      "local": "sources/prerequisites/rems-project--sail--sail.opam",
+      "status": "full_primary_file",
+      "sha256": "cd2b06c1d003570ec70a000324f53afcd085b1c0165c3eff4a712689e1cdc7a1",
+      "bytes": 2013,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "README.md",
+      "git_blob": "ca2223a24e9e97f620bd8abfcce72d91548f7f20",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/README.md",
+      "local": "sources/prerequisites/jasmin-lang--jasmin--README.md",
+      "status": "full_primary_file",
+      "sha256": "552eb09fc2e70d970379338442ea7151735b67c78eb13a36377190db596f41ae",
+      "bytes": 1917,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "INSTALL.md",
+      "git_blob": "42883955b329ab1d223b5490808fc5ca6841661b",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/INSTALL.md",
+      "local": "sources/prerequisites/project-everest--vale--INSTALL.md",
+      "status": "full_primary_file",
+      "sha256": "88ea13155dec6e3155c2450a39758f21a80632f84147a2d72d41056d89c97499",
+      "bytes": 3700,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "README.md",
+      "git_blob": "660d370be6d332f45b1489e6b54849fc764f4912",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/README.md",
+      "local": "sources/prerequisites/awslabs--s2n-bignum--README.md",
+      "status": "full_primary_file",
+      "sha256": "cbf4021ffc2626c39645d11a34c136b8ec293cdb2dce770af7eeade26653fea8",
+      "bytes": 26431,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "libsail.opam",
+      "git_blob": "795f01368d2b127ec6a84c027cd9a39fde4e4eb7",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/libsail.opam",
+      "local": "sources/prerequisites/rems-project--sail--libsail.opam",
+      "status": "full_primary_file",
+      "sha256": "7ca2bca4400219b2c2a4fa99b0d95398df71683a216587ee04f762c2697339c2",
+      "bytes": 1715,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "jasmin.opam",
+      "status": "fetch_failed",
+      "diagnostic": [
+        {
+          "type": "text",
+          "text": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}"
+        }
+      ]
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/misc/installation_guide.md",
+      "git_blob": "bd6c5387b9a0aab8b963ececdbd385b0a4ff2619",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/misc/installation_guide.md",
+      "local": "sources/prerequisites/jasmin-lang--jasmin--docs--source--misc--installation_guide.md",
+      "status": "full_primary_file",
+      "sha256": "1b84c4817ea69180a149a2875584b2dc07e78996d77580d15e213a28c0a47464",
+      "bytes": 8567,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/Makefile",
+      "git_blob": "c35a6a2a5d4431f02ade423eb87d5fa359ffe4da",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/Makefile",
+      "local": "sources/prerequisites/awslabs--s2n-bignum--x86--Makefile",
+      "status": "full_primary_file",
+      "sha256": "93f4778c7aec49ae72824d74ce77a2086a5022cdf508312cd179c3032c11aec4",
+      "bytes": 25573,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "SConstruct",
+      "git_blob": "331c1ec49ab45aceed9f7908b3444ce73150b498",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/SConstruct",
+      "local": "sources/prerequisites/project-everest--vale--SConstruct",
+      "status": "full_primary_file",
+      "sha256": "5b045f16bbb873932752be90670455eebd1fa91e4fe2a4451825021bae9993c3",
+      "bytes": 48875,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "compiler/jasmin.opam",
+      "git_blob": "28767d384b83f7e503e826f3314aa6ce2c006682",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/compiler/jasmin.opam",
+      "local": "sources/prerequisites/jasmin-lang--jasmin--compiler--jasmin.opam",
+      "status": "full_primary_file",
+      "sha256": "05bf4c75b91466cc68f94477e73fc15e5951ceed348a921146cae21d66f7cdf5",
+      "bytes": 1011,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "default.nix",
+      "git_blob": "215b65344356ff5c2a49215782295bf39a662ef0",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/default.nix",
+      "local": "sources/prerequisites/jasmin-lang--jasmin--default.nix",
+      "status": "full_primary_file",
+      "sha256": "fb50e40bbb899deeb7b1d14668703f71c52810ac812bc8cb9ec6717e94493578",
+      "bytes": 3565,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": ".docker/build/config.json",
+      "git_blob": "796eaacae927b9451d14c3792237d186c0087e00",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/.docker/build/config.json",
+      "local": "sources/prerequisites/project-everest--vale--.docker--build--config.json",
+      "status": "full_primary_file",
+      "sha256": "4ea509547e798e4e48e218c5210d7ae41b331a7508815550910ee4dc43fa1197",
+      "bytes": 1037,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "tools/build-proof.sh",
+      "git_blob": "39d7243340e2a6580a9d584a895a9396d6f2131f",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/tools/build-proof.sh",
+      "local": "sources/prerequisites/awslabs--s2n-bignum--tools--build-proof.sh",
+      "status": "full_primary_file",
+      "sha256": "c3b340c3d577331613df636f5880e6eb250abb48783a37d3ea36b7142c00af64",
+      "bytes": 2276,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "tools/run-proof.sh",
+      "git_blob": "784a32989a3465eacddf6b93a5e702f1882b0e40",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/tools/run-proof.sh",
+      "local": "sources/prerequisites/awslabs--s2n-bignum--tools--run-proof.sh",
+      "status": "full_primary_file",
+      "sha256": "b62b01592220366e9460a29168b9b900be5c9e69867bf5664c8e150ade9d0bfe",
+      "bytes": 740,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded",
+      "git_blob_verified": true
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "src/sail_lean_backend/sail_plugin_lean.ml",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/src/sail_lean_backend/sail_plugin_lean.ml",
+      "sha256": "c4fb0532907f3da8d1871a916d9c848a4ca2f1e2af33033621d2a7bfcefbe75a",
+      "bytes": 22199,
+      "sections": "97-100 toolchain/support pins;315-327 emitted toolchain/FakeReal choice",
+      "preservation": "shared read-only inspected source"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "README.md",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/README.md",
+      "sha256": "5c45aaa0824e882cceffdbdc27a3b15fcc9cfdd3db238f635df251283f0e46a4",
+      "bytes": 6365,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail/README.md",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail/README.md",
+      "sha256": "68d8c07b7063444071ad62bbfdeb27640ee291de1e3ac6da3e6e6ed0d8478b88",
+      "bytes": 845,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/inline-assembly.md",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md",
+      "sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "bytes": 74833,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/attributes/codegen.md",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/attributes/codegen.md",
+      "sha256": "0adae17a6e03a6400098b3a395544495f2f02fd65992c4c9b584b96fe905da97",
+      "bytes": 52868,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/items/functions.md",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/items/functions.md",
+      "sha256": "9dcf49ccf23e4b8c1123466626e08750c4186fb21d28fbec3a67194d0c82e905",
+      "bytes": 28223,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "repository": "ARM-software/abi-aa",
+      "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264",
+      "path": "aapcs64/aapcs64.rst",
+      "url": "https://github.com/ARM-software/abi-aa/blob/ec3e2fb69065768aa1caf298813a7808b50bc264/aapcs64/aapcs64.rst",
+      "sha256": "7f4e6a9c02bd88184f92d5309e062539babccc1fa90c4e4676d26b58df965dbd",
+      "bytes": 201396,
+      "preservation": "shared read-only inspected primary source"
+    },
+    {
+      "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+      "identity": "Arm A64 instruction reference internal aarchmrs/pseudocode v2025-03_rel;build2025-03-21T17:41",
+      "sections": [
+        "LDRB immediate pp518-519",
+        "RET p751"
+      ],
+      "access": "primary indexed text; no full PDF hash claimed",
+      "findings": [
+        "LDRB unsigned immediate fixed high bits0011100101,imm12,Rn,Rt;no writeback",
+        "RET defaultX30; enabledGCS performs additional record load/check and GCSP update; BTypeNext update absent in Kraken",
+        "Review is not an imported formal ISA relation"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms",
+      "observed_at": "2026-10-14",
+      "access": "primary web text; mutable documentation, no immutable content hash",
+      "sections": [
+        "register reservations/leaf frames",
+        "16byte SP alignment and narrow argument extension"
+      ]
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "sail_maker.opam",
+      "git_blob": "4ff2f3dfa6d18e94df500d314b7775167b9617af",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/sail_maker.opam",
+      "local": "sources/prerequisites/rems-project--sail--sail_maker.opam",
+      "status": "full_primary_file",
+      "sha256": "9ce1f91815a6c2a21fe554c7fba24c3ab0920c4f8af2339b61234ea9b5ea9823",
+      "bytes": 988,
+      "git_blob_verified": true,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded"
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "sail_lean_backend.opam",
+      "git_blob": "bed53f3b882a260de1bc733d6d2bd1f113493d8d",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/sail_lean_backend.opam",
+      "local": "sources/prerequisites/rems-project--sail--sail_lean_backend.opam",
+      "status": "full_primary_file",
+      "sha256": "649bb4b56b8707bfe97752a3392ea9570b06017f1540ed506dafa82c90b36d48",
+      "bytes": 958,
+      "git_blob_verified": true,
+      "public_preservation": "coordinates/hash; full acquisition cache excluded"
+    }
+  ]
+}

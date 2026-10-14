@@ -1,0 +1,213 @@
+{
+  "order": [
+    "Kraken.Attribute",
+    "Kraken.Eval",
+    "Kraken.Layout",
+    "Kraken.OmniSemantics",
+    "Kraken.Separation",
+    "Kraken.ToBytes",
+    "Kraken.AArch64.Syntax",
+    "Kraken.Mem",
+    "Kraken.SeparationTactics",
+    "Kraken.Tactics",
+    "Kraken.X64.Syntax",
+    "Kraken.AArch64.Parser.Basic",
+    "Kraken.AArch64.Print",
+    "Kraken.AArch64.Semantics",
+    "Kraken.Fuzzer",
+    "Kraken.SeparationMem",
+    "Kraken.SeparationTests",
+    "Kraken.X64.Parser.Basic",
+    "Kraken.X64.PrintIntel",
+    "Kraken.X64.Semantics",
+    "Kraken.AArch64.OmniSemantics",
+    "Kraken.AArch64.Parser",
+    "Kraken.AArch64.Sep",
+    "Kraken.X64.Examples.IncrementDMA",
+    "Kraken.X64.Examples.IncrementMMIO",
+    "Kraken.X64.OmniSemantics",
+    "Kraken.X64.Parser",
+    "Kraken.X64.PrintATT",
+    "Kraken.X64.Sep",
+    "Kraken.AArch64.Examples.Examples",
+    "Kraken.AArch64.ParserTests",
+    "Kraken.AArch64.PrintTests",
+    "Kraken.AArch64.TacticsTests",
+    "Kraken.X64.ParserTests",
+    "Kraken.X64.PrettyPrint",
+    "Kraken.X64.PrintATTTests",
+    "Kraken.X64.TacticsTests",
+    "Kraken.X64.Examples.Examples",
+    "KrakenAArch64",
+    "Kraken"
+  ],
+  "dependencies": {
+    "Kraken.AArch64.Parser": [
+      "Kraken.AArch64.Parser.Basic"
+    ],
+    "Kraken.Mem": [
+      "Kraken.ToBytes"
+    ],
+    "Kraken.X64.Examples.Examples": [
+      "Kraken.Eval",
+      "Kraken.SeparationTactics",
+      "Kraken.Tactics",
+      "Kraken.X64.OmniSemantics",
+      "Kraken.X64.Parser",
+      "Kraken.X64.PrettyPrint",
+      "Kraken.X64.Semantics",
+      "Kraken.X64.Sep"
+    ],
+    "Kraken.X64.Sep": [
+      "Kraken.Attribute",
+      "Kraken.SeparationMem",
+      "Kraken.X64.Semantics"
+    ],
+    "Kraken.X64.Parser.Basic": [
+      "Kraken.X64.Syntax"
+    ],
+    "Kraken.X64.Examples.IncrementMMIO": [
+      "Kraken.X64.Semantics"
+    ],
+    "Kraken.AArch64.TacticsTests": [
+      "Kraken.AArch64.OmniSemantics",
+      "Kraken.AArch64.Semantics",
+      "Kraken.Tactics"
+    ],
+    "Kraken.Tactics": [
+      "Kraken.Attribute",
+      "Kraken.Layout"
+    ],
+    "Kraken.Attribute": [],
+    "Kraken.OmniSemantics": [],
+    "Kraken.AArch64.Print": [
+      "Kraken.AArch64.Syntax"
+    ],
+    "Kraken.Eval": [],
+    "Kraken.AArch64.PrintTests": [
+      "Kraken.AArch64.Parser",
+      "Kraken.AArch64.Print"
+    ],
+    "Kraken.X64.Parser": [
+      "Kraken.X64.Parser.Basic"
+    ],
+    "Kraken.X64.TacticsTests": [
+      "Kraken.Tactics",
+      "Kraken.X64.OmniSemantics",
+      "Kraken.X64.Semantics"
+    ],
+    "Kraken.AArch64.Syntax": [
+      "Kraken.Attribute",
+      "Kraken.Layout"
+    ],
+    "Kraken.AArch64.Semantics": [
+      "Kraken.AArch64.Syntax",
+      "Kraken.Attribute",
+      "Kraken.Mem"
+    ],
+    "Kraken": [
+      "Kraken.Tactics",
+      "Kraken.X64.Examples.Examples",
+      "Kraken.X64.OmniSemantics",
+      "Kraken.X64.Parser",
+      "Kraken.X64.Semantics",
+      "Kraken.X64.Sep"
+    ],
+    "Kraken.AArch64.OmniSemantics": [
+      "Kraken.AArch64.Semantics",
+      "Kraken.Attribute",
+      "Kraken.OmniSemantics"
+    ],
+    "Kraken.X64.Semantics": [
+      "Kraken.Attribute",
+      "Kraken.Layout",
+      "Kraken.Mem",
+      "Kraken.X64.Syntax"
+    ],
+    "Kraken.Layout": [],
+    "Kraken.SeparationTactics": [
+      "Kraken.Separation"
+    ],
+    "Kraken.Fuzzer": [
+      "Kraken.Layout",
+      "Kraken.Mem"
+    ],
+    "Kraken.X64.Syntax": [
+      "Kraken.Attribute",
+      "Kraken.Layout"
+    ],
+    "Kraken.X64.PrettyPrint": [
+      "Kraken.X64.OmniSemantics",
+      "Kraken.X64.PrintIntel",
+      "Kraken.X64.Semantics",
+      "Kraken.X64.Syntax"
+    ],
+    "KrakenAArch64": [
+      "Kraken.AArch64.Examples.Examples",
+      "Kraken.AArch64.OmniSemantics",
+      "Kraken.AArch64.Parser",
+      "Kraken.AArch64.Semantics",
+      "Kraken.AArch64.Sep",
+      "Kraken.Tactics"
+    ],
+    "Kraken.X64.OmniSemantics": [
+      "Kraken.Attribute",
+      "Kraken.OmniSemantics",
+      "Kraken.X64.Semantics"
+    ],
+    "Kraken.AArch64.Parser.Basic": [
+      "Kraken.AArch64.Syntax"
+    ],
+    "Kraken.AArch64.Examples.Examples": [
+      "Kraken.AArch64.OmniSemantics",
+      "Kraken.AArch64.Parser",
+      "Kraken.AArch64.Semantics",
+      "Kraken.AArch64.Sep",
+      "Kraken.Eval",
+      "Kraken.SeparationTactics",
+      "Kraken.Tactics"
+    ],
+    "Kraken.AArch64.ParserTests": [
+      "Kraken.AArch64.Parser"
+    ],
+    "Kraken.X64.ParserTests": [
+      "Kraken.X64.Parser"
+    ],
+    "Kraken.Separation": [],
+    "Kraken.X64.PrintIntel": [
+      "Kraken.X64.Syntax"
+    ],
+    "Kraken.X64.Examples.IncrementDMA": [
+      "Kraken.X64.Semantics"
+    ],
+    "Kraken.X64.PrintATTTests": [
+      "Kraken.X64.Parser",
+      "Kraken.X64.PrintATT"
+    ],
+    "Kraken.AArch64.Sep": [
+      "Kraken.AArch64.Semantics",
+      "Kraken.Attribute",
+      "Kraken.SeparationMem"
+    ],
+    "Kraken.SeparationTests": [
+      "Kraken.Mem",
+      "Kraken.Separation",
+      "Kraken.SeparationTactics"
+    ],
+    "Kraken.SeparationMem": [
+      "Kraken.Mem",
+      "Kraken.Separation"
+    ],
+    "Kraken.X64.PrintATT": [
+      "Kraken.X64.PrintIntel"
+    ],
+    "Kraken.ToBytes": []
+  },
+  "concurrency": "serial Lake target invocations; LEAN_NUM_THREADS=2",
+  "excluded_executables": [
+    "Att2Intel",
+    "KrakenRunnerAArch64",
+    "KrakenRunnerX64",
+    "Main"
+  ]
+}

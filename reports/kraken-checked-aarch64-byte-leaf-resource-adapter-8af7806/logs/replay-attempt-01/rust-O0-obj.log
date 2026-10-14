@@ -1,0 +1,7 @@
+error: unexpected argument '--edition' found
+
+  tip: a similar argument exists: '--version'
+
+Usage: rustup[EXE] --version [+toolchain]
+
+For more information, try '--help'.

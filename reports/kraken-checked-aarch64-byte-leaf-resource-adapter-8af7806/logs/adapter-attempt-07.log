@@ -1,0 +1,24 @@
+support/Adapter.lean:182:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (Kraken.Layout.apply (fixedLayout pc) (program 0)).directivesFromAddress (Kraken.Layout.start Directive)
+in the target expression
+  (have this := Executable.labels (Kraken.Layout.apply (fixedLayout pc) (program 0));
+    Directives.interp
+      ((Kraken.Layout.apply (fixedLayout pc) (program 0)).directivesFromAddress { data := d, pc := pc }.pc)
+      { data := d, pc := pc }.data { data := d, pc := pc }.pc fun pc s => Effects.done { data := s, pc := pc }) =
+    require_exec_access (pc...pc + 4) fun x =>
+      require_read_access d.regs.X0.toBitVec MemWidth.W8 fun x =>
+        require_exec_access ((pc + 4)...pc + 4 + 4) fun x =>
+          Effects.done { data := resultData d v, pc := Int64.ofBitVec d.regs.X30.toBitVec }
+
+pc : Int64
+d : MachineData
+v : BitVec 8
+hload : Mem.loadInt d.dmem d.regs.X0.toBitVec 1 = some v.toInt
+⊢ (have this := Executable.labels (Kraken.Layout.apply (fixedLayout pc) (program 0));
+    Directives.interp
+      ((Kraken.Layout.apply (fixedLayout pc) (program 0)).directivesFromAddress { data := d, pc := pc }.pc)
+      { data := d, pc := pc }.data { data := d, pc := pc }.pc fun pc s => Effects.done { data := s, pc := pc }) =
+    require_exec_access (pc...pc + 4) fun x =>
+      require_read_access d.regs.X0.toBitVec MemWidth.W8 fun x =>
+        require_exec_access ((pc + 4)...pc + 4 + 4) fun x =>
+          Effects.done { data := resultData d v, pc := Int64.ofBitVec d.regs.X30.toBitVec }

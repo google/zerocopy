@@ -1,0 +1,3 @@
+⚠ [14/15] Built Kraken.X64.Examples.IncrementDMA (253ms)
+warning: Kraken/X64/Examples/IncrementDMA.lean:70:4: declaration uses `sorry`
+Build completed successfully (15 jobs).

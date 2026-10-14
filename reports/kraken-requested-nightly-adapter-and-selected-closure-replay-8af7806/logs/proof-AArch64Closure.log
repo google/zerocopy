@@ -1,0 +1,11 @@
+'_private.Kraken.AArch64.Examples.Examples.0.swap_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.Kraken.AArch64.Examples.Examples.0.arith_shift_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ arith_shift_correct._native.bv_decide.ax_1_10]
+'_private.Kraken.AArch64.Examples.Examples.0.move_2_regs_to_heap_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private.Kraken.AArch64.Examples.Examples.0.reg_offset_example_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

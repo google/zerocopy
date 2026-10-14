@@ -1,0 +1,204 @@
+[
+  {
+    "tool": "lean",
+    "argv": [
+      "--version"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/lean-version.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.036965041,
+    "output_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "-vV"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rustc-version.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.029382917,
+    "output_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+  },
+  {
+    "tool": "lean",
+    "argv": [
+      "-o",
+      "support/Adapter.olean",
+      "support/Adapter.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/adapter-proof.log",
+    "native_execution": false,
+    "elapsed_seconds": 1.9734726669999998,
+    "output_sha256": "f4a0f578e881e5ee2a55d1e6dc7e90a64ec1e08e3b69fb4c11db32b35b9e58ec"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=obj",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O0.o"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O0-obj.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.045251583000000206,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=link",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O0"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O0-link.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.10211812500000006,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=asm",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O0.s"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O0-asm.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.04415804199999984,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=obj",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O3.o"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O3-obj.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.05118687500000041,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=link",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O3"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O3-link.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.09983541699999998,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "rustc",
+    "argv": [
+      "--edition=2024",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "panic=abort",
+      "-C",
+      "strip=debuginfo",
+      "--emit=asm",
+      "support/leaf.rs",
+      "-o",
+      "artifacts/leaf-O3.s"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/rust-O3-asm.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.04874329200000016,
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "lean",
+    "argv": [
+      "support/BindingCertificates.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/binding-proof.log",
+    "native_execution": false,
+    "elapsed_seconds": 0.2241302089999997,
+    "output_sha256": "0c2f803c2803cb3cfe5ae73c904e601d6f1de5048ecc98a33369f9a2420dd131"
+  },
+  {
+    "tool": "./artifacts/leaf-O0",
+    "argv": [],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/native-O0.log",
+    "native_execution": true,
+    "elapsed_seconds": 0.09110183300000019,
+    "output_sha256": "63f5c966f4febf9eeae8c975b0a59b1ab60aa768f53ab7d8cae6c8ad3918fb5d"
+  },
+  {
+    "tool": "./artifacts/leaf-O3",
+    "argv": [],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/native-O3.log",
+    "native_execution": true,
+    "elapsed_seconds": 0.05181012499999982,
+    "output_sha256": "63f5c966f4febf9eeae8c975b0a59b1ab60aa768f53ab7d8cae6c8ad3918fb5d"
+  }
+]

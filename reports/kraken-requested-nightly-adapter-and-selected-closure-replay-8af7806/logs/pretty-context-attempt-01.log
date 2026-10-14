@@ -1,0 +1,5 @@
+support/PrettyContext.lean:8:0: error(lean.unknownIdentifier): Unknown constant `Lean.Elab.Tactic.Tactic`
+
+Note: A public declaration `Tactic` exists but is imported privately; consider adding `public import Lean.Elab.Tactic.Basic`.
+support/PrettyContext.lean:18:2: error: Tactic `tacticProbe_message_context` has not been implemented
+'_private.support.PrettyContext.0.diagnostic_only' depends on axioms: [sorryAx]

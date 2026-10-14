@@ -1,0 +1,128 @@
+{
+  "final_replay": "logs/replay-results.json",
+  "historical_attempts": [
+    {
+      "path": "logs/adapter-attempt-01.log",
+      "exit": 1,
+      "sha256": "7ea2c23871501cbe8d5578ee60f245c48af90d35a0a82b3cb3c5f93f2e6e61ee",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-02.log",
+      "exit": 1,
+      "sha256": "78a07988981b224666f553090d033deb5f212b5dbab694e4ff4c9013df15bd54",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-03.log",
+      "exit": 1,
+      "sha256": "501fa2373ae517a10a7324a45120377000de2dfce67c88b03146d9e58f495d73",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-04.log",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-05.log",
+      "exit": 1,
+      "sha256": "e1c6ae16076f1b84a13c1808906bd2e51c37a0a684728170a8267e79f85443bc",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-06.log",
+      "exit": 1,
+      "sha256": "f5c1d5d6ada5453bc1d517482e7b14180aba3a450bebfc68423a96ace810f9e6",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-07.log",
+      "exit": 1,
+      "sha256": "27d51b8989ebc2c0b41eeff2ada48734270dd1598368192098855226365a52b9",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-08.log",
+      "exit": 1,
+      "sha256": "c91306f8c63453339382e62ea329bd3730f5ae8f7cba2d8974c37405c0e2836e",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-09.log",
+      "exit": 0,
+      "sha256": "8fd4502ab57cb12a61912d602c6017c376ffcd628dc3eec7f02b3cd056fd7051",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-10.log",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-11.log",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-12.log",
+      "exit": 1,
+      "sha256": "f79761fee1eff3aa69eb6f3ca1eda8566d48cec9a4e02d9b8a0004acf08dab3b",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-13.log",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-attempt-14.log",
+      "exit": 1,
+      "sha256": "384c812365643f3fca2e289dfcfda22148fd8b27d3518782246df2b8fa717093",
+      "role": "historical elaboration attempt; not counted in final proof closure"
+    },
+    {
+      "path": "logs/adapter-endpoints-attempt.log",
+      "exit": 0,
+      "sha256": "f662e24aa1cfc4df39a7bf77d53a2793670c593b66144116fec1b28c62ae8a1b",
+      "role": "successful intermediate proof; final replay supersedes"
+    },
+    {
+      "path": "logs/adapter-steps-attempt.log",
+      "exit": 0,
+      "sha256": "5c83eb1b161bb9ea3ea30e2ccc4e723d72eb14949fb86da7ef774070c6704812",
+      "role": "successful intermediate proof; final replay supersedes"
+    },
+    {
+      "path": "logs/layout-query.log",
+      "wrapper_exit": 0,
+      "nested_lean_exit": "not separately captured",
+      "sha256": "4f610b2e336fcb5e25d70c8ecdf45e6280e756f9507a815bf4f0f6e306e23f49",
+      "role": "declaration query diagnostics, not proof evidence"
+    },
+    {
+      "path": "logs/value-query.log",
+      "wrapper_exit": 0,
+      "nested_lean_exit": "not separately captured",
+      "sha256": "93f19cd72b0e5f3a0d21de5e1bbeb13f5cdb438ddabc9a8768fe8373c3a21caa",
+      "role": "declaration query diagnostics, not proof evidence"
+    },
+    {
+      "path": "logs/replay-attempt-01/replay-driver.log",
+      "exit": 1,
+      "role": "rustc symlink resolved to rustup; compiler invocation rejected, corrected by preserving argv0"
+    },
+    {
+      "path": "logs/replay-bad-root-control.log",
+      "wrapper_exit": 0,
+      "nested_python_exit": "not separately captured",
+      "role": "deliberate absent dependency-root control; failed before tool execution; raw absolute path excluded from public projection"
+    }
+  ],
+  "unexpected_panic_assertion_or_semantic_disagreement": false,
+  "source_reconstruction_correction": "logs/source-acquisition-lf-correction.json"
+}

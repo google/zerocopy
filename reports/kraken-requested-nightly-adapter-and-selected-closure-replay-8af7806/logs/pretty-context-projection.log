@@ -1,0 +1,3 @@
+Outside goal context: failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+Inside goal context: detached_x.value = detached_x.value
+'_private.support.PrettyContext.0.diagnostic_only' does not depend on any axioms

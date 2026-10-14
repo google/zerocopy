@@ -1,0 +1,89 @@
+support/Adapter.lean:32:4: error: `simp` made no progress
+support/Adapter.lean:44:6: error: 'change' tactic failed, pattern
+  False ↔ ?m.98
+is not definitionally equal to target
+  none = some (Decoded.loadByte offset) ↔ offset < 4096 ∧ word = 960495616 + offset * 1024
+support/Adapter.lean:81:4: error: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  i ≥ 0
+  0 ≤ h ≤ 255
+  0 ≤ g ≤ 255
+  0 ≤ f ≤ 255
+  0 ≤ e ≤ 255
+  e - i ≥ 1
+where
+ e := ↑a.toNat
+ f := ↑b.toNat
+ g := ↑c.toNat
+ h := ↑d.toNat
+ i := ↑(UInt8.ofNat (a.toNat + 256 * b.toNat + 65536 * c.toNat + 16777216 * d.toNat)).toNat
+support/Adapter.lean:85:4: error: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  i ≥ 0
+  0 ≤ h ≤ 255
+  0 ≤ g ≤ 255
+  0 ≤ f ≤ 255
+  f - i ≥ 1
+  0 ≤ e ≤ 255
+where
+ e := ↑a.toNat
+ f := ↑b.toNat
+ g := ↑c.toNat
+ h := ↑d.toNat
+ i := ↑(UInt8.ofNat ((a.toNat + 256 * b.toNat + 65536 * c.toNat + 16777216 * d.toNat) / 256)).toNat
+support/Adapter.lean:89:4: error: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  i ≥ 0
+  0 ≤ h ≤ 255
+  0 ≤ g ≤ 255
+  g - i ≥ 1
+  0 ≤ f ≤ 255
+  0 ≤ e ≤ 255
+where
+ e := ↑a.toNat
+ f := ↑b.toNat
+ g := ↑c.toNat
+ h := ↑d.toNat
+ i := ↑(UInt8.ofNat ((a.toNat + 256 * b.toNat + 65536 * c.toNat + 16777216 * d.toNat) / 65536)).toNat
+support/Adapter.lean:92:4: error: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  i ≥ 0
+  0 ≤ h ≤ 255
+  h - i ≥ 1
+  0 ≤ g ≤ 255
+  0 ≤ f ≤ 255
+  0 ≤ e ≤ 255
+where
+ e := ↑a.toNat
+ f := ↑b.toNat
+ g := ↑c.toNat
+ h := ↑d.toNat
+ i := ↑(UInt8.ofNat ((a.toNat + 256 * b.toNat + 65536 * c.toNat + 16777216 * d.toNat) / 16777216)).toNat
+support/Adapter.lean:80:15: warning: This simp argument is unused:
+  UInt8.toNat_ofNat
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [wordLE]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+support/Adapter.lean:84:15: warning: This simp argument is unused:
+  UInt8.toNat_ofNat
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [wordLE]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+support/Adapter.lean:88:15: warning: This simp argument is unused:
+  UInt8.toNat_ofNat
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [wordLE]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+support/Adapter.lean:91:15: warning: This simp argument is unused:
+  UInt8.toNat_ofNat
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [wordLE]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

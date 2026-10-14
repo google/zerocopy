@@ -1,0 +1,10 @@
+{
+  "completed_module_targets": 40,
+  "actual_local_import_edges": 98,
+  "all_import_forms_checked_including_import_all": true,
+  "order_violations": [],
+  "max_new_built_lines_per_log": 1,
+  "serial_invocations": true,
+  "Lean_threads": 2,
+  "source_unchanged": true
+}

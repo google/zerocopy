@@ -1,0 +1,11 @@
+{
+  "package": "kraken-requested-nightly-adapter-and-selected-closure-replay-8af7806",
+  "milestones": [
+    {"id": "E27", "status": "requested_nightly_subtask_discharged_broader_milestone_open", "answered_scope": "Fresh exact166-file Kraken source; actual requested nightly40-module build; six unchanged selected proof files and72 closure inspections", "stronger_unestablished_claims": ["broader X64/A64 fault/overlap/SIMD validation"], "unexamined_gaps": ["Remaining motivated ISA validation forms"]},
+    {"ids": ["E28", "E30"], "status": "companion_scalar_proofs_replayed", "answered_scope": "The companion40 adapter/binding declarations and21 prior leaf declarations replay without extra axioms on requested nightly", "stronger_unestablished_claims": ["generic assembly source/byte/loader correctness", "generic trace and Rust/page authority"], "unexamined_gaps": []},
+    {"ids": ["E29", "E35"], "status": "not_discharged", "answered_scope": "Toolchain replay does not change the explicitly missing formal-reference ISA and actual MiniRust source/resource arrows", "stronger_unestablished_claims": ["Arm formal-reference simulation", "actual MiniRust allocation/borrow/context adequacy"], "unexamined_gaps": ["Construct and prove these operational relations"]}
+  ],
+  "original_questions": [
+    {"ids": ["AS01", "AS04", "AS17", "AS28"], "sections": ["Findings", "Boundaries"], "answered_scope": "Requested-toolchain build/replay, exact closed/admitted/native-axiom distinctions and context-printing diagnostic reproduction", "stronger_unestablished_claims": ["ISA-wide adequacy or all-theorem closure"], "unexamined_gaps": ["Broader ISA/reference proof work"]}
+  ]
+}

@@ -1,0 +1,8 @@
+'bound_O0_object' depends on axioms: [propext]
+'mutation_O0_object' depends on axioms: [propext]
+'bound_O0_linked' depends on axioms: [propext]
+'mutation_O0_linked' depends on axioms: [propext]
+'bound_O3_object' depends on axioms: [propext]
+'mutation_O3_object' depends on axioms: [propext]
+'bound_O3_linked' depends on axioms: [propext]
+'mutation_O3_linked' depends on axioms: [propext]

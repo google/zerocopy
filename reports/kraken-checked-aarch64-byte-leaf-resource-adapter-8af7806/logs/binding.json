@@ -1,0 +1,143 @@
+{
+  "artifacts": [
+    {
+      "artifact": "artifacts/leaf-O0.o",
+      "artifact_sha256": "00a36a89f187860e786618082bdfebd8c61c3f13f221f14c6ed6cc8997abe583",
+      "artifact_length": 8488,
+      "binding": {
+        "symbol": "_read_byte_leaf",
+        "address": 0,
+        "file_offset": 632,
+        "imported_length": 8,
+        "bytes": "00004039c0035fd6",
+        "bytes_sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8",
+        "matches": true,
+        "section": {
+          "name": "__text",
+          "segment": "__TEXT",
+          "address": 0,
+          "length": 1976,
+          "offset": 632,
+          "alignment": 2,
+          "relocation_offset": 3168,
+          "relocation_count": 63,
+          "flags": 2147484672
+        },
+        "no_relocation_in_slice": true,
+        "next_symbol": [
+          ".Lfunc_end__read_byte_leaf",
+          8
+        ],
+        "slice_scope": "8 bytes at entry; no claim that symbol extent equals8 or loader mapping is verified"
+      },
+      "changed_byte_rejected": true,
+      "changed_artifact_sha256": "2200a5491644f0d38124c90312d7c0cc61712890f5100de074946bde008be8fe",
+      "truncated_files_rejected": 3
+    },
+    {
+      "artifact": "artifacts/leaf-O0",
+      "artifact_sha256": "22597cc71edde5270deb25a79593df09709bb79a8bd9e9483b9087ea41acd1b6",
+      "artifact_length": 438304,
+      "binding": {
+        "symbol": "_read_byte_leaf",
+        "address": 4294969536,
+        "file_offset": 2240,
+        "imported_length": 8,
+        "bytes": "00004039c0035fd6",
+        "bytes_sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8",
+        "matches": true,
+        "section": {
+          "name": "__text",
+          "segment": "__TEXT",
+          "address": 4294969536,
+          "length": 218812,
+          "offset": 2240,
+          "alignment": 6,
+          "relocation_offset": 0,
+          "relocation_count": 0,
+          "flags": 2147484672
+        },
+        "no_relocation_in_slice": true,
+        "next_symbol": [
+          ".Lfunc_end__read_byte_leaf",
+          4294969544
+        ],
+        "slice_scope": "8 bytes at entry; no claim that symbol extent equals8 or loader mapping is verified"
+      },
+      "changed_byte_rejected": true,
+      "changed_artifact_sha256": "9729122191c402ee0290678eca98cbaa121551f47588d7ad40aa60f2239f4aed",
+      "truncated_files_rejected": 3
+    },
+    {
+      "artifact": "artifacts/leaf-O3.o",
+      "artifact_sha256": "9ef7a9c48efe01d74914fb1470fb2ad33bdae770b1351ef7b169b1d8961ae7f6",
+      "artifact_length": 3080,
+      "binding": {
+        "symbol": "_read_byte_leaf",
+        "address": 0,
+        "file_offset": 568,
+        "imported_length": 8,
+        "bytes": "00004039c0035fd6",
+        "bytes_sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8",
+        "matches": true,
+        "section": {
+          "name": "__text",
+          "segment": "__TEXT",
+          "address": 0,
+          "length": 592,
+          "offset": 568,
+          "alignment": 2,
+          "relocation_offset": 1312,
+          "relocation_count": 27,
+          "flags": 2147484672
+        },
+        "no_relocation_in_slice": true,
+        "next_symbol": [
+          ".Lfunc_end__read_byte_leaf",
+          8
+        ],
+        "slice_scope": "8 bytes at entry; no claim that symbol extent equals8 or loader mapping is verified"
+      },
+      "changed_byte_rejected": true,
+      "changed_artifact_sha256": "fe0f77f0f021dbc845e4b1f483a55337d5b4f988a287c108d4e7dd93757824b1",
+      "truncated_files_rejected": 3
+    },
+    {
+      "artifact": "artifacts/leaf-O3",
+      "artifact_sha256": "54e7f113dc80248213ffcd2aff2b361c62a0d2118d9cbe0227cf3e6b11d112b4",
+      "artifact_length": 435392,
+      "binding": {
+        "symbol": "_read_byte_leaf",
+        "address": 4294969536,
+        "file_offset": 2240,
+        "imported_length": 8,
+        "bytes": "00004039c0035fd6",
+        "bytes_sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8",
+        "matches": true,
+        "section": {
+          "name": "__text",
+          "segment": "__TEXT",
+          "address": 4294969536,
+          "length": 217404,
+          "offset": 2240,
+          "alignment": 6,
+          "relocation_offset": 0,
+          "relocation_count": 0,
+          "flags": 2147484672
+        },
+        "no_relocation_in_slice": true,
+        "next_symbol": [
+          ".Lfunc_end__read_byte_leaf",
+          4294969544
+        ],
+        "slice_scope": "8 bytes at entry; no claim that symbol extent equals8 or loader mapping is verified"
+      },
+      "changed_byte_rejected": true,
+      "changed_artifact_sha256": "065e0d20a699ef797212ee1aedc7284ddc2371ef61915d9ebf6e1acdef00c572",
+      "truncated_files_rejected": 3
+    }
+  ],
+  "single_byte_mutants_rejected": 2040,
+  "parser_scope": "owned bounded Mach-O importer, unverified; Lean checks concrete imported lists",
+  "no_mutated_native_execution": true
+}

@@ -1,0 +1,74 @@
+⚠ [24/37] Replayed Kraken.SeparationMem
+warning: Kraken/SeparationMem.lean:86:74: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+ℹ [34/37] Replayed Kraken.AArch64.Examples.Examples
+info: Kraken/AArch64/Examples/Examples.lean:56:9: END KSTEP: 0 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:70:9: END KSTEP: 0 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:90:9: kstep: keepGoing = false
+info: Kraken/AArch64/Examples/Examples.lean:90:9: END KSTEP: 0 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:94:9: END KSTEP: 0 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:132:2: Found a spec lemma: store_sep
+info: Kraken/AArch64/Examples/Examples.lean:132:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:132:2: Found sep goal: (Eq (List.At ?bs (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 0))) ⋆ ?R) ss✝.dmem
+info: Kraken/AArch64/Examples/Examples.lean:132:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:135:2: Found a spec lemma: store_sep
+info: Kraken/AArch64/Examples/Examples.lean:135:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:135:2: Found sep goal: (Eq (List.At ?bs (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 8))) ⋆ ?R)
+  {
+      regs :=
+        { X0 := X0, X1 := X1, X2 := X2, X3 := X3, X4 := X4, X5 := X5, X6 := X6, X7 := X7, X8 := X8, X9 := X9,
+          X10 := X10, X11 := X11, X12 := X12, X13 := X13, X14 := X14, X15 := X15, X16 := X16, X17 := X17, X18 := X18,
+          X19 := X19, X20 := X20, X21 := X21, X22 := X22, X23 := X23, X24 := X24, X25 := X25, X26 := X26, X27 := X27,
+          X28 := X28, X29 := X29, X30 := X30, SP := SP },
+      status := flags,
+      dmem :=
+        Mem.storeInt mem (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 0)) 8
+          (BitVec.extractLsb' 0 64 X0.toBitVec).toInt }.dmem
+info: Kraken/AArch64/Examples/Examples.lean:135:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:138:2: Found a spec lemma: load_sep
+info: Kraken/AArch64/Examples/Examples.lean:138:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:138:2: Found sep goal: (Eq (List.At ?bs (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 0))) ⋆ ?R)
+  {
+      regs :=
+        { X0 := X0, X1 := X1, X2 := X2, X3 := X3, X4 := X4, X5 := X5, X6 := X6, X7 := X7, X8 := X8, X9 := X9,
+          X10 := X10, X11 := X11, X12 := X12, X13 := X13, X14 := X14, X15 := X15, X16 := X16, X17 := X17, X18 := X18,
+          X19 := X19, X20 := X20, X21 := X21, X22 := X22, X23 := X23, X24 := X24, X25 := X25, X26 := X26, X27 := X27,
+          X28 := X28, X29 := X29, X30 := X30, SP := SP },
+      status := flags,
+      dmem :=
+        (Mem.storeInt mem (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 0)) 8
+              (BitVec.extractLsb' 0 64 X0.toBitVec).toInt).storeInt
+          (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 8)) 8
+          (BitVec.extractLsb' 0 64 X1.toBitVec).toInt }.dmem
+info: Kraken/AArch64/Examples/Examples.lean:138:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:141:2: Found a spec lemma: load_sep
+info: Kraken/AArch64/Examples/Examples.lean:141:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:141:2: Found sep goal: (Eq (List.At ?bs (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 8))) ⋆ ?R)
+  {
+      regs :=
+        have v := { toBitVec := BitVec.ofInt 64 (Int.ofBytes (Int.toBytes 8 X0.toBitVec.toInt)) };
+        { X0 := X0, X1 := X1, X2 := X2, X3 := v, X4 := X4, X5 := X5, X6 := X6, X7 := X7, X8 := X8, X9 := X9, X10 := X10,
+          X11 := X11, X12 := X12, X13 := X13, X14 := X14, X15 := X15, X16 := X16, X17 := X17, X18 := X18, X19 := X19,
+          X20 := X20, X21 := X21, X22 := X22, X23 := X23, X24 := X24, X25 := X25, X26 := X26, X27 := X27, X28 := X28,
+          X29 := X29, X30 := X30, SP := SP },
+      status := flags,
+      dmem :=
+        (Mem.storeInt mem (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 0)) 8
+              (BitVec.extractLsb' 0 64 X0.toBitVec).toInt).storeInt
+          (BitVec.extractLsb' 0 64 X2.toBitVec + BitVec.ofInt 64 (Int64.toInt 8)) 8
+          (BitVec.extractLsb' 0 64 X1.toBitVec).toInt }.dmem
+info: Kraken/AArch64/Examples/Examples.lean:141:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:144:2: END KSTEP: 0 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:170:2: Found a spec lemma: store_sep
+info: Kraken/AArch64/Examples/Examples.lean:170:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:170:2: Found sep goal: failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+info: Kraken/AArch64/Examples/Examples.lean:170:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:173:2: Found a spec lemma: load_sep
+info: Kraken/AArch64/Examples/Examples.lean:173:2: 4 subgoals generated
+info: Kraken/AArch64/Examples/Examples.lean:173:2: Found sep goal: failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+info: Kraken/AArch64/Examples/Examples.lean:173:2: END KSTEP: 4 sub-goals left
+info: Kraken/AArch64/Examples/Examples.lean:176:2: END KSTEP: 0 sub-goals left
+✔ [36/37] Built KrakenAArch64 (746ms)
+Build completed successfully (37 jobs).

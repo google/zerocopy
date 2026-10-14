@@ -16938,6 +16938,58 @@
         "rust/inline-assembly"
       ]
     },
+    "kraken-checked-aarch64-byte-leaf-resource-adapter-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken AArch64"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "target": "aarch64-apple-darwin",
+            "version": "1.99.0"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "build": "2025-03-21T17:41",
+            "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+            "version": "aarchmrs/pseudocode v2025-03_rel"
+          },
+          "name": "Arm A64 reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        }
+      ],
+      "topics": [
+        "kraken",
+        "assembly/decoding",
+        "assembly/byte-certificates",
+        "memory/permissions",
+        "rust/abi",
+        "lean/axioms"
+      ]
+    },
     "kraken-parser-layout-fragment-boundaries-8af7806": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -16962,6 +17014,34 @@
         "assembly/parsing",
         "assembly/layout",
         "assembly/composition"
+      ]
+    },
+    "kraken-requested-nightly-adapter-and-selected-closure-replay-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "binary_sha256": "a4c5d3dfc1672faf014e59bd17724035259ff0d22a4ffbdf5a75e142f564817e",
+            "repository": "leanprover/lean4",
+            "revision": "ca39d2bc730f0382e4897ce314b93a4f168ff15e",
+            "version": "4.36.0-nightly-2026-09-21"
+          },
+          "name": "Kraken requested Lean nightly"
+        }
+      ],
+      "topics": [
+        "kraken",
+        "lean/toolchains",
+        "lean/axioms",
+        "assembly/byte-certificates",
+        "proof/revalidation"
       ]
     },
     "kraken-rust-assembly-pilot-8af7806": {

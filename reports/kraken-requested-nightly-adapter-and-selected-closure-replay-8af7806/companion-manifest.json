@@ -1,0 +1,7 @@
+{
+  "package": "kraken-checked-aarch64-byte-leaf-resource-adapter-8af7806",
+  "manifest_sha256": "7d4bed8e8d3d6535d62e346f8f35a870fb43e4bceb2754aa0427b40e19903add",
+  "raw_freeze_sha256": "f1a5a57fe6db72221a76c2c8f041ad3d91c2f209260adb9d48088e402012fafd",
+  "relationship": "Unchanged copied proof sources and original native/byte-binding evidence; separate toolchain subjects; parent publication adds italic disclosure and sibling replay link only, with all proof/native evidence unchanged",
+  "reviewed_source_manifest_sha256": "68ff61a4642cd41e7c2ed4e0b373174c4f3320d09309ef207d46e2d7eaf4cf85"
+}

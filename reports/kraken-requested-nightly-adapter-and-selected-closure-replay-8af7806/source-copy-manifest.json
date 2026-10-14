@@ -1,0 +1,843 @@
+{
+  "repository": "AeneasVerif/kraken",
+  "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+  "source_files": [
+    {
+      "path": ".github/workflows/lean_action_ci.yml",
+      "bytes": 1587,
+      "sha256": "cd7673d396b41701433797445422ab1888286256baf62213d64545d2c4e06cd0"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 91,
+      "sha256": "166a3a823cf54ac2fbacdc3303b5259b48aaeddc2b596d0b57d661138317df59"
+    },
+    {
+      "path": "Att2Intel.lean",
+      "bytes": 606,
+      "sha256": "3190ab7c5e39317dfd92f8b38ca6b6dfc314e14162f39bce309678106f7764bd"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 3078,
+      "sha256": "a804cd0d9491ad5977f43bdac2363bbd7af6e76385c29bb36a15fe35185ee3af"
+    },
+    {
+      "path": "DEVELOPER.md",
+      "bytes": 953,
+      "sha256": "adaab0bd1c9947548a1823a96f98dd1357d0a5ea75bee8ab9949afc81c78aed0"
+    },
+    {
+      "path": "Kraken/AArch64/Examples/Examples.lean",
+      "bytes": 5821,
+      "sha256": "a1a380039a1f54bd14341d39df9eec12926efbd9a97f02d6730690805193a918"
+    },
+    {
+      "path": "Kraken/AArch64/OmniSemantics.lean",
+      "bytes": 894,
+      "sha256": "bfdd4e19572558f28f08bc68ddb6715ff32634c5acc23cadb073c6250d636608"
+    },
+    {
+      "path": "Kraken/AArch64/Parser/Basic.lean",
+      "bytes": 80792,
+      "sha256": "f3ca9783e39cdd11f2c19941418bd1071538b3fa260c9749f8d1fee237b11dbe"
+    },
+    {
+      "path": "Kraken/AArch64/Parser.lean",
+      "bytes": 1339,
+      "sha256": "84407963f198e18b130b2a2ca7faa085b5a27a4651ad59f6d28c34e5f98ceb99"
+    },
+    {
+      "path": "Kraken/AArch64/ParserTests.lean",
+      "bytes": 67887,
+      "sha256": "3dd31fae065ea931462be2b08b4106f274eb40abb2ddffbb28d0a957fe69b54b"
+    },
+    {
+      "path": "Kraken/AArch64/Print.lean",
+      "bytes": 10895,
+      "sha256": "25b62e4d5d153abb1bb25d59a2613401a7a72c6b7aa82a910a729ac800d10d62"
+    },
+    {
+      "path": "Kraken/AArch64/PrintTests.lean",
+      "bytes": 4598,
+      "sha256": "7a21c99c4f74bee7849ac681c5bab0e2dc8d566727244614cd028e95c48c122d"
+    },
+    {
+      "path": "Kraken/AArch64/Semantics.lean",
+      "bytes": 42881,
+      "sha256": "6836d7e542cacdffb8d67070fe1d69d402503788ee6f3010c514f28bdd442be7"
+    },
+    {
+      "path": "Kraken/AArch64/Sep.lean",
+      "bytes": 1283,
+      "sha256": "7b147716ac85a3bfbf0ee8cb0faef694d3f89539585533fb297290517d9f1049"
+    },
+    {
+      "path": "Kraken/AArch64/Syntax.lean",
+      "bytes": 28892,
+      "sha256": "0ed1b015319d1c72e364a4796b4e0729656657ca2ee8b77b3b66bc59694e5b05"
+    },
+    {
+      "path": "Kraken/AArch64/TacticsTests.lean",
+      "bytes": 835,
+      "sha256": "ef2a11fed54d2b0a37050a96b70362280bbabf3131d2dcb57da5f265b9d32ee4"
+    },
+    {
+      "path": "Kraken/AArch64/Test/README.md",
+      "bytes": 773,
+      "sha256": "f6551f2906084117987fbee9b3ba6bdec998019e23940df2e6b27e0ba9553146"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_adc.S",
+      "bytes": 222,
+      "sha256": "cfb2ae2b5863c6ae96ddbd4b748cbff3fd0616069f4d28b16701497381d15891"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_add.S",
+      "bytes": 194,
+      "sha256": "686ee6aaefc0a5e7304158e3f3b03c961e150cefcf1aaeb744c8c128c11568f1"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_adds.S",
+      "bytes": 96,
+      "sha256": "b557f78595cbb87bea537687308f2fa77dfe4407314a6c1fcb6d421b8a746683"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_and.S",
+      "bytes": 65,
+      "sha256": "a12e1280d8b676b8beedaa9814fafea562223e39b115d0aa06691727650fdea7"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_and_imm.S",
+      "bytes": 107,
+      "sha256": "26bdbca7537aa8f0c5f7385ca6d8ac9c296ce1bf0e3ff585ef06a6f91838a1c3"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ands_imm.S",
+      "bytes": 68,
+      "sha256": "15d957adfbd91a5be87bacdcae14eaea397e8e1b94c26a8cbb5000854c39ed04"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_asr.S",
+      "bytes": 61,
+      "sha256": "e04400d702df4eb634f75988c93e0d0e6636d7a3951b0fb8717be8bc8346a5eb"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_b_cond.S",
+      "bytes": 613,
+      "sha256": "2a5c51a51ffe14e0d207360b2f3d23c93a19b84ba486cb20079c3e64334f8f4f"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_bic.S",
+      "bytes": 45,
+      "sha256": "c9b2e1c7d1fd7984b6c3953012250c6dea83e1ebddc44212bd9114eeb0a2c1f5"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_bics.S",
+      "bytes": 16,
+      "sha256": "5e1eb4c119f8b8b44252798c0c6a2d33ac9940bd499a8256ff88c39a95e92ace"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_bitfield.S",
+      "bytes": 230,
+      "sha256": "c53ff44b441125b83aef9019fa181d230f3a37c532216c9b7b4dbfd3d294d22b"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_cbz.S",
+      "bytes": 491,
+      "sha256": "9f914094bcaa8686e2ef5119e065ca6fca53371a9a8aa99b5233023680292d63"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ccmn.S",
+      "bytes": 56,
+      "sha256": "9745ff6e9167e59b732737cfee3b07db05baaaa5dadb2e483de77bdebdd49c30"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ccmp.S",
+      "bytes": 57,
+      "sha256": "f521f1fc9046d3c6c488baea1ff7fd860b42dc62b9807ca9feaacbb674072cd1"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_cls.S",
+      "bytes": 52,
+      "sha256": "0c8d359e93d2d1eb2528562a485c162b8de0f11deddb10ce4ca19c94922d35fe"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_clz.S",
+      "bytes": 52,
+      "sha256": "057f21ff799956d8a8578e98c03be232ba2060b651965d383d6ba2760d39f599"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_csel.S",
+      "bytes": 162,
+      "sha256": "f6149bb116c6c371dfda9b054a75a05d931fb57f8f033d72e2a489e154135b2b"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_csinc.S",
+      "bytes": 208,
+      "sha256": "0b5e87a763aeb661a1c0ad84cce9d921d96d4f000c35ee4fe5263d6d14a3ae62"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_csinv.S",
+      "bytes": 211,
+      "sha256": "775e9a7d9edcdcdda60ff51c5fc159e675d0f53975bff1f0a8f36b169008361a"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_csneg.S",
+      "bytes": 188,
+      "sha256": "976bbbd7326fa61d8e870697127f68f70c3407a54dc1808cf246f261a11deaca"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_eon.S",
+      "bytes": 45,
+      "sha256": "c93bb43eed8f235ff46be959506ea16f90d588460b015d0f19b3f780c59076a6"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_eor.S",
+      "bytes": 45,
+      "sha256": "df4d61c8a2f57683975c5e971cedb62d4b9203448cb1f8972d9f76c4b285d29f"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_eor_imm.S",
+      "bytes": 82,
+      "sha256": "fe90264c8bc8752baaf34d5912c4fad80548d68e762baa3066ccf78e8b6401a9"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_extr.S",
+      "bytes": 65,
+      "sha256": "f021f03954738a6b3be7eacc69d065dd1c52812813f57872d868c325f535a972"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldp_stp.S",
+      "bytes": 465,
+      "sha256": "ec5c326d045c49ae74bcd48253ff083c974ac8e716ddf204a13e0aa816ce9d8a"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldpsw.S",
+      "bytes": 848,
+      "sha256": "0ebe7323d9530f73df4b414868a17f6e5bb67fe68e262b5074981017c8b8a0e7"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldr_str.S",
+      "bytes": 510,
+      "sha256": "7fc3ca6d9c302cc59634027ff9b536a8a2d324725f4ca07518d8c669d6f4dc8c"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldrb_strb.S",
+      "bytes": 1338,
+      "sha256": "e6498e5bf2199977a8a43c0c014fda003c7753b6cecec35969646f1a5152a836"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldrh_strh.S",
+      "bytes": 1191,
+      "sha256": "567ed45ffb16ae692fef368a1e542e3caa1ab6f02ae54cfc52ea9e8f7dfbc1f7"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldrsb.S",
+      "bytes": 1242,
+      "sha256": "978cab52c4c046e4a8246207d575c89144bae5f6b7580abd232b0aa0a5e2b350"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldrsh.S",
+      "bytes": 1345,
+      "sha256": "b452a99dccec3deed262151c9eca5d8a26dc7bdbce0d48c7700f655af0c963dd"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldrsw.S",
+      "bytes": 1034,
+      "sha256": "a53f659dead83b7cb4e968a36309f745ec806e8cddd45aacc233ae3aca0aea20"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ldur_stur.S",
+      "bytes": 478,
+      "sha256": "e9ea2fdf690180377926f93fdf0098dbf67bbe64d859ec200f99a536b22189c4"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_lsl.S",
+      "bytes": 61,
+      "sha256": "55ca2962e916cdf65e9b1fe813ca474e3916a66a375dcef4989bc91142e8050d"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_lsr.S",
+      "bytes": 61,
+      "sha256": "519a43f841ea3e6e898111942a1a3fc485a30e46ea69e3a53ff6818c89963781"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_mov_reg.S",
+      "bytes": 160,
+      "sha256": "0a0da748b3d416b17acc2da62aa401a3e415be6a17efa21817bcfbb47aa9c853"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_movk.S",
+      "bytes": 442,
+      "sha256": "5180ef4dc6eaf542706b34c4615174000ab3f723680f2b140e488283e5e63163"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_movn.S",
+      "bytes": 225,
+      "sha256": "b92a2fb96844e7a286dab9b36df15e2f82ae1ce1a67cfc360b61cdaa2e452a36"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_movz.S",
+      "bytes": 204,
+      "sha256": "ace2d7c7808636675d0f9888d4f85b5101f5b3f24de7c60bb1c260cb141a4952"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_msub.S",
+      "bytes": 66,
+      "sha256": "d9eb948f2dbb8ecc9977b434f97064ab80bbe5011ec321c9f10b8ff1ecf21917"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_mul.S",
+      "bytes": 85,
+      "sha256": "ef57e3b228a9650a363438696acfde5a8819bf53659f734bc9eeb4776bd23ea2"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_mvn.S",
+      "bytes": 71,
+      "sha256": "2c6715e152dba969fc1beeeb008896646be4af67a9897760b927bac708fbde3d"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_neg.S",
+      "bytes": 23,
+      "sha256": "b739666d80ab42a00f6e8a1ff686453bcd9f6fcd52d9b18a7a3ab4bf2a702378"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_nop.S",
+      "bytes": 34,
+      "sha256": "c1755e7c9cb5908ca4c7755b24c4f8869a2c32045a9351d099774294ed8c06cf"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_orn.S",
+      "bytes": 45,
+      "sha256": "41adb4ee8eded6b65636b6f94fdfa83f5ca4785292ebcdb405516b2acf7c660b"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_orr.S",
+      "bytes": 129,
+      "sha256": "afd7a9c0290e65f1a1198185e5bcb80279068ebc37d4ca1a2314fa66bac7b154"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_orr_imm.S",
+      "bytes": 82,
+      "sha256": "ffeac4d318a8acfd5433e251a7e356795889793ff4f51e4736097f0d2cad26ac"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_rbit.S",
+      "bytes": 54,
+      "sha256": "1df09f7dddd4f5ebace26248e19ab4ddbb7e7f3d0076f8894a6a18900cb2a170"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_rev.S",
+      "bytes": 91,
+      "sha256": "5e6c17cb6080213bc884c8525c45b363f9125f19b17848d70d7206ff155cfd3e"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_ror.S",
+      "bytes": 61,
+      "sha256": "5ac95c70996bf6dc127862a9b38effee5db59ae5148d8a17201dfe2e89b5c6a5"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_sbc.S",
+      "bytes": 224,
+      "sha256": "6a6e26d382c15b242d4fbbc1f1ca7269387cd32e376325bd261f926cfef3e20b"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_sdiv.S",
+      "bytes": 62,
+      "sha256": "c9d6b9753dd91bf41e5241d98261315868c7a0ff00f74db45707701b3194dced"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_shift_imm.S",
+      "bytes": 90,
+      "sha256": "0f2de5c68c5a389d67283ac46bca0303ce9a360857cb43c25848b3a3cb9d7b58"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_smaddl.S",
+      "bytes": 69,
+      "sha256": "aae21e6645f4976a29d0dd80dab73b61781f22714d2827fd52b067e276ff5e61"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_smsubl.S",
+      "bytes": 70,
+      "sha256": "d60016ac6873bb5093add3c4467126d9ffe09e952fde27a2ecc2847b7f37a1cc"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_smulh.S",
+      "bytes": 47,
+      "sha256": "ab771ed77105e0b2a2201d41a8e4faff5d22eb5c0f03334ad508efa31a4d1c49"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_sub.S",
+      "bytes": 98,
+      "sha256": "01863baea8075e355e6fdbfd177e21377a9503eea6bf8a03f9b3feb5fe55ecbb"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_subs.S",
+      "bytes": 80,
+      "sha256": "e2184f0fef74cb526be432be08a18648c9864d638e1210e60b343601d6884c5f"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_tbz.S",
+      "bytes": 519,
+      "sha256": "5e615595810d548cefc89534da48d2783fe99381d84c269e7a546f14f5e3d244"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_udiv.S",
+      "bytes": 62,
+      "sha256": "68d3fc9e26466ac30f81cb31eb5b97e85efc0ddec79a336ea4d6d2b2e0cb3cd9"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_umaddl.S",
+      "bytes": 69,
+      "sha256": "9084d8193affa59b6e8b5ede993f6d748033ec051dcc75efe1499060ddb2196e"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_umsubl.S",
+      "bytes": 70,
+      "sha256": "7ae11ecc639092c37f93f2221bfa7732f7637167c109be7e1ac81b64eb3a2784"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm/test_umulh.S",
+      "bytes": 47,
+      "sha256": "8efe9b60d7e7682a6633e07f8a279eee7e66c959034b0684a24ce12bd4e1df0a"
+    },
+    {
+      "path": "Kraken/AArch64/Test/asm_tests.py",
+      "bytes": 13076,
+      "sha256": "62b3027308162da038b955c354fc6be18c6de97dfb591270f3d8586b69c8be49"
+    },
+    {
+      "path": "Kraken/AArch64/Test/fuzz_aarch64.py",
+      "bytes": 814,
+      "sha256": "5f1a4c562462bade33a2ba5846776e3c5c5213d6f69654c915ccef83ef456b46"
+    },
+    {
+      "path": "Kraken/Attribute.lean",
+      "bytes": 1096,
+      "sha256": "74f181ea4dbe2ee0d874988e318e77a130541d3afd7c829a7f7b960bb529e5e0"
+    },
+    {
+      "path": "Kraken/Eval.lean",
+      "bytes": 441,
+      "sha256": "e000db1f0467dddb5348720f6131c02f774b06f8f4417cd3bac6e34de932bdf4"
+    },
+    {
+      "path": "Kraken/Fuzzer.lean",
+      "bytes": 9045,
+      "sha256": "bcc62ccd2c2eebc60cafd5219357c9242ade5e7a0a8aed41d34b5c67f570edaf"
+    },
+    {
+      "path": "Kraken/Layout.lean",
+      "bytes": 3201,
+      "sha256": "b14d53739de354670f6996cb0ec596897be0276fbe2b4d358cb3e5e3e7168d6b"
+    },
+    {
+      "path": "Kraken/Mem.lean",
+      "bytes": 5902,
+      "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01"
+    },
+    {
+      "path": "Kraken/OmniSemantics.lean",
+      "bytes": 2439,
+      "sha256": "87e19661dcc00b0149c10e77f1c1e5bb75ecbb0e29a69046b8ab0fcae50d60d6"
+    },
+    {
+      "path": "Kraken/Separation.lean",
+      "bytes": 4752,
+      "sha256": "284360793d9ebfb2aa3baad7598f0ee99eaab616ce7e2169086b74fe92a8c9d3"
+    },
+    {
+      "path": "Kraken/SeparationMem.lean",
+      "bytes": 5459,
+      "sha256": "cb04e13771966794e8d025d32fc565dc37d5db42d4bf61cc0c652a94065f5ccd"
+    },
+    {
+      "path": "Kraken/SeparationTactics.lean",
+      "bytes": 8117,
+      "sha256": "f2536af93271b513428a3311d2c76c00e47f81ccd6a10893af49baac9c9fe396"
+    },
+    {
+      "path": "Kraken/SeparationTests.lean",
+      "bytes": 2891,
+      "sha256": "b50bce70570231041c5843ce3b222cba7a15473f1be55cab373a1dffe874c8f5"
+    },
+    {
+      "path": "Kraken/Tactics.lean",
+      "bytes": 22584,
+      "sha256": "2e925ed70cbda30dd63d6d607afdb143ac24400edc1dc7a3b84b2d3ab34686a6"
+    },
+    {
+      "path": "Kraken/Test/fuzz.py",
+      "bytes": 2976,
+      "sha256": "7fa12e7f413e1665bf24e928cd2b04dc2d8444dad3fd9d03c16546ccba8286dd"
+    },
+    {
+      "path": "Kraken/ToBytes.lean",
+      "bytes": 13909,
+      "sha256": "27a606d299e0dd9ebda0667aeae619e6492c287226d3715951aa7c1efea3fc79"
+    },
+    {
+      "path": "Kraken/X64/Examples/Examples.lean",
+      "bytes": 16173,
+      "sha256": "71d9e15449e1ac889dcf46cda87a0097a6d2d1a0b6dc5151318c39266303e5d4"
+    },
+    {
+      "path": "Kraken/X64/Examples/IncrementDMA.lean",
+      "bytes": 2712,
+      "sha256": "bdffdb972547d6f9cec0a3b064b866585eba2c5dbd7257448053adffdc7851f4"
+    },
+    {
+      "path": "Kraken/X64/Examples/IncrementMMIO.lean",
+      "bytes": 4964,
+      "sha256": "03655366868d06a3cef65ac0bcf00737c28065851b8029231155bc44ac0f6d31"
+    },
+    {
+      "path": "Kraken/X64/OmniSemantics.lean",
+      "bytes": 886,
+      "sha256": "ebc38906f936005d28eb8c41804bea803c7206bec3e4d502fc985d271db399f1"
+    },
+    {
+      "path": "Kraken/X64/Parser/Basic.lean",
+      "bytes": 43369,
+      "sha256": "c13b9878e83e708ef4e242ae81f7565b8c1588ccf60bf38568d09ff70da41fe5"
+    },
+    {
+      "path": "Kraken/X64/Parser.lean",
+      "bytes": 1151,
+      "sha256": "69240afbb63b5ef0c69db557d494e59b77b24e6ab417b5d115ebedcf7ebd7847"
+    },
+    {
+      "path": "Kraken/X64/ParserTests.lean",
+      "bytes": 13827,
+      "sha256": "dca5e2ec94203534e1f1f367d75991ea6b0a6ef6219e14a9a4a67bef07e4ab3a"
+    },
+    {
+      "path": "Kraken/X64/PrettyPrint.lean",
+      "bytes": 7719,
+      "sha256": "669cb89e47aad016faf549c009a92435324ec49e1384107c3d681ecdd0a03220"
+    },
+    {
+      "path": "Kraken/X64/PrintATT.lean",
+      "bytes": 5388,
+      "sha256": "2251d101276b5c6f5e71be8026aa8a6e96b8517eb81cf16d58a31db87d7b8c92"
+    },
+    {
+      "path": "Kraken/X64/PrintATTTests.lean",
+      "bytes": 3447,
+      "sha256": "ed929abb8496488db92fdc1c82e4876437080dcb87d33773a7de4abf3a67a300"
+    },
+    {
+      "path": "Kraken/X64/PrintIntel.lean",
+      "bytes": 9083,
+      "sha256": "ed68f46331802fc9bbca37b587c39346aeb292ff2db27f3ea23abc2a4aaa084f"
+    },
+    {
+      "path": "Kraken/X64/Semantics.lean",
+      "bytes": 37544,
+      "sha256": "ec2541b8698a0672ea90bd44ee6beb9192fb69fc08afba468e3706eb27564cf6"
+    },
+    {
+      "path": "Kraken/X64/Sep.lean",
+      "bytes": 1273,
+      "sha256": "8ce8160d27bb54822d02a5144490c34353ad5840a8209d5fc1382a49ecd5be84"
+    },
+    {
+      "path": "Kraken/X64/Syntax.lean",
+      "bytes": 13852,
+      "sha256": "355045a86dbdc9e48ef9855b0c74e6e0ef8bbe54de0ae6e2c082ed8d68db3753"
+    },
+    {
+      "path": "Kraken/X64/TacticsTests.lean",
+      "bytes": 832,
+      "sha256": "235971e3d66f7e2464ab47af153cd144a0f26b25d569f52a684d9532d907a185"
+    },
+    {
+      "path": "Kraken/X64/Test/README.md",
+      "bytes": 1904,
+      "sha256": "3ac221682e476dd3eb24a4e058c7d4b55354ffee44f482399637b92382a9245c"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/cmp_flags.S",
+      "bytes": 30,
+      "sha256": "ad865f78b1bb01c337b62e511b97cf043f6927f8024a7984ba970a0d2c3bf485"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/stack/test_push_pop.S",
+      "bytes": 75,
+      "sha256": "78e594a78d517f810caa9cffa55f02c38cf4ad768e85cead743c70b6515d5fd4"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_32bit_ops.S",
+      "bytes": 1576,
+      "sha256": "2dd4d2d06af82bd962830a2e745f07c45daf0c4cae8313c6be3263245b784e11"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_8bit_16bit.S",
+      "bytes": 1101,
+      "sha256": "9924af8af46d254910fcff625807c450eecdee84f29f9bf27aedf451c25e4a57"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_adc_carry.S",
+      "bytes": 98,
+      "sha256": "b6975ddb4304334bb7de0411d7bd1e81da56a3b49ea0c0ebc8853f3f785054e3"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_arithmetic.S",
+      "bytes": 1261,
+      "sha256": "ba0b75c7481f9259df9fdf98e07169993c7c3aa30ea14ac70509357b421bca3b"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_avx_mov.S",
+      "bytes": 1057,
+      "sha256": "8f6b01ae3217581fb751d8357d5ac42d5ea9a9698a7d51ec7b1a47117967aadb"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_bswap.S",
+      "bytes": 786,
+      "sha256": "de8969f29c9df146550e47e0a3879c311c9efb5ef2d83f3d1eaca1057adfd1eb"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_condition_codes.S",
+      "bytes": 490,
+      "sha256": "5c7f310d2a6efbf81d2dbb23759ae802ac874b3dd2ae0c6a7d3a2e3efab8a261"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_conditionals.S",
+      "bytes": 881,
+      "sha256": "dd2f701be5df8dc29808c74d6c5c34dd299ebb1381ee5455358b3b36cdcd198c"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_displacement_whitespace.S",
+      "bytes": 1363,
+      "sha256": "0f96cc522dfcdcb2b126fb062fb0e34990ab22dbd5f7185ea1c8648f5ec0716f"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_double_label.S",
+      "bytes": 74,
+      "sha256": "35690de96267fd4a93924972b3652ab881092045b03317ae78f9b138ebeb3ecf"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_flags.S",
+      "bytes": 1082,
+      "sha256": "d1cfa0b22d7b500f73fa3027e63c59bc928f2fbca808539de222c57e4f6a6b2d"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_imul_variants.S",
+      "bytes": 1541,
+      "sha256": "10ccb8e4351f2453d915d5f3087be4854032b7e394a378fdae49f7a53e97e8b4"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_jmp.S",
+      "bytes": 73,
+      "sha256": "22da2be099decf4ca95ab15a03cc2bd44c984c16eb27b8b613cfe1e607daa284"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_jmp2.S",
+      "bytes": 73,
+      "sha256": "0a9b505cb8a602567899551f6588dbd7d2c9a08f524985ef439aaa7cc36bd64d"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_lea_addr32.S",
+      "bytes": 303,
+      "sha256": "9081abac1b3e9c92475299414ced7a48330852b096e7ce42e07b6c713680496d"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_logic.S",
+      "bytes": 543,
+      "sha256": "9e58a238de8f6c366b83bf4835f4d4e4b3b76864f3de1195855a3339667fc091"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_memory.S",
+      "bytes": 713,
+      "sha256": "3bebd47eba28bdf0d1725867b39a469b1e0c77c929e8b0646c995a6df1543ae2"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_memory_whitespace.S",
+      "bytes": 1306,
+      "sha256": "0c6f8c677a31583cb4f2869a3e32e7600640f60d5276fe13932dd6a74c6f2250"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_move.S",
+      "bytes": 692,
+      "sha256": "ce2ca7301021ad89361bb2d5b10d010de832c1a718a9ee0f299de6576d6bdb83"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_movsx_bug.S",
+      "bytes": 92,
+      "sha256": "e5ebf08a2cce99a722f1ed70e3b1120976b73e370b07708cb1773a0f5da0343f"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_movsxd.S",
+      "bytes": 167,
+      "sha256": "ed16270087ac1480c31cec33d300c1db8bed63f3f0609fed12d3ad87bbdb07ff"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_mul_suffixed.S",
+      "bytes": 1858,
+      "sha256": "8df39c437ecffc8ed3042215d150a41c606f17140556c410dc4a6678c34d0901"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_multiply.S",
+      "bytes": 673,
+      "sha256": "3a31cd01c6abc3df11946b4bdabaf79075325d465f3202ecdce312e7ec9c51e8"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_nop.S",
+      "bytes": 46,
+      "sha256": "5bce97f59a0c4071f4611282f8b4862fdf6f162fcc9154602cbc8b79e48aa404"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_pop_add_bug.S",
+      "bytes": 292,
+      "sha256": "251fa482e44eb5c21cbbf55c586d615ffd461aba353e2d254129ef20ac407f1e"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_pop_mem_rsp.S",
+      "bytes": 201,
+      "sha256": "970c064739b8c52b06f194039c0db98e0066d6ae1fda0b1af72d0b80fe7d458c"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_pop_rsp.S",
+      "bytes": 119,
+      "sha256": "f89569527fd3e7b8ffec6e89ab221d6cb64e318398e026a2b2e1e6afcc325fed"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_rip_offset.S",
+      "bytes": 82,
+      "sha256": "7eb35d24ea227025fd33d241c502a04c74c094390478704f866d4acc883d55f5"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_rsp_absolute.S",
+      "bytes": 371,
+      "sha256": "8d19bf62ed72d00b10ebe7ec9b4c9b1edfd7b1d71a45b66b492713f8fd25123a"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_sar_large_count.S",
+      "bytes": 2349,
+      "sha256": "0b696fcc77935960610cd77c05eef82c7ade846b3c0103959a4c9cc108ef5b4f"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_sbb_wrap.S",
+      "bytes": 43,
+      "sha256": "6939a069627b2f63c8357f3c495fa7aa93de2f2878304544c378e38c47bdfcfa"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_shift_zero_count.S",
+      "bytes": 355,
+      "sha256": "055b20b420b224143d44db04793e6598bbc1c545845834e629fd8b4ca543c3c4"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_shifts.S",
+      "bytes": 1688,
+      "sha256": "077bd813e9353ec35f5a5122f5e917f101ad380c2bce8c76d65e2e6e182f9c19"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_shld_shrd_full_count.S",
+      "bytes": 1154,
+      "sha256": "862151dbca6274e0aaa0d74509ef5d6b612604d86ab2b3ebb7b2315736b30535"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_shr_mask_imm.S",
+      "bytes": 72,
+      "sha256": "9121421b6a7ab128c8922f2d6033e436d6198cabfd3a6ccb41f4fdbe8071e1c3"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_single_arg_shift.S",
+      "bytes": 2280,
+      "sha256": "2662eac30541e9f8096b04007831e4dff355937a65cdbd14209951af23b0fcb8"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_sse_math.S",
+      "bytes": 639,
+      "sha256": "70942a7b4186ed430daa316f78c1664dc0670e7ff4aa864f057b72b889be0155"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_sse_nan.S",
+      "bytes": 835,
+      "sha256": "4e32af2a47f0c359d0e5473a78f3f2d099bbbd79bb5877fd839f8908159335b9"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_symbol_operands.S",
+      "bytes": 1029,
+      "sha256": "e6f142db426480117b2c7011b88fb009fac6b5f7831713442c481c3b346230cb"
+    },
+    {
+      "path": "Kraken/X64/Test/asm/test_zero_extend.S",
+      "bytes": 1141,
+      "sha256": "8f188c39e3e182562faaf235edbe4013142f91b961d8acdf71457b969c726c29"
+    },
+    {
+      "path": "Kraken/X64/Test/asm_tests.py",
+      "bytes": 13219,
+      "sha256": "3d9d9012c99cd449422f1fffd909fab4116c0ddfd854fc184cdcd085bbfba449"
+    },
+    {
+      "path": "Kraken/X64/Test/fuzz_x64.py",
+      "bytes": 478,
+      "sha256": "5ae4cefcc15fa48f22dbe7ce8522ad62797693482e9f07702170edb8bc10fa0e"
+    },
+    {
+      "path": "Kraken.lean",
+      "bytes": 403,
+      "sha256": "cf1ee10de23f218244fc8cdffebc05dca0338b95306e0c8be8b5d7a5f46822d5"
+    },
+    {
+      "path": "KrakenAArch64.lean",
+      "bytes": 344,
+      "sha256": "cfe26ea3841ee03136fb2b8131617a83c549e62c74fb3a8e44157d6447a1feed"
+    },
+    {
+      "path": "KrakenRunnerAArch64.lean",
+      "bytes": 10005,
+      "sha256": "a378f2acf50adac0e50b8d6a635ace9a25cb2fd6acc921f66b195046867fc4ce"
+    },
+    {
+      "path": "KrakenRunnerX64.lean",
+      "bytes": 8419,
+      "sha256": "8486f308d9c017a7d859548df7d3eda8f0156b1284cadb19a0b8dbd0a35bdcd0"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1068,
+      "sha256": "0e3e62d7f0b2b143566acac81f7ba64e2b44e0f7f2064f5f264d3dbed533cf2f"
+    },
+    {
+      "path": "Main.lean",
+      "bytes": 76,
+      "sha256": "5102986182bcd727acfb22f48db451d3759e544d463f73a5144a753e7a5d6f0f"
+    },
+    {
+      "path": "NOTES.md",
+      "bytes": 2685,
+      "sha256": "9ee2467ca336f97869f61a33b37841b6388c23e86bb63c696cfabf34b807b2b0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1683,
+      "sha256": "4120770f1549f134ee93d8c466205ea144b458b5e038208204e94407f456041d"
+    },
+    {
+      "path": "lake-manifest.json",
+      "bytes": 112,
+      "sha256": "db51a3a80296f33075d6a48b94b66b6b66f632a085790a952edc7d79d6ca96f9"
+    },
+    {
+      "path": "lakefile.toml",
+      "bytes": 546,
+      "sha256": "24aeacd43a41389dbfafc7247160d3e2f94cc38b65f12461080c0b2b220cde8d"
+    },
+    {
+      "path": "lean-toolchain",
+      "bytes": 36,
+      "sha256": "c7d3be4f231b7173b248710c425d8b406df756ed3de889895999a9a7b2518add"
+    }
+  ],
+  "file_count": 166,
+  "bytes": 598992,
+  "excluded": [
+    ".lake",
+    ".git"
+  ],
+  "fresh_build_no_4_34_olean_reuse": true
+}

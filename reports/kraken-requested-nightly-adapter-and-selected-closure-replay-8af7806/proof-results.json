@@ -1,0 +1,635 @@
+[
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/Adapter.olean",
+      "support/Adapter.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-Adapter.log",
+    "elapsed_seconds": 1.896242333,
+    "closures": [
+      {
+        "declaration": "CheckedByteLeaf.decode_load_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.decode_ret_iff",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.wordLE_bound",
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.encodeLE_wordLE",
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.decodeLeaf_fields",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.accepted_iff_canonical",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.certificate_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.actual_effects",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.complete_trace",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.permission_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.checked_adapter",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.one_byte_region",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.empty_span_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.wrong_return_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.wrong_frame_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.zero_writes",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.result_zero_extended",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.byte_value",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.resource_load",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.checked_resource_contract",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.code_no_wrap",
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.layout_endpoints",
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.actual_load_step",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.actual_ret_step",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.result_preserves_resource",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.malformed_layout_rejected",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.any_changed_bytes_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.wrong_length_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.unaligned_certificate_rejected",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.wrapping_certificate_rejected",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.good_certificate",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "CheckedByteLeaf.named_byte_controls_rejected",
+        "axioms": [
+          "propext"
+        ]
+      }
+    ],
+    "output_sha256": "f4a0f578e881e5ee2a55d1e6dc7e90a64ec1e08e3b69fb4c11db32b35b9e58ec"
+  },
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/BindingCertificates.olean",
+      "support/BindingCertificates.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-BindingCertificates.log",
+    "elapsed_seconds": 0.23357995799999998,
+    "closures": [
+      {
+        "declaration": "bound_O0_object",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "mutation_O0_object",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "bound_O0_linked",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "mutation_O0_linked",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "bound_O3_object",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "mutation_O3_object",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "bound_O3_linked",
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "declaration": "mutation_O3_linked",
+        "axioms": [
+          "propext"
+        ]
+      }
+    ],
+    "output_sha256": "0c2f803c2803cb3cfe5ae73c904e601d6f1de5048ecc98a33369f9a2420dd131"
+  },
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/AArch64Closure.olean",
+      "support/AArch64Closure.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-AArch64Closure.log",
+    "elapsed_seconds": 0.6075822919999996,
+    "closures": [
+      {
+        "declaration": "_private.Kraken.AArch64.Examples.Examples.0.swap_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.AArch64.Examples.Examples.0.arith_shift_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound",
+          "arith_shift_correct._native.bv_decide.ax_1_10"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.AArch64.Examples.Examples.0.move_2_regs_to_heap_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.AArch64.Examples.Examples.0.reg_offset_example_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "output_sha256": "2ab1617162cdb04515d19f4523b2f4ffcd27f6a2b5909eb58aff2c2459e60f65"
+  },
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/X64Closure.olean",
+      "support/X64Closure.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-X64Closure.log",
+    "elapsed_seconds": 0.58320075,
+    "closures": [
+      {
+        "declaration": "_private.Kraken.X64.Examples.Examples.0.swap_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.X64.Examples.Examples.0.move_2_regs_to_heap_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.X64.Examples.Examples.0.alu_mem_example_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.X64.Examples.Examples.0.p3_correct",
+        "axioms": [
+          "propext",
+          "sorryAx",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.Kraken.X64.Examples.Examples.0.dynamic_stack_example_correct",
+        "axioms": [
+          "propext",
+          "sorryAx",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "Mem.loadInt_sep",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "Mem.storeInt_sep",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "output_sha256": "abbf9a3b2171437bd4b87176098f88972c39ef4fb555d8d6689798c3eb8f825d"
+  },
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/AArch64Pilot.olean",
+      "support/AArch64Pilot.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-AArch64Pilot.log",
+    "elapsed_seconds": 2.7695511250000004,
+    "closures": [
+      {
+        "declaration": "addBody_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "addReturn_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      }
+    ],
+    "output_sha256": "7bf08ef2e14fff3dc43be5a5654ec153a229bec6ca23f3748c52cb01537fe29f"
+  },
+  {
+    "tool": "requested-nightly lean",
+    "argv": [
+      "-o",
+      "support/X64Pilot.olean",
+      "support/X64Pilot.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "log": "logs/proof-X64Pilot.log",
+    "elapsed_seconds": 1.0588077079999998,
+    "closures": [
+      {
+        "declaration": "_private.support.X64Pilot.0.result_is_wrapping_sum",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.addBody_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.addReturn_of_load",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.addReturn_correct",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.addReturn_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.wrong_return_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.hidden_clobber_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.addReturn_permission_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.forbidden_stack_read_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.forbidden_exec_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.bounded_access_positive",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.seven_byte_stack_prefix_rejected",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.eight_byte_stack_region_positive",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.host_addReturn_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.host_entry_step_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.host_ret_step_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.host_two_step_composition",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.host_permission_iff",
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      {
+        "declaration": "_private.support.X64Pilot.0.fixedHost_program_identity",
+        "axioms": []
+      }
+    ],
+    "output_sha256": "93f449e166abbdd682b6740ea1ef7571634710cac1375d36c1286182b9758df8"
+  }
+]

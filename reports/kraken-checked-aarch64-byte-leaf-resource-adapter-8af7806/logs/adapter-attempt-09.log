@@ -1,0 +1,36 @@
+support/Adapter.lean:186:4: warning: This simp argument is unused:
+  program
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Executable.straightline, Kraken.Executable.directivesFromAddress,
+    Kraken.Executable.withAddresses.eq_def, fixedLayout, Kraken.Layout.apply, Directives.interp, Directive.interp,
+    Instr.interp, Operation.interp, loadInstr, retInstr, AddrExpr.interpLoad, AddrExpr.checkSPAlignment, AddrExpr.eval,
+    Reg64s.getRegOrSp, Reg64s.getRegOrSp64, Reg64s.getXReg, RegOrSp.base, RegOrZr.base, BitVec.take, BitVec.signed,
+    ConstExpr.interp, MachineData.load, hload, MachineData.setRegOrZr, Reg64s.setRegOrZr, Reg64s.setRegOrZr64,
+    Reg64s.setXReg, Reg64s.getRegOrZr, Reg64s.getRegOrZr64, RegWidth.bits, MemWidth.bits, MemWidth.bytes, resultData]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+support/Adapter.lean:186:13: warning: This simp argument is unused:
+  fixedLayout
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Executable.straightline, Kraken.Executable.directivesFromAddress,
+    Kraken.Executable.withAddresses.eq_def, program, Kraken.Layout.apply, Directives.interp, Directive.interp,
+    Instr.interp, Operation.interp, loadInstr, retInstr, AddrExpr.interpLoad, AddrExpr.checkSPAlignment, AddrExpr.eval,
+    Reg64s.getRegOrSp, Reg64s.getRegOrSp64, Reg64s.getXReg, RegOrSp.base, RegOrZr.base, BitVec.take, BitVec.signed,
+    ConstExpr.interp, MachineData.load, hload, MachineData.setRegOrZr, Reg64s.setRegOrZr, Reg64s.setRegOrZr64,
+    Reg64s.setXReg, Reg64s.getRegOrZr, Reg64s.getRegOrZr64, RegWidth.bits, MemWidth.bits, MemWidth.bytes, resultData]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+support/Adapter.lean:186:26: warning: This simp argument is unused:
+  Kraken.Layout.apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Executable.straightline, Kraken.Executable.directivesFromAddress,
+    Kraken.Executable.withAddresses.eq_def, program, fixedLayout, Directives.interp, Directive.interp, Instr.interp,
+    Operation.interp, loadInstr, retInstr, AddrExpr.interpLoad, AddrExpr.checkSPAlignment, AddrExpr.eval,
+    Reg64s.getRegOrSp, Reg64s.getRegOrSp64, Reg64s.getXReg, RegOrSp.base, RegOrZr.base, BitVec.take, BitVec.signed,
+    ConstExpr.interp, MachineData.load, hload, MachineData.setRegOrZr, Reg64s.setRegOrZr, Reg64s.setRegOrZr64,
+    Reg64s.setXReg, Reg64s.getRegOrZr, Reg64s.getRegOrZr64, RegWidth.bits, MemWidth.bits, MemWidth.bytes, resultData]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

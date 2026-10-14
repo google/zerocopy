@@ -1,0 +1,14 @@
+def Kraken.Layout.apply : {Directive : Type} → Kraken.Layout Directive → List Directive → Kraken.Executable Directive :=
+fun {Directive} l prog =>
+  @Kraken.Executable.mk Directive (@Kraken.Layout.start Directive l)
+    (@List.mapIdx Directive (Kraken.Sized Directive)
+      (fun i directive => @Kraken.Sized.mk Directive directive (@Kraken.Layout.size Directive l i)) prog)
+theorem Kraken.Executable.directivesFromStart : ∀ {Directive : Type} [layout : Kraken.Layout Directive]
+  (prog : List Directive),
+  @Eq (List (Kraken.Sized Directive))
+    (@Kraken.Executable.directivesFromAddress Directive (@Kraken.Layout.apply Directive layout prog)
+      (@Kraken.Layout.start Directive layout))
+    (@List.mapIdx Directive (Kraken.Sized Directive)
+      (fun i directive => @Kraken.Sized.mk Directive directive (@Kraken.Layout.size Directive layout i)) prog) :=
+<not imported>
+support/LayoutQuery.lean:7:0: error: Invalid `meta` definition `_eval`, `Kraken.Layout.apply` is not accessible here; consider adding `public meta import Kraken.Layout`

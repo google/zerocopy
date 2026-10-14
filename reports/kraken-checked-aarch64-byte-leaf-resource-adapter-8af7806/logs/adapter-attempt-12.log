@@ -1,0 +1,6 @@
+support/Adapter.lean:308:2: error: Type mismatch: After simplification, term
+  h
+ has type
+  @Eq (Option Int) (Mem.loadInt d.dmem d.regs.X0.toBitVec 1) (some ↑v.toNat)
+but is expected to have type
+  @Eq (Option Int) (Mem.loadInt d.dmem d.regs.X0.toBitVec 1) (some (Int.ofNat v.toNat))

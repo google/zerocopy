@@ -1,0 +1,6 @@
+support/ValueQuery.lean:3:7: error(lean.unknownIdentifier): Unknown constant `BitVec.toInt_emod`
+support/ValueQuery.lean:4:7: error(lean.unknownIdentifier): Unknown constant `BitVec.toInt_emod_eq_toNat`
+BitVec.toNat_ofInt {n : Nat} (i : Int) : (BitVec.ofInt n i).toNat = (i % ↑(2 ^ n)).toNat
+BitVec.toInt_eq_msb_cond {w : Nat} (x : BitVec w) : x.toInt = if x.msb = true then ↑x.toNat - ↑(2 ^ w) else ↑x.toNat
+BitVec.ofInt_natCast (w n : Nat) : BitVec.ofInt w ↑n = BitVec.ofNat w n
+UInt8.toNat_toBitVec (x : UInt8) : x.toBitVec.toNat = x.toNat

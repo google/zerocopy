@@ -1,0 +1,43 @@
+support/Adapter.lean:367:20: warning: This simp argument is unused:
+  RegOrZr.base
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Executable.step, Kraken.Executable.directivesAtAddress, Kraken.Executable.withAddresses.eq_def,
+    hdistinct, Directives.interp, Directive.interp, Instr.interp, Operation.interp, loadInstr, AddrExpr.interpLoad,
+    AddrExpr.checkSPAlignment, AddrExpr.eval, Reg64s.getRegOrSp, Reg64s.getRegOrSp64, Reg64s.getXReg, RegOrSp.base,
+    BitVec.take, BitVec.signed, ConstExpr.interp, MachineData.load, hload, MachineData.setRegOrZr, Reg64s.setRegOrZr,
+    Reg64s.setRegOrZr64, Reg64s.setXReg, RegWidth.bits, MemWidth.bits, MemWidth.bytes, resultData]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'CheckedByteLeaf.decode_load_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.decode_ret_iff' depends on axioms: [propext]
+'CheckedByteLeaf.wordLE_bound' depends on axioms: [propext, Quot.sound]
+'CheckedByteLeaf.encodeLE_wordLE' depends on axioms: [propext, Quot.sound]
+'CheckedByteLeaf.decodeLeaf_fields' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.accepted_iff_canonical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.certificate_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.actual_effects' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.complete_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.permission_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.checked_adapter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.one_byte_region' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.empty_span_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.wrong_return_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.wrong_frame_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.zero_writes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.result_zero_extended' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.byte_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.resource_load' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.checked_resource_contract' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.code_no_wrap' depends on axioms: [propext, Quot.sound]
+'CheckedByteLeaf.layout_endpoints' depends on axioms: [propext, Quot.sound]
+'CheckedByteLeaf.actual_load_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.actual_ret_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.every_prefix_preserves_resource' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.malformed_layout_rejected' depends on axioms: [propext]
+'CheckedByteLeaf.any_changed_bytes_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.wrong_length_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CheckedByteLeaf.unaligned_certificate_rejected' depends on axioms: [propext]
+'CheckedByteLeaf.wrapping_certificate_rejected' depends on axioms: [propext]
+'CheckedByteLeaf.good_certificate' depends on axioms: [propext]
+'CheckedByteLeaf.named_byte_controls_rejected' depends on axioms: [propext]

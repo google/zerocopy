@@ -1,0 +1,728 @@
+⚠ [34/41] Replayed Kraken.SeparationMem
+warning: Kraken/SeparationMem.lean:86:74: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+⚠ [38/41] Replayed Kraken.X64.Examples.Examples
+info: Kraken/X64/Examples/Examples.lean:34:9: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:54:9: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:71:2: kstep: keepGoing = false
+info: Kraken/X64/Examples/Examples.lean:71:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:78:2: END KSTEP: 0 sub-goals left
+warning: Kraken/X64/Examples/Examples.lean:112:4: declaration uses `sorry`
+info: Kraken/X64/Examples/Examples.lean:207:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:225:9: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:268:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:268:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:268:2: Found sep goal: (Eq (List.At ?bs _fvar.16167.2757) ⋆ ?R)
+  {
+      regs :=
+        have v := { toBitVec := _fvar.16167.2757 };
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := v, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem
+info: Kraken/X64/Examples/Examples.lean:268:2: Solved by exact: (Eq (stack.At _fvar.16167.2757) ⋆ R)
+  {
+      regs :=
+        have v := { toBitVec := _fvar.16167.2757 };
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := v, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem by h_mem
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: List UInt8
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: Std.ExtHashMap (BitVec 64) UInt8 → Prop
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: (Eq (stack.At _fvar.16167.2757) ⋆ R)
+  {
+      regs :=
+        have v := { toBitVec := _fvar.16167.2757 };
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := v, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem
+info: Kraken/X64/Examples/Examples.lean:268:2: Solved by exact: stack.length =
+  match Width.W64 with
+  | Width.W8 => 1
+  | Width.W16 => 2
+  | Width.W32 => 4
+  | Width.W64 => 8 by h_bs
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: List UInt8
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: Std.ExtHashMap (BitVec 64) UInt8 → Prop
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: (Eq (stack.At _fvar.16167.2757) ⋆ R)
+  {
+      regs :=
+        have v := { toBitVec := _fvar.16167.2757 };
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := v, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: stack.length =
+  match Width.W64 with
+  | Width.W8 => 1
+  | Width.W16 => 2
+  | Width.W32 => 4
+  | Width.W64 => 8
+info: Kraken/X64/Examples/Examples.lean:268:2: kstep: keepGoing = true
+info: Kraken/X64/Examples/Examples.lean:268:2: Found a spec lemma: load_sep
+info: Kraken/X64/Examples/Examples.lean:268:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:268:2: Found sep goal: [Error pretty printing expression: unknown free variable `_uniq.16167.2757`. Falling back to raw printer.]
+Std.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Std.LawfulBEqOrd.equivBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Std.instLawfulBEqCmpOfLawfulEqCmpOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Ord.compare.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instLawfulEqOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (BitVec.instTransOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulHashableOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (Eq.{1} (Std.ExtHashMap.{0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (List.At (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) ?_uniq.16167.4577 _uniq.16167.4410)) ?_uniq.16167.4578 (MachineData.dmem (MachineData.mk (have v : UInt64 := OfNat.ofNat.{0} UInt64 (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) (UInt64.instOfNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))); Reg64s.mk v _uniq.16167.99 _uniq.16167.100 _uniq.16167.101 _uniq.16167.102 _uniq.16167.103 (UInt64.ofBitVec _uniq.16167.2757) _uniq.16167.105 _uniq.16167.106 _uniq.16167.107 _uniq.16167.108 _uniq.16167.109 _uniq.16167.110 _uniq.16167.111 _uniq.16167.112 _uniq.16167.113) _uniq.16167.61 _uniq.16167.62 (Mem.storeInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) _uniq.16167.63 _uniq.16167.2757 (OfNat.ofNat.{0} Nat 8 (instOfNatNat 8)) (BitVec.toInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) (UInt64.toBitVec _uniq.16167.98)))))
+info: Kraken/X64/Examples/Examples.lean:268:2: Solved by exact: [Error pretty printing expression: unknown free variable `_uniq.16167.2757`. Falling back to raw printer.]
+Std.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Std.LawfulBEqOrd.equivBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Std.instLawfulBEqCmpOfLawfulEqCmpOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Ord.compare.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instLawfulEqOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (BitVec.instTransOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulHashableOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (Eq.{1} (Std.ExtHashMap.{0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (List.At (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) ?_uniq.16167.4577 _uniq.16167.4410)) ?_uniq.16167.4578 (MachineData.dmem (MachineData.mk (have v : UInt64 := OfNat.ofNat.{0} UInt64 (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) (UInt64.instOfNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))); Reg64s.mk v _uniq.16167.99 _uniq.16167.100 _uniq.16167.101 _uniq.16167.102 _uniq.16167.103 (UInt64.ofBitVec _uniq.16167.2757) _uniq.16167.105 _uniq.16167.106 _uniq.16167.107 _uniq.16167.108 _uniq.16167.109 _uniq.16167.110 _uniq.16167.111 _uniq.16167.112 _uniq.16167.113) _uniq.16167.61 _uniq.16167.62 (Mem.storeInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) _uniq.16167.63 _uniq.16167.2757 (OfNat.ofNat.{0} Nat 8 (instOfNatNat 8)) (BitVec.toInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) (UInt64.toBitVec _uniq.16167.98))))) by h_mem1
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: List UInt8
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: Std.ExtHashMap (BitVec 64) UInt8 → Prop
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: [Error pretty printing expression: unknown free variable `_uniq.16167.2757`. Falling back to raw printer.]
+Std.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Std.LawfulBEqOrd.equivBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Std.instLawfulBEqCmpOfLawfulEqCmpOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Ord.compare.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instLawfulEqOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (BitVec.instTransOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulHashableOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (Eq.{1} (Std.ExtHashMap.{0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (List.At (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) ?_uniq.16167.4577 _uniq.16167.4410)) ?_uniq.16167.4578 (MachineData.dmem (MachineData.mk (have v : UInt64 := OfNat.ofNat.{0} UInt64 (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) (UInt64.instOfNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))); Reg64s.mk v _uniq.16167.99 _uniq.16167.100 _uniq.16167.101 _uniq.16167.102 _uniq.16167.103 (UInt64.ofBitVec _uniq.16167.2757) _uniq.16167.105 _uniq.16167.106 _uniq.16167.107 _uniq.16167.108 _uniq.16167.109 _uniq.16167.110 _uniq.16167.111 _uniq.16167.112 _uniq.16167.113) _uniq.16167.61 _uniq.16167.62 (Mem.storeInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) _uniq.16167.63 _uniq.16167.2757 (OfNat.ofNat.{0} Nat 8 (instOfNatNat 8)) (BitVec.toInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) (UInt64.toBitVec _uniq.16167.98)))))
+info: Kraken/X64/Examples/Examples.lean:268:2: Solved by refl: (Int.toBytes 8 rax.toBitVec.toInt).length =
+  match Width.W64 with
+  | Width.W8 => 1
+  | Width.W16 => 2
+  | Width.W32 => 4
+  | Width.W64 => 8
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: List UInt8
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: Std.ExtHashMap (BitVec 64) UInt8 → Prop
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: [Error pretty printing expression: unknown free variable `_uniq.16167.2757`. Falling back to raw printer.]
+Std.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Std.LawfulBEqOrd.equivBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Std.instLawfulBEqCmpOfLawfulEqCmpOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (Ord.compare.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instOrdBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instLawfulEqOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (BitVec.instTransOrd (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulHashableOfLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instLawfulBEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))))) (Eq.{1} (Std.ExtHashMap.{0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (instDecidableEqBitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (BitVec.instHashable (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)))) (List.At (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) ?_uniq.16167.4577 _uniq.16167.4410)) ?_uniq.16167.4578 (MachineData.dmem (MachineData.mk (have v : UInt64 := OfNat.ofNat.{0} UInt64 (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0)) (UInt64.instOfNat (OfNat.ofNat.{0} Nat 0 (instOfNatNat 0))); Reg64s.mk v _uniq.16167.99 _uniq.16167.100 _uniq.16167.101 _uniq.16167.102 _uniq.16167.103 (UInt64.ofBitVec _uniq.16167.2757) _uniq.16167.105 _uniq.16167.106 _uniq.16167.107 _uniq.16167.108 _uniq.16167.109 _uniq.16167.110 _uniq.16167.111 _uniq.16167.112 _uniq.16167.113) _uniq.16167.61 _uniq.16167.62 (Mem.storeInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) _uniq.16167.63 _uniq.16167.2757 (OfNat.ofNat.{0} Nat 8 (instOfNatNat 8)) (BitVec.toInt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64)) (UInt64.toBitVec _uniq.16167.98)))))
+info: Kraken/X64/Examples/Examples.lean:268:2: Already solved: (Int.toBytes 8 rax.toBitVec.toInt).length =
+  match Width.W64 with
+  | Width.W8 => 1
+  | Width.W16 => 2
+  | Width.W32 => 4
+  | Width.W64 => 8
+info: Kraken/X64/Examples/Examples.lean:268:2: kstep: keepGoing = true
+info: Kraken/X64/Examples/Examples.lean:268:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:336:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:336:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:336:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 0)))) ⋆
+    ?R)
+  ss✝.dmem
+info: Kraken/X64/Examples/Examples.lean:336:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:339:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:339:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:339:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 8)))) ⋆
+    ?R)
+  {
+      regs :=
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags,
+      dmem :=
+        Mem.storeInt mem
+          (BitVec.setWidth 64
+            (have base :=
+              (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  rdi.toNat).toInt;
+            have idx := 0;
+            BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  base +
+                BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  idx +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                (Int64.toInt 0)))
+          8 rax.toBitVec.toInt }.dmem
+info: Kraken/X64/Examples/Examples.lean:339:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:342:2: Found a spec lemma: load_sep
+info: Kraken/X64/Examples/Examples.lean:342:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:342:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 0)))) ⋆
+    ?R)
+  {
+      regs :=
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags,
+      dmem :=
+        (Mem.storeInt mem
+              (BitVec.setWidth 64
+                (have base :=
+                  (BitVec.ofNat
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      rdi.toNat).toInt;
+                have idx := 0;
+                BitVec.ofInt
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      base +
+                    BitVec.ofInt
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      idx +
+                  BitVec.ofInt
+                    (match address_size with
+                    | Width.W8 => 8
+                    | Width.W16 => 16
+                    | Width.W32 => 32
+                    | Width.W64 => 64)
+                    (Int64.toInt 0)))
+              8 rax.toBitVec.toInt).storeInt
+          (BitVec.setWidth 64
+            (have base :=
+              (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  rdi.toNat).toInt;
+            have idx := 0;
+            BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  base +
+                BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  idx +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                (Int64.toInt 8)))
+          8 rcx.toBitVec.toInt }.dmem
+info: Kraken/X64/Examples/Examples.lean:342:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:345:2: Found a spec lemma: load_sep
+info: Kraken/X64/Examples/Examples.lean:345:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:345:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 8)))) ⋆
+    ?R)
+  {
+      regs :=
+        have v := { toBitVec := BitVec.ofInt 64 (Int.ofBytes (Int.toBytes 8 rax.toBitVec.toInt)) };
+        { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := v, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags,
+      dmem :=
+        (Mem.storeInt mem
+              (BitVec.setWidth 64
+                (have base :=
+                  (BitVec.ofNat
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      rdi.toNat).toInt;
+                have idx := 0;
+                BitVec.ofInt
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      base +
+                    BitVec.ofInt
+                      (match address_size with
+                      | Width.W8 => 8
+                      | Width.W16 => 16
+                      | Width.W32 => 32
+                      | Width.W64 => 64)
+                      idx +
+                  BitVec.ofInt
+                    (match address_size with
+                    | Width.W8 => 8
+                    | Width.W16 => 16
+                    | Width.W32 => 32
+                    | Width.W64 => 64)
+                    (Int64.toInt 0)))
+              8 rax.toBitVec.toInt).storeInt
+          (BitVec.setWidth 64
+            (have base :=
+              (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  rdi.toNat).toInt;
+            have idx := 0;
+            BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  base +
+                BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  idx +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                (Int64.toInt 8)))
+          8 rcx.toBitVec.toInt }.dmem
+info: Kraken/X64/Examples/Examples.lean:345:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:348:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:375:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:375:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:375:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx :=
+            (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  r15.toNat).toInt *
+              ↑8;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 0)))) ⋆
+    ?R)
+  {
+      regs :=
+        have v := OfNat.ofNat 42;
+        { rax := v, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem
+info: Kraken/X64/Examples/Examples.lean:375:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:378:2: Found a spec lemma: load_sep
+info: Kraken/X64/Examples/Examples.lean:378:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:378:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdi.toNat).toInt;
+          have idx :=
+            (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  r15.toNat).toInt *
+              ↑8;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 0)))) ⋆
+    ?R)
+  {
+      regs :=
+        have v := OfNat.ofNat 0;
+        { rax := v, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags,
+      dmem :=
+        Mem.storeInt mem
+          (BitVec.setWidth 64
+            (have base :=
+              (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  rdi.toNat).toInt;
+            have idx :=
+              (BitVec.ofNat
+                    (match address_size with
+                    | Width.W8 => 8
+                    | Width.W16 => 16
+                    | Width.W32 => 32
+                    | Width.W64 => 64)
+                    r15.toNat).toInt *
+                ↑8;
+            BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  base +
+                BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  idx +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                (Int64.toInt 0)))
+          8 42 }.dmem
+info: Kraken/X64/Examples/Examples.lean:378:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:381:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:404:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:404:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:404:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdx.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 136)))) ⋆
+    ?R)
+  {
+      regs :=
+        have v := OfNat.ofNat 42;
+        { rax := v, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+          r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags, dmem := mem }.dmem
+info: Kraken/X64/Examples/Examples.lean:404:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:407:2: Found a spec lemma: load_sep
+info: Kraken/X64/Examples/Examples.lean:407:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:407:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rdx.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              (Int64.toInt 136)))) ⋆
+    ?R)
+  {
+      regs :=
+        have v := OfNat.ofNat 100;
+        { rax := OfNat.ofNat 42, rbx := rbx, rcx := v, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp,
+          r8 := r8, r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+      zmms := zmms, status := flags,
+      dmem :=
+        Mem.storeInt mem
+          (BitVec.setWidth 64
+            (have base :=
+              (BitVec.ofNat
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  rdx.toNat).toInt;
+            have idx := 0;
+            BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  base +
+                BitVec.ofInt
+                  (match address_size with
+                  | Width.W8 => 8
+                  | Width.W16 => 16
+                  | Width.W32 => 32
+                  | Width.W64 => 64)
+                  idx +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                (Int64.toInt 136)))
+          8 42 }.dmem
+info: Kraken/X64/Examples/Examples.lean:407:2: END KSTEP: 4 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:410:2: END KSTEP: 0 sub-goals left
+info: Kraken/X64/Examples/Examples.lean:464:2: Found a spec lemma: store_sep
+info: Kraken/X64/Examples/Examples.lean:464:2: 4 subgoals generated
+info: Kraken/X64/Examples/Examples.lean:464:2: Found sep goal: (Eq
+      (List.At ?bs
+        (BitVec.setWidth 64
+          (have base :=
+            (BitVec.ofNat
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                rsp.toNat).toInt;
+          have idx := 0;
+          BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                base +
+              BitVec.ofInt
+                (match address_size with
+                | Width.W8 => 8
+                | Width.W16 => 16
+                | Width.W32 => 32
+                | Width.W64 => 64)
+                idx +
+            BitVec.ofInt
+              (match address_size with
+              | Width.W8 => 8
+              | Width.W16 => 16
+              | Width.W32 => 32
+              | Width.W64 => 64)
+              ((-Int64.toInt 8).bmod 18446744073709551616)))) ⋆
+    ?R)
+  ss✝.dmem
+info: Kraken/X64/Examples/Examples.lean:464:2: END KSTEP: 4 sub-goals left
+warning: Kraken/X64/Examples/Examples.lean:463:2: declaration uses `sorry`
+✔ [40/41] Built Kraken (704ms)
+Build completed successfully (41 jobs).
