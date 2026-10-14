@@ -1,0 +1,24 @@
+{
+  "label": "miri-tree",
+  "argv": [
+    "@RUST_TOOLCHAIN@/bin/miri",
+    "--sysroot",
+    "@CAPTURE@/miri-sysroot",
+    "-Zmiri-tree-borrows",
+    "@CAPTURE@/cases/enum_pair_invalid_two.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs/enum_pair_invalid_two",
+  "returncode": 1,
+  "seconds": 0.053253417000000025,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "8465e7f509726a60bd8f3c64a976a55b79f6e9900e18356e9b370655c8934e82",
+  "native_subject_execution": false
+}

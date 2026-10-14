@@ -1,0 +1,28 @@
+{
+  "name": "minimize-sysroot",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize"
+  ],
+  "cwd": "@CAPTURE@",
+  "returncode": 0,
+  "seconds": 11.933238792,
+  "limit": null,
+  "panic_or_assertion": false,
+  "task_bytes": 434757819,
+  "peak_task_bytes": 428072573,
+  "env": {
+    "RUSTUP_HOME": "@TASK@/work/execution/toolchains/rustup",
+    "RUSTUP_TOOLCHAIN": "nightly-2026-05-01",
+    "CARGO_HOME": "@CAPTURE@/cargo-home",
+    "CARGO_TARGET_DIR": "@CAPTURE@/target",
+    "RUSTC": "@RUST_TOOLCHAIN@/bin/rustc",
+    "MINIRUST_SYSROOT": "@CAPTURE@/minimize-sysroot",
+    "MIRI_SYSROOT": "@CAPTURE@/miri-sysroot",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "DYLD_LIBRARY_PATH": "@RUST_TOOLCHAIN@/lib"
+  },
+  "log": "logs/minimize-sysroot.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

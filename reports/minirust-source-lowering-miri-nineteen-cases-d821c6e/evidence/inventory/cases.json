@@ -1,0 +1,155 @@
+[
+  {
+    "name": "smoke",
+    "path": "cases/smoke.rs",
+    "sha256": "a7f87990019385c2c8d861563a9f556cb97024d39b98dfedb0f535c1aa315279",
+    "origin": "owned",
+    "intent": "valid source baseline",
+    "expected_miri": "success"
+  },
+  {
+    "name": "union_wide_one_field",
+    "path": "cases/union_wide_one_field.rs",
+    "sha256": "04b5b028957da292ed7f3a662e3c7b4cd02b4f6951566fb30cd8c74292d76fc0",
+    "origin": "owned",
+    "intent": "valid wide raw pointer union copy; one-field chunks candidate versus full-size union field control",
+    "expected_miri": "success"
+  },
+  {
+    "name": "union_wide_two_word_control",
+    "path": "cases/union_wide_two_word_control.rs",
+    "sha256": "5215d4828f6ec1d9da159cf9fc9f3c704da93d07e819a1be373631b71e8a2b21",
+    "origin": "owned",
+    "intent": "valid wide raw pointer union copy; one-field chunks candidate versus full-size union field control",
+    "expected_miri": "success"
+  },
+  {
+    "name": "wide_pointer_control",
+    "path": "cases/wide_pointer_control.rs",
+    "sha256": "f8a065f483758d43f7540a6eab7db926b619fb00f9555b39e5a236f97b55e1d0",
+    "origin": "owned",
+    "intent": "valid direct wide raw pointer copy control",
+    "expected_miri": "success"
+  },
+  {
+    "name": "enum_single_zero",
+    "path": "cases/enum_single_zero.rs",
+    "sha256": "765c0d37665748d0486123b50d5f82f8c420af016a10115c063e1354abc2b6eb",
+    "origin": "owned",
+    "intent": "fixed tag validation for actual source enum; invalid cases interpreter-only",
+    "expected_miri": "success"
+  },
+  {
+    "name": "enum_single_invalid_one",
+    "path": "cases/enum_single_invalid_one.rs",
+    "sha256": "082e1fb5fc34f024ae4c345e0689400175612898cb00eafa45502f393cc4cdd1",
+    "origin": "owned",
+    "intent": "fixed tag validation for actual source enum; invalid cases interpreter-only",
+    "expected_miri": "undefined-behavior"
+  },
+  {
+    "name": "enum_pair_one",
+    "path": "cases/enum_pair_one.rs",
+    "sha256": "3a02630a271a7cfa6149438a0bf6f64626626c996d89def3e718f2e45a69e65a",
+    "origin": "owned",
+    "intent": "fixed tag validation for actual source enum; invalid cases interpreter-only",
+    "expected_miri": "success"
+  },
+  {
+    "name": "enum_pair_invalid_two",
+    "path": "cases/enum_pair_invalid_two.rs",
+    "sha256": "55a3db8ea41f3f058860d8c52e1d7218431c9df5c1fd02839ebebc3630350060",
+    "origin": "owned",
+    "intent": "fixed tag validation for actual source enum; invalid cases interpreter-only",
+    "expected_miri": "undefined-behavior"
+  },
+  {
+    "name": "library_split_cell",
+    "path": "cases/library_split_cell.rs",
+    "sha256": "64f415ef81d605e3ea5657cd97c4a56be09b724e5f50946938efcef0202ec865",
+    "origin": "owned",
+    "intent": "safe std slice split and interior mutation through shared reference",
+    "expected_miri": "success"
+  },
+  {
+    "name": "library_box",
+    "path": "cases/library_box.rs",
+    "sha256": "84783ec91b3c51c60b796e21d86508ac85f2a3eacf4ca50d91773a6da93e299a",
+    "origin": "owned",
+    "intent": "safe real allocation/library/drop path, no allocator model substitution",
+    "expected_miri": "success"
+  },
+  {
+    "name": "library_drop_count",
+    "path": "cases/library_drop_count.rs",
+    "sha256": "84038a1ff17e82b88f519202409fdbb519d3e8e1fe3f153432fa743473faaf6b",
+    "origin": "owned",
+    "intent": "safe real Drop elaboration and Cell observable",
+    "expected_miri": "success"
+  },
+  {
+    "name": "library_drop_unwind",
+    "path": "cases/library_drop_unwind.rs",
+    "sha256": "619f1394d545cebe7309bc5d066f567853fe68905ec8a5bfdeee5150e171815c",
+    "origin": "owned",
+    "intent": "safe caught subject panic in destructor; outer guard must be dropped",
+    "expected_miri": "success",
+    "expected_subject_panic": "OWNED_EXPECTED_DROP_UNWIND"
+  },
+  {
+    "name": "upstream_pass_enum_direct_tag",
+    "path": "cases/upstream_pass_enum_direct_tag.rs",
+    "sha256": "f6e7dea4f6a869e81cfed6e7ae80f8d9e5fc2910f1591d92dc8bff2e2c9404f7",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/enum_direct_tag.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": false
+  },
+  {
+    "name": "upstream_pass_enum_niche_tag",
+    "path": "cases/upstream_pass_enum_niche_tag.rs",
+    "sha256": "96372276b1ae27bd59dbf799ed42df0d10120eb7fb5032f63ccba39e5dcb36dd",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/enum_niche_tag.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": false
+  },
+  {
+    "name": "upstream_pass_slice",
+    "path": "cases/upstream_pass_slice.rs",
+    "sha256": "f4a72bab925364400d5607cd8f73864a4a0be9b464c0d880cf1ef01d0a534e61",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/slice.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": false
+  },
+  {
+    "name": "upstream_pass_drop",
+    "path": "cases/upstream_pass_drop.rs",
+    "sha256": "16c74a3131bf0334e9233812c017e1da7c64baec2f9bab449acca5a822b34137",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/drop.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": true
+  },
+  {
+    "name": "upstream_pass_tree_borrows_cell_inside_struct",
+    "path": "cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+    "sha256": "258ee141b26733d8a469fc201899baabf18ebfca6e799364843be87ab31babb9",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/tree_borrows/cell_inside_struct.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": false
+  },
+  {
+    "name": "upstream_ub_inv_bool",
+    "path": "cases/upstream_ub_inv_bool.rs",
+    "sha256": "cf7c1f198ede8653db4f24a18a2807896dadb85ca04fbe08fbdc065df522f489",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/ub/inv_bool.rs",
+    "expected_miri": "undefined-behavior",
+    "requires_intrinsics": false
+  },
+  {
+    "name": "upstream_ub_enum_ub_discriminant",
+    "path": "cases/upstream_ub_enum_ub_discriminant.rs",
+    "sha256": "825daf8dc3b049d170960a865199b3291295544bc2838ded5d944f3d2002dee9",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/ub/enum_ub_discriminant.rs",
+    "expected_miri": "undefined-behavior",
+    "requires_intrinsics": false
+  }
+]

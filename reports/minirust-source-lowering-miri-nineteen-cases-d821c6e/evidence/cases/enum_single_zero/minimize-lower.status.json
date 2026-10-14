@@ -1,0 +1,22 @@
+{
+  "label": "minimize-lower",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize",
+    "--minimize-dump=json",
+    "@CAPTURE@/cases/enum_single_zero.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs/enum_single_zero",
+  "returncode": 0,
+  "seconds": 0.09023904199999999,
+  "classification": "success",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "3b826bb5b9b092e54e9529e0c88b97db451cf085bc47fd77782dadcfe687cf99",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_subject_execution": false
+}

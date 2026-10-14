@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "minirust/source-lowering",
+    "miri/tree-borrows",
+    "rust/representation",
+    "rust/drop",
+    "verification/operational-failures"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust and minimize",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Specr associated with generated runtime source",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348"
+      }
+    },
+    {
+      "name": "Pinned Rust compiler and Miri",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "toolchain": "nightly-2026-05-01",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Actual emitted one-field union program",
+      "identity": {
+        "artifact": "evidence/cases/union_wide_one_field/minirust.json",
+        "sha256": "777d5f58831da2911bf7c9c3265f5edbd18a8af649f9a96d4e680458ceae3327"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

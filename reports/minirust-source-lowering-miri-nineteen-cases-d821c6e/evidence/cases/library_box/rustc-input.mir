@@ -1,0 +1,86 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn main() -> () {
+    let mut _0: ();
+    let mut _1: std::boxed::Box<u32>;
+    let _2: ();
+    let mut _3: bool;
+    let mut _4: u32;
+    let mut _5: !;
+    let _6: ();
+    let mut _7: std::boxed::Box<u32>;
+    let mut _8: bool;
+    let mut _9: *const u32;
+    let mut _10: *const u32;
+    let mut _11: *const u32;
+    scope 1 {
+        debug b => _1;
+    }
+
+    bb0: {
+        _8 = const false;
+        StorageLive(_1);
+        _8 = const true;
+        _1 = Box::<u32>::new(const 41_u32) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        Retag(_1);
+        _9 = copy ((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);
+        _10 = copy ((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);
+        (*_9) = Add(copy (*_10), const 1_u32);
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _11 = copy ((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);
+        _4 = copy (*_11);
+        _3 = Eq(move _4, const 42_u32);
+        switchInt(move _3) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        _2 = const ();
+        StorageDead(_3);
+        StorageDead(_2);
+        StorageLive(_6);
+        StorageLive(_7);
+        _8 = const false;
+        _7 = move _1;
+        Retag(_7);
+        _6 = std::mem::drop::<Box<u32>>(move _7) -> [return: bb4, unwind: bb7];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        StorageLive(_5);
+        _5 = core::panicking::panic(const "assertion failed: *b == 42") -> bb7;
+    }
+
+    bb4: {
+        StorageDead(_7);
+        StorageDead(_6);
+        _0 = const ();
+        _8 = const false;
+        StorageDead(_1);
+        return;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+
+    bb6 (cleanup): {
+        drop(_1) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        switchInt(copy _8) -> [0: bb5, otherwise: bb6];
+    }
+}
+
+alloc1 (size: 26, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 2a 62 20 3d 3d 20 34 32                   │ : *b == 42
+}

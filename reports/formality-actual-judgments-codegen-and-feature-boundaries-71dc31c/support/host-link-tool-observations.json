@@ -1,0 +1,40 @@
+{
+  "observed_after_build": true,
+  "interpretation": "Supplementary host-tool observation, not full transitive build or OS trust closure. Cargo used default environment selectors; exact Rust compiler/cargo/driver and dependency bytes are separately bound.",
+  "selector_environment": {
+    "CC": null,
+    "CXX": null,
+    "AR": null,
+    "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+    "MACOSX_DEPLOYMENT_TARGET": null
+  },
+  "tools": [
+    {
+      "name": "cc",
+      "path": "/usr/bin/cc",
+      "resolved_path": "/usr/bin/cc",
+      "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+      "exit": 0,
+      "stdout": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+      "stderr": ""
+    },
+    {
+      "name": "ar",
+      "path": "/usr/bin/ar",
+      "resolved_path": "/usr/bin/ar",
+      "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "usage:  ar -d [-TLsv] archive file ...\n\tar -m [-TLsv] archive file ...\n\tar -m [-abiTLsv] position archive file ...\n\tar -p [-TLsv] archive [file ...]\n\tar -q [-cTLsv] archive file ...\n\tar -r [-cuTLsv] archive file ...\n\tar -r [-abciuTLsv] position archive file ...\n\tar -t [-TLsv] archive [file ...]\n\tar -x [-ouTLsv] archive [file ...]\n"
+    },
+    {
+      "name": "ld",
+      "path": "/usr/bin/ld",
+      "resolved_path": "/usr/bin/ld",
+      "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "@(#)PROGRAM:ld PROJECT:ld-27037.1\nBUILD 21:17:51 Aug 25 2026\nconfigured to support archs: armv6 armv7 armv7s arm64 arm64e arm64_32 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em armv8m.main armv8.1m.main\nLTO support using: LLVM version 21.0.0 (static support for 30, runtime is 30)\nTAPI support using: Apple TAPI version 21.0.0 (tapi-2100.3.8.1)\n"
+    }
+  ]
+}

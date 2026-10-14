@@ -1,0 +1,75 @@
+support/Consumer.lean:77:6: error: Type mismatch: After simplification, term
+  Nat.toBytes_ofBytes 4 (entryBytes raw) (Decidable.byContradiction fun a => parse_sound._proof_1_3 raw he_len a)
+ has type
+  Nat.toBytes 4 (Nat.ofBytes (entryBytes raw)) = List.take 4 (entryBytes raw)
+but is expected to have type
+  Nat.toBytes 4 (Nat.ofBytes (entryBytes raw)) = entryBytes raw
+support/Consumer.lean:79:6: error: Type mismatch: After simplification, term
+  Nat.toBytes_ofBytes 8 (pcBytes raw) (Decidable.byContradiction fun a => parse_sound._proof_1_4 raw hp_len a)
+ has type
+  Nat.toBytes 8 (Nat.ofBytes (pcBytes raw)) = List.take 8 (pcBytes raw)
+but is expected to have type
+  Nat.toBytes 8 (Nat.ofBytes (pcBytes raw)) = pcBytes raw
+support/Consumer.lean:85:66: error: Tactic `rfl` failed: The left-hand side
+  List.take 7 raw ++ (List.take 4 (List.drop 7 raw) ++ List.drop 4 (List.drop 7 raw))
+is not definitionally equal to the right-hand side
+  List.take 7 raw ++ (List.take 4 (List.take 4 (List.drop 7 raw) ++ List.drop 4 (List.drop 7 raw)) ++ List.drop 11 raw)
+
+raw : List UInt8
+hl : raw.length = 19
+hh : List.take 7 raw = header
+hpc : Nat.ofBytes (pcBytes raw) < 2 ^ 63
+h :
+  some { entry := Nat.ofBytes (entryBytes raw), pc := Nat.ofBytes (pcBytes raw) } =
+    some { entry := Nat.ofBytes (entryBytes raw), pc := Nat.ofBytes (pcBytes raw) }
+he_len : (entryBytes raw).length = 4
+hp_len : (pcBytes raw).length = 8
+he_bound : Nat.ofBytes (entryBytes raw) < 256 ^ 4
+he_inverse : Nat.toBytes 4 (Nat.ofBytes (entryBytes raw)) = entryBytes raw
+hp_inverse : Nat.toBytes 8 (Nat.ofBytes (pcBytes raw)) = pcBytes raw
+hsplit : List.take 4 (List.drop 7 raw) ++ List.drop 4 (List.drop 7 raw) = List.drop 7 raw
+⊢ List.take 7 raw ++ (List.take 4 (List.drop 7 raw) ++ List.drop 4 (List.drop 7 raw)) =
+    List.take 7 raw ++
+      (List.take 4 (List.take 4 (List.drop 7 raw) ++ List.drop 4 (List.drop 7 raw)) ++ List.drop 11 raw)
+support/Consumer.lean:118:4: error: Tactic `split` failed: Could not split an `if` or `match` expression in the type
+  (do
+      let f ← some f
+      if
+            candidate = r.image ∧
+              Supported r ∧ f.entry = r.entry ∧ f.pc = r.pc.toInt.toNat ∧ r.entry + 8 ≤ candidate.length then
+          certificate r.pc (slice candidate r.entry)
+        else none) =
+    some e
+of `h`
+
+Hint: Use `set_option trace.split.failure true` to display additional diagnostic information
+
+case some
+r : Request
+candidate raw : List UInt8
+e : Executable
+f : Fields
+hp : parseRaw raw = some f
+h :
+  (do
+      let f ← some f
+      if
+            candidate = r.image ∧
+              Supported r ∧ f.entry = r.entry ∧ f.pc = r.pc.toInt.toNat ∧ r.entry + 8 ≤ candidate.length then
+          certificate r.pc (slice candidate r.entry)
+        else none) =
+    some e
+⊢ candidate = r.image ∧
+    Supported r ∧
+      r.entry + 8 ≤ r.image.length ∧
+        LayoutOK r.pc ∧
+          slice candidate r.entry = canonicalBytes ∧
+            e = executable r.pc 0 ∧
+              ∃ f, raw = serialize f ∧ f.entry = r.entry ∧ f.pc = r.pc.toInt.toNat ∧ f.entry < 2 ^ 32 ∧ f.pc < 2 ^ 63
+support/Consumer.lean:117:19: warning: This simp argument is unused:
+  Option.bind_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hp] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

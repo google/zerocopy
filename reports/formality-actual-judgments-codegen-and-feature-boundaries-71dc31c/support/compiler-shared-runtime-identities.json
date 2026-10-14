@@ -1,0 +1,27 @@
+[
+  {
+    "name": "librustc-nightly_rt.asan.dylib",
+    "bytes": 4503168,
+    "sha256": "ba57a0dcb89c6403b4c3d6e4d2ebfd5ec383f08f6d7fbb81a595e0c9907ff21b"
+  },
+  {
+    "name": "librustc-nightly_rt.lsan.dylib",
+    "bytes": 1844016,
+    "sha256": "bb61b3b4dbf90c4067b1f1e1dc8e597c1cc9b0c202cdbad3e21665f5f9fe9f5c"
+  },
+  {
+    "name": "librustc-nightly_rt.rtsan.dylib",
+    "bytes": 1543024,
+    "sha256": "60449023d0be4ff91d00ffdf827385fbcb7b3d0255f7081c1a7eb6a1c3038888"
+  },
+  {
+    "name": "librustc-nightly_rt.tsan.dylib",
+    "bytes": 3852496,
+    "sha256": "70bdfdb75a82d2c86959c04a319302735e5b64f67a7bb9a598d2f45faf1eb9f2"
+  },
+  {
+    "name": "librustc_driver-f891a47ca42f363d.dylib",
+    "bytes": 204014952,
+    "sha256": "17dc0214d095de51b06dac23d61473ad6b1d0431893527c8a26a5debc07d5138"
+  }
+]

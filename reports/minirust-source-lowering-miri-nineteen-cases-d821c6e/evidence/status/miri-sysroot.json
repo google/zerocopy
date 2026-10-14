@@ -1,0 +1,32 @@
+{
+  "name": "miri-sysroot",
+  "argv": [
+    "@RUST_TOOLCHAIN@/bin/cargo",
+    "miri",
+    "setup",
+    "--target",
+    "aarch64-apple-darwin"
+  ],
+  "cwd": "@CAPTURE@",
+  "returncode": 0,
+  "seconds": 10.867904459,
+  "limit": null,
+  "panic_or_assertion": false,
+  "task_bytes": 637793637,
+  "peak_task_bytes": 640701007,
+  "env": {
+    "RUSTUP_HOME": "@TASK@/work/execution/toolchains/rustup",
+    "RUSTUP_TOOLCHAIN": "nightly-2026-05-01",
+    "CARGO_HOME": "@CAPTURE@/cargo-home",
+    "CARGO_TARGET_DIR": "@CAPTURE@/target",
+    "RUSTC": "@RUST_TOOLCHAIN@/bin/rustc",
+    "MINIRUST_SYSROOT": "@CAPTURE@/minimize-sysroot",
+    "MIRI_SYSROOT": "@CAPTURE@/miri-sysroot",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "DYLD_LIBRARY_PATH": "@RUST_TOOLCHAIN@/lib"
+  },
+  "log": "logs/miri-sysroot.log",
+  "log_sha256": "d106ac2a322dd27493b6b604b8dd5b9be5976aa340d069753740895b94ac923e"
+}

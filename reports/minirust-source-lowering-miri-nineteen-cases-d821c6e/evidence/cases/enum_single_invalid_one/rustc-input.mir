@@ -1,0 +1,60 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const E::Only::{constant#0}: u8 = const 0_u8;
+
+fn <impl at @CAPTURE@/cases/enum_single_invalid_one.rs:3:10: 3:15>::clone(_1: &E) -> E {
+    debug self => _1;
+    let mut _0: E;
+
+    bb0: {
+        Retag([fn entry] _1);
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: u8;
+    let mut _3: *const u8;
+    let mut _5: *const E;
+    scope 1 {
+        debug byte => _1;
+        let _2: *const E;
+        scope 2 {
+            debug pointer => _2;
+            let _4: E;
+            scope 3 {
+                debug value => _4;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const 1_u8;
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = &raw const _1;
+        _2 = std::ptr::const_ptr::<impl *const u8>::cast::<E>(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _2;
+        _4 = std::ptr::const_ptr::<impl *const E>::read(move _5) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_5);
+        PlaceMention(_4);
+        _0 = ();
+        StorageDead(_4);
+        StorageDead(_2);
+        StorageDead(_1);
+        return;
+    }
+}

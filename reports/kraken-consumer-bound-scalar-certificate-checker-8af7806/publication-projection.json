@@ -1,0 +1,36 @@
+{
+  "package": "kraken-consumer-bound-scalar-certificate-checker-8af7806",
+  "public_files": [
+    "REPORT.json",
+    "REPORT.md",
+    "artifact-data.json",
+    "artifacts/read-byte-a64.bin",
+    "artifacts/read-byte-frame.cert",
+    "coverage.json",
+    "development-status.json",
+    "logs/Adapter.log",
+    "logs/Consumer.log",
+    "logs/adapter-dependency.log",
+    "logs/consumer-attempt-01.log",
+    "logs/consumer-attempt-02.log",
+    "logs/consumer-attempt-03.log",
+    "logs/consumer-attempt-04.log",
+    "logs/consumer-attempt-05.log",
+    "logs/replay-commands.json",
+    "logs/replay-driver.log",
+    "logs/replay-results.json",
+    "logs/version.log",
+    "source-evidence.json",
+    "support/Adapter.lean",
+    "support/Consumer.lean",
+    "support/replay.py",
+    "validation.json"
+  ],
+  "exclude_from_public": [
+    "support/*.olean (generated proof objects)",
+    "generated support caches",
+    "FREEZE.json (raw freeze receipt)"
+  ],
+  "subject": "Pure Lean all-input certificate/checker binding and actual conditional Kraken claim; no compiled consumer or file-loader adequacy",
+  "milestone_policy": "Parent owns independent review, publication and all checkbox decisions."
+}

@@ -1,0 +1,16 @@
+{
+  "label": "minirun-basic",
+  "argv": [
+    "@CAPTURE@/target/debug/minirun",
+    "@CAPTURE@/runs/enum_pair_invalid_two/minirust.json"
+  ],
+  "cwd": "@CAPTURE@/runs/enum_pair_invalid_two",
+  "returncode": 101,
+  "seconds": 0.006431375000000017,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "4bb6601d82293437aee7332aa1803de08f1d4b5684ed7f908891a11872cf8f73",
+  "native_subject_execution": false
+}

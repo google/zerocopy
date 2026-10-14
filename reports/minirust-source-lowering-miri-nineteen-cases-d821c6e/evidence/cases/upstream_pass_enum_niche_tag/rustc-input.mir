@@ -1,0 +1,1032 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn convert_option_bool(_1: Option<bool>) -> i8 {
+    debug b => _1;
+    let mut _0: i8;
+    let mut _2: isize;
+
+    bb0: {
+        PlaceMention(_1);
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb5, 1: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        switchInt(copy ((_1 as Some).0: bool)) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        _0 = const 1_i8;
+        goto -> bb6;
+    }
+
+    bb4: {
+        _0 = const 0_i8;
+        goto -> bb6;
+    }
+
+    bb5: {
+        _0 = const -1_i8;
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+fn convert_result_bool(_1: Result<bool, ()>) -> i8 {
+    debug r => _1;
+    let mut _0: i8;
+    let mut _2: isize;
+
+    bb0: {
+        PlaceMention(_1);
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb2, 1: bb5, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        switchInt(copy ((_1 as Ok).0: bool)) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        _0 = const 1_i8;
+        goto -> bb6;
+    }
+
+    bb4: {
+        _0 = const 0_i8;
+        goto -> bb6;
+    }
+
+    bb5: {
+        _0 = const -1_i8;
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+fn convert_option_ref(_1: Option<&u8>) -> u8 {
+    debug o => _1;
+    let mut _0: u8;
+    let mut _2: isize;
+    let _3: &u8;
+    scope 1 {
+        debug v => _3;
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        PlaceMention(_1);
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb2, 1: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = const 0_u8;
+        goto -> bb4;
+    }
+
+    bb3: {
+        StorageLive(_3);
+        _3 = copy ((_1 as Some).0: &u8);
+        Retag(_3);
+        _0 = copy (*_3);
+        StorageDead(_3);
+        goto -> bb4;
+    }
+
+    bb4: {
+        return;
+    }
+}
+
+fn convert_option_nz(_1: Option<NonZero<i32>>) -> i32 {
+    debug o => _1;
+    let mut _0: i32;
+    let mut _2: isize;
+    let _3: std::num::NonZero<i32>;
+    let mut _4: std::num::NonZero<i32>;
+    scope 1 {
+        debug v => _3;
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        PlaceMention(_1);
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb2, 1: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = const 0_i32;
+        goto -> bb5;
+    }
+
+    bb3: {
+        StorageLive(_3);
+        _3 = copy ((_1 as Some).0: std::num::NonZero<i32>);
+        Retag(_3);
+        StorageLive(_4);
+        _4 = copy _3;
+        Retag(_4);
+        _0 = NonZero::<i32>::get(move _4) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_4);
+        StorageDead(_3);
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+}
+
+const Inner::V1::{constant#0}: i16 = const -32767_i16;
+
+const Inner::V2::{constant#0}: i16 = const i16::MIN;
+
+fn convert_outer(_1: Outer) -> u8 {
+    debug o => _1;
+    let mut _0: u8;
+    let mut _2: i16;
+    let mut _3: isize;
+    let _4: u32;
+    let _5: u16;
+    let _6: u32;
+    let _7: u16;
+    scope 1 {
+        debug _x => _4;
+        debug _y => _5;
+    }
+    scope 2 {
+        debug _x => _6;
+        debug _y => _7;
+    }
+
+    bb0: {
+        PlaceMention(_1);
+        _3 = discriminant(_1);
+        switchInt(move _3) -> [0: bb2, 1: bb4, 2: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _2 = discriminant(((_1 as V1).1: Inner));
+        switchInt(move _2) -> [32769: bb6, 32768: bb5, otherwise: bb1];
+    }
+
+    bb3: {
+        _0 = const 3_u8;
+        goto -> bb7;
+    }
+
+    bb4: {
+        _0 = const 2_u8;
+        goto -> bb7;
+    }
+
+    bb5: {
+        StorageLive(_6);
+        _6 = copy ((_1 as V1).0: u32);
+        StorageLive(_7);
+        _7 = copy ((_1 as V1).2: u16);
+        _0 = const 1_u8;
+        StorageDead(_7);
+        StorageDead(_6);
+        goto -> bb7;
+    }
+
+    bb6: {
+        StorageLive(_4);
+        _4 = copy ((_1 as V1).0: u32);
+        StorageLive(_5);
+        _5 = copy ((_1 as V1).2: u16);
+        _0 = const 0_u8;
+        StorageDead(_5);
+        StorageDead(_4);
+        goto -> bb7;
+    }
+
+    bb7: {
+        return;
+    }
+}
+
+fn convert_option_weird_niche_align(_1: Option<WeirdNicheAlign>) -> u8 {
+    debug instance => _1;
+    let mut _0: u8;
+    let mut _2: bool;
+    let mut _3: &std::option::Option<WeirdNicheAlign>;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = &_1;
+        _2 = Option::<WeirdNicheAlign>::is_some(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(move _2) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        _0 = const 1_u8;
+        goto -> bb4;
+    }
+
+    bb3: {
+        StorageDead(_3);
+        _0 = const 0_u8;
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: bool;
+    let mut _3: i8;
+    let mut _4: std::option::Option<bool>;
+    let mut _5: !;
+    let _6: ();
+    let mut _7: bool;
+    let mut _8: i8;
+    let mut _9: std::option::Option<bool>;
+    let mut _10: !;
+    let _11: ();
+    let mut _12: bool;
+    let mut _13: i8;
+    let mut _14: std::option::Option<bool>;
+    let mut _15: !;
+    let _16: ();
+    let mut _17: bool;
+    let mut _18: i8;
+    let mut _19: std::result::Result<bool, ()>;
+    let mut _20: !;
+    let _21: ();
+    let mut _22: bool;
+    let mut _23: i8;
+    let mut _24: std::result::Result<bool, ()>;
+    let mut _25: !;
+    let _26: ();
+    let mut _27: bool;
+    let mut _28: i8;
+    let mut _29: std::result::Result<bool, ()>;
+    let mut _30: ();
+    let mut _31: !;
+    let _32: ();
+    let mut _33: bool;
+    let mut _34: u8;
+    let mut _35: std::option::Option<&u8>;
+    let mut _36: &u8;
+    let _37: &u8;
+    let _38: u8;
+    let mut _39: !;
+    let _40: ();
+    let mut _41: bool;
+    let mut _42: u8;
+    let mut _43: std::option::Option<&u8>;
+    let mut _44: !;
+    let _45: ();
+    let mut _46: bool;
+    let mut _47: i32;
+    let mut _48: std::option::Option<std::num::NonZero<i32>>;
+    let mut _49: !;
+    let _50: ();
+    let mut _51: bool;
+    let mut _52: i32;
+    let mut _53: std::option::Option<std::num::NonZero<i32>>;
+    let mut _54: !;
+    let _55: ();
+    let mut _56: bool;
+    let mut _57: i32;
+    let mut _58: std::option::Option<std::num::NonZero<i32>>;
+    let mut _59: !;
+    let _60: ();
+    let mut _61: bool;
+    let mut _62: i32;
+    let mut _63: std::option::Option<std::num::NonZero<i32>>;
+    let mut _64: !;
+    let _65: ();
+    let mut _66: bool;
+    let mut _67: u8;
+    let mut _68: Outer;
+    let mut _69: Inner;
+    let mut _70: !;
+    let _71: ();
+    let mut _72: bool;
+    let mut _73: u8;
+    let mut _74: Outer;
+    let mut _75: Inner;
+    let mut _76: !;
+    let _77: ();
+    let mut _78: bool;
+    let mut _79: u8;
+    let mut _80: Outer;
+    let mut _81: !;
+    let _82: ();
+    let mut _83: bool;
+    let mut _84: u8;
+    let mut _85: Outer;
+    let mut _86: !;
+    let _87: ();
+    let mut _88: bool;
+    let mut _89: u8;
+    let mut _90: std::option::Option<WeirdNicheAlign>;
+    let mut _91: !;
+    let _92: ();
+    let mut _93: bool;
+    let mut _94: u8;
+    let mut _95: std::option::Option<WeirdNicheAlign>;
+    let mut _96: WeirdNicheAlign;
+    let mut _97: Inner;
+    let mut _98: !;
+    let mut _99: &u8;
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = Option::<bool>::Some(const true);
+        _3 = convert_option_bool(move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_4);
+        _2 = Eq(move _3, const 1_i8);
+        switchInt(move _2) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        _1 = const ();
+        StorageDead(_2);
+        StorageDead(_1);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = Option::<bool>::Some(const false);
+        _8 = convert_option_bool(move _9) -> [return: bb4, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_3);
+        StorageLive(_5);
+        _5 = core::panicking::panic(const "assertion failed: convert_option_bool(Some(true)) == 1") -> unwind continue;
+    }
+
+    bb4: {
+        StorageDead(_9);
+        _7 = Eq(move _8, const 0_i8);
+        switchInt(move _7) -> [0: bb6, otherwise: bb5];
+    }
+
+    bb5: {
+        StorageDead(_8);
+        _6 = const ();
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_11);
+        StorageLive(_12);
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = Option::<bool>::None;
+        _13 = convert_option_bool(move _14) -> [return: bb7, unwind continue];
+    }
+
+    bb6: {
+        StorageDead(_8);
+        StorageLive(_10);
+        _10 = core::panicking::panic(const "assertion failed: convert_option_bool(Some(false)) == 0") -> unwind continue;
+    }
+
+    bb7: {
+        StorageDead(_14);
+        _12 = Eq(move _13, const -1_i8);
+        switchInt(move _12) -> [0: bb9, otherwise: bb8];
+    }
+
+    bb8: {
+        StorageDead(_13);
+        _11 = const ();
+        StorageDead(_12);
+        StorageDead(_11);
+        StorageLive(_16);
+        StorageLive(_17);
+        StorageLive(_18);
+        StorageLive(_19);
+        _19 = Result::<bool, ()>::Ok(const true);
+        _18 = convert_result_bool(move _19) -> [return: bb10, unwind continue];
+    }
+
+    bb9: {
+        StorageDead(_13);
+        StorageLive(_15);
+        _15 = core::panicking::panic(const "assertion failed: convert_option_bool(None) == -1") -> unwind continue;
+    }
+
+    bb10: {
+        StorageDead(_19);
+        _17 = Eq(move _18, const 1_i8);
+        switchInt(move _17) -> [0: bb12, otherwise: bb11];
+    }
+
+    bb11: {
+        StorageDead(_18);
+        _16 = const ();
+        StorageDead(_17);
+        StorageDead(_16);
+        StorageLive(_21);
+        StorageLive(_22);
+        StorageLive(_23);
+        StorageLive(_24);
+        _24 = Result::<bool, ()>::Ok(const false);
+        _23 = convert_result_bool(move _24) -> [return: bb13, unwind continue];
+    }
+
+    bb12: {
+        StorageDead(_18);
+        StorageLive(_20);
+        _20 = core::panicking::panic(const "assertion failed: convert_result_bool(Ok(true)) == 1") -> unwind continue;
+    }
+
+    bb13: {
+        StorageDead(_24);
+        _22 = Eq(move _23, const 0_i8);
+        switchInt(move _22) -> [0: bb15, otherwise: bb14];
+    }
+
+    bb14: {
+        StorageDead(_23);
+        _21 = const ();
+        StorageDead(_22);
+        StorageDead(_21);
+        StorageLive(_26);
+        StorageLive(_27);
+        StorageLive(_28);
+        StorageLive(_29);
+        StorageLive(_30);
+        _30 = ();
+        _29 = Result::<bool, ()>::Err(move _30);
+        StorageDead(_30);
+        _28 = convert_result_bool(move _29) -> [return: bb16, unwind continue];
+    }
+
+    bb15: {
+        StorageDead(_23);
+        StorageLive(_25);
+        _25 = core::panicking::panic(const "assertion failed: convert_result_bool(Ok(false)) == 0") -> unwind continue;
+    }
+
+    bb16: {
+        StorageDead(_29);
+        _27 = Eq(move _28, const -1_i8);
+        switchInt(move _27) -> [0: bb18, otherwise: bb17];
+    }
+
+    bb17: {
+        StorageDead(_28);
+        _26 = const ();
+        StorageDead(_27);
+        StorageDead(_26);
+        StorageLive(_32);
+        StorageLive(_33);
+        StorageLive(_34);
+        StorageLive(_35);
+        StorageLive(_36);
+        StorageLive(_37);
+        _99 = const main::promoted[0];
+        Retag(_99);
+        _37 = &(*_99);
+        _36 = &(*_37);
+        _35 = Option::<&u8>::Some(move _36);
+        Retag(_35);
+        StorageDead(_36);
+        _34 = convert_option_ref(move _35) -> [return: bb19, unwind continue];
+    }
+
+    bb18: {
+        StorageDead(_28);
+        StorageLive(_31);
+        _31 = core::panicking::panic(const "assertion failed: convert_result_bool(Err(())) == -1") -> unwind continue;
+    }
+
+    bb19: {
+        StorageDead(_35);
+        _33 = Eq(move _34, const 42_u8);
+        switchInt(move _33) -> [0: bb21, otherwise: bb20];
+    }
+
+    bb20: {
+        StorageDead(_34);
+        StorageDead(_37);
+        _32 = const ();
+        StorageDead(_33);
+        StorageDead(_32);
+        StorageLive(_40);
+        StorageLive(_41);
+        StorageLive(_42);
+        StorageLive(_43);
+        _43 = Option::<&u8>::None;
+        Retag(_43);
+        _42 = convert_option_ref(move _43) -> [return: bb22, unwind continue];
+    }
+
+    bb21: {
+        StorageDead(_34);
+        StorageDead(_37);
+        StorageLive(_39);
+        _39 = core::panicking::panic(const "assertion failed: convert_option_ref(Some(&42)) == 42") -> unwind continue;
+    }
+
+    bb22: {
+        StorageDead(_43);
+        _41 = Eq(move _42, const 0_u8);
+        switchInt(move _41) -> [0: bb24, otherwise: bb23];
+    }
+
+    bb23: {
+        StorageDead(_42);
+        _40 = const ();
+        StorageDead(_41);
+        StorageDead(_40);
+        StorageLive(_45);
+        StorageLive(_46);
+        StorageLive(_47);
+        StorageLive(_48);
+        _48 = Option::<NonZero<i32>>::None;
+        Retag(_48);
+        _47 = convert_option_nz(move _48) -> [return: bb25, unwind continue];
+    }
+
+    bb24: {
+        StorageDead(_42);
+        StorageLive(_44);
+        _44 = core::panicking::panic(const "assertion failed: convert_option_ref(None) == 0") -> unwind continue;
+    }
+
+    bb25: {
+        StorageDead(_48);
+        _46 = Eq(move _47, const 0_i32);
+        switchInt(move _46) -> [0: bb27, otherwise: bb26];
+    }
+
+    bb26: {
+        StorageDead(_47);
+        _45 = const ();
+        StorageDead(_46);
+        StorageDead(_45);
+        StorageLive(_50);
+        StorageLive(_51);
+        StorageLive(_52);
+        StorageLive(_53);
+        _53 = NonZero::<i32>::new(const 0_i32) -> [return: bb28, unwind continue];
+    }
+
+    bb27: {
+        StorageDead(_47);
+        StorageLive(_49);
+        _49 = core::panicking::panic(const "assertion failed: convert_option_nz(None) == 0") -> unwind continue;
+    }
+
+    bb28: {
+        Retag(_53);
+        _52 = convert_option_nz(move _53) -> [return: bb29, unwind continue];
+    }
+
+    bb29: {
+        StorageDead(_53);
+        _51 = Eq(move _52, const 0_i32);
+        switchInt(move _51) -> [0: bb31, otherwise: bb30];
+    }
+
+    bb30: {
+        StorageDead(_52);
+        _50 = const ();
+        StorageDead(_51);
+        StorageDead(_50);
+        StorageLive(_55);
+        StorageLive(_56);
+        StorageLive(_57);
+        StorageLive(_58);
+        _58 = NonZero::<i32>::new(const 14_i32) -> [return: bb32, unwind continue];
+    }
+
+    bb31: {
+        StorageDead(_52);
+        StorageLive(_54);
+        _54 = core::panicking::panic(const "assertion failed: convert_option_nz(NonZeroI32::new(0)) == 0") -> unwind continue;
+    }
+
+    bb32: {
+        Retag(_58);
+        _57 = convert_option_nz(move _58) -> [return: bb33, unwind continue];
+    }
+
+    bb33: {
+        StorageDead(_58);
+        _56 = Eq(move _57, const 14_i32);
+        switchInt(move _56) -> [0: bb35, otherwise: bb34];
+    }
+
+    bb34: {
+        StorageDead(_57);
+        _55 = const ();
+        StorageDead(_56);
+        StorageDead(_55);
+        StorageLive(_60);
+        StorageLive(_61);
+        StorageLive(_62);
+        StorageLive(_63);
+        _63 = NonZero::<i32>::new(const -14_i32) -> [return: bb36, unwind continue];
+    }
+
+    bb35: {
+        StorageDead(_57);
+        StorageLive(_59);
+        _59 = core::panicking::panic(const "assertion failed: convert_option_nz(NonZeroI32::new(14)) == 14") -> unwind continue;
+    }
+
+    bb36: {
+        Retag(_63);
+        _62 = convert_option_nz(move _63) -> [return: bb37, unwind continue];
+    }
+
+    bb37: {
+        StorageDead(_63);
+        _61 = Eq(move _62, const -14_i32);
+        switchInt(move _61) -> [0: bb39, otherwise: bb38];
+    }
+
+    bb38: {
+        StorageDead(_62);
+        _60 = const ();
+        StorageDead(_61);
+        StorageDead(_60);
+        StorageLive(_65);
+        StorageLive(_66);
+        StorageLive(_67);
+        StorageLive(_68);
+        StorageLive(_69);
+        _69 = Inner::V1;
+        _68 = Outer::V1(const 12_u32, move _69, const 42_u16);
+        StorageDead(_69);
+        _67 = convert_outer(move _68) -> [return: bb40, unwind continue];
+    }
+
+    bb39: {
+        StorageDead(_62);
+        StorageLive(_64);
+        _64 = core::panicking::panic(const "assertion failed: convert_option_nz(NonZeroI32::new(-14)) == -14") -> unwind continue;
+    }
+
+    bb40: {
+        StorageDead(_68);
+        _66 = Eq(move _67, const 0_u8);
+        switchInt(move _66) -> [0: bb42, otherwise: bb41];
+    }
+
+    bb41: {
+        StorageDead(_67);
+        _65 = const ();
+        StorageDead(_66);
+        StorageDead(_65);
+        StorageLive(_71);
+        StorageLive(_72);
+        StorageLive(_73);
+        StorageLive(_74);
+        StorageLive(_75);
+        _75 = Inner::V2;
+        _74 = Outer::V1(const 8888_u32, move _75, const 127_u16);
+        StorageDead(_75);
+        _73 = convert_outer(move _74) -> [return: bb43, unwind continue];
+    }
+
+    bb42: {
+        StorageDead(_67);
+        StorageLive(_70);
+        _70 = core::panicking::panic(const "assertion failed: convert_outer(Outer::V1(12, Inner::V1, 42)) == 0") -> unwind continue;
+    }
+
+    bb43: {
+        StorageDead(_74);
+        _72 = Eq(move _73, const 1_u8);
+        switchInt(move _72) -> [0: bb45, otherwise: bb44];
+    }
+
+    bb44: {
+        StorageDead(_73);
+        _71 = const ();
+        StorageDead(_72);
+        StorageDead(_71);
+        StorageLive(_77);
+        StorageLive(_78);
+        StorageLive(_79);
+        StorageLive(_80);
+        _80 = Outer::V2;
+        _79 = convert_outer(move _80) -> [return: bb46, unwind continue];
+    }
+
+    bb45: {
+        StorageDead(_73);
+        StorageLive(_76);
+        _76 = core::panicking::panic(const "assertion failed: convert_outer(Outer::V1(8888, Inner::V2, 127)) == 1") -> unwind continue;
+    }
+
+    bb46: {
+        StorageDead(_80);
+        _78 = Eq(move _79, const 2_u8);
+        switchInt(move _78) -> [0: bb48, otherwise: bb47];
+    }
+
+    bb47: {
+        StorageDead(_79);
+        _77 = const ();
+        StorageDead(_78);
+        StorageDead(_77);
+        StorageLive(_82);
+        StorageLive(_83);
+        StorageLive(_84);
+        StorageLive(_85);
+        _85 = Outer::V3;
+        _84 = convert_outer(move _85) -> [return: bb49, unwind continue];
+    }
+
+    bb48: {
+        StorageDead(_79);
+        StorageLive(_81);
+        _81 = core::panicking::panic(const "assertion failed: convert_outer(Outer::V2) == 2") -> unwind continue;
+    }
+
+    bb49: {
+        StorageDead(_85);
+        _83 = Eq(move _84, const 3_u8);
+        switchInt(move _83) -> [0: bb51, otherwise: bb50];
+    }
+
+    bb50: {
+        StorageDead(_84);
+        _82 = const ();
+        StorageDead(_83);
+        StorageDead(_82);
+        StorageLive(_87);
+        StorageLive(_88);
+        StorageLive(_89);
+        StorageLive(_90);
+        _90 = Option::<WeirdNicheAlign>::None;
+        _89 = convert_option_weird_niche_align(move _90) -> [return: bb52, unwind continue];
+    }
+
+    bb51: {
+        StorageDead(_84);
+        StorageLive(_86);
+        _86 = core::panicking::panic(const "assertion failed: convert_outer(Outer::V3) == 3") -> unwind continue;
+    }
+
+    bb52: {
+        StorageDead(_90);
+        _88 = Eq(move _89, const 0_u8);
+        switchInt(move _88) -> [0: bb54, otherwise: bb53];
+    }
+
+    bb53: {
+        StorageDead(_89);
+        _87 = const ();
+        StorageDead(_88);
+        StorageDead(_87);
+        StorageLive(_92);
+        StorageLive(_93);
+        StorageLive(_94);
+        StorageLive(_95);
+        StorageLive(_96);
+        StorageLive(_97);
+        _97 = Inner::V1;
+        _96 = WeirdNicheAlign { x: const 42_u8, inner: move _97 };
+        StorageDead(_97);
+        _95 = Option::<WeirdNicheAlign>::Some(move _96);
+        StorageDead(_96);
+        _94 = convert_option_weird_niche_align(move _95) -> [return: bb55, unwind continue];
+    }
+
+    bb54: {
+        StorageDead(_89);
+        StorageLive(_91);
+        _91 = core::panicking::panic(const "assertion failed: convert_option_weird_niche_align(None) == 0") -> unwind continue;
+    }
+
+    bb55: {
+        StorageDead(_95);
+        _93 = Eq(move _94, const 1_u8);
+        switchInt(move _93) -> [0: bb57, otherwise: bb56];
+    }
+
+    bb56: {
+        StorageDead(_94);
+        _92 = const ();
+        StorageDead(_93);
+        StorageDead(_92);
+        _0 = const ();
+        return;
+    }
+
+    bb57: {
+        StorageDead(_94);
+        StorageLive(_98);
+        _98 = core::panicking::panic(const "assertion failed: convert_option_weird_niche_align(Some(WeirdNicheAlign {\n                x: 42,\n                inner: Inner::V1,\n            })) == 1") -> unwind continue;
+    }
+}
+
+alloc31 (size: 151, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 77 65 69 72 64 5f 6e 69 63 68 65 5f 61 6c 69 │ _weird_niche_ali
+    0x30 │ 67 6e 28 53 6f 6d 65 28 57 65 69 72 64 4e 69 63 │ gn(Some(WeirdNic
+    0x40 │ 68 65 41 6c 69 67 6e 20 7b 0a 20 20 20 20 20 20 │ heAlign {.      
+    0x50 │ 20 20 20 20 20 20 20 20 20 20 78 3a 20 34 32 2c │           x: 42,
+    0x60 │ 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 │ .               
+    0x70 │ 20 69 6e 6e 65 72 3a 20 49 6e 6e 65 72 3a 3a 56 │  inner: Inner::V
+    0x80 │ 31 2c 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d │ 1,.            }
+    0x90 │ 29 29 20 3d 3d 20 31                            │ )) == 1
+}
+
+alloc30 (size: 61, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 77 65 69 72 64 5f 6e 69 63 68 65 5f 61 6c 69 │ _weird_niche_ali
+    0x30 │ 67 6e 28 4e 6f 6e 65 29 20 3d 3d 20 30          │ gn(None) == 0
+}
+
+alloc29 (size: 47, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 75 74 65 72 28 │ : convert_outer(
+    0x20 │ 4f 75 74 65 72 3a 3a 56 33 29 20 3d 3d 20 33    │ Outer::V3) == 3
+}
+
+alloc28 (size: 47, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 75 74 65 72 28 │ : convert_outer(
+    0x20 │ 4f 75 74 65 72 3a 3a 56 32 29 20 3d 3d 20 32    │ Outer::V2) == 2
+}
+
+alloc27 (size: 69, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 75 74 65 72 28 │ : convert_outer(
+    0x20 │ 4f 75 74 65 72 3a 3a 56 31 28 38 38 38 38 2c 20 │ Outer::V1(8888, 
+    0x30 │ 49 6e 6e 65 72 3a 3a 56 32 2c 20 31 32 37 29 29 │ Inner::V2, 127))
+    0x40 │ 20 3d 3d 20 31                                  │  == 1
+}
+
+alloc26 (size: 66, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 75 74 65 72 28 │ : convert_outer(
+    0x20 │ 4f 75 74 65 72 3a 3a 56 31 28 31 32 2c 20 49 6e │ Outer::V1(12, In
+    0x30 │ 6e 65 72 3a 3a 56 31 2c 20 34 32 29 29 20 3d 3d │ ner::V1, 42)) ==
+    0x40 │ 20 30                                           │  0
+}
+
+alloc25 (size: 64, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 6e 7a 28 4e 6f 6e 5a 65 72 6f 49 33 32 3a 3a │ _nz(NonZeroI32::
+    0x30 │ 6e 65 77 28 2d 31 34 29 29 20 3d 3d 20 2d 31 34 │ new(-14)) == -14
+}
+
+alloc24 (size: 62, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 6e 7a 28 4e 6f 6e 5a 65 72 6f 49 33 32 3a 3a │ _nz(NonZeroI32::
+    0x30 │ 6e 65 77 28 31 34 29 29 20 3d 3d 20 31 34       │ new(14)) == 14
+}
+
+alloc23 (size: 60, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 6e 7a 28 4e 6f 6e 5a 65 72 6f 49 33 32 3a 3a │ _nz(NonZeroI32::
+    0x30 │ 6e 65 77 28 30 29 29 20 3d 3d 20 30             │ new(0)) == 0
+}
+
+alloc22 (size: 46, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 6e 7a 28 4e 6f 6e 65 29 20 3d 3d 20 30       │ _nz(None) == 0
+}
+
+alloc21 (size: 47, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 72 65 66 28 4e 6f 6e 65 29 20 3d 3d 20 30    │ _ref(None) == 0
+}
+
+alloc20 (size: 53, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 72 65 66 28 53 6f 6d 65 28 26 34 32 29 29 20 │ _ref(Some(&42)) 
+    0x30 │ 3d 3d 20 34 32                                  │ == 42
+}
+
+alloc19 (size: 52, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 72 65 73 75 6c 74 │ : convert_result
+    0x20 │ 5f 62 6f 6f 6c 28 45 72 72 28 28 29 29 29 20 3d │ _bool(Err(())) =
+    0x30 │ 3d 20 2d 31                                     │ = -1
+}
+
+alloc18 (size: 53, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 72 65 73 75 6c 74 │ : convert_result
+    0x20 │ 5f 62 6f 6f 6c 28 4f 6b 28 66 61 6c 73 65 29 29 │ _bool(Ok(false))
+    0x30 │ 20 3d 3d 20 30                                  │  == 0
+}
+
+alloc17 (size: 52, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 72 65 73 75 6c 74 │ : convert_result
+    0x20 │ 5f 62 6f 6f 6c 28 4f 6b 28 74 72 75 65 29 29 20 │ _bool(Ok(true)) 
+    0x30 │ 3d 3d 20 31                                     │ == 1
+}
+
+alloc16 (size: 49, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 62 6f 6f 6c 28 4e 6f 6e 65 29 20 3d 3d 20 2d │ _bool(None) == -
+    0x30 │ 31                                              │ 1
+}
+
+alloc15 (size: 55, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 62 6f 6f 6c 28 53 6f 6d 65 28 66 61 6c 73 65 │ _bool(Some(false
+    0x30 │ 29 29 20 3d 3d 20 30                            │ )) == 0
+}
+
+alloc14 (size: 54, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 6e 76 65 72 74 5f 6f 70 74 69 6f 6e │ : convert_option
+    0x20 │ 5f 62 6f 6f 6c 28 53 6f 6d 65 28 74 72 75 65 29 │ _bool(Some(true)
+    0x30 │ 29 20 3d 3d 20 31                               │ ) == 1
+}
+
+const main::promoted[0]: &u8 = {
+    let mut _0: &u8;
+    let mut _1: u8;
+
+    bb0: {
+        _1 = const 42_u8;
+        _0 = &_1;
+        return;
+    }
+}
+
+fn Outer::V1(_1: u32, _2: Inner, _3: u16) -> Outer {
+    let mut _0: Outer;
+
+    bb0: {
+        _0 = Outer::V1(move _1, move _2, move _3);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Outer::V1(_1: u32, _2: Inner, _3: u16) -> Outer {
+    let mut _0: Outer;
+
+    bb0: {
+        _0 = Outer::V1(move _1, move _2, move _3);
+        return;
+    }
+}

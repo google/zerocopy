@@ -1,0 +1,2 @@
+error: crate `intrinsics` required to be available in rlib format, but was not found in this form
+

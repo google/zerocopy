@@ -1,0 +1,151 @@
+{
+  "minimize_binary": "@CAPTURE@/target/debug/minimize",
+  "minimize_binary_sha256": "e69577543fa46159c81e17341e73935f90573a71255de6704bf4261ebf456ab6",
+  "run_group": "runs-after-harness-fix",
+  "case": {
+    "name": "upstream_ub_enum_ub_discriminant",
+    "path": "cases/upstream_ub_enum_ub_discriminant.rs",
+    "sha256": "825daf8dc3b049d170960a865199b3291295544bc2838ded5d944f3d2002dee9",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/ub/enum_ub_discriminant.rs",
+    "expected_miri": "undefined-behavior",
+    "requires_intrinsics": false
+  },
+  "actual_target": "aarch64-apple-darwin",
+  "mini_memory": "TreeBorrows default params (implicit_writes=false)",
+  "miri_memory": "-Zmiri-tree-borrows; default validation retained",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "outcomes": {
+    "minirun-tree": "undefined-behavior",
+    "minirun-basic": "undefined-behavior",
+    "miri-tree": "undefined-behavior"
+  },
+  "mini_tree_miri_agree": true,
+  "miri_expected_outcome_matches": true,
+  "commands": [
+    {
+      "label": "rustc-mir",
+      "argv": [
+        "@RUST_TOOLCHAIN@/bin/rustc",
+        "--cfg=miri",
+        "-Zalways-encode-mir",
+        "-Zextra-const-ub-checks",
+        "-Zmir-emit-retag",
+        "-Zmir-opt-level=0",
+        "-Zmir-enable-passes=-CheckAlignment",
+        "-Zmir-preserve-ub",
+        "-Zub-checks=false",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind",
+        "--sysroot",
+        "@CAPTURE@/minimize-sysroot",
+        "--emit=mir",
+        "@CAPTURE@/cases/upstream_ub_enum_ub_discriminant.rs",
+        "-o",
+        "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant/rustc-input.mir"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+      "returncode": 0,
+      "seconds": 0.080277667,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minimize-lower",
+      "argv": [
+        "@CAPTURE@/target/debug/minimize",
+        "--minimize-dump=json",
+        "@CAPTURE@/cases/upstream_ub_enum_ub_discriminant.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+      "returncode": 0,
+      "seconds": 0.082679167,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "aa8b0d4ae973a09f836a485c7ae9740cc5b2ec54d7fcc2bf7abe0a94f38bfd55",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minirun-tree",
+      "argv": [
+        "@CAPTURE@/target/debug/minirun",
+        "--minirust-tree-borrows",
+        "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant/minirust.json"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+      "returncode": 101,
+      "seconds": 0.005833292000000018,
+      "classification": "undefined-behavior",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "10b9505bcff90cd21434ff045cd424484524df95ee31868dc586efc1e2410ce9",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minirun-basic",
+      "argv": [
+        "@CAPTURE@/target/debug/minirun",
+        "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant/minirust.json"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+      "returncode": 101,
+      "seconds": 0.005530083999999991,
+      "classification": "undefined-behavior",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "10b9505bcff90cd21434ff045cd424484524df95ee31868dc586efc1e2410ce9",
+      "native_subject_execution": false
+    },
+    {
+      "label": "miri-tree",
+      "argv": [
+        "@RUST_TOOLCHAIN@/bin/miri",
+        "--sysroot",
+        "@CAPTURE@/miri-sysroot",
+        "-Zmiri-tree-borrows",
+        "@CAPTURE@/cases/upstream_ub_enum_ub_discriminant.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+      "returncode": 1,
+      "seconds": 0.033085582999999974,
+      "classification": "undefined-behavior",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "52b853fe0e39a41ae58b6bbb127ab2f4d514a0706ac2fb808d2c8ecc62db4e2b",
+      "native_subject_execution": false
+    }
+  ],
+  "source_sha256": "825daf8dc3b049d170960a865199b3291295544bc2838ded5d944f3d2002dee9",
+  "mir_sha256": "fecd1a9c9958dcfb46c859fc3527a08861c1bde038d0587b4fa936244c347b59",
+  "minirust_json_sha256": "aa8b0d4ae973a09f836a485c7ae9740cc5b2ec54d7fcc2bf7abe0a94f38bfd55",
+  "minirust_json_top_level": [
+    "functions",
+    "start",
+    "globals",
+    "traits",
+    "vtables"
+  ],
+  "task_bytes": 639967320,
+  "native_subject_execution": false
+}

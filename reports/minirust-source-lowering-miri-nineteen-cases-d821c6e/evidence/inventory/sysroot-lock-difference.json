@@ -1,0 +1,54 @@
+{
+  "added": [
+    {
+      "name": "custom-local-sysroot",
+      "version": "0.0.0"
+    }
+  ],
+  "removed": [
+    {
+      "name": "rand",
+      "version": "0.9.2",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "6db2770f06117d490610c7488547d543617b21bfa07796d7a12f6f1bd53850d1"
+    },
+    {
+      "name": "alloctests",
+      "version": "0.0.0"
+    },
+    {
+      "name": "cc",
+      "version": "1.2.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "1aeb932158bd710538c73702db6945cb68a8fb08c519e6e12706b94263b36db8"
+    },
+    {
+      "name": "profiler_builtins",
+      "version": "0.0.0"
+    },
+    {
+      "name": "shlex",
+      "version": "1.3.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
+    },
+    {
+      "name": "coretests",
+      "version": "0.0.0"
+    },
+    {
+      "name": "rand_xorshift",
+      "version": "0.4.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "513962919efc330f829edb2535844d1b912b0fbe2ca165d613e4e8788bb05a5a"
+    },
+    {
+      "name": "rand_core",
+      "version": "0.9.3",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "99d9a13982dcf210057a8a78572b2217b667c3beacbf3a0d8b454f6f82837d38"
+    }
+  ],
+  "changed": [],
+  "common_registry_versions_preserved": true
+}

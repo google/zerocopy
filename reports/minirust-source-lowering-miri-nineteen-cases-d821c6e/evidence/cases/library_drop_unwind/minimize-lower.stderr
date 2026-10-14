@@ -1,0 +1,41 @@
+error: internal compiler error: minimize/src/bb.rs:790:13: cannot call foreign function alloc::alloc::__rust_dealloc
+   --> @RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/alloc/src/alloc.rs:128:14
+    |
+128 |     unsafe { __rust_dealloc(ptr, layout.size(), layout.alignment()) }
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+thread 'rustc' (32857604) panicked at minimize/src/bb.rs:790:13:
+Box<dyn Any>
+stack backtrace:
+   0: std::panicking::begin_panic::<rustc_errors::ExplicitBug>
+   1: <rustc_errors::diagnostic::BugAbort as rustc_errors::diagnostic::EmissionGuarantee>::emit_producing_guarantee
+   2: <rustc_errors::DiagCtxtHandle>::span_bug::<rustc_span::span_encoding::Span, alloc::string::String>
+   3: rustc_middle::util::bug::opt_span_bug_fmt::<rustc_span::span_encoding::Span>::{closure#0}
+   4: rustc_middle::ty::context::tls::with_opt::<rustc_middle::util::bug::opt_span_bug_fmt<rustc_span::span_encoding::Span>::{closure#0}, !>::{closure#0}
+   5: rustc_middle::ty::context::tls::with_context_opt::<rustc_middle::ty::context::tls::with_opt<rustc_middle::util::bug::opt_span_bug_fmt<rustc_span::span_encoding::Span>::{closure#0}, !>::{closure#0}, !>
+   6: rustc_middle::util::bug::span_bug_fmt::<rustc_span::span_encoding::Span>
+   7: <minimize::function::FnCtxt>::translate_call
+   8: <minimize::function::FnCtxt>::translate_terminator
+   9: <minimize::function::FnCtxt>::translate_bb
+  10: <minimize::function::FnCtxt>::translate
+  11: <minimize::program::Ctxt>::translate::{closure#3}
+  12: <<minimize::program::Ctxt>::translate::{closure#3} as core::ops::function::FnOnce<()>>::call_once
+  13: <core::panic::unwind_safe::AssertUnwindSafe<<minimize::program::Ctxt>::translate::{closure#3}> as core::ops::function::FnOnce<()>>::call_once
+  14: std::panicking::catch_unwind::do_call::<core::panic::unwind_safe::AssertUnwindSafe<<minimize::program::Ctxt>::translate::{closure#3}>, minirust_rs::lang::Function>
+  15: ___rust_try
+  16: std::panic::catch_unwind::<core::panic::unwind_safe::AssertUnwindSafe<<minimize::program::Ctxt>::translate::{closure#3}>, minirust_rs::lang::Function>
+  17: <minimize::program::Ctxt>::translate
+  18: <minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}
+  19: rustc_public::rustc_internal::run::<<minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}, minirust_rs::lang::Program>::{closure#0}
+  20: rustc_public::compiler_interface::run::<rustc_public::rustc_internal::run<<minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}, minirust_rs::lang::Program>::{closure#0}, minirust_rs::lang::Program>::{closure#0}
+  21: <scoped_tls::ScopedKey<core::cell::Cell<*const ()>>>::set::<rustc_public::compiler_interface::run<rustc_public::rustc_internal::run<<minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}, minirust_rs::lang::Program>::{closure#0}, minirust_rs::lang::Program>::{closure#0}, core::result::Result<minirust_rs::lang::Program, rustc_public::error::Error>>
+  22: rustc_public::compiler_interface::run::<rustc_public::rustc_internal::run<<minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}, minirust_rs::lang::Program>::{closure#0}, minirust_rs::lang::Program>
+  23: rustc_public::rustc_internal::run::<<minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis::{closure#0}, minirust_rs::lang::Program>
+  24: <minimize::Cb<minimize::main::{closure#1}> as rustc_driver_impl::Callbacks>::after_analysis
+  25: rustc_interface::passes::create_and_enter_global_ctxt::<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure#2}>
+  26: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#1}
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+This error occurred while translating alloc::alloc::dealloc_nonnull (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/alloc/src/alloc.rs:127:1: 127:60 (#0))
+error: aborting due to 1 previous error
+

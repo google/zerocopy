@@ -1,0 +1,198 @@
+{
+  "union_wide_one_field": [
+    {
+      "json_path": "$.functions[0][1].locals[0][1].Union",
+      "shape": {
+        "fields": [
+          [
+            0,
+            {
+              "Ptr": {
+                "Raw": {
+                  "meta_kind": "ElementCount"
+                }
+              }
+            }
+          ]
+        ],
+        "chunks": [
+          [
+            0,
+            8
+          ]
+        ],
+        "size": 16,
+        "align": 8
+      }
+    }
+  ],
+  "union_wide_two_word_control": [
+    {
+      "json_path": "$.functions[2][1].locals[3][1].Union",
+      "shape": {
+        "fields": [
+          [
+            0,
+            {
+              "Ptr": {
+                "Raw": {
+                  "meta_kind": "ElementCount"
+                }
+              }
+            }
+          ],
+          [
+            0,
+            {
+              "Array": {
+                "elem": {
+                  "Int": {
+                    "signed": "Unsigned",
+                    "size": 8
+                  }
+                },
+                "count": 2
+              }
+            }
+          ]
+        ],
+        "chunks": [
+          [
+            0,
+            16
+          ]
+        ],
+        "size": 16,
+        "align": 8
+      }
+    }
+  ],
+  "enum_single_zero": [
+    {
+      "json_path": "$.functions[0][1].locals[0][1].Enum",
+      "shape": {
+        "variants": [
+          [
+            0,
+            {
+              "ty": {
+                "Tuple": {
+                  "sized_fields": [],
+                  "sized_head_layout": {
+                    "end": 1,
+                    "align": 1,
+                    "packed_align": null
+                  },
+                  "unsized_field": null
+                }
+              },
+              "tagger": [
+                [
+                  0,
+                  [
+                    {
+                      "signed": "Unsigned",
+                      "size": 1
+                    },
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        ],
+        "discriminant_ty": {
+          "signed": "Unsigned",
+          "size": 1
+        },
+        "discriminator": {
+          "Branch": {
+            "offset": 0,
+            "value_type": {
+              "signed": "Unsigned",
+              "size": 1
+            },
+            "fallback": "Invalid",
+            "children": [
+              [
+                [
+                  0,
+                  1
+                ],
+                {
+                  "Known": 0
+                }
+              ]
+            ]
+          }
+        },
+        "size": 1,
+        "align": 1
+      }
+    }
+  ],
+  "enum_single_invalid_one": [
+    {
+      "json_path": "$.functions[0][1].locals[1][1].Enum",
+      "shape": {
+        "variants": [
+          [
+            0,
+            {
+              "ty": {
+                "Tuple": {
+                  "sized_fields": [],
+                  "sized_head_layout": {
+                    "end": 1,
+                    "align": 1,
+                    "packed_align": null
+                  },
+                  "unsized_field": null
+                }
+              },
+              "tagger": [
+                [
+                  0,
+                  [
+                    {
+                      "signed": "Unsigned",
+                      "size": 1
+                    },
+                    0
+                  ]
+                ]
+              ]
+            }
+          ]
+        ],
+        "discriminant_ty": {
+          "signed": "Unsigned",
+          "size": 1
+        },
+        "discriminator": {
+          "Branch": {
+            "offset": 0,
+            "value_type": {
+              "signed": "Unsigned",
+              "size": 1
+            },
+            "fallback": "Invalid",
+            "children": [
+              [
+                [
+                  0,
+                  1
+                ],
+                {
+                  "Known": 0
+                }
+              ]
+            ]
+          }
+        },
+        "size": 1,
+        "align": 1
+      }
+    }
+  ]
+}

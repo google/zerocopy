@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "checks": {
+    "one_authorship_notice": true,
+    "coverage_report_hash": true,
+    "all_original_source_blobs_match": true,
+    "compiled_owned_source_identical": true,
+    "package_only_same_binary_replay": true,
+    "case_archive_114files": true,
+    "all20_case_captures_match_status_records": true,
+    "all_declared_path_projection_receipts_match": true,
+    "no_personal_task_path_in_public_text": true,
+    "direct_tests4_exit0_empty_stderr": true,
+    "budget_stop_not_success": true
+  },
+  "scope": "Structural/evidence-integrity validation plus observed package-only replay; not semantic adequacy or independent compiler verification.",
+  "source_archive_bytes": 423932,
+  "case_archive_bytes": 630197
+}

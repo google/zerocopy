@@ -1,0 +1,2417 @@
+{
+  "sha": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+  "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/71dc31c1b186df1f0a64d8464b8103195902a5a5",
+  "tree": [
+    {
+      "path": ".devcontainer",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b11c73a84fad4aa5a889a74c35ea83c07f5d6944",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/b11c73a84fad4aa5a889a74c35ea83c07f5d6944"
+    },
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7720a3ed6911c7a6f45ef9af79159d42d3fa504",
+      "size": 1209,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d7720a3ed6911c7a6f45ef9af79159d42d3fa504"
+    },
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6313b56c57848efce05faa7aa7e901ccfc2886ea",
+      "size": 19,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6313b56c57848efce05faa7aa7e901ccfc2886ea"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e297953cb71e6cd49bc6994326cc9566e35b9e51",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/e297953cb71e6cd49bc6994326cc9566e35b9e51"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28c9cd131f8ac7de693c1e8f744989519260ae81",
+      "size": 763,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/28c9cd131f8ac7de693c1e8f744989519260ae81"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3ae97c0b1440fe2c8700607227918db0e5f6165d",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/3ae97c0b1440fe2c8700607227918db0e5f6165d"
+    },
+    {
+      "path": ".github/workflows/ci.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea6c3ac574129227fad7d14e279a54f8f510b6da",
+      "size": 1488,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/ea6c3ac574129227fad7d14e279a54f8f510b6da"
+    },
+    {
+      "path": ".github/workflows/coverage-report.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a3f869a868490139170ca3aa8a76f262bb2d997",
+      "size": 1663,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9a3f869a868490139170ca3aa8a76f262bb2d997"
+    },
+    {
+      "path": ".github/workflows/mdbook.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3dc792ad09816dc1d18dbffc7e25c4d1428b9e1",
+      "size": 1920,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a3dc792ad09816dc1d18dbffc7e25c4d1428b9e1"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c96de21155536d0c2a872178b9c42ac6982179b",
+      "size": 254,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0c96de21155536d0c2a872178b9c42ac6982179b"
+    },
+    {
+      "path": ".nvmrc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f4569c72f006fcf7d898fddcb023cc8f0dce3e1",
+      "size": 9,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6f4569c72f006fcf7d898fddcb023cc8f0dce3e1"
+    },
+    {
+      "path": ".vscode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d241dfeb181750e55fc8bf950055593eb5a71c31",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/d241dfeb181750e55fc8bf950055593eb5a71c31"
+    },
+    {
+      "path": ".vscode/launch.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10efcb2fe501b66952a71b4bd77e7d0d40a26d69",
+      "size": 495,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/10efcb2fe501b66952a71b4bd77e7d0d40a26d69"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f35734f60b222679b83d6855ba2cd2354c88ffb",
+      "size": 92,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0f35734f60b222679b83d6855ba2cd2354c88ffb"
+    },
+    {
+      "path": "Cargo.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d846b61320c4a63ec333700208136d81eee965f",
+      "size": 41653,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0d846b61320c4a63ec333700208136d81eee965f"
+    },
+    {
+      "path": "Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "702381b0c9e10f431923210f580bcad677591792",
+      "size": 1180,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/702381b0c9e10f431923210f580bcad677591792"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b5ec8b78e237b5c3b3d812a7c0a6589d0f7161d",
+      "size": 9723,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1b5ec8b78e237b5c3b3d812a7c0a6589d0f7161d"
+    },
+    {
+      "path": "LICENSE-MIT",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31aa79387f27e730e33d871925e152e35e428031",
+      "size": 1023,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/31aa79387f27e730e33d871925e152e35e428031"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a42d8838ebe0220b9f583e3d2a0fca97b60642a8",
+      "size": 1242,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a42d8838ebe0220b9f583e3d2a0fca97b60642a8"
+    },
+    {
+      "path": "book",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c7c2f134c4d6f28a5628eef332107264d8522b21",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/c7c2f134c4d6f28a5628eef332107264d8522b21"
+    },
+    {
+      "path": "book/.gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7585238efedfc33acdd9494b0269951aaf3909ec",
+      "size": 5,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7585238efedfc33acdd9494b0269951aaf3909ec"
+    },
+    {
+      "path": "book/book.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fc3a6fe8a2a1798a37f5bc0594188cfb77c866d",
+      "size": 267,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0fc3a6fe8a2a1798a37f5bc0594188cfb77c866d"
+    },
+    {
+      "path": "book/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5a0f1f8b400ad7ef648821001c5394c6597fc7c5",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/5a0f1f8b400ad7ef648821001c5394c6597fc7c5"
+    },
+    {
+      "path": "book/src/SUMMARY.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d73f12eb16e61049595550afa24606c0c7afd7f",
+      "size": 899,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7d73f12eb16e61049595550afa24606c0c7afd7f"
+    },
+    {
+      "path": "book/src/chapter_1.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b743fda354692a44400c2c21ae0fb71c2d5a30d5",
+      "size": 12,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b743fda354692a44400c2c21ae0fb71c2d5a30d5"
+    },
+    {
+      "path": "book/src/faq.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9c7936da103638cf35641f6353b7c1cab41dbb7",
+      "size": 26,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e9c7936da103638cf35641f6353b7c1cab41dbb7"
+    },
+    {
+      "path": "book/src/formality_core.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c394e3fd42019141af4183b043c8d09f1d66698a",
+      "size": 401,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c394e3fd42019141af4183b043c8d09f1d66698a"
+    },
+    {
+      "path": "book/src/formality_core",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eeaf2971fe376b1d908e17d57a3536305622d07b",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/eeaf2971fe376b1d908e17d57a3536305622d07b"
+    },
+    {
+      "path": "book/src/formality_core/collections.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b360452713cc52537fce6fe29255e715265db8da",
+      "size": 1488,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b360452713cc52537fce6fe29255e715265db8da"
+    },
+    {
+      "path": "book/src/formality_core/constructors.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74594edbe0a4f592af1f3540c6aa3660df08f928",
+      "size": 488,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/74594edbe0a4f592af1f3540c6aa3660df08f928"
+    },
+    {
+      "path": "book/src/formality_core/debug.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21ce3479e61ed518ad67fcff191046140e08bf0b",
+      "size": 735,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/21ce3479e61ed518ad67fcff191046140e08bf0b"
+    },
+    {
+      "path": "book/src/formality_core/faq.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce7945fa36a66a0294df31af81e0474190c86f80",
+      "size": 337,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/ce7945fa36a66a0294df31af81e0474190c86f80"
+    },
+    {
+      "path": "book/src/formality_core/idiomatic_judgment_fn.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ca533b9568f93705a1237f37bdb9187bd56ed8b",
+      "size": 105,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1ca533b9568f93705a1237f37bdb9187bd56ed8b"
+    },
+    {
+      "path": "book/src/formality_core/judgment_fn.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b23168f5e2f883911740a8bdb4a466fad48cacbc",
+      "size": 7289,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b23168f5e2f883911740a8bdb4a466fad48cacbc"
+    },
+    {
+      "path": "book/src/formality_core/lang.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e709231838f8e4c2a496883ebd0d066d3b3c998c",
+      "size": 1688,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e709231838f8e4c2a496883ebd0d066d3b3c998c"
+    },
+    {
+      "path": "book/src/formality_core/parse.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d8ac0e228c6c7a6fb63713ca960c4e2d564f51b",
+      "size": 18638,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8d8ac0e228c6c7a6fb63713ca960c4e2d564f51b"
+    },
+    {
+      "path": "book/src/formality_core/terms.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7711e492eb024ca07914e94d11387900fc52263b",
+      "size": 4013,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7711e492eb024ca07914e94d11387900fc52263b"
+    },
+    {
+      "path": "book/src/formality_core/variables.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20362be450bcebca9810c23e50cef8c9b2df2c7a",
+      "size": 1759,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/20362be450bcebca9810c23e50cef8c9b2df2c7a"
+    },
+    {
+      "path": "book/src/formality_rust.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2982453514dcb5a04e9dfc153deefad71c30f14b",
+      "size": 1424,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2982453514dcb5a04e9dfc153deefad71c30f14b"
+    },
+    {
+      "path": "book/src/formality_rust",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5ec152a28cd8fd81d9c48bee21f11cb68740fa10",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/5ec152a28cd8fd81d9c48bee21f11cb68740fa10"
+    },
+    {
+      "path": "book/src/formality_rust/borrow_check.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d30096563b428fc67c8288aa87d698645521d6c2",
+      "size": 1406,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d30096563b428fc67c8288aa87d698645521d6c2"
+    },
+    {
+      "path": "book/src/formality_rust/codegen.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad30a78d84f968f42f2513882e4982bc399b861e",
+      "size": 8125,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/ad30a78d84f968f42f2513882e4982bc399b861e"
+    },
+    {
+      "path": "book/src/formality_rust/coherence.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bae553f001f5c5269f385478aadc55ef23b4cd83",
+      "size": 1456,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/bae553f001f5c5269f385478aadc55ef23b4cd83"
+    },
+    {
+      "path": "book/src/intro.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2bffdd0714478c533cf551925cb8f09b268ef98",
+      "size": 2330,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c2bffdd0714478c533cf551925cb8f09b268ef98"
+    },
+    {
+      "path": "crates",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eb1385a424cd46922be76332408722447ac6bad4",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/eb1385a424cd46922be76332408722447ac6bad4"
+    },
+    {
+      "path": "crates/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73e67930a4e98145254566306cc722fd3e3ef94a",
+      "size": 177,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/73e67930a4e98145254566306cc722fd3e3ef94a"
+    },
+    {
+      "path": "crates/formality-core",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a781a90f1d85da00aaefdd3a9b171d46869949a5",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/a781a90f1d85da00aaefdd3a9b171d46869949a5"
+    },
+    {
+      "path": "crates/formality-core/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "972fd108561dcbf2c8740add92abeec1cb3429df",
+      "size": 960,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/972fd108561dcbf2c8740add92abeec1cb3429df"
+    },
+    {
+      "path": "crates/formality-core/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35494e4d1a01410cf3ed331a84a0b462c4aa1676",
+      "size": 183,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/35494e4d1a01410cf3ed331a84a0b462c4aa1676"
+    },
+    {
+      "path": "crates/formality-core/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ae38b8f71d524fc2f333d2e2b185260b330dc3bb",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/ae38b8f71d524fc2f333d2e2b185260b330dc3bb"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5124ed680e6617fcf230798437ef0fcc19a61e76",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/5124ed680e6617fcf230798437ef0fcc19a61e76"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9128c9149a6933b03b8add693fc590be8bebd5b8",
+      "size": 10925,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9128c9149a6933b03b8add693fc590be8bebd5b8"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/evals",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "221294b73c2331d0f29122e646774a60780c0aed",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/221294b73c2331d0f29122e646774a60780c0aed"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/evals/evals.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "911695f9f3f27c4f253c4478b356030d97655d64",
+      "size": 4504,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/911695f9f3f27c4f253c4478b356030d97655d64"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a1939ab877e2102080ded352a74bdb564b933261",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/a1939ab877e2102080ded352a74bdb564b933261"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/scripts/run_evals.py",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "68ae031ee549f32d5bd566eba28ace361c4f12fd",
+      "size": 24857,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/68ae031ee549f32d5bd566eba28ace361c4f12fd"
+    },
+    {
+      "path": "crates/formality-core/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9f668efb1bfcc5435b75e8ca193f5b2b56e4317c",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/9f668efb1bfcc5435b75e8ca193f5b2b56e4317c"
+    },
+    {
+      "path": "crates/formality-core/src/binder.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8977fd29711ccea3a2f6b4b11efb6ccbac25c333",
+      "size": 9392,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8977fd29711ccea3a2f6b4b11efb6ccbac25c333"
+    },
+    {
+      "path": "crates/formality-core/src/cast.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ceba4ddcfbe883ecb730be3f6dbf97908c9ecba",
+      "size": 10259,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0ceba4ddcfbe883ecb730be3f6dbf97908c9ecba"
+    },
+    {
+      "path": "crates/formality-core/src/collections.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a60354bbc522ba9cb114f856225efd59224d686",
+      "size": 9183,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/5a60354bbc522ba9cb114f856225efd59224d686"
+    },
+    {
+      "path": "crates/formality-core/src/derive_links.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d56e9ae1ebcb21aab0f4c36c53d3e4748b9c2f3a",
+      "size": 568,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d56e9ae1ebcb21aab0f4c36c53d3e4748b9c2f3a"
+    },
+    {
+      "path": "crates/formality-core/src/fixed_point.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d64687ac69f415e002b8d5b8f92b5b93681dd0c",
+      "size": 2452,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2d64687ac69f415e002b8d5b8f92b5b93681dd0c"
+    },
+    {
+      "path": "crates/formality-core/src/fixed_point",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a17988b69e8671f7d69de72f07aa5f8fde67c21e",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/a17988b69e8671f7d69de72f07aa5f8fde67c21e"
+    },
+    {
+      "path": "crates/formality-core/src/fixed_point/stack.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "906ebf8ea3f652700423623bb7dc46f45ce9f86c",
+      "size": 2664,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/906ebf8ea3f652700423623bb7dc46f45ce9f86c"
+    },
+    {
+      "path": "crates/formality-core/src/fold.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66424867613efc010a67589ea35b25a4982f0a48",
+      "size": 5707,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/66424867613efc010a67589ea35b25a4982f0a48"
+    },
+    {
+      "path": "crates/formality-core/src/judgment.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b8649a48d4868dbf662a969c256b816c7cba7bd",
+      "size": 34425,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8b8649a48d4868dbf662a969c256b816c7cba7bd"
+    },
+    {
+      "path": "crates/formality-core/src/judgment",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4815f4c42d0017751bdd4834e9c9ac543f6e1d51",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/4815f4c42d0017751bdd4834e9c9ac543f6e1d51"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/assertion.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "880f0b240da45044442acfdb750e5ce7fef845a7",
+      "size": 680,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/880f0b240da45044442acfdb750e5ce7fef845a7"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/coverage.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15871c59bb9333abb5ed6ee3cb79ce1b20110d0e",
+      "size": 15629,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/15871c59bb9333abb5ed6ee3cb79ce1b20110d0e"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/proven_set.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78606c9d38ed5ab340cb9e9d7ac3c83617645889",
+      "size": 37965,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/78606c9d38ed5ab340cb9e9d7ac3c83617645889"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_explicit_fail.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f8baa2c904c45f65e08def60a83f86fab430bdce",
+      "size": 1399,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f8baa2c904c45f65e08def60a83f86fab430bdce"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_fallible.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b424a2f3ce4e351a8e89e79d08ce0f09dad735c",
+      "size": 1726,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0b424a2f3ce4e351a8e89e79d08ce0f09dad735c"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_filtered.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a898970e51cbddf8953ac78aaf3e4dbefa0629e7",
+      "size": 1412,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a898970e51cbddf8953ac78aaf3e4dbefa0629e7"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_for_all.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e758e3fc7fae41c774edbd612c6ad9167625136",
+      "size": 1858,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2e758e3fc7fae41c774edbd612c6ad9167625136"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_reachable.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8eada93d92c1710ab4754f0b9574486df820b759",
+      "size": 1195,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8eada93d92c1710ab4754f0b9574486df820b759"
+    },
+    {
+      "path": "crates/formality-core/src/language.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "044eb8f3321f0ef490b43c10880725b9fe0897c7",
+      "size": 1727,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/044eb8f3321f0ef490b43c10880725b9fe0897c7"
+    },
+    {
+      "path": "crates/formality-core/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40ecf123cf40964d35fc7831b60999d8aee419c3",
+      "size": 10364,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/40ecf123cf40964d35fc7831b60999d8aee419c3"
+    },
+    {
+      "path": "crates/formality-core/src/parse.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de0c56aa98152df15f1f828d0ba9428ad2e46ebb",
+      "size": 22435,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/de0c56aa98152df15f1f828d0ba9428ad2e46ebb"
+    },
+    {
+      "path": "crates/formality-core/src/parse",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ec05b33f4439ba18b5393342966f8baa3887d275",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/ec05b33f4439ba18b5393342966f8baa3887d275"
+    },
+    {
+      "path": "crates/formality-core/src/parse/parser.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b60471d2eda2897f74fedd6f66785dfe9fd386b",
+      "size": 39756,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0b60471d2eda2897f74fedd6f66785dfe9fd386b"
+    },
+    {
+      "path": "crates/formality-core/src/parse/parser",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9cc979178d5113bdbf73c2d518a3f489c591f308",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/9cc979178d5113bdbf73c2d518a3f489c591f308"
+    },
+    {
+      "path": "crates/formality-core/src/parse/parser/left_recursion.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85d23d26495742dd6e9238f05c24dc3a94fd956e",
+      "size": 23889,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/85d23d26495742dd6e9238f05c24dc3a94fd956e"
+    },
+    {
+      "path": "crates/formality-core/src/parse/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size": 1,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
+    },
+    {
+      "path": "crates/formality-core/src/substitution.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6736fd80d81c5dbdb56c4218466a61cfbc0a31b",
+      "size": 6082,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b6736fd80d81c5dbdb56c4218466a61cfbc0a31b"
+    },
+    {
+      "path": "crates/formality-core/src/term.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16e2b355e53925a52bcf5a2e0c96466b4df89530",
+      "size": 943,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/16e2b355e53925a52bcf5a2e0c96466b4df89530"
+    },
+    {
+      "path": "crates/formality-core/src/test_util.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d66cc77600d033df390aebe2845863689012d8c3",
+      "size": 6619,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d66cc77600d033df390aebe2845863689012d8c3"
+    },
+    {
+      "path": "crates/formality-core/src/util.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "691505de92fc9836ecc00a400db352a633da733f",
+      "size": 235,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/691505de92fc9836ecc00a400db352a633da733f"
+    },
+    {
+      "path": "crates/formality-core/src/variable.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80c09825e0c581ae11937f52a3af7103dfc3c3f4",
+      "size": 6525,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/80c09825e0c581ae11937f52a3af7103dfc3c3f4"
+    },
+    {
+      "path": "crates/formality-core/src/variable",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "70baa0eea634054e594fc996963fcb6ee51f8a46",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/70baa0eea634054e594fc996963fcb6ee51f8a46"
+    },
+    {
+      "path": "crates/formality-core/src/variable/cast_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68c72c958bb97053e8133180cf43457f51bc5381",
+      "size": 477,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/68c72c958bb97053e8133180cf43457f51bc5381"
+    },
+    {
+      "path": "crates/formality-core/src/variable/debug_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e981fa8fa61e60f1ea0dcbd3c623c91bd0be8500",
+      "size": 1711,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e981fa8fa61e60f1ea0dcbd3c623c91bd0be8500"
+    },
+    {
+      "path": "crates/formality-core/src/visit.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fc15849f6eedebf163104366dfc08fbdb971306",
+      "size": 7325,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/4fc15849f6eedebf163104366dfc08fbdb971306"
+    },
+    {
+      "path": "crates/formality-core/tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b0aee5e33d2ede691756a8168287bf1639fcbb59",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/b0aee5e33d2ede691756a8168287bf1639fcbb59"
+    },
+    {
+      "path": "crates/formality-core/tests/coverage.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85899dc26dbc25d45034c728aa94f13a13491748",
+      "size": 5897,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/85899dc26dbc25d45034c728aa94f13a13491748"
+    },
+    {
+      "path": "crates/formality-coverage",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "491d1c50cec15f38c9bd4cce5240aa869885d469",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/491d1c50cec15f38c9bd4cce5240aa869885d469"
+    },
+    {
+      "path": "crates/formality-coverage/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "670027090de426a561f19631d9f7d0549ef44075",
+      "size": 726,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/670027090de426a561f19631d9f7d0549ef44075"
+    },
+    {
+      "path": "crates/formality-coverage/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eb788c3fee53d9df2ef9d953f4480dbe3d7260c3",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/eb788c3fee53d9df2ef9d953f4480dbe3d7260c3"
+    },
+    {
+      "path": "crates/formality-coverage/src/bin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0b9a60bcd678cfd4bc0128c10450f834d512771f",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/0b9a60bcd678cfd4bc0128c10450f834d512771f"
+    },
+    {
+      "path": "crates/formality-coverage/src/bin/coverage-diff.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0afe05e8d297865f91e7b428c5f67460858fd9c9",
+      "size": 2012,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0afe05e8d297865f91e7b428c5f67460858fd9c9"
+    },
+    {
+      "path": "crates/formality-coverage/src/bin/formality-coverage.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "088dc9bb1270949a2a09c4c38558c5c5b77baa44",
+      "size": 2519,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/088dc9bb1270949a2a09c4c38558c5c5b77baa44"
+    },
+    {
+      "path": "crates/formality-coverage/src/diff.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e028d4b3d480f181dd54f123475829684cc3f892",
+      "size": 4922,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e028d4b3d480f181dd54f123475829684cc3f892"
+    },
+    {
+      "path": "crates/formality-coverage/src/jsonl.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "776d7adc6b742fa61c2de0c8aba4e29a084c69da",
+      "size": 10584,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/776d7adc6b742fa61c2de0c8aba4e29a084c69da"
+    },
+    {
+      "path": "crates/formality-coverage/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0625782676d9c70e87e411a4bdbccd6cbcf5f40",
+      "size": 78,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f0625782676d9c70e87e411a4bdbccd6cbcf5f40"
+    },
+    {
+      "path": "crates/formality-coverage/src/report.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8ad6db056125cf0205af2e303c0d1d97ebe1748",
+      "size": 67025,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a8ad6db056125cf0205af2e303c0d1d97ebe1748"
+    },
+    {
+      "path": "crates/formality-coverage/src/scrape.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e849175882fa7fe979c55f29d8cb8bbe3bd22fe2",
+      "size": 19745,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e849175882fa7fe979c55f29d8cb8bbe3bd22fe2"
+    },
+    {
+      "path": "crates/formality-coverage/src/summary.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cd1e33ec984ceb14c3ad07a8efe19f85ae70ed7",
+      "size": 5642,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7cd1e33ec984ceb14c3ad07a8efe19f85ae70ed7"
+    },
+    {
+      "path": "crates/formality-coverage/tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f2741e45485ceedc1526d5d2c47f1615aeac7eb4",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/f2741e45485ceedc1526d5d2c47f1615aeac7eb4"
+    },
+    {
+      "path": "crates/formality-coverage/tests/scrape.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38762187965aac8723998f5f89a96396aa33b45e",
+      "size": 54436,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/38762187965aac8723998f5f89a96396aa33b45e"
+    },
+    {
+      "path": "crates/formality-coverage/tests/summary.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a2d4e431e27442035ab96ec15e8e028a96ea83f",
+      "size": 4586,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1a2d4e431e27442035ab96ec15e8e028a96ea83f"
+    },
+    {
+      "path": "crates/formality-macros",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2664c63e69bfca1e34b44f070faff5301c0cb3eb",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/2664c63e69bfca1e34b44f070faff5301c0cb3eb"
+    },
+    {
+      "path": "crates/formality-macros/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c96149bfbc79d76a65e3da66bfc112529956c0e6",
+      "size": 572,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c96149bfbc79d76a65e3da66bfc112529956c0e6"
+    },
+    {
+      "path": "crates/formality-macros/READE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23e5187104d111bcbd6c7241818ebcf3fe165332",
+      "size": 135,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/23e5187104d111bcbd6c7241818ebcf3fe165332"
+    },
+    {
+      "path": "crates/formality-macros/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6600f6a86233aa2e58e91523968d6c271a23cc5f",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/6600f6a86233aa2e58e91523968d6c271a23cc5f"
+    },
+    {
+      "path": "crates/formality-macros/src/as_methods.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size": 1,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
+    },
+    {
+      "path": "crates/formality-macros/src/attrs.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60f008e613abda67c3569b17b67deb9c2f68654c",
+      "size": 4399,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/60f008e613abda67c3569b17b67deb9c2f68654c"
+    },
+    {
+      "path": "crates/formality-macros/src/cast.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d4e6872ba59c778e1d3b5c8c2348eeb43db0521",
+      "size": 5512,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9d4e6872ba59c778e1d3b5c8c2348eeb43db0521"
+    },
+    {
+      "path": "crates/formality-macros/src/constructors.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "420d8a9ee52e5669d81933703a73dbee79edc47f",
+      "size": 2634,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/420d8a9ee52e5669d81933703a73dbee79edc47f"
+    },
+    {
+      "path": "crates/formality-macros/src/custom.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5854dff5da771bf199d59e57d5f8265e5fa0e8c",
+      "size": 2122,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e5854dff5da771bf199d59e57d5f8265e5fa0e8c"
+    },
+    {
+      "path": "crates/formality-macros/src/debug.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "515dfd8603bc7026371fa45c5069dbff920f76f8",
+      "size": 11658,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/515dfd8603bc7026371fa45c5069dbff920f76f8"
+    },
+    {
+      "path": "crates/formality-macros/src/fixed_point.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "286fd89097109cbbd21da0c7a887b7cc3e33295e",
+      "size": 8608,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/286fd89097109cbbd21da0c7a887b7cc3e33295e"
+    },
+    {
+      "path": "crates/formality-macros/src/fold.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4acd8fc0e609634375a2d23738c43f243e3ced52",
+      "size": 1724,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/4acd8fc0e609634375a2d23738c43f243e3ced52"
+    },
+    {
+      "path": "crates/formality-macros/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "338c65a5b04340356ade4822b52ca7dfc0497de9",
+      "size": 3222,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/338c65a5b04340356ade4822b52ca7dfc0497de9"
+    },
+    {
+      "path": "crates/formality-macros/src/parse.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1faca4db536e7713f55ec38fddb8cd6ee4f047a4",
+      "size": 29503,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1faca4db536e7713f55ec38fddb8cd6ee4f047a4"
+    },
+    {
+      "path": "crates/formality-macros/src/precedence.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd9c0ebbb5ab6e3d3cfa6040984aaa4885323c14",
+      "size": 3450,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/cd9c0ebbb5ab6e3d3cfa6040984aaa4885323c14"
+    },
+    {
+      "path": "crates/formality-macros/src/reject.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ad54bfa2402cc52d662209357c9a9ad06e901a9",
+      "size": 4976,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1ad54bfa2402cc52d662209357c9a9ad06e901a9"
+    },
+    {
+      "path": "crates/formality-macros/src/spec.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "635794c643be8e5bb6ee558cb3327b5d05b210eb",
+      "size": 12394,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/635794c643be8e5bb6ee558cb3327b5d05b210eb"
+    },
+    {
+      "path": "crates/formality-macros/src/term.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "61990bdb348cc14e402a90b01f7d4aa3d5c75d72",
+      "size": 2209,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/61990bdb348cc14e402a90b01f7d4aa3d5c75d72"
+    },
+    {
+      "path": "crates/formality-macros/src/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9021506cdabdb07fe5d247092b9755c76235e35d",
+      "size": 334,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9021506cdabdb07fe5d247092b9755c76235e35d"
+    },
+    {
+      "path": "crates/formality-macros/src/variable.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a969d05de4b9b865b9a665e1dd640ccad30bba3b",
+      "size": 564,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a969d05de4b9b865b9a665e1dd640ccad30bba3b"
+    },
+    {
+      "path": "crates/formality-macros/src/visit.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9569a90b348606ff6e7953c2c2460e7e4dca953",
+      "size": 1453,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c9569a90b348606ff6e7953c2c2460e7e4dca953"
+    },
+    {
+      "path": "crates/formality-mdbook",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f1c385cf1a5cc0fe3729755ff9fcb904e872e73e",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/f1c385cf1a5cc0fe3729755ff9fcb904e872e73e"
+    },
+    {
+      "path": "crates/formality-mdbook/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d94fb957008d0c341386e65f3a5edd475fe780e",
+      "size": 420,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1d94fb957008d0c341386e65f3a5edd475fe780e"
+    },
+    {
+      "path": "crates/formality-mdbook/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f10e1d0d6b9b3aac29cca8fc747c67cb76b44e1a",
+      "size": 2026,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f10e1d0d6b9b3aac29cca8fc747c67cb76b44e1a"
+    },
+    {
+      "path": "crates/formality-mdbook/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0cb8fc7603756b59fc47c3a3fb3faa6dac6a2c01",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/0cb8fc7603756b59fc47c3a3fb3faa6dac6a2c01"
+    },
+    {
+      "path": "crates/formality-mdbook/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e659cd9e56e2721d4c6c1eaa6e003662e4fc843a",
+      "size": 24224,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e659cd9e56e2721d4c6c1eaa6e003662e4fc843a"
+    },
+    {
+      "path": "crates/formality-mdbook/src/main.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41a283fdee25e6dc0bb55019e7d356328c197540",
+      "size": 606,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/41a283fdee25e6dc0bb55019e7d356328c197540"
+    },
+    {
+      "path": "crates/formality-rust",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "35979e38d8ac0438a701963225bfc22a14673291",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/35979e38d8ac0438a701963225bfc22a14673291"
+    },
+    {
+      "path": "crates/formality-rust/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81cfbd565e36d171f22bd3861f25646a4392d322",
+      "size": 509,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/81cfbd565e36d171f22bd3861f25646a4392d322"
+    },
+    {
+      "path": "crates/formality-rust/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1bf785bdb7940198c8fab76707aa6f574e278a19",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/1bf785bdb7940198c8fab76707aa6f574e278a19"
+    },
+    {
+      "path": "crates/formality-rust/src/check",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b7f09c34a93756e7f70774d6befe6c6fab8a2f75",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/b7f09c34a93756e7f70774d6befe6c6fab8a2f75"
+    },
+    {
+      "path": "crates/formality-rust/src/check/adts.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87ceaf7b3eb36fe21468f507e6d549415d6ae328",
+      "size": 1935,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/87ceaf7b3eb36fe21468f507e6d549415d6ae328"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c078fb6349b206f72f213af834cd2ce3ed3b7dda",
+      "size": 126,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c078fb6349b206f72f213af834cd2ce3ed3b7dda"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5a1548d9313529c68942d706ee84797e513f5ea4",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/5a1548d9313529c68942d706ee84797e513f5ea4"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/env.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77fbfbcfa84fe277345a4e318aff26f6a06dd6aa",
+      "size": 12798,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/77fbfbcfa84fe277345a4e318aff26f6a06dd6aa"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/flow_state.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f24e44b961d1a6fe38e9cb9d7ec27c7f8a9ce32",
+      "size": 22491,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9f24e44b961d1a6fe38e9cb9d7ec27c7f8a9ce32"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/liveness.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e06961adaf977f55147f04269cd3e2e696282e33",
+      "size": 17307,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e06961adaf977f55147f04269cd3e2e696282e33"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/nll.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bed3123fb49d63c776d0651a7672db4ce0292914",
+      "size": 62731,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/bed3123fb49d63c776d0651a7672db4ce0292914"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/outlives.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b51805ebb8003ccf09c296cedb43887c118173bb",
+      "size": 3830,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b51805ebb8003ccf09c296cedb43887c118173bb"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/typed_place_expression.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "640a4b02ad50ef43c873f2ce0914331f827efaa7",
+      "size": 2637,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/640a4b02ad50ef43c873f2ce0914331f827efaa7"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/wf.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0202f1ce0e07ca367f67a25e8fb27ec50a61351",
+      "size": 138,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b0202f1ce0e07ca367f67a25e8fb27ec50a61351"
+    },
+    {
+      "path": "crates/formality-rust/src/check/coherence.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29ac534b2fab3b04a42d7776b4d94e89da22f318",
+      "size": 5330,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/29ac534b2fab3b04a42d7776b4d94e89da22f318"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0539796ecee990de41fc16795827156deadf7659",
+      "size": 444,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0539796ecee990de41fc16795827156deadf7659"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d17010c7fd3d11c044b5293541a85ea6a9b026ab",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/d17010c7fd3d11c044b5293541a85ea6a9b026ab"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate/copy.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ea0ebfdf732eb4c7a3e8b65ffe127a5403d7734",
+      "size": 518,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/3ea0ebfdf732eb4c7a3e8b65ffe127a5403d7734"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate/field_projections.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b79b8aab6eaf6a9044d1d3a0dcf7b4d3bb66abbc",
+      "size": 1487,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b79b8aab6eaf6a9044d1d3a0dcf7b4d3bb66abbc"
+    },
+    {
+      "path": "crates/formality-rust/src/check/fns.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cfb957f7b4224ea25dff19446e0cc49dfe8057ce",
+      "size": 3926,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/cfb957f7b4224ea25dff19446e0cc49dfe8057ce"
+    },
+    {
+      "path": "crates/formality-rust/src/check/impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d29b487fb36daa32afcccdf2dbf5abf5f06451d",
+      "size": 15102,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2d29b487fb36daa32afcccdf2dbf5abf5f06451d"
+    },
+    {
+      "path": "crates/formality-rust/src/check/mini_rust_check",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ef1ec4e31021810b86323abfa6c454c0d9d07040",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/ef1ec4e31021810b86323abfa6c454c0d9d07040"
+    },
+    {
+      "path": "crates/formality-rust/src/check/mini_rust_check/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2578d29b5ac15ad9d09a3e53a07dc7c8c60cddcc",
+      "size": 880,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2578d29b5ac15ad9d09a3e53a07dc7c8c60cddcc"
+    },
+    {
+      "path": "crates/formality-rust/src/check/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f8439864231e3b367ec6fe7ef8e142ab8f77b9ea",
+      "size": 10492,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f8439864231e3b367ec6fe7ef8e142ab8f77b9ea"
+    },
+    {
+      "path": "crates/formality-rust/src/check/traits.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a19b258ac1a43fb6b22978e51cceecd63cc9222",
+      "size": 4226,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/3a19b258ac1a43fb6b22978e51cceecd63cc9222"
+    },
+    {
+      "path": "crates/formality-rust/src/check/where_clauses.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b0056751cacb6e9f75c8b8a9000a430cec529e6",
+      "size": 645,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/5b0056751cacb6e9f75c8b8a9000a430cec529e6"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d8e8827a56a050efade73b7951e3a3d70c22e82",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/2d8e8827a56a050efade73b7951e3a3d70c22e82"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/code_block.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6416fe759d85edbe11f15df492270bfa61eb5759",
+      "size": 20951,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6416fe759d85edbe11f15df492270bfa61eb5759"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/helpers.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f87e459d073fe33a9bdecaadeb048d4e6f6430f2",
+      "size": 12074,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f87e459d073fe33a9bdecaadeb048d4e6f6430f2"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/minirust.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b62659aaf0cdbce4d35a39f8da8876e91139742d",
+      "size": 11045,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b62659aaf0cdbce4d35a39f8da8876e91139742d"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f83fc22a529e83625a75f75be6841f5227555b4",
+      "size": 16350,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8f83fc22a529e83625a75f75be6841f5227555b4"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/scope.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e28649bf9bebbbb7f7b07b5988ea041126f3280",
+      "size": 10219,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1e28649bf9bebbbb7f7b07b5988ea041126f3280"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e30c2af6f238798f9065e82dcf8d3b2070ac01f6",
+      "size": 482,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e30c2af6f238798f9065e82dcf8d3b2070ac01f6"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c70f340dbe81a0b4a9188c132857204bbc5548a6",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/c70f340dbe81a0b4a9188c132857204bbc5548a6"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/consts.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0b797bd47807b08758e45ae516f0e53ce12933d",
+      "size": 1977,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e0b797bd47807b08758e45ae516f0e53ce12933d"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/crates.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c8a4a22a4d11b5c32edf17af4acbb7d39a1f6af",
+      "size": 1668,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7c8a4a22a4d11b5c32edf17af4acbb7d39a1f6af"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/expr",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "825eecf71dbea0a4311a93dcac71a51f7bfdf09c",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/825eecf71dbea0a4311a93dcac71a51f7bfdf09c"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/expr/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aee375abad321172bbc9fbc76d22a86c56de0ce7",
+      "size": 6939,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/aee375abad321172bbc9fbc76d22a86c56de0ce7"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/expr/parse_expr.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7ce3fe576387dba37fbb2b1110e135b7fd39b90",
+      "size": 1086,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d7ce3fe576387dba37fbb2b1110e135b7fd39b90"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/feature.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f54628c30af01e36c0ee155a358889d14408dc39",
+      "size": 419,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f54628c30af01e36c0ee155a358889d14408dc39"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/fns.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b294da4eb83d117d601dcffe5b19415366ed0217",
+      "size": 798,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b294da4eb83d117d601dcffe5b19415366ed0217"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/formulas.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6afd564beaa1ddb2c695248f0589e00468c61641",
+      "size": 5895,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6afd564beaa1ddb2c695248f0589e00468c61641"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ids.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f80ee1a64a496887afb94c18495fbbd706e49191",
+      "size": 305,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f80ee1a64a496887afb94c18495fbbd706e49191"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/kinded.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "694c50f77233da9495d1e7aae52fba88ffea11f0",
+      "size": 943,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/694c50f77233da9495d1e7aae52fba88ffea11f0"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/predicate.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25b2c1f4197bd5ea9a331d96466ba21783d6e56b",
+      "size": 5150,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/25b2c1f4197bd5ea9a331d96466ba21783d6e56b"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/program.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01e7a6cb28b13515baace6cc3ea91dfb6b96d25b",
+      "size": 4243,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/01e7a6cb28b13515baace6cc3ea91dfb6b96d25b"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/structs_enums_and_adts.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc42142db4cf9a246d6e9188d6f773306139a02b",
+      "size": 2073,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/fc42142db4cf9a246d6e9188d6f773306139a02b"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/traits_and_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf472c741e968f926ac66cc7863f58138ae27e94",
+      "size": 5946,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/bf472c741e968f926ac66cc7863f58138ae27e94"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e98dbac0f1b554e020688e559bb718cd1df33e1",
+      "size": 8637,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8e98dbac0f1b554e020688e559bb718cd1df33e1"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "01990f2bec98e2f7c7132afd27666f3cc474aeb1",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/01990f2bec98e2f7c7132afd27666f3cc474aeb1"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/debug_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ac94b1170c062139f9902ffb475904f718ac9d1",
+      "size": 3843,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9ac94b1170c062139f9902ffb475904f718ac9d1"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/parse_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f9a7f70f771ee96bece7a0ba7376a7097e30503",
+      "size": 6414,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/3f9a7f70f771ee96bece7a0ba7376a7097e30503"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/term_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2b66892f92d1f85be8b23b5c443087637a5c2dd",
+      "size": 2179,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e2b66892f92d1f85be8b23b5c443087637a5c2dd"
+    },
+    {
+      "path": "crates/formality-rust/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "201cfecfa5a873a258ebbbecc55fb3399e4899e3",
+      "size": 1161,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/201cfecfa5a873a258ebbbecc55fb3399e4899e3"
+    },
+    {
+      "path": "crates/formality-rust/src/prove.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4662165401d4327bfedbac2b7193f62f06470616",
+      "size": 7546,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/4662165401d4327bfedbac2b7193f62f06470616"
+    },
+    {
+      "path": "crates/formality-rust/src/prove",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4bcdd217601abaac98bd96c813917c3678d05043",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/4bcdd217601abaac98bd96c813917c3678d05043"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/combinators.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f5cbd1390736ee8b742d025f9168af94f3439e9",
+      "size": 2125,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/5f5cbd1390736ee8b742d025f9168af94f3439e9"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/constraints.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f18413d17aaf96abf9c3c42fb2b0310837a1459d",
+      "size": 8135,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f18413d17aaf96abf9c3c42fb2b0310837a1459d"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/db.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size": 1,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/decls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55a67952571f2b103c1fcaef24ead41287687e81",
+      "size": 14387,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/55a67952571f2b103c1fcaef24ead41287687e81"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/env.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "433cba3e05096362745847e83465e0f0e03efbc5",
+      "size": 12590,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/433cba3e05096362745847e83465e0f0e03efbc5"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/is_local.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22193debfd0399861e06a8d128c783f159cfb29d",
+      "size": 13529,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/22193debfd0399861e06a8d128c783f159cfb29d"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/minimize.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d92ffd810aaef67833fb3491f2d5cac12d08ee3d",
+      "size": 6473,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d92ffd810aaef67833fb3491f2d5cac12d08ee3d"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/minimize",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ee41b00aa2a39225d07cf2425f73a9f3db9b3eb4",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/ee41b00aa2a39225d07cf2425f73a9f3db9b3eb4"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/minimize/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7db65557dab0e4d3f40172ccd89cc48a933d0fa",
+      "size": 1867,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a7db65557dab0e4d3f40172ccd89cc48a933d0fa"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/negation.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ebbc69ced727cd306b3b40905e660129bed1176",
+      "size": 5356,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/4ebbc69ced727cd306b3b40905e660129bed1176"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_after.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd9fbbe9bd3f413d0b2f448842ff0fe3c7297656",
+      "size": 652,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/fd9fbbe9bd3f413d0b2f448842ff0fe3c7297656"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_const_has_type.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1cda8086f5068800c8ead8f19a06b7f3fceea38",
+      "size": 1367,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b1cda8086f5068800c8ead8f19a06b7f3fceea38"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_eq.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45c97a7f84543311e7def76263a04f2a2630a6d1",
+      "size": 8332,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/45c97a7f84543311e7def76263a04f2a2630a6d1"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_normalize.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93e23740ed86bfbfa2b57da5c17c0d491362ec89",
+      "size": 7372,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/93e23740ed86bfbfa2b57da5c17c0d491362ec89"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_outlives.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b6bbee0cf27ce7d58bf285e887b60117f8f4d2f",
+      "size": 5309,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6b6bbee0cf27ce7d58bf285e887b60117f8f4d2f"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_predicate.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "583b8e9402cc7618eeb3d75bf3487136e38922ba",
+      "size": 7569,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/583b8e9402cc7618eeb3d75bf3487136e38922ba"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_predicate_list.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60e2e6c38d7c0ff037bd8c8a423c8a2ecdc1ae60",
+      "size": 985,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/60e2e6c38d7c0ff037bd8c8a423c8a2ecdc1ae60"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_sub.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b059ac06b05bf95b07e16689e04ea0b52facf16f",
+      "size": 1931,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/b059ac06b05bf95b07e16689e04ea0b52facf16f"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_via.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f8ed8dc3aa39d8a706635acdd92557d225f5ca9",
+      "size": 3116,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/3f8ed8dc3aa39d8a706635acdd92557d225f5ca9"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_wf.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a19971efa3b757acaa0edacb8efe8b55c3229f7d",
+      "size": 3977,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a19971efa3b757acaa0edacb8efe8b55c3229f7d"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f04b7e1284714cb8c6f1e7c426e5962d11ac5480",
+      "size": 170,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f04b7e1284714cb8c6f1e7c426e5962d11ac5480"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "285dc787334088b0fa3f35c8b2bc546bd2b4323b",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/285dc787334088b0fa3f35c8b2bc546bd2b4323b"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/adt_wf.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3cee962195a7a473ecee08f8ea657ae7f14638e9",
+      "size": 2132,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/3cee962195a7a473ecee08f8ea657ae7f14638e9"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/eq_assumptions.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83cc6b181e499effb34e3b0cd8e47e8ebb839df2",
+      "size": 6853,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/83cc6b181e499effb34e3b0cd8e47e8ebb839df2"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/eq_partial_eq.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e4874ea5d626f8ca89ea969164cc93efae11dde",
+      "size": 3128,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0e4874ea5d626f8ca89ea969164cc93efae11dde"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/exists_constraints.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07df78aee4b8e70f37131413576aaa5845a1ec01",
+      "size": 833,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/07df78aee4b8e70f37131413576aaa5845a1ec01"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/expanding.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9eac7a50ebbadf3412b7709c958f4bd34638f02",
+      "size": 793,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d9eac7a50ebbadf3412b7709c958f4bd34638f02"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/is_local.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e6767d2dadbf67c2b632d194fe62fe339d084f5",
+      "size": 1063,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1e6767d2dadbf67c2b632d194fe62fe339d084f5"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/magic_copy.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1500e6c2795f86af6ee8361f87ccba0d6c1d4a53",
+      "size": 3943,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1500e6c2795f86af6ee8361f87ccba0d6c1d4a53"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/occurs_check.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70801211004e2ac9bb55cc0b84c6e3c68544e954",
+      "size": 3451,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/70801211004e2ac9bb55cc0b84c6e3c68544e954"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/simple_impl.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6bb33d6feccb4e232a2572607c10e0347f09e12e",
+      "size": 1106,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6bb33d6feccb4e232a2572607c10e0347f09e12e"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/universes.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7bb313daa5664f1e5845d96fd8f5bb83412073c0",
+      "size": 1645,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7bb313daa5664f1e5845d96fd8f5bb83412073c0"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test_util.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e9b3a2046a8f1da3a2cd8fecf7470255baa6908",
+      "size": 2079,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/0e9b3a2046a8f1da3a2cd8fecf7470255baa6908"
+    },
+    {
+      "path": "crates/formality-rust/src/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be3952a1d7660f6555f9d8cc16b075b8a5ef738b",
+      "size": 10124,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/be3952a1d7660f6555f9d8cc16b075b8a5ef738b"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "69adf2d8cb6b37c747a8b469467f9eb754ee58ee",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/69adf2d8cb6b37c747a8b469467f9eb754ee58ee"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/context.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95d5cd465712e123104152045f49a1c6a1c13047",
+      "size": 11617,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/95d5cd465712e123104152045f49a1c6a1c13047"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/crates.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ba185d9d222af9bd17a1a1fe7706ac06e0f26c7",
+      "size": 2833,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9ba185d9d222af9bd17a1a1fe7706ac06e0f26c7"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/expr.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6814eefb93ca0a7ad991eeb3e7523bc1758e0fc8",
+      "size": 8736,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6814eefb93ca0a7ad991eeb3e7523bc1758e0fc8"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/feature_gate.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f33c1864b4c9238494d294b8cb2a3679017ab476",
+      "size": 512,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f33c1864b4c9238494d294b8cb2a3679017ab476"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/fns.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa8abc49184d837d1e8f2f11b2fabeee202965f0",
+      "size": 3800,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/aa8abc49184d837d1e8f2f11b2fabeee202965f0"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4fa57af60c611bbec5d34983cd7d51f1d06fe84",
+      "size": 10725,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f4fa57af60c611bbec5d34983cd7d51f1d06fe84"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/structs_enums_and_adts.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dbe442c02ef1fb58ae0725169264243a42c94e0",
+      "size": 4610,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9dbe442c02ef1fb58ae0725169264243a42c94e0"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/syntax.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "908814f8fa892869b97c9b8c4d43955a10d4a130",
+      "size": 30305,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/908814f8fa892869b97c9b8c4d43955a10d4a130"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/test_util.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f95e1fa080b4eb69ed683cffadf3a96f4790698d",
+      "size": 1511,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f95e1fa080b4eb69ed683cffadf3a96f4790698d"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/traits_and_impls.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "baf0fcbe643c6489066f81f9840dcc8d106bd766",
+      "size": 10036,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/baf0fcbe643c6489066f81f9840dcc8d106bd766"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/tys.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55dfee88a70eb3446a792642120edcb9d78cce17",
+      "size": 17241,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/55dfee88a70eb3446a792642120edcb9d78cce17"
+    },
+    {
+      "path": "crates/formality-rust/src/trait_binder.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8312fea13f9809296a21af5999799ee506e3f6ae",
+      "size": 3740,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8312fea13f9809296a21af5999799ee506e3f6ae"
+    },
+    {
+      "path": "crates/formality-rust/src/types",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "46613e4fdfbe14a74e21b2a6eca1b895699d5e6d",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/46613e4fdfbe14a74e21b2a6eca1b895699d5e6d"
+    },
+    {
+      "path": "crates/formality-rust/src/types/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9da2c4a9539ab323eadf3d36e7a35d1f866779d",
+      "size": 21,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f9da2c4a9539ab323eadf3d36e7a35d1f866779d"
+    },
+    {
+      "path": "crates/formality-rust/src/types/visit.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f41c5e7d9273ab0bc0444f4ae3cf40150ebe4756",
+      "size": 114,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/f41c5e7d9273ab0bc0444f4ae3cf40150ebe4756"
+    },
+    {
+      "path": "crates/minirust-rs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "62f29f274528dc9e504b91b57dad8b0ca4565b07",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/62f29f274528dc9e504b91b57dad8b0ca4565b07"
+    },
+    {
+      "path": "crates/minirust-rs/Cargo.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2da0b0126e20d761a7d176698b279e036b56bfe6",
+      "size": 6446,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2da0b0126e20d761a7d176698b279e036b56bfe6"
+    },
+    {
+      "path": "crates/minirust-rs/Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8138068235316ee1f714fc0ca9bc99abf2a7a31f",
+      "size": 152,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8138068235316ee1f714fc0ca9bc99abf2a7a31f"
+    },
+    {
+      "path": "crates/minirust-rs/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c807622d3b421db8d19ebb3936261290d37ea610",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/c807622d3b421db8d19ebb3936261290d37ea610"
+    },
+    {
+      "path": "crates/minirust-rs/src/lang.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d690cd1450f1e63370da3289201eb0056d4e5ac0",
+      "size": 206790,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d690cd1450f1e63370da3289201eb0056d4e5ac0"
+    },
+    {
+      "path": "crates/minirust-rs/src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a765667cc3801b68cf2e7fb36d5bca80521abce",
+      "size": 298,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6a765667cc3801b68cf2e7fb36d5bca80521abce"
+    },
+    {
+      "path": "crates/minirust-rs/src/mem.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef0ee1f642550d1637a78d9ab926e67439ef9301",
+      "size": 63205,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/ef0ee1f642550d1637a78d9ab926e67439ef9301"
+    },
+    {
+      "path": "crates/minirust-rs/src/prelude.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cdc22c7264625fc549e7ccf7e12ed40163e4a39",
+      "size": 3405,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2cdc22c7264625fc549e7ccf7e12ed40163e4a39"
+    },
+    {
+      "path": "examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "25ce436421949893e6325db57c5aa7ddfc76b10b",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/25ce436421949893e6325db57c5aa7ddfc76b10b"
+    },
+    {
+      "path": "examples/formality-eg",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f58b48581a199014df46fe2e9a42c581d6d65dbc",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/f58b48581a199014df46fe2e9a42c581d6d65dbc"
+    },
+    {
+      "path": "examples/formality-eg/grammar.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6686a2892909c90e13be5167c124c99d2d91f4b5",
+      "size": 3083,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6686a2892909c90e13be5167c124c99d2d91f4b5"
+    },
+    {
+      "path": "examples/formality-eg/grammar",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "46f8762cfe018fa3820e8bbfdc180992a7d656af",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/46f8762cfe018fa3820e8bbfdc180992a7d656af"
+    },
+    {
+      "path": "examples/formality-eg/grammar/test.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bbb5fe0c2024eef6ab3ab4b7a8de91ee4bc585f",
+      "size": 2060,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/4bbb5fe0c2024eef6ab3ab4b7a8de91ee4bc585f"
+    },
+    {
+      "path": "examples/formality-eg/main.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "012159f688f0262ddbf963f3707248c20014aae5",
+      "size": 546,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/012159f688f0262ddbf963f3707248c20014aae5"
+    },
+    {
+      "path": "examples/formality-eg/type_system.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size": 1,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/8b137891791fe96927ad78e64b0aad7bded08bdc"
+    },
+    {
+      "path": "flake.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9509b771e31b90d089bc60665c1a1eb745029d6",
+      "size": 2459,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d9509b771e31b90d089bc60665c1a1eb745029d6"
+    },
+    {
+      "path": "flake.nix",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "629d5c8955df24b312151e39cc374e7bf6595bb1",
+      "size": 689,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/629d5c8955df24b312151e39cc374e7bf6595bb1"
+    },
+    {
+      "path": "reformat-logs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a05d1b756d8479a41218c2638c4658bdd9eb1e1e",
+      "size": 3926,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a05d1b756d8479a41218c2638c4658bdd9eb1e1e"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5fd35b000e7841ed0ea0748d559030faee0cd589",
+      "size": 134,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/5fd35b000e7841ed0ea0748d559030faee0cd589"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "08e0927bdc028df26395c8759f367197e59b2a74",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/08e0927bdc028df26395c8759f367197e59b2a74"
+    },
+    {
+      "path": "scripts/update-minirust.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "c48cd549b3200b7ee22a085596996e7a13c86860",
+      "size": 2725,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c48cd549b3200b7ee22a085596996e7a13c86860"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "24988af13efd03aa3521c290b95713c5125698af",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/24988af13efd03aa3521c290b95713c5125698af"
+    },
+    {
+      "path": "src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "453cf3965747a17f3e0a5cc88bb805c8d2ce0d99",
+      "size": 2485,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/453cf3965747a17f3e0a5cc88bb805c8d2ce0d99"
+    },
+    {
+      "path": "src/main.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5d5203893580535a607670601d2d0d4efd7e8a6",
+      "size": 97,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d5d5203893580535a607670601d2d0d4efd7e8a6"
+    },
+    {
+      "path": "src/test_util.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e1fa92a72ae3718785bb6f3dda1816f7ce99097",
+      "size": 10171,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9e1fa92a72ae3718785bb6f3dda1816f7ce99097"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6a9fab10966ba2489db0ce94a2659e2e17af8ae1",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/6a9fab10966ba2489db0ce94a2659e2e17af8ae1"
+    },
+    {
+      "path": "tests/associated_type_normalization.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d518e9a20186b54ee4990d804c936630a8b41c17",
+      "size": 761,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/d518e9a20186b54ee4990d804c936630a8b41c17"
+    },
+    {
+      "path": "tests/basic_tests.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5075b14076a6c55c091ece11d4ebc5d4d2f12540",
+      "size": 13575,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/5075b14076a6c55c091ece11d4ebc5d4d2f12540"
+    },
+    {
+      "path": "tests/borrowck.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de8c5fda423072e9790f6b6f50a9987b9e0dcbee",
+      "size": 356664,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/de8c5fda423072e9790f6b6f50a9987b9e0dcbee"
+    },
+    {
+      "path": "tests/codegen.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c640a987d8ab215421cea73d66d7eee4b0e90935",
+      "size": 10432,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c640a987d8ab215421cea73d66d7eee4b0e90935"
+    },
+    {
+      "path": "tests/coherence_orphan.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bafe41bb757f4e7746e4f362747e4f7824375e0",
+      "size": 18918,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2bafe41bb757f4e7746e4f362747e4f7824375e0"
+    },
+    {
+      "path": "tests/coherence_overlap.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7116fb47a98c6f862d5d136c4b942b8c3321ebfc",
+      "size": 41607,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/7116fb47a98c6f862d5d136c4b942b8c3321ebfc"
+    },
+    {
+      "path": "tests/const_generics_rv_tsv_parse.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58d925d23875451f7319148451bc5ce88f42c8b9",
+      "size": 309,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/58d925d23875451f7319148451bc5ce88f42c8b9"
+    },
+    {
+      "path": "tests/consts.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81d7515eb2909266f745c2af0e096be0d4127643",
+      "size": 5209,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/81d7515eb2909266f745c2af0e096be0d4127643"
+    },
+    {
+      "path": "tests/decl_safety.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84ae23c33f0f3cd049623588992ac2f4ac2fe3e0",
+      "size": 4293,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/84ae23c33f0f3cd049623588992ac2f4ac2fe3e0"
+    },
+    {
+      "path": "tests/drop.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32a7b53d435a00cfd3abb907f4b5495dbc4f830b",
+      "size": 8727,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/32a7b53d435a00cfd3abb907f4b5495dbc4f830b"
+    },
+    {
+      "path": "tests/field_projections.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10021f635972b27d8eeee27586c28b078259062f",
+      "size": 328,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/10021f635972b27d8eeee27586c28b078259062f"
+    },
+    {
+      "path": "tests/functions.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa16f5b10f97440e68befe43ee3103c9eb78eefc",
+      "size": 1567,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/aa16f5b10f97440e68befe43ee3103c9eb78eefc"
+    },
+    {
+      "path": "tests/judgment-error-reporting",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "47d478d1fc88152979582e53c805bec02112b0b9",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/47d478d1fc88152979582e53c805bec02112b0b9"
+    },
+    {
+      "path": "tests/judgment-error-reporting/cyclic_judgment.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a543af08004ea967cfcc94dfe7740c058078fbc",
+      "size": 6764,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6a543af08004ea967cfcc94dfe7740c058078fbc"
+    },
+    {
+      "path": "tests/judgment-error-reporting/fallible.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2aab36dae4ec0e004ff067bfec2fe1be4b455a4d",
+      "size": 1224,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2aab36dae4ec0e004ff067bfec2fe1be4b455a4d"
+    },
+    {
+      "path": "tests/judgment-error-reporting/grammar.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "301abdc8854ce1b4e39021be523a842afd0a5124",
+      "size": 1556,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/301abdc8854ce1b4e39021be523a842afd0a5124"
+    },
+    {
+      "path": "tests/judgment-error-reporting/main.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da0b7a2f6babcef03dd7a7edb8dccd501b8e438f",
+      "size": 544,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/da0b7a2f6babcef03dd7a7edb8dccd501b8e438f"
+    },
+    {
+      "path": "tests/mir_typeck.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a86144c722230e87daefb37bc144e797a2d843a",
+      "size": 37272,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2a86144c722230e87daefb37bc144e797a2d843a"
+    },
+    {
+      "path": "tests/parser-torture-tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "34db398f6276810889f71618692d1894cdb8bb3e",
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/trees/34db398f6276810889f71618692d1894cdb8bb3e"
+    },
+    {
+      "path": "tests/parser-torture-tests/ambiguity.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9b799b4e439d7c5234bca5a6d992703bed052a0",
+      "size": 5169,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c9b799b4e439d7c5234bca5a6d992703bed052a0"
+    },
+    {
+      "path": "tests/parser-torture-tests/ambiguity_helpers.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e367b9e5e515c0e3d12eace98adcafa6302566ae",
+      "size": 39463,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/e367b9e5e515c0e3d12eace98adcafa6302566ae"
+    },
+    {
+      "path": "tests/parser-torture-tests/commit_points.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49211f1cce5ec19b0d3c74c6bc7401e81055b79c",
+      "size": 2136,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/49211f1cce5ec19b0d3c74c6bc7401e81055b79c"
+    },
+    {
+      "path": "tests/parser-torture-tests/grammar.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90e1767c77f8a03008433a520f535884b1d472a7",
+      "size": 1556,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/90e1767c77f8a03008433a520f535884b1d472a7"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_associative.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6189696237346304552fa6e4fba8dc83df80d0a5",
+      "size": 2977,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6189696237346304552fa6e4fba8dc83df80d0a5"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_recursion_seed.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1eb61a8f7fac2ada179c3315e755f9a61c0b868b",
+      "size": 3685,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1eb61a8f7fac2ada179c3315e755f9a61c0b868b"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_recursion_seed_bias.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "baf4fc33eb01c30b2a02af5d13f5feeeee6c4d0e",
+      "size": 9825,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/baf4fc33eb01c30b2a02af5d13f5feeeee6c4d0e"
+    },
+    {
+      "path": "tests/parser-torture-tests/main.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c65265f3726b2db19ad9af991ea7ec6f8138c3a",
+      "size": 1829,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/6c65265f3726b2db19ad9af991ea7ec6f8138c3a"
+    },
+    {
+      "path": "tests/parser-torture-tests/none_associative.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26b7c70fe622724508079c644420085603acbb3f",
+      "size": 2085,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/26b7c70fe622724508079c644420085603acbb3f"
+    },
+    {
+      "path": "tests/parser-torture-tests/path.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1862f288c9e4b87b6e6b576a6cf9680bb5945f55",
+      "size": 778,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/1862f288c9e4b87b6e6b576a6cf9680bb5945f55"
+    },
+    {
+      "path": "tests/parser-torture-tests/reject.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a81774c52407cafd6987d68ca1c1d14159b40d8a",
+      "size": 9277,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a81774c52407cafd6987d68ca1c1d14159b40d8a"
+    },
+    {
+      "path": "tests/parser-torture-tests/right_associative.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "966f3370b476c87aaa4ce462db6da3d8eb8110a8",
+      "size": 2975,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/966f3370b476c87aaa4ce462db6da3d8eb8110a8"
+    },
+    {
+      "path": "tests/parser_var_id_ambiguity.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3db3d45b78e2c125a168c00f46dbfc771fec2bd",
+      "size": 4860,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/a3db3d45b78e2c125a168c00f46dbfc771fec2bd"
+    },
+    {
+      "path": "tests/projection.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdc22a19cf89e05338878c26b6ecd33a513c30c7",
+      "size": 5175,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/fdc22a19cf89e05338878c26b6ecd33a513c30c7"
+    },
+    {
+      "path": "tests/references.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "313565f7537db5f47573cd0384f6839d52cd5abc",
+      "size": 1777,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/313565f7537db5f47573cd0384f6839d52cd5abc"
+    },
+    {
+      "path": "tests/return_validation.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c919ca2d35260e7fb81f6d0aec11c42c89790289",
+      "size": 3563,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/c919ca2d35260e7fb81f6d0aec11c42c89790289"
+    },
+    {
+      "path": "tests/traits.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46c7f28ab5d31127d84686ec93e6e86c307bba9c",
+      "size": 1094,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/46c7f28ab5d31127d84686ec93e6e86c307bba9c"
+    },
+    {
+      "path": "tests/well_formed_struct.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19a987f09450a52e8277da0418a6340352e19d45",
+      "size": 376,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/19a987f09450a52e8277da0418a6340352e19d45"
+    },
+    {
+      "path": "tests/well_formed_trait_ref.rs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9025a2b2d942c0d5c072766bae4183d45f3f2845",
+      "size": 2894,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/9025a2b2d942c0d5c072766bae4183d45f3f2845"
+    },
+    {
+      "path": "triagebot.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55eef14f71789556beb177ffecefb473dc18bb09",
+      "size": 932,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/55eef14f71789556beb177ffecefb473dc18bb09"
+    },
+    {
+      "path": "wip.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2465461a493360e03e750fa03251cbaef95cf169",
+      "size": 25136,
+      "url": "https://api.github.com/repos/rust-lang/a-mir-formality/git/blobs/2465461a493360e03e750fa03251cbaef95cf169"
+    }
+  ],
+  "truncated": false
+}

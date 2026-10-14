@@ -1,0 +1,16 @@
+{
+  "label": "minirun-basic",
+  "argv": [
+    "@CAPTURE@/target/debug/minirun",
+    "@CAPTURE@/runs-after-harness-fix/upstream_ub_inv_bool/minirust.json"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_inv_bool",
+  "returncode": 101,
+  "seconds": 0.004176417000000016,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a7add6f2493f34c18ab61836cc00dd48b01a8137592ad16db5deda7f7bc2b79f",
+  "native_subject_execution": false
+}

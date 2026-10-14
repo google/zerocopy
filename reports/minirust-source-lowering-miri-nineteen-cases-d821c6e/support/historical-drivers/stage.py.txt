@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Bounded owned build driver. All mutable state stays beneath this task root."""
+from pathlib import Path
+import argparse,os,subprocess,time,json,re,signal,sys,hashlib
+ROOT=Path(__file__).resolve().parent
+TOOL=ROOT.parent/'toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin'
+def env():
+ e=os.environ.copy()
+ e.pop('RUSTC_BOOTSTRAP',None)
+ e.update(PATH=str(TOOL/'bin')+os.pathsep+e['PATH'],RUSTUP_HOME=str(ROOT.parent/'toolchains/rustup'),RUSTUP_TOOLCHAIN='nightly-2026-05-01',CARGO_HOME=str(ROOT/'cargo-home'),CARGO_TARGET_DIR=str(ROOT/'target'),CARGO_BUILD_JOBS='2',CARGO_PROFILE_DEV_DEBUG='0',CARGO_PROFILE_TEST_DEBUG='0',CARGO_INCREMENTAL='0',RUSTC=str(TOOL/'bin/rustc'),RUSTDOC=str(TOOL/'bin/rustdoc'),MINIRUST_SYSROOT=str(ROOT/'minimize-sysroot'),MIRI_SYSROOT=str(ROOT/'miri-sysroot'),XDG_CACHE_HOME=str(ROOT/'xdg-cache'),TMPDIR=str(ROOT/'tmp'),DYLD_LIBRARY_PATH=str(TOOL/'lib'),CARGO_HTTP_TIMEOUT='30',CARGO_NET_RETRY='1',RUST_BACKTRACE='1')
+ return e
+def bytes_used():
+ return sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file() and not p.is_symlink())
+def run(name,argv,timeout=300,cwd=None,extra=None):
+ (ROOT/'logs').mkdir(exist_ok=True);(ROOT/'status').mkdir(exist_ok=True);(ROOT/'tmp').mkdir(exist_ok=True)
+ e=env();e.update(extra or {})
+ out=ROOT/'logs'/f'{name}.log';start=time.monotonic();why=None;peak=0
+ with out.open('w') as log:
+  p=subprocess.Popen(argv,cwd=cwd or ROOT,env=e,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+  while p.poll() is None:
+   time.sleep(.2)
+   if 'sysroot' in name:
+    for manifest in (ROOT/'tmp').glob('*/Cargo.toml'):
+     for src in [manifest,manifest.with_name('Cargo.lock'),manifest.with_name('lib.rs')]:
+      try:
+       data=src.read_bytes()
+       if data or src.name=='lib.rs':
+        capture=ROOT/'captured-inputs'/name;capture.mkdir(parents=True,exist_ok=True)
+        (capture/(src.parent.name+'-'+src.name)).write_bytes(data)
+      except FileNotFoundError:pass # Tool-owned TempDir finished normally between observations.
+   elapsed=time.monotonic()-start
+   if elapsed>timeout:why='stage-time-limit'
+   if int(elapsed)%2==0:
+    peak=max(peak,bytes_used())
+    if peak>2*1024**3:why='task-directory-2GiB-limit'
+   if why:os.killpg(p.pid,signal.SIGTERM);break
+  code=p.wait()
+ text=out.read_text(errors='replace')
+ panic=bool(re.search(r"thread '[^']*' panicked|assertion[^\n]*failed|internal compiler error|LLVM ERROR|rustc unexpectedly panicked",text,re.I))
+ result=dict(name=name,argv=argv,cwd=str(cwd or ROOT),returncode=code,seconds=time.monotonic()-start,limit=why,panic_or_assertion=panic,task_bytes=bytes_used(),peak_task_bytes=peak,env={k:e[k] for k in ['RUSTUP_HOME','RUSTUP_TOOLCHAIN','CARGO_HOME','CARGO_TARGET_DIR','RUSTC','MINIRUST_SYSROOT','MIRI_SYSROOT','CARGO_BUILD_JOBS','CARGO_PROFILE_DEV_DEBUG','CARGO_INCREMENTAL','DYLD_LIBRARY_PATH']},log=str(out.relative_to(ROOT)),log_sha256=hashlib.sha256(out.read_bytes()).hexdigest())
+ (ROOT/'status'/f'{name}.json').write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps(result,indent=2))
+ return result
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('stage',choices=['fetch','fetch-sysroot','build','minimize-sysroot','miri-sysroot']);p.add_argument('--label');a=p.parse_args()
+ if a.stage=='fetch':r=run(a.label or 'fetch',[str(TOOL/'bin/cargo'),'fetch','--locked','--target','aarch64-apple-darwin','--manifest-path',str(ROOT/'workspace/tooling/Cargo.toml')],180)
+ elif a.stage=='fetch-sysroot':r=run(a.label or 'fetch-sysroot',[str(TOOL/'bin/cargo'),'fetch','--target','aarch64-apple-darwin','--manifest-path',str(ROOT/'sysroot-prefetch/Cargo.toml')],180)
+ elif a.stage=='build':r=run('build-minimize',[str(TOOL/'bin/cargo'),'build','--offline','--locked','-j2','--manifest-path',str(ROOT/'workspace/tooling/Cargo.toml'),'-p','minimize','-p','minirun'],300)
+ elif a.stage=='minimize-sysroot':r=run('minimize-sysroot',[str(ROOT/'target/debug/minimize')],300,extra={'MINIMIZE_BUILD_SYSROOT':'only','CARGO_NET_OFFLINE':'true'})
+ else:r=run('miri-sysroot',[str(TOOL/'bin/cargo'),'miri','setup','--target','aarch64-apple-darwin'],300,extra={'CARGO_NET_OFFLINE':'true'})
+ if r['returncode'] or r['panic_or_assertion'] or r['limit']:sys.exit(1)

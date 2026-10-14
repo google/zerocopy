@@ -1,0 +1,30 @@
+Preparing a sysroot for Miri (target: aarch64-apple-darwin)...
+   Compiling compiler_builtins v0.1.160 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)
+   Compiling core v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/core)
+   Compiling libc v0.2.185
+   Compiling object v0.37.3
+   Compiling std v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/std)
+   Compiling test v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/test)
+   Compiling rustc-std-workspace-core v1.99.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-core)
+   Compiling alloc v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/alloc)
+   Compiling unwind v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/unwind)
+   Compiling memchr v2.7.6
+   Compiling adler2 v2.0.1
+   Compiling rustc-demangle v0.1.27
+   Compiling panic_abort v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/panic_abort)
+   Compiling cfg-if v1.0.4
+   Compiling rustc-literal-escaper v0.0.7
+   Compiling rustc-std-workspace-alloc v1.99.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-alloc)
+   Compiling panic_unwind v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/panic_unwind)
+   Compiling gimli v0.32.3
+   Compiling addr2line v0.25.1
+   Compiling miniz_oxide v0.8.9
+   Compiling std_detect v0.1.5 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/std_detect)
+   Compiling hashbrown v0.17.0
+   Compiling rustc-std-workspace-std v1.99.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-std)
+   Compiling proc_macro v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/proc_macro)
+   Compiling getopts v0.2.24
+   Compiling sysroot v0.0.0 (@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/sysroot)
+   Compiling custom-local-sysroot v0.0.0 (@CAPTURE@/tmp/.tmpVcFZnS)
+    Finished `custom_sysroot` profile [optimized] target(s) in 10.49s
+A sysroot for Miri is now available in `@CAPTURE@/miri-sysroot`.

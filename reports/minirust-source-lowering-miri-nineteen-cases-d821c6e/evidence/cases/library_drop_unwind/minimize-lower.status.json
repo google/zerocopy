@@ -1,0 +1,22 @@
+{
+  "label": "minimize-lower",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize",
+    "--minimize-dump=json",
+    "@CAPTURE@/cases/library_drop_unwind.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs/library_drop_unwind",
+  "returncode": 101,
+  "seconds": 0.10868204199999999,
+  "classification": "diagnostic-or-tool-failure",
+  "unexpected_panic_or_assertion": true,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "c0b912b0927a5a4c980469d5666ad0b39d2fba05bf7cac8c8790283acca08d99",
+  "native_subject_execution": false
+}

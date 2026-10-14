@@ -1,0 +1,22 @@
+{
+  "label": "minimize-lower",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize",
+    "--minimize-dump=json",
+    "@CAPTURE@/cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+  "returncode": 0,
+  "seconds": 0.079254375,
+  "classification": "success",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "cd037143c251cffc26730b8df8b37e7dc012031ce2ada8f3eb635ed62929774c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_subject_execution": false
+}

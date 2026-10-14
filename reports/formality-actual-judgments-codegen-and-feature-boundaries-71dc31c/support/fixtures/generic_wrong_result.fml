@@ -1,0 +1,1 @@
+[crate test { fn identity<T>(x: T) -> T { return x; } fn main() -> () { let a: bool = identity::<i32>(42_i32); println!(a); } }]

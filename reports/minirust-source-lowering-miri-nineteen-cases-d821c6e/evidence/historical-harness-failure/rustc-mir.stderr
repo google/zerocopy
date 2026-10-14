@@ -1,0 +1,21 @@
+error: extern location for intrinsics is of an unknown type: @CAPTURE@/runs/upstream_pass_drop/mini-deps/intrinsics.rmeta
+ --> @CAPTURE@/cases/upstream_pass_drop.rs:1:1
+  |
+1 | extern crate intrinsics;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: file name should be lib*.rlib or lib*.dylib
+ --> @CAPTURE@/cases/upstream_pass_drop.rs:1:1
+  |
+1 | extern crate intrinsics;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0463]: can't find crate for `intrinsics`
+ --> @CAPTURE@/cases/upstream_pass_drop.rs:1:1
+  |
+1 | extern crate intrinsics;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `rustc --explain E0463`.

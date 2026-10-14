@@ -1,0 +1,146 @@
+{
+  "package": "kraken-consumer-bound-scalar-certificate-checker-8af7806",
+  "scope": "Frozen pure Lean consumer proof prototype",
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 1050,
+      "sha256": "e761d7568bbe302b2eff8117a56675e21c789a1205701eeab5b6babd87af3d21"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 11073,
+      "sha256": "a70716e8e5e9b6e49e51094bbb94c62453f98adc47e3dd35aa313a3e5afecfd7"
+    },
+    {
+      "path": "artifact-data.json",
+      "bytes": 804,
+      "sha256": "e009d759d3e30ebb7a0b9cd02d7e12371cccb8b137eb0b4839d6c65250d2a5d1"
+    },
+    {
+      "path": "artifacts/read-byte-a64.bin",
+      "bytes": 8,
+      "sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8"
+    },
+    {
+      "path": "artifacts/read-byte-frame.cert",
+      "bytes": 19,
+      "sha256": "9ea77dde02bf3455a6840a0018a28a83ff7e5f8f0420f49293d92c2512b53e62"
+    },
+    {
+      "path": "coverage.json",
+      "bytes": 3575,
+      "sha256": "8ffcbfca03dece78c597edda965e9a85b528b1331f24be9c29b6085e65edfd51"
+    },
+    {
+      "path": "development-status.json",
+      "bytes": 1476,
+      "sha256": "74671164914850918d21617cc9eaf68e68fe908dec6c98f0e4e6e06135d3ec61"
+    },
+    {
+      "path": "logs/Adapter.log",
+      "bytes": 2824,
+      "sha256": "f4a0f578e881e5ee2a55d1e6dc7e90a64ec1e08e3b69fb4c11db32b35b9e58ec"
+    },
+    {
+      "path": "logs/Consumer.log",
+      "bytes": 2882,
+      "sha256": "94a036cee33ab335be2cdde525290cf906b71b22a753b057795223ee6c59af91"
+    },
+    {
+      "path": "logs/adapter-dependency.log",
+      "bytes": 2824,
+      "sha256": "f4a0f578e881e5ee2a55d1e6dc7e90a64ec1e08e3b69fb4c11db32b35b9e58ec"
+    },
+    {
+      "path": "logs/consumer-attempt-01.log",
+      "bytes": 3375,
+      "sha256": "6be58484a19ef615972cec1fbc419183c28b2aa61daece7554a5efe6042ee069"
+    },
+    {
+      "path": "logs/consumer-attempt-02.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/consumer-attempt-03.log",
+      "bytes": 1118,
+      "sha256": "b224b7b343c71e8bb8878bef96c6d876e416628b9d78670b2a1ffbc1994b7a2d"
+    },
+    {
+      "path": "logs/consumer-attempt-04.log",
+      "bytes": 95,
+      "sha256": "f406acddbe50daa52fe4a6e6a14ed22110ecb9003310eb8b5a29c8325f5d9d34"
+    },
+    {
+      "path": "logs/consumer-attempt-05.log",
+      "bytes": 2882,
+      "sha256": "94a036cee33ab335be2cdde525290cf906b71b22a753b057795223ee6c59af91"
+    },
+    {
+      "path": "logs/independent-request-controls.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/independent-request-controls.stdout",
+      "bytes": 404,
+      "sha256": "779663ee6395230c34be12e547a9170a705f51b17faea7df360d05a3481329f6"
+    },
+    {
+      "path": "logs/replay-commands.json",
+      "bytes": 970,
+      "sha256": "2e08a9587aa739a5c7e15d07df64b43d534a37876cd0b3018c2f7cc03f7391b9"
+    },
+    {
+      "path": "logs/replay-driver.log",
+      "bytes": 134,
+      "sha256": "110660c62af64afae316d34f392353e7a914e41cc3cedfd7be276db075527193"
+    },
+    {
+      "path": "logs/replay-results.json",
+      "bytes": 12765,
+      "sha256": "53785c090de1a03b51b45e36e4b3dee43e4159ab0ee239dcb061bc187da88d30"
+    },
+    {
+      "path": "logs/version.log",
+      "bytes": 106,
+      "sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e"
+    },
+    {
+      "path": "publication-projection.json",
+      "bytes": 1198,
+      "sha256": "6452d869a1fcc0e8c94b00fb747e7b9eafc12ce4114ec9c109ec3134017f7c01"
+    },
+    {
+      "path": "source-evidence.json",
+      "bytes": 2206,
+      "sha256": "364c12b8525444de008768f332eb728c0ce373a6475a0f829541485770956cba"
+    },
+    {
+      "path": "support/Adapter.lean",
+      "bytes": 19514,
+      "sha256": "388afef2f745a482715848d5ecf48a662a58c591603d2f0681c64a2ca82f1f1e"
+    },
+    {
+      "path": "support/Consumer.lean",
+      "bytes": 15576,
+      "sha256": "c173a66c4e852a3cb405ba10c796a2896e41aa04e38ac5b851f8d82ca8644959"
+    },
+    {
+      "path": "support/ReviewControls.lean",
+      "bytes": 1031,
+      "sha256": "9e83aff323b93898c9edef3e19f3d5a96dd4e95437998cb4a79d3e435ca3aa72"
+    },
+    {
+      "path": "support/replay.py",
+      "bytes": 3600,
+      "sha256": "a0b17068e50eb6d6baa45c95444377e842494fc58dd675addb041d84ed7c35ce"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 684,
+      "sha256": "3a875e0271d6329035ae3dae9d9215b5f8339c5b0c5acbb633cef220f1ee9084"
+    }
+  ]
+}

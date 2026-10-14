@@ -1,0 +1,98 @@
+{
+  "package": "kraken-consumer-bound-scalar-certificate-checker-8af7806",
+  "milestones": [
+    {
+      "id": "E44",
+      "status": "bounded_pure_prototype_independently_replayed",
+      "answered_scope": "Actual executable pure Lean parser/checker separates producer data from consumer-owned full image, entry/PC, target/model/claim and logical premise selection; malformed, changed-subject, unsupported/weaker-claim controls checked",
+      "stronger_unestablished_claims": [
+        "compiled standalone consumer/file-reader correspondence",
+        "arbitrary proof formats and resource languages"
+      ],
+      "unexamined_gaps": [
+        "Parent publication/acceptance remains separate from this proof evidence"
+      ]
+    },
+    {
+      "id": "E45",
+      "status": "partial_universal_proof_progress",
+      "answered_scope": "For all raw certificate/candidate/request inputs, pure checker success implies exact serialization/exhaustion, complete structural image/claim binding, decoded executable and actual Kraken conditional resource/step/trace/frame meaning",
+      "stronger_unestablished_claims": [
+        "compiled checker/runtime adequacy",
+        "general Lean/SMT import/axiom/computation policy",
+        "file/loader correctness",
+        "actual Rust/MiniRust resource semantics"
+      ],
+      "unexamined_gaps": [
+        "Construct the remaining executable/import/resource correspondence arrows"
+      ]
+    },
+    {
+      "ids": [
+        "E28",
+        "E30"
+      ],
+      "status": "admitted_scalar_composition_only",
+      "answered_scope": "Binds raw data certificate to the existing checked scalar decoder/layout/effects/resource adapter without producer AST authority",
+      "stronger_unestablished_claims": [
+        "general source/parser/preprocessor/printer/loader correctness",
+        "generic access production or Rust/page authority"
+      ],
+      "unexamined_gaps": []
+    },
+    {
+      "ids": [
+        "E29",
+        "E35"
+      ],
+      "status": "not_discharged",
+      "answered_scope": "Formal Arm and actual Rust/MiniRust arrows remain explicitly external to the pure checker result",
+      "stronger_unestablished_claims": [
+        "formal reference ISA relation including GCS/tag/fault configuration",
+        "actual provenance/borrow/allocation/continuation relation"
+      ],
+      "unexamined_gaps": [
+        "Prove these actual operational relations"
+      ]
+    }
+  ],
+  "original_questions": [
+    {
+      "ids": [
+        "MR03",
+        "MR24",
+        "AS09",
+        "AS24"
+      ],
+      "sections": [
+        "Findings",
+        "Boundaries"
+      ],
+      "answered_scope": "Universal pure serialized checker soundness and consumer binding for one closed data grammar, with actual logical resource premises",
+      "stronger_unestablished_claims": [
+        "general proof-evidence consumer adequacy"
+      ],
+      "unexamined_gaps": [
+        "Compiled/file/import/runtime and broader resource proofs"
+      ]
+    },
+    {
+      "ids": [
+        "AS03",
+        "AS05",
+        "AS07",
+        "AS16",
+        "AS17"
+      ],
+      "sections": [
+        "Findings: Consumer binding is structural and universal",
+        "Findings: Acceptance implies the fixed actual machine contract"
+      ],
+      "answered_scope": "All-input binding through actual decoded scalar effects and map-cell resources; no hash equality premise",
+      "stronger_unestablished_claims": [
+        "filesystem/Mach-O/deployed image or actual Rust-resource correspondence"
+      ],
+      "unexamined_gaps": []
+    }
+  ]
+}

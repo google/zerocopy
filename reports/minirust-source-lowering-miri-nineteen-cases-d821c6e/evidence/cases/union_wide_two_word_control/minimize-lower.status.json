@@ -1,0 +1,22 @@
+{
+  "label": "minimize-lower",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize",
+    "--minimize-dump=json",
+    "@CAPTURE@/cases/union_wide_two_word_control.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs/union_wide_two_word_control",
+  "returncode": 0,
+  "seconds": 0.088099083,
+  "classification": "success",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "af65a03a290a96037b36c2e404305077ddb7b938567f621ae8872478f10559af",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_subject_execution": false
+}

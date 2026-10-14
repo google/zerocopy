@@ -1,0 +1,28 @@
+[package]
+authors = ["rustc-build-sysroot"]
+name = "custom-local-sysroot"
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+path = "lib.rs"
+
+[profile.custom_sysroot]
+inherits = "release"
+panic = "unwind"
+
+[dependencies.std]
+features = ["panic-unwind", "backtrace"]
+path = "@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/std"
+
+[dependencies.sysroot]
+path = "@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/sysroot"
+
+[patch.crates-io.rustc-std-workspace-core]
+path = "@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-core"
+
+[patch.crates-io.rustc-std-workspace-alloc]
+path = "@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-alloc"
+
+[patch.crates-io.rustc-std-workspace-std]
+path = "@RUST_TOOLCHAIN@/lib/rustlib/src/rust/library/rustc-std-workspace-std"

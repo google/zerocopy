@@ -1,0 +1,1 @@
+forall<T> {} => { Iterator(Vec<T>), <Vec<T> as Iterator>::Item = T }

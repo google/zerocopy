@@ -1,0 +1,43 @@
+{
+  "E05": {
+    "status": "partial_execution",
+    "sections": [
+      "F1. The actual source-to-model corpus has seventeen comparisons and two lowering failures",
+      "F2. The valid union copy exposes a one-word chunk for a two-word pointer",
+      "F3. The actual source enum rejects the invalid tag",
+      "F4. Allocation and caught-unwind cases stop at a specific foreign-item ICE",
+      "F5. The harness correction and stop are preserved as separate events"
+    ],
+    "completed_scope": "Nineteen source/MIR observations; seventeen actual emitted programs under both MiniRust models; two diagnosed lowering ICEs; source/layout diagnosis and controls.",
+    "remaining_actual_work": [
+      "Paired actual MIR-pass/optimized-MIR erasure and first-bad-prefix controls were not begun",
+      "No union repair or expanded metadata/nested-union/padding comparison exists",
+      "Actual Box and caught-unwind lowering has no model result"
+    ],
+    "future_semantic_obligations": [
+      "General source/import/representation and safety correspondence",
+      "General recursive union-chunk invariant and library/cleanup coverage"
+    ],
+    "report_body_sha256": "129b08f1a57e8fa5987dda369c3b4df2fe4e91c356f152f544eaa363f568d70d"
+  },
+  "E06": {
+    "status": "partial_execution",
+    "sections": [
+      "F1. The actual source-to-model corpus has seventeen comparisons and two lowering failures",
+      "F2. The valid union copy exposes a one-word chunk for a two-word pointer",
+      "F3. The actual source enum rejects the invalid tag"
+    ],
+    "completed_scope": "Nineteen captured Miri Tree Borrows results, seventeen actual-model comparisons: sixteen agreements and one valid-union false positive. Both MiniRust models agree on each of those seventeen outcomes.",
+    "remaining_actual_work": [
+      "Broader retag/protector/provenance/allocation-reuse/zero-size/race comparisons",
+      "No repaired-pipeline or expanded configuration replay"
+    ],
+    "not_inferred": [
+      "Interpreter equivalence or matched internal flags/parameters",
+      "General source adequacy or a safety-reflection theorem",
+      "MiniRust semantic UB/result for either lowering ICE"
+    ],
+    "report_body_sha256": "129b08f1a57e8fa5987dda369c3b4df2fe4e91c356f152f544eaa363f568d70d"
+  },
+  "reporting_scope": "Static projection only; no compiler/interpreter/tests/build/install/network or new code experiment. Original stop retained; exact automated flag operation unknown."
+}

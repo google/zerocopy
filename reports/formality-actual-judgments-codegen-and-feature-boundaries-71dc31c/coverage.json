@@ -1,0 +1,50 @@
+{
+  "execution_milestone": "E07",
+  "research_topics": [
+    "MR05",
+    "MR21",
+    "MR22"
+  ],
+  "status": "selected actual execution completed; full frontend/logic proof goals remain open",
+  "sections": [
+    "F1. Generic FnDef calls produce distinct checked instances",
+    "F2. Trusted checking and executable-body coverage differ",
+    "F3. Normalization uses implementations and assumptions, with negative controls",
+    "F4. Feature and owner scope is observable",
+    "F5. Safety markers constrain judgments without proving semantic trait laws",
+    "F6. Status and resource boundaries remain explicit"
+  ],
+  "performed": {
+    "owned_cases": 20,
+    "parse_rejections": 5,
+    "checking_rejections": 5,
+    "query_rejections": 2,
+    "post_check_codegen_rejection": 1,
+    "exit_zero_cases": 7,
+    "model_executions": 4,
+    "direct_upstream_test_functions": 4,
+    "package_only_same_binary_repeat_cases": 20
+  },
+  "actual_operational_stop": "Selected cargo test compilation stopped by1GiB target monitor at1110361762B; no suite execution through cargo. Parent permitted retention<=1.2GiB; no further compile or cleanup.",
+  "remaining_unperformed_experiments": [
+    "Full workspace/Cargo suite and six explicitly ignored AliasTy/Derefable codegen cases",
+    "Meaningfully distinguishing borrow-algorithm cases under every gate/mode",
+    "Actual rustc configured/expanded/generated owner import, coroutine/closure/drop shim ports",
+    "Current MiniRust/Miri correspondence and broader safe/unsafe source cases"
+  ],
+  "stronger_unestablished_claims": [
+    "Kernel-checked normalization/trait-solver/frontend safety theorem",
+    "Trusted function body implementation soundness or unsafe-trait semantic invariants",
+    "Source/body census completeness and actual Rust source-to-model correspondence",
+    "Compiler correctness, arbitrary safe-client theorem or physical memory resource interpretation"
+  ],
+  "evidence": [
+    "support/observed-cases.tar.gz",
+    "support/actual-outcome-summary.json",
+    "support/phase-logs",
+    "support/direct-tests",
+    "feature-and-owner-census.json",
+    "support/package-only-replay-validation.json"
+  ],
+  "report_body_sha256": "4b389e80be3e404860d8ec294b6b9a818da38547c54f86fdb7e8b04aba05a23b"
+}

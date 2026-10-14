@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "proof/certificates",
+    "proof/consumer-binding",
+    "assembly/byte-certificates",
+    "memory/permissions",
+    "kraken",
+    "lean/axioms"
+  ],
+  "subjects": [
+    {
+      "name": "Kraken AArch64",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Owned raw AArch64 image",
+      "identity": {
+        "artifact": "artifacts/read-byte-a64.bin",
+        "sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8"
+      }
+    },
+    {
+      "name": "Owned serialized certificate",
+      "identity": {
+        "artifact": "artifacts/read-byte-frame.cert",
+        "sha256": "9ea77dde02bf3455a6840a0018a28a83ff7e5f8f0420f49293d92c2512b53e62"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

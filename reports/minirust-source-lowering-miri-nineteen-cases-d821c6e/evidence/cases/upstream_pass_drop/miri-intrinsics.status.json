@@ -1,0 +1,29 @@
+{
+  "label": "miri-intrinsics",
+  "argv": [
+    "@RUST_TOOLCHAIN@/bin/miri",
+    "--sysroot",
+    "@CAPTURE@/miri-sysroot",
+    "--crate-name",
+    "intrinsics",
+    "--crate-type=lib",
+    "--emit=metadata",
+    "@CAPTURE@/workspace/tooling/minimize/intrinsics/src/lib.rs",
+    "-o",
+    "@CAPTURE@/runs-after-harness-fix/upstream_pass_drop/miri-deps/libintrinsics.rmeta",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_drop",
+  "returncode": 0,
+  "seconds": 0.055221916999999995,
+  "classification": "success",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_subject_execution": false
+}

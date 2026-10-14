@@ -1,0 +1,237 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn update(_1: &mut [u32]) -> () {
+    debug x => _1;
+    let mut _0: ();
+    let _2: &mut [u32];
+    let _3: &mut [u32];
+    let mut _4: (&mut [u32], &mut [u32]);
+    let mut _5: &mut [u32];
+    let _6: usize;
+    let mut _7: *const [u32];
+    let mut _8: usize;
+    let mut _9: bool;
+    let _10: usize;
+    let mut _11: *const [u32];
+    let mut _12: usize;
+    let mut _13: bool;
+    scope 1 {
+        debug left => _2;
+        debug right => _3;
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = &mut (*_1);
+        _4 = core::slice::<impl [u32]>::split_at_mut(move _5, const 2_usize) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        Retag(_4);
+        StorageDead(_5);
+        PlaceMention(_4);
+        StorageLive(_2);
+        _2 = move (_4.0: &mut [u32]);
+        Retag(_2);
+        StorageLive(_3);
+        _3 = move (_4.1: &mut [u32]);
+        Retag(_3);
+        StorageDead(_4);
+        StorageLive(_6);
+        _6 = const 0_usize;
+        _7 = &raw const (fake) (*_2);
+        _8 = PtrMetadata(move _7);
+        _9 = Lt(copy _6, copy _8);
+        assert(move _9, "index out of bounds: the length is {} but the index is {}", move _8, copy _6) -> [success: bb2, unwind continue];
+    }
+
+    bb2: {
+        (*_2)[_6] = Add(copy (*_2)[_6], const 10_u32);
+        StorageDead(_6);
+        StorageLive(_10);
+        _10 = const 0_usize;
+        _11 = &raw const (fake) (*_3);
+        _12 = PtrMetadata(move _11);
+        _13 = Lt(copy _10, copy _12);
+        assert(move _13, "index out of bounds: the length is {} but the index is {}", move _12, copy _10) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        (*_3)[_10] = Add(copy (*_3)[_10], const 20_u32);
+        StorageDead(_10);
+        _0 = const ();
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let mut _1: [u32; 4];
+    let _2: ();
+    let mut _3: &mut [u32];
+    let mut _4: &mut [u32; 4];
+    let mut _5: &mut [u32; 4];
+    let _6: ();
+    let mut _7: bool;
+    let mut _8: &[u32; 4];
+    let mut _9: &[u32; 4];
+    let _10: [u32; 4];
+    let mut _11: !;
+    let _14: ();
+    let mut _15: &std::cell::Cell<u32>;
+    let mut _16: u32;
+    let mut _17: u32;
+    let mut _18: &std::cell::Cell<u32>;
+    let _19: ();
+    let mut _20: bool;
+    let mut _21: u32;
+    let mut _22: &std::cell::Cell<u32>;
+    let mut _23: !;
+    scope 1 {
+        debug data => _1;
+        let _12: std::cell::Cell<u32>;
+        let mut _24: &[u32; 4];
+        scope 2 {
+            debug cell => _12;
+            let _13: &std::cell::Cell<u32>;
+            scope 3 {
+                debug shared => _13;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = [const 1_u32, const 2_u32, const 3_u32, const 4_u32];
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = &mut _1;
+        _4 = &mut (*_5);
+        _3 = move _4 as &mut [u32] (PointerCoercion(Unsize, Implicit));
+        Retag(_3);
+        StorageDead(_4);
+        _2 = update(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_5);
+        StorageDead(_2);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = &_1;
+        StorageLive(_9);
+        _24 = const main::promoted[0];
+        Retag(_24);
+        _9 = &(*_24);
+        _7 = <[u32; 4] as PartialEq>::eq(move _8, move _9) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        switchInt(move _7) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _6 = const ();
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_12);
+        _12 = Cell::<u32>::new(const 7_u32) -> [return: bb5, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_9);
+        StorageDead(_8);
+        StorageLive(_11);
+        _11 = core::panicking::panic(const "assertion failed: data == [11, 2, 23, 4]") -> unwind continue;
+    }
+
+    bb5: {
+        StorageLive(_13);
+        _13 = &_12;
+        StorageLive(_14);
+        StorageLive(_15);
+        _15 = &(*_13);
+        StorageLive(_16);
+        StorageLive(_17);
+        StorageLive(_18);
+        _18 = &(*_13);
+        _17 = Cell::<u32>::get(move _18) -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        StorageDead(_18);
+        _16 = Add(move _17, const 5_u32);
+        StorageDead(_17);
+        _14 = Cell::<u32>::set(move _15, move _16) -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        StorageDead(_16);
+        StorageDead(_15);
+        StorageDead(_14);
+        StorageLive(_19);
+        StorageLive(_20);
+        StorageLive(_21);
+        StorageLive(_22);
+        _22 = &_12;
+        _21 = Cell::<u32>::get(move _22) -> [return: bb8, unwind continue];
+    }
+
+    bb8: {
+        StorageDead(_22);
+        _20 = Eq(move _21, const 12_u32);
+        switchInt(move _20) -> [0: bb10, otherwise: bb9];
+    }
+
+    bb9: {
+        StorageDead(_21);
+        _19 = const ();
+        StorageDead(_20);
+        StorageDead(_19);
+        _0 = const ();
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageDead(_1);
+        return;
+    }
+
+    bb10: {
+        StorageDead(_21);
+        StorageLive(_23);
+        _23 = core::panicking::panic(const "assertion failed: cell.get() == 12") -> unwind continue;
+    }
+}
+
+alloc2 (size: 34, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 65 6c 6c 2e 67 65 74 28 29 20 3d 3d 20 │ : cell.get() == 
+    0x20 │ 31 32                                           │ 12
+}
+
+alloc1 (size: 40, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 64 61 74 61 20 3d 3d 20 5b 31 31 2c 20 32 │ : data == [11, 2
+    0x20 │ 2c 20 32 33 2c 20 34 5d                         │ , 23, 4]
+}
+
+const main::promoted[0]: &[u32; 4] = {
+    let mut _0: &[u32; 4];
+    let mut _1: [u32; 4];
+
+    bb0: {
+        _1 = [const 11_u32, const 2_u32, const 23_u32, const 4_u32];
+        _0 = &_1;
+        return;
+    }
+}

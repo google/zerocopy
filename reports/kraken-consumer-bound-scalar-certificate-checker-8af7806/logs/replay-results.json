@@ -1,0 +1,527 @@
+{
+  "status": "pass",
+  "pure_kernel_reduction_instances": "concrete_accept plus14 named identity/grammar/policy rejections",
+  "consumer_declarations": 37,
+  "adapter_dependency_declarations": 32,
+  "serial_commands": 3,
+  "all_inputs_theorems": [
+    "parse_iff",
+    "check_binding",
+    "consumer_sound",
+    "accepted_sound",
+    "closed_grammar"
+  ],
+  "groups": [
+    {
+      "subject": "Adapter",
+      "checked_declarations": 32,
+      "closures": [
+        {
+          "declaration": "CheckedByteLeaf.decode_load_iff",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.decode_ret_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.wordLE_bound",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.encodeLE_wordLE",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.decodeLeaf_fields",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.accepted_iff_canonical",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.certificate_iff",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.actual_effects",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.complete_trace",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.permission_iff",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.checked_adapter",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.one_byte_region",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.empty_span_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.wrong_return_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.wrong_frame_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.zero_writes",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.result_zero_extended",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.byte_value",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.resource_load",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.checked_resource_contract",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.code_no_wrap",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.layout_endpoints",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.actual_load_step",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.actual_ret_step",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.result_preserves_resource",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.malformed_layout_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.any_changed_bytes_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.wrong_length_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.unaligned_certificate_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.wrapping_certificate_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.good_certificate",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "CheckedByteLeaf.named_byte_controls_rejected",
+          "axioms": [
+            "propext"
+          ]
+        }
+      ]
+    },
+    {
+      "subject": "Consumer",
+      "checked_declarations": 37,
+      "closures": [
+        {
+          "declaration": "BoundConsumer.bytes_bound",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.serialize_length",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.serialized_parts",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.roundtrip",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.parse_sound",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.parse_iff",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.check_binding",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.consumer_sound",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.accepted_sound",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.closed_grammar",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_image_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_length_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.bad_header_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.parse_rejection_rejects",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.trailing_rejected",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.unsupported_request_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_entry_rejected",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_pc_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.accepted_empty_span_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.accepted_wrong_return_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.accepted_wrong_frame_rejected",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.concrete_accept",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.concrete_meaning",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_byte_zero_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.hidden_image_tail_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.missing_input_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.trailing_input_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_entry_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_pc_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_target_tag_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_model_tag_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.changed_claim_tag_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_version_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_request_target_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.wrong_request_model_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.weaker_request_rejected",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "declaration": "BoundConsumer.pc_topbit_rejected",
+          "axioms": []
+        }
+      ]
+    }
+  ],
+  "no_compiled_consumer_execution": true,
+  "no_native_Rust_execution": true,
+  "no_install_or_upstream_build": true,
+  "remaining_arrows": [
+    "compiled consumer correspondence",
+    "filesystem/loader",
+    "formal Arm reference relation",
+    "actual Rust/MiniRust allocation/provenance/borrows/context"
+  ]
+}

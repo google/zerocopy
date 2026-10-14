@@ -1,0 +1,24 @@
+{
+  "label": "miri-tree",
+  "argv": [
+    "@RUST_TOOLCHAIN@/bin/miri",
+    "--sysroot",
+    "@CAPTURE@/miri-sysroot",
+    "-Zmiri-tree-borrows",
+    "@CAPTURE@/cases/upstream_ub_inv_bool.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_inv_bool",
+  "returncode": 1,
+  "seconds": 0.03212166599999999,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "5121bb8100416a1985c9690220be4c2162d4025c8cd03c5165f8355c59252d54",
+  "native_subject_execution": false
+}

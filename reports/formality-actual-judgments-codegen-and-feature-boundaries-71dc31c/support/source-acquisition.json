@@ -1,0 +1,1535 @@
+{
+  "url": "https://codeload.github.com/rust-lang/a-mir-formality/tar.gz/71dc31c1b186df1f0a64d8464b8103195902a5a5",
+  "archive_bytes": 423932,
+  "archive_sha256": "dacb47547f117edd5ec63ad75dfcf6e78e219c46a7be1cd3f290836a5cb1db8c",
+  "git_tree": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+  "tree_truncated": false,
+  "all254_source_blobs_verified": true,
+  "blobs": [
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "bytes": 1209,
+      "git_blob": "d7720a3ed6911c7a6f45ef9af79159d42d3fa504",
+      "sha256": "f3dc8b5eed6d0d33d17a4d5459682859c6f03ab76570cf44a6f68bec4bd7faab"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 19,
+      "git_blob": "6313b56c57848efce05faa7aa7e901ccfc2886ea",
+      "sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 763,
+      "git_blob": "28c9cd131f8ac7de693c1e8f744989519260ae81",
+      "sha256": "eeca2ed7f19fa1a2cbfa86fbbb77e3f31fb77f227e72bf0a0dda47b413556bd9"
+    },
+    {
+      "path": ".github/workflows/ci.yaml",
+      "bytes": 1488,
+      "git_blob": "ea6c3ac574129227fad7d14e279a54f8f510b6da",
+      "sha256": "fbcf85d6bca01fdefcdca641387ccf00b9d50d390e5837173773ba020340fe6d"
+    },
+    {
+      "path": ".github/workflows/coverage-report.yml",
+      "bytes": 1663,
+      "git_blob": "9a3f869a868490139170ca3aa8a76f262bb2d997",
+      "sha256": "5bed1d7e8b95b93a7b6cb8f54c73f932fb96aa85cf10b3073691e5ba2d21c29b"
+    },
+    {
+      "path": ".github/workflows/mdbook.yml",
+      "bytes": 1920,
+      "git_blob": "a3dc792ad09816dc1d18dbffc7e25c4d1428b9e1",
+      "sha256": "89d05162f09bd5833bdcc1cce96f565875051c09517bc65a0961ece227e798ae"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 254,
+      "git_blob": "0c96de21155536d0c2a872178b9c42ac6982179b",
+      "sha256": "da37e983db24545da7dba0e9d83977d6b16366ebfbabc3efd46677ee2452c7ec"
+    },
+    {
+      "path": ".nvmrc",
+      "bytes": 9,
+      "git_blob": "6f4569c72f006fcf7d898fddcb023cc8f0dce3e1",
+      "sha256": "72bd6fabc6290f895a470367ea137f158aad9b4eaefc4a6a5d821840840ef69f"
+    },
+    {
+      "path": ".vscode/launch.json",
+      "bytes": 495,
+      "git_blob": "10efcb2fe501b66952a71b4bd77e7d0d40a26d69",
+      "sha256": "b94486ee3b7d32a96fe647a00a7e44a18521ee9415f2bc58bbec10f8c7214ff0"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "bytes": 92,
+      "git_blob": "0f35734f60b222679b83d6855ba2cd2354c88ffb",
+      "sha256": "7bc31f991db7fa706b0ec493b008ab36b286bc3e471ecca29e57f59dc19cc5d5"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 41653,
+      "git_blob": "0d846b61320c4a63ec333700208136d81eee965f",
+      "sha256": "13d9b85df332458b4a5df3b0f189cef707608180087055cbf3b30477ff7b7049"
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 1180,
+      "git_blob": "702381b0c9e10f431923210f580bcad677591792",
+      "sha256": "d052436df7c621ef608207c44a11ce82c79b27d5aa0620c07297e937aefca433"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "bytes": 9723,
+      "git_blob": "1b5ec8b78e237b5c3b3d812a7c0a6589d0f7161d",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE-MIT",
+      "bytes": 1023,
+      "git_blob": "31aa79387f27e730e33d871925e152e35e428031",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1242,
+      "git_blob": "a42d8838ebe0220b9f583e3d2a0fca97b60642a8",
+      "sha256": "301cc87a452d4fee04948138e128265d5cbcdfeb55a11aff0623deab8823ac98"
+    },
+    {
+      "path": "book/.gitignore",
+      "bytes": 5,
+      "git_blob": "7585238efedfc33acdd9494b0269951aaf3909ec",
+      "sha256": "3c4dbff9eeda9410a0b9eb423472981db8997d666388b4cd2424700c3974d64b"
+    },
+    {
+      "path": "book/book.toml",
+      "bytes": 267,
+      "git_blob": "0fc3a6fe8a2a1798a37f5bc0594188cfb77c866d",
+      "sha256": "bb944245b9aa454aa4303c08039d23e586ea04d1e10b1c3fe3a152aa384d54ae"
+    },
+    {
+      "path": "book/src/SUMMARY.md",
+      "bytes": 899,
+      "git_blob": "7d73f12eb16e61049595550afa24606c0c7afd7f",
+      "sha256": "96241602621cc70832e5197e25467a781f428ea0176244a60c4ee894e5838df2"
+    },
+    {
+      "path": "book/src/chapter_1.md",
+      "bytes": 12,
+      "git_blob": "b743fda354692a44400c2c21ae0fb71c2d5a30d5",
+      "sha256": "cac4f4a3609ec22eb519b0e07d1d1bdc15ac3d741f29f9b97280f700b96ded66"
+    },
+    {
+      "path": "book/src/faq.md",
+      "bytes": 26,
+      "git_blob": "e9c7936da103638cf35641f6353b7c1cab41dbb7",
+      "sha256": "2c571129fb451ff86c16f2cdf36d201272c36f3214bec221a9a24be9d0d70f85"
+    },
+    {
+      "path": "book/src/formality_core.md",
+      "bytes": 401,
+      "git_blob": "c394e3fd42019141af4183b043c8d09f1d66698a",
+      "sha256": "bd8df93e8bfee3a31c00e20256a414097afbbae30661dd0d279997bacba69d08"
+    },
+    {
+      "path": "book/src/formality_core/collections.md",
+      "bytes": 1488,
+      "git_blob": "b360452713cc52537fce6fe29255e715265db8da",
+      "sha256": "a0f3cdc99d94a78d812f5722efe9c5557c158ba6c888bb0881c972ebc69f329b"
+    },
+    {
+      "path": "book/src/formality_core/constructors.md",
+      "bytes": 488,
+      "git_blob": "74594edbe0a4f592af1f3540c6aa3660df08f928",
+      "sha256": "99387f858b2377c0fec1fa3f2be90cd94aa5524b24b998a4c8aaaaec3811786c"
+    },
+    {
+      "path": "book/src/formality_core/debug.md",
+      "bytes": 735,
+      "git_blob": "21ce3479e61ed518ad67fcff191046140e08bf0b",
+      "sha256": "1bf90c1da15a713964745706cb1028e65e3f70bf9db1c8c1290dbcc10cf3f79c"
+    },
+    {
+      "path": "book/src/formality_core/faq.md",
+      "bytes": 337,
+      "git_blob": "ce7945fa36a66a0294df31af81e0474190c86f80",
+      "sha256": "d578389b60100272e9a6b6a4787bac25b0b51c985a1c8a122f4bee17f99283bb"
+    },
+    {
+      "path": "book/src/formality_core/idiomatic_judgment_fn.md",
+      "bytes": 105,
+      "git_blob": "1ca533b9568f93705a1237f37bdb9187bd56ed8b",
+      "sha256": "0fdb3d1c67d7351a51dc0273496ffed683f89742a098affc35bc3c8ae9235056"
+    },
+    {
+      "path": "book/src/formality_core/judgment_fn.md",
+      "bytes": 7289,
+      "git_blob": "b23168f5e2f883911740a8bdb4a466fad48cacbc",
+      "sha256": "f4964645931bef05f38edcc4f0c23b34c86130585380817f75d3f5925aa9c010"
+    },
+    {
+      "path": "book/src/formality_core/lang.md",
+      "bytes": 1688,
+      "git_blob": "e709231838f8e4c2a496883ebd0d066d3b3c998c",
+      "sha256": "b6efabda33a89f86c7b161f517b5477558902a73f3a14d96ca2bb20bd4640ae5"
+    },
+    {
+      "path": "book/src/formality_core/parse.md",
+      "bytes": 18638,
+      "git_blob": "8d8ac0e228c6c7a6fb63713ca960c4e2d564f51b",
+      "sha256": "85cdf41e18448ecd9258f0180c8a755b4c8cd2006f83236aa57776597de635fb"
+    },
+    {
+      "path": "book/src/formality_core/terms.md",
+      "bytes": 4013,
+      "git_blob": "7711e492eb024ca07914e94d11387900fc52263b",
+      "sha256": "2fdcbe2b908c9d23b6b33a2fb9c855b2b740927658e57d3ded874a6ad17125e9"
+    },
+    {
+      "path": "book/src/formality_core/variables.md",
+      "bytes": 1759,
+      "git_blob": "20362be450bcebca9810c23e50cef8c9b2df2c7a",
+      "sha256": "ff301ac8733c8ec3254acf24482a5cf1b84dd6b2095c2bb0d55f05acb02fc1f0"
+    },
+    {
+      "path": "book/src/formality_rust.md",
+      "bytes": 1424,
+      "git_blob": "2982453514dcb5a04e9dfc153deefad71c30f14b",
+      "sha256": "0345473a2bb1af1a5595edfed3bd153f214b622f4bda22205f91e38a390c77e5"
+    },
+    {
+      "path": "book/src/formality_rust/borrow_check.md",
+      "bytes": 1406,
+      "git_blob": "d30096563b428fc67c8288aa87d698645521d6c2",
+      "sha256": "1b203b5cece499d2f8737c854ff1a18091df65f2c91a8b65d2c81ae36dd83314"
+    },
+    {
+      "path": "book/src/formality_rust/codegen.md",
+      "bytes": 8125,
+      "git_blob": "ad30a78d84f968f42f2513882e4982bc399b861e",
+      "sha256": "eb31a0c33c90402bfae055d2a8c8e7a4c47b8b1f7e17cce184e0571c395759e7"
+    },
+    {
+      "path": "book/src/formality_rust/coherence.md",
+      "bytes": 1456,
+      "git_blob": "bae553f001f5c5269f385478aadc55ef23b4cd83",
+      "sha256": "ea73dca9cd2413a918445cac28a63de37a5d3008555a572341d2fafcd97fec1b"
+    },
+    {
+      "path": "book/src/intro.md",
+      "bytes": 2330,
+      "git_blob": "c2bffdd0714478c533cf551925cb8f09b268ef98",
+      "sha256": "5170238855bc2f87ccf3167aedc79f9cfe3b05de3edc183b939a5618a1b8bd18"
+    },
+    {
+      "path": "crates/README.md",
+      "bytes": 177,
+      "git_blob": "73e67930a4e98145254566306cc722fd3e3ef94a",
+      "sha256": "7e4b0899c055641af57fa45940167590e653b214e6d9ba4a136a48c4b71c6a07"
+    },
+    {
+      "path": "crates/formality-core/Cargo.toml",
+      "bytes": 960,
+      "git_blob": "972fd108561dcbf2c8740add92abeec1cb3429df",
+      "sha256": "6c88bf1ce1b1de37a511494dc37eb8990cdad9afe06bcbbd8d9226d19d67e326"
+    },
+    {
+      "path": "crates/formality-core/README.md",
+      "bytes": 183,
+      "git_blob": "35494e4d1a01410cf3ed331a84a0b462c4aa1676",
+      "sha256": "90987f10c0c4f3dfdf38d7dfa86520a65f4592b14dd00e95970cd7a4e5756549"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/SKILL.md",
+      "bytes": 10925,
+      "git_blob": "9128c9149a6933b03b8add693fc590be8bebd5b8",
+      "sha256": "d6dcba50a84e86702929a32e7b6c82647e4fdabeae2a1a2e3d9d1a5db952f733"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/evals/evals.json",
+      "bytes": 4504,
+      "git_blob": "911695f9f3f27c4f253c4478b356030d97655d64",
+      "sha256": "1a53f503d7f1778d4736fd0868817cf21e050847304a1d2ae6c242b28456dd31"
+    },
+    {
+      "path": "crates/formality-core/skills/a-mir-formality-idiomatic-judgment-fn/scripts/run_evals.py",
+      "bytes": 24857,
+      "git_blob": "68ae031ee549f32d5bd566eba28ace361c4f12fd",
+      "sha256": "addd5f5915e7c0afc273473e7b065b901fd73bf32e82c61738d5e23e662d23dd"
+    },
+    {
+      "path": "crates/formality-core/src/binder.rs",
+      "bytes": 9392,
+      "git_blob": "8977fd29711ccea3a2f6b4b11efb6ccbac25c333",
+      "sha256": "e0b34a07548e7f70719b26f6492c49cc87de8b06a7f1921401e688a16c681b77"
+    },
+    {
+      "path": "crates/formality-core/src/cast.rs",
+      "bytes": 10259,
+      "git_blob": "0ceba4ddcfbe883ecb730be3f6dbf97908c9ecba",
+      "sha256": "091c614bdeaf9368063a0eb6916c21f62657fcd270a2bcf4dd3251a1f2cf9e7a"
+    },
+    {
+      "path": "crates/formality-core/src/collections.rs",
+      "bytes": 9183,
+      "git_blob": "5a60354bbc522ba9cb114f856225efd59224d686",
+      "sha256": "5b110d1c8e5b22f8c5651b14a3c4ecd80ade0f3419ebb8afc3c672d9c13bb1cd"
+    },
+    {
+      "path": "crates/formality-core/src/derive_links.rs",
+      "bytes": 568,
+      "git_blob": "d56e9ae1ebcb21aab0f4c36c53d3e4748b9c2f3a",
+      "sha256": "118b0dc95d5132e82e1090c35cb15c8493ffe98a2bb1db008edf5d882cb3cfd3"
+    },
+    {
+      "path": "crates/formality-core/src/fixed_point.rs",
+      "bytes": 2452,
+      "git_blob": "2d64687ac69f415e002b8d5b8f92b5b93681dd0c",
+      "sha256": "aba32738cc1275d358342e20937bc89a1a110298b293bd3ffd768275b25343bd"
+    },
+    {
+      "path": "crates/formality-core/src/fixed_point/stack.rs",
+      "bytes": 2664,
+      "git_blob": "906ebf8ea3f652700423623bb7dc46f45ce9f86c",
+      "sha256": "9b4617f24158500eddda20ed01887861a722fb286d2a7781d2c4cd71107ca475"
+    },
+    {
+      "path": "crates/formality-core/src/fold.rs",
+      "bytes": 5707,
+      "git_blob": "66424867613efc010a67589ea35b25a4982f0a48",
+      "sha256": "31071aa0c77c43826e0eb1eade7238c0d14a33d566d98f71aa687d131f20b892"
+    },
+    {
+      "path": "crates/formality-core/src/judgment.rs",
+      "bytes": 34425,
+      "git_blob": "8b8649a48d4868dbf662a969c256b816c7cba7bd",
+      "sha256": "d81c79302865f2a0e19e55f1917235823dc48ccf2a7894ec5a7558af16e50ca1"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/assertion.rs",
+      "bytes": 680,
+      "git_blob": "880f0b240da45044442acfdb750e5ce7fef845a7",
+      "sha256": "746162920260afe62554aa9824586c494f562dd8a8ce1f7c166dc871fe56d9c8"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/coverage.rs",
+      "bytes": 15629,
+      "git_blob": "15871c59bb9333abb5ed6ee3cb79ce1b20110d0e",
+      "sha256": "d09a01e25f425494c371271247fa8f9bc012016f33ab09ad6ae045a664414a21"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/proven_set.rs",
+      "bytes": 37965,
+      "git_blob": "78606c9d38ed5ab340cb9e9d7ac3c83617645889",
+      "sha256": "2ae89e9fa8c6e71f988c112b8deadbf292723b64f95407cdbda8d8e278791366"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_explicit_fail.rs",
+      "bytes": 1399,
+      "git_blob": "f8baa2c904c45f65e08def60a83f86fab430bdce",
+      "sha256": "22c96ce1387e6dd2aa682e671b0bfe1de7bf9420f85b95f6892597e91b37cb4a"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_fallible.rs",
+      "bytes": 1726,
+      "git_blob": "0b424a2f3ce4e351a8e89e79d08ce0f09dad735c",
+      "sha256": "ed27e0d415a2668f286996d215fb34a788b4d0b28a386a371f42dde27d80adc3"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_filtered.rs",
+      "bytes": 1412,
+      "git_blob": "a898970e51cbddf8953ac78aaf3e4dbefa0629e7",
+      "sha256": "cb07076911097fb5e0f34848c94deb8309a98248cf686223ec7343c400a09592"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_for_all.rs",
+      "bytes": 1858,
+      "git_blob": "2e758e3fc7fae41c774edbd612c6ad9167625136",
+      "sha256": "86d6496785ee7e6946c6d0cc9f989d258b75b620a448ed4f0605f4774d5fc4fa"
+    },
+    {
+      "path": "crates/formality-core/src/judgment/test_reachable.rs",
+      "bytes": 1195,
+      "git_blob": "8eada93d92c1710ab4754f0b9574486df820b759",
+      "sha256": "d2240c98cad9a4bbb78db9fbbc4c08ae171a9b0ed818eabc909945ac6323479c"
+    },
+    {
+      "path": "crates/formality-core/src/language.rs",
+      "bytes": 1727,
+      "git_blob": "044eb8f3321f0ef490b43c10880725b9fe0897c7",
+      "sha256": "957ee92511ef7affa8e0ebd8aa2b3c7be606a1f05b5d12ee9062d15589b1e91e"
+    },
+    {
+      "path": "crates/formality-core/src/lib.rs",
+      "bytes": 10364,
+      "git_blob": "40ecf123cf40964d35fc7831b60999d8aee419c3",
+      "sha256": "f605b81267270337a33ab0ca09dec21da094a5f78d65aae846b5c8b645fa6c9f"
+    },
+    {
+      "path": "crates/formality-core/src/parse.rs",
+      "bytes": 22435,
+      "git_blob": "de0c56aa98152df15f1f828d0ba9428ad2e46ebb",
+      "sha256": "ea2ece56e4ee57ed3c5d6024dde3d948e284c6c7051bf5db79a1595ae411d32f"
+    },
+    {
+      "path": "crates/formality-core/src/parse/parser.rs",
+      "bytes": 39756,
+      "git_blob": "0b60471d2eda2897f74fedd6f66785dfe9fd386b",
+      "sha256": "cf32aa4c6401f3ecec215b5cfa1e9d8631ed46431a96f9f6541c1ff3573c09d5"
+    },
+    {
+      "path": "crates/formality-core/src/parse/parser/left_recursion.rs",
+      "bytes": 23889,
+      "git_blob": "85d23d26495742dd6e9238f05c24dc3a94fd956e",
+      "sha256": "9200e001be7dece762e689fb91fe3e4316be15699b6b44416b083ad37cc6ce03"
+    },
+    {
+      "path": "crates/formality-core/src/parse/test.rs",
+      "bytes": 1,
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "crates/formality-core/src/substitution.rs",
+      "bytes": 6082,
+      "git_blob": "b6736fd80d81c5dbdb56c4218466a61cfbc0a31b",
+      "sha256": "ecc9b60417109e6844ec4aa1e5bed0d85b4902d67b69d7f5245ebcbf23a0c843"
+    },
+    {
+      "path": "crates/formality-core/src/term.rs",
+      "bytes": 943,
+      "git_blob": "16e2b355e53925a52bcf5a2e0c96466b4df89530",
+      "sha256": "9ba1cb16667ad5d5c96793ea34e8d0159e253ce79d4d1be09a9ab44735e6f70b"
+    },
+    {
+      "path": "crates/formality-core/src/test_util.rs",
+      "bytes": 6619,
+      "git_blob": "d66cc77600d033df390aebe2845863689012d8c3",
+      "sha256": "d1ffdcd2cb56a986801c2de8b3e71804cfb04de77bf518deb91ea753915edbc8"
+    },
+    {
+      "path": "crates/formality-core/src/util.rs",
+      "bytes": 235,
+      "git_blob": "691505de92fc9836ecc00a400db352a633da733f",
+      "sha256": "6aa69ad297a80d56a4cdc7dd756b4779f1e4eb0af3b31f601673fe5f7b60da34"
+    },
+    {
+      "path": "crates/formality-core/src/variable.rs",
+      "bytes": 6525,
+      "git_blob": "80c09825e0c581ae11937f52a3af7103dfc3c3f4",
+      "sha256": "39fbff9a100b2d21250fd786b38326a7bbf3be1e053d4aab262423d5490da5bd"
+    },
+    {
+      "path": "crates/formality-core/src/variable/cast_impls.rs",
+      "bytes": 477,
+      "git_blob": "68c72c958bb97053e8133180cf43457f51bc5381",
+      "sha256": "419b8e2808317a44825525d8ab8fe59170c5b300b28d39d1312dc0a34b2b7ed7"
+    },
+    {
+      "path": "crates/formality-core/src/variable/debug_impls.rs",
+      "bytes": 1711,
+      "git_blob": "e981fa8fa61e60f1ea0dcbd3c623c91bd0be8500",
+      "sha256": "e282d73cdacbd964e9c5d036364d1bb846ddf2b0aa872ed77b4c29a6ad6a8a30"
+    },
+    {
+      "path": "crates/formality-core/src/visit.rs",
+      "bytes": 7325,
+      "git_blob": "4fc15849f6eedebf163104366dfc08fbdb971306",
+      "sha256": "59071e12f66fb5dd4bfb0ebe2fb0ec8e61dd80d7f0dd5f2961d94662ff19da2f"
+    },
+    {
+      "path": "crates/formality-core/tests/coverage.rs",
+      "bytes": 5897,
+      "git_blob": "85899dc26dbc25d45034c728aa94f13a13491748",
+      "sha256": "3d767ed924b4fd1a5e755b7c3b9bd6bb6665a5fc1fb3ed146e05c97b3d3c7ee5"
+    },
+    {
+      "path": "crates/formality-coverage/Cargo.toml",
+      "bytes": 726,
+      "git_blob": "670027090de426a561f19631d9f7d0549ef44075",
+      "sha256": "f4cb9d7fe53f3f13a2b1dc77b52f50f04cf5be6011cc257d8f087ea162504991"
+    },
+    {
+      "path": "crates/formality-coverage/src/bin/coverage-diff.rs",
+      "bytes": 2012,
+      "git_blob": "0afe05e8d297865f91e7b428c5f67460858fd9c9",
+      "sha256": "337eb8f4273baaf885bf83a433a42cd3a7dce040ec6b7d564465bd0fd879e398"
+    },
+    {
+      "path": "crates/formality-coverage/src/bin/formality-coverage.rs",
+      "bytes": 2519,
+      "git_blob": "088dc9bb1270949a2a09c4c38558c5c5b77baa44",
+      "sha256": "59acdd071f176388f428a57c0000e9df22cf3ebae4b221d60c31104a556cc902"
+    },
+    {
+      "path": "crates/formality-coverage/src/diff.rs",
+      "bytes": 4922,
+      "git_blob": "e028d4b3d480f181dd54f123475829684cc3f892",
+      "sha256": "c4639227a897e5cdf3147f6b573b221d86da793aa4b398ad035cc71d967db249"
+    },
+    {
+      "path": "crates/formality-coverage/src/jsonl.rs",
+      "bytes": 10584,
+      "git_blob": "776d7adc6b742fa61c2de0c8aba4e29a084c69da",
+      "sha256": "cd638a04b8461fd3bef8a9e6f0ba8b50f88c4730007491ce1115eb72b6d0a8a0"
+    },
+    {
+      "path": "crates/formality-coverage/src/lib.rs",
+      "bytes": 78,
+      "git_blob": "f0625782676d9c70e87e411a4bdbccd6cbcf5f40",
+      "sha256": "b48acbce72572931b0108de7d6a30e892a79f7a78ee3cad7b6915a8e0f0c8896"
+    },
+    {
+      "path": "crates/formality-coverage/src/report.rs",
+      "bytes": 67025,
+      "git_blob": "a8ad6db056125cf0205af2e303c0d1d97ebe1748",
+      "sha256": "6093597d774ed559145ff605dc1e6e8d3bdd92120dc8a3116b4b60788e178d2d"
+    },
+    {
+      "path": "crates/formality-coverage/src/scrape.rs",
+      "bytes": 19745,
+      "git_blob": "e849175882fa7fe979c55f29d8cb8bbe3bd22fe2",
+      "sha256": "6034c6d66294af484cd944ff8376fa59c47b7e033463830e6ae6035da87fe2a7"
+    },
+    {
+      "path": "crates/formality-coverage/src/summary.rs",
+      "bytes": 5642,
+      "git_blob": "7cd1e33ec984ceb14c3ad07a8efe19f85ae70ed7",
+      "sha256": "e701692628bc1ecd9cf871601ca4674963b8a9b59c8c57e7ac02ae761abc6974"
+    },
+    {
+      "path": "crates/formality-coverage/tests/scrape.rs",
+      "bytes": 54436,
+      "git_blob": "38762187965aac8723998f5f89a96396aa33b45e",
+      "sha256": "ee7372b98f0edd56e6ed20901151f747ad80a9e45af398ce6627c5c5d1fa787e"
+    },
+    {
+      "path": "crates/formality-coverage/tests/summary.rs",
+      "bytes": 4586,
+      "git_blob": "1a2d4e431e27442035ab96ec15e8e028a96ea83f",
+      "sha256": "d548d7d8728aa4958da11d1fea44b9f38f723a1bfb72b7a2b3bc3a79c7f5f528"
+    },
+    {
+      "path": "crates/formality-macros/Cargo.toml",
+      "bytes": 572,
+      "git_blob": "c96149bfbc79d76a65e3da66bfc112529956c0e6",
+      "sha256": "c84d777e8d42fd3d243b6448afeeca51c4628c3ae487ef7864798615d2450b8e"
+    },
+    {
+      "path": "crates/formality-macros/READE.md",
+      "bytes": 135,
+      "git_blob": "23e5187104d111bcbd6c7241818ebcf3fe165332",
+      "sha256": "6ad2f7a1e963270d1e1210589fc529f633176fc53a4cd98b985e6a3f10f83e0c"
+    },
+    {
+      "path": "crates/formality-macros/src/as_methods.rs",
+      "bytes": 1,
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "crates/formality-macros/src/attrs.rs",
+      "bytes": 4399,
+      "git_blob": "60f008e613abda67c3569b17b67deb9c2f68654c",
+      "sha256": "376f0ff92ef4f4726fda8b61cc290760b1094c0b05752987b1f01511974d7c9a"
+    },
+    {
+      "path": "crates/formality-macros/src/cast.rs",
+      "bytes": 5512,
+      "git_blob": "9d4e6872ba59c778e1d3b5c8c2348eeb43db0521",
+      "sha256": "391d309862eea4a59e2d7f63f9eb7a9aa76ac8f8cf8434e5c92c2b3d4bdb4369"
+    },
+    {
+      "path": "crates/formality-macros/src/constructors.rs",
+      "bytes": 2634,
+      "git_blob": "420d8a9ee52e5669d81933703a73dbee79edc47f",
+      "sha256": "193356783858da2c3868819de4c4fbecf1ca8926031ceb208ffbcdadec5f88e9"
+    },
+    {
+      "path": "crates/formality-macros/src/custom.rs",
+      "bytes": 2122,
+      "git_blob": "e5854dff5da771bf199d59e57d5f8265e5fa0e8c",
+      "sha256": "2b480e07ccfe252e48cfaf91e7b1d628237d06d3856e18d03b52489f6c1d7731"
+    },
+    {
+      "path": "crates/formality-macros/src/debug.rs",
+      "bytes": 11658,
+      "git_blob": "515dfd8603bc7026371fa45c5069dbff920f76f8",
+      "sha256": "0d43398b4053f4462191b781bcfdbe98f67861473b44a500f971cb8cb94bfaec"
+    },
+    {
+      "path": "crates/formality-macros/src/fixed_point.rs",
+      "bytes": 8608,
+      "git_blob": "286fd89097109cbbd21da0c7a887b7cc3e33295e",
+      "sha256": "1286f865233e707a5ad8976415011b17371d6ff91a0e300b96b71dd761c803b3"
+    },
+    {
+      "path": "crates/formality-macros/src/fold.rs",
+      "bytes": 1724,
+      "git_blob": "4acd8fc0e609634375a2d23738c43f243e3ced52",
+      "sha256": "c79a2008915be9c0a92d742f5aa51396387531ce936e1265a81f6afaeec45bac"
+    },
+    {
+      "path": "crates/formality-macros/src/lib.rs",
+      "bytes": 3222,
+      "git_blob": "338c65a5b04340356ade4822b52ca7dfc0497de9",
+      "sha256": "998f522b6a7b635eb1320e58f457c9534437a602e19363ab1942ac06dcbbb646"
+    },
+    {
+      "path": "crates/formality-macros/src/parse.rs",
+      "bytes": 29503,
+      "git_blob": "1faca4db536e7713f55ec38fddb8cd6ee4f047a4",
+      "sha256": "0f642ad33894de7ea4fb91da9dfed66815f7ec13ba98ce3b99c1821de9e81c98"
+    },
+    {
+      "path": "crates/formality-macros/src/precedence.rs",
+      "bytes": 3450,
+      "git_blob": "cd9c0ebbb5ab6e3d3cfa6040984aaa4885323c14",
+      "sha256": "7523ca8f3e79ff223577dbe471e436af291edd7337079b0063fb0adc261cd20e"
+    },
+    {
+      "path": "crates/formality-macros/src/reject.rs",
+      "bytes": 4976,
+      "git_blob": "1ad54bfa2402cc52d662209357c9a9ad06e901a9",
+      "sha256": "310bcdb72502e8c9457b81f51176f9200201cbc3e512810cc2baef1b11640c0a"
+    },
+    {
+      "path": "crates/formality-macros/src/spec.rs",
+      "bytes": 12394,
+      "git_blob": "635794c643be8e5bb6ee558cb3327b5d05b210eb",
+      "sha256": "2ead091917828776a8fd8adbc80087d3d110fd4ee10c58cc16a00e3851e3a1e2"
+    },
+    {
+      "path": "crates/formality-macros/src/term.rs",
+      "bytes": 2209,
+      "git_blob": "61990bdb348cc14e402a90b01f7d4aa3d5c75d72",
+      "sha256": "6e58ccbf8ee4c658c3cd9c5cc85a98a9aa3e8aae8e25432b0eb1146781538f6b"
+    },
+    {
+      "path": "crates/formality-macros/src/test.rs",
+      "bytes": 334,
+      "git_blob": "9021506cdabdb07fe5d247092b9755c76235e35d",
+      "sha256": "81ccb088a899e5d54f73cc332c2781efe9507a2d8fc76fb05d6561b98b06c515"
+    },
+    {
+      "path": "crates/formality-macros/src/variable.rs",
+      "bytes": 564,
+      "git_blob": "a969d05de4b9b865b9a665e1dd640ccad30bba3b",
+      "sha256": "edc808e6ac28be4e51512be798b34a394022ac24103aa56e2540a17e8e416284"
+    },
+    {
+      "path": "crates/formality-macros/src/visit.rs",
+      "bytes": 1453,
+      "git_blob": "c9569a90b348606ff6e7953c2c2460e7e4dca953",
+      "sha256": "f146f5aa7bba0c2d7cec116086bade95e679f79e3850476f5d6ed096fae2a424"
+    },
+    {
+      "path": "crates/formality-mdbook/Cargo.toml",
+      "bytes": 420,
+      "git_blob": "1d94fb957008d0c341386e65f3a5edd475fe780e",
+      "sha256": "2204c258776b8fe5efab6132671355618adc83bffcab7c733f334869203fd845"
+    },
+    {
+      "path": "crates/formality-mdbook/README.md",
+      "bytes": 2026,
+      "git_blob": "f10e1d0d6b9b3aac29cca8fc747c67cb76b44e1a",
+      "sha256": "6db5f39e11a13e86b8e07c31daaa5c4cff3fa4070f1b9fab4923cdfb7f92d7bd"
+    },
+    {
+      "path": "crates/formality-mdbook/src/lib.rs",
+      "bytes": 24224,
+      "git_blob": "e659cd9e56e2721d4c6c1eaa6e003662e4fc843a",
+      "sha256": "6889402c908aeaaaad0d6c26e4347819469ed1d599ecdef38fd24a6ed2f4018b"
+    },
+    {
+      "path": "crates/formality-mdbook/src/main.rs",
+      "bytes": 606,
+      "git_blob": "41a283fdee25e6dc0bb55019e7d356328c197540",
+      "sha256": "4574e68b21686a29b27a2df5a49980dd09c4530bf88264f4c1dc1384913e457b"
+    },
+    {
+      "path": "crates/formality-rust/Cargo.toml",
+      "bytes": 509,
+      "git_blob": "81cfbd565e36d171f22bd3861f25646a4392d322",
+      "sha256": "7d3d736d5212d0ad395ae3b97e99d576261fe0b1a05d07cb4f325a1704bee392"
+    },
+    {
+      "path": "crates/formality-rust/src/check/adts.rs",
+      "bytes": 1935,
+      "git_blob": "87ceaf7b3eb36fe21468f507e6d549415d6ae328",
+      "sha256": "c1cb777a7419d9cfc18da4ac99234ccb4d324d5e3109ff6f651da1063d616c34"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check.rs",
+      "bytes": 126,
+      "git_blob": "c078fb6349b206f72f213af834cd2ce3ed3b7dda",
+      "sha256": "72e99b11b198f974b2c60658b2c7432ff8c18c62a7926012b509abc5b5479e8d"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/env.rs",
+      "bytes": 12798,
+      "git_blob": "77fbfbcfa84fe277345a4e318aff26f6a06dd6aa",
+      "sha256": "381835363b747f1435b9a35cc5b1a72f5a99d04a8350242ea1fcc85cb2219d8a"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/flow_state.rs",
+      "bytes": 22491,
+      "git_blob": "9f24e44b961d1a6fe38e9cb9d7ec27c7f8a9ce32",
+      "sha256": "86bf27a0184c234766d6126353595e5cbef8ed627e598893e36126f7020a4d14"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/liveness.rs",
+      "bytes": 17307,
+      "git_blob": "e06961adaf977f55147f04269cd3e2e696282e33",
+      "sha256": "849dff8e699eb82ba7b7176cf7a9b9f2add79369b17b76c14df6eafaf34261b9"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/nll.rs",
+      "bytes": 62731,
+      "git_blob": "bed3123fb49d63c776d0651a7672db4ce0292914",
+      "sha256": "a236c3df75abe2a57fe873839fc9cb918f8791c9caab68da042252db64833e4b"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/outlives.rs",
+      "bytes": 3830,
+      "git_blob": "b51805ebb8003ccf09c296cedb43887c118173bb",
+      "sha256": "c6346f2893171ef81896118fb04e693dda1914aec7741409bc5165a569c38fae"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/typed_place_expression.rs",
+      "bytes": 2637,
+      "git_blob": "640a4b02ad50ef43c873f2ce0914331f827efaa7",
+      "sha256": "a19f1d918b2e0e4affbd57887455c4ae84e33fc2e7784ac8fc3778862ce9d3e3"
+    },
+    {
+      "path": "crates/formality-rust/src/check/borrow_check/wf.rs",
+      "bytes": 138,
+      "git_blob": "b0202f1ce0e07ca367f67a25e8fb27ec50a61351",
+      "sha256": "8c39737341be2365a37e4be2bc7f86d46c8c70480fe247857c85700b4ca7605e"
+    },
+    {
+      "path": "crates/formality-rust/src/check/coherence.rs",
+      "bytes": 5330,
+      "git_blob": "29ac534b2fab3b04a42d7776b4d94e89da22f318",
+      "sha256": "fd332771a7040ead32d307ba9a259be2e13406ec31fc9f220ee336ef186d876c"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate.rs",
+      "bytes": 444,
+      "git_blob": "0539796ecee990de41fc16795827156deadf7659",
+      "sha256": "b93167a2c906d8dc44fed4a3e90f172c0b40a0a7370da1c88e1fdff18a4b0296"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate/copy.rs",
+      "bytes": 518,
+      "git_blob": "3ea0ebfdf732eb4c7a3e8b65ffe127a5403d7734",
+      "sha256": "e58c3c308e6e4436acebfd3a3aa052484ba8f36bc734f1e7b8d24dc81ef8557b"
+    },
+    {
+      "path": "crates/formality-rust/src/check/core_crate/field_projections.rs",
+      "bytes": 1487,
+      "git_blob": "b79b8aab6eaf6a9044d1d3a0dcf7b4d3bb66abbc",
+      "sha256": "cb405aa3fa446b49193559f11aaf83902d944c8359cefb42cf58ee115927ee53"
+    },
+    {
+      "path": "crates/formality-rust/src/check/fns.rs",
+      "bytes": 3926,
+      "git_blob": "cfb957f7b4224ea25dff19446e0cc49dfe8057ce",
+      "sha256": "44e18362219ce3141b369abe59f358ec0be87c286edaf4c50c2404d5523c3644"
+    },
+    {
+      "path": "crates/formality-rust/src/check/impls.rs",
+      "bytes": 15102,
+      "git_blob": "2d29b487fb36daa32afcccdf2dbf5abf5f06451d",
+      "sha256": "154ae16b0042c9c2203383ae427fc95b08bc614e1fb5569b96ef84818f743a6f"
+    },
+    {
+      "path": "crates/formality-rust/src/check/mini_rust_check/test.rs",
+      "bytes": 880,
+      "git_blob": "2578d29b5ac15ad9d09a3e53a07dc7c8c60cddcc",
+      "sha256": "7df57fbfc0536597f7b737c79af23ab236ab477c04f69e659b78ed5a52c2edf3"
+    },
+    {
+      "path": "crates/formality-rust/src/check/mod.rs",
+      "bytes": 10492,
+      "git_blob": "f8439864231e3b367ec6fe7ef8e142ab8f77b9ea",
+      "sha256": "7508e58644e88b07fd37eccc0f0219658250a329c88318601faf86020d512673"
+    },
+    {
+      "path": "crates/formality-rust/src/check/traits.rs",
+      "bytes": 4226,
+      "git_blob": "3a19b258ac1a43fb6b22978e51cceecd63cc9222",
+      "sha256": "92e3eac146ce4d71ceb171f7ded11e31f10f35277c8bd1c1d40f3c49b92cc846"
+    },
+    {
+      "path": "crates/formality-rust/src/check/where_clauses.rs",
+      "bytes": 645,
+      "git_blob": "5b0056751cacb6e9f75c8b8a9000a430cec529e6",
+      "sha256": "b50f27599990b81dc0c7e0563782b1b6882198ec0e6e64a1a433e4f4f7283ecd"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/code_block.rs",
+      "bytes": 20951,
+      "git_blob": "6416fe759d85edbe11f15df492270bfa61eb5759",
+      "sha256": "b65352115fd689736a32e2291242af04d758dae51a9f9e98cca4bd3b2266f3d7"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/helpers.rs",
+      "bytes": 12074,
+      "git_blob": "f87e459d073fe33a9bdecaadeb048d4e6f6430f2",
+      "sha256": "a5c72d072cccc58a87d228421f6c6966f9430a5ec938bab02a79e222d13ef2c0"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/minirust.rs",
+      "bytes": 11045,
+      "git_blob": "b62659aaf0cdbce4d35a39f8da8876e91139742d",
+      "sha256": "a5414d567f480c24fdd84218281723ca169e3a27c65cdb8a0833873fccffe261"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/mod.rs",
+      "bytes": 16350,
+      "git_blob": "8f83fc22a529e83625a75f75be6841f5227555b4",
+      "sha256": "90e4a238142e06496ec1cab327f5d9404b568c7151949c2e21dfd0d151702ca1"
+    },
+    {
+      "path": "crates/formality-rust/src/codegen/scope.rs",
+      "bytes": 10219,
+      "git_blob": "1e28649bf9bebbbb7f7b07b5988ea041126f3280",
+      "sha256": "e291f2e54342855d51b5111e3df24544ef007f595521bd2b0be895281fe1dab7"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar.rs",
+      "bytes": 482,
+      "git_blob": "e30c2af6f238798f9065e82dcf8d3b2070ac01f6",
+      "sha256": "1208e349e053a0b033b51b660375127aef959adac25190f2f814d7d70740cbd1"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/consts.rs",
+      "bytes": 1977,
+      "git_blob": "e0b797bd47807b08758e45ae516f0e53ce12933d",
+      "sha256": "f76f7600ba1f888c460c41c0b0343849b357d6347dc9a0d6f0918b5745f24689"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/crates.rs",
+      "bytes": 1668,
+      "git_blob": "7c8a4a22a4d11b5c32edf17af4acbb7d39a1f6af",
+      "sha256": "a9a989c01cfba6d9168ca19717024bbbcfbccc5a5ae0f63be2ea8e38198e21d9"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/expr/mod.rs",
+      "bytes": 6939,
+      "git_blob": "aee375abad321172bbc9fbc76d22a86c56de0ce7",
+      "sha256": "649d43b73e7fe15e4e425f02be40250ea510e98d89ae790273df1cea742183cd"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/expr/parse_expr.rs",
+      "bytes": 1086,
+      "git_blob": "d7ce3fe576387dba37fbb2b1110e135b7fd39b90",
+      "sha256": "bf725448baa380a88a7277c4f6c255907ccb3661ef882ff8ea918abe117c1c3d"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/feature.rs",
+      "bytes": 419,
+      "git_blob": "f54628c30af01e36c0ee155a358889d14408dc39",
+      "sha256": "49fc33035a19aa89806ff70427dc26cd4c36db1630e343766ad920fb695f52b6"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/fns.rs",
+      "bytes": 798,
+      "git_blob": "b294da4eb83d117d601dcffe5b19415366ed0217",
+      "sha256": "d51217042b1f7b93154ca76e00dbf87b05094b771bbb541dbd9a3522ce38cb02"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/formulas.rs",
+      "bytes": 5895,
+      "git_blob": "6afd564beaa1ddb2c695248f0589e00468c61641",
+      "sha256": "d00875452c2fc10a69b349256c8464a1b961e288cb84a8424dcad8e125fb8f7a"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ids.rs",
+      "bytes": 305,
+      "git_blob": "f80ee1a64a496887afb94c18495fbbd706e49191",
+      "sha256": "21f17bf6de9d73f1ee518b332c55f19b03c38fb239e5157e77b33408134f59db"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/kinded.rs",
+      "bytes": 943,
+      "git_blob": "694c50f77233da9495d1e7aae52fba88ffea11f0",
+      "sha256": "74c3b20ec04d86074afc3849c898ac2828907d85f8f57ef3f4cbf61870964a6c"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/predicate.rs",
+      "bytes": 5150,
+      "git_blob": "25b2c1f4197bd5ea9a331d96466ba21783d6e56b",
+      "sha256": "b346ddd64e8bfcb38c9cfcd3bf8fcbed20ccf5028927a71fbc0cbb965c7c6fcf"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/program.rs",
+      "bytes": 4243,
+      "git_blob": "01e7a6cb28b13515baace6cc3ea91dfb6b96d25b",
+      "sha256": "e7f562ed194143a7a5b7877c7f3ad84e28376909dffe0c0f5e52bb8f07da7636"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/structs_enums_and_adts.rs",
+      "bytes": 2073,
+      "git_blob": "fc42142db4cf9a246d6e9188d6f773306139a02b",
+      "sha256": "1bfc8a2b7b8ed3e4e642188d7d496bc2cc716039ccffb5e4292fd21c107aa116"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/traits_and_impls.rs",
+      "bytes": 5946,
+      "git_blob": "bf472c741e968f926ac66cc7863f58138ae27e94",
+      "sha256": "c141430627e8fda515ca36c3e17509a587cbb174c6da3cf121e755588c66a8ab"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty.rs",
+      "bytes": 8637,
+      "git_blob": "8e98dbac0f1b554e020688e559bb718cd1df33e1",
+      "sha256": "7c07dd4ad5118e960e558ba2c9cd0d431bd69a4b4999e8161e07c84d18931c28"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/debug_impls.rs",
+      "bytes": 3843,
+      "git_blob": "9ac94b1170c062139f9902ffb475904f718ac9d1",
+      "sha256": "f7c1dbc6c7522f59537ef3c3dbd35ad9f8e12fc0928693f72d0ee136cf90d896"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/parse_impls.rs",
+      "bytes": 6414,
+      "git_blob": "3f9a7f70f771ee96bece7a0ba7376a7097e30503",
+      "sha256": "f592c504cd9afd46d972bd79e8dfec5480276f50cebae19fd42d39be53d325c9"
+    },
+    {
+      "path": "crates/formality-rust/src/grammar/ty/term_impls.rs",
+      "bytes": 2179,
+      "git_blob": "e2b66892f92d1f85be8b23b5c443087637a5c2dd",
+      "sha256": "33d93a5335d5bb6d924bff54b20622afceb0fe4506298a3773117d28ed86dfca"
+    },
+    {
+      "path": "crates/formality-rust/src/lib.rs",
+      "bytes": 1161,
+      "git_blob": "201cfecfa5a873a258ebbbecc55fb3399e4899e3",
+      "sha256": "4db5a2e0cd2a369ef2ad2b52c1f392205eec565ddeb6108127c6302a71aef70a"
+    },
+    {
+      "path": "crates/formality-rust/src/prove.rs",
+      "bytes": 7546,
+      "git_blob": "4662165401d4327bfedbac2b7193f62f06470616",
+      "sha256": "0ab474015bc2e249857ecd3e719d865f2eb1f3eb55062a7d524b7fe27e7c9dc9"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/combinators.rs",
+      "bytes": 2125,
+      "git_blob": "5f5cbd1390736ee8b742d025f9168af94f3439e9",
+      "sha256": "c2958b7d419c2af14f17181c6a0524db37028ceccf099f39e207ad2f92e7c6bb"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/constraints.rs",
+      "bytes": 8135,
+      "git_blob": "f18413d17aaf96abf9c3c42fb2b0310837a1459d",
+      "sha256": "7b648d23fdc75f859d353e9f4d15c9bc42fa43322be71ebb87784059e7a0c187"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/db.rs",
+      "bytes": 1,
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/decls.rs",
+      "bytes": 14387,
+      "git_blob": "55a67952571f2b103c1fcaef24ead41287687e81",
+      "sha256": "b8e7258cdabaed29273f815fbb85e11a012c2a90051aa40a863e6213a2357fa7"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/env.rs",
+      "bytes": 12590,
+      "git_blob": "433cba3e05096362745847e83465e0f0e03efbc5",
+      "sha256": "cab191b69d6414e26382e47f135ad95a1393e35acdbbffe37c401097047dc895"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/is_local.rs",
+      "bytes": 13529,
+      "git_blob": "22193debfd0399861e06a8d128c783f159cfb29d",
+      "sha256": "1435c935d5d80fb820385dbd80f276532ac877c62525803bbf8aa87b30f0ffb7"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/minimize.rs",
+      "bytes": 6473,
+      "git_blob": "d92ffd810aaef67833fb3491f2d5cac12d08ee3d",
+      "sha256": "9173c250e05a3502210297ddcb261e6dfe70a35a89a0c743b9f5bf2193caf430"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/minimize/test.rs",
+      "bytes": 1867,
+      "git_blob": "a7db65557dab0e4d3f40172ccd89cc48a933d0fa",
+      "sha256": "19f675c43e520e19eeef841a3d94fd6ee16fcca8238da4db4a39051160a260b7"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/negation.rs",
+      "bytes": 5356,
+      "git_blob": "4ebbc69ced727cd306b3b40905e660129bed1176",
+      "sha256": "586c83bcdeaf4779fe187777f0465894a7152b65c47cbd8f6218b27956b3fab6"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_after.rs",
+      "bytes": 652,
+      "git_blob": "fd9fbbe9bd3f413d0b2f448842ff0fe3c7297656",
+      "sha256": "4205e1e31848df6298b79488ab8561c2d80c10261c8bfe94a254bdd57b5633b6"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_const_has_type.rs",
+      "bytes": 1367,
+      "git_blob": "b1cda8086f5068800c8ead8f19a06b7f3fceea38",
+      "sha256": "3f9595cda69aee684da5c30ad5d7159e52c3a07e3c159080137c6f57ade22a64"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_eq.rs",
+      "bytes": 8332,
+      "git_blob": "45c97a7f84543311e7def76263a04f2a2630a6d1",
+      "sha256": "dbea7ade00a7b7f79a358bd0a824deb6ec0edfbbc5d40a77aff2d618b650ac7a"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_normalize.rs",
+      "bytes": 7372,
+      "git_blob": "93e23740ed86bfbfa2b57da5c17c0d491362ec89",
+      "sha256": "cd53d295668e2e1ffd7dd436b3795597176da96462f604c1c080971d1cbd4d35"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_outlives.rs",
+      "bytes": 5309,
+      "git_blob": "6b6bbee0cf27ce7d58bf285e887b60117f8f4d2f",
+      "sha256": "a65249ec89a86d1d1e0d8b5419876c344fd0ce5801bfe0520037842e36baaca3"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_predicate.rs",
+      "bytes": 7569,
+      "git_blob": "583b8e9402cc7618eeb3d75bf3487136e38922ba",
+      "sha256": "3eb8951e2ea278152fb82cee3fe967421c63fb7781602948e948a81d42dac8e5"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_predicate_list.rs",
+      "bytes": 985,
+      "git_blob": "60e2e6c38d7c0ff037bd8c8a423c8a2ecdc1ae60",
+      "sha256": "87f3f3d04bfb49f9763554306ff3565e9790d2ac624f651d7fd7b561f2470883"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_sub.rs",
+      "bytes": 1931,
+      "git_blob": "b059ac06b05bf95b07e16689e04ea0b52facf16f",
+      "sha256": "82b8f5f6b58cc3666b34bd2a40e96491e01e60391b21cad3774e87cfc74a337f"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_via.rs",
+      "bytes": 3116,
+      "git_blob": "3f8ed8dc3aa39d8a706635acdd92557d225f5ca9",
+      "sha256": "46054ceb8efab7fb1feb911c1244e755070f9abe99041492501420a2560867f0"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/prove_wf.rs",
+      "bytes": 3977,
+      "git_blob": "a19971efa3b757acaa0edacb8efe8b55c3229f7d",
+      "sha256": "8ab4553554f2bfb5de33cdd69513ec8cc14b51e205e994011be66fcd3aca09c2"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test.rs",
+      "bytes": 170,
+      "git_blob": "f04b7e1284714cb8c6f1e7c426e5962d11ac5480",
+      "sha256": "63a46e18bc4ba0adb43bafd20ca656e0ab8a444cf3ec68d3aeb514c294792b39"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/adt_wf.rs",
+      "bytes": 2132,
+      "git_blob": "3cee962195a7a473ecee08f8ea657ae7f14638e9",
+      "sha256": "ef2f02e84e73f8571ba8c17e25156e70f592c51b3ccdf83d7fc1b7db230f07b2"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/eq_assumptions.rs",
+      "bytes": 6853,
+      "git_blob": "83cc6b181e499effb34e3b0cd8e47e8ebb839df2",
+      "sha256": "95e43b3bb692ef573b294a23c5ab17da19a23147987cc2080b8c50ebbaa6b1ba"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/eq_partial_eq.rs",
+      "bytes": 3128,
+      "git_blob": "0e4874ea5d626f8ca89ea969164cc93efae11dde",
+      "sha256": "7d94b8ff7e12b029f65fc8f7fcf4874b2491c0b20a55adc1287da67f991f6880"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/exists_constraints.rs",
+      "bytes": 833,
+      "git_blob": "07df78aee4b8e70f37131413576aaa5845a1ec01",
+      "sha256": "b94683c4c8e148dab24101f9de1d85a892ff26608e86756b68fd2ff7897cb7ba"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/expanding.rs",
+      "bytes": 793,
+      "git_blob": "d9eac7a50ebbadf3412b7709c958f4bd34638f02",
+      "sha256": "86243034f6d0d3f6d051c366824f66c47433f6d0ffc973564fb85573e676a76e"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/is_local.rs",
+      "bytes": 1063,
+      "git_blob": "1e6767d2dadbf67c2b632d194fe62fe339d084f5",
+      "sha256": "6d026ffd501b33611523d20bbd69f19ba2e7febcb295556f11403661a274a02a"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/magic_copy.rs",
+      "bytes": 3943,
+      "git_blob": "1500e6c2795f86af6ee8361f87ccba0d6c1d4a53",
+      "sha256": "06e2aa311b0eb88d76780d56bd8b1cade2f736aa3068cccbc6cb4c8257c17291"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/occurs_check.rs",
+      "bytes": 3451,
+      "git_blob": "70801211004e2ac9bb55cc0b84c6e3c68544e954",
+      "sha256": "9fbcef5c85e036894c18be83e989661b74ef2435f0545eee584d4b9590eabf21"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/simple_impl.rs",
+      "bytes": 1106,
+      "git_blob": "6bb33d6feccb4e232a2572607c10e0347f09e12e",
+      "sha256": "026313f3279c1c03b79ff2a69e541962e75c841b68a56402062743882216e128"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test/universes.rs",
+      "bytes": 1645,
+      "git_blob": "7bb313daa5664f1e5845d96fd8f5bb83412073c0",
+      "sha256": "678965c46bb22456afba2d70af0311167a1ef16755b6098a903dbae4fd2d4210"
+    },
+    {
+      "path": "crates/formality-rust/src/prove/test_util.rs",
+      "bytes": 2079,
+      "git_blob": "0e9b3a2046a8f1da3a2cd8fecf7470255baa6908",
+      "sha256": "68974973f93ee15a6e3848607655deb28f42bb019c769950cd997690df135b4a"
+    },
+    {
+      "path": "crates/formality-rust/src/test.rs",
+      "bytes": 10124,
+      "git_blob": "be3952a1d7660f6555f9d8cc16b075b8a5ef738b",
+      "sha256": "b2bb4c8cdd0031d6e15c6facf964246bce62906479dd3861f115ea49cc79d904"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/context.rs",
+      "bytes": 11617,
+      "git_blob": "95d5cd465712e123104152045f49a1c6a1c13047",
+      "sha256": "021282ba0539ad6cee29b3af38f64eec6779648dee2a6a033e02f62b8fe31a7e"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/crates.rs",
+      "bytes": 2833,
+      "git_blob": "9ba185d9d222af9bd17a1a1fe7706ac06e0f26c7",
+      "sha256": "c5f3d335552713e4c99e87706a77ebace2472e3cb37a273a2912cfe4c03b220c"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/expr.rs",
+      "bytes": 8736,
+      "git_blob": "6814eefb93ca0a7ad991eeb3e7523bc1758e0fc8",
+      "sha256": "34da4941489047e9f0edf6dfc667e79825ed7770982c0124cf2be2972fe568a8"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/feature_gate.rs",
+      "bytes": 512,
+      "git_blob": "f33c1864b4c9238494d294b8cb2a3679017ab476",
+      "sha256": "b126580924d7d7634b95d0d7b8449cd2c6e82867381f89b33d7b0467273d8218"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/fns.rs",
+      "bytes": 3800,
+      "git_blob": "aa8abc49184d837d1e8f2f11b2fabeee202965f0",
+      "sha256": "10bd0f5c252008ae6ec48d0918088ff9bd00c9881c55bab5c860e8840c8291c2"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/mod.rs",
+      "bytes": 10725,
+      "git_blob": "f4fa57af60c611bbec5d34983cd7d51f1d06fe84",
+      "sha256": "7a6027790ccfa5c9e6008ba9a6be1b248954c359df34ab8ea76751520250c61b"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/structs_enums_and_adts.rs",
+      "bytes": 4610,
+      "git_blob": "9dbe442c02ef1fb58ae0725169264243a42c94e0",
+      "sha256": "392ba7d7e00a32acd0e1a04d7dea1b26bc9b09e7aa9b9ca4bb826cd1cd68a47c"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/syntax.rs",
+      "bytes": 30305,
+      "git_blob": "908814f8fa892869b97c9b8c4d43955a10d4a130",
+      "sha256": "bc3bd92c39f4ac3c8d074b94293e69c39e484977aae276ddbe12d5aca48b6c37"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/test_util.rs",
+      "bytes": 1511,
+      "git_blob": "f95e1fa080b4eb69ed683cffadf3a96f4790698d",
+      "sha256": "69a9140ef7947ca72694a93ac331cf1a08ea5aa6821daa1a7c4c4822eb15b603"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/traits_and_impls.rs",
+      "bytes": 10036,
+      "git_blob": "baf0fcbe643c6489066f81f9840dcc8d106bd766",
+      "sha256": "4af3065c88f524fcc31f78068d1835501de75b70162950308f680a0b363191f5"
+    },
+    {
+      "path": "crates/formality-rust/src/to_rust/tys.rs",
+      "bytes": 17241,
+      "git_blob": "55dfee88a70eb3446a792642120edcb9d78cce17",
+      "sha256": "2fd15e7dd3d7244c88dae02b821932b4107b8ddaf6f4c6eda636cc8340a35eff"
+    },
+    {
+      "path": "crates/formality-rust/src/trait_binder.rs",
+      "bytes": 3740,
+      "git_blob": "8312fea13f9809296a21af5999799ee506e3f6ae",
+      "sha256": "1bb651462007b950b42242947bb81f3546eaf93d1c77d4835b314cddbb586631"
+    },
+    {
+      "path": "crates/formality-rust/src/types/mod.rs",
+      "bytes": 21,
+      "git_blob": "f9da2c4a9539ab323eadf3d36e7a35d1f866779d",
+      "sha256": "5fa6abd81da6a9418ecc15c679efb0ebbf42e4fe2d363f63e0432bcce90562b1"
+    },
+    {
+      "path": "crates/formality-rust/src/types/visit.rs",
+      "bytes": 114,
+      "git_blob": "f41c5e7d9273ab0bc0444f4ae3cf40150ebe4756",
+      "sha256": "14aa40ed1b22cf8a74bb3e0f021f9c58c7f5d6fd8eebcdbf075da246bcbfa924"
+    },
+    {
+      "path": "crates/minirust-rs/Cargo.lock",
+      "bytes": 6446,
+      "git_blob": "2da0b0126e20d761a7d176698b279e036b56bfe6",
+      "sha256": "88e9b4e53726f28d46d6dfb4eacc27429f74281380e19e966cb2d74061df96d3"
+    },
+    {
+      "path": "crates/minirust-rs/Cargo.toml",
+      "bytes": 152,
+      "git_blob": "8138068235316ee1f714fc0ca9bc99abf2a7a31f",
+      "sha256": "e3221d379bb805259e9133ad633e5ddc9dbbbea67941cbaaf2d70d73d17e9b41"
+    },
+    {
+      "path": "crates/minirust-rs/src/lang.rs",
+      "bytes": 206790,
+      "git_blob": "d690cd1450f1e63370da3289201eb0056d4e5ac0",
+      "sha256": "660828c2185b935886d7b80298b1dc59717ddf9d98488a457f9d31e30b034488"
+    },
+    {
+      "path": "crates/minirust-rs/src/lib.rs",
+      "bytes": 298,
+      "git_blob": "6a765667cc3801b68cf2e7fb36d5bca80521abce",
+      "sha256": "a9234231fb299af7db0418ebd83eceab219741b81db40d6ea84e3f2aac0ba247"
+    },
+    {
+      "path": "crates/minirust-rs/src/mem.rs",
+      "bytes": 63205,
+      "git_blob": "ef0ee1f642550d1637a78d9ab926e67439ef9301",
+      "sha256": "54c23e8c825b6bda888ece923f2aa08e1a4a060154d9d57c3632cfc0ceeea6c8"
+    },
+    {
+      "path": "crates/minirust-rs/src/prelude.rs",
+      "bytes": 3405,
+      "git_blob": "2cdc22c7264625fc549e7ccf7e12ed40163e4a39",
+      "sha256": "5a7157e3e027dddedc15ba581820fe4bd503fb5d43ce49c4de8c6634d99f62c4"
+    },
+    {
+      "path": "examples/formality-eg/grammar.rs",
+      "bytes": 3083,
+      "git_blob": "6686a2892909c90e13be5167c124c99d2d91f4b5",
+      "sha256": "cf6018a859ccbfe97b35a38d65aa8079b5e51d46d034f84915b66afd384f16ef"
+    },
+    {
+      "path": "examples/formality-eg/grammar/test.rs",
+      "bytes": 2060,
+      "git_blob": "4bbb5fe0c2024eef6ab3ab4b7a8de91ee4bc585f",
+      "sha256": "82425535bb6f38d72801dc618d3f7bf9fd99ad46eeed418dce790569e5a3398c"
+    },
+    {
+      "path": "examples/formality-eg/main.rs",
+      "bytes": 546,
+      "git_blob": "012159f688f0262ddbf963f3707248c20014aae5",
+      "sha256": "16d9211de6d532464b539227673a22f2a09c89695b4362a5d600498227ef853a"
+    },
+    {
+      "path": "examples/formality-eg/type_system.rs",
+      "bytes": 1,
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "flake.lock",
+      "bytes": 2459,
+      "git_blob": "d9509b771e31b90d089bc60665c1a1eb745029d6",
+      "sha256": "264f664330146c4ca59d6985cb2ab1a90d8a2b2ed56a93c329fb070cc10c0649"
+    },
+    {
+      "path": "flake.nix",
+      "bytes": 689,
+      "git_blob": "629d5c8955df24b312151e39cc374e7bf6595bb1",
+      "sha256": "e3a7a33b9d2b704f364cc74af462dafdf113414d62e9bd7e3a09518f154ae2f4"
+    },
+    {
+      "path": "reformat-logs.py",
+      "bytes": 3926,
+      "git_blob": "a05d1b756d8479a41218c2638c4658bdd9eb1e1e",
+      "sha256": "f2ac4b1373c15969f81cb14aea9a065fa99c704abb858183ad0153aeb69b3c80"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "bytes": 134,
+      "git_blob": "5fd35b000e7841ed0ea0748d559030faee0cd589",
+      "sha256": "361a65eda575b085937161da71f19ef9f986b97e01e6b6139036cd5c877358bf"
+    },
+    {
+      "path": "scripts/update-minirust.sh",
+      "bytes": 2725,
+      "git_blob": "c48cd549b3200b7ee22a085596996e7a13c86860",
+      "sha256": "e8b10897d6b3e756d4ca8e861b85b23feff4fa917d0ce14cbdecfe08993a0c6d"
+    },
+    {
+      "path": "src/lib.rs",
+      "bytes": 2485,
+      "git_blob": "453cf3965747a17f3e0a5cc88bb805c8d2ce0d99",
+      "sha256": "1d1b930084f0c373c1f6e91b5404fe464b87bead589ed00f6640fde8b81669c9"
+    },
+    {
+      "path": "src/main.rs",
+      "bytes": 97,
+      "git_blob": "d5d5203893580535a607670601d2d0d4efd7e8a6",
+      "sha256": "94f5730959e50f28a326ce829f3cd48a7e7adee2e1c722b37e1a34c6d02931d8"
+    },
+    {
+      "path": "src/test_util.rs",
+      "bytes": 10171,
+      "git_blob": "9e1fa92a72ae3718785bb6f3dda1816f7ce99097",
+      "sha256": "035ab2ee906694d5bf005ee48c38d0eb2a04c111ced3e734a87b54cf41e99564"
+    },
+    {
+      "path": "tests/associated_type_normalization.rs",
+      "bytes": 761,
+      "git_blob": "d518e9a20186b54ee4990d804c936630a8b41c17",
+      "sha256": "14433d72f97090855880d664b06ceb028bcb59f9670875428ee6a7436b8c5c82"
+    },
+    {
+      "path": "tests/basic_tests.rs",
+      "bytes": 13575,
+      "git_blob": "5075b14076a6c55c091ece11d4ebc5d4d2f12540",
+      "sha256": "8afb3f50e57fb530ee67cc5af48c3b8192c7252428cf841ae0cb50319f329022"
+    },
+    {
+      "path": "tests/borrowck.rs",
+      "bytes": 356664,
+      "git_blob": "de8c5fda423072e9790f6b6f50a9987b9e0dcbee",
+      "sha256": "95b65e80f5a88137ff712ab32db35f74deece5cf1f46e98900731cc232cce7fb"
+    },
+    {
+      "path": "tests/codegen.rs",
+      "bytes": 10432,
+      "git_blob": "c640a987d8ab215421cea73d66d7eee4b0e90935",
+      "sha256": "5ec3970ff95c5a222d6ba50a1d1a9e3413ef75689c278518b5bc835a730a5296"
+    },
+    {
+      "path": "tests/coherence_orphan.rs",
+      "bytes": 18918,
+      "git_blob": "2bafe41bb757f4e7746e4f362747e4f7824375e0",
+      "sha256": "a282345137300b4f31382d4ef6050bb3fe3efae2ce7653728898701716a00b3d"
+    },
+    {
+      "path": "tests/coherence_overlap.rs",
+      "bytes": 41607,
+      "git_blob": "7116fb47a98c6f862d5d136c4b942b8c3321ebfc",
+      "sha256": "1b2eedd8e59821bd3f8c37c592018d3aad787abbe9c3a7d8b115bac9a9269852"
+    },
+    {
+      "path": "tests/const_generics_rv_tsv_parse.rs",
+      "bytes": 309,
+      "git_blob": "58d925d23875451f7319148451bc5ce88f42c8b9",
+      "sha256": "0360a11f663dbdd9fa8ee021d2c1b6476256cc9e69431ec0fe9044db5aedc852"
+    },
+    {
+      "path": "tests/consts.rs",
+      "bytes": 5209,
+      "git_blob": "81d7515eb2909266f745c2af0e096be0d4127643",
+      "sha256": "adc7a1ac3100cce1214826780d1340e526ed36d0de5d8a3d7a5ce269526e30e5"
+    },
+    {
+      "path": "tests/decl_safety.rs",
+      "bytes": 4293,
+      "git_blob": "84ae23c33f0f3cd049623588992ac2f4ac2fe3e0",
+      "sha256": "907ef73fd1817d58d4575a140bf0b0060bbcf038865b2dfc31c76faa96c92c02"
+    },
+    {
+      "path": "tests/drop.rs",
+      "bytes": 8727,
+      "git_blob": "32a7b53d435a00cfd3abb907f4b5495dbc4f830b",
+      "sha256": "6e5d29844e7dd492f11da62f2966f81168a19e5b1ed8711d7deebef8f60ec5e3"
+    },
+    {
+      "path": "tests/field_projections.rs",
+      "bytes": 328,
+      "git_blob": "10021f635972b27d8eeee27586c28b078259062f",
+      "sha256": "911e2ee06868fdcf654735b7fc6f915e40c29066afca7d681341d3767dcd055c"
+    },
+    {
+      "path": "tests/functions.rs",
+      "bytes": 1567,
+      "git_blob": "aa16f5b10f97440e68befe43ee3103c9eb78eefc",
+      "sha256": "4c079fd000ea57fe981076281fad826700dadf1aa8c77d8938f82588bf2bc86a"
+    },
+    {
+      "path": "tests/judgment-error-reporting/cyclic_judgment.rs",
+      "bytes": 6764,
+      "git_blob": "6a543af08004ea967cfcc94dfe7740c058078fbc",
+      "sha256": "8c4d41f1a6cfe25ed7148da11433da3b05efc65c8e0ec6bf4646b7819d230b71"
+    },
+    {
+      "path": "tests/judgment-error-reporting/fallible.rs",
+      "bytes": 1224,
+      "git_blob": "2aab36dae4ec0e004ff067bfec2fe1be4b455a4d",
+      "sha256": "03be38bf24d7f54219760a5d0a4f39977f45abfe1e20745dae84bea165c49270"
+    },
+    {
+      "path": "tests/judgment-error-reporting/grammar.rs",
+      "bytes": 1556,
+      "git_blob": "301abdc8854ce1b4e39021be523a842afd0a5124",
+      "sha256": "e69a82f6d0842a67d861cbced1e469633ad8a199fb206e13c0068283317b05f6"
+    },
+    {
+      "path": "tests/judgment-error-reporting/main.rs",
+      "bytes": 544,
+      "git_blob": "da0b7a2f6babcef03dd7a7edb8dccd501b8e438f",
+      "sha256": "0054e5a6e7b26d82540bb34182a403e7413e48c679190ca59b505424183d9a80"
+    },
+    {
+      "path": "tests/mir_typeck.rs",
+      "bytes": 37272,
+      "git_blob": "2a86144c722230e87daefb37bc144e797a2d843a",
+      "sha256": "451043f63a6b9ee9a9dd6f12e4951f49959244c62ef7aa3cba859003bd18579f"
+    },
+    {
+      "path": "tests/parser-torture-tests/ambiguity.rs",
+      "bytes": 5169,
+      "git_blob": "c9b799b4e439d7c5234bca5a6d992703bed052a0",
+      "sha256": "6dd9bf5e997fb514135a674800ae5e7efbfb69bbce32703749d394ec561cb325"
+    },
+    {
+      "path": "tests/parser-torture-tests/ambiguity_helpers.rs",
+      "bytes": 39463,
+      "git_blob": "e367b9e5e515c0e3d12eace98adcafa6302566ae",
+      "sha256": "e5987fa68b30dc4dd98dab649bf93a666e442885affc991635f7d2332ae6686c"
+    },
+    {
+      "path": "tests/parser-torture-tests/commit_points.rs",
+      "bytes": 2136,
+      "git_blob": "49211f1cce5ec19b0d3c74c6bc7401e81055b79c",
+      "sha256": "461336918ce80938a1c00fb696d4667a97a00ef2c4ef9a9b47cd3c3bfb4dff9b"
+    },
+    {
+      "path": "tests/parser-torture-tests/grammar.rs",
+      "bytes": 1556,
+      "git_blob": "90e1767c77f8a03008433a520f535884b1d472a7",
+      "sha256": "2fe9153d22c53fee58a9de720fe9992a19e9bd522c8cec4b08c45238cfc6846b"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_associative.rs",
+      "bytes": 2977,
+      "git_blob": "6189696237346304552fa6e4fba8dc83df80d0a5",
+      "sha256": "e2da15bde36900a716cfce2392dd49904f8d845d8684d65f455f58984f7cd41f"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_recursion_seed.rs",
+      "bytes": 3685,
+      "git_blob": "1eb61a8f7fac2ada179c3315e755f9a61c0b868b",
+      "sha256": "9388b623d9221269d9a239e8195b44ba28e79088fbfa8a1f22a0aa3c23c7f067"
+    },
+    {
+      "path": "tests/parser-torture-tests/left_recursion_seed_bias.rs",
+      "bytes": 9825,
+      "git_blob": "baf4fc33eb01c30b2a02af5d13f5feeeee6c4d0e",
+      "sha256": "159c90058794a6b5e2bb092f4e19c3986f184e509754e75ec5562bf83dffc505"
+    },
+    {
+      "path": "tests/parser-torture-tests/main.rs",
+      "bytes": 1829,
+      "git_blob": "6c65265f3726b2db19ad9af991ea7ec6f8138c3a",
+      "sha256": "4a89a0c39d6f4b7aeb2c20bd15e8c4a6ddb86c74ece43968d90b1f1105c9754b"
+    },
+    {
+      "path": "tests/parser-torture-tests/none_associative.rs",
+      "bytes": 2085,
+      "git_blob": "26b7c70fe622724508079c644420085603acbb3f",
+      "sha256": "d1c91c75deb6a473d577bb156327c7b290af62d02c7b5648a2a6d04e68cec985"
+    },
+    {
+      "path": "tests/parser-torture-tests/path.rs",
+      "bytes": 778,
+      "git_blob": "1862f288c9e4b87b6e6b576a6cf9680bb5945f55",
+      "sha256": "68bfbfa6bd0b7ff4729024c1c536421fbf4818c78c92944966b663660c8b8897"
+    },
+    {
+      "path": "tests/parser-torture-tests/reject.rs",
+      "bytes": 9277,
+      "git_blob": "a81774c52407cafd6987d68ca1c1d14159b40d8a",
+      "sha256": "9060aeda69ad8082d09399875221f96aebf8b8e2c1c266c17263f087d33dc36a"
+    },
+    {
+      "path": "tests/parser-torture-tests/right_associative.rs",
+      "bytes": 2975,
+      "git_blob": "966f3370b476c87aaa4ce462db6da3d8eb8110a8",
+      "sha256": "f10b6328a26c37b5a05e0b1d0be8e53f8c0adf2306ec260202a25c4f974e26d5"
+    },
+    {
+      "path": "tests/parser_var_id_ambiguity.rs",
+      "bytes": 4860,
+      "git_blob": "a3db3d45b78e2c125a168c00f46dbfc771fec2bd",
+      "sha256": "c892b97b223b6e9c0bf19b18851e60ac29d260041e9d9956a4069900ea2f2ea3"
+    },
+    {
+      "path": "tests/projection.rs",
+      "bytes": 5175,
+      "git_blob": "fdc22a19cf89e05338878c26b6ecd33a513c30c7",
+      "sha256": "b1e1093a67cd36519bcc19599a97ed70bed29b95c87982ed80ca5dde3bf70f3b"
+    },
+    {
+      "path": "tests/references.rs",
+      "bytes": 1777,
+      "git_blob": "313565f7537db5f47573cd0384f6839d52cd5abc",
+      "sha256": "b793504fdc4e13549fe5e3bb3465dad77e9fcf8c02b2eb696532a860e45f1421"
+    },
+    {
+      "path": "tests/return_validation.rs",
+      "bytes": 3563,
+      "git_blob": "c919ca2d35260e7fb81f6d0aec11c42c89790289",
+      "sha256": "e6e5849679a0d5331055483a3e225233a4be7b2d44c2c52418c88569ac732716"
+    },
+    {
+      "path": "tests/traits.rs",
+      "bytes": 1094,
+      "git_blob": "46c7f28ab5d31127d84686ec93e6e86c307bba9c",
+      "sha256": "6f21b03bea7415de63740ada980a179c5aaa2d9f3c1aaf46ae3ccf0b64b1156b"
+    },
+    {
+      "path": "tests/well_formed_struct.rs",
+      "bytes": 376,
+      "git_blob": "19a987f09450a52e8277da0418a6340352e19d45",
+      "sha256": "371344f5b4979fa50caff61bbdce91e49ee11a2d80842081a6f887c5ea810437"
+    },
+    {
+      "path": "tests/well_formed_trait_ref.rs",
+      "bytes": 2894,
+      "git_blob": "9025a2b2d942c0d5c072766bae4183d45f3f2845",
+      "sha256": "bb9dda539bce931fa0cf1eb3530c43ddb3f5c2a0e02ee5057d391fc94b2d4ce6"
+    },
+    {
+      "path": "triagebot.toml",
+      "bytes": 932,
+      "git_blob": "55eef14f71789556beb177ffecefb473dc18bb09",
+      "sha256": "2635ed9c1385f2b222b7ff4d42bd8ad68365d5c920eb23d0430ad9609b6cca77"
+    },
+    {
+      "path": "wip.md",
+      "bytes": 25136,
+      "git_blob": "2465461a493360e03e750fa03251cbaef95cf169",
+      "sha256": "3a5df2ca96bb39cc3bc2c423e1060e962bd79f6e9de42e3248357fdc61c6c88c"
+    }
+  ],
+  "acquisition": "Initial sandbox curl exit6 DNS resolution failure; same authorized read-only request with network-capable exec succeeded exit0. No build/install."
+}

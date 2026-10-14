@@ -1,0 +1,54 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn main() -> () {
+    let mut _0: ();
+    let _1: u32;
+    let _2: ();
+    let mut _3: bool;
+    let mut _4: u32;
+    let mut _5: u32;
+    let mut _6: !;
+    scope 1 {
+        debug x => _1;
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const 17_u32;
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _1;
+        _4 = core::num::<impl u32>::wrapping_add(move _5, const 25_u32) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        _3 = Eq(move _4, const 42_u32);
+        switchInt(move _3) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        _2 = const ();
+        StorageDead(_3);
+        StorageDead(_2);
+        _0 = const ();
+        StorageDead(_1);
+        return;
+    }
+
+    bb3: {
+        StorageDead(_4);
+        StorageLive(_6);
+        _6 = core::panicking::panic(const "assertion failed: x.wrapping_add(25) == 42") -> unwind continue;
+    }
+}
+
+alloc1 (size: 42, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 78 2e 77 72 61 70 70 69 6e 67 5f 61 64 64 │ : x.wrapping_add
+    0x20 │ 28 32 35 29 20 3d 3d 20 34 32                   │ (25) == 42
+}

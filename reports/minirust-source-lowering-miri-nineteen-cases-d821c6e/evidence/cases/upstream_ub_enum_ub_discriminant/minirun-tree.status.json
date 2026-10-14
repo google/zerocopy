@@ -1,0 +1,17 @@
+{
+  "label": "minirun-tree",
+  "argv": [
+    "@CAPTURE@/target/debug/minirun",
+    "--minirust-tree-borrows",
+    "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant/minirust.json"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_ub_enum_ub_discriminant",
+  "returncode": 101,
+  "seconds": 0.005833292000000018,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "10b9505bcff90cd21434ff045cd424484524df95ee31868dc586efc1e2410ce9",
+  "native_subject_execution": false
+}

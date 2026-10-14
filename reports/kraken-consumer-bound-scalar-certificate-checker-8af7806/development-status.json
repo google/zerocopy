@@ -1,0 +1,37 @@
+{
+  "attempts": [
+    {
+      "path": "logs/consumer-attempt-01.log",
+      "exit": 1,
+      "sha256": "6be58484a19ef615972cec1fbc419183c28b2aa61daece7554a5efe6042ee069",
+      "role": "historical elaboration stage; final Consumer.log and replay-results supersede it"
+    },
+    {
+      "path": "logs/consumer-attempt-02.log",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "historical elaboration stage; final Consumer.log and replay-results supersede it"
+    },
+    {
+      "path": "logs/consumer-attempt-03.log",
+      "exit": 1,
+      "sha256": "b224b7b343c71e8bb8878bef96c6d876e416628b9d78670b2a1ffbc1994b7a2d",
+      "role": "historical elaboration stage; final Consumer.log and replay-results supersede it"
+    },
+    {
+      "path": "logs/consumer-attempt-04.log",
+      "exit": 0,
+      "sha256": "f406acddbe50daa52fe4a6e6a14ed22110ecb9003310eb8b5a29c8325f5d9d34",
+      "role": "historical elaboration stage; final Consumer.log and replay-results supersede it"
+    },
+    {
+      "path": "logs/consumer-attempt-05.log",
+      "exit": 0,
+      "sha256": "94a036cee33ab335be2cdde525290cf906b71b22a753b057795223ee6c59af91",
+      "role": "historical elaboration stage; final Consumer.log and replay-results supersede it"
+    }
+  ],
+  "final_replay": "logs/replay-results.json",
+  "unexpected_panic_assertion_or_semantic_disagreement": false,
+  "successful_proof_sources_contain_no_admissions": true
+}

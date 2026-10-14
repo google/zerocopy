@@ -1,0 +1,151 @@
+{
+  "minimize_binary": "@CAPTURE@/target/debug/minimize",
+  "minimize_binary_sha256": "e69577543fa46159c81e17341e73935f90573a71255de6704bf4261ebf456ab6",
+  "run_group": "runs-after-harness-fix",
+  "case": {
+    "name": "upstream_pass_tree_borrows_cell_inside_struct",
+    "path": "cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+    "sha256": "258ee141b26733d8a469fc201899baabf18ebfca6e799364843be87ab31babb9",
+    "origin": "minirust/minirust@d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/tests/pass/tree_borrows/cell_inside_struct.rs",
+    "expected_miri": "success",
+    "requires_intrinsics": false
+  },
+  "actual_target": "aarch64-apple-darwin",
+  "mini_memory": "TreeBorrows default params (implicit_writes=false)",
+  "miri_memory": "-Zmiri-tree-borrows; default validation retained",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "outcomes": {
+    "minirun-tree": "success",
+    "minirun-basic": "success",
+    "miri-tree": "success"
+  },
+  "mini_tree_miri_agree": true,
+  "miri_expected_outcome_matches": true,
+  "commands": [
+    {
+      "label": "rustc-mir",
+      "argv": [
+        "@RUST_TOOLCHAIN@/bin/rustc",
+        "--cfg=miri",
+        "-Zalways-encode-mir",
+        "-Zextra-const-ub-checks",
+        "-Zmir-emit-retag",
+        "-Zmir-opt-level=0",
+        "-Zmir-enable-passes=-CheckAlignment",
+        "-Zmir-preserve-ub",
+        "-Zub-checks=false",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind",
+        "--sysroot",
+        "@CAPTURE@/minimize-sysroot",
+        "--emit=mir",
+        "@CAPTURE@/cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+        "-o",
+        "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct/rustc-input.mir"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+      "returncode": 0,
+      "seconds": 0.08145125,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minimize-lower",
+      "argv": [
+        "@CAPTURE@/target/debug/minimize",
+        "--minimize-dump=json",
+        "@CAPTURE@/cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+      "returncode": 0,
+      "seconds": 0.079254375,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "cd037143c251cffc26730b8df8b37e7dc012031ce2ada8f3eb635ed62929774c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minirun-tree",
+      "argv": [
+        "@CAPTURE@/target/debug/minirun",
+        "--minirust-tree-borrows",
+        "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct/minirust.json"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+      "returncode": 0,
+      "seconds": 0.01653175000000001,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "minirun-basic",
+      "argv": [
+        "@CAPTURE@/target/debug/minirun",
+        "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct/minirust.json"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+      "returncode": 0,
+      "seconds": 0.01380954099999998,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    },
+    {
+      "label": "miri-tree",
+      "argv": [
+        "@RUST_TOOLCHAIN@/bin/miri",
+        "--sysroot",
+        "@CAPTURE@/miri-sysroot",
+        "-Zmiri-tree-borrows",
+        "@CAPTURE@/cases/upstream_pass_tree_borrows_cell_inside_struct.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-apple-darwin",
+        "-Cdebug-assertions=off",
+        "-Cpanic=unwind"
+      ],
+      "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_tree_borrows_cell_inside_struct",
+      "returncode": 0,
+      "seconds": 0.0343425,
+      "classification": "success",
+      "unexpected_panic_or_assertion": false,
+      "expected_subject_panic_observed": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_subject_execution": false
+    }
+  ],
+  "source_sha256": "258ee141b26733d8a469fc201899baabf18ebfca6e799364843be87ab31babb9",
+  "mir_sha256": "c07a377e2f983d0a40e24b91fda5138112bb5366d978df2e946964f1b1509014",
+  "minirust_json_sha256": "cd037143c251cffc26730b8df8b37e7dc012031ce2ada8f3eb635ed62929774c",
+  "minirust_json_top_level": [
+    "functions",
+    "start",
+    "globals",
+    "traits",
+    "vtables"
+  ],
+  "task_bytes": 639922334,
+  "native_subject_execution": false
+}

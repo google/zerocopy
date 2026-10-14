@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "pure_replay_status": "pass",
+  "checked_consumer_declarations": 37,
+  "checked_adapter_dependency_declarations": 32,
+  "serial_commands": 3,
+  "native_or_compiled_consumer_execution": false,
+  "actual_kernel_reductions": "concrete acceptance and14 named data/policy rejections checked as rfl proof terms",
+  "all_inputs_soundness_theorems": [
+    "parse_iff",
+    "check_binding",
+    "consumer_sound",
+    "accepted_sound",
+    "closed_grammar"
+  ],
+  "all_frozen_adapter_public_inputs_unchanged": 62,
+  "report_links_exist": true,
+  "metadata_exact_fields": true,
+  "single_AI_disclosure": true,
+  "owned_bytes": 6231565,
+  "owned_limit_bytes": 314572800
+}

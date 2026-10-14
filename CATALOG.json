@@ -15524,6 +15524,43 @@
         "lean/kernel-trust"
       ]
     },
+    "formality-actual-judgments-codegen-and-feature-boundaries-71dc31c": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+          },
+          "name": "a-mir-formality"
+        },
+        {
+          "identity": {
+            "host": "aarch64-apple-darwin",
+            "repository": "rust-lang/rust",
+            "revision": "48cc71ee88cd0f11217eced958b9930970da998b",
+            "toolchain": "nightly-2026-04-01"
+          },
+          "name": "Executed Rust compiler"
+        },
+        {
+          "identity": {
+            "library": "libspecr=0.1.40",
+            "path": "crates/minirust-rs",
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+            "target": "x86_64"
+          },
+          "name": "Vendored MiniRust runtime"
+        }
+      ],
+      "topics": [
+        "rust/formality",
+        "rust/frontend",
+        "minirust/codegen",
+        "verification/execution"
+      ]
+    },
     "foundational-verifast-hinted-mirroring-2026-10-14": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -16987,6 +17024,48 @@
         "assembly/byte-certificates",
         "memory/permissions",
         "rust/abi",
+        "lean/axioms"
+      ]
+    },
+    "kraken-consumer-bound-scalar-certificate-checker-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken AArch64"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "artifact": "artifacts/read-byte-a64.bin",
+            "sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8"
+          },
+          "name": "Owned raw AArch64 image"
+        },
+        {
+          "identity": {
+            "artifact": "artifacts/read-byte-frame.cert",
+            "sha256": "9ea77dde02bf3455a6840a0018a28a83ff7e5f8f0420f49293d92c2512b53e62"
+          },
+          "name": "Owned serialized certificate"
+        }
+      ],
+      "topics": [
+        "proof/certificates",
+        "proof/consumer-binding",
+        "assembly/byte-certificates",
+        "memory/permissions",
+        "kraken",
         "lean/axioms"
       ]
     },
@@ -20625,6 +20704,48 @@
         "verification/linking",
         "verification/source-safety",
         "rust/interior-mutability"
+      ]
+    },
+    "minirust-source-lowering-miri-nineteen-cases-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust and minimize"
+        },
+        {
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348"
+          },
+          "name": "Specr associated with generated runtime source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+            "target": "aarch64-apple-darwin",
+            "toolchain": "nightly-2026-05-01"
+          },
+          "name": "Pinned Rust compiler and Miri"
+        },
+        {
+          "identity": {
+            "artifact": "evidence/cases/union_wide_one_field/minirust.json",
+            "sha256": "777d5f58831da2911bf7c9c3265f5edbd18a8af649f9a96d4e680458ceae3327"
+          },
+          "name": "Actual emitted one-field union program"
+        }
+      ],
+      "topics": [
+        "minirust/source-lowering",
+        "miri/tree-borrows",
+        "rust/representation",
+        "rust/drop",
+        "verification/operational-failures"
       ]
     },
     "minirust-static-judgments-and-open-contract-controls-2026": {

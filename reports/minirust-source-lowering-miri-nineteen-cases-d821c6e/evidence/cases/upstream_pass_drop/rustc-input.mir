@@ -1,0 +1,174 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at @CAPTURE@/cases/upstream_pass_drop.rs:6:1: 6:19>::drop(_1: &mut Bomb) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: ();
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_2);
+        _2 = intrinsics::print::<i32>(const 42_i32) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        _0 = const ();
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: Bomb;
+    let _3: ();
+    let _4: ();
+    let mut _5: *mut dyn Shell;
+    let mut _6: &mut dyn Shell;
+    let mut _7: &mut Bomb;
+    let mut _8: &mut Bomb;
+    let _9: ();
+    let mut _10: Bomb;
+    let mut _12: Bomb;
+    let mut _13: Bomb;
+    let _14: ();
+    let _15: ();
+    let mut _16: *mut [Bomb];
+    let mut _17: &mut [Bomb];
+    let mut _18: &mut [Bomb; 2];
+    let mut _19: &mut [Bomb; 2];
+    let _20: ();
+    let mut _21: [Bomb; 2];
+    let mut _22: bool;
+    let mut _23: bool;
+    scope 1 {
+        debug _b => _1;
+        let mut _2: Bomb;
+        scope 2 {
+            debug bomb => _2;
+            let mut _11: [Bomb; 2];
+            scope 3 {
+                debug two_bombs => _11;
+            }
+        }
+    }
+
+    bb0: {
+        _23 = const false;
+        _22 = const false;
+        StorageLive(_1);
+        _1 = Bomb;
+        StorageLive(_2);
+        _23 = const true;
+        _2 = Bomb;
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = &mut _2;
+        _7 = &mut (*_8);
+        _6 = move _7 as &mut dyn Shell (PointerCoercion(Unsize, AsCast));
+        Retag(_6);
+        StorageDead(_7);
+        _5 = &raw mut (*_6);
+        _4 = drop_in_place::<dyn Shell>(move _5) -> [return: bb1, unwind: bb11];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_8);
+        StorageDead(_6);
+        StorageDead(_4);
+        _3 = const ();
+        StorageDead(_3);
+        StorageLive(_9);
+        StorageLive(_10);
+        _23 = const false;
+        _10 = move _2;
+        _9 = std::mem::forget::<Bomb>(move _10) -> [return: bb2, unwind: bb11];
+    }
+
+    bb2: {
+        StorageDead(_10);
+        StorageDead(_9);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = Bomb;
+        StorageLive(_13);
+        _13 = Bomb;
+        _22 = const true;
+        _11 = [move _12, move _13];
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageLive(_14);
+        StorageLive(_15);
+        StorageLive(_16);
+        StorageLive(_17);
+        StorageLive(_18);
+        StorageLive(_19);
+        _19 = &mut _11;
+        _18 = &mut (*_19);
+        _17 = move _18 as &mut [Bomb] (PointerCoercion(Unsize, AsCast));
+        Retag(_17);
+        StorageDead(_18);
+        _16 = &raw mut (*_17);
+        _15 = drop_in_place::<[Bomb]>(move _16) -> [return: bb3, unwind: bb9];
+    }
+
+    bb3: {
+        StorageDead(_16);
+        StorageDead(_19);
+        StorageDead(_17);
+        StorageDead(_15);
+        _14 = const ();
+        StorageDead(_14);
+        StorageLive(_20);
+        StorageLive(_21);
+        _22 = const false;
+        _21 = move _11;
+        _20 = std::mem::forget::<[Bomb; 2]>(move _21) -> [return: bb4, unwind: bb9];
+    }
+
+    bb4: {
+        StorageDead(_21);
+        StorageDead(_20);
+        _0 = const ();
+        _22 = const false;
+        StorageDead(_11);
+        _23 = const false;
+        StorageDead(_2);
+        drop(_1) -> [return: bb5, unwind: bb7];
+    }
+
+    bb5: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb6 (cleanup): {
+        drop(_1) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        resume;
+    }
+
+    bb8 (cleanup): {
+        drop(_11) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb9 (cleanup): {
+        switchInt(copy _22) -> [0: bb11, otherwise: bb8];
+    }
+
+    bb10 (cleanup): {
+        drop(_2) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        switchInt(copy _23) -> [0: bb6, otherwise: bb10];
+    }
+}

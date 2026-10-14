@@ -1,0 +1,38 @@
+{
+  "name": "build-minimize",
+  "argv": [
+    "@RUST_TOOLCHAIN@/bin/cargo",
+    "build",
+    "--offline",
+    "--locked",
+    "-j2",
+    "--manifest-path",
+    "@CAPTURE@/workspace/tooling/Cargo.toml",
+    "-p",
+    "minimize",
+    "-p",
+    "minirun"
+  ],
+  "cwd": "@CAPTURE@",
+  "returncode": 0,
+  "seconds": 19.748006125,
+  "limit": null,
+  "panic_or_assertion": false,
+  "task_bytes": 317218895,
+  "peak_task_bytes": 265376727,
+  "env": {
+    "RUSTUP_HOME": "@TASK@/work/execution/toolchains/rustup",
+    "RUSTUP_TOOLCHAIN": "nightly-2026-05-01",
+    "CARGO_HOME": "@CAPTURE@/cargo-home",
+    "CARGO_TARGET_DIR": "@CAPTURE@/target",
+    "RUSTC": "@RUST_TOOLCHAIN@/bin/rustc",
+    "MINIRUST_SYSROOT": "@CAPTURE@/minimize-sysroot",
+    "MIRI_SYSROOT": "@CAPTURE@/miri-sysroot",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "DYLD_LIBRARY_PATH": "@RUST_TOOLCHAIN@/lib"
+  },
+  "log": "logs/build-minimize.log",
+  "log_sha256": "8781cdaa571d0bd935f2f36d1b5d068b62f11599edad5991bb562ea436cf02df"
+}

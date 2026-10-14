@@ -1,0 +1,3 @@
+normalize_basic: test
+normalize_into_iterator: test
+projection_equality: test

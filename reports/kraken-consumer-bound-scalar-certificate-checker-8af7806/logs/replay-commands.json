@@ -1,0 +1,42 @@
+[
+  {
+    "tool": "Lean4.34.1",
+    "argv": [
+      "--version"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "lean_threads": 1,
+    "elapsed_seconds": 0.204191583,
+    "log": "logs/version.log",
+    "output_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e"
+  },
+  {
+    "tool": "Lean4.34.1",
+    "argv": [
+      "-o",
+      "support/Adapter.olean",
+      "support/Adapter.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "lean_threads": 1,
+    "elapsed_seconds": 1.972371208,
+    "log": "logs/Adapter.log",
+    "output_sha256": "f4a0f578e881e5ee2a55d1e6dc7e90a64ec1e08e3b69fb4c11db32b35b9e58ec"
+  },
+  {
+    "tool": "Lean4.34.1",
+    "argv": [
+      "-o",
+      "support/Consumer.olean",
+      "support/Consumer.lean"
+    ],
+    "cwd": ".",
+    "exit": 0,
+    "lean_threads": 1,
+    "elapsed_seconds": 0.4003235420000002,
+    "log": "logs/Consumer.log",
+    "output_sha256": "94a036cee33ab335be2cdde525290cf906b71b22a753b057795223ee6c59af91"
+  }
+]

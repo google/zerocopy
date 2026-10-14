@@ -1,0 +1,897 @@
+{
+  "available_locked_archives": 127,
+  "all_checksums_match": true,
+  "compressed_bytes": 12380863,
+  "source_cargo_lock_unchanged": true,
+  "records": [
+    {
+      "name": "addr2line",
+      "version": "0.25.1",
+      "checksum": "1b5d307320b3181d6d7954e663bd7c774a838b8220fe0593c86d9fb09f498b4b",
+      "lock_checksum_matches": true,
+      "bytes": 43134
+    },
+    {
+      "name": "adler2",
+      "version": "2.0.1",
+      "checksum": "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa",
+      "lock_checksum_matches": true,
+      "bytes": 13366
+    },
+    {
+      "name": "aho-corasick",
+      "version": "1.1.4",
+      "checksum": "ddd31a130427c27518df266943a5308ed92d4b226cc639f5a8f1002816174301",
+      "lock_checksum_matches": true,
+      "bytes": 184015
+    },
+    {
+      "name": "anstream",
+      "version": "0.6.21",
+      "checksum": "43d5b281e737544384e969a5ccad3f1cdd24b48086a0fc1b2a5262a26b8f4f4a",
+      "lock_checksum_matches": true,
+      "bytes": 29516
+    },
+    {
+      "name": "anstyle",
+      "version": "1.0.13",
+      "checksum": "5192cca8006f1fd4f7237516f40fa183bb07f8fbdfedaa0036de5ea9b0b45e78",
+      "lock_checksum_matches": true,
+      "bytes": 17651
+    },
+    {
+      "name": "anstyle-parse",
+      "version": "0.2.7",
+      "checksum": "4e7644824f0aa2c7b9384579234ef10eb7efb6a0deb83f9630a49594dd9c15c2",
+      "lock_checksum_matches": true,
+      "bytes": 21707
+    },
+    {
+      "name": "anstyle-query",
+      "version": "1.1.5",
+      "checksum": "40c48f72fd53cd289104fc64099abca73db4166ad86ea0b4341abe65af83dadc",
+      "lock_checksum_matches": true,
+      "bytes": 10264
+    },
+    {
+      "name": "anyhow",
+      "version": "1.0.102",
+      "checksum": "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c",
+      "lock_checksum_matches": true,
+      "bytes": 48658
+    },
+    {
+      "name": "ar_archive_writer",
+      "version": "0.5.1",
+      "checksum": "7eb93bbb63b9c227414f6eb3a0adfddca591a8ce1e9b60661bb08969b87e340b",
+      "lock_checksum_matches": true,
+      "bytes": 85345
+    },
+    {
+      "name": "autocfg",
+      "version": "1.5.0",
+      "checksum": "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8",
+      "lock_checksum_matches": true,
+      "bytes": 18729
+    },
+    {
+      "name": "backtrace",
+      "version": "0.3.76",
+      "checksum": "bb531853791a215d7c62a30daf0dde835f381ab5de4589cfe7c649d2cbe92bd6",
+      "lock_checksum_matches": true,
+      "bytes": 89458
+    },
+    {
+      "name": "backtrace-ext",
+      "version": "0.2.1",
+      "checksum": "537beee3be4a18fb023b570f80e3ae28003db9167a751266b259926e25539d50",
+      "lock_checksum_matches": true,
+      "bytes": 11401
+    },
+    {
+      "name": "bitflags",
+      "version": "2.11.0",
+      "checksum": "843867be96c8daad0d758b57df9392b6d8d271134fce549de6ce169ff98a92af",
+      "lock_checksum_matches": true,
+      "bytes": 48906
+    },
+    {
+      "name": "bitmaps",
+      "version": "2.1.0",
+      "checksum": "031043d04099746d8db04daf1fa424b2bc8bd69d92b25962dcde24da39ab64a2",
+      "lock_checksum_matches": true,
+      "bytes": 16717
+    },
+    {
+      "name": "cc",
+      "version": "1.2.55",
+      "checksum": "47b26a0954ae34af09b50f0de26458fa95369a0d478d8236d3f93082b219bd29",
+      "lock_checksum_matches": true,
+      "bytes": 93756
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.4",
+      "checksum": "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801",
+      "lock_checksum_matches": true,
+      "bytes": 9360
+    },
+    {
+      "name": "clap",
+      "version": "4.5.57",
+      "checksum": "6899ea499e3fb9305a65d5ebf6e3d2248c5fab291f300ad0a704fbe142eae31a",
+      "lock_checksum_matches": true,
+      "bytes": 61999
+    },
+    {
+      "name": "clap_builder",
+      "version": "4.5.57",
+      "checksum": "7b12c8b680195a62a8364d16b8447b01b6c2c8f9aaf68bee653be34d4245e238",
+      "lock_checksum_matches": true,
+      "bytes": 170948
+    },
+    {
+      "name": "clap_derive",
+      "version": "4.5.55",
+      "checksum": "a92793da1a46a5f2a02a6f4c46c6496b28c43638adea8306fcb0caa1634f24e5",
+      "lock_checksum_matches": true,
+      "bytes": 33502
+    },
+    {
+      "name": "clap_lex",
+      "version": "0.7.7",
+      "checksum": "c3e64b0cc0439b12df2fa678eae89a1c56a529fd067a9115f7827f1fffd22b32",
+      "lock_checksum_matches": true,
+      "bytes": 13474
+    },
+    {
+      "name": "colorchoice",
+      "version": "1.0.4",
+      "checksum": "b05b61dc5112cbb17e4b6cd61790d9845d13888356391624cbe7e41efeac1e75",
+      "lock_checksum_matches": true,
+      "bytes": 8196
+    },
+    {
+      "name": "contracts",
+      "version": "0.6.7",
+      "checksum": "008eb94d541da40512913ef5e0707c3fb0e7280ba1af13f062461e46dd96ef7e",
+      "lock_checksum_matches": true,
+      "bytes": 31377
+    },
+    {
+      "name": "convert_case",
+      "version": "0.6.0",
+      "checksum": "ec182b0ca2f35d8fc196cf3404988fd8b8c739a4d270ff118a398feb0cbec1ca",
+      "lock_checksum_matches": true,
+      "bytes": 18675
+    },
+    {
+      "name": "dissimilar",
+      "version": "1.0.10",
+      "checksum": "8975ffdaa0ef3661bfe02dbdcc06c9f829dfafe6a3c474de366a8d5e44276921",
+      "lock_checksum_matches": true,
+      "bytes": 27757
+    },
+    {
+      "name": "either",
+      "version": "1.16.0",
+      "checksum": "91622ff5e7162018101f2fea40d6ebf4a78bbe5a49736a2020649edf9693679e",
+      "lock_checksum_matches": true,
+      "bytes": 21248
+    },
+    {
+      "name": "equivalent",
+      "version": "1.0.2",
+      "checksum": "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f",
+      "lock_checksum_matches": true,
+      "bytes": 7419
+    },
+    {
+      "name": "errno",
+      "version": "0.3.14",
+      "checksum": "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb",
+      "lock_checksum_matches": true,
+      "bytes": 12002
+    },
+    {
+      "name": "expect-test",
+      "version": "1.5.1",
+      "checksum": "63af43ff4431e848fb47472a920f14fa71c24de13255a5692e93d4e90302acb0",
+      "lock_checksum_matches": true,
+      "bytes": 13672
+    },
+    {
+      "name": "fastrand",
+      "version": "2.4.1",
+      "checksum": "9f1f227452a390804cdb637b74a86990f2a7d7ba4b7d5693aac9b4dd6defd8d6",
+      "lock_checksum_matches": true,
+      "bytes": 20773
+    },
+    {
+      "name": "final_fn",
+      "version": "0.1.0",
+      "checksum": "fe1fa59a36a9928c12b6c4e9658f8b84d43e7578cb6d532b069ce84dcd0afda6",
+      "lock_checksum_matches": true,
+      "bytes": 4016
+    },
+    {
+      "name": "find-msvc-tools",
+      "version": "0.1.9",
+      "checksum": "5baebc0774151f905a1a2cc41989300b1e6fbb29aff0ceffa1064fdd3088d582",
+      "lock_checksum_matches": true,
+      "bytes": 31493
+    },
+    {
+      "name": "fn-error-context",
+      "version": "0.2.1",
+      "checksum": "2cd66269887534af4b0c3e3337404591daa8dc8b9b2b3db71f9523beb4bafb41",
+      "lock_checksum_matches": true,
+      "bytes": 13446
+    },
+    {
+      "name": "foldhash",
+      "version": "0.1.5",
+      "checksum": "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2",
+      "lock_checksum_matches": true,
+      "bytes": 21901
+    },
+    {
+      "name": "gccompat-derive",
+      "version": "0.1.2",
+      "checksum": "89347878f603019f820f60dac258650c0b43a20f918317aea36bc466d7b63a74",
+      "lock_checksum_matches": true,
+      "bytes": 2081
+    },
+    {
+      "name": "getrandom",
+      "version": "0.2.17",
+      "checksum": "ff2abc00be7fca6ebc474524697ae276ad847ad0a6b3faa4bcb027e9a4614ad0",
+      "lock_checksum_matches": true,
+      "bytes": 40780
+    },
+    {
+      "name": "getrandom",
+      "version": "0.4.2",
+      "checksum": "0de51e6874e94e7bf76d726fc5d13ba782deca734ff60d5bb2fb2607c7406555",
+      "lock_checksum_matches": true,
+      "bytes": 53905
+    },
+    {
+      "name": "gimli",
+      "version": "0.32.3",
+      "checksum": "e629b9b98ef3dd8afe6ca2bd0f89306cec16d43d907889945bc5d6687f2f13c7",
+      "lock_checksum_matches": true,
+      "bytes": 289789
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.15.5",
+      "checksum": "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1",
+      "lock_checksum_matches": true,
+      "bytes": 140908
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.17.0",
+      "checksum": "4f467dd6dccf739c208452f8014c75c18bb8301b050ad1cfb27153803edb0f51",
+      "lock_checksum_matches": true,
+      "bytes": 154597
+    },
+    {
+      "name": "heck",
+      "version": "0.5.0",
+      "checksum": "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea",
+      "lock_checksum_matches": true,
+      "bytes": 11517
+    },
+    {
+      "name": "im",
+      "version": "15.1.0",
+      "checksum": "d0acd33ff0285af998aaf9b57342af478078f53492322fafc47450e09397e0e9",
+      "lock_checksum_matches": true,
+      "bytes": 117169
+    },
+    {
+      "name": "indexmap",
+      "version": "2.14.0",
+      "checksum": "d466e9454f08e4a911e14806c24e16fba1b4c121d1ea474396f396069cf949d9",
+      "lock_checksum_matches": true,
+      "bytes": 104085
+    },
+    {
+      "name": "is_ci",
+      "version": "1.2.0",
+      "checksum": "7655c9839580ee829dfacba1d1278c2b7883e50a277ff7541299489d6bdfdc45",
+      "lock_checksum_matches": true,
+      "bytes": 4521
+    },
+    {
+      "name": "is_terminal_polyfill",
+      "version": "1.70.2",
+      "checksum": "a6cb138bb79a146c1bd460005623e142ef0181e3d0219cb493e02f7d08a35695",
+      "lock_checksum_matches": true,
+      "bytes": 7548
+    },
+    {
+      "name": "itertools",
+      "version": "0.14.0",
+      "checksum": "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285",
+      "lock_checksum_matches": true,
+      "bytes": 152715
+    },
+    {
+      "name": "itoa",
+      "version": "1.0.18",
+      "checksum": "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682",
+      "lock_checksum_matches": true,
+      "bytes": 15935
+    },
+    {
+      "name": "lazy_static",
+      "version": "1.5.0",
+      "checksum": "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe",
+      "lock_checksum_matches": true,
+      "bytes": 14025
+    },
+    {
+      "name": "libc",
+      "version": "0.2.183",
+      "checksum": "b5b646652bf6661599e1da8901b3b9522896f01e736bad5f723fe7a3a27f899d",
+      "lock_checksum_matches": true,
+      "bytes": 816918
+    },
+    {
+      "name": "libspecr",
+      "version": "0.1.40",
+      "checksum": "9dbcdd154754d8773b3711e76364ff46b61c672ec6f25a758eb7da47d9ba04c0",
+      "lock_checksum_matches": true,
+      "bytes": 23025
+    },
+    {
+      "name": "log",
+      "version": "0.4.29",
+      "checksum": "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897",
+      "lock_checksum_matches": true,
+      "bytes": 51515
+    },
+    {
+      "name": "matchers",
+      "version": "0.2.0",
+      "checksum": "d1525a2a28c7f4fa0fc98bb91ae755d1e2d1505079e05539e35bc876b5d65ae9",
+      "lock_checksum_matches": true,
+      "bytes": 7075
+    },
+    {
+      "name": "mdbook-core",
+      "version": "0.5.3",
+      "checksum": "6fc1c4da7fd9e2e412f3891428f9468fab890ed159723ed0892bb85a049ac1c1",
+      "lock_checksum_matches": true,
+      "bytes": 22581
+    },
+    {
+      "name": "mdbook-preprocessor",
+      "version": "0.5.3",
+      "checksum": "8eff7b4afaafd664a649a03b8891ad8199aef359a35b911ad6c31acab38ed209",
+      "lock_checksum_matches": true,
+      "bytes": 4615
+    },
+    {
+      "name": "memchr",
+      "version": "2.8.0",
+      "checksum": "f8ca58f447f06ed17d5fc4043ce1b10dd205e060fb3ce5b979b8ed8e59ff3f79",
+      "lock_checksum_matches": true,
+      "bytes": 97780
+    },
+    {
+      "name": "miette",
+      "version": "7.6.0",
+      "checksum": "5f98efec8807c63c752b5bd61f862c165c115b0a35685bdcfd9238c7aeb592b7",
+      "lock_checksum_matches": true,
+      "bytes": 114499
+    },
+    {
+      "name": "miette-derive",
+      "version": "7.6.0",
+      "checksum": "db5b29714e950dbb20d5e6f74f9dcec4edbcc1067bb7f8ed198c097b8c1a818b",
+      "lock_checksum_matches": true,
+      "bytes": 17249
+    },
+    {
+      "name": "miniz_oxide",
+      "version": "0.8.9",
+      "checksum": "1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316",
+      "lock_checksum_matches": true,
+      "bytes": 67132
+    },
+    {
+      "name": "nu-ansi-term",
+      "version": "0.46.0",
+      "checksum": "77a8165726e8236064dbb45459242600304b42a5ea24ee2948e18e023bf7ba84",
+      "lock_checksum_matches": true,
+      "bytes": 24311
+    },
+    {
+      "name": "num-bigint",
+      "version": "0.4.6",
+      "checksum": "a5e44f723f1133c9deac646763579fdb3ac745e418f2a7af9cd0c431da1f20b9",
+      "lock_checksum_matches": true,
+      "bytes": 102801
+    },
+    {
+      "name": "num-integer",
+      "version": "0.1.46",
+      "checksum": "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f",
+      "lock_checksum_matches": true,
+      "bytes": 22331
+    },
+    {
+      "name": "num-traits",
+      "version": "0.2.19",
+      "checksum": "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841",
+      "lock_checksum_matches": true,
+      "bytes": 51631
+    },
+    {
+      "name": "object",
+      "version": "0.37.3",
+      "checksum": "ff76201f031d8863c38aa7f905eca4f53abbfa15f609db4277d44cd8938f33fe",
+      "lock_checksum_matches": true,
+      "bytes": 344032
+    },
+    {
+      "name": "once_cell",
+      "version": "1.21.3",
+      "checksum": "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d",
+      "lock_checksum_matches": true,
+      "bytes": 34534
+    },
+    {
+      "name": "overload",
+      "version": "0.1.1",
+      "checksum": "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39",
+      "lock_checksum_matches": true,
+      "bytes": 24439
+    },
+    {
+      "name": "owo-colors",
+      "version": "4.3.0",
+      "checksum": "d211803b9b6b570f68772237e415a029d5a50c65d382910b879fb19d3271f94d",
+      "lock_checksum_matches": true,
+      "bytes": 31273
+    },
+    {
+      "name": "pin-project-lite",
+      "version": "0.2.16",
+      "checksum": "3b3cff922bd51709b605d9ead9aa71031d81447142d828eb4a6eba76fe619f9b",
+      "lock_checksum_matches": true,
+      "bytes": 30504
+    },
+    {
+      "name": "ppv-lite86",
+      "version": "0.2.21",
+      "checksum": "85eae3c4ed2f50dcfe72643da4befc30deadb458a9b590d720cde2f2b1e97da9",
+      "lock_checksum_matches": true,
+      "bytes": 22522
+    },
+    {
+      "name": "prettyplease",
+      "version": "0.2.37",
+      "checksum": "479ca8adacdd7ce8f1fb39ce9ecccbfe93a3f1344b3d0d97f20bc0196208f62b",
+      "lock_checksum_matches": true,
+      "bytes": 72033
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.106",
+      "checksum": "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934",
+      "lock_checksum_matches": true,
+      "bytes": 59765
+    },
+    {
+      "name": "psm",
+      "version": "0.1.30",
+      "checksum": "3852766467df634d74f0b2d7819bf8dc483a0eb2e3b0f50f756f9cfe8b0d18d8",
+      "lock_checksum_matches": true,
+      "bytes": 25061
+    },
+    {
+      "name": "quote",
+      "version": "1.0.44",
+      "checksum": "21b2ebcf727b7760c461f091f9f0f539b77b8e87f2fd88131e7f1b433b3cece4",
+      "lock_checksum_matches": true,
+      "bytes": 31629
+    },
+    {
+      "name": "rand",
+      "version": "0.8.5",
+      "checksum": "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404",
+      "lock_checksum_matches": true,
+      "bytes": 87113
+    },
+    {
+      "name": "rand_chacha",
+      "version": "0.3.1",
+      "checksum": "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88",
+      "lock_checksum_matches": true,
+      "bytes": 15251
+    },
+    {
+      "name": "rand_core",
+      "version": "0.6.4",
+      "checksum": "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c",
+      "lock_checksum_matches": true,
+      "bytes": 22666
+    },
+    {
+      "name": "rand_xoshiro",
+      "version": "0.6.0",
+      "checksum": "6f97cdb2a36ed4183de61b2f824cc45c9f1037f28afe0a322e9fff4c108b5aaa",
+      "lock_checksum_matches": true,
+      "bytes": 17125
+    },
+    {
+      "name": "regex",
+      "version": "1.12.3",
+      "checksum": "e10754a14b9137dd7b1e3e5b0493cc9171fdd105e0ab477f51b72e7f3ac0e276",
+      "lock_checksum_matches": true,
+      "bytes": 153392
+    },
+    {
+      "name": "regex-automata",
+      "version": "0.4.14",
+      "checksum": "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f",
+      "lock_checksum_matches": true,
+      "bytes": 618012
+    },
+    {
+      "name": "regex-syntax",
+      "version": "0.8.9",
+      "checksum": "a96887878f22d7bad8a3b6dc5b7440e0ada9a245242924394987b21cf2210a4c",
+      "lock_checksum_matches": true,
+      "bytes": 358430
+    },
+    {
+      "name": "rustc-demangle",
+      "version": "0.1.27",
+      "checksum": "b50b8869d9fc858ce7266cce0194bd74df58b9d0e3f6df3a9fc8eb470d95c09d",
+      "lock_checksum_matches": true,
+      "bytes": 30448
+    },
+    {
+      "name": "rustix",
+      "version": "1.1.4",
+      "checksum": "b6fe4565b9518b83ef4f91bb47ce29620ca828bd32cb7e408f0062e9930ba190",
+      "lock_checksum_matches": true,
+      "bytes": 425241
+    },
+    {
+      "name": "same-file",
+      "version": "1.0.6",
+      "checksum": "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502",
+      "lock_checksum_matches": true,
+      "bytes": 10183
+    },
+    {
+      "name": "semver",
+      "version": "1.0.28",
+      "checksum": "8a7852d02fc848982e0c167ef163aaff9cd91dc640ba85e263cb1ce46fae51cd",
+      "lock_checksum_matches": true,
+      "bytes": 33064
+    },
+    {
+      "name": "serde",
+      "version": "1.0.228",
+      "checksum": "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e",
+      "lock_checksum_matches": true,
+      "bytes": 83652
+    },
+    {
+      "name": "serde_core",
+      "version": "1.0.228",
+      "checksum": "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad",
+      "lock_checksum_matches": true,
+      "bytes": 63111
+    },
+    {
+      "name": "serde_derive",
+      "version": "1.0.228",
+      "checksum": "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79",
+      "lock_checksum_matches": true,
+      "bytes": 59605
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.149",
+      "checksum": "83fc039473c5595ace860d8c4fafa220ff474b3fc6bfdb4293327f1a37e94d86",
+      "lock_checksum_matches": true,
+      "bytes": 155994
+    },
+    {
+      "name": "serde_spanned",
+      "version": "1.1.1",
+      "checksum": "6662b5879511e06e8999a8a235d848113e942c9124f211511b16466ee2995f26",
+      "lock_checksum_matches": true,
+      "bytes": 11025
+    },
+    {
+      "name": "sharded-slab",
+      "version": "0.1.7",
+      "checksum": "f40ca3c46823713e0d4209592e8d6e826aa57e928f09752619fc696c499637f6",
+      "lock_checksum_matches": true,
+      "bytes": 58227
+    },
+    {
+      "name": "shlex",
+      "version": "1.3.0",
+      "checksum": "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64",
+      "lock_checksum_matches": true,
+      "bytes": 18713
+    },
+    {
+      "name": "similar",
+      "version": "2.7.0",
+      "checksum": "bbbb5d9659141646ae647b42fe094daf6c6192d1620870b449d9557f748b2daa",
+      "lock_checksum_matches": true,
+      "bytes": 53928
+    },
+    {
+      "name": "sized-chunks",
+      "version": "0.6.5",
+      "checksum": "16d69225bde7a69b235da73377861095455d298f2b970996eec25ddbb42b3d1e",
+      "lock_checksum_matches": true,
+      "bytes": 43628
+    },
+    {
+      "name": "stacker",
+      "version": "0.1.23",
+      "checksum": "08d74a23609d509411d10e2176dc2a4346e3b4aea2e7b1869f19fdedbc71c013",
+      "lock_checksum_matches": true,
+      "bytes": 17813
+    },
+    {
+      "name": "strsim",
+      "version": "0.11.1",
+      "checksum": "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f",
+      "lock_checksum_matches": true,
+      "bytes": 14266
+    },
+    {
+      "name": "supports-color",
+      "version": "3.0.2",
+      "checksum": "c64fc7232dd8d2e4ac5ce4ef302b1d81e0b80d055b9d77c7c4f51f6aa4c867d6",
+      "lock_checksum_matches": true,
+      "bytes": 10445
+    },
+    {
+      "name": "supports-hyperlinks",
+      "version": "3.2.0",
+      "checksum": "e396b6523b11ccb83120b115a0b7366de372751aa6edf19844dfb13a6af97e91",
+      "lock_checksum_matches": true,
+      "bytes": 8455
+    },
+    {
+      "name": "supports-unicode",
+      "version": "3.0.0",
+      "checksum": "b7401a30af6cb5818bb64852270bb722533397edcfc7344954a38f420819ece2",
+      "lock_checksum_matches": true,
+      "bytes": 7825
+    },
+    {
+      "name": "syn",
+      "version": "1.0.109",
+      "checksum": "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237",
+      "lock_checksum_matches": true,
+      "bytes": 237611
+    },
+    {
+      "name": "syn",
+      "version": "2.0.114",
+      "checksum": "d4d107df263a3013ef9b1879b0df87d706ff80f65a86ea879bd9c31f9b307c2a",
+      "lock_checksum_matches": true,
+      "bytes": 304636
+    },
+    {
+      "name": "synstructure",
+      "version": "0.13.2",
+      "checksum": "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2",
+      "lock_checksum_matches": true,
+      "bytes": 18950
+    },
+    {
+      "name": "tempfile",
+      "version": "3.27.0",
+      "checksum": "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd",
+      "lock_checksum_matches": true,
+      "bytes": 44780
+    },
+    {
+      "name": "terminal_size",
+      "version": "0.4.3",
+      "checksum": "60b8cb979cb11c32ce1603f8137b22262a9d131aaa5c37b5678025f22b8becd0",
+      "lock_checksum_matches": true,
+      "bytes": 10686
+    },
+    {
+      "name": "textwrap",
+      "version": "0.16.2",
+      "checksum": "c13547615a44dc9c452a8a534638acdf07120d4b6847c8178705da06306a3057",
+      "lock_checksum_matches": true,
+      "bytes": 57077
+    },
+    {
+      "name": "thread_local",
+      "version": "1.1.9",
+      "checksum": "f60246a4944f24f6e018aa17cdeffb7818b76356965d03b07d6a9886e8962185",
+      "lock_checksum_matches": true,
+      "bytes": 19315
+    },
+    {
+      "name": "toml",
+      "version": "1.1.2+spec-1.1.0",
+      "checksum": "81f3d15e84cbcd896376e6730314d59fb5a87f31e4b038454184435cd57defee",
+      "lock_checksum_matches": true,
+      "bytes": 56327
+    },
+    {
+      "name": "toml_datetime",
+      "version": "1.1.1+spec-1.1.0",
+      "checksum": "3165f65f62e28e0115a00b2ebdd37eb6f3b641855f9d636d3cd4103767159ad7",
+      "lock_checksum_matches": true,
+      "bytes": 17982
+    },
+    {
+      "name": "toml_parser",
+      "version": "1.1.2+spec-1.1.0",
+      "checksum": "a2abe9b86193656635d2411dc43050282ca48aa31c2451210f4202550afb7526",
+      "lock_checksum_matches": true,
+      "bytes": 35485
+    },
+    {
+      "name": "toml_writer",
+      "version": "1.1.1+spec-1.1.0",
+      "checksum": "756daf9b1013ebe47a8776667b466417e2d4c5679d441c26230efd9ef78692db",
+      "lock_checksum_matches": true,
+      "bytes": 18841
+    },
+    {
+      "name": "tracing",
+      "version": "0.1.44",
+      "checksum": "63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100",
+      "lock_checksum_matches": true,
+      "bytes": 463135
+    },
+    {
+      "name": "tracing-attributes",
+      "version": "0.1.31",
+      "checksum": "7490cfa5ec963746568740651ac6781f701c9c5ea257c58e057f3ba8cf69e8da",
+      "lock_checksum_matches": true,
+      "bytes": 39733
+    },
+    {
+      "name": "tracing-core",
+      "version": "0.1.36",
+      "checksum": "db97caf9d906fbde555dd62fa95ddba9eecfd14cb388e4f491a66d74cd5fb79a",
+      "lock_checksum_matches": true,
+      "bytes": 63967
+    },
+    {
+      "name": "tracing-log",
+      "version": "0.1.4",
+      "checksum": "f751112709b4e791d8ce53e32c4ed2d353565a795ce84da2285393f41557bdf2",
+      "lock_checksum_matches": true,
+      "bytes": 20640
+    },
+    {
+      "name": "tracing-subscriber",
+      "version": "0.3.22",
+      "checksum": "2f30143827ddab0d256fd843b7a66d164e9f271cfa0dde49142c5ca0ca291f1e",
+      "lock_checksum_matches": true,
+      "bytes": 212851
+    },
+    {
+      "name": "tracing-tree",
+      "version": "0.2.5",
+      "checksum": "2ec6adcab41b1391b08a308cc6302b79f8095d1673f6947c2dc65ffb028b0b2d",
+      "lock_checksum_matches": true,
+      "bytes": 28371
+    },
+    {
+      "name": "typenum",
+      "version": "1.19.0",
+      "checksum": "562d481066bde0658276a35467c4af00bdc6ee726305698a55b86e61d7ad82bb",
+      "lock_checksum_matches": true,
+      "bytes": 76414
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.23",
+      "checksum": "537dd038a89878be9b64dd4bd1b260315c1bb94f4d784956b81e27a088d9a09e",
+      "lock_checksum_matches": true,
+      "bytes": 49352
+    },
+    {
+      "name": "unicode-linebreak",
+      "version": "0.1.5",
+      "checksum": "3b09c83c3c29d37506a3e260c08c03743a6bb66a9cd432c6934ab501a190571f",
+      "lock_checksum_matches": true,
+      "bytes": 15324
+    },
+    {
+      "name": "unicode-segmentation",
+      "version": "1.12.0",
+      "checksum": "f6ccf251212114b54433ec949fd6a7841275f9ada20dddd2f29e9ceea4501493",
+      "lock_checksum_matches": true,
+      "bytes": 106323
+    },
+    {
+      "name": "unicode-width",
+      "version": "0.1.14",
+      "checksum": "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af",
+      "lock_checksum_matches": true,
+      "bytes": 271615
+    },
+    {
+      "name": "unicode-width",
+      "version": "0.2.2",
+      "checksum": "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254",
+      "lock_checksum_matches": true,
+      "bytes": 282768
+    },
+    {
+      "name": "utf8parse",
+      "version": "0.2.2",
+      "checksum": "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821",
+      "lock_checksum_matches": true,
+      "bytes": 13499
+    },
+    {
+      "name": "version_check",
+      "version": "0.9.5",
+      "checksum": "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a",
+      "lock_checksum_matches": true,
+      "bytes": 15554
+    },
+    {
+      "name": "walkdir",
+      "version": "2.5.0",
+      "checksum": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b",
+      "lock_checksum_matches": true,
+      "bytes": 23951
+    },
+    {
+      "name": "wasi",
+      "version": "0.11.1+wasi-snapshot-preview1",
+      "checksum": "ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b",
+      "lock_checksum_matches": true,
+      "bytes": 28477
+    },
+    {
+      "name": "windows-sys",
+      "version": "0.61.2",
+      "checksum": "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc",
+      "lock_checksum_matches": true,
+      "bytes": 2517186
+    },
+    {
+      "name": "winnow",
+      "version": "1.0.3",
+      "checksum": "0592e1c9d151f854e6fd382574c3a0855250e1d9b2f99d9281c6e6391af352f1",
+      "lock_checksum_matches": true,
+      "bytes": 187990
+    },
+    {
+      "name": "zerocopy",
+      "version": "0.8.42",
+      "checksum": "f2578b716f8a7a858b7f02d5bd870c14bf4ddbbcf3a4c05414ba6503640505e3",
+      "lock_checksum_matches": true,
+      "bytes": 275035
+    },
+    {
+      "name": "zmij",
+      "version": "1.0.21",
+      "checksum": "b8848ee67ecc8aedbaf3e4122217aff892639231befc6a1b58d29fff4c2cabaa",
+      "lock_checksum_matches": true,
+      "bytes": 26665
+    }
+  ]
+}

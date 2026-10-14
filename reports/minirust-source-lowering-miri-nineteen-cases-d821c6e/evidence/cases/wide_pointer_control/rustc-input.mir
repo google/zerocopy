@@ -1,0 +1,139 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn identity(_1: *const [u8]) -> *const [u8] {
+    debug x => _1;
+    let mut _0: *const [u8];
+
+    bb0: {
+        _0 = copy _1;
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: [u8; 3];
+    let mut _3: *const [u8; 3];
+    let _4: &[u8; 3];
+    let mut _6: *const [u8];
+    let _7: ();
+    let mut _8: bool;
+    let mut _9: usize;
+    let mut _10: *const [u8];
+    let mut _11: !;
+    let _12: ();
+    let mut _13: bool;
+    let mut _14: u8;
+    let mut _15: &[u8];
+    let _16: usize;
+    let mut _17: usize;
+    let mut _18: bool;
+    let mut _19: !;
+    scope 1 {
+        debug bytes => _1;
+        let _2: *const [u8];
+        scope 2 {
+            debug p => _2;
+            let _5: *const [u8];
+            scope 3 {
+                debug q => _5;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = [const 11_u8, const 22_u8, const 33_u8];
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &_1;
+        _3 = &raw const (*_4);
+        _2 = move _3 as *const [u8] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _2;
+        _5 = identity(move _6) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        StorageLive(_9);
+        StorageLive(_10);
+        _10 = copy _5;
+        _9 = std::ptr::const_ptr::<impl *const [u8]>::len(move _10) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_10);
+        _8 = Eq(move _9, const 3_usize);
+        switchInt(move _8) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageDead(_9);
+        _7 = const ();
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageLive(_12);
+        StorageLive(_13);
+        StorageLive(_14);
+        StorageLive(_15);
+        _15 = &(*_5);
+        StorageLive(_16);
+        _16 = const 2_usize;
+        _17 = PtrMetadata(copy _15);
+        _18 = Lt(copy _16, copy _17);
+        assert(move _18, "index out of bounds: the length is {} but the index is {}", move _17, copy _16) -> [success: bb5, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_9);
+        StorageLive(_11);
+        _11 = core::panicking::panic(const "assertion failed: q.len() == 3") -> unwind continue;
+    }
+
+    bb5: {
+        _14 = copy (*_15)[_16];
+        _13 = Eq(move _14, const 33_u8);
+        switchInt(move _13) -> [0: bb7, otherwise: bb6];
+    }
+
+    bb6: {
+        StorageDead(_14);
+        StorageDead(_16);
+        StorageDead(_15);
+        _12 = const ();
+        StorageDead(_13);
+        StorageDead(_12);
+        _0 = const ();
+        StorageDead(_5);
+        StorageDead(_2);
+        StorageDead(_1);
+        return;
+    }
+
+    bb7: {
+        StorageDead(_14);
+        StorageDead(_16);
+        StorageDead(_15);
+        StorageLive(_19);
+        _19 = core::panicking::panic(const "assertion failed: unsafe { (&*q)[2] } == 33") -> unwind continue;
+    }
+}
+
+alloc2 (size: 43, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 75 6e 73 61 66 65 20 7b 20 28 26 2a 71 29 │ : unsafe { (&*q)
+    0x20 │ 5b 32 5d 20 7d 20 3d 3d 20 33 33                │ [2] } == 33
+}
+
+alloc1 (size: 30, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 71 2e 6c 65 6e 28 29 20 3d 3d 20 33       │ : q.len() == 3
+}

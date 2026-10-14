@@ -1,0 +1,25 @@
+{
+  "consumer_request": {
+    "entire_image_hex": "00004039c0035fd6",
+    "entry": 0,
+    "pc": 4096,
+    "target": "a64",
+    "model": "Kraken8af78062037bc237b341d20252aafd1797c1bcb7",
+    "claim": "readByteFullFrame"
+  },
+  "files": [
+    {
+      "path": "artifacts/read-byte-a64.bin",
+      "length": 8,
+      "hex": "00004039c0035fd6",
+      "sha256": "cb54949d467f73d9dcbdbcb28d5a644a4eec1b14f07f76f0b273836bd51115b8"
+    },
+    {
+      "path": "artifacts/read-byte-frame.cert",
+      "length": 19,
+      "hex": "4b524301010101000000000010000000000000",
+      "sha256": "9ea77dde02bf3455a6840a0018a28a83ff7e5f8f0420f49293d92c2512b53e62"
+    }
+  ],
+  "file_to_Lean_boundary": "Receipt bytes correspond to the displayed Lean literals/serialization; no filesystem reader adequacy theorem is claimed"
+}

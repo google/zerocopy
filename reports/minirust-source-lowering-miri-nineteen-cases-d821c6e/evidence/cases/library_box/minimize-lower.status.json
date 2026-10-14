@@ -1,0 +1,22 @@
+{
+  "label": "minimize-lower",
+  "argv": [
+    "@CAPTURE@/target/debug/minimize",
+    "--minimize-dump=json",
+    "@CAPTURE@/cases/library_box.rs",
+    "--edition=2021",
+    "--target",
+    "aarch64-apple-darwin",
+    "-Cdebug-assertions=off",
+    "-Cpanic=unwind"
+  ],
+  "cwd": "@CAPTURE@/runs/library_box",
+  "returncode": 101,
+  "seconds": 0.184619875,
+  "classification": "diagnostic-or-tool-failure",
+  "unexpected_panic_or_assertion": true,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a6af30ed52741fac7b0cb251488b7a7e6818f752f8667028242cf265c127ad26",
+  "native_subject_execution": false
+}

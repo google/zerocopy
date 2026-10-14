@@ -1,0 +1,449 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn check_a(_1: &A, _2: bool) -> () {
+    debug a => _1;
+    debug is_a1 => _2;
+    let mut _0: ();
+    let _3: ();
+    let mut _4: isize;
+    let mut _6: bool;
+    let mut _7: bool;
+    let mut _8: bool;
+    let mut _9: u8;
+    let mut _10: !;
+    let _11: ();
+    let mut _12: bool;
+    let mut _13: !;
+    let mut _14: isize;
+    let _15: &u8;
+    let mut _16: bool;
+    let mut _17: bool;
+    let mut _18: bool;
+    let mut _19: u8;
+    let mut _20: !;
+    let mut _21: bool;
+    let mut _22: !;
+    scope 1 {
+        debug x => _5;
+        let _5: &u8;
+    }
+    scope 2 {
+        debug x => _15;
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_3);
+        PlaceMention(_1);
+        _4 = discriminant((*_1));
+        switchInt(move _4) -> [0: bb1, otherwise: bb4];
+    }
+
+    bb1: {
+        StorageLive(_5);
+        _5 = &(((*_1) as A1).0: u8);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _2;
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy (*_5);
+        _8 = Eq(move _9, const 12_u8);
+        StorageDead(_9);
+        _6 = BitAnd(move _7, move _8);
+        switchInt(move _6) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_8);
+        StorageDead(_7);
+        _3 = const ();
+        StorageDead(_6);
+        StorageDead(_5);
+        goto -> bb7;
+    }
+
+    bb3: {
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageLive(_10);
+        _10 = core::panicking::panic(const "assertion failed: is_a1 & (*x == 12)") -> unwind continue;
+    }
+
+    bb4: {
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = copy _2;
+        switchInt(move _12) -> [0: bb6, otherwise: bb5];
+    }
+
+    bb5: {
+        StorageLive(_13);
+        _13 = core::panicking::panic(const "assertion failed: !is_a1") -> unwind continue;
+    }
+
+    bb6: {
+        _11 = const ();
+        StorageDead(_12);
+        StorageDead(_11);
+        _3 = const ();
+        goto -> bb7;
+    }
+
+    bb7: {
+        StorageDead(_3);
+        PlaceMention(_1);
+        _14 = discriminant((*_1));
+        switchInt(move _14) -> [0: bb10, 1: bb9, otherwise: bb8];
+    }
+
+    bb8: {
+        unreachable;
+    }
+
+    bb9: {
+        StorageLive(_21);
+        _21 = copy _2;
+        switchInt(move _21) -> [0: bb14, otherwise: bb13];
+    }
+
+    bb10: {
+        StorageLive(_15);
+        _15 = &(((*_1) as A1).0: u8);
+        StorageLive(_16);
+        StorageLive(_17);
+        _17 = copy _2;
+        StorageLive(_18);
+        StorageLive(_19);
+        _19 = copy (*_15);
+        _18 = Eq(move _19, const 12_u8);
+        StorageDead(_19);
+        _16 = BitAnd(move _17, move _18);
+        switchInt(move _16) -> [0: bb12, otherwise: bb11];
+    }
+
+    bb11: {
+        StorageDead(_18);
+        StorageDead(_17);
+        _0 = const ();
+        StorageDead(_16);
+        StorageDead(_15);
+        goto -> bb15;
+    }
+
+    bb12: {
+        StorageDead(_18);
+        StorageDead(_17);
+        StorageLive(_20);
+        _20 = core::panicking::panic(const "assertion failed: is_a1 & (*x == 12)") -> unwind continue;
+    }
+
+    bb13: {
+        StorageLive(_22);
+        _22 = core::panicking::panic(const "assertion failed: !is_a1") -> unwind continue;
+    }
+
+    bb14: {
+        _0 = const ();
+        StorageDead(_21);
+        goto -> bb15;
+    }
+
+    bb15: {
+        return;
+    }
+}
+
+alloc7 (size: 24, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 21 69 73 5f 61 31                         │ : !is_a1
+}
+
+alloc6 (size: 36, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 69 73 5f 61 31 20 26 20 28 2a 78 20 3d 3d │ : is_a1 & (*x ==
+    0x20 │ 20 31 32 29                                     │  12)
+}
+
+I16Repr::Min::{constant#0}: i16 = {
+    let mut _0: i16;
+
+    bb0: {
+        _0 = const core::num::<impl i16>::MIN;
+        return;
+    }
+}
+
+const I16Repr::Minus1::{constant#0}: i16 = const -1_i16;
+
+const I16Repr::Zero::{constant#0}: i16 = const 0_i16;
+
+I16Repr::Max::{constant#0}: i16 = {
+    let mut _0: i16;
+
+    bb0: {
+        _0 = const core::num::<impl i16>::MAX;
+        return;
+    }
+}
+
+fn get_i16_repr(_1: I16Repr) -> i16 {
+    debug a => _1;
+    let mut _0: i16;
+    let mut _2: i16;
+
+    bb0: {
+        PlaceMention(_1);
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [32768: bb5, 65535: bb4, 0: bb3, 32767: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = const 1_i16;
+        goto -> bb6;
+    }
+
+    bb3: {
+        _0 = const 0_i16;
+        goto -> bb6;
+    }
+
+    bb4: {
+        _0 = const -1_i16;
+        goto -> bb6;
+    }
+
+    bb5: {
+        _0 = const -2_i16;
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: A;
+    let _2: ();
+    let mut _3: &A;
+    let _4: &A;
+    let _6: ();
+    let mut _7: &A;
+    let _8: &A;
+    let _9: ();
+    let mut _10: bool;
+    let mut _11: i16;
+    let mut _12: I16Repr;
+    let mut _13: !;
+    let _14: ();
+    let mut _15: bool;
+    let mut _16: i16;
+    let mut _17: I16Repr;
+    let mut _18: !;
+    let _19: ();
+    let mut _20: bool;
+    let mut _21: i16;
+    let mut _22: I16Repr;
+    let mut _23: !;
+    let _24: ();
+    let mut _25: bool;
+    let mut _26: i16;
+    let mut _27: I16Repr;
+    let mut _28: !;
+    scope 1 {
+        debug x => _1;
+        let _5: A;
+        scope 2 {
+            debug x => _5;
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = A::A1(const 12_u8);
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &_1;
+        _3 = &(*_4);
+        _2 = check_a(move _3, const true) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_4);
+        StorageDead(_2);
+        StorageLive(_5);
+        _5 = A::A2;
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = &_5;
+        _7 = &(*_8);
+        _6 = check_a(move _7, const false) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_7);
+        StorageDead(_8);
+        StorageDead(_6);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = I16Repr::Min;
+        _11 = get_i16_repr(move _12) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_12);
+        _10 = Eq(move _11, const -2_i16);
+        switchInt(move _10) -> [0: bb5, otherwise: bb4];
+    }
+
+    bb4: {
+        StorageDead(_11);
+        _9 = const ();
+        StorageDead(_10);
+        StorageDead(_9);
+        StorageLive(_14);
+        StorageLive(_15);
+        StorageLive(_16);
+        StorageLive(_17);
+        _17 = I16Repr::Minus1;
+        _16 = get_i16_repr(move _17) -> [return: bb6, unwind continue];
+    }
+
+    bb5: {
+        StorageDead(_11);
+        StorageLive(_13);
+        _13 = core::panicking::panic(const "assertion failed: get_i16_repr(I16Repr::Min) == -2") -> unwind continue;
+    }
+
+    bb6: {
+        StorageDead(_17);
+        _15 = Eq(move _16, const -1_i16);
+        switchInt(move _15) -> [0: bb8, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageDead(_16);
+        _14 = const ();
+        StorageDead(_15);
+        StorageDead(_14);
+        StorageLive(_19);
+        StorageLive(_20);
+        StorageLive(_21);
+        StorageLive(_22);
+        _22 = I16Repr::Zero;
+        _21 = get_i16_repr(move _22) -> [return: bb9, unwind continue];
+    }
+
+    bb8: {
+        StorageDead(_16);
+        StorageLive(_18);
+        _18 = core::panicking::panic(const "assertion failed: get_i16_repr(I16Repr::Minus1) == -1") -> unwind continue;
+    }
+
+    bb9: {
+        StorageDead(_22);
+        _20 = Eq(move _21, const 0_i16);
+        switchInt(move _20) -> [0: bb11, otherwise: bb10];
+    }
+
+    bb10: {
+        StorageDead(_21);
+        _19 = const ();
+        StorageDead(_20);
+        StorageDead(_19);
+        StorageLive(_24);
+        StorageLive(_25);
+        StorageLive(_26);
+        StorageLive(_27);
+        _27 = I16Repr::Max;
+        _26 = get_i16_repr(move _27) -> [return: bb12, unwind continue];
+    }
+
+    bb11: {
+        StorageDead(_21);
+        StorageLive(_23);
+        _23 = core::panicking::panic(const "assertion failed: get_i16_repr(I16Repr::Zero) == 0") -> unwind continue;
+    }
+
+    bb12: {
+        StorageDead(_27);
+        _25 = Eq(move _26, const 1_i16);
+        switchInt(move _25) -> [0: bb14, otherwise: bb13];
+    }
+
+    bb13: {
+        StorageDead(_26);
+        _24 = const ();
+        StorageDead(_25);
+        StorageDead(_24);
+        _0 = const ();
+        StorageDead(_5);
+        StorageDead(_1);
+        return;
+    }
+
+    bb14: {
+        StorageDead(_26);
+        StorageLive(_28);
+        _28 = core::panicking::panic(const "assertion failed: get_i16_repr(I16Repr::Max) == 1") -> unwind continue;
+    }
+}
+
+alloc11 (size: 49, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 67 65 74 5f 69 31 36 5f 72 65 70 72 28 49 │ : get_i16_repr(I
+    0x20 │ 31 36 52 65 70 72 3a 3a 4d 61 78 29 20 3d 3d 20 │ 16Repr::Max) == 
+    0x30 │ 31                                              │ 1
+}
+
+alloc10 (size: 50, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 67 65 74 5f 69 31 36 5f 72 65 70 72 28 49 │ : get_i16_repr(I
+    0x20 │ 31 36 52 65 70 72 3a 3a 5a 65 72 6f 29 20 3d 3d │ 16Repr::Zero) ==
+    0x30 │ 20 30                                           │  0
+}
+
+alloc9 (size: 53, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 67 65 74 5f 69 31 36 5f 72 65 70 72 28 49 │ : get_i16_repr(I
+    0x20 │ 31 36 52 65 70 72 3a 3a 4d 69 6e 75 73 31 29 20 │ 16Repr::Minus1) 
+    0x30 │ 3d 3d 20 2d 31                                  │ == -1
+}
+
+alloc8 (size: 50, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 67 65 74 5f 69 31 36 5f 72 65 70 72 28 49 │ : get_i16_repr(I
+    0x20 │ 31 36 52 65 70 72 3a 3a 4d 69 6e 29 20 3d 3d 20 │ 16Repr::Min) == 
+    0x30 │ 2d 32                                           │ -2
+}
+
+fn A::A1(_1: u8) -> A {
+    let mut _0: A;
+
+    bb0: {
+        _0 = A::A1(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn A::A1(_1: u8) -> A {
+    let mut _0: A;
+
+    bb0: {
+        _0 = A::A1(move _1);
+        return;
+    }
+}

@@ -1,0 +1,62 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn main() -> () {
+    let mut _0: ();
+    let _1: Foo;
+    let mut _2: std::cell::Cell<u32>;
+    let mut _5: *mut Foo;
+    let mut _6: *const Foo;
+    let mut _7: *const Foo;
+    let _8: ();
+    let mut _9: &std::cell::Cell<u32>;
+    scope 1 {
+        debug root => _1;
+        let _3: &Foo;
+        scope 2 {
+            debug a => _3;
+            let _4: *mut Foo;
+            scope 3 {
+                debug a => _4;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        _2 = Cell::<u32>::new(const 88_u32) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _1 = Foo { field1: move _2 };
+        StorageDead(_2);
+        StorageLive(_3);
+        _3 = &_1;
+        StorageLive(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = &raw const (*_3);
+        _6 = copy _7;
+        _5 = move _6 as *mut Foo (PtrToPtr);
+        _4 = copy _5;
+        StorageDead(_6);
+        StorageDead(_7);
+        StorageDead(_5);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = &((*_4).0: std::cell::Cell<u32>);
+        _8 = Cell::<u32>::set(move _9, const 10_u32) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _0 = const ();
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_1);
+        return;
+    }
+}

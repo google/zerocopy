@@ -1,0 +1,159 @@
+{
+  "source_records": [
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/chunks.rs",
+      "symbols": [
+        "mark_used_bytes",
+        "calc_chunks"
+      ],
+      "sha256": "e442c679cd7e2e9f0cb6e536e8f787f7f4aa8f3415caa392ddf7baeb7f932463",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/ty.rs",
+      "symbols": [
+        "translate_ty union branch"
+      ],
+      "sha256": "aba733b1f138094da6b4477305151aa281c0582c2c876719a24856f81ed2e400",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/bb.rs",
+      "symbols": [
+        "translate_call foreign-item branch"
+      ],
+      "sha256": "5094f4305b1552319867fe25ed03bae20f6875527043074cadd169b84bb9622a",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/enums.rs",
+      "symbols": [
+        "translate_enum"
+      ],
+      "sha256": "d8d76dd86e907ccd1ae902c603e4529a68d062d8e53895ee8bd4058194c81d22",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/main.rs",
+      "symbols": [
+        "DEFAULT_ARGS",
+        "run_compiler"
+      ],
+      "sha256": "0543923e49cf22e45ad43560a8a9f7ea1219f6254e63138d4afd18bfa4efd7e7",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/program.rs",
+      "symbols": [
+        "Ctxt::new data-layout checks"
+      ],
+      "sha256": "74f23638f728659efd108f44d830247081fd4d31703aa4383bcf8fa0e4362825",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/miniutil/src/cli.rs",
+      "symbols": [
+        "MinirustMachineConfig",
+        "run_prog_and_print_errors"
+      ],
+      "sha256": "68186f5c189c762ac967dc453a42f9671c57f052aea80b16c3f88648401d956a",
+      "local_execution_source_matches_pinned_source": true
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/representation.md",
+      "symbols": [
+        "PtrType::as_wide_pair",
+        "Type::Union encode/decode"
+      ],
+      "sha256": "3b101b30e85a6aea580b5b06371116abaab97f87b622f62de7459e0363f37844"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "library/alloc/src/alloc.rs",
+      "symbols": [
+        "dealloc_nonnull",
+        "__rust_dealloc call at line128"
+      ],
+      "sha256": "afc8eece58d63942328cab563fad1b180b50afdadc9141d40e5d98a6df90cd70"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "src/tools/miri/cargo-miri/src/setup.rs",
+      "git_blob_sha": "47c99f939254edf7172708a048a12b351fdcd14c",
+      "sha256": "750a77d79d5deaf0a73ef60b5e9c9db1d4159293f12a7c173ef63ee15b8695d9",
+      "preservation": "Primary source coordinates/hash only; full retrieved source not mirrored"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "src/tools/miri/cargo-miri/src/main.rs",
+      "git_blob_sha": "4c01a81fdfdc917fbd7f745bebe41f80733ebd29",
+      "sha256": "69d6124e113a8ac26995dceaa74d08e4979413f5fecfe0b954e71e0a5e51cc8e",
+      "preservation": "Primary source coordinates/hash only; full retrieved source not mirrored"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "src/tools/miri/cargo-miri/src/util.rs",
+      "git_blob_sha": "1952435c5997777f4f545fcf764fbbd074e5a3f1",
+      "sha256": "8767d0352cd9ba16e62f0cdf5d19c4f816fe8b2bdf465291bb6ba08315fd41c9",
+      "preservation": "Primary source coordinates/hash only; full retrieved source not mirrored"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "src/tools/miri/src/bin/miri.rs",
+      "git_blob_sha": "b1a3d470d25ae6b5e655f71aa9bea088512970d8",
+      "sha256": "961c09e1d31859c019f9db792798979b84f69ec3ade2f8a25ab55bb9942e9dfa",
+      "preservation": "Primary source coordinates/hash only; full retrieved source not mirrored"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "path": "src/tools/miri/cargo-miri/src/phases.rs",
+      "git_blob_sha": "8a4d09b8348bfe7e135d746bea0cd07469dbd5b6",
+      "sha256": "70806a0499dc06c09bddff233af848bf261e651db2288cc7d18458e4b49bdd85",
+      "preservation": "Primary source coordinates/hash only; full retrieved source not mirrored"
+    }
+  ],
+  "generated_runtime_source_hashes": {
+    "Cargo.toml": "9af20d7fbc91e10d8dc49f50dc93cad96c5c44638c7e9fb874c69d6470e9143e",
+    "src/lang.rs": "106b8d33a2a99a87028e4f3771171447775f507825aa595f62fb6c1fd6cd5450",
+    "src/lib.rs": "e3de42b4c496ea7a440724d350763bbea52048767cd5b5b6e69ddd698581db9d",
+    "src/mem.rs": "bcfbed6c1d8f5bedafa282b7e55e7d3f12378540ff3653839209d7a92d73e421",
+    "src/prelude.rs": "a145fcbf99688857fad7f7feb438da4af8e4b8b69680af7f0707e06402426a35"
+  },
+  "generated_runtime_generation": "Reused earlier generated runtime source, not freshly regenerated in this reporting wave",
+  "Specr_revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+  "minimize_binary_hashes_in_recorded_results": [
+    "e69577543fa46159c81e17341e73935f90573a71255de6704bf4261ebf456ab6"
+  ],
+  "results_with_recorded_minimize_hash": 4,
+  "actual_models": 17,
+  "current_binary_static_read_hashes": {
+    "minimize": "e69577543fa46159c81e17341e73935f90573a71255de6704bf4261ebf456ab6",
+    "minirun": "e817beb3d45f9872d227e580259a59afbd0815781eaf122aab1582fc8dd06066"
+  },
+  "current_binary_hash_role": "Static identity read during reporting; binaries are not executed/copied. Per-run historical identity is established only where recorded, not invented for older result schemas.",
+  "source_inventory_raw_sha256": "1490731cf47f819599c421f8d5f42e58f3c6d946a233f545c2b2d7db06fc44d0",
+  "upstream_tooling_lock_sha256": "713f632f676e23bce95cbfb46454a718a53ec126837ca7d6db3257ee40f450ad",
+  "configured_tooling_lock_sha256": "11a841f4701f9a0b3899297a70bcddaccc2bb3b0d9a827b89b2a7e6063eecbf1"
+}

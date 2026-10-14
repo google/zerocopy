@@ -1,0 +1,262 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at @CAPTURE@/cases/library_drop_unwind.rs:4:1: 4:24>::drop(_1: &mut Guard<'_>) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: &std::cell::Cell<u32>;
+    let mut _4: u32;
+    let mut _5: u32;
+    let mut _6: &std::cell::Cell<u32>;
+    let mut _7: &std::cell::Cell<u32>;
+    let mut _8: &std::cell::Cell<u32>;
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_2);
+        StorageLive(_3);
+        _7 = copy ((*_1).0: &std::cell::Cell<u32>);
+        _3 = &(*_7);
+        StorageLive(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _8 = copy ((*_1).0: &std::cell::Cell<u32>);
+        _6 = &(*_8);
+        _5 = Cell::<u32>::get(move _6) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_6);
+        _4 = Add(move _5, const 1_u32);
+        StorageDead(_5);
+        _2 = Cell::<u32>::set(move _3, move _4) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_2);
+        _0 = const ();
+        return;
+    }
+}
+
+fn <impl at @CAPTURE@/cases/library_drop_unwind.rs:6:1: 6:19>::drop(_1: &mut Bomb) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let mut _2: !;
+    let _3: !;
+    let _4: !;
+    let mut _5: std::fmt::Arguments<'_>;
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = Arguments::<'_>::from_str(const "OWNED_EXPECTED_DROP_UNWIND") -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = std::rt::panic_fmt(move _5) -> unwind continue;
+    }
+}
+
+alloc1 (size: 26, align: 1) {
+    0x00 │ 4f 57 4e 45 44 5f 45 58 50 45 43 54 45 44 5f 44 │ OWNED_EXPECTED_D
+    0x10 │ 52 4f 50 5f 55 4e 57 49 4e 44                   │ ROP_UNWIND
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: std::cell::Cell<u32>;
+    let mut _3: std::panic::AssertUnwindSafe<{closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45}>;
+    let mut _4: {closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45};
+    let mut _5: &std::cell::Cell<u32>;
+    let _6: ();
+    let mut _7: bool;
+    let mut _8: &std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let mut _9: !;
+    let _10: ();
+    let mut _11: bool;
+    let mut _12: u32;
+    let mut _13: &std::cell::Cell<u32>;
+    let mut _14: !;
+    scope 1 {
+        debug n => _1;
+        let _2: std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+        scope 2 {
+            debug caught => _2;
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = Cell::<u32>::new(const 0_u32) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = &_1;
+        _4 = {closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45} { n: move _5 };
+        Retag(_4);
+        StorageDead(_5);
+        _3 = AssertUnwindSafe::<{closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45}>(move _4);
+        Retag(_3);
+        StorageDead(_4);
+        _2 = std::panic::catch_unwind::<AssertUnwindSafe<{closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45}>, ()>(move _3) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        Retag(_2);
+        StorageDead(_3);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = &_2;
+        _7 = Result::<(), Box<dyn Any + Send>>::is_err(move _8) -> [return: bb3, unwind: bb10];
+    }
+
+    bb3: {
+        switchInt(move _7) -> [0: bb5, otherwise: bb4];
+    }
+
+    bb4: {
+        StorageDead(_8);
+        _6 = const ();
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageLive(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        StorageLive(_13);
+        _13 = &_1;
+        _12 = Cell::<u32>::get(move _13) -> [return: bb6, unwind: bb10];
+    }
+
+    bb5: {
+        StorageDead(_8);
+        StorageLive(_9);
+        _9 = core::panicking::panic(const "assertion failed: caught.is_err()") -> bb10;
+    }
+
+    bb6: {
+        StorageDead(_13);
+        _11 = Eq(move _12, const 1_u32);
+        switchInt(move _11) -> [0: bb8, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageDead(_12);
+        _10 = const ();
+        StorageDead(_11);
+        StorageDead(_10);
+        _0 = const ();
+        drop(_2) -> [return: bb9, unwind: bb11];
+    }
+
+    bb8: {
+        StorageDead(_12);
+        StorageLive(_14);
+        _14 = core::panicking::panic(const "assertion failed: n.get() == 1") -> bb10;
+    }
+
+    bb9: {
+        StorageDead(_2);
+        StorageDead(_1);
+        return;
+    }
+
+    bb10 (cleanup): {
+        drop(_2) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        resume;
+    }
+}
+
+alloc3 (size: 30, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 6e 2e 67 65 74 28 29 20 3d 3d 20 31       │ : n.get() == 1
+}
+
+alloc2 (size: 33, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 61 75 67 68 74 2e 69 73 5f 65 72 72 28 │ : caught.is_err(
+    0x20 │ 29                                              │ )
+}
+
+fn main::{closure#0}(_1: &{closure@@CAPTURE@/cases/library_drop_unwind.rs:9:43: 9:45}) -> () {
+    debug n => (*((*_1).0: &std::cell::Cell<u32>));
+    let mut _0: ();
+    let _2: Guard<'_>;
+    let mut _3: &std::cell::Cell<u32>;
+    let _4: &std::cell::Cell<u32>;
+    let mut _6: &std::cell::Cell<u32>;
+    scope 1 {
+        debug _guard => _2;
+        let _5: Bomb;
+        scope 2 {
+            debug _bomb => _5;
+        }
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _6 = copy ((*_1).0: &std::cell::Cell<u32>);
+        _4 = &(*_6);
+        _3 = &(*_4);
+        _2 = Guard::<'_>(move _3);
+        Retag(_2);
+        StorageDead(_3);
+        StorageDead(_4);
+        StorageLive(_5);
+        _5 = Bomb;
+        _0 = const ();
+        drop(_5) -> [return: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        drop(_2) -> [return: bb2, unwind: bb4];
+    }
+
+    bb2: {
+        StorageDead(_2);
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(_2) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+}
+
+fn Guard(_1: &Cell<u32>) -> Guard<'_> {
+    let mut _0: Guard<'_>;
+
+    bb0: {
+        _0 = Guard::<'_>(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Guard(_1: &Cell<u32>) -> Guard<'_> {
+    let mut _0: Guard<'_>;
+
+    bb0: {
+        _0 = Guard::<'_>(move _1);
+        return;
+    }
+}

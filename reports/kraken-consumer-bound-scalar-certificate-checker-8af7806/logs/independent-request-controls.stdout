@@ -1,0 +1,4 @@
+'_private.ReviewControls.0.actual_file_literals_accepted' depends on axioms: [propext]
+'_private.ReviewControls.0.actual_file_literals_meaning' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.ReviewControls.0.changing_consumer_authority_changes_subject' depends on axioms: [propext]
+'_private.ReviewControls.0.changed_consumer_still_cannot_weaken_claim' depends on axioms: [propext]

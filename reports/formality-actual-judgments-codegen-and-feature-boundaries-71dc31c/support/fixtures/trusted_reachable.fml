@@ -1,0 +1,1 @@
+[crate test { fn helper(x: i32) -> i32 { trusted } fn main() -> () { println!(helper(42_i32)); } }]

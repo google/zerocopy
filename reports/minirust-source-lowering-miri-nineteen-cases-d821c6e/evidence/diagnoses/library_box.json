@@ -1,0 +1,11 @@
+{
+  "case": "library_box",
+  "classification": "lowering-tool-ICE",
+  "cause": "minimize/src/bb.rs:790 calls span_bug on foreign item alloc::alloc::__rust_dealloc; exact std alloc::alloc::dealloc_nonnull:128 calls this extern allocator entry",
+  "source_semantic_result_miri": "success",
+  "minirust_semantic_result": null,
+  "original_lowering_retried": false,
+  "source_unmodified": true,
+  "native_subject_execution": false,
+  "diagnostic_sha256": "a6af30ed52741fac7b0cb251488b7a7e6818f752f8667028242cf265c127ad26"
+}

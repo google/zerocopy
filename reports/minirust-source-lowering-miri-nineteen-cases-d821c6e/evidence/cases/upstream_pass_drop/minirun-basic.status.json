@@ -1,0 +1,16 @@
+{
+  "label": "minirun-basic",
+  "argv": [
+    "@CAPTURE@/target/debug/minirun",
+    "@CAPTURE@/runs-after-harness-fix/upstream_pass_drop/minirust.json"
+  ],
+  "cwd": "@CAPTURE@/runs-after-harness-fix/upstream_pass_drop",
+  "returncode": 0,
+  "seconds": 0.02101016699999997,
+  "classification": "success",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "4b9792f1c59d08f723913cc21692db4fafaadbdf0c8537df0e49e0209be3fe2b",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "native_subject_execution": false
+}

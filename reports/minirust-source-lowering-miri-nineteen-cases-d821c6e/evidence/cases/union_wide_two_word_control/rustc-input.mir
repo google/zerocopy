@@ -1,0 +1,167 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const Wide::words::{constant#0}: usize = const 2_usize;
+
+fn <impl at @CAPTURE@/cases/union_wide_two_word_control.rs:2:10: 2:15>::clone(_1: &Wide) -> Wide {
+    debug self => _1;
+    let mut _0: Wide;
+    scope 1 {
+    }
+
+    bb0: {
+        Retag([fn entry] _1);
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+fn identity(_1: Wide) -> Wide {
+    debug x => _1;
+    let mut _0: Wide;
+
+    bb0: {
+        _0 = copy _1;
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: [u8; 3];
+    let mut _3: *const [u8; 3];
+    let _4: &[u8; 3];
+    let mut _6: Wide;
+    let mut _7: *const [u8];
+    let _9: ();
+    let mut _10: bool;
+    let mut _11: usize;
+    let mut _12: *const [u8];
+    let mut _13: !;
+    let _14: ();
+    let mut _15: bool;
+    let mut _16: u8;
+    let mut _17: &[u8];
+    let _18: usize;
+    let mut _19: usize;
+    let mut _20: bool;
+    let mut _21: !;
+    scope 1 {
+        debug data => _1;
+        let _2: *const [u8];
+        scope 2 {
+            debug pointer => _2;
+            let _5: Wide;
+            scope 3 {
+                debug copied => _5;
+                let _8: *const [u8];
+                scope 4 {
+                    debug roundtrip => _8;
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = [const 11_u8, const 22_u8, const 33_u8];
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &_1;
+        _3 = &raw const (*_4);
+        _2 = move _3 as *const [u8] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _2;
+        _6 = Wide { p: move _7 };
+        StorageDead(_7);
+        _5 = identity(move _6) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_6);
+        StorageLive(_8);
+        _8 = copy (_5.0: *const [u8]);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = copy _8;
+        _11 = std::ptr::const_ptr::<impl *const [u8]>::len(move _12) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_12);
+        _10 = Eq(move _11, const 3_usize);
+        switchInt(move _10) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageDead(_11);
+        _9 = const ();
+        StorageDead(_10);
+        StorageDead(_9);
+        StorageLive(_14);
+        StorageLive(_15);
+        StorageLive(_16);
+        StorageLive(_17);
+        _17 = &(*_8);
+        StorageLive(_18);
+        _18 = const 2_usize;
+        _19 = PtrMetadata(copy _17);
+        _20 = Lt(copy _18, copy _19);
+        assert(move _20, "index out of bounds: the length is {} but the index is {}", move _19, copy _18) -> [success: bb5, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_11);
+        StorageLive(_13);
+        _13 = core::panicking::panic(const "assertion failed: roundtrip.len() == 3") -> unwind continue;
+    }
+
+    bb5: {
+        _16 = copy (*_17)[_18];
+        _15 = Eq(move _16, const 33_u8);
+        switchInt(move _15) -> [0: bb7, otherwise: bb6];
+    }
+
+    bb6: {
+        StorageDead(_16);
+        StorageDead(_18);
+        StorageDead(_17);
+        _14 = const ();
+        StorageDead(_15);
+        StorageDead(_14);
+        _0 = const ();
+        StorageDead(_8);
+        StorageDead(_5);
+        StorageDead(_2);
+        StorageDead(_1);
+        return;
+    }
+
+    bb7: {
+        StorageDead(_16);
+        StorageDead(_18);
+        StorageDead(_17);
+        StorageLive(_21);
+        _21 = core::panicking::panic(const "assertion failed: unsafe { (&*roundtrip)[2] } == 33") -> unwind continue;
+    }
+}
+
+alloc2 (size: 51, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 75 6e 73 61 66 65 20 7b 20 28 26 2a 72 6f │ : unsafe { (&*ro
+    0x20 │ 75 6e 64 74 72 69 70 29 5b 32 5d 20 7d 20 3d 3d │ undtrip)[2] } ==
+    0x30 │ 20 33 33                                        │  33
+}
+
+alloc1 (size: 38, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 72 6f 75 6e 64 74 72 69 70 2e 6c 65 6e 28 │ : roundtrip.len(
+    0x20 │ 29 20 3d 3d 20 33                               │ ) == 3
+}

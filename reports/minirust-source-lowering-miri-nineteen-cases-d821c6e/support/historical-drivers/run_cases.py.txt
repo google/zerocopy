@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Actual source/MIR/minimize/minirun/Miri pipeline. Never invokes a native subject."""
+from pathlib import Path
+import argparse,hashlib,json,os,re,subprocess,sys,time
+from stage import ROOT,TOOL,env,bytes_used
+DEFAULT_MINIMIZE=['--cfg=miri','-Zalways-encode-mir','-Zextra-const-ub-checks','-Zmir-emit-retag','-Zmir-opt-level=0','-Zmir-enable-passes=-CheckAlignment','-Zmir-preserve-ub','-Zub-checks=false']
+def classify(code,err):
+ if code==0:return 'success'
+ if re.search(r'(fatal error: UB:|Undefined Behavior:)',err,re.I):return 'undefined-behavior'
+ if 'program aborted' in err:return 'abort'
+ if 'program not well-formed' in err:return 'ill-formed'
+ if 'program leaked memory' in err:return 'memory-leak'
+ if 'program dead-locked' in err:return 'deadlock'
+ return 'diagnostic-or-tool-failure'
+def run(out,label,argv,extra=None,expected_panic=None):
+ e=env();e.update(CARGO_NET_OFFLINE='true');e.update(extra or {})
+ start=time.monotonic()
+ cp=subprocess.run(argv,cwd=out,env=e,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=90)
+ (out/(label+'.stdout')).write_text(cp.stdout);(out/(label+'.stderr')).write_text(cp.stderr)
+ has_panic=bool(re.search(r"thread '[^']*'[^\n]*panicked|assertion[^\n]*failed|internal compiler error|LLVM ERROR|rustc unexpectedly panicked",cp.stderr,re.I))
+ expected_subject_panic=bool(expected_panic and expected_panic in cp.stderr and cp.returncode==0)
+ bad_panic=has_panic and not expected_subject_panic
+ row=dict(label=label,argv=argv,cwd=str(out),returncode=cp.returncode,seconds=time.monotonic()-start,classification=classify(cp.returncode,cp.stderr),unexpected_panic_or_assertion=bad_panic,expected_subject_panic_observed=expected_subject_panic,stdout_sha256=hashlib.sha256(cp.stdout.encode()).hexdigest(),stderr_sha256=hashlib.sha256(cp.stderr.encode()).hexdigest(),native_subject_execution=False)
+ (out/(label+'.status.json')).write_text(json.dumps(row,indent=2)+'\n')
+ if bad_panic:raise SystemExit('Stopped unexpected panic/assertion; inspect '+str(out/(label+'.stderr')))
+ return row
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--case',required=True);p.add_argument('--basic',action='store_true');p.add_argument('--group',default='runs');p.add_argument('--tool-path',type=Path);a=p.parse_args()
+ minimize=(a.tool_path or ROOT/'target/debug/minimize').resolve()
+ spec=next(x for x in json.loads((ROOT/'inventory/cases.json').read_text()) if x['name']==a.case)
+ source=ROOT/spec['path']
+ if hashlib.sha256(source.read_bytes()).hexdigest()!=spec['sha256']:raise SystemExit('Case source identity mismatch; stop')
+ out=ROOT/a.group/a.case;out.mkdir(parents=True,exist_ok=False)
+ common=['--edition=2021','--target','aarch64-apple-darwin','-Cdebug-assertions=off','-Cpanic=unwind']
+ metadata={}
+ if spec.get('requires_intrinsics'):
+  for engine in ['mini','miri']:
+   # Compile dependency metadata with the same engine/sysroot used for the subject.
+   directory=out/(engine+'-deps');directory.mkdir()
+   sysroot=ROOT/('minimize-sysroot' if engine=='mini' else 'miri-sysroot')
+   tool=minimize if engine=='mini' else TOOL/'bin/miri'
+   extra={'MINIMIZE_BE_RUSTC':'1','MINIMIZE_BUILD_SYSROOT':'off'} if engine=='mini' else {'MIRI_BE_RUSTC':'target'}
+   args=[str(tool),'--sysroot',str(sysroot),'--crate-name','intrinsics','--crate-type=lib','--emit=metadata',str(ROOT/'workspace/tooling/minimize/intrinsics/src/lib.rs'),'-o',str(directory/'libintrinsics.rmeta')]+common
+   row=run(out,engine+'-intrinsics',args,extra)
+   if row['returncode']:raise SystemExit('Dependency metadata compile failed; stop affected case')
+   metadata[engine]=['--extern','intrinsics='+str(directory/'libintrinsics.rmeta')]
+ rows=[]
+ mirfile=out/'rustc-input.mir'
+ # Compiler emit-only control carries exactly the pinned minimize default flags.
+ rows.append(run(out,'rustc-mir',[str(TOOL/'bin/rustc')]+DEFAULT_MINIMIZE+common+['--sysroot',str(ROOT/'minimize-sysroot'),'--emit=mir',str(source),'-o',str(mirfile)]+metadata.get('mini',[])))
+ if rows[-1]['returncode']:raise SystemExit('Compiler MIR emission diagnostic; stop affected case')
+ lower=run(out,'minimize-lower',[str(minimize),'--minimize-dump=json',str(source)]+common+metadata.get('mini',[]))
+ rows.append(lower)
+ if lower['returncode']:raise SystemExit('Minimize lowering diagnostic; stop affected case')
+ encoded=(out/'minimize-lower.stdout').read_text();prog=json.loads(encoded)
+ (out/'minirust.json').write_text(encoded)
+ # Run exactly the emitted MiniRust, never a reconstructed/owned replacement.
+ rows.append(run(out,'minirun-tree',[str(ROOT/'target/debug/minirun'),'--minirust-tree-borrows',str(out/'minirust.json')]))
+ if a.basic:rows.append(run(out,'minirun-basic',[str(ROOT/'target/debug/minirun'),str(out/'minirust.json')]))
+ rows.append(run(out,'miri-tree',[str(TOOL/'bin/miri'),'--sysroot',str(ROOT/'miri-sysroot'),'-Zmiri-tree-borrows',str(source)]+common+metadata.get('miri',[]),expected_panic=spec.get('expected_subject_panic')))
+ outcomes={r['label']:r['classification'] for r in rows if r['label'] in ['minirun-tree','minirun-basic','miri-tree']}
+ agree=outcomes['minirun-tree']==outcomes['miri-tree']
+ result=dict(minimize_binary=str(minimize),minimize_binary_sha256=hashlib.sha256(minimize.read_bytes()).hexdigest(),run_group=a.group,case=spec,actual_target='aarch64-apple-darwin',mini_memory='TreeBorrows default params (implicit_writes=false)',miri_memory='-Zmiri-tree-borrows; default validation retained',compiler_commit='f53b654a8882fd5fc036c4ca7a4ff41ce32497a6',outcomes=outcomes,mini_tree_miri_agree=agree,miri_expected_outcome_matches=outcomes['miri-tree']==spec['expected_miri'],commands=rows,source_sha256=spec['sha256'],mir_sha256=hashlib.sha256(mirfile.read_bytes()).hexdigest(),minirust_json_sha256=hashlib.sha256(encoded.encode()).hexdigest(),minirust_json_top_level=list(prog) if isinstance(prog,dict) else type(prog).__name__,task_bytes=bytes_used(),native_subject_execution=False)
+ (out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps({k:v for k,v in result.items() if k not in ['commands','case','minirust_json_top_level']},indent=2))
+ if not agree or not result['miri_expected_outcome_matches']:raise SystemExit('Semantic disagreement retained; diagnose before replay/changes')
+if __name__=='__main__':main()

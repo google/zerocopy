@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "rust/formality",
+    "rust/frontend",
+    "minirust/codegen",
+    "verification/execution"
+  ],
+  "subjects": [
+    {
+      "name": "a-mir-formality",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+      }
+    },
+    {
+      "name": "Executed Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48cc71ee88cd0f11217eced958b9930970da998b",
+        "toolchain": "nightly-2026-04-01",
+        "host": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Vendored MiniRust runtime",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+        "path": "crates/minirust-rs",
+        "target": "x86_64",
+        "library": "libspecr=0.1.40"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,123 @@
+{
+  "policy": "Raw originals remain unmodified in private task scratch. Public copies replace only the listed literal display-path prefixes; executable/program/source/proof semantics and statuses are unchanged. This is explicit editorial projection, not silent raw-log alteration.",
+  "replacements": [
+    {
+      "original_prefix_description": "exact task-private April1 toolchain prefix",
+      "original_prefix_sha256": "c23093896257289eb8b23e72abcd5e633117dc359d2f0fcc2af6e65f5ddfb149",
+      "public": "<APRIL1_TOOLCHAIN>"
+    },
+    {
+      "original_prefix_description": "exact task-private formality scratch prefix",
+      "original_prefix_sha256": "4b3cefc462b28b5ed5f51de5330af1475951ee30c2ba2df9616d6a469c116c4b",
+      "public": "<TASK_ROOT>"
+    },
+    {
+      "original_prefix_description": "exact task-shared execution prefix",
+      "original_prefix_sha256": "581b0e581683719deb0377dd0af6478fd941d3bd86b5652e07e908799b9bc073",
+      "public": "<EXECUTION_ROOT>"
+    },
+    {
+      "original_prefix_description": "exact acquisition user-home prefix",
+      "original_prefix_sha256": "ce75671906a5ca612d3c236f3aae2eee19d0bf8c821896c48fd420d44dd813c8",
+      "public": "<USER_HOME>"
+    }
+  ],
+  "files": [
+    {
+      "source": "execution-tool-identities.json",
+      "public": "support/execution-tool-identities.json",
+      "original_sha256": "71db4cac155f0625bb1831110b075d1bc450d3a3b95c886e285bf7bb2d3da97a",
+      "public_sha256": "d8414dda4515dcb6124db26a85b71d33a7d879bdde716f57612d083ec22df4a0",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "direct-test-build-association.json",
+      "public": "support/direct-test-build-association.json",
+      "original_sha256": "f1cd22443f6c0fc06b166733ff26300903e317deea8cb8e9ff60c3d67b53921f",
+      "public_sha256": "a096c10f3fe484c82a302f6c33cb378d2588d72f8d79df6a1f528b0e76bb3ff3",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "syntax-preparation-diagnostic.json",
+      "public": "support/syntax-preparation-diagnostic.json",
+      "original_sha256": "f7c1da597fc849bbf7188c7a83f7b7fbf6983e61021797006c7675097f51db04",
+      "public_sha256": "715766d8a6afcbbe96cf6b87f3dfc33465e0fefadab272082c29420c34a26795",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "phase-logs/locked-fetch.json",
+      "public": "support/phase-logs/locked-fetch.json",
+      "original_sha256": "a763afc5dc89de42d2fc4936df7f1e2a4267ef23062d736cc7d46023547803ac",
+      "public_sha256": "195edd48f35a345ee27c93692ceb042a22390621ab2a57bd2c8c8c787ffa8ff7",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "phase-logs/observer-build.json",
+      "public": "support/phase-logs/observer-build.json",
+      "original_sha256": "91d3dfedeb5e3b0808b58db379c5aef2ae0b6d2642fc86477806fdcb229ee006",
+      "public_sha256": "fbde33bf7c2e2ef43fbff9c86261455a16f433b3cd6aa23af50d525fc77f9711",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "phase-logs/observer-build.stderr",
+      "public": "support/phase-logs/observer-build.stderr",
+      "original_sha256": "b6629c20caa7b60931974810a4d2c718d257585aab9d5aaef9f3d729d16ad8eb",
+      "public_sha256": "59b27eaccc719285e5e7c6dcdca164ac248d23aabbc29bd56318a894f9fb5a9d",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "phase-logs/upstream-selected-tests.json",
+      "public": "support/phase-logs/upstream-selected-tests.json",
+      "original_sha256": "a41deb9db65718620042ee6600298824958c4679805b9768c0c9f977ab6fb767",
+      "public_sha256": "202df453152a9b673a201a5ddf53f917c9888d444dd3c6fa8388cafa4d107497",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "phase-logs/upstream-selected-tests.stderr",
+      "public": "support/phase-logs/upstream-selected-tests.stderr",
+      "original_sha256": "7c48f266fdfca284a1d43acb888902d6ea1e9e9c9a4a48c4d0a38cb4d7320940",
+      "public_sha256": "c595800abd260ac12bf9cfaae6a2f64f733bc755cd9848d04e7356aed05cf665",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "direct-tests/list-results.json",
+      "public": "support/direct-tests/list-results.json",
+      "original_sha256": "905b05988e87bc63827512125f7db0c8cc40c78d12cfcc3bde87f735fa67b822",
+      "public_sha256": "cd1068704e9f231450397ca68b269805e1ad4f127bfee8126970b48f22b040c1",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "direct-tests/test-results.json",
+      "public": "support/direct-tests/test-results.json",
+      "original_sha256": "d351a08c0bc37918ce6e1f33ccb59f710fd4a81293599c77f54bc1a3a5ea45b8",
+      "public_sha256": "3a5bcfd07991c7aa0e8802b92455ab01dabcf695a05bb01a9d2664aacb52042e",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "direct-tests/test-results.partial.json",
+      "public": "support/direct-tests/test-results.partial.json",
+      "original_sha256": "d351a08c0bc37918ce6e1f33ccb59f710fd4a81293599c77f54bc1a3a5ea45b8",
+      "public_sha256": "3a5bcfd07991c7aa0e8802b92455ab01dabcf695a05bb01a9d2664aacb52042e",
+      "only_display_path_prefixes_replaced": true
+    }
+  ],
+  "archived_case_files": [
+    {
+      "source": "observed-cases/partial-results.json",
+      "public_archive_entry": "observed-cases/partial-results.json",
+      "original_sha256": "cb3cd22f721a27ccc25a68d90c9f7df6dfd70009d43b1265cf06a6d49e797e51",
+      "public_sha256": "6fc783ddea6ee73c5fa87fc89ec5fcf43e049159be4a754e4b9dfa6b92430d8b",
+      "only_display_path_prefixes_replaced": true
+    },
+    {
+      "source": "observed-cases/results.json",
+      "public_archive_entry": "observed-cases/results.json",
+      "original_sha256": "78a797ebb01f83e01def50f238d65ee0476e487a729b2c895f2a18e5a3e5d663",
+      "public_sha256": "cc47e3ce1fd275d88730bb7e63eb74cfc55958b169ac0679d3ca7a1e13c46ab9",
+      "only_display_path_prefixes_replaced": true
+    }
+  ],
+  "case_archive_sha256": "337651c69ec304303bdf7c253d98ed42bc133c08b4f7894311f6693860814831",
+  "case_archive_bytes": 630197,
+  "private_mapping": "Exact original prefix strings remain in private-path-projection-receipt.json beside unmodified raw outcomes, excluded from publication. Public receipts bind original and projected file bytes and describe every replacement."
+}

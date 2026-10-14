@@ -1,0 +1,33 @@
+{
+  "case": "library_drop_unwind",
+  "classification": "lowering-tool-ICE",
+  "cause": "minimize/src/bb.rs:790 calls span_bug on foreign alloc::alloc::__rust_dealloc, as in library_box; no model semantic result",
+  "miri": {
+    "label": "miri-tree",
+    "argv": [
+      "@RUST_TOOLCHAIN@/bin/miri",
+      "--sysroot",
+      "@CAPTURE@/miri-sysroot",
+      "-Zmiri-tree-borrows",
+      "@CAPTURE@/cases/library_drop_unwind.rs",
+      "--edition=2021",
+      "--target",
+      "aarch64-apple-darwin",
+      "-Cdebug-assertions=off",
+      "-Cpanic=unwind"
+    ],
+    "cwd": "@CAPTURE@/runs/library_drop_unwind",
+    "returncode": 0,
+    "seconds": 0.08536637500000001,
+    "classification": "success",
+    "unexpected_panic_or_assertion": false,
+    "expected_subject_panic_observed": true,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "bc2bae7094a0afa410563328dac09e701e7b550d30f2814e94489f2d09547232",
+    "native_subject_execution": false
+  },
+  "original_lowering_retried": false,
+  "source_unmodified": true,
+  "native_subject_execution": false,
+  "diagnostic_sha256": "c0b912b0927a5a4c980469d5666ad0b39d2fba05bf7cac8c8790283acca08d99"
+}

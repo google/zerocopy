@@ -1,0 +1,1 @@
+[crate test { unsafe fn helper(x: i32) -> i32 { return x; } fn main() -> () { println!(helper(42_i32)); } }]

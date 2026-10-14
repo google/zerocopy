@@ -1,0 +1,5 @@
+
+thread 'main' (0) panicked at @CAPTURE@/cases/library_drop_unwind.rs:6:43:
+OWNED_EXPECTED_DROP_UNWIND
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+note: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect

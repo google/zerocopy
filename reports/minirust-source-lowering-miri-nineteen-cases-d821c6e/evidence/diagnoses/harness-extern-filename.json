@@ -1,0 +1,8 @@
+{
+  "cause": "Owned harness selected intrinsics.rmeta without required lib prefix; rustc rejected extern dependency filename before subject MIR compilation",
+  "correction": "libintrinsics.rmeta; test source and compiled dependency bytes unchanged in intent, rerun gets fresh output group",
+  "upstream_source_defect": false,
+  "original_evidence_retained": "runs/upstream_pass_drop",
+  "original_driver_sha256": "62ffbc862d3022bd4cecdd677156c20fe7bdcac9671d185f1cf02c160d3ea988",
+  "new_driver_sha256": "365c6762b7f7a982beba3995111de8aa68fbfca9a2cb10a08fe685828e839ec7"
+}

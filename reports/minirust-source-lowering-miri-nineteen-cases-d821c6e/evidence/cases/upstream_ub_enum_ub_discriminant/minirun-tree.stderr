@@ -1,0 +1,1 @@
+fatal error: UB: ValueExpr::GetDiscriminant encountered invalid discriminant.

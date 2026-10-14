@@ -1,0 +1,16 @@
+{
+  "label": "minirun-basic",
+  "argv": [
+    "@CAPTURE@/target/debug/minirun",
+    "@CAPTURE@/runs/union_wide_one_field/minirust.json"
+  ],
+  "cwd": "@CAPTURE@/runs/union_wide_one_field",
+  "returncode": 101,
+  "seconds": 0.007258959000000009,
+  "classification": "undefined-behavior",
+  "unexpected_panic_or_assertion": false,
+  "expected_subject_panic_observed": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a859ffe2bfb0e80addc18ab82e593a1ef8a4801d70f5445f5e1ffb03f78df6fc",
+  "native_subject_execution": false
+}

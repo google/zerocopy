@@ -1,0 +1,58 @@
+{
+  "toolchain": "nightly-2026-05-01",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "manifest_sha256": "ea96e87fce61b2182006a819cf8d6ac74cc7562e4bc6d60aba4107ffcba58d52",
+  "components": [
+    {
+      "package": "rustc",
+      "target": "aarch64-apple-darwin",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/rustc-nightly-aarch64-apple-darwin.tar.xz",
+      "sha256": "2400f1a7f1382fa4fc975ca76609e7e0d7d9a4c5427b94d39c315e2a284a1617"
+    },
+    {
+      "package": "rust-std",
+      "target": "aarch64-apple-darwin",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-aarch64-apple-darwin.tar.xz",
+      "sha256": "8497a64bf027a50bb3756ce0c7c15558edb181679129d2feaa4933bb8920a5a2"
+    },
+    {
+      "package": "cargo",
+      "target": "aarch64-apple-darwin",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/cargo-nightly-aarch64-apple-darwin.tar.xz",
+      "sha256": "1f0a363c194873468923afb64bd4c84fa9429a21b359030b9d3f9f01522e15a8"
+    },
+    {
+      "package": "rustc-dev",
+      "target": "aarch64-apple-darwin",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/rustc-dev-nightly-aarch64-apple-darwin.tar.xz",
+      "sha256": "40da932371170f9dc8c5ca738391c5a7d0fbd31161917eec3ddb1cff852f6395"
+    },
+    {
+      "package": "rust-src",
+      "target": "*",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/rust-src-nightly.tar.xz",
+      "sha256": "83446faa40923c3fcb49333180136d5f776d7b52e062d7c819bb4a575eeebc0d"
+    },
+    {
+      "package": "miri-preview",
+      "target": "aarch64-apple-darwin",
+      "url": "https://static.rust-lang.org/dist/2026-05-01/miri-nightly-aarch64-apple-darwin.tar.xz",
+      "sha256": "1a40c8df09ca1a6c6fd02663c3028939f064300a058ca155accc8080fa636de1"
+    }
+  ],
+  "required_for_minimize": [
+    "rustc",
+    "rust-std",
+    "rustc-dev",
+    "rust-src",
+    "cargo"
+  ],
+  "required_for_miri": [
+    "miri-preview",
+    "rust-src"
+  ],
+  "not_execution_required_from_file": [
+    "rustfmt",
+    "llvm-tools-preview"
+  ]
+}

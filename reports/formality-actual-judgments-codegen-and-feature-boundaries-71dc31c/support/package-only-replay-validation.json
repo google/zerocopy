@@ -1,0 +1,127 @@
+{
+  "status": "pass",
+  "same_observer_binary": true,
+  "cases": [
+    {
+      "name": "generic_i32",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "generic_i32_bool",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "generic_wrong_result",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "generic_missing_argument",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "trusted_reachable",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "trusted_unreachable",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "uncalled_bad_owner",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "unsafe_callee",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "normalize_impl",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "normalize_wrong_output",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "normalize_assumption",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "normalize_assumption_wrong",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "feature_gate",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "unknown_feature_gate",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "cfg_surface",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "macro_surface",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "async_surface",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "closure_surface",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "unsafe_trait_marked",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    },
+    {
+      "name": "unsafe_trait_unmarked_impl",
+      "same_exit": true,
+      "same_input_sha256": true,
+      "same_semantic_output_files": true
+    }
+  ],
+  "scope": "Packaged inputs/controller with the already-built exact native observer. No fresh build or independent compiler implementation."
+}

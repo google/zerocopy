@@ -1,0 +1,26 @@
+{
+  "command": [
+    "<APRIL1_TOOLCHAIN>/bin/cargo",
+    "fetch",
+    "--locked",
+    "--target",
+    "aarch64-apple-darwin"
+  ],
+  "environment_overrides": {
+    "CARGO_HOME": "<TASK_ROOT>/cargo-home",
+    "CARGO_TARGET_DIR": "<TASK_ROOT>/target",
+    "RUSTUP_HOME": "<EXECUTION_ROOT>/toolchains/rustup",
+    "RUSTUP_TOOLCHAIN": "nightly-2026-04-01",
+    "RUSTC": "<APRIL1_TOOLCHAIN>/bin/rustc",
+    "RUSTDOC": "<APRIL1_TOOLCHAIN>/bin/rustdoc",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0"
+  },
+  "exit": 0,
+  "elapsed_ns": 4038015750,
+  "peak_target_bytes": 0,
+  "operational_stop": null,
+  "source_lock_sha256": "13d9b85df332458b4a5df3b0f189cef707608180087055cbf3b30477ff7b7049"
+}

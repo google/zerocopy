@@ -1,0 +1,1 @@
+fatal error: UB: load at type Ptr(Raw { meta_kind: ElementCount }) but the data in memory violates the language invariant

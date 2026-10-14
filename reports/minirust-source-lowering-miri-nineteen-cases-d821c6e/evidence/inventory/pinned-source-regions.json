@@ -1,0 +1,54 @@
+{
+  "repository": "minirust/minirust",
+  "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "files": {
+    "rust-toolchain.toml": {
+      "bytes": 117,
+      "sha256": "c9d156d35085df5843c805edf0f530b1e90336f65dae7988f9ba4b20c4b7190b"
+    },
+    "tooling/Cargo.toml": {
+      "bytes": 111,
+      "sha256": "b039cdfd75a18c60e60bcede4db043995175ee8402b0a19563a598caf2f9a41c"
+    },
+    "tooling/Cargo.lock": {
+      "bytes": 32892,
+      "sha256": "713f632f676e23bce95cbfb46454a718a53ec126837ca7d6db3257ee40f450ad"
+    },
+    "tooling/minimize/Cargo.toml": {
+      "bytes": 461,
+      "sha256": "c7fb8122feeb39be6511a77b3f0de4bd4ee43f76ec581528aa9121e8578e2066"
+    },
+    "tooling/minimize/src/main.rs": {
+      "bytes": 7490,
+      "sha256": "0543923e49cf22e45ad43560a8a9f7ea1219f6254e63138d4afd18bfa4efd7e7"
+    },
+    "tooling/minimize/src/sysroot.rs": {
+      "bytes": 2605,
+      "sha256": "036ce2aa0c51a20462d43126caea5d1977416da587e4eeec46fc62d9e27c4fb3"
+    },
+    "tooling/minimize/src/program.rs": {
+      "bytes": 7858,
+      "sha256": "74f23638f728659efd108f44d830247081fd4d31703aa4383bcf8fa0e4362825"
+    },
+    "tooling/minimize/src/chunks.rs": {
+      "bytes": 4156,
+      "sha256": "e442c679cd7e2e9f0cb6e536e8f787f7f4aa8f3415caa392ddf7baeb7f932463"
+    },
+    "tooling/minimize/src/ty.rs": {
+      "bytes": 14430,
+      "sha256": "aba733b1f138094da6b4477305151aa281c0582c2c876719a24856f81ed2e400"
+    },
+    "tooling/minimize/src/enums.rs": {
+      "bytes": 12304,
+      "sha256": "d8d76dd86e907ccd1ae902c603e4529a68d062d8e53895ee8bd4058194c81d22"
+    },
+    "tooling/minimize/src/bb.rs": {
+      "bytes": 42230,
+      "sha256": "5094f4305b1552319867fe25ed03bae20f6875527043074cadd169b84bb9622a"
+    },
+    "tooling/miniutil/src/cli.rs": {
+      "bytes": 3010,
+      "sha256": "68186f5c189c762ac967dc453a42f9671c57f052aea80b16c3f88648401d956a"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+support/Consumer.lean:134:14: warning: Variable name `r` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _r
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+support/Consumer.lean:178:23: error: Application type mismatch: The argument
+  hc
+has type
+  check r candidate raw = some e
+but is expected to have type
+  some e = some e
+in the application
+  And.intro hc
+support/Consumer.lean:220:97: error: unsolved goals
+r : Request
+candidate raw : List UInt8
+f : Fields
+hp : parseRaw raw = some f
+h : f.pc ≠ r.pc.toInt.toNat
+⊢ candidate = r.image →
+    Supported r →
+      f.entry = r.entry →
+        f.pc = r.pc.toNatClampNeg → r.entry + 8 ≤ candidate.length → certificate r.pc (slice candidate r.entry) = none
+support/Consumer.lean:221:17: warning: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [check, hp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

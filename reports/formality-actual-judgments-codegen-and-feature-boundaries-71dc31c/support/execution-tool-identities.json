@@ -1,0 +1,21 @@
+{
+  "toolchain": "<APRIL1_TOOLCHAIN>",
+  "rows": [
+    {
+      "name": "rustc",
+      "path": "<APRIL1_TOOLCHAIN>/bin/rustc",
+      "sha256": "2bbaeb4492287203ac54eb161a34f78e70e496c4ee3506ac3b89541995a9e41e",
+      "exit": 0,
+      "stdout": "rustc 1.96.0-nightly (48cc71ee8 2026-03-31)\nbinary: rustc\ncommit-hash: 48cc71ee88cd0f11217eced958b9930970da998b\ncommit-date: 2026-03-31\nhost: aarch64-apple-darwin\nrelease: 1.96.0-nightly\nLLVM version: 22.1.2\n",
+      "stderr": ""
+    },
+    {
+      "name": "cargo",
+      "path": "<APRIL1_TOOLCHAIN>/bin/cargo",
+      "sha256": "bbe8ae9a051a57ae635df047963403a0e3205c986d91aea1c4506956cc6da3cd",
+      "exit": 0,
+      "stdout": "cargo 1.96.0-nightly (888f67534 2026-03-30)\n",
+      "stderr": ""
+    }
+  ]
+}
