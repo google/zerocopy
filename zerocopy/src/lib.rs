@@ -5934,6 +5934,10 @@ pub use zerocopy_derive::IntoBytes;
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(IntoBytes)]` to `{Self}`")
 )]
+/// ```aeneas
+/// invariant into_bytes_initialized for self =>
+///   AeneasSpecs.RustModel.initializedRepresentation Self
+/// ```
 pub unsafe trait IntoBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `IntoBytes` from being object safe. Note that other `IntoBytes` methods

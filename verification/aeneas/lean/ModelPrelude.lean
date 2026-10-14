@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import RustModel
+public import RustAeneas.Storage
 public import Zerocopy.Types
 @[expose] public section
 
@@ -30,7 +31,8 @@ namespace AeneasSpecs
 -- variance, drop checking, or pointer provenance.
 @[reducible] instance modelPhantomData (T : Type) :
     RustModel (Zerocopy.core.marker.PhantomData T) :=
-  { Model := Unit, «decode» := fun _ => some () }
+  { Model := Unit, «decode» := fun _ => some (),
+    representation := some (Rust.Storage.emptyDecoder Zerocopy.core.marker.PhantomData.mk) }
 
 /-- This check fails if the pinned extracted carrier gains runtime fields. -/
 theorem phantomData_eq_mk (T : Type) (raw : Zerocopy.core.marker.PhantomData T) :
@@ -38,6 +40,58 @@ theorem phantomData_eq_mk (T : Type) (raw : Zerocopy.core.marker.PhantomData T) 
   cases raw
   rfl
 
+
+-- A wrapper has exactly its payload's accepted bytes. Missing child storage
+-- semantics stay missing; a mathematical decoder never supplies those bytes.
+def wrapperRepresentation {A B : Type} [ma : RustModel A] (wrap : A → B) :
+    Option (Rust.Storage.BitDecoder B) := ma.representation.map (·.map wrap)
+
+theorem initializedWrapperRepresentation {A B : Type} [ma : RustModel A]
+    (wrap : A → B) (child : RustModel.initializedRepresentation A) :
+    match wrapperRepresentation wrap with
+    | none => False
+    | some decoder => decoder.Initialized := by
+  cases h : ma.representation with
+  | none => simp [RustModel.initializedRepresentation, h] at child
+  | some decoder =>
+    simp only [RustModel.initializedRepresentation, h] at child
+    simp only [wrapperRepresentation, h, Option.map_some]
+    exact Rust.Storage.BitDecoder.map_initialized decoder wrap child
+
+-- These providers interpret stored values only. They do not model mutation,
+-- aliasing, synchronization, or destruction of the standard-library wrappers.
+@[reducible] instance modelManuallyDrop (T : Type) [ma : RustModel T] :
+    RustModel (core.mem.manually_drop.ManuallyDrop T) where
+  Model := ma.Model
+  decode raw := ma.decode raw.value
+  representation := wrapperRepresentation core.mem.manually_drop.ManuallyDrop.mk
+
+@[reducible] instance modelCell (T : Type) [ma : RustModel T] :
+    RustModel (core.cell.Cell T) where
+  Model := ma.Model
+  decode raw := ma.decode raw.value
+  representation := wrapperRepresentation core.cell.Cell.mk
+
+@[reducible] instance modelUnsafeCell (T : Type) [ma : RustModel T] :
+    RustModel (core.cell.UnsafeCell T) where
+  Model := ma.Model
+  decode raw := ma.decode raw.value
+  representation := wrapperRepresentation core.cell.UnsafeCell.mk
+
+theorem initializedManuallyDrop (T : Type) [ma : RustModel T]
+    (child : RustModel.initializedRepresentation T) :
+    RustModel.initializedRepresentation (core.mem.manually_drop.ManuallyDrop T) :=
+  initializedWrapperRepresentation core.mem.manually_drop.ManuallyDrop.mk child
+
+theorem initializedCell (T : Type) [ma : RustModel T]
+    (child : RustModel.initializedRepresentation T) :
+    RustModel.initializedRepresentation (core.cell.Cell T) :=
+  initializedWrapperRepresentation core.cell.Cell.mk child
+
+theorem initializedUnsafeCell (T : Type) [ma : RustModel T]
+    (child : RustModel.initializedRepresentation T) :
+    RustModel.initializedRepresentation (core.cell.UnsafeCell T) :=
+  initializedWrapperRepresentation core.cell.UnsafeCell.mk child
 
 -- The bounds are proofs stored beside the value. They contribute constraints
 -- to the mathematical type without another runtime field or admission test.
@@ -82,20 +136,103 @@ def signedWord (x : IScalar ty) : SignedWord ty :=
   ⟨x.val, by simpa only [IScalar.min] using x.hmin,
     by have := x.hmax; simp only [IScalar.max]; omega⟩
 
-@[reducible] instance modelUScalar (ty : UScalarTy) : RustModel (UScalar ty) :=
-  ⟨UnsignedWord ty, fun x => some (unsignedWord x)⟩
-@[reducible] instance modelIScalar (ty : IScalarTy) : RustModel (IScalar ty) :=
-  { Model := SignedWord ty, «decode» := fun x => some (signedWord x) }
+/-- Admission currently checks a little-endian 64-bit extraction target.
+The shared initialization theorems are independent of this byte order. -/
+def uScalarBitDecoder (ty : UScalarTy) : Rust.Storage.BitDecoder (UScalar ty) :=
+  Rust.Storage.AeneasAdapter.unsignedDecoder ty .little
+
+def iScalarBitDecoder (ty : IScalarTy) : Rust.Storage.BitDecoder (IScalar ty) :=
+  Rust.Storage.AeneasAdapter.signedDecoder ty .little
+
+abbrev u8BitDecoder := uScalarBitDecoder .U8
+
+@[reducible] instance modelUScalar (ty : UScalarTy) : RustModel (UScalar ty) where
+  Model := UnsignedWord ty
+  decode x := some (unsignedWord x)
+  representation := some (uScalarBitDecoder ty)
+@[reducible] instance modelIScalar (ty : IScalarTy) : RustModel (IScalar ty) where
+  Model := SignedWord ty
+  decode x := some (signedWord x)
+  representation := some (iScalarBitDecoder ty)
+
+/-- Char stores a Unicode scalar value in four bytes. Filtering the complete
+integer decoder rejects surrogates and out-of-range code points without ever
+turning an uninitialized representation into a character. -/
+def charBitDecoder : Rust.Storage.BitDecoder Char :=
+  (Rust.Storage.integerDecoder 4 .little).filterMap fun word =>
+    let value := UInt32.ofNat word.toNat
+    if h : isValidChar value then some ⟨value, h⟩ else none
+
+@[reducible] instance modelChar : RustModel Char where
+  Model := Char
+  decode x := some x
+  representation := some charBitDecoder
+
+def nonzeroUScalarBitDecoder (ty : UScalarTy) (Inner : Type) :
+    Rust.Storage.BitDecoder (core.num.nonzero.NonZero (UScalar ty) Inner) :=
+  (uScalarBitDecoder ty).filterMap fun word =>
+    if word.val = 0 then none else some ⟨word⟩
+
+def nonzeroIScalarBitDecoder (ty : IScalarTy) (Inner : Type) :
+    Rust.Storage.BitDecoder (core.num.nonzero.NonZero (IScalar ty) Inner) :=
+  (iScalarBitDecoder ty).filterMap fun word =>
+    if word.val = 0 then none else some ⟨word⟩
 
 @[reducible] instance modelNonZeroUScalar (ty : UScalarTy) (Inner : Type) :
     RustModel (core.num.nonzero.NonZero (UScalar ty) Inner) where
   Model := NonZeroUnsignedWord ty
   decode raw := if h : 0 < raw.val.val then some ⟨unsignedWord raw.val, h⟩ else none
+  representation := some (nonzeroUScalarBitDecoder ty Inner)
 
 @[reducible] instance modelNonZeroIScalar (ty : IScalarTy) (Inner : Type) :
     RustModel (core.num.nonzero.NonZero (IScalar ty) Inner) where
   Model := NonZeroSignedWord ty
   decode raw := if h : raw.val.val ≠ 0 then some ⟨signedWord raw.val, h⟩ else none
+  representation := some (nonzeroIScalarBitDecoder ty Inner)
+
+-- Rust guarantees the zero niche for these particular standard-library
+-- wrappers. Map the full integer decoder: a zero is a successfully decoded
+-- Rust None, whereas an earlier byte failure remains a decoding failure.
+-- A generic Option<T> has no physical decoder inferred from its payload.
+@[reducible] instance (priority := 1001) modelOptionNonZeroUScalar
+    (ty : UScalarTy) (Inner : Type) :
+    RustModel (Option (core.num.nonzero.NonZero (UScalar ty) Inner)) where
+  Model := Option (NonZeroUnsignedWord ty)
+  decode := (modelOption (ma := modelNonZeroUScalar ty Inner)).decode
+  representation := some ((uScalarBitDecoder ty).map fun word =>
+    if word.val = 0 then none else some ⟨word⟩)
+
+@[reducible] instance (priority := 1001) modelOptionNonZeroIScalar
+    (ty : IScalarTy) (Inner : Type) :
+    RustModel (Option (core.num.nonzero.NonZero (IScalar ty) Inner)) where
+  Model := Option (NonZeroSignedWord ty)
+  decode := (modelOption (ma := modelNonZeroIScalar ty Inner)).decode
+  representation := some ((iScalarBitDecoder ty).map fun word =>
+    if word.val = 0 then none else some ⟨word⟩)
+
+theorem initializedUScalar (ty : UScalarTy) :
+    RustModel.initializedRepresentation (UScalar ty) :=
+  Rust.Storage.AeneasAdapter.unsignedDecoder_initialized ty .little
+
+theorem initializedIScalar (ty : IScalarTy) :
+    RustModel.initializedRepresentation (IScalar ty) :=
+  Rust.Storage.AeneasAdapter.signedDecoder_initialized ty .little
+
+theorem initializedNonZeroUScalar (ty : UScalarTy) (Inner : Type) :
+    RustModel.initializedRepresentation (core.num.nonzero.NonZero (UScalar ty) Inner) :=
+  Rust.Storage.BitDecoder.filterMap_initialized _ _ (initializedUScalar ty)
+
+theorem initializedNonZeroIScalar (ty : IScalarTy) (Inner : Type) :
+    RustModel.initializedRepresentation (core.num.nonzero.NonZero (IScalar ty) Inner) :=
+  Rust.Storage.BitDecoder.filterMap_initialized _ _ (initializedIScalar ty)
+
+theorem initializedOptionNonZeroUScalar (ty : UScalarTy) (Inner : Type) :
+    RustModel.initializedRepresentation (Option (core.num.nonzero.NonZero (UScalar ty) Inner)) :=
+  Rust.Storage.BitDecoder.map_initialized _ _ (initializedUScalar ty)
+
+theorem initializedOptionNonZeroIScalar (ty : IScalarTy) (Inner : Type) :
+    RustModel.initializedRepresentation (Option (core.num.nonzero.NonZero (IScalar ty) Inner)) :=
+  Rust.Storage.BitDecoder.map_initialized _ _ (initializedIScalar ty)
 
 abbrev NonZeroUsizeValue := NonZeroUnsignedWord .Usize
 abbrev modelNonZeroUsize := modelNonZeroUScalar .Usize core.num.niche_types.NonZeroUsizeInner
