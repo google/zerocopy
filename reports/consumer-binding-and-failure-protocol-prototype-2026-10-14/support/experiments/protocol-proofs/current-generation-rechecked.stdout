@@ -1,0 +1,3 @@
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨rfl, posthoc_sound capturedSource proposedIR acceptance⟩
+'consumerAccepted' depends on axioms: [propext]

@@ -1,0 +1,1 @@
+arch: posix_spawnp: /usr/bin/true: Bad CPU type in executable

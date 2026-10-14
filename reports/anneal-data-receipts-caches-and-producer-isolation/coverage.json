@@ -1,0 +1,685 @@
+{
+  "interpretation": "Scoped evidence mapping only; not a blanket completion verdict. Parent final question audit resolves aggregate scope.",
+  "entries": [
+    {
+      "id": "T053",
+      "question": "Examine names, namespaces, definitions, universes, type classes, notation, and equivalent encodings.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fix the statement independently of the proposed proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Fix the statement independently of the proposed proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T054",
+      "question": "Compare name-based allowlists with declaration identity, proposition identity, and dependency-closure checks.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fix the statement independently of the proposed proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Fix the statement independently of the proposed proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T055",
+      "question": "Study how the expected proposition is selected, generated, or certified independently of the proposed solution.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fix the statement independently of the proposed proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Fix the statement independently of the proposed proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T062",
+      "question": "Determine how Anneal binds proofs to the requested Rust claim without trusting producer-selected roots or goals.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fix the statement independently of the proposed proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Fix the statement independently of the proposed proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T091",
+      "question": "Investigate checking a theorem about fixed Rust semantics and an exact encoded program instead of trusting generated specifications.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fix the statement independently of the proposed proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Fix the statement independently of the proposed proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T051",
+      "question": "Study what hashes and signatures establish and why authenticated incorrect evidence still requires checking.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Authentication and provenance identify bytes without proving their meaning"
+        }
+      ],
+      "answered_research_scope": [
+        "Authentication and provenance identify bytes without proving their meaning; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T052",
+      "question": "Distinguish identifying the actual producer and inputs from proving its transformation faithful.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Authentication and provenance identify bytes without proving their meaning"
+        }
+      ],
+      "answered_research_scope": [
+        "Authentication and provenance identify bytes without proving their meaning; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P116",
+      "question": "Establish how the checker identifies exact source, intermediates, models, and configuration; correspondence about different artifacts provides no assurance.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Authentication and provenance identify bytes without proving their meaning"
+        }
+      ],
+      "answered_research_scope": [
+        "Authentication and provenance identify bytes without proving their meaning; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T096",
+      "question": "Bind proof terms, definitions, interfaces, and cached imports to the same semantic subject.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T097",
+      "question": "Compare opaque in-process values with durable certificates; serialization must preserve or re-establish their meaning.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T099",
+      "question": "Define a replayable package identifying the exact claim, assumptions, semantic evidence, and checking policy.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P115",
+      "question": "Compare proof terms, traces, AST bundles, and relation witnesses; the format determines checker complexity, portability, and evolution costs.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P118",
+      "question": "Identify the definitions and lemmas used by a certificate; checking against substituted or incompatible semantics changes its meaning.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P119",
+      "question": "Audit certificates, imported declarations, and computation mechanisms; a kernel-accepted result may still depend on assumptions Anneal intends to eliminate.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Treat a receipt as evidence that must pass the current applicability rule"
+        }
+      ],
+      "answered_research_scope": [
+        "Treat a receipt as evidence that must pass the current applicability rule; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T041",
+      "question": "Study malformed encodings, duplicate identifiers, references, canonicalization, integer overflow, and verified parsing.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fresh reconstruction changes the imported-artifact boundary"
+        }
+      ],
+      "answered_research_scope": [
+        "Fresh reconstruction changes the imported-artifact boundary; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T042",
+      "question": "Compare direct compiled-artifact loading with validated, data-only exports and fresh reconstruction.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fresh reconstruction changes the imported-artifact boundary"
+        }
+      ],
+      "answered_research_scope": [
+        "Fresh reconstruction changes the imported-artifact boundary; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T098",
+      "question": "Design a checker input format that avoids loading tactics, native plugins, or arbitrary build code.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fresh reconstruction changes the imported-artifact boundary"
+        }
+      ],
+      "answered_research_scope": [
+        "Fresh reconstruction changes the imported-artifact boundary; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P117",
+      "question": "Preserve the same formal program across files and process boundaries; printing and parsing can otherwise reintroduce trusted translations.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Fresh reconstruction changes the imported-artifact boundary"
+        }
+      ],
+      "answered_research_scope": [
+        "Fresh reconstruction changes the imported-artifact boundary; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T058",
+      "question": "Study independently checked dependency closure, cycles, summaries, missing nodes, and certificate compression.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Dependency closure and compression need a semantic checking contract"
+        }
+      ],
+      "answered_research_scope": [
+        "Dependency closure and compression need a semantic checking contract; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P123",
+      "question": "Compare DAGs, schemas, abbreviations, and reconstruction; reduced storage must not require trusting a semantic decompressor.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Dependency closure and compression need a semantic checking contract"
+        }
+      ],
+      "answered_research_scope": [
+        "Dependency closure and compression need a semantic checking contract; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "R086",
+      "question": "Determine when source, semantic models, imported proofs, contracts, or tool changes invalidate accepted evidence; extend existing project-service research.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Cache equality is neither an invalidation policy nor an upgrade proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Cache equality is neither an invalidation policy nor an upgrade proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T056",
+      "question": "Design versioning and unknown-constructor behavior that preserve soundness when formats evolve.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Cache equality is neither an invalidation policy nor an upgrade proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Cache equality is neither an invalidation policy nor an upgrade proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T057",
+      "question": "Determine when earlier evidence remains valid across changed programs, definitions, tools, or policies.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Cache equality is neither an invalidation policy nor an upgrade proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Cache equality is neither an invalidation policy nor an upgrade proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T060",
+      "question": "Investigate compatibility evidence, retired rules, changed assumptions, and avoiding silent reinterpretation of old certificates.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Cache equality is neither an invalidation policy nor an upgrade proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Cache equality is neither an invalidation policy nor an upgrade proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P124",
+      "question": "Define safe reuse after source, configuration, library, or semantics changes; stale certificates must never validate changed subjects.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Cache equality is neither an invalidation policy nor an upgrade proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Cache equality is neither an invalidation policy nor an upgrade proof; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T046",
+      "question": "Study architectures where producer execution cannot modify the checker, challenge, policy, or accepted artifacts.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "A native control protects the consumer challenge from one producer process"
+        }
+      ],
+      "answered_research_scope": [
+        "A native control protects the consumer challenge from one producer process; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T049",
+      "question": "Determine how execution containment preserves the checking boundary without itself proving the submitted claim.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "A native control protects the consumer challenge from one producer process"
+        }
+      ],
+      "answered_research_scope": [
+        "A native control protects the consumer challenge from one producer process; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T106",
+      "question": "Test whether proof generation can alter the challenge, policy, checker inputs, or final accepted-result record.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "A native control protects the consumer challenge from one producer process"
+        }
+      ],
+      "answered_research_scope": [
+        "A native control protects the consumer challenge from one producer process; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T059",
+      "question": "Examine timeouts, crashes, truncated streams, skipped stages, and the construction of accepted results.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "T100",
+      "question": "Ensure CI, batch, editors, and agents use the same rules while incomplete interactive information remains separately identified.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P121",
+      "question": "Extend correctness from the logical checking function to its executable wrapper; small logical kernels can still have substantial trusted surroundings.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P122",
+      "question": "Check function coverage, dependency closure, property selection, and certificate composition; successful individual checks must justify the exact reported claim.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P125",
+      "question": "Measure both costs on realistic programs; a tiny checker may still be unusable if certificates are enormous or expensive to produce.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    },
+    {
+      "id": "P126",
+      "question": "Specify rejection on unsupported cases, malformed evidence, timeouts, and producer failure; incomplete proof production must preserve Anneal\u2019s fail-closed behavior.",
+      "scope": "bounded-evidence",
+      "sections": [
+        {
+          "package": "anneal-data-receipts-caches-and-producer-isolation",
+          "section": "Verdicts and shared frontends should consume one complete acceptance result"
+        }
+      ],
+      "answered_research_scope": [
+        "Verdicts and shared frontends should consume one complete acceptance result; see exact subject and limits in report."
+      ],
+      "remaining_research_scope": [
+        "A concrete full implementation, representative scale or broader environment cannot be inferred from this bounded interface/control; aggregate with the other scoped reports."
+      ],
+      "future_engineering": [
+        "Implement the chosen Anneal acceptance interface and discharge its source/model obligations."
+      ]
+    }
+  ]
+}

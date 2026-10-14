@@ -1,0 +1,1 @@
+{"bool":256,"pair":65536,"controls":18,"out_of_domain":2,"all_match":true,"layout":[4,8,4,4,5,1,1],"imports":[],"wasm_bytes":2141436,"case_runtime_ms":25.071583000000004,"node":"v24.21.0","v8":"13.6.233.17-node.53"}

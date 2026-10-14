@@ -1,0 +1,16 @@
+[
+  {
+    "fixture": "BorrowCertificate.lean",
+    "expected_exit": 0,
+    "exit": 0,
+    "seconds": 5.0906404169999995,
+    "sha256": "9376f28eeb1ee674ec914b088031cbeb79fedd342e2005602bb7036aee127617"
+  },
+  {
+    "fixture": "BorrowWrongField.lean",
+    "expected_exit": 1,
+    "exit": 1,
+    "seconds": 0.7015719580000006,
+    "sha256": "f91c79f7a3cad42d4f5f8250a6b1ee61aa072991e20b2413bf1ea7a80b6babe6"
+  }
+]

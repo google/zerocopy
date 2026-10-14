@@ -1,0 +1,6 @@
+wrong-ir-operation.lean:100:73: error: Tactic `decide` proved that the proposition
+  checkPosthoc capturedSource proposedIR = true
+is false
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨rfl, posthoc_sound capturedSource proposedIR acceptance⟩
+'consumerAccepted' depends on axioms: [propext, sorryAx]

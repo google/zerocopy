@@ -1,0 +1,79 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "owned_input_sha256": {
+    "lib.rs": "6ab127b1f61077235c7e981b39ce939715b21cddc77d396e6d41f7ce596e6ddc",
+    "main.rs": "627b7b5a41ee2db761c3696cce6a580d858178468ecbed64594336906b120c2a",
+    "check-wasm.mjs": "a1f429c760f542c7b6cfbfc16f9c8bb4ac5932966d61cc41ea3a8c87d4c301b7",
+    "run_cross.py": "44071c1412e13727370f6d24c0ad0fa6eebe4718512b4101ebdd15e778c6c55c"
+  },
+  "commands": [
+    {
+      "name": "rust-version",
+      "exit": 0,
+      "elapsed_ns": 32282916,
+      "argv": [
+        "rustc",
+        "-vV"
+      ]
+    },
+    {
+      "name": "node-version",
+      "exit": 0,
+      "elapsed_ns": 133020584,
+      "argv": [
+        "node",
+        "--version"
+      ]
+    },
+    {
+      "name": "native-build",
+      "exit": 0,
+      "elapsed_ns": 2318014209,
+      "argv": [
+        "cargo",
+        "build",
+        "--bin",
+        "anneal-cross-target",
+        "--offline",
+        "--quiet"
+      ]
+    },
+    {
+      "name": "native-check",
+      "exit": 0,
+      "elapsed_ns": 62323458,
+      "argv": [
+        "<private-extraction>/target/debug/anneal-cross-target"
+      ]
+    },
+    {
+      "name": "wasm-build",
+      "exit": 0,
+      "elapsed_ns": 1883900333,
+      "argv": [
+        "cargo",
+        "build",
+        "--lib",
+        "--target",
+        "wasm32-unknown-unknown",
+        "--offline",
+        "--quiet"
+      ]
+    },
+    {
+      "name": "wasm-check",
+      "exit": 0,
+      "elapsed_ns": 104113375,
+      "argv": [
+        "node",
+        "<support>/check-wasm.mjs",
+        "<private-extraction>/target/wasm32-unknown-unknown/debug/anneal_cross_target.wasm"
+      ]
+    }
+  ],
+  "wasm_sha256": "d6e33751c6fc6e37887eee4672a231907f296bf367ad360ee420baf5a64ab6a5",
+  "wasm_bytes": 2141436,
+  "scope": "Concrete Rust/compiler/runtime controls; no source semantic certificate or realistic Anneal proof-cost benchmark",
+  "network": "Cargo offline; official target component acquired separately"
+}

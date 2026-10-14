@@ -1,0 +1,125 @@
+{
+  "observed_at": "2026-10-14",
+  "artifacts": [
+    {
+      "path": "support/bootstrap.py",
+      "sha256": "9501e7fae1016721d6fc23fd5d1e43f7d7ee22aa686db24ae64bee168be13f1a",
+      "bytes": 7403
+    },
+    {
+      "path": "support/experiments/Arithmetic-constructive.lean",
+      "sha256": "e11e4bf7d40f93549210a95aa717ca2265fafa1d982d9aa0ba1f5c98b2855ed6",
+      "bytes": 4433
+    },
+    {
+      "path": "support/experiments/Arithmetic-constructive.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/Arithmetic-constructive.stdout",
+      "sha256": "7a2f3c85baa3b507f5672f4512360d073cde976e5a08974b6f9925e6f408d665",
+      "bytes": 526
+    },
+    {
+      "path": "support/experiments/Arithmetic-instrumented.lean",
+      "sha256": "e493d8cb4ab5b120205212ec9d668dd6924e4353c8e869d12d796c77babc1c14",
+      "bytes": 10659
+    },
+    {
+      "path": "support/experiments/Arithmetic-instrumented.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/Arithmetic-instrumented.stdout",
+      "sha256": "e7bc0828d91c88f618acf0f7c2933fff9b70b7f6f4b99fc8e16644f4b093fc18",
+      "bytes": 419
+    },
+    {
+      "path": "support/experiments/Arithmetic-posthoc.lean",
+      "sha256": "5e330ad6d5b977d0faa90b0157bf9830c0393cf822107f634f879a32911af8b0",
+      "bytes": 4442
+    },
+    {
+      "path": "support/experiments/Arithmetic-posthoc.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/Arithmetic-posthoc.stdout",
+      "sha256": "0aceed8c37b8aa3f8f5a643ac2b6b8c3f276f6a8ef7e22b1d0b5cd327d836c1f",
+      "bytes": 414
+    },
+    {
+      "path": "support/experiments/ArithmeticModel.lean",
+      "sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3",
+      "bytes": 3503
+    },
+    {
+      "path": "support/experiments/arithmetic_compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/arithmetic_compile.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/arithmetic_native.rs",
+      "sha256": "85be1ee8955b3252c2dae634f93a9ad6aca3da9ecd01c6a48503e3662704da18",
+      "bytes": 217
+    },
+    {
+      "path": "support/experiments/arithmetic_native.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/arithmetic_native.stdout",
+      "sha256": "96a8e71f38840b90d5c4abb70c0a58c50d21ccc3970b859ba8c87901553e7c08",
+      "bytes": 3656
+    },
+    {
+      "path": "support/experiments/baseline-candidate.json",
+      "sha256": "f2a27a85e43f5323662b8a01ba2a9cf3cbbfc66c4645c0bcca9648fac887eca7",
+      "bytes": 15694
+    },
+    {
+      "path": "support/experiments/challenge.json",
+      "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c",
+      "bytes": 1486
+    },
+    {
+      "path": "support/experiments/execution-results.json",
+      "sha256": "f77fb4bcb87728fac171e70a46b0a3892267a520e92bb3c634820692bc559e0e",
+      "bytes": 3028
+    },
+    {
+      "path": "support/experiments/instrumented.rs",
+      "sha256": "3145040e3fe100d499e37f76fa2b8601a197d4c28a3d99ccd3259c484fefb475",
+      "bytes": 278
+    },
+    {
+      "path": "support/experiments/native-observation.json",
+      "sha256": "2fa70f1313f7aec74ad3b89a8e808390b1dc0561010a4f6606c0a7f9b99a17e8",
+      "bytes": 554
+    },
+    {
+      "path": "support/experiments/native-rows.json",
+      "sha256": "eed684203e99c027130be9ad44c9feb9f883c54a90dd2cca65ca671a2a32fd2e",
+      "bytes": 10827
+    },
+    {
+      "path": "support/experiments/subject.rs",
+      "sha256": "e3a37308bc49b9ed0308dbcbc6e63890b74a22de29abdf7030673b7ad6c642e8",
+      "bytes": 151
+    },
+    {
+      "path": "support/experiments/toolchain-identities.json",
+      "sha256": "ca38be89f25f1c518df71d76a300e781cbf5fe7864df95bf5e131e462c5b24de",
+      "bytes": 687
+    }
+  ]
+}

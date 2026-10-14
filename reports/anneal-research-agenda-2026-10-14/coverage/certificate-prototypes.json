@@ -1,0 +1,404 @@
+{
+  "entries": [
+    {
+      "id": "P127",
+      "scope": "partial",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Actual source/hash/domain binding, all-input captured-model correspondence and native exhaustive control; minimum byte semantics and reusable proof endpoints."
+      ],
+      "unanswered_research_scope": [
+        "A proved Rust capture/import frontier and correspondence for real pre-optimization artifacts."
+      ],
+      "question": "Certify a small pre-optimization fragment end to end; this reveals the minimum semantics, artifact binding, and reusable lemmas required.",
+      "title": "A minimal Rust-to-model certificate prototype"
+    },
+    {
+      "id": "P132",
+      "scope": "full",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Three implemented routes on the SAME evaluator equality/domain; theorem strength, visible maintenance obligations, exact local fixture sizes and sampled times."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Implement the same task three ways; compare theorem strength, engineering effort, maintenance, and performance.",
+      "title": "Instrumented, post-hoc, and constructive translation comparison"
+    },
+    {
+      "id": "T112",
+      "scope": "partial",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99",
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Proved Boolean checker endpoint, kernel replay, native checker observation and exact wrapper/runtime trust separation."
+      ],
+      "unanswered_research_scope": [
+        "Verified executable/binary path and its compiler/runtime theorem endpoint."
+      ],
+      "question": "Compare a proved executable validator with replay through a general-purpose proof kernel.",
+      "title": "A small verified Anneal certificate checker"
+    },
+    {
+      "id": "T113",
+      "scope": "partial",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99",
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99",
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Concrete correspondence witness interfaces and composition with generic model-level soundness/translation theorems."
+      ],
+      "unanswered_research_scope": [
+        "Integration with existing Anneal/Charon/Aeneas stages and their adequacy/dependency closure."
+      ],
+      "question": "Assess extending the existing pipeline with checked correspondence witnesses and a composition theorem.",
+      "title": "Pass-by-pass certified extraction"
+    },
+    {
+      "id": "T114",
+      "scope": "full",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Generic model-level constructive translator correctness compared with per-run finite semantic derivation replay; external Python producer remains untrusted behind its output witness."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Compare verifying the executor implementation with replaying per-run semantic derivations.",
+      "title": "Certified symbolic execution"
+    },
+    {
+      "id": "P136",
+      "scope": "partial",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99",
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Actual kernel-versus-native observation/timing and explicit trusted frontend/compiler/wrapper/import frontiers."
+      ],
+      "unanswered_research_scope": [
+        "No proof-produced executable checker binary or verified compiler was exercised; no full trust-reduction comparison."
+      ],
+      "question": "Compare kernel checking with a proof-produced executable checker; measure actual trust reduction alongside performance and integration costs.",
+      "title": "A generated checker implementation prototype"
+    },
+    {
+      "id": "P129",
+      "scope": "partial",
+      "packages": [
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Representative root/split/update/restore field and length-two slice certificates, frame proofs, wrong-field negative, exhaustive native fixed-delta controls."
+      ],
+      "unanswered_research_scope": [
+        "Adequacy from actual Rust references/capture to the modeled authority and functional state."
+      ],
+      "question": "Certify one representative borrow/update transformation; this tests a central semantic feature before extending to raw memory.",
+      "title": "An Aeneas borrow-translation prototype"
+    },
+    {
+      "id": "R063",
+      "scope": "partial",
+      "packages": [
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Field projection/reborrow bookkeeping, reconstruction of the unmodified field, and abstract ancestor/root restoration."
+      ],
+      "unanswered_research_scope": [
+        "Escaping references, lifetime semantics, richer reborrows and global aliasing interpretation."
+      ],
+      "question": "Model field projections, reborrows, reference reconstruction, escaping references, and suspended ancestor capabilities.",
+      "title": "Borrow-preserving pointer projection"
+    },
+    {
+      "id": "R064",
+      "scope": "partial",
+      "packages": [
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Two-cell slice bounds, distinct-index frame preservation, native valid/out-of-bounds controls."
+      ],
+      "unanswered_research_scope": [
+        "Arbitrary subobjects/slice lengths, overlapping footprints, ZSTs and physical permission-separation adequacy."
+      ],
+      "question": "Cover slices, subobjects, overlapping footprints, ZSTs, and the connection between numerical non-overlap and permission separation.",
+      "title": "Splitting and framing memory ranges"
+    },
+    {
+      "id": "R096",
+      "scope": "partial",
+      "packages": [
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Modeled splitting/projection/reconstruction with root-entry and restoration premises; wrong-field counterexample."
+      ],
+      "unanswered_research_scope": [
+        "Casts, actual reference reconstruction, lifetime-extension and aliasing counterexamples."
+      ],
+      "question": "Verify construction, projection, splitting, casting, and reference reconstruction; include lifetime-extension and aliasing counterexamples.",
+      "title": "Pointer-capability case study"
+    },
+    {
+      "id": "T076",
+      "scope": "partial",
+      "packages": [
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Explicit root-entry/selected-child/restored-root transition and preserved functional frame."
+      ],
+      "unanswered_research_scope": [
+        "Actual spatial-memory resource interpretation and source-reference authority adequacy."
+      ],
+      "question": "Preserve access authority and ownership restoration across functionalized references and spatial memory.",
+      "title": "Borrow and lifetime correspondence certificates"
+    },
+    {
+      "id": "T101",
+      "scope": "full",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Actual source/program substitution, weakened property and semantic-predicate substitutions reject under independently selected fixed challenge/model."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Substitute another program, weaken the goal, or redefine a semantic predicate as `True`.",
+      "title": "Wrong-subject and changed-goal experiments"
+    },
+    {
+      "id": "T102",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14",
+        "field-slice-borrow-frame-prototype-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Missing concrete callee inventory and modified model snapshot reject; modeled permission guard remains fixed by selected model hash."
+      ],
+      "unanswered_research_scope": [
+        "Unsafe guards, destructors, cleanup actions, generated dependency closure and their actual pipeline witnesses."
+      ],
+      "question": "Remove an unsafe guard, destructor, cleanup action, generated operation, or dependency from the proposed evidence.",
+      "title": "Omitted-behavior experiments"
+    },
+    {
+      "id": "T103",
+      "scope": "full",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Conflicting identifiers, truncated JSON, invalid opcode/reference, literal range and structurally incomplete exports reject at the prototype's exact schema."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Challenge parsers and loaders with conflicting identifiers, invalid references, truncated artifacts, and structurally invalid exports.",
+      "title": "Malformed-certificate experiments"
+    },
+    {
+      "id": "T104",
+      "scope": "full",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Corrupted model plus weakened goal and actual substituted consumer-model snapshot reject under fixed independent challenge/model identity."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Corrupt both the proposed model and its generated expected obligation to test whether agreement is mistaken for correspondence.",
+      "title": "Common-generator agreement experiments"
+    },
+    {
+      "id": "T105",
+      "scope": "full",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Actual same-named claims with direct/imported hidden axioms and native assumptions pass kernel but fail policy; actual dependencies retained."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Introduce changed axioms, native-evaluation assumptions, misleading names, and indirect imported dependencies.",
+      "title": "Hidden-assumption experiments"
+    },
+    {
+      "id": "T106",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Changed challenge/policy/model/binary fields and injected accepted-record/proof-code fields reject in data-only protocol."
+      ],
+      "unanswered_research_scope": [
+        "Adversarial same-user OS writes, checker/runtime replacement and authenticated final-record isolation."
+      ],
+      "question": "Test whether proof generation can alter the challenge, policy, checker inputs, or final accepted-result record.",
+      "title": "Producer-boundary experiments"
+    },
+    {
+      "id": "T107",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14",
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Empty/restricted domain, missing/duplicate native input cases and complete Fin256 logical-domain controls."
+      ],
+      "unanswered_research_scope": [
+        "Arbitrary impossible precondition/empty ghost-type encodings and richer decoder adequacy."
+      ],
+      "question": "Use impossible preconditions, empty ghost types, restrictive decoders, or omitted input cases.",
+      "title": "Vacuity experiments"
+    },
+    {
+      "id": "T108",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Concrete u8 scale5 instance/callee identity substitution reject."
+      ],
+      "unanswered_research_scope": [
+        "Actual Rust trait dictionaries, associated types, monomorphization and dynamic dispatch proof closure."
+      ],
+      "question": "Substitute trait dictionaries, associated types, monomorphizations, or dynamic implementations without matching evidence.",
+      "title": "Generic and dispatch experiments"
+    },
+    {
+      "id": "T109",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Target/flags/source generation/semantics/model substitutions, stale cached candidate data rejection, current-generation kernel rechecking."
+      ],
+      "unanswered_research_scope": [
+        "Accepted-proof cache or stale imported module reuse, feature-dependent build closure, and full dependency cache protocol."
+      ],
+      "question": "Mix targets, features, source generations, semantic definitions, and cached proofs.",
+      "title": "Configuration and freshness experiments"
+    },
+    {
+      "id": "T110",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Real exit7 producer and timeout cancellation, missing/partial stages, generation mismatch and rechecking verdicts."
+      ],
+      "unanswered_research_scope": [
+        "Concurrent generations, cleanup/recovery, partial publication, atomic result store and scheduler state semantics."
+      ],
+      "question": "Inject cancellation, crashes, partial publication, competing generations, and missing stages into the acceptance path.",
+      "title": "Parallel and failure experiments"
+    },
+    {
+      "id": "P134",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Actual prototype binding mutations of program/property/target/config/concrete instance reject; semantic IR mutation fails kernel."
+      ],
+      "unanswered_research_scope": [
+        "Arbitrary implementation/contract/generic-instance dependency closures beyond the fixed source grammar."
+      ],
+      "question": "Replace implementations, contracts, targets, and generic instantiations; the checker should reject every semantically mismatched combination.",
+      "title": "Modular certificate substitution experiments"
+    },
+    {
+      "id": "P137",
+      "scope": "partial",
+      "packages": [
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "assigned",
+      "answered_research_scope": [
+        "Wrong IR endpoint/native row, missing callee/stage, weakened property, hidden/native assumptions and stale cached data tested."
+      ],
+      "unanswered_research_scope": [
+        "Full original-Rust acceptance pipeline, cleanup/dependency/DAG completeness and proof-cache publication."
+      ],
+      "question": "Corrupt endpoints, omit callees, weaken assertions, insert assumptions, and reuse stale evidence; this tests the full acceptance path rather than only proof syntax.",
+      "title": "Certificate mutation testing"
+    },
+    {
+      "id": "T111",
+      "scope": "partial",
+      "packages": [
+        "safe-byte-correspondence-three-routes-lean4-31-rust1-99",
+        "consumer-binding-and-failure-protocol-prototype-2026-10-14"
+      ],
+      "assignment": "supplemental",
+      "answered_research_scope": [
+        "Supplemental evidence: fixed semantic encoding with generated consumer proof declarations and independently bound certificate inputs."
+      ],
+      "unanswered_research_scope": [
+        "A general untrusted producer-proof-object API and importer assurance."
+      ],
+      "question": "Assess a fixed semantic encoding with producer-generated proof terms and independently bound inputs.",
+      "title": "Lean checking of complete Rust-level claims"
+    }
+  ],
+  "definition_of_full": "Answered version/frontier-scoped research experiment, pending parent review; no global tracking mutation or general Rust adequacy claim.",
+  "definition_of_partial": "Reusable answered subquestions are stated separately from genuine unexamined research scope.",
+  "future_implementation_obligations": [
+    "Use verified or explicitly admitted source capture for the actual exported stage; the current restricted Python/manual capture is an initial trusted frontier.",
+    "Integrate full dependency/instance closure, typed original-statement selection and source/model adequacy.",
+    "Verify or explicitly trust binding wrapper, kernel import/runtime artifacts and any compiled checker path.",
+    "Define actual scheduler/cache/publication state semantics and apply OS isolation if executing adversarial producer code."
+  ],
+  "observed_at": "2026-10-14",
+  "assigned_count": 23,
+  "supplemental_count": 1,
+  "package_count": 3,
+  "assigned_counts": {
+    "full": 6,
+    "partial": 17
+  },
+  "supplemental_counts": {
+    "full": 0,
+    "partial": 1
+  },
+  "tracking_mutation": "none; parent owns disposition/publication"
+}

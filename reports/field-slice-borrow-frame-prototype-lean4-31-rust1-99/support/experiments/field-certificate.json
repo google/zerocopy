@@ -1,0 +1,1 @@
+{"source_function":"update_field","representation":"two-byte-fields-v1","entry":"exclusive-root","instructions":["split",{"writeLeft":"delta"},"restore"],"frame":"right-unchanged","restoration":"exclusive-root"}

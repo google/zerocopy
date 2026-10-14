@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "anneal",
+    "prototype/correspondence",
+    "rust/byte-arithmetic",
+    "lean/kernel-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "artifact": "rustc executable",
+        "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+      }
+    },
+    {
+      "name": "Captured arithmetic prototype",
+      "identity": {
+        "artifact": "support/experiments/subject.rs",
+        "sha256": "e3a37308bc49b9ed0308dbcbc6e63890b74a22de29abdf7030673b7ad6c642e8",
+        "semantics": "wrapping-byte-tree-v1"
+      }
+    },
+    {
+      "name": "Arithmetic proof model",
+      "identity": {
+        "artifact": "support/experiments/ArithmeticModel.lean",
+        "sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

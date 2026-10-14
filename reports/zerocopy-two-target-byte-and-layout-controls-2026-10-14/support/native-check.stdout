@@ -1,0 +1,3 @@
+bool=256;pair=65536;controls=18;out_of_domain=2;all_match=true
+layout=[8, 16, 8, 8, 9, 1, 1]
+case_runtime_ns=7531209

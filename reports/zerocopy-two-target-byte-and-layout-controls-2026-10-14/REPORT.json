@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "anneal",
+    "rust/unsafe",
+    "zerocopy/validity",
+    "zerocopy/bytes",
+    "rust/layout",
+    "verification/cross-target",
+    "verification/costs"
+  ],
+  "subjects": [
+    {
+      "name": "Zerocopy selected library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+      }
+    },
+    {
+      "name": "Rust1.99.0",
+      "identity": {
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "host_target": "aarch64-apple-darwin",
+        "second_target": "wasm32-unknown-unknown"
+      }
+    },
+    {
+      "name": "Official Rust wasm32 standard library",
+      "identity": {
+        "version": "1.99.0",
+        "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+      }
+    },
+    {
+      "name": "Node/WebAssembly runtime",
+      "identity": {
+        "node": "24.21.0",
+        "v8": "13.6.233.17-node.53",
+        "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "arithmetic-challenge-v1",
+  "program": "subject",
+  "source_sha256": "e3a37308bc49b9ed0308dbcbc6e63890b74a22de29abdf7030673b7ad6c642e8",
+  "captured_source": {
+    "tag": "wrappingAdd",
+    "a": {
+      "tag": "wrappingMul",
+      "a": {
+        "tag": "wrappingAdd",
+        "a": {
+          "tag": "input"
+        },
+        "b": {
+          "tag": "literal",
+          "value": 3
+        }
+      },
+      "b": {
+        "tag": "literal",
+        "value": 5
+      }
+    },
+    "b": {
+      "tag": "literal",
+      "value": 7
+    }
+  },
+  "domain": {
+    "kind": "u8",
+    "bits": 8,
+    "inputs": 256
+  },
+  "property": "all-u8-source-ir-output-equality",
+  "semantics": "wrapping-byte-tree-v1",
+  "callee": {
+    "scale": {
+      "body": "wrapping_mul",
+      "constant": 5
+    }
+  },
+  "generic_instance": "concrete-u8-scale5",
+  "target": "aarch64-apple-darwin",
+  "rust_flags": [
+    "--edition=2024",
+    "-C",
+    "opt-level=0"
+  ],
+  "lean_revision": "68218e876d2a38b1985b8590fff244a83c321783",
+  "rust_revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+  "generation": "consumer-generation-001",
+  "policy": {
+    "allowed_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "producer_data_only": true,
+    "native_proof_assumptions": true
+  },
+  "model_sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3",
+  "lean_binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+}

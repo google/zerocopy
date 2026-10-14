@@ -1,0 +1,111 @@
+{
+  "scope": "Independent private-copy replay of exact fixtures; no semantic source-adequacy implication",
+  "records": [
+    {
+      "name": "Arithmetic-instrumented.lean",
+      "exit": 0,
+      "expected_exit": 0,
+      "matches": true,
+      "axioms_or_errors": [
+        "'consumerAccepted' depends on axioms: [propext]",
+        "'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]",
+        "'ArithmeticPrototype.construct_eval' depends on axioms: [propext]",
+        "'ArithmeticPrototype.instrumented_sound' depends on axioms: [propext]"
+      ]
+    },
+    {
+      "name": "Arithmetic-posthoc.lean",
+      "exit": 0,
+      "expected_exit": 0,
+      "matches": true,
+      "axioms_or_errors": [
+        "'consumerAccepted' depends on axioms: [propext]",
+        "'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]",
+        "'ArithmeticPrototype.construct_eval' depends on axioms: [propext]",
+        "'ArithmeticPrototype.instrumented_sound' depends on axioms: [propext]"
+      ]
+    },
+    {
+      "name": "Arithmetic-constructive.lean",
+      "exit": 0,
+      "expected_exit": 0,
+      "matches": true,
+      "axioms_or_errors": [
+        "'consumerAccepted' depends on axioms: [propext]",
+        "'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]",
+        "'ArithmeticPrototype.construct_eval' depends on axioms: [propext]",
+        "'ArithmeticPrototype.instrumented_sound' depends on axioms: [propext]"
+      ]
+    },
+    {
+      "name": "BorrowModel.lean",
+      "exit": 0,
+      "expected_exit": 0,
+      "matches": true,
+      "axioms_or_errors": [
+        "'BorrowPrototype.field_correspondence' does not depend on any axioms",
+        "'BorrowPrototype.field_frame' does not depend on any axioms",
+        "'BorrowPrototype.slice_correspondence' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_frame' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_oob' depends on axioms: [propext]",
+        "'BorrowPrototype.wrong_authority' does not depend on any axioms",
+        "'BorrowPrototype.fieldConsumerAccepted' does not depend on any axioms",
+        "'BorrowPrototype.sliceConsumerAccepted' depends on axioms: [propext]"
+      ]
+    },
+    {
+      "name": "BorrowCertificate.lean",
+      "exit": 0,
+      "expected_exit": 0,
+      "matches": true,
+      "axioms_or_errors": [
+        "'BorrowPrototype.field_correspondence' does not depend on any axioms",
+        "'BorrowPrototype.field_frame' does not depend on any axioms",
+        "'BorrowPrototype.slice_correspondence' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_frame' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_oob' depends on axioms: [propext]",
+        "'BorrowPrototype.wrong_authority' does not depend on any axioms",
+        "'BorrowPrototype.fieldConsumerAccepted' does not depend on any axioms",
+        "'BorrowPrototype.sliceConsumerAccepted' depends on axioms: [propext]",
+        "'providedCertificate' does not depend on any axioms"
+      ]
+    },
+    {
+      "name": "BorrowWrongField.lean",
+      "exit": 1,
+      "expected_exit": 1,
+      "matches": true,
+      "axioms_or_errors": [
+        "'BorrowPrototype.field_correspondence' does not depend on any axioms",
+        "'BorrowPrototype.field_frame' does not depend on any axioms",
+        "'BorrowPrototype.slice_correspondence' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_frame' depends on axioms: [propext]",
+        "'BorrowPrototype.slice_oob' depends on axioms: [propext]",
+        "'BorrowPrototype.wrong_authority' does not depend on any axioms",
+        "'BorrowPrototype.fieldConsumerAccepted' does not depend on any axioms",
+        "'BorrowPrototype.sliceConsumerAccepted' depends on axioms: [propext]",
+        "BorrowWrongField.lean:98:26: error: Tactic `decide` proved that the proposition"
+      ]
+    },
+    {
+      "name": "full-protocol-mutations",
+      "exit": 0,
+      "protocol_cases": 38,
+      "matches": true
+    },
+    {
+      "name": "arithmetic_native.rs",
+      "compile_exit": 0,
+      "exit": 0,
+      "stdout_lines": 256,
+      "stdout_tail": "42,186,193\n240,243,191,198\n241,244,196,203\n242,245,201,208\n243,246,206,213\n244,247,211,218\n245,248,216,223\n246,249,221,228\n247,250,226,233\n248,251,231,238\n249,252,236,243\n250,253,241,248\n251,254,246,253\n252,255,251,2\n253,0,0,7\n254,1,5,12\n255,2,10,17\n"
+    },
+    {
+      "name": "borrow_native.rs",
+      "compile_exit": 0,
+      "exit": 0,
+      "stdout_lines": 1,
+      "stdout_tail": "field_cases=65536 slice_cases=196608 fixed_delta=3 fnv64=f2ed1041187b6325\n"
+    }
+  ]
+}

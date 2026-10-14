@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "anneal",
+    "prototype/borrows",
+    "rust/fields",
+    "rust/slices",
+    "logic/frame-rules"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "artifact": "rustc executable",
+        "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+      }
+    },
+    {
+      "name": "Safe native borrow controls",
+      "identity": {
+        "artifact": "support/experiments/borrow_native.rs",
+        "sha256": "996f70f543d0bad10d09464b2f4f8df566bc556c8a8f0fdcc8c4b9f796f7797b"
+      }
+    },
+    {
+      "name": "Abstract borrow model and correspondence certificates",
+      "identity": {
+        "artifact": "support/experiments/BorrowModel.lean",
+        "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3",
+        "semantics": "two-byte-root-and-child-v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

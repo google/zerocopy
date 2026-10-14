@@ -1,0 +1,12 @@
+{
+  "scope": "Specific owned producer process, write protection, no confidentiality or deployed Anneal containment claim",
+  "exit": 0,
+  "stdout": "{\"producer_output\": true, \"protected_write\": {\"exception\": \"PermissionError\", \"errno\": 1}}\n",
+  "stderr": "",
+  "protected_input_unchanged": true,
+  "producer_subject_sha256": "dde625538af8a74923c91193c71bbfe91fd59a75636b9fe14f30408553767af8",
+  "profile_pattern": "allow default; deny network; deny file writes except task-owned producer output",
+  "sandbox_executable_sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8",
+  "python_executable_sha256": "7ebde552773a4045532637b114d645a313e045ac07b26f5e520bf039f1e34063",
+  "expected_security_result": "Successful producer write, denied challenge write, challenge unchanged"
+}

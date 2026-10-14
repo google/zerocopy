@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal",
+    "proof/statement-identity",
+    "proof/assumptions",
+    "certificate/receipts",
+    "certificate/applicability",
+    "certificate/dependency-closure",
+    "verification/producer-isolation"
+  ],
+  "subjects": [
+    {
+      "name": "Bounded macOS sandbox-exec fixture",
+      "identity": {
+        "host": "Darwin27-arm64",
+        "binary_sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8",
+        "producer_subject_sha256": "dde625538af8a74923c91193c71bbfe91fd59a75636b9fe14f30408553767af8"
+      }
+    },
+    {
+      "name": "Python3.14.8 executable",
+      "identity": {
+        "binary_sha256": "7ebde552773a4045532637b114d645a313e045ac07b26f5e520bf039f1e34063"
+      }
+    },
+    {
+      "name": "Lean4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Lean comparator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "Reviewed reference evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "serialization_cache_revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+        "kernel_comparison_revision": "fdd09d40aec6cf9466a56d67ce04cf52b00fda31"
+      }
+    },
+    {
+      "name": "Charon0.1.210 serialization",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

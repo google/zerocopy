@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal",
+    "prototype/acceptance",
+    "proof/assumptions",
+    "artifact/binding",
+    "artifact/cache",
+    "protocol/failure"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Consumer-owned prototype checker",
+      "identity": {
+        "artifact": "support/checker.py",
+        "sha256": "4bf4f2111b72a2ac0c1caaa1754b5edde9f00d8edf1ab97727b6cb0c4bf397db",
+        "protocol": "arithmetic-consumer-protocol-v1"
+      }
+    },
+    {
+      "name": "Selected consumer challenge",
+      "identity": {
+        "artifact": "support/experiments/challenge.json",
+        "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

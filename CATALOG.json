@@ -10479,6 +10479,63 @@
         "lean/lsp"
       ]
     },
+    "anneal-data-receipts-caches-and-producer-isolation": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8",
+            "host": "Darwin27-arm64",
+            "producer_subject_sha256": "dde625538af8a74923c91193c71bbfe91fd59a75636b9fe14f30408553767af8"
+          },
+          "name": "Bounded macOS sandbox-exec fixture"
+        },
+        {
+          "identity": {
+            "binary_sha256": "7ebde552773a4045532637b114d645a313e045ac07b26f5e520bf039f1e34063"
+          },
+          "name": "Python3.14.8 executable"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Lean comparator"
+        },
+        {
+          "identity": {
+            "kernel_comparison_revision": "fdd09d40aec6cf9466a56d67ce04cf52b00fda31",
+            "repository": "google/zerocopy",
+            "serialization_cache_revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188"
+          },
+          "name": "Reviewed reference evidence"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          },
+          "name": "Charon0.1.210 serialization"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "proof/statement-identity",
+        "proof/assumptions",
+        "certificate/receipts",
+        "certificate/applicability",
+        "certificate/dependency-closure",
+        "verification/producer-isolation"
+      ]
+    },
     "anneal-error-provenance-classification-nightly-2026-06-03-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -13458,6 +13515,43 @@
         "isabelle/llvm"
       ]
     },
+    "consumer-binding-and-failure-protocol-prototype-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "artifact": "support/checker.py",
+            "protocol": "arithmetic-consumer-protocol-v1",
+            "sha256": "4bf4f2111b72a2ac0c1caaa1754b5edde9f00d8edf1ab97727b6cb0c4bf397db"
+          },
+          "name": "Consumer-owned prototype checker"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiments/challenge.json",
+            "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c"
+          },
+          "name": "Selected consumer challenge"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "prototype/acceptance",
+        "proof/assumptions",
+        "artifact/binding",
+        "artifact/cache",
+        "protocol/failure"
+      ]
+    },
     "coq-rocq-stm-serapi-fleche-architecture-2013-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -14260,6 +14354,51 @@
         "rust/ffi",
         "compcert",
         "cakeml"
+      ]
+    },
+    "field-slice-borrow-frame-prototype-lean4-31-rust1-99": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "artifact": "rustc executable",
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+          },
+          "name": "Rust 1.99.0 compiler"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiments/borrow_native.rs",
+            "sha256": "996f70f543d0bad10d09464b2f4f8df566bc556c8a8f0fdcc8c4b9f796f7797b"
+          },
+          "name": "Safe native borrow controls"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiments/BorrowModel.lean",
+            "semantics": "two-byte-root-and-child-v1",
+            "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3"
+          },
+          "name": "Abstract borrow model and correspondence certificates"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "prototype/borrows",
+        "rust/fields",
+        "rust/slices",
+        "logic/frame-rules"
       ]
     },
     "foundational-verifast-hinted-mirroring-2026-10-14": {
@@ -22025,6 +22164,50 @@
         "rustc/hir"
       ]
     },
+    "safe-byte-correspondence-three-routes-lean4-31-rust1-99": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "artifact": "rustc executable",
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+          },
+          "name": "Rust 1.99.0 compiler"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiments/subject.rs",
+            "semantics": "wrapping-byte-tree-v1",
+            "sha256": "e3a37308bc49b9ed0308dbcbc6e63890b74a22de29abdf7030673b7ad6c642e8"
+          },
+          "name": "Captured arithmetic prototype"
+        },
+        {
+          "identity": {
+            "artifact": "support/experiments/ArithmeticModel.lean",
+            "sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3"
+          },
+          "name": "Arithmetic proof model"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "prototype/correspondence",
+        "rust/byte-arithmetic",
+        "lean/kernel-checking"
+      ]
+    },
     "salsa-rustc-current-source-review": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -23240,6 +23423,51 @@
         "rust/pointers",
         "rust/unsafe",
         "anneal/verification-surface"
+      ]
+    },
+    "zerocopy-two-target-byte-and-layout-controls-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Zerocopy selected library"
+        },
+        {
+          "identity": {
+            "host_target": "aarch64-apple-darwin",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "second_target": "wasm32-unknown-unknown"
+          },
+          "name": "Rust1.99.0"
+        },
+        {
+          "identity": {
+            "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22",
+            "version": "1.99.0"
+          },
+          "name": "Official Rust wasm32 standard library"
+        },
+        {
+          "identity": {
+            "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e",
+            "node": "24.21.0",
+            "v8": "13.6.233.17-node.53"
+          },
+          "name": "Node/WebAssembly runtime"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "rust/unsafe",
+        "zerocopy/validity",
+        "zerocopy/bytes",
+        "rust/layout",
+        "verification/cross-target",
+        "verification/costs"
       ]
     }
   }

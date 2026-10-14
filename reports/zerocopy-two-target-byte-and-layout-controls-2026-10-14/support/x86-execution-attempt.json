@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "arch",
+    "-x86_64",
+    "/usr/bin/true"
+  ],
+  "exit": 1,
+  "scope": "This launch only; no emulator installation or compilation-support inference"
+}
