@@ -10870,6 +10870,32 @@
         "rustc/diagnostics"
       ]
     },
+    "anneal-execution-milestones-and-acceptance-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "db952eb27f7706ef3d74c50696a81023eddc51fa4716762848f64d9a57c7c267",
+            "issue": "3876",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal execution and proof initiative"
+        },
+        {
+          "identity": {
+            "path": "reports/anneal-minirust-assembly-coverage-and-adoption-synthesis-2026/coverage-matrix.json",
+            "repository": "google/zerocopy",
+            "revision": "32f279dc7f8faa27ded717ba664c5d30df5503a2"
+          },
+          "name": "Published research frontier baseline"
+        }
+      ],
+      "topics": [
+        "anneal/execution",
+        "verification/acceptance",
+        "research/proof-obligations"
+      ]
+    },
     "anneal-external-crate-diagnostic-source-recovery-nightly-2026-05-31-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -12765,6 +12791,56 @@
         "build-systems/incremental",
         "build-systems/scheduling",
         "build-systems/traces"
+      ]
+    },
+    "byte-laws-strict-alethe-expansion-cvc5-carcara-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d",
+            "repository": "cvc5/cvc5",
+            "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d"
+          },
+          "name": "cvc5 1.4.2"
+        },
+        {
+          "identity": {
+            "binary_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f",
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+          },
+          "name": "Carcara 1.1.0"
+        },
+        {
+          "identity": {
+            "Init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "artifact": "ByteLaws.lean",
+            "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc"
+          },
+          "name": "Owned fixed finite byte semantics"
+        },
+        {
+          "identity": {
+            "artifact": "translate.py",
+            "sha256": "34f43a206b1a3756004fbc0e37bfb3914208460eaad68333b20ff9b2be19f684"
+          },
+          "name": "Owned local Alethe expansion producer"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "proof/certificates",
+        "proof/smt",
+        "rust/byte-laws"
       ]
     },
     "cargo-compilation-subject-identity-2026-05-31": {

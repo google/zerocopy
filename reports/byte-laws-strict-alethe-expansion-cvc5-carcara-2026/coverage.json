@@ -1,0 +1,28 @@
+{
+  "R095": {
+    "question": "Verify representative IntoBytes, byte-writing, boolean-validation, and array laws across candidates, including incorrect variants.",
+    "classification": "bounded_experiment_completed",
+    "scope": "Fixed finite two-cell guarded judgment: direct/reflected Lean evidence retained; actual cvc5 proof generation through untrusted local expansion to native strict Carcara now accepts all four original whole laws.",
+    "sections": [
+      "F1. The independently fixed whole-law subjects are unchanged",
+      "F2. Five local rule expansions repair the actual cvc5 exports",
+      "F3. All four complete translated certificates pass strict acceptance",
+      "F4. False laws, missing premises and misbound proofs remain rejected",
+      "F5. Small separated measurements establish feasibility, not a ranking"
+    ],
+    "remaining_requested_research_or_experiment": [],
+    "future_engineering_or_semantic_arrows": [
+      "General cvc5 export translation beyond observed rewrite names and proof syntax",
+      "Named Rust-verifier integration and actual source/frontend correspondence",
+      "Native checker correctness, runtime assurance and hostile filesystem security",
+      "General Rust layouts, provenance, lifetime, aliasing, atomicity and arbitrary safe-client closure"
+    ],
+    "negative_and_operational_distinctions": {
+      "negative": "Three raw whole-law exports remain invalid; ten consumer controls rejected including exit-zero holey.",
+      "positive": "All four translated original whole-law roots accepted in 3/3 samples; five SAT valuations checked and refuted in Lean.",
+      "operational_failure": "None observed in this execution wave.",
+      "unexamined": "Other upstream versions, proof vocabularies, larger workloads and named Rust-verifier parity."
+    },
+    "report_body_sha256": "3cae8f5d0d2314ecd402cfcb8fcb67db5b90aab035c12945bccef55c1d86b882"
+  }
+}

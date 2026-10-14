@@ -1,0 +1,5 @@
+{
+  "input": "unknown rewrite name",
+  "result": "explicit ValueError",
+  "message": "unexamined rewrite name/arity: unexamined-rule"
+}

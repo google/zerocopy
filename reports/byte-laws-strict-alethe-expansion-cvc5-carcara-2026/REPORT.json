@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "anneal",
+    "proof/certificates",
+    "proof/smt",
+    "rust/byte-laws"
+  ],
+  "subjects": [
+    {
+      "name": "cvc5 1.4.2",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "binary_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d"
+      }
+    },
+    {
+      "name": "Carcara 1.1.0",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+        "binary_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+        "Init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+      }
+    },
+    {
+      "name": "Owned fixed finite byte semantics",
+      "identity": {
+        "artifact": "ByteLaws.lean",
+        "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc"
+      }
+    },
+    {
+      "name": "Owned local Alethe expansion producer",
+      "identity": {
+        "artifact": "translate.py",
+        "sha256": "34f43a206b1a3756004fbc0e37bfb3914208460eaad68333b20ff9b2be19f684"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

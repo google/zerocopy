@@ -1,0 +1,137 @@
+[
+  {
+    "case": "into_bytes",
+    "sample": 0,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 2,
+    "translated_steps": 2
+  },
+  {
+    "case": "into_bytes",
+    "sample": 1,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 2,
+    "translated_steps": 2
+  },
+  {
+    "case": "into_bytes",
+    "sample": 2,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 2,
+    "translated_steps": 2
+  },
+  {
+    "case": "byte_write",
+    "sample": 0,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 51,
+    "translated_steps": 51
+  },
+  {
+    "case": "byte_write",
+    "sample": 1,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 51,
+    "translated_steps": 51
+  },
+  {
+    "case": "byte_write",
+    "sample": 2,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 51,
+    "translated_steps": 51
+  },
+  {
+    "case": "bool_validate",
+    "sample": 0,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 131,
+    "translated_steps": 139
+  },
+  {
+    "case": "bool_validate",
+    "sample": 1,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 131,
+    "translated_steps": 139
+  },
+  {
+    "case": "bool_validate",
+    "sample": 2,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 131,
+    "translated_steps": 139
+  },
+  {
+    "case": "array_validate",
+    "sample": 0,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 132,
+    "translated_steps": 140
+  },
+  {
+    "case": "array_validate",
+    "sample": 1,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 132,
+    "translated_steps": 140
+  },
+  {
+    "case": "array_validate",
+    "sample": 2,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 132,
+    "translated_steps": 140
+  },
+  {
+    "case": "wrong_narrow_domain",
+    "sample": 0,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 40,
+    "translated_steps": 44
+  },
+  {
+    "case": "wrong_narrow_domain",
+    "sample": 1,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 40,
+    "translated_steps": 44
+  },
+  {
+    "case": "wrong_narrow_domain",
+    "sample": 2,
+    "all_original_step_conclusions_byte_identical": true,
+    "all_assumption_lines_byte_identical": true,
+    "nonrewrite_lines_preserved_in_order": true,
+    "original_steps": 40,
+    "translated_steps": 44
+  }
+]

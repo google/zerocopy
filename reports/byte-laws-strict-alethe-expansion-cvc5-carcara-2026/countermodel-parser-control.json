@@ -1,0 +1,5 @@
+{
+  "malformed_scalar": "Boolean supplied for Int changed",
+  "result": "rejected",
+  "message": "address outside fixed two-cell integer domain"
+}

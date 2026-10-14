@@ -1,0 +1,4 @@
+error: the rule bool-double-not-elim was not found
+  [34m-->[39m in file [4m[34mbool_validate.1.raw.alethe[39m[0m
+  [1mnote:[0m checking failed on step [33mt1[39m with rule [33mrare_rewrite[39m
+

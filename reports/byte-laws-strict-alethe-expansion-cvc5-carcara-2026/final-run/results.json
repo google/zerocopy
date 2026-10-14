@@ -1,0 +1,1349 @@
+{
+  "whole_law_cases": [
+    "into_bytes",
+    "byte_write",
+    "bool_validate",
+    "array_validate"
+  ],
+  "samples": 3,
+  "matrix": [
+    {
+      "capture": "into_bytes.0.translated.check",
+      "case": "into_bytes",
+      "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+      "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 0,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {},
+      "translation_ns": 69625,
+      "proof_bytes": 834,
+      "raw_export": {
+        "capture": "into_bytes.0.raw.check",
+        "case": "into_bytes",
+        "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+        "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+        "exit": 0,
+        "verdict": "valid",
+        "accepted": true
+      }
+    },
+    {
+      "capture": "into_bytes.reconstructed.check",
+      "case": "into_bytes",
+      "proof_sha256": "21f1bbd9cb2c9ad8402facee7a66ca695de0f74ffc6c087b77bffb6b1f10267d",
+      "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "route": "independent bounded reconstruction diagnostic"
+    },
+    {
+      "capture": "byte_write.0.translated.check",
+      "case": "byte_write",
+      "proof_sha256": "fe582b2b19273a92d776d1ae5b60c85905c15c1b53aac8a84c841c0a9cef616a",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 0,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "array-read-over-write": 2,
+        "eq-refl": 1,
+        "eq-symm": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 316667,
+      "proof_bytes": 4280,
+      "raw_export": {
+        "capture": "byte_write.0.raw.check",
+        "case": "byte_write",
+        "proof_sha256": "475f91923350865ab7a777c9cb3b429c64b605a598e6dbc1186d0907198f017b",
+        "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "byte_write.reconstructed.check",
+      "case": "byte_write",
+      "proof_sha256": "e7f46700576b94d5250879164a64688e0067e1ad6738c261e70c386079eb30f3",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "route": "independent bounded reconstruction diagnostic"
+    },
+    {
+      "capture": "bool_validate.0.translated.check",
+      "case": "bool_validate",
+      "proof_sha256": "b4beb43dcc06f4990fd7708544575759a7db1e20636c3a2cd382cb67cf560e5c",
+      "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 0,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 564625,
+      "proof_bytes": 11684,
+      "raw_export": {
+        "capture": "bool_validate.0.raw.check",
+        "case": "bool_validate",
+        "proof_sha256": "162a12bf56e63b922f11eba0f900919a5b38373cb4848e4c60eb6c34074650cc",
+        "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "bool_validate.reconstructed.check",
+      "case": "bool_validate",
+      "proof_sha256": "a42dad886d51b45fa480e4a4047c47c81bf83ba7caf22cf1b66644f4fccb19e7",
+      "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "route": "independent bounded reconstruction diagnostic"
+    },
+    {
+      "capture": "array_validate.0.translated.check",
+      "case": "array_validate",
+      "proof_sha256": "e28cc5b79e637c72ec27dd3ee784a6d165f5dcd5bb8084107602a3a9e9cba010",
+      "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 0,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 521334,
+      "proof_bytes": 11953,
+      "raw_export": {
+        "capture": "array_validate.0.raw.check",
+        "case": "array_validate",
+        "proof_sha256": "58b61243c77430048ec4e95595c02acbd46e2de744d0c9989a8bc124c33bb9a1",
+        "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "array_validate.reconstructed.check",
+      "case": "array_validate",
+      "proof_sha256": "fbddb690bd267172c8f0fe93f215e10b677cd3b6eabdaa88222e6d839e518bbe",
+      "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "route": "independent bounded reconstruction diagnostic"
+    },
+    {
+      "capture": "wrong_narrow_domain.0.translated.check",
+      "case": "wrong_narrow_domain",
+      "proof_sha256": "10f89c4b1681e71050b76277fdf142fe16f1b55b59a29b59ffa8be514b6a07f5",
+      "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 0,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "arith-elim-lt": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 294458,
+      "proof_bytes": 4189,
+      "raw_export": {
+        "capture": "wrong_narrow_domain.0.raw.check",
+        "case": "wrong_narrow_domain",
+        "proof_sha256": "0486934e853f50de4d97c1e93b5786e914e2a0019365e78bbbe72e4b6674a1fe",
+        "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "wrong_narrow_domain.reconstructed.check",
+      "case": "wrong_narrow_domain",
+      "proof_sha256": "61ecbebaf93c532be2c5feb3b3118cfbbc8a481d70d433a74037992b1647ce16",
+      "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "route": "independent bounded reconstruction diagnostic"
+    },
+    {
+      "capture": "into_bytes.1.translated.check",
+      "case": "into_bytes",
+      "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+      "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 1,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {},
+      "translation_ns": 56875,
+      "proof_bytes": 834,
+      "raw_export": {
+        "capture": "into_bytes.1.raw.check",
+        "case": "into_bytes",
+        "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+        "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+        "exit": 0,
+        "verdict": "valid",
+        "accepted": true
+      }
+    },
+    {
+      "capture": "byte_write.1.translated.check",
+      "case": "byte_write",
+      "proof_sha256": "fe582b2b19273a92d776d1ae5b60c85905c15c1b53aac8a84c841c0a9cef616a",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 1,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "array-read-over-write": 2,
+        "eq-refl": 1,
+        "eq-symm": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 118667,
+      "proof_bytes": 4280,
+      "raw_export": {
+        "capture": "byte_write.1.raw.check",
+        "case": "byte_write",
+        "proof_sha256": "475f91923350865ab7a777c9cb3b429c64b605a598e6dbc1186d0907198f017b",
+        "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "bool_validate.1.translated.check",
+      "case": "bool_validate",
+      "proof_sha256": "b4beb43dcc06f4990fd7708544575759a7db1e20636c3a2cd382cb67cf560e5c",
+      "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 1,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 225333,
+      "proof_bytes": 11684,
+      "raw_export": {
+        "capture": "bool_validate.1.raw.check",
+        "case": "bool_validate",
+        "proof_sha256": "162a12bf56e63b922f11eba0f900919a5b38373cb4848e4c60eb6c34074650cc",
+        "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "array_validate.1.translated.check",
+      "case": "array_validate",
+      "proof_sha256": "e28cc5b79e637c72ec27dd3ee784a6d165f5dcd5bb8084107602a3a9e9cba010",
+      "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 1,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 214625,
+      "proof_bytes": 11953,
+      "raw_export": {
+        "capture": "array_validate.1.raw.check",
+        "case": "array_validate",
+        "proof_sha256": "58b61243c77430048ec4e95595c02acbd46e2de744d0c9989a8bc124c33bb9a1",
+        "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "wrong_narrow_domain.1.translated.check",
+      "case": "wrong_narrow_domain",
+      "proof_sha256": "10f89c4b1681e71050b76277fdf142fe16f1b55b59a29b59ffa8be514b6a07f5",
+      "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 1,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "arith-elim-lt": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 117458,
+      "proof_bytes": 4189,
+      "raw_export": {
+        "capture": "wrong_narrow_domain.1.raw.check",
+        "case": "wrong_narrow_domain",
+        "proof_sha256": "0486934e853f50de4d97c1e93b5786e914e2a0019365e78bbbe72e4b6674a1fe",
+        "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "into_bytes.2.translated.check",
+      "case": "into_bytes",
+      "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+      "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 2,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {},
+      "translation_ns": 47334,
+      "proof_bytes": 834,
+      "raw_export": {
+        "capture": "into_bytes.2.raw.check",
+        "case": "into_bytes",
+        "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+        "root_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9",
+        "exit": 0,
+        "verdict": "valid",
+        "accepted": true
+      }
+    },
+    {
+      "capture": "byte_write.2.translated.check",
+      "case": "byte_write",
+      "proof_sha256": "fe582b2b19273a92d776d1ae5b60c85905c15c1b53aac8a84c841c0a9cef616a",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 2,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "array-read-over-write": 2,
+        "eq-refl": 1,
+        "eq-symm": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 114334,
+      "proof_bytes": 4280,
+      "raw_export": {
+        "capture": "byte_write.2.raw.check",
+        "case": "byte_write",
+        "proof_sha256": "475f91923350865ab7a777c9cb3b429c64b605a598e6dbc1186d0907198f017b",
+        "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "bool_validate.2.translated.check",
+      "case": "bool_validate",
+      "proof_sha256": "b4beb43dcc06f4990fd7708544575759a7db1e20636c3a2cd382cb67cf560e5c",
+      "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 2,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 210125,
+      "proof_bytes": 11684,
+      "raw_export": {
+        "capture": "bool_validate.2.raw.check",
+        "case": "bool_validate",
+        "proof_sha256": "162a12bf56e63b922f11eba0f900919a5b38373cb4848e4c60eb6c34074650cc",
+        "root_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "array_validate.2.translated.check",
+      "case": "array_validate",
+      "proof_sha256": "e28cc5b79e637c72ec27dd3ee784a6d165f5dcd5bb8084107602a3a9e9cba010",
+      "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 2,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "bool-double-not-elim": 4,
+        "arith-elim-lt": 2
+      },
+      "translation_ns": 210750,
+      "proof_bytes": 11953,
+      "raw_export": {
+        "capture": "array_validate.2.raw.check",
+        "case": "array_validate",
+        "proof_sha256": "58b61243c77430048ec4e95595c02acbd46e2de744d0c9989a8bc124c33bb9a1",
+        "root_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    },
+    {
+      "capture": "wrong_narrow_domain.2.translated.check",
+      "case": "wrong_narrow_domain",
+      "proof_sha256": "10f89c4b1681e71050b76277fdf142fe16f1b55b59a29b59ffa8be514b6a07f5",
+      "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+      "exit": 0,
+      "verdict": "valid",
+      "accepted": true,
+      "sample": 2,
+      "route": "actual cvc5 -> untrusted local expansion -> strict Carcara",
+      "expanded_rewrite_counts": {
+        "arith-elim-lt": 1,
+        "bool-double-not-elim": 1
+      },
+      "translation_ns": 122000,
+      "proof_bytes": 4189,
+      "raw_export": {
+        "capture": "wrong_narrow_domain.2.raw.check",
+        "case": "wrong_narrow_domain",
+        "proof_sha256": "0486934e853f50de4d97c1e93b5786e914e2a0019365e78bbbe72e4b6674a1fe",
+        "root_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+        "exit": 1,
+        "verdict": "invalid",
+        "accepted": false
+      }
+    }
+  ],
+  "rejection_controls": [
+    {
+      "capture": "into_bytes.attached-to.missing_initialization",
+      "case": "missing_initialization",
+      "proof_sha256": "ce4cf552d3aeb463b84d2a3c7e2a539deab85b185bc44a46425e773ce7983e7c",
+      "root_sha256": "6fd216dcd217722c2fd5b7a191fb8d0139114227e8887ff92f00757d1fca18c8",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "byte_write.attached-to.alias_frame",
+      "case": "alias_frame",
+      "proof_sha256": "fe582b2b19273a92d776d1ae5b60c85905c15c1b53aac8a84c841c0a9cef616a",
+      "root_sha256": "de47aa8d515a23d1a555208e0ef963d241f605bd50531e0c0ce32d736bc0a35f",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "bool_validate.attached-to.bool_two",
+      "case": "bool_two",
+      "proof_sha256": "b4beb43dcc06f4990fd7708544575759a7db1e20636c3a2cd382cb67cf560e5c",
+      "root_sha256": "87ed230c9eb2701eaf19e301614618bff5173ff8c666e7be2d60f918c6803e3e",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "bool_validate.attached-to.missing_stability",
+      "case": "missing_stability",
+      "proof_sha256": "b4beb43dcc06f4990fd7708544575759a7db1e20636c3a2cd382cb67cf560e5c",
+      "root_sha256": "2d7356eb98dd1ca4e15264f068bf1987a511764f5033556271f375acab65afda",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "array_validate.attached-to.array_index_omission",
+      "case": "array_index_omission",
+      "proof_sha256": "e28cc5b79e637c72ec27dd3ee784a6d165f5dcd5bb8084107602a3a9e9cba010",
+      "root_sha256": "e98781d7cf386c9d17c8ae99b6776178eebddbd3409c0a0cd715a3203417105a",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "wrong_narrow_domain.attached-to.bool_two",
+      "case": "bool_two",
+      "proof_sha256": "10f89c4b1681e71050b76277fdf142fe16f1b55b59a29b59ffa8be514b6a07f5",
+      "root_sha256": "87ed230c9eb2701eaf19e301614618bff5173ff8c666e7be2d60f918c6803e3e",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "holey-write.check",
+      "case": "byte_write",
+      "proof_sha256": "35a74966979409097fb577ae6a0f8989aa8391fc87f7fecd18cb7381a2129f08",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 0,
+      "verdict": "holey",
+      "accepted": false
+    },
+    {
+      "capture": "corrupt-write.check",
+      "case": "byte_write",
+      "proof_sha256": "89752440a19972605a5aa5526db6460dbc60cbfa93eaba1a278cc27f5f8def38",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "forged-assumption.check",
+      "case": "byte_write",
+      "proof_sha256": "2a166a9609038f4f610810163d232c8fc2fe0a15279672b17539c684ef7aac47",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    },
+    {
+      "capture": "projection-attached-to-whole.check",
+      "case": "byte_write",
+      "proof_sha256": "2ec7796a681204ce85441119b78fcd9ef23475fdab0426abd5d2d676e277755a",
+      "root_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70",
+      "exit": 1,
+      "verdict": "invalid",
+      "accepted": false
+    }
+  ],
+  "domain_identity_control": {
+    "expected_full_root": "87ed230c9eb2701eaf19e301614618bff5173ff8c666e7be2d60f918c6803e3e",
+    "proposed_narrow_root": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc",
+    "admitted": false
+  },
+  "countermodels": [
+    {
+      "case": "missing_initialization",
+      "valuation": {
+        "source": {
+          "0": 0,
+          "1": 0
+        },
+        "current": {
+          "0": 0,
+          "1": 0
+        },
+        "source_init": {
+          "0": false,
+          "1": true
+        },
+        "source_read": {
+          "0": true,
+          "1": true
+        },
+        "current_init": {
+          "0": false,
+          "1": false
+        },
+        "current_read": {
+          "0": false,
+          "1": false
+        },
+        "write_authority": {
+          "0": false,
+          "1": false
+        },
+        "changed": 1,
+        "framed": 1,
+        "replacement": 0
+      },
+      "all_exact_root_assertions_true": true,
+      "assertions_evaluated": 11,
+      "solver_output_sha256": "bc9423a8274783daffa99921d37dfdda6c69250b59029ee30db16fd2691cdd07"
+    },
+    {
+      "case": "alias_frame",
+      "valuation": {
+        "source": {
+          "0": 0,
+          "1": 0
+        },
+        "current": {
+          "0": 0,
+          "1": 0
+        },
+        "source_init": {
+          "0": false,
+          "1": true
+        },
+        "source_read": {
+          "0": false,
+          "1": false
+        },
+        "current_init": {
+          "0": false,
+          "1": false
+        },
+        "current_read": {
+          "0": false,
+          "1": false
+        },
+        "write_authority": {
+          "0": false,
+          "1": true
+        },
+        "changed": 1,
+        "framed": 1,
+        "replacement": 1
+      },
+      "all_exact_root_assertions_true": true,
+      "assertions_evaluated": 9,
+      "solver_output_sha256": "e8da92a6a97db2122cc4ae979d37ca3739c1c1ea48a7e57a6ea93b61f0e1886d"
+    },
+    {
+      "case": "bool_two",
+      "valuation": {
+        "source": {
+          "0": 2,
+          "1": 0
+        },
+        "current": {
+          "0": 2,
+          "1": 0
+        },
+        "source_init": {
+          "0": true,
+          "1": false
+        },
+        "source_read": {
+          "0": true,
+          "1": false
+        },
+        "current_init": {
+          "0": true,
+          "1": false
+        },
+        "current_read": {
+          "0": true,
+          "1": false
+        },
+        "write_authority": {
+          "0": false,
+          "1": false
+        },
+        "changed": 1,
+        "framed": 1,
+        "replacement": 0
+      },
+      "all_exact_root_assertions_true": true,
+      "assertions_evaluated": 14,
+      "solver_output_sha256": "f924f958321bbf21d38060332b9739fbffaa2f5fa97ce39479763f4e3bd81eab"
+    },
+    {
+      "case": "missing_stability",
+      "valuation": {
+        "source": {
+          "0": 1,
+          "1": 0
+        },
+        "current": {
+          "0": 2,
+          "1": 0
+        },
+        "source_init": {
+          "0": true,
+          "1": false
+        },
+        "source_read": {
+          "0": true,
+          "1": false
+        },
+        "current_init": {
+          "0": true,
+          "1": false
+        },
+        "current_read": {
+          "0": true,
+          "1": false
+        },
+        "write_authority": {
+          "0": false,
+          "1": false
+        },
+        "changed": 1,
+        "framed": 1,
+        "replacement": 0
+      },
+      "all_exact_root_assertions_true": true,
+      "assertions_evaluated": 13,
+      "solver_output_sha256": "ee9834d358f87c236a87f3fe79a07cc8f4efbeff7e6930e9d2e2ca5608795267"
+    },
+    {
+      "case": "array_index_omission",
+      "valuation": {
+        "source": {
+          "0": 0,
+          "1": 2
+        },
+        "current": {
+          "0": 0,
+          "1": 2
+        },
+        "source_init": {
+          "0": true,
+          "1": true
+        },
+        "source_read": {
+          "0": true,
+          "1": true
+        },
+        "current_init": {
+          "0": true,
+          "1": true
+        },
+        "current_read": {
+          "0": true,
+          "1": true
+        },
+        "write_authority": {
+          "0": false,
+          "1": false
+        },
+        "changed": 1,
+        "framed": 1,
+        "replacement": 0
+      },
+      "all_exact_root_assertions_true": true,
+      "assertions_evaluated": 19,
+      "solver_output_sha256": "8b9c7fb7a8dc517102401fcff8beda01e3f9e41b0bf707ddd34bf439bdb4c89c"
+    }
+  ],
+  "phases": [
+    {
+      "capture": "into_bytes.0.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 18744625,
+      "stdout_bytes": 840,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.0.raw.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 5383791,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.0.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4297542,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.reconstructed.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4019833,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.0.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 13758292,
+      "stdout_bytes": 4501,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.0.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4474458,
+      "stdout_bytes": 8,
+      "stderr_bytes": 205
+    },
+    {
+      "capture": "byte_write.0.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 5469250,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.reconstructed.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4667125,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.0.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 12528875,
+      "stdout_bytes": 10952,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.0.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4926667,
+      "stdout_bytes": 8,
+      "stderr_bytes": 207
+    },
+    {
+      "capture": "bool_validate.0.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4750833,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.reconstructed.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4131708,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.0.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 12726792,
+      "stdout_bytes": 11281,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.0.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4318166,
+      "stdout_bytes": 8,
+      "stderr_bytes": 208
+    },
+    {
+      "capture": "array_validate.0.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4527167,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.reconstructed.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 3999833,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.0.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 12223459,
+      "stdout_bytes": 3819,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.0.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4723583,
+      "stdout_bytes": 8,
+      "stderr_bytes": 206
+    },
+    {
+      "capture": "wrong_narrow_domain.0.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4520000,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.reconstructed.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4443916,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.1.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 11327416,
+      "stdout_bytes": 840,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.1.raw.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4705209,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.1.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4196375,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.1.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 12177625,
+      "stdout_bytes": 4501,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.1.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4218750,
+      "stdout_bytes": 8,
+      "stderr_bytes": 205
+    },
+    {
+      "capture": "byte_write.1.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4112084,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.1.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 13135791,
+      "stdout_bytes": 10952,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.1.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4709084,
+      "stdout_bytes": 8,
+      "stderr_bytes": 207
+    },
+    {
+      "capture": "bool_validate.1.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4676250,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.1.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 13748791,
+      "stdout_bytes": 11281,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.1.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4537459,
+      "stdout_bytes": 8,
+      "stderr_bytes": 208
+    },
+    {
+      "capture": "array_validate.1.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 5003792,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.1.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 12840792,
+      "stdout_bytes": 3819,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.1.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4229875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 206
+    },
+    {
+      "capture": "wrong_narrow_domain.1.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4158459,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.2.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 10803292,
+      "stdout_bytes": 840,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.2.raw.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4071417,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.2.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 3985875,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.2.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 11971084,
+      "stdout_bytes": 4501,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "byte_write.2.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4133083,
+      "stdout_bytes": 8,
+      "stderr_bytes": 205
+    },
+    {
+      "capture": "byte_write.2.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4390333,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.2.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 13617583,
+      "stdout_bytes": 10952,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_validate.2.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4595625,
+      "stdout_bytes": 8,
+      "stderr_bytes": 207
+    },
+    {
+      "capture": "bool_validate.2.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4806250,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.2.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 13577250,
+      "stdout_bytes": 11281,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_validate.2.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4796625,
+      "stdout_bytes": 8,
+      "stderr_bytes": 208
+    },
+    {
+      "capture": "array_validate.2.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4515750,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.2.cvc5.generate",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 14321083,
+      "stdout_bytes": 3819,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "wrong_narrow_domain.2.raw.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 5661833,
+      "stdout_bytes": 8,
+      "stderr_bytes": 206
+    },
+    {
+      "capture": "wrong_narrow_domain.2.translated.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 4221750,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "into_bytes.attached-to.missing_initialization",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 7412875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 246
+    },
+    {
+      "capture": "byte_write.attached-to.alias_frame",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 5037958,
+      "stdout_bytes": 8,
+      "stderr_bytes": 248
+    },
+    {
+      "capture": "bool_validate.attached-to.bool_two",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 6400667,
+      "stdout_bytes": 8,
+      "stderr_bytes": 258
+    },
+    {
+      "capture": "bool_validate.attached-to.missing_stability",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 5668250,
+      "stdout_bytes": 8,
+      "stderr_bytes": 268
+    },
+    {
+      "capture": "array_validate.attached-to.array_index_omission",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4760875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 259
+    },
+    {
+      "capture": "wrong_narrow_domain.attached-to.bool_two",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 5377459,
+      "stdout_bytes": 8,
+      "stderr_bytes": 257
+    },
+    {
+      "capture": "holey-write.check",
+      "tool": "carcara",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 8421208,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "corrupt-write.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 4788417,
+      "stdout_bytes": 8,
+      "stderr_bytes": 231
+    },
+    {
+      "capture": "forged-assumption.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 6838875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 227
+    },
+    {
+      "capture": "projection-attached-to-whole.check",
+      "tool": "carcara",
+      "exit": 1,
+      "timeout": false,
+      "elapsed_ns": 5053500,
+      "stdout_bytes": 8,
+      "stderr_bytes": 302
+    },
+    {
+      "capture": "missing_initialization.countermodel",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 9537875,
+      "stdout_bytes": 454,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "alias_frame.countermodel",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 7740416,
+      "stdout_bytes": 455,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "bool_two.countermodel",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 7287667,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "missing_stability.countermodel",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 8094584,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "array_index_omission.countermodel",
+      "tool": "cvc5",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 8381291,
+      "stdout_bytes": 449,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "finite-model",
+      "tool": "lean",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 1777601708,
+      "stdout_bytes": 1073,
+      "stderr_bytes": 0
+    },
+    {
+      "capture": "countermodel-lean",
+      "tool": "lean",
+      "exit": 0,
+      "timeout": false,
+      "elapsed_ns": 387035125,
+      "stdout_bytes": 383,
+      "stderr_bytes": 0
+    }
+  ],
+  "acceptance_policy": "exit == 0 AND stdout bytes exactly valid newline",
+  "frontier": "Native checker, root binding, fixture quotation, SMT theory and Rust correspondence remain explicit premises."
+}

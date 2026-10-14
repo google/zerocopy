@@ -1,0 +1,4 @@
+error: could not match term to any of the original problem premises: false
+  [34m-->[39m in file [4m[34mforged-assumption.alethe[39m[0m
+  [1mnote:[0m checking failed on step [33mforged[39m with rule [33massume[39m
+

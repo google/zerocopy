@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/execution",
+    "verification/acceptance",
+    "research/proof-obligations"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal execution and proof initiative",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3876",
+        "body_sha256": "db952eb27f7706ef3d74c50696a81023eddc51fa4716762848f64d9a57c7c267"
+      }
+    },
+    {
+      "name": "Published research frontier baseline",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "32f279dc7f8faa27ded717ba664c5d30df5503a2",
+        "path": "reports/anneal-minirust-assembly-coverage-and-adoption-synthesis-2026/coverage-matrix.json"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}
