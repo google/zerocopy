@@ -731,20 +731,19 @@ def Array.Insts.ZerocopyIntoBytes {T : Type} (N : Std.Usize) (IntoBytesInst :
     N IntoBytesInst
 }
 
-/-- [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}::only_derive_is_allowed_to_implement_this_trait]:
+/-- [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
-def
-  Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+def Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
   : Result Unit := do
   ok ()
 
-/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}]
+/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}]
     Source: 'src/util/macros.rs', lines 30:8-32:9 -/
 @[reducible]
-def Tuple.Insts.ZerocopyIntoBytes : IntoBytes Unit := {
+def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
   only_derive_is_allowed_to_implement_this_trait :=
-    Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u8}::only_derive_is_allowed_to_implement_this_trait]:
@@ -762,19 +761,20 @@ def U8.Insts.ZerocopyIntoBytes : IntoBytes Std.U8 := {
     U8.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
-/-- [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
+/-- [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
-def Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+def
+  Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
   : Result Unit := do
   ok ()
 
-/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}]
+/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::IntoBytes for ()}]
     Source: 'src/util/macros.rs', lines 30:8-32:9 -/
 @[reducible]
-def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
+def Tuple.Insts.ZerocopyIntoBytes : IntoBytes Unit := {
   only_derive_is_allowed_to_implement_this_trait :=
-    Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    Tuple.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
 /-- [zerocopy::trait_checks::check_array_into_bytes]:
@@ -790,6 +790,638 @@ def trait_checks.check_array_into_bytes : Result Unit := do
     Bool.Insts.ZerocopyIntoBytes)
   trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
     (Array.Insts.ZerocopyIntoBytes 2#usize Bool.Insts.ZerocopyIntoBytes))
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def I8.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def I8.Insts.ZerocopyIntoBytes : IntoBytes Std.I8 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    I8.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u16}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u16}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U16.Insts.ZerocopyIntoBytes : IntoBytes Std.U16 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i16}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i16}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def I16.Insts.ZerocopyIntoBytes : IntoBytes Std.I16 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyIntoBytes : IntoBytes Std.U32 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def I32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def I32.Insts.ZerocopyIntoBytes : IntoBytes Std.I32 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    I32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u64}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u64}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U64.Insts.ZerocopyIntoBytes : IntoBytes Std.U64 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i64}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def I64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i64}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def I64.Insts.ZerocopyIntoBytes : IntoBytes Std.I64 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    I64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u128}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u128}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U128.Insts.ZerocopyIntoBytes : IntoBytes Std.U128 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i128}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def I128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i128}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def I128.Insts.ZerocopyIntoBytes : IntoBytes Std.I128 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    I128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for usize}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Usize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for usize}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Usize.Insts.ZerocopyIntoBytes : IntoBytes Std.Usize := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Usize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for isize}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Isize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for isize}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Isize.Insts.ZerocopyIntoBytes : IntoBytes Std.Isize := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Isize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#4::{impl zerocopy::IntoBytes for char}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def Char.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#4::{impl zerocopy::IntoBytes for char}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Char.Insts.ZerocopyIntoBytes : IntoBytes Char := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Char.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u8, core::num::niche_types::NonZeroU8Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u8, core::num::niche_types::NonZeroU8Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.U8
+  core.num.niche_types.NonZeroU8Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i8, core::num::niche_types::NonZeroI8Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i8, core::num::niche_types::NonZeroI8Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.I8
+  core.num.niche_types.NonZeroI8Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u16, core::num::niche_types::NonZeroU16Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u16, core::num::niche_types::NonZeroU16Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.U16
+  core.num.niche_types.NonZeroU16Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i16, core::num::niche_types::NonZeroI16Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i16, core::num::niche_types::NonZeroI16Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.I16
+  core.num.niche_types.NonZeroI16Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u32, core::num::niche_types::NonZeroU32Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u32, core::num::niche_types::NonZeroU32Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.U32
+  core.num.niche_types.NonZeroU32Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i32, core::num::niche_types::NonZeroI32Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i32, core::num::niche_types::NonZeroI32Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.I32
+  core.num.niche_types.NonZeroI32Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u64, core::num::niche_types::NonZeroU64Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u64, core::num::niche_types::NonZeroU64Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.U64
+  core.num.niche_types.NonZeroU64Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i64, core::num::niche_types::NonZeroI64Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i64, core::num::niche_types::NonZeroI64Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.I64
+  core.num.niche_types.NonZeroI64Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u128, core::num::niche_types::NonZeroU128Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<u128, core::num::niche_types::NonZeroU128Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.U128
+  core.num.niche_types.NonZeroU128Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i128, core::num::niche_types::NonZeroI128Inner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<i128, core::num::niche_types::NonZeroI128Inner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.I128
+  core.num.niche_types.NonZeroI128Inner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<usize, core::num::niche_types::NonZeroUsizeInner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<usize, core::num::niche_types::NonZeroUsizeInner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<isize, core::num::niche_types::NonZeroIsizeInner>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.num.nonzero.NonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#8::{impl zerocopy::IntoBytes for core::num::nonzero::NonZero<isize, core::num::niche_types::NonZeroIsizeInner>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.num.nonzero.NonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes :
+  IntoBytes (core.num.nonzero.NonZero Std.Isize
+  core.num.niche_types.NonZeroIsizeInner) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.nonzero.NonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u8, core::num::niche_types::NonZeroU8Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u8, core::num::niche_types::NonZeroU8Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.U8
+  core.num.niche_types.NonZeroU8Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroU8NonZeroU8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i8, core::num::niche_types::NonZeroI8Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i8, core::num::niche_types::NonZeroI8Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.I8
+  core.num.niche_types.NonZeroI8Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroI8NonZeroI8Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u16, core::num::niche_types::NonZeroU16Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u16, core::num::niche_types::NonZeroU16Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.U16
+  core.num.niche_types.NonZeroU16Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroU16NonZeroU16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i16, core::num::niche_types::NonZeroI16Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i16, core::num::niche_types::NonZeroI16Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.I16
+  core.num.niche_types.NonZeroI16Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroI16NonZeroI16Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u32, core::num::niche_types::NonZeroU32Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u32, core::num::niche_types::NonZeroU32Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.U32
+  core.num.niche_types.NonZeroU32Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroU32NonZeroU32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i32, core::num::niche_types::NonZeroI32Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i32, core::num::niche_types::NonZeroI32Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.I32
+  core.num.niche_types.NonZeroI32Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroI32NonZeroI32Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u64, core::num::niche_types::NonZeroU64Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u64, core::num::niche_types::NonZeroU64Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.U64
+  core.num.niche_types.NonZeroU64Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroU64NonZeroU64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i64, core::num::niche_types::NonZeroI64Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i64, core::num::niche_types::NonZeroI64Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.I64
+  core.num.niche_types.NonZeroI64Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroI64NonZeroI64Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u128, core::num::niche_types::NonZeroU128Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<u128, core::num::niche_types::NonZeroU128Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.U128
+  core.num.niche_types.NonZeroU128Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroU128NonZeroU128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i128, core::num::niche_types::NonZeroI128Inner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<i128, core::num::niche_types::NonZeroI128Inner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.I128
+  core.num.niche_types.NonZeroI128Inner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroI128NonZeroI128Inner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<usize, core::num::niche_types::NonZeroUsizeInner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<usize, core::num::niche_types::NonZeroUsizeInner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.Usize
+  core.num.niche_types.NonZeroUsizeInner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroUsizeNonZeroUsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<isize, core::num::niche_types::NonZeroIsizeInner>>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.option.OptionNonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#9::{impl zerocopy::IntoBytes for core::option::Option<core::num::nonzero::NonZero<isize, core::num::niche_types::NonZeroIsizeInner>>}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def core.option.OptionNonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes :
+  IntoBytes (Option (core.num.nonzero.NonZero Std.Isize
+  core.num.niche_types.NonZeroIsizeInner)) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.option.OptionNonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#12::{impl zerocopy::IntoBytes for core::marker::PhantomData<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  core.marker.PhantomData.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (T : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#12::{impl zerocopy::IntoBytes for core::marker::PhantomData<T>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def core.marker.PhantomData.Insts.ZerocopyIntoBytes (T : Type) : IntoBytes
+  (core.marker.PhantomData T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.marker.PhantomData.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    T
+}
 
 /-- [zerocopy::util::padding_needed_for]:
     Source: 'src/util/mod.rs', lines 166:0-226:1 -/
