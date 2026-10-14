@@ -1,0 +1,480 @@
+{
+  "reader_status": "owned unverified bounded data decoder/interpreter, not a verified loader/unwinder",
+  "object_sha256": "360faff08c03863e69915ae1d5b6119b3986ae7c5be0ffd5052037e70dcd3128",
+  "image_sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf",
+  "object_binding": {
+    "start": 0,
+    "end": 32,
+    "file_offset": 1288,
+    "bytes": "fd7bbfa9fd030091f00300aae00301aa00023fd600040091fd7bc1a8c0035fd6",
+    "bytes_sha256": "ea698a8dbd4154d20a251e113a12debdbc2ac44fb57a323d87458d8ba1074cf4",
+    "section": {
+      "name": "__text",
+      "segment": "__TEXT",
+      "address": 0,
+      "size": 5916,
+      "offset": 1288,
+      "align": 2,
+      "reloff": 12544,
+      "nreloc": 338,
+      "flags": 2147484672
+    }
+  },
+  "image_binding": {
+    "start": 4294969536,
+    "end": 4294969568,
+    "file_offset": 2240,
+    "bytes": "fd7bbfa9fd030091f00300aae00301aa00023fd600040091fd7bc1a8c0035fd6",
+    "bytes_sha256": "ea698a8dbd4154d20a251e113a12debdbc2ac44fb57a323d87458d8ba1074cf4",
+    "section": {
+      "name": "__text",
+      "segment": "__TEXT",
+      "address": 4294969536,
+      "size": 226748,
+      "offset": 2240,
+      "align": 6,
+      "reloff": 0,
+      "nreloc": 0,
+      "flags": 2147484672
+    }
+  },
+  "active_unwind": {
+    "function_offset": 2240,
+    "encoding": 50331668,
+    "page_kind": 2,
+    "range_end_offset": 2272,
+    "image_base": 4294967296,
+    "section": {
+      "name": "__unwind_info",
+      "segment": "__TEXT",
+      "address": 4295221900,
+      "size": 5560,
+      "offset": 254604,
+      "align": 2,
+      "reloff": 0,
+      "nreloc": 0,
+      "flags": 0
+    },
+    "personality_index": 0,
+    "has_lsda": false
+  },
+  "final_FDE": {
+    "section": {
+      "name": "__eh_frame",
+      "segment": "__TEXT",
+      "address": 4295227464,
+      "size": 29388,
+      "offset": 260168,
+      "align": 3,
+      "reloff": 0,
+      "nreloc": 0,
+      "flags": 1744830475
+    },
+    "fde_section_offset": 20,
+    "file_offset": 260188,
+    "record_bytes": 52,
+    "CIE_file_offset": 260168,
+    "CIE_RA_column": 30,
+    "CIE_pointer_encoding": "pcrel native64 (0x10)",
+    "initial_field_section_offset": 28,
+    "encoded_pc": -257956,
+    "unrelocated_or_final_pc": 4294969536,
+    "range": 32,
+    "rows": [
+      {
+        "pc_offset": 0,
+        "state": {
+          "cfa": [
+            31,
+            0
+          ],
+          "registers": {
+            "29": [
+              "same"
+            ],
+            "30": [
+              "same"
+            ]
+          }
+        }
+      },
+      {
+        "pc_offset": 4,
+        "state": {
+          "cfa": [
+            31,
+            16
+          ],
+          "registers": {
+            "29": [
+              "offset",
+              -16
+            ],
+            "30": [
+              "offset",
+              -8
+            ]
+          }
+        }
+      },
+      {
+        "pc_offset": 8,
+        "state": {
+          "cfa": [
+            29,
+            16
+          ],
+          "registers": {
+            "29": [
+              "offset",
+              -16
+            ],
+            "30": [
+              "offset",
+              -8
+            ]
+          }
+        }
+      },
+      {
+        "pc_offset": 28,
+        "state": {
+          "cfa": [
+            31,
+            0
+          ],
+          "registers": {
+            "29": [
+              "same"
+            ],
+            "30": [
+              "same"
+            ]
+          }
+        }
+      }
+    ],
+    "ops": [
+      {
+        "at": 260213,
+        "pc_offset": 0,
+        "opcode": 12,
+        "kind": "def_cfa",
+        "reg": 31,
+        "offset": 0,
+        "arg_at": 260215
+      },
+      {
+        "at": 260216,
+        "pc_offset": 0,
+        "opcode": 8,
+        "kind": "same",
+        "reg": 29
+      },
+      {
+        "at": 260218,
+        "pc_offset": 0,
+        "opcode": 8,
+        "kind": "same",
+        "reg": 30
+      },
+      {
+        "at": 260220,
+        "pc_offset": 0,
+        "opcode": 68,
+        "kind": "advance",
+        "to": 4
+      },
+      {
+        "at": 260221,
+        "pc_offset": 4,
+        "opcode": 14,
+        "kind": "def_cfa_offset",
+        "offset": 16,
+        "arg_at": 260222
+      },
+      {
+        "at": 260223,
+        "pc_offset": 4,
+        "opcode": 157,
+        "kind": "offset",
+        "reg": 29,
+        "arg": 2,
+        "arg_at": 260224
+      },
+      {
+        "at": 260225,
+        "pc_offset": 4,
+        "opcode": 158,
+        "kind": "offset",
+        "reg": 30,
+        "arg": 1,
+        "arg_at": 260226
+      },
+      {
+        "at": 260227,
+        "pc_offset": 4,
+        "opcode": 68,
+        "kind": "advance",
+        "to": 8
+      },
+      {
+        "at": 260228,
+        "pc_offset": 8,
+        "opcode": 13,
+        "kind": "def_cfa_register",
+        "reg": 29
+      },
+      {
+        "at": 260230,
+        "pc_offset": 8,
+        "opcode": 84,
+        "kind": "advance",
+        "to": 28
+      },
+      {
+        "at": 260231,
+        "pc_offset": 28,
+        "opcode": 12,
+        "kind": "def_cfa",
+        "reg": 31,
+        "offset": 0,
+        "arg_at": 260233
+      },
+      {
+        "at": 260234,
+        "pc_offset": 28,
+        "opcode": 8,
+        "kind": "same",
+        "reg": 29
+      },
+      {
+        "at": 260236,
+        "pc_offset": 28,
+        "opcode": 8,
+        "kind": "same",
+        "reg": 30
+      },
+      {
+        "at": 260238,
+        "pc_offset": 28,
+        "opcode": 0,
+        "kind": "nop"
+      },
+      {
+        "at": 260239,
+        "pc_offset": 28,
+        "opcode": 0,
+        "kind": "nop"
+      }
+    ]
+  },
+  "five_recovery_contexts": [
+    {
+      "pc_offset": 0,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 4,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 8,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 20,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 28,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    }
+  ],
+  "object_FDE_relocation": {
+    "pair": [
+      {
+        "address": 28,
+        "type": 1,
+        "length_log2": 3,
+        "pcrel": 0,
+        "external": 1,
+        "symbol": {
+          "name": "ltmp12",
+          "type": 14,
+          "section": 13,
+          "value": 9408
+        },
+        "index": 98
+      },
+      {
+        "address": 28,
+        "type": 0,
+        "length_log2": 3,
+        "pcrel": 0,
+        "external": 1,
+        "symbol": {
+          "name": "_anneal_unwind_bounce",
+          "type": 15,
+          "section": 1,
+          "value": 0
+        },
+        "index": 102
+      }
+    ],
+    "raw_tool_PC": 9408,
+    "resolved_object_PC": 0,
+    "explanation": "Object dwarf display has not applied the symbol subtractor/unsigned relocation pair; use resolved final image for active PC binding"
+  },
+  "data_controls": [
+    {
+      "name": "wrong-cfa-offset",
+      "path": "data-controls/wrong-cfa-offset.macho-data.bin",
+      "sha256": "1e2445ef327286f6e071c2a54624f65442cca341bcb1c19a7f485058d2b11d0a",
+      "changed_file_offset": 260222,
+      "original_byte": 16,
+      "new_byte": 8,
+      "instruction_bytes_identical": true,
+      "body_recovery": {
+        "pc_offset": 20,
+        "recovered": {
+          "sp": 4088,
+          "fp": 3735928559,
+          "lr": 12288
+        },
+        "expected": {
+          "sp": 4096,
+          "fp": 12288,
+          "lr": 32772
+        },
+        "matches": false
+      },
+      "modeled_ordinary_epilogue": {
+        "recovered": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "expected": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "matches": true
+      },
+      "native_execution": false
+    },
+    {
+      "name": "wrong-lr-offset",
+      "path": "data-controls/wrong-lr-offset.macho-data.bin",
+      "sha256": "1c5baea06ee93269e9beb7b5f7cc9f27b26d9b54152062fea625bbbc0fefe32b",
+      "changed_file_offset": 260226,
+      "original_byte": 1,
+      "new_byte": 2,
+      "instruction_bytes_identical": true,
+      "body_recovery": {
+        "pc_offset": 20,
+        "recovered": {
+          "sp": 4096,
+          "fp": 12288,
+          "lr": 12288
+        },
+        "expected": {
+          "sp": 4096,
+          "fp": 12288,
+          "lr": 32772
+        },
+        "matches": false
+      },
+      "modeled_ordinary_epilogue": {
+        "recovered": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "expected": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "matches": true
+      },
+      "native_execution": false
+    },
+    {
+      "name": "missing-active-fde",
+      "path": "data-controls/missing-active-fde.macho-data.bin",
+      "sha256": "66615df61a327545705de1156484dd5976095a193ad9d48e50bfd0aae066c908",
+      "changed_file_offset": 260188,
+      "instruction_bytes_identical": true,
+      "active_route_is_dwarf": true,
+      "expected_owned_lookup_failure": "missing or out-of-range FDE",
+      "modeled_ordinary_epilogue": {
+        "recovered": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "expected": {
+          "sp": 4096,
+          "fp": 12288,
+          "pc_after_ret": 32772
+        },
+        "matches": true
+      },
+      "native_execution": false
+    }
+  ],
+  "no_native_execution": true,
+  "no_mutant_compilation_link_loading_execution": true
+}

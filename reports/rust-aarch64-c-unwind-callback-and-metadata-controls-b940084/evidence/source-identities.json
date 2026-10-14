@@ -1,0 +1,106 @@
+{
+  "stage": "Preparation only; source/header reads and copies, no compiler/tool/native execution",
+  "observed_at": "2026-10-14",
+  "files": [
+    {
+      "role": "normative Rust interface source reread from pinned cache",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/items/functions.md",
+      "owned_copy": "primary/rust-reference/functions.md",
+      "sha256": "9dcf49ccf23e4b8c1123466626e08750c4186fb21d28fbec3a67194d0c82e905",
+      "bytes": 28223
+    },
+    {
+      "role": "normative Rust interface source reread from pinned cache",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/items/external-blocks.md",
+      "owned_copy": "primary/rust-reference/external-blocks.md",
+      "sha256": "304c39c4f0737c1abc22ec2735bac4d96bb51b7986a4771215325cc52b842b62",
+      "bytes": 23215
+    },
+    {
+      "role": "normative Rust interface source reread from pinned cache",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/inline-assembly.md",
+      "owned_copy": "primary/rust-reference/inline-assembly.md",
+      "sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "bytes": 74833
+    },
+    {
+      "role": "actual selected SDK ABI/metadata/API header; not a claim about current runtime implementation source",
+      "source_label": "<SDKROOT>/usr/include/mach-o/compact_unwind_encoding.h",
+      "sdk_directory_identity": "MacOSX27.0.sdk",
+      "owned_copy": "primary/sdk/mach-o/compact_unwind_encoding.h",
+      "sha256": "3cc6fb9161ed9f8096983c65cc4c39be857a2628a6e01372e45f80dd9b367cf8",
+      "bytes": 22152
+    },
+    {
+      "role": "actual selected SDK ABI/metadata/API header; not a claim about current runtime implementation source",
+      "source_label": "<SDKROOT>/usr/include/unwind.h",
+      "sdk_directory_identity": "MacOSX27.0.sdk",
+      "owned_copy": "primary/sdk/unwind.h",
+      "sha256": "e4a58637fc8ca1d29cd600c3c4416aafed50085edf276fa076214c8d81c263f0",
+      "bytes": 7523
+    },
+    {
+      "role": "actual selected SDK ABI/metadata/API header; not a claim about current runtime implementation source",
+      "source_label": "<SDKROOT>/usr/include/unwind_itanium.h",
+      "sdk_directory_identity": "MacOSX27.0.sdk",
+      "owned_copy": "primary/sdk/unwind_itanium.h",
+      "sha256": "c8cc61d806e13a2e75e93f1c15afd432f93a99283d27d15f5a28a3ebee989cba",
+      "bytes": 2824
+    },
+    {
+      "role": "actual selected SDK ABI/metadata/API header; not a claim about current runtime implementation source",
+      "source_label": "<SDKROOT>/usr/include/dlfcn.h",
+      "sdk_directory_identity": "MacOSX27.0.sdk",
+      "owned_copy": "primary/sdk/dlfcn.h",
+      "sha256": "01b3575f40973f5549655b9d44fb845b67c663fa201bdb1f3a0b0266e5ec046b",
+      "bytes": 14871
+    },
+    {
+      "role": "actual selected SDK ABI/metadata/API header; not a claim about current runtime implementation source",
+      "source_label": "<SDKROOT>/usr/include/libunwind.h",
+      "sdk_directory_identity": "MacOSX27.0.sdk",
+      "owned_copy": "primary/sdk/libunwind.h",
+      "sha256": "34d08a481ab71fc699971638cb58693cc9fcc6dafe4680963cb937359cfa6edb",
+      "bytes": 38238
+    },
+    {
+      "role": "previous observed global compiler identity, NOT a fresh invocation in this task",
+      "owned_copy": "primary/prior-rustc-version.log",
+      "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+      "bytes": 192
+    }
+  ],
+  "web_primary_reads": [
+    {
+      "url": "https://developer.apple.com/tutorials/data/documentation/xcode/writing-arm64-code-for-apple-platforms.json",
+      "identity": "Current official Apple article; no immutable source revision exposed; normalized tool text read, not a raw-byte hash",
+      "used": "X18 reservation, valid X29 frame chain and 16-byte SP alignment"
+    },
+    {
+      "url": "https://dwarfstd.org/doc/DWARF5.pdf",
+      "identity": "DWARF5,13February2017,section6.4/6.4.2",
+      "used": "Proposed CFA/register recovery row semantics, not concrete unwinder proof"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ARM-software/abi-aa/2025Q1/aadwarf64/aadwarf64.rst",
+      "identity": "Release2025Q1,7April2025; tag/release document, no resolved commit asserted",
+      "used": "Register29/30/31 mapping, CFA definition, initial-rule caution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ARM-software/abi-aa/2025Q1/aapcs64/aapcs64.rst",
+      "identity": "Release2025Q1; no resolved commit asserted",
+      "used": "General integer register and stack ABI background"
+    }
+  ],
+  "unresolved_fetches": [
+    "Apple article HTML and Markdown unavailable; JSON official view succeeded",
+    "LLVM llvmorg-23.1.1 raw source view unavailable; actual hash-bound SDK header used, no source/compiler identity substitution",
+    "ARM tag Git-ref API view unavailable; release-document coordinates retained without invented immutable commit"
+  ]
+}

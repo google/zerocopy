@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "metadata_exact_top_fields": true,
+  "one_exact_italic_AI_notice": true,
+  "local_report_file_links_checked": 18,
+  "no_private_Users_or_container_home_prefix_in_public_text_or_data": true,
+  "image_data_all_nonexecutable": true,
+  "positive_raw_image_still_unchanged": true,
+  "native_run_count": 1,
+  "no_new_native_execution_during_structural_audit": true
+}

@@ -1,0 +1,96 @@
+OVERVIEW: pretty-print DWARF debug information in object files and debug info archives.
+
+USAGE: llvm-dwarfdump [options] <input object files or .dSYM bundles>
+
+OPTIONS:
+
+Color Options:
+
+  --color                                 - Use colors in output (default=autodetect)
+
+Generic Options:
+
+  --help                                  - Display available options (--help-hidden for more)
+  --help-list                             - Display list of available options (--help-list-hidden for more)
+  --version                               - Display the version of this program
+
+Section-specific Dump Options:
+These control which sections are dumped. Where applicable these parameters take an optional =<offset> argument to dump only the entry at the specified offset.
+
+  -a                                      - Alias for --all
+  --all                                   - Dump all debug info sections
+  --apple-names                           - Dump the .apple_names section
+  --apple-namespaces                      - Dump the .apple_namespaces section
+  --apple-objc                            - Dump the .apple_objc section
+  --apple-types                           - Dump the .apple_types section
+  --debug-abbrev                          - Dump the .debug_abbrev section
+  --debug-addr                            - Dump the .debug_addr section
+  --debug-aranges                         - Dump the .debug_aranges section
+  --debug-cu-index                        - Dump the .debug_cu_index section
+  --debug-frame[=<offset>]                  - Dump the .debug_frame section
+  --debug-gnu-pubnames                    - Dump the .debug_gnu_pubnames section
+  --debug-gnu-pubtypes                    - Dump the .debug_gnu_pubtypes section
+  --debug-info[=<offset>]                   - Dump the .debug_info section
+  --debug-line[=<offset>]                   - Dump the .debug_line section
+  --debug-line-str                        - Dump the .debug_line_str section
+  --debug-loc[=<offset>]                    - Dump the .debug_loc section
+  --debug-loclists[=<offset>]               - Dump the .debug_loclists section
+  --debug-macro                           - Dump the .debug_macro section
+  --debug-names                           - Dump the .debug_names section
+  --debug-pubnames                        - Dump the .debug_pubnames section
+  --debug-pubtypes                        - Dump the .debug_pubtypes section
+  --debug-ranges                          - Dump the .debug_ranges section
+  --debug-rnglists                        - Dump the .debug_rnglists section
+  --debug-str                             - Dump the .debug_str section
+  --debug-str-offsets                     - Dump the .debug_str_offsets section
+  --debug-tu-index                        - Dump the .debug_tu_index section
+  --debug-types[=<offset>]                  - Dump the .debug_types section
+  --eh-frame                              - Alias for --debug-frame
+  --gdb-index                             - Dump the .gdb_index section
+
+Specific Options:
+
+  -F                                      - Alias for --show-form.
+  --arch=<string>                         - Dump debug information for the specified CPU architecture only. Architectures may be specified by name or by number. This option can be specified multiple times, once for each desired architecture.
+  -c                                      - Alias for --show-children.
+  --diff                                  - Emit diff-friendly output by omitting offsets and addresses.
+  --dwo                                   - Dump the non skeleton DIE in the .dwo or .dwp file after dumping the skeleton DIE from the main executable. This allows dumping the .dwo files with resolved addresses.
+  --error-display=<value>                 - Set the level of detail and summary to display when verifying (implies --verify)
+    =quiet                                -   Only display whether errors occurred.
+    =summary                              -   Display only a summary of the errors found.
+    =details                              -   Display each error in detail but no summary.
+    =full                                 -   Display each error as well as a summary. [default]
+  -f                                      - Alias for --find.
+  --filter-child-tag=<list of DWARF tags> - When --show-children is specified, show only DIEs with the specified DWARF tags.
+  --find=<name>                           - Search for the exact match for <name> in the accelerator tables and print the matching debug information entries. When no accelerator tables are available, the slower but more complete -name option can be used instead.
+  --find-all-apple                        - Print every debug information entry in the accelerator tables.
+  -i                                      - Alias for --ignore-case.
+  --ignore-case                           - Ignore case distinctions when using --name.
+  --lookup=<address>                      - Lookup <address> in the debug information and print out any available file, function, block and line table details.
+  -n                                      - Alias for --name
+  --name=<pattern>                        - Find and print all debug info entries whose name (DW_AT_name attribute) matches the exact text in <pattern>.  When used with the the -regex option <pattern> is interpreted as a regular expression.
+  -o <filename>                           - Redirect output to the specified file.
+  -p                                      - Alias for --show-parents.
+  --parent-recurse-depth=<N>              - Only recurse to a depth of N when displaying parents of debug info entries.
+  --quiet                                 - Use with -verify to not emit to STDOUT.
+  -r                                      - Alias for --recurse-depth.
+  --recurse-depth=<N>                     - Only recurse to a depth of N when displaying children of debug info entries.
+  --regex                                 - Treat any <pattern> strings as regular expressions when searching with --name. If --ignore-case is also specified, the regular expression becomes case-insensitive.
+  --show-children                         - Show a debug info entry's children when selectively printing entries.
+  --show-form                             - Show DWARF form types after the DWARF attribute types.
+  --show-parents                          - Show a debug info entry's parents when selectively printing entries.
+  --show-section-sizes                    - Show the sizes of all debug sections, expressed in bytes.
+  --show-sources                          - Show the sources across all compilation units.
+  --statistics                            - Emit JSON-formatted debug info quality metrics.
+  --summarize-types                       - Abbreviate the description of type unit entries.
+  -t                                      - Alias for --filter-child-tag.
+  -u                                      - Alias for --uuid.
+  --uuid                                  - Show the UUID for each architecture.
+  -v                                      - Alias for --verbose.
+  --verbose                               - Print more low-level encoding details.
+  --verify                                - Verify the DWARF debug info.
+  --verify-json=<filename.json>           - Output JSON-formatted error summary to the specified file. (Implies --verify)
+  --verify-num-threads=<uint>             - Number of threads to use for --verify. Single threaded verification is the default unless this option is specified. If 0 is specified, maximum hardware threads will be used. This can cause the output to be non determinisitic, but can speed up verification and is useful when running with the summary only or JSON summary modes.
+  -x                                      - Alias for --regex
+
+Pass @FILE as argument to read options from FILE.

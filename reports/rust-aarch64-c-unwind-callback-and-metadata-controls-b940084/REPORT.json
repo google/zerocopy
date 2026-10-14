@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "rust/ffi",
+    "rust/unwind",
+    "assembly/aarch64",
+    "assembly/cfi",
+    "macho/unwind",
+    "resources/cleanup"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and C-unwind lowering",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "target": "aarch64-apple-darwin",
+        "rustc_sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+      }
+    },
+    {
+      "name": "Rust unwind and assembly interface specification",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Whole-function callback and cleanup specimen",
+      "identity": {
+        "artifact": "specimen.rs",
+        "sha256": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1",
+        "assembly_sha256": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+        "actual_native_image_sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf"
+      }
+    },
+    {
+      "name": "Apple SDK unwind API and metadata headers",
+      "identity": {
+        "artifact": "MacOSX27.0.sdk selected unwind and dlfcn headers",
+        "identity_inventory": "evidence/source-identities.json",
+        "compact_unwind_header_sha256": "3cc6fb9161ed9f8096983c65cc4c39be857a2628a6e01372e45f80dd9b367cf8",
+        "unwind_api_header_sha256": "e4a58637fc8ca1d29cd600c3c4416aafed50085edf276fa076214c8d81c263f0"
+      }
+    },
+    {
+      "name": "Observed platform unwind runtime",
+      "identity": {
+        "platform": "macOS Arm64",
+        "image": "/usr/lib/system/libunwind.dylib",
+        "observed_symbol": "_Unwind_Backtrace",
+        "observed_symbol_image_offset": "0x8998"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

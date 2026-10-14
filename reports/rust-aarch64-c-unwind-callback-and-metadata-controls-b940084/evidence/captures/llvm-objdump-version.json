@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "--version"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "TMPDIR": "<OWNED_NATIVE_UNWIND_ROOT>/tmp/",
+  "exit": 0,
+  "seconds": 0.206230667,
+  "streams": {
+    "stdout": {
+      "path": "captures/llvm-objdump-version.stdout",
+      "sha256": "daf97ed1902b65c69716a2f0b1477d0a3a180f1cc673170ac733282e06fed5fb",
+      "bytes": 561
+    },
+    "stderr": {
+      "path": "captures/llvm-objdump-version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "source_sha256": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  }
+}

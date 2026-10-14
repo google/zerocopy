@@ -1,0 +1,37 @@
+{
+  "rustc_actual": "<GLOBAL_RUST_SYSROOT>/bin/rustc",
+  "files": [
+    {
+      "path": "<GLOBAL_RUST_SYSROOT>/bin/rustc",
+      "bytes": 413480,
+      "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+    },
+    {
+      "path": "<GLOBAL_RUST_SYSROOT>/lib/librustc_driver-09a1a87b4d568b8a.dylib",
+      "bytes": 83384232,
+      "sha256": "17b7b2520e11aaa79087493fb8ad1140382b959eed3f00c3e8635cc000b63a4d"
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "bytes": 18133888,
+      "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c"
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-dwarfdump",
+      "bytes": 12958464,
+      "sha256": "4aa5dcbab821ed16cbc51c0f291a7cc17d3de12b228fb8dd8d7c23999976deaa"
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/nm",
+      "bytes": 16367008,
+      "sha256": "82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8"
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/otool",
+      "bytes": 72672,
+      "sha256": "8353ad3c42743a93e9ca7d0d4e9d3df22305252d169c42c543ee22eeb8c33809"
+    }
+  ],
+  "rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "stage": "identities only; no image execution"
+}

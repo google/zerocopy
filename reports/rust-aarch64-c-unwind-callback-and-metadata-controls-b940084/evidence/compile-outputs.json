@@ -1,0 +1,25 @@
+{
+  "outputs": [
+    {
+      "path": "build/specimen.o",
+      "bytes": 27136,
+      "sha256": "360faff08c03863e69915ae1d5b6119b3986ae7c5be0ffd5052037e70dcd3128"
+    },
+    {
+      "path": "build/specimen.s",
+      "bytes": 84248,
+      "sha256": "629c6d5166163f88883004c7e7d877e2aa35770e5d64d1a812be254efb8db1eb"
+    },
+    {
+      "path": "build/specimen",
+      "bytes": 499336,
+      "sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf"
+    }
+  ],
+  "source_hashes": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  },
+  "native_executed": false,
+  "owned_bytes": 1501052
+}

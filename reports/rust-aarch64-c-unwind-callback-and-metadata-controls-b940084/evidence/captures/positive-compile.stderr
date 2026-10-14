@@ -1,0 +1,12 @@
+warning: unnecessary `unsafe` block
+   --> specimen.rs:183:19
+    |
+183 |         let end = unsafe { std::ptr::addr_of!(anneal_unwind_bounce_end) } as usize;
+    |                   ^^^^^^ unnecessary `unsafe` block
+    |
+    = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+
+        0.33 real         0.15 user         0.08 sys
+time: sysctl kern.clockrate: Operation not permitted

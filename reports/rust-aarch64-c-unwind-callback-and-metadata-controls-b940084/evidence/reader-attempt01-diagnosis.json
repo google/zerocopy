@@ -1,0 +1,28 @@
+{
+  "status": "Stopped before any data control generation; own reader unsupported-format error, no native execution",
+  "observed_exit": 1,
+  "source_sha256": "d2ff0f5ba0250e231d3eb15247ec318478cbe9d5a40dd616e2368c49ee48aeb6",
+  "diagnostic_transcribed_from_tool_result": "ValueError: selected compressed second-level page",
+  "root_cause": "Reader initially admitted only compressed pagekind3, while actual final image pages are regular pagekind2. SDK header defines both. This is a decoder-domain limitation, not a disagreement in the compiler CFI or selected metadata.",
+  "actual_top_level_pages": [
+    {
+      "index": 0,
+      "function_offset": 2240,
+      "second_level_page_offset": 1300,
+      "page_kind": 2
+    },
+    {
+      "index": 1,
+      "function_offset": 224980,
+      "second_level_page_offset": 5400,
+      "page_kind": 3
+    },
+    {
+      "index": 2,
+      "function_offset": 228989,
+      "second_level_page_offset": 0,
+      "page_kind": null
+    }
+  ],
+  "next_action": "Extend owned data reader with exact SDK-defined regular pagekind2 fields, then rerun unchanged positive artifacts."
+}

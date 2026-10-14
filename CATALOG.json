@@ -23622,6 +23622,63 @@
         "cargo/incremental-compilation"
       ]
     },
+    "rust-aarch64-c-unwind-callback-and-metadata-controls-b940084": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "rustc_sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0",
+            "target": "aarch64-apple-darwin",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler and C-unwind lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust unwind and assembly interface specification"
+        },
+        {
+          "identity": {
+            "actual_native_image_sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf",
+            "artifact": "specimen.rs",
+            "assembly_sha256": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+            "sha256": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+          },
+          "name": "Whole-function callback and cleanup specimen"
+        },
+        {
+          "identity": {
+            "artifact": "MacOSX27.0.sdk selected unwind and dlfcn headers",
+            "compact_unwind_header_sha256": "3cc6fb9161ed9f8096983c65cc4c39be857a2628a6e01372e45f80dd9b367cf8",
+            "identity_inventory": "evidence/source-identities.json",
+            "unwind_api_header_sha256": "e4a58637fc8ca1d29cd600c3c4416aafed50085edf276fa076214c8d81c263f0"
+          },
+          "name": "Apple SDK unwind API and metadata headers"
+        },
+        {
+          "identity": {
+            "image": "/usr/lib/system/libunwind.dylib",
+            "observed_symbol": "_Unwind_Backtrace",
+            "observed_symbol_image_offset": "0x8998",
+            "platform": "macOS Arm64"
+          },
+          "name": "Observed platform unwind runtime"
+        }
+      ],
+      "topics": [
+        "rust/ffi",
+        "rust/unwind",
+        "assembly/aarch64",
+        "assembly/cfi",
+        "macho/unwind",
+        "resources/cleanup"
+      ]
+    },
     "rust-admission-diagnostics-and-proof-transport-cce761ad": {
       "observed_at": "2026-10-14",
       "subjects": [

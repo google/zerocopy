@@ -1,0 +1,37 @@
+{
+  "normative_sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/items/functions.md",
+      "rules": [
+        "items.fn.extern.unwind"
+      ],
+      "supports": "C-unwind/panic strategy boundary for the selected Rust panic"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/inline-assembly.md",
+      "rules": [
+        "asm.scope.global_asm",
+        "asm.options.global_asm-restriction",
+        "asm.rules.unwind",
+        "asm.naked-rules.unwind"
+      ],
+      "supports": "Whole external function versus ordinary asm unwind prohibition; naked interface separate"
+    }
+  ],
+  "platform_artifacts": "primary/sdk; exact header hashes in evidence/source-identities.json. SDK source declarations/format are separate from actual runtime implementation identity.",
+  "actual_execution": [
+    "evidence/captures/positive-compile-direct.json",
+    "evidence/captures/native-positive.json"
+  ],
+  "derived_only": [
+    "Five supplied frame arithmetic snapshots",
+    "Ordinary epilogue counterfactual under unchanged instruction bytes",
+    "Three data-only invalid-metadata interpretations by an unverified bounded reader"
+  ],
+  "no_universal_proof": "E41 remains open; no compiler/unwinder/personality/Rust resource adequacy theorem",
+  "projection": "Exact approved same-length N_OSO prefix changes and separate text changes, source/raw/public hashes in projection-receipts.json"
+}

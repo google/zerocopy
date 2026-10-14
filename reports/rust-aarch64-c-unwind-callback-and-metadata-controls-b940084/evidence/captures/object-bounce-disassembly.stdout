@@ -1,0 +1,11 @@
+build/specimen.o:
+(__TEXT,__text) section
+_anneal_unwind_bounce:
+       0:	fd 7b bf a9	stp	x29, x30, [sp, #-0x10]!
+       4:	fd 03 00 91	mov	x29, sp
+       8:	f0 03 00 aa	mov	x16, x0
+       c:	e0 03 01 aa	mov	x0, x1
+      10:	00 02 3f d6	blr	x16
+      14:	00 04 00 91	add	x0, x0, #0x1
+      18:	fd 7b c1 a8	ldp	x29, x30, [sp], #0x10
+      1c:	c0 03 5f d6	ret

@@ -1,0 +1,26 @@
+{
+  "status": "Stopped on wrapper exit1; no native execution",
+  "diagnosis": "/usr/bin/time -l reports sysctl kern.clockrate Operation not permitted. Rust emits unused_unsafe warning only and artifacts; child compiler exit was not independently captured. Do not claim accepted compile status from wrapper exit.",
+  "original_capture": "captures/positive-compile.json",
+  "outputs_after_stopped_attempt": [
+    {
+      "path": "build/specimen.o",
+      "exists": true,
+      "bytes": 27136,
+      "sha256": "360faff08c03863e69915ae1d5b6119b3986ae7c5be0ffd5052037e70dcd3128"
+    },
+    {
+      "path": "build/specimen.s",
+      "exists": true,
+      "bytes": 84248,
+      "sha256": "629c6d5166163f88883004c7e7d877e2aa35770e5d64d1a812be254efb8db1eb"
+    },
+    {
+      "path": "build/specimen",
+      "exists": true,
+      "bytes": 499336,
+      "sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf"
+    }
+  ],
+  "next_action": "Preserve entire first build output directory as build-attempt01; direct unchanged compiler in new build directory with monotonic elapsed time only, no RSS claim."
+}

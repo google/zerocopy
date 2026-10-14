@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "<GLOBAL_RUST_SYSROOT>/bin/rustc",
+    "specimen.rs",
+    "--edition=2024",
+    "-C",
+    "opt-level=1",
+    "-C",
+    "panic=unwind",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "force-frame-pointers=yes",
+    "-C",
+    "force-unwind-tables=yes",
+    "--emit=obj=build/specimen.o,asm=build/specimen.s,link=build/specimen"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "TMPDIR": "<OWNED_NATIVE_UNWIND_ROOT>/tmp/",
+  "exit": 0,
+  "seconds": 0.145995959,
+  "streams": {
+    "stdout": {
+      "path": "captures/positive-compile-direct.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "stderr": {
+      "path": "captures/positive-compile-direct.stderr",
+      "sha256": "13e22ac0914fd2fd51cfee6397471b231e8573a0b2260cab68553bb49e02c992",
+      "bytes": 330
+    }
+  },
+  "source_sha256": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  }
+}

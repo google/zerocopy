@@ -1,0 +1,1103 @@
+{
+  "status": "actual ONE positive native run completed; public validation is static data inspection only",
+  "native_run_count": 1,
+  "native_exit": 0,
+  "native_raw_image_sha256": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf",
+  "public_positive_image_DATA_sha256": "b3132adac0a809fba51315822a82df64383bc43d1d0483621eee80c145404387",
+  "public_projected_images_executed": false,
+  "mutated_images_executed": false,
+  "image_identity_observations": {
+    "assembly-bounce": {
+      "address": 4362291392,
+      "image_base": 4362289152,
+      "offset": 2240,
+      "symbol": "anneal_unwind_bounce",
+      "image": "<OWNED_NATIVE_UNWIND_ROOT>/build/specimen"
+    },
+    "rust-bounce": {
+      "address": 4362297148,
+      "image_base": 4362289152,
+      "offset": 7996,
+      "symbol": "anneal_rust_bounce",
+      "image": "<OWNED_NATIVE_UNWIND_ROOT>/build/specimen"
+    },
+    "platform-unwinder": {
+      "address": 6794721688,
+      "image_base": 6794686464,
+      "offset": 35224,
+      "symbol": "_Unwind_Backtrace",
+      "image": "/usr/lib/system/libunwind.dylib"
+    }
+  },
+  "actual_cases": [
+    {
+      "path": "Rust",
+      "panic": false,
+      "calls": 1,
+      "callback_drops": 1,
+      "outer_drops": 1,
+      "drop_order": 12,
+      "expected_hooks": 0,
+      "backtrace_status": 5,
+      "backtrace_ips": [
+        4362292784,
+        4362293632,
+        4362297168,
+        4362294676,
+        4362294160,
+        4362291896,
+        4362291920,
+        4362395952,
+        4362297232
+      ]
+    },
+    {
+      "path": "Rust",
+      "panic": true,
+      "calls": 1,
+      "callback_drops": 1,
+      "outer_drops": 1,
+      "drop_order": 12,
+      "expected_hooks": 1,
+      "backtrace_status": 5,
+      "backtrace_ips": [
+        4362292784,
+        4362293540,
+        4362297168,
+        4362294676,
+        4362294204,
+        4362291896,
+        4362291920,
+        4362395952,
+        4362297232
+      ]
+    },
+    {
+      "path": "Assembly",
+      "panic": false,
+      "calls": 1,
+      "callback_drops": 1,
+      "outer_drops": 1,
+      "drop_order": 12,
+      "expected_hooks": 0,
+      "backtrace_status": 5,
+      "backtrace_ips": [
+        4362292784,
+        4362293632,
+        4362291412,
+        4362294700,
+        4362294160,
+        4362291896,
+        4362291920,
+        4362395952,
+        4362297232
+      ]
+    },
+    {
+      "path": "Assembly",
+      "panic": true,
+      "calls": 1,
+      "callback_drops": 1,
+      "outer_drops": 1,
+      "drop_order": 12,
+      "expected_hooks": 1,
+      "backtrace_status": 5,
+      "backtrace_ips": [
+        4362292784,
+        4362293540,
+        4362291412,
+        4362294700,
+        4362294204,
+        4362291896,
+        4362291920,
+        4362395952,
+        4362297232
+      ]
+    }
+  ],
+  "positive_recovery_contexts": [
+    {
+      "pc_offset": 0,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 4,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 8,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 20,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    },
+    {
+      "pc_offset": 28,
+      "recovered": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "expected": {
+        "sp": 4096,
+        "fp": 12288,
+        "lr": 32772
+      },
+      "matches": true
+    }
+  ],
+  "metadata_only_controls": 3,
+  "E41": "No universal unwinder/metadata/personality/Rust-resource proof",
+  "checks": [
+    {
+      "check": "public binding support/specimen.rs",
+      "pass": true
+    },
+    {
+      "check": "public binding support/bounce.s",
+      "pass": true
+    },
+    {
+      "check": "public binding artifacts/specimen.o",
+      "pass": true
+    },
+    {
+      "check": "public binding artifacts/specimen.s",
+      "pass": true
+    },
+    {
+      "check": "public binding data-controls/positive-image.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "image-data nonexecutable data-controls/positive-image.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "four equal-length N_OSO projections data-controls/positive-image.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/positive-image.macho-data.bin __text",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/positive-image.macho-data.bin __eh_frame",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/positive-image.macho-data.bin __unwind_info",
+      "pass": true
+    },
+    {
+      "check": "public binding data-controls/wrong-cfa-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "image-data nonexecutable data-controls/wrong-cfa-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "four equal-length N_OSO projections data-controls/wrong-cfa-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-cfa-offset.macho-data.bin __text",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-cfa-offset.macho-data.bin __eh_frame",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-cfa-offset.macho-data.bin __unwind_info",
+      "pass": true
+    },
+    {
+      "check": "public binding data-controls/wrong-lr-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "image-data nonexecutable data-controls/wrong-lr-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "four equal-length N_OSO projections data-controls/wrong-lr-offset.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-lr-offset.macho-data.bin __text",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-lr-offset.macho-data.bin __eh_frame",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/wrong-lr-offset.macho-data.bin __unwind_info",
+      "pass": true
+    },
+    {
+      "check": "public binding data-controls/missing-active-fde.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "image-data nonexecutable data-controls/missing-active-fde.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "four equal-length N_OSO projections data-controls/missing-active-fde.macho-data.bin",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "declared N_OSO replacement bytes",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/missing-active-fde.macho-data.bin __text",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/missing-active-fde.macho-data.bin __eh_frame",
+      "pass": true
+    },
+    {
+      "check": "raw/public section identity data-controls/missing-active-fde.macho-data.bin __unwind_info",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-bounce-disassembly.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-bounce-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-bounce-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-dylibs.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-dylibs.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-dylibs.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-eh-frame.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-eh-frame.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-eh-frame.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-loadcommands.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-loadcommands.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-loadcommands.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-symbols.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-symbols.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-symbols.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-unwind.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-unwind.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/image-unwind.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-help.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-help.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-help.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-version.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-dwarfdump-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-help.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-help.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-help.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-version.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/llvm-objdump-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/metadata-checker.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/metadata-checker.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/metadata-checker.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/native-positive.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/native-positive.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/native-positive.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-bounce-disassembly.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-bounce-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-bounce-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-eh-frame.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-eh-frame.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-eh-frame.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-relocations.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-relocations.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-relocations.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-symbols.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-symbols.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-symbols.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-unwind.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-unwind.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/object-unwind.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile-direct.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile-direct.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile-direct.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/positive-compile.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-sysroot.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-sysroot.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-sysroot.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-version.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/captures/rustc-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/prior-rustc-version.log",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/rust-reference/external-blocks.md",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/rust-reference/functions.md",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/rust-reference/inline-assembly.md",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/sdk/dlfcn.h",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/sdk/libunwind.h",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/sdk/mach-o/compact_unwind_encoding.h",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/sdk/unwind.h",
+      "pass": true
+    },
+    {
+      "check": "public binding primary/sdk/unwind_itanium.h",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/source-identities.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/tool-identities.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/compile-outputs.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/first-wrapper-attempt.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/reader-attempt01-diagnosis.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/metadata-results.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/historical-pre-native-STAGE-STATUS.json",
+      "pass": true
+    },
+    {
+      "check": "public binding evidence/historical-commands-proposed.json",
+      "pass": true
+    },
+    {
+      "check": "public binding support/acquisition/capture_stage.py",
+      "pass": true
+    },
+    {
+      "check": "public binding support/acquisition/inspect_stage.py",
+      "pass": true
+    },
+    {
+      "check": "public binding support/acquisition/reader-attempt01.py",
+      "pass": true
+    },
+    {
+      "check": "public binding support/acquisition/run_positive_once.py",
+      "pass": true
+    },
+    {
+      "check": "ACTUAL executed raw image identity before/after; distinct from public projection",
+      "pass": true
+    },
+    {
+      "check": "public image is declared projected DATA, never labeled executed raw image",
+      "pass": true
+    },
+    {
+      "check": "actual object/raw/public code binding",
+      "pass": true
+    },
+    {
+      "check": "actual public-data active DWARF route equals original",
+      "pass": true
+    },
+    {
+      "check": "actual public-data FDE equals raw FDE",
+      "pass": true
+    },
+    {
+      "check": "five bounded recovery contexts",
+      "pass": true
+    },
+    {
+      "check": "original data-control identity wrong-cfa-offset",
+      "pass": true
+    },
+    {
+      "check": "control code unchanged wrong-cfa-offset",
+      "pass": true
+    },
+    {
+      "check": "only declared metadata difference from projected positive wrong-cfa-offset",
+      "pass": true
+    },
+    {
+      "check": "calculated unchanged ordinary epilogue wrong-cfa-offset",
+      "pass": true
+    },
+    {
+      "check": "wrong body recovery distinguished wrong-cfa-offset",
+      "pass": true
+    },
+    {
+      "check": "original data-control identity wrong-lr-offset",
+      "pass": true
+    },
+    {
+      "check": "control code unchanged wrong-lr-offset",
+      "pass": true
+    },
+    {
+      "check": "only declared metadata difference from projected positive wrong-lr-offset",
+      "pass": true
+    },
+    {
+      "check": "calculated unchanged ordinary epilogue wrong-lr-offset",
+      "pass": true
+    },
+    {
+      "check": "wrong body recovery distinguished wrong-lr-offset",
+      "pass": true
+    },
+    {
+      "check": "original data-control identity missing-active-fde",
+      "pass": true
+    },
+    {
+      "check": "control code unchanged missing-active-fde",
+      "pass": true
+    },
+    {
+      "check": "only declared metadata difference from projected positive missing-active-fde",
+      "pass": true
+    },
+    {
+      "check": "calculated unchanged ordinary epilogue missing-active-fde",
+      "pass": true
+    },
+    {
+      "check": "expected missing selected FDE rejection",
+      "pass": true
+    },
+    {
+      "check": "exactly two expected typed subject panic diagnostics; no unknown diagnostics",
+      "pass": true
+    },
+    {
+      "check": "three actual loaded-image observations",
+      "pass": true
+    },
+    {
+      "check": "loaded/static image-relative symbol binding assembly-bounce",
+      "pass": true
+    },
+    {
+      "check": "loaded/static image-relative symbol binding rust-bounce",
+      "pass": true
+    },
+    {
+      "check": "observed platform unwinder image/symbol (no source-version proof)",
+      "pass": true
+    },
+    {
+      "check": "live callback return PC in actual platform walk Rust/false",
+      "pass": true
+    },
+    {
+      "check": "live callback return PC in actual platform walk Rust/true",
+      "pass": true
+    },
+    {
+      "check": "live callback return PC in actual platform walk Assembly/false",
+      "pass": true
+    },
+    {
+      "check": "live callback return PC in actual platform walk Assembly/true",
+      "pass": true
+    },
+    {
+      "check": "four actual cases and exact call/drop/hook counts",
+      "pass": true
+    },
+    {
+      "check": "both normal results match widened arithmetic oracle",
+      "pass": true
+    },
+    {
+      "check": "two exact typed payloads confirmed outside bounces",
+      "pass": true
+    },
+    {
+      "check": "complete native output grammar",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-bounce-disassembly",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-bounce-disassembly/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-bounce-disassembly/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-dylibs",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-dylibs/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-dylibs/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-eh-frame",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-eh-frame/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-eh-frame/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-loadcommands",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-loadcommands/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-loadcommands/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-symbols",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-symbols/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-symbols/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified image-unwind",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-unwind/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt image-unwind/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified llvm-dwarfdump-help",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-dwarfdump-help/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-dwarfdump-help/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified llvm-dwarfdump-version",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-dwarfdump-version/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-dwarfdump-version/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified llvm-objdump-help",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-objdump-help/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-objdump-help/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified llvm-objdump-version",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-objdump-version/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt llvm-objdump-version/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified metadata-checker",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt metadata-checker/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt metadata-checker/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified native-positive",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt native-positive/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt native-positive/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified object-bounce-disassembly",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-bounce-disassembly/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-bounce-disassembly/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified object-eh-frame",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-eh-frame/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-eh-frame/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified object-relocations",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-relocations/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-relocations/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified object-symbols",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-symbols/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-symbols/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified object-unwind",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-unwind/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt object-unwind/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified positive-compile-direct",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt positive-compile-direct/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt positive-compile-direct/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified positive-compile",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt positive-compile/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt positive-compile/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified rustc-sysroot",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt rustc-sysroot/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt rustc-sysroot/stderr",
+      "pass": true
+    },
+    {
+      "check": "captured status classified rustc-version",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt rustc-version/stdout",
+      "pass": true
+    },
+    {
+      "check": "raw stream receipt rustc-version/stderr",
+      "pass": true
+    },
+    {
+      "check": "unchanged actually compiled source bounce.s",
+      "pass": true
+    },
+    {
+      "check": "unchanged actually compiled source specimen.rs",
+      "pass": true
+    }
+  ],
+  "all_passed": true
+}

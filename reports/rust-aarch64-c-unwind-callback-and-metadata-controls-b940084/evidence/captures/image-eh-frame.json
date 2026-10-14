@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-dwarfdump",
+    "--eh-frame",
+    "build/specimen"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "TMPDIR": "<OWNED_NATIVE_UNWIND_ROOT>/tmp/",
+  "exit": 0,
+  "seconds": 0.006195458000000001,
+  "streams": {
+    "stdout": {
+      "path": "captures/image-eh-frame.stdout",
+      "sha256": "33bb6ca60312705844af03237b527bcf1417562f6873eab86d7e80e8392eb84b",
+      "bytes": 515880
+    },
+    "stderr": {
+      "path": "captures/image-eh-frame.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "source_sha256": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  }
+}

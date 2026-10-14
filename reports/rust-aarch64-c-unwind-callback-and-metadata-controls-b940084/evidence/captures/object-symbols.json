@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/nm",
+    "-n",
+    "-m",
+    "build/specimen.o"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "TMPDIR": "<OWNED_NATIVE_UNWIND_ROOT>/tmp/",
+  "exit": 0,
+  "seconds": 0.013276666000000006,
+  "streams": {
+    "stdout": {
+      "path": "captures/object-symbols.stdout",
+      "sha256": "0bc0abe92bded57ffa058da9ac336a1f967b941165b55ac5f0fb6569fe36001f",
+      "bytes": 14569
+    },
+    "stderr": {
+      "path": "captures/object-symbols.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "source_sha256": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  }
+}

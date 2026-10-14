@@ -1,0 +1,100 @@
+{
+  "status": "Description only; parent authorized identities + one unchanged positive serial compile + metadata/data inspection. Native execution NOT authorized.",
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "required_rustc_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+  "required_target": "aarch64-apple-darwin",
+  "source_hashes": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  },
+  "identity_argv": [
+    [
+      "rustc",
+      "-Vv"
+    ],
+    [
+      "rustc",
+      "--print",
+      "sysroot"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "--version"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-dwarfdump",
+      "--version"
+    ]
+  ],
+  "compile_argv": [
+    "rustc",
+    "specimen.rs",
+    "--edition=2024",
+    "-C",
+    "opt-level=1",
+    "-C",
+    "panic=unwind",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "force-frame-pointers=yes",
+    "-C",
+    "force-unwind-tables=yes",
+    "--emit=obj=build/specimen.o,asm=build/specimen.s,link=build/specimen"
+  ],
+  "compile_measurement_wrapper": [],
+  "metadata_argv_templates": [
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "--macho",
+      "--unwind-info",
+      "<OBJECT_OR_IMAGE>"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-dwarfdump",
+      "--eh-frame",
+      "<OBJECT_OR_IMAGE>"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "--reloc",
+      "build/specimen.o"
+    ],
+    [
+      "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "--disassemble",
+      "--start-address=<BOUND_FUNCTION_VM_START>",
+      "--stop-address=<BOUND_FUNCTION_VM_END>",
+      "<OBJECT_OR_IMAGE>"
+    ],
+    [
+      "/usr/bin/otool",
+      "-l",
+      "build/specimen"
+    ],
+    [
+      "/usr/bin/otool",
+      "-L",
+      "build/specimen"
+    ],
+    [
+      "/usr/bin/nm",
+      "-n",
+      "-m",
+      "<OBJECT_OR_IMAGE>"
+    ]
+  ],
+  "native_status": "PROHIBITED at current stage; future positive run ./build/specimen only after metadata acceptance and explicit parent grant",
+  "storage_cap_bytes": 52428800,
+  "concurrency": "serial only; one codegen unit; no install/upstream build/network",
+  "stop_conditions": [
+    "Unexpected tool panic/assertion",
+    "Compiler identity differs from reviewed subject",
+    "Compile failure or unexpected metadata/ABI disagreement",
+    "Any output-budget violation"
+  ],
+  "mutants": "DATA ONLY; never link/load/execute",
+  "compile_measurement_note": "First time-l wrapper failed on denied kern.clockrate stats, retained separately. Accepted compile uses direct unchanged rustc argv with Python monotonic elapsed seconds only; peak RSS not measured."
+}

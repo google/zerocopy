@@ -1,0 +1,41 @@
+{
+  "milestones": [
+    {
+      "id": "E40",
+      "role": "bounded experiment evidence for parent review; no checkbox mutation",
+      "acceptance": "Run selected valid helper/callback and native unwind cases, bind final metadata/registration and cleanup; retain metadata-only negatives without executing undefined Rust.",
+      "performed": [
+        "Exact compiler/driver identities and unchanged source compile to actual object/assembly/final Mach-O",
+        "Exact32-byte object/final function and active linked DWARF FDE/index/relocation binding",
+        "One positive native process with four cases: Rust/assembly normal and exact typed Rust panic",
+        "Actual normal result, one callback/outer Drop each, ordered cleanup and exact expected panic payload/hook checks",
+        "Actual platform frame walks and dladdr loaded-image offset correspondence",
+        "Five owned arithmetic recovery contexts and three metadata-only non-executable actual-image data negatives",
+        "Independent parent ABI/CFI/metadata/hash review before authorized positive native run"
+      ],
+      "assessment": "Selected bounded native/helper/callback experiment criteria are substantively evidenced; parent decides milestone disposition after independent review/publication.",
+      "not_claimed": [
+        "Execution of malformed metadata or deliberately undefined Rust",
+        "Execution of public projected image-data copies",
+        "Internal runtime table-lookup route instrumentation or complete registration theorem",
+        "Arbitrary callbacks/inputs/platforms or universal cleanup/resource adequacy"
+      ],
+      "genuinely_unexamined_within_this_selected_experiment": []
+    },
+    {
+      "id": "E41",
+      "role": "stronger proof remains unestablished",
+      "acceptance": "Verify relevant partial prologues/body/epilogues, metadata production/loading, callee/callback composition and restored Rust resources on each permitted exceptional exit; forced unwind/nonlocal jumps require their own justified scope.",
+      "remaining": [
+        "Universal ISA/CFI partial-prologue/body/epilogue recovery and callee-saved state proof",
+        "Validated metadata producer, link/load registration and actual runtime lookup/fallback relation",
+        "Actual personality/LSDA/cleanup protocol theorem and compiler/runtime adequacy",
+        "Compositional Rust/MiniRust resource restoration for all admitted normal/exceptional exits",
+        "Separate justified scope for forced unwind/nonlocal jumps, foreign exceptions and asynchronous contexts"
+      ]
+    }
+  ],
+  "source_questions": ["MR16", "AS11", "AS13", "AS27"],
+  "observation_limits": "One wideu64 input, two known callbacks, exact Opt1 standard-arm64 C-unwind configuration. Bounded operational evidence and unverified data interpretation, not a universal theorem.",
+  "current_native_state": "ONE authorized positive run completed; historical pre-native snapshot is separately labeled and does not describe current result"
+}

@@ -1,0 +1,18 @@
+{
+  "native_runs": 1,
+  "actual_native_cases": 4,
+  "exact_expected_typed_subject_panics": 2,
+  "unknown_native_panics_accepted": 0,
+  "mutated_or_public_projected_images_executed": false,
+  "source_changed_after_parent_ABI_review": false,
+  "accepted_direct_compile_exit": 0,
+  "compiler_invocations": "First time-wrapped unchanged compile produced artifacts but wrapper failed and child status unknown; second unchanged direct compile exit0, all outputs byte-identical",
+  "diagnosed_operational_failures": [
+    "time-l sandbox kern.clockrate denial; no RSS claim",
+    "Initial owned reader admitted only compressed unwind pages; stopped, diagnosed regular pagekind2 and extended from SDK before controls"
+  ],
+  "report_side_validation": "Owned public static data validator, structure/links/private-path scan and manifests; no further native replay or recompilation",
+  "canonical_or_external_mutations": false,
+  "install_network_cleanup_nested_agents": false,
+  "publication_selection": "Only this package directory; raw originals/snapshots/duplicate artifacts/tmp/cache remain outside publication"
+}

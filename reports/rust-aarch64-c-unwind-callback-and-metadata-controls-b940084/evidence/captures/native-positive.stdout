@@ -1,0 +1,12 @@
+IMAGE label=assembly-bounce address=0x1040348c0 image_base=0x104034000 offset=0x8c0 symbol=anneal_unwind_bounce image=<OWNED_NATIVE_UNWIND_ROOT>/build/specimen
+IMAGE label=rust-bounce address=0x104035f3c image_base=0x104034000 offset=0x1f3c symbol=anneal_rust_bounce image=<OWNED_NATIVE_UNWIND_ROOT>/build/specimen
+IMAGE label=platform-unwinder address=0x194ff3998 image_base=0x194feb000 offset=0x8998 symbol=_Unwind_Backtrace image=/usr/lib/system/libunwind.dylib
+NORMAL_RESULT path=Rust value=0x336699cd00336699
+CASE_PASS path=Rust panic=false counts=[1, 1, 1, 12, 0] trace_status=5 ips=[104034e30, 104035180, 104035f50, 104035594, 104035390, 104034ab8, 104034ad0, 10404e130, 104035f90]
+EXPECTED_PAYLOAD_CONFIRMED path=Rust marker=0x4534305f554e5744 value=0x1122334455667788
+CASE_PASS path=Rust panic=true counts=[1, 1, 1, 12, 1] trace_status=5 ips=[104034e30, 104035124, 104035f50, 104035594, 1040353bc, 104034ab8, 104034ad0, 10404e130, 104035f90]
+NORMAL_RESULT path=Assembly value=0x336699cd00336699
+CASE_PASS path=Assembly panic=false counts=[1, 1, 1, 12, 0] trace_status=5 ips=[104034e30, 104035180, 1040348d4, 1040355ac, 104035390, 104034ab8, 104034ad0, 10404e130, 104035f90]
+EXPECTED_PAYLOAD_CONFIRMED path=Assembly marker=0x4534305f554e5744 value=0x1122334455667788
+CASE_PASS path=Assembly panic=true counts=[1, 1, 1, 12, 1] trace_status=5 ips=[104034e30, 104035124, 1040348d4, 1040355ac, 1040353bc, 104034ab8, 104034ad0, 10404e130, 104035f90]
+ALL_FOUR_CASES_PASSED

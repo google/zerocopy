@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "./build/specimen"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "exit": 0,
+  "seconds": 0.09691216700000001,
+  "timeout_seconds": 30,
+  "image_sha256_before": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf",
+  "image_sha256_after": "39fe9089fd8449dbe783bc1549daa67fc60d221982be1ecdf345c1b4a721cedf",
+  "stdout_sha256": "5d23fa18245f9875182ac26dfddf2b55ed876db8b5fc4030058544c2fcde7383",
+  "stderr_sha256": "f36f5eed45d4e542192a6cb15fdb28dcc4b5ff9be44dab1934898d17e3a36a36",
+  "retry_authorized": false,
+  "native_subject": "unchanged positive image only",
+  "mutants_executed": false
+}

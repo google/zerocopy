@@ -1,0 +1,145 @@
+Contents of __compact_unwind section:
+  Entry at offset 0x0:
+    start:                0x0 ltmp0
+    length:               0x20
+    compact encoding:     0x03000000
+  Entry at offset 0x20:
+    start:                0x20 __RINvNtCs1SSuMAdGM58_3std2rt10lang_startNtNtB4_7process8ExitCodeECsle4UtX85Rrh_8specimen
+    length:               0x38
+    compact encoding:     0x03000000
+  Entry at offset 0x40:
+    start:                0x58 __RINvNtCs1SSuMAdGM58_3std5panic9panic_anyNtCsle4UtX85Rrh_8specimen13ExpectedPanicEBE_
+    length:               0xc
+    compact encoding:     0x04000000
+  Entry at offset 0x60:
+    start:                0x64 __RINvNtCs1SSuMAdGM58_3std9panicking11begin_panicNtCsle4UtX85Rrh_8specimen13ExpectedPanicEBL_
+    length:               0x34
+    compact encoding:     0x04000000
+  Entry at offset 0x80:
+    start:                0x98 __RINvNtCsjIpoRzUjyHQ_4core3ptr9drop_glueINtNtCs6zY7rJBZy9D_5alloc5boxed3BoxDNtNtB4_3any3AnyNtNtB4_6marker4SendEL_EECsle4UtX85Rrh_8specimen
+    length:               0x7c
+    compact encoding:     0x03000000
+  Entry at offset 0xa0:
+    start:                0x114 __RINvNtCsjIpoRzUjyHQ_4core3ptr9drop_glueINtNtCs6zY7rJBZy9D_5alloc6borrow3CoweEECsle4UtX85Rrh_8specimen
+    length:               0x54
+    compact encoding:     0x03000000
+  Entry at offset 0xc0:
+    start:                0x168 __RINvNtCsjIpoRzUjyHQ_4core3ptr9drop_glueNCNvCsle4UtX85Rrh_8specimen3run0EBF_
+    length:               0x7c
+    compact encoding:     0x03000000
+  Entry at offset 0xe0:
+    start:                0x1e4 __RINvNtCsjIpoRzUjyHQ_4core3ptr9drop_glueNtNtCs6zY7rJBZy9D_5alloc6string6StringECsle4UtX85Rrh_8specimen
+    length:               0x3c
+    compact encoding:     0x03000000
+  Entry at offset 0x100:
+    start:                0x220 __RINvNtNtCs1SSuMAdGM58_3std3sys9backtrace26___rust_end_short_backtraceNCINvNtB6_9panicking11begin_panicNtCsle4UtX85Rrh_8specimen13ExpectedPanicE0zEB1E_
+    length:               0xc
+    compact encoding:     0x04000000
+  Entry at offset 0x120:
+    start:                0x22c __RINvNtNtCs1SSuMAdGM58_3std3sys9backtrace28___rust_begin_short_backtraceFENtNtB6_7process8ExitCodeB19_ECsle4UtX85Rrh_8specimen
+    length:               0x14
+    compact encoding:     0x03000000
+  Entry at offset 0x140:
+    start:                0x240 __RNCINvNtCs1SSuMAdGM58_3std2rt10lang_startNtNtB6_7process8ExitCodeE0Csle4UtX85Rrh_8specimen
+    length:               0x1c
+    compact encoding:     0x03000000
+  Entry at offset 0x160:
+    start:                0x25c __RNCINvNtCs1SSuMAdGM58_3std9panicking11begin_panicNtCsle4UtX85Rrh_8specimen13ExpectedPanicE0BN_
+    length:               0x38
+    compact encoding:     0x04000000
+  Entry at offset 0x180:
+    start:                0x294 __RNCNvCsle4UtX85Rrh_8specimen3run0B3_
+    length:               0x100
+    compact encoding:     0x03000000
+  Entry at offset 0x1a0:
+    start:                0x394 __RNSNvYNCINvNtCs1SSuMAdGM58_3std2rt10lang_startNtNtBb_7process8ExitCodeE0INtNtNtCsjIpoRzUjyHQ_4core3ops8function6FnOnceuE9call_once6vtableCsle4UtX85Rrh_8specimen
+    length:               0x1c
+    compact encoding:     0x03000000
+  Entry at offset 0x1c0:
+    start:                0x3b0 __RNSNvYNCNvCsle4UtX85Rrh_8specimen3run0INtNtNtCsjIpoRzUjyHQ_4core3ops8function6FnOnceTRNtNtCs1SSuMAdGM58_3std5panic13PanicHookInfoEE9call_once6vtableB8_
+    length:               0x160
+    compact encoding:     0x03000000
+  Entry at offset 0x1e0:
+    start:                0x510 __RNvCsle4UtX85Rrh_8specimen11trace_frame
+    length:               0x68
+    compact encoding:     0x03000000
+  Entry at offset 0x200:
+    start:                0x578 __RNvCsle4UtX85Rrh_8specimen13capture_trace
+    length:               0x8c
+    compact encoding:     0x03000000
+  Entry at offset 0x220:
+    start:                0x604 __RNvCsle4UtX85Rrh_8specimen14image_identity
+    length:               0x27c
+    compact encoding:     0x03000000
+  Entry at offset 0x240:
+    start:                0x880 __RNvCsle4UtX85Rrh_8specimen14panic_callback
+    length:               0x5c
+    compact encoding:     0x03000000
+  Entry at offset 0x260:
+    start:                0x8dc __RNvCsle4UtX85Rrh_8specimen15normal_callback
+    length:               0x88
+    compact encoding:     0x03000000
+  Entry at offset 0x280:
+    start:                0x964 __RNvCsle4UtX85Rrh_8specimen4main
+    length:               0x284
+    compact encoding:     0x03000000
+  Entry at offset 0x2a0:
+    start:                0xbe8 __RNvCsle4UtX85Rrh_8specimen8run_case
+    length:               0x708
+    compact encoding:     0x03000000
+  Entry at offset 0x2c0:
+    start:                0x12f0 __RNvMNtCsjIpoRzUjyHQ_4core5sliceSj8containsCsle4UtX85Rrh_8specimen
+    length:               0x108
+    compact encoding:     0x03000000
+  Entry at offset 0x2e0:
+    start:                0x13f8 __RNvXNtCsjIpoRzUjyHQ_4core3anyNtCsle4UtX85Rrh_8specimen13ExpectedPanicNtB2_3Any7type_idBt_
+    length:               0x20
+    compact encoding:     0x03000000
+  Entry at offset 0x300:
+    start:                0x1418 __RNvXNvNtCs1SSuMAdGM58_3std9panicking11begin_panicINtB2_7PayloadNtCsle4UtX85Rrh_8specimen13ExpectedPanicENtNtCsjIpoRzUjyHQ_4core5panic12PanicPayload3getB11_
+    length:               0x20
+    compact encoding:     0x04000000
+  Entry at offset 0x320:
+    start:                0x1438 __RNvXNvNtCs1SSuMAdGM58_3std9panicking11begin_panicINtB2_7PayloadNtCsle4UtX85Rrh_8specimen13ExpectedPanicENtNtCsjIpoRzUjyHQ_4core5panic12PanicPayload8take_boxB11_
+    length:               0x5c
+    compact encoding:     0x03000000
+  Entry at offset 0x340:
+    start:                0x1494 __RNvXs1g_NtCsjIpoRzUjyHQ_4core3fmtRSjNtB6_5Debug3fmtCsle4UtX85Rrh_8specimen
+    length:               0x70
+    compact encoding:     0x03000000
+  Entry at offset 0x360:
+    start:                0x1504 __RNvXs1g_NtCsjIpoRzUjyHQ_4core3fmtRjNtB6_5Debug3fmtCsle4UtX85Rrh_8specimen
+    length:               0x30
+    compact encoding:     0x03000000
+  Entry at offset 0x380:
+    start:                0x1534 __RNvXs_NvNtCs1SSuMAdGM58_3std9panicking11begin_panicINtB4_7PayloadNtCsle4UtX85Rrh_8specimen13ExpectedPanicENtNtCsjIpoRzUjyHQ_4core3fmt7Display3fmtB13_
+    length:               0x48
+    compact encoding:     0x03000000
+  Entry at offset 0x3a0:
+    start:                0x157c __RNvXsa_Csle4UtX85Rrh_8specimenNtB5_4PathNtNtCsjIpoRzUjyHQ_4core3fmt5Debug3fmt
+    length:               0x40
+    compact encoding:     0x03000000
+  Entry at offset 0x3c0:
+    start:                0x15bc __RNvXsa_NtCsjIpoRzUjyHQ_4core5arrayAjj5_NtNtB7_3fmt5Debug3fmtCsle4UtX85Rrh_8specimen
+    length:               0xb4
+    compact encoding:     0x03000000
+  Entry at offset 0x3e0:
+    start:                0x1670 __RNvXsb_NtCs6zY7rJBZy9D_5alloc6borrowINtB5_3CoweENtNtCsjIpoRzUjyHQ_4core3fmt7Display3fmtCsle4UtX85Rrh_8specimen
+    length:               0x1c
+    compact encoding:     0x03000000
+  Entry at offset 0x400:
+    start:                0x168c __RNvXsq_NtCs6zY7rJBZy9D_5alloc6stringNtB5_6StringNtNtCsjIpoRzUjyHQ_4core3fmt7Display3fmt
+    length:               0x1c
+    compact encoding:     0x03000000
+  Entry at offset 0x420:
+    start:                0x16a8 __RNvYINtNvNtCs1SSuMAdGM58_3std9panicking11begin_panic7PayloadNtCsle4UtX85Rrh_8specimen13ExpectedPanicENtNtCsjIpoRzUjyHQ_4core5panic12PanicPayload6as_strBY_
+    length:               0x14
+    compact encoding:     0x03000000
+  Entry at offset 0x440:
+    start:                0x16bc _anneal_rust_bounce
+    length:               0x20
+    compact encoding:     0x03000000
+  Entry at offset 0x460:
+    start:                0x16dc _main
+    length:               0x40
+    compact encoding:     0x04000000

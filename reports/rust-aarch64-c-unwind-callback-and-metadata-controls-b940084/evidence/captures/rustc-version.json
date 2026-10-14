@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "rustc",
+    "-Vv"
+  ],
+  "cwd": "<OWNED_NATIVE_UNWIND_ROOT>",
+  "TMPDIR": "<OWNED_NATIVE_UNWIND_ROOT>/tmp/",
+  "exit": 0,
+  "seconds": 0.125072833,
+  "streams": {
+    "stdout": {
+      "path": "captures/rustc-version.stdout",
+      "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+      "bytes": 192
+    },
+    "stderr": {
+      "path": "captures/rustc-version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "source_sha256": {
+    "bounce.s": "5c9ee259c976d4fd7a044a95ef380ad899ac0183370d1b9d8a3872270a9dd1dd",
+    "specimen.rs": "d76355f5da03e61bd6a7e13f001c7ab79810c4978fd3865797ed6197fed1c5e1"
+  }
+}
