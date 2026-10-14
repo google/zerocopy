@@ -1,0 +1,500 @@
+--- a/src/bin/charon-driver/main.rs
++++ b/src/bin/charon-driver/main.rs
+@@ -91,0 +92,15 @@
++    // Preserve executable effects before any Charon simplification. The consumer
++    // requires this snapshot, so a stock driver cannot silently skip admission.
++    // This is evidence for a downstream checker, not a rustc correctness proof.
++    if let Some(path) = std::env::var_os("CHARON_ADMISSION_SNAPSHOT") {
++        let snapshot = export::CrateData {
++            charon_version: export::CharonVersion(charon_lib::VERSION.to_owned()),
++            translated: ctx.translated.clone(),
++            has_errors: ctx.errors.borrow().error_count != 0,
++        };
++        snapshot.serialize_to_file(
++            std::path::Path::new(&path),
++            charon_lib::options::SerializationFormat::Json,
++        ).map_err(|()| CharonFailure::Serialize)?;
++    }
++
+--- a/src/bin/charon-driver/translate/get_mir.rs
++++ b/src/bin/charon-driver/translate/get_mir.rs
+@@ -87 +87,9 @@
+-                // We fall back to optimized MIR if the requested body was stolen.
++                // Admission must inspect the requested pre-optimization body.
++                // A stolen local body cannot silently become optimized MIR.
++                // None leaves a missing body which the consumer rejects.
++                if std::env::var_os("CHARON_ADMISSION_SNAPSHOT").is_some()
++                    && !matches!(level, MirLevel::Optimized)
++                {
++                    return None;
++                }
++                // Other consumers retain the upstream fallback behavior.
+--- a/src/bin/charon-driver/translate/translate_crate.rs
++++ b/src/bin/charon-driver/translate/translate_crate.rs
+@@ -29 +29 @@
+-use charon_lib::options::{CliOpts, ConstHandling, StartFrom, TranslateOptions};
++use charon_lib::options::{CliOpts, ConstHandling, SourceOwnerSpan, StartFrom, TranslateOptions};
+@@ -376,0 +377,114 @@
++        })
++    }
++
++    fn matches_source_owner(&mut self, owner: &SourceOwnerSpan, span: rustc_span::Span) -> bool {
++        if span.is_dummy() {
++            return false;
++        }
++        let source_file = self.tcx.sess.source_map().lookup_source_file(span.lo());
++        matches!(self.translate_filename(source_file.name.clone()), FileName::Local(path) if path == owner.file)
++            && source_file.original_relative_byte_pos(span.lo()).0 == owner.beg
++            && source_file.original_relative_byte_pos(span.hi()).0 == owner.end
++    }
++
++    // This census is deliberately collected before root selection. Owner attribute maps
++    // include unsupported fields, variants, generics and statement docs omitted by the
++    // item iterator. Classify the attributed node, never just its enclosing owner.
++    fn annotation_origins(&mut self) -> Vec<(rustc_span::def_id::LocalDefId, serde_json::Value)> {
++        use rustc_ast::token::DocFragmentKind;
++        use rustc_hir::{Attribute, Node, attrs::AttributeKind, def::DefKind};
++        let tcx = self.tcx;
++        let mut nodes = Vec::new();
++        for owner in tcx.hir_crate_items(()).owners() {
++            for (local_id, attrs) in tcx.hir_attr_map(owner).map.iter() {
++                let hir_id = rustc_hir::HirId {
++                    owner,
++                    local_id: *local_id,
++                };
++                // rustc lowering aliases a tuple/unit struct's complete attribute
++                // slice onto its synthetic constructor. There is no separately
++                // authored constructor declaration. Canonicalize only this exact
++                // compiler alias, verified against the nominal item's HIR data,
++                // owner, constructor DefId parent, and identical attribute slice.
++                // Variant constructors and all fields remain unsupported nodes.
++                if let Node::Ctor(data) = tcx.hir_node(hir_id)
++                    && let Node::Item(parent) = tcx.parent_hir_node(hir_id)
++                    && let rustc_hir::ItemKind::Struct(_, _, nominal_data) = &parent.kind
++                    && let Some((_, ctor_hir_id, ctor_def_id)) = data.ctor()
++                    && ctor_hir_id == hir_id
++                    && std::ptr::eq(data, nominal_data)
++                    && parent.owner_id == owner
++                    && tcx.local_def_id_to_hir_id(owner.def_id) == parent.hir_id()
++                    && tcx.parent(ctor_def_id.to_def_id()) == parent.owner_id.def_id.to_def_id()
++                    && std::ptr::eq(*attrs, tcx.hir_attrs(parent.hir_id()))
++                {
++                    continue;
++                }
++                let mut docs = Vec::new();
++                for attr in *attrs {
++                    if let Attribute::Parsed(AttributeKind::DocComment {
++                        style,
++                        kind,
++                        span,
++                        comment,
++                    }) = attr
++                    {
++                        // A forwarded literal's value span remains authored even when
++                        // the complete attribute span is synthesized by expansion.
++                        let origin = match kind {
++                            DocFragmentKind::Raw(value_span) => *value_span,
++                            DocFragmentKind::Sugared(_) => *span,
++                        };
++                        let mut doc = self.annotation_span(origin);
++                        doc["text"] = serde_json::json!(comment.as_str());
++                        doc["outer"] = serde_json::json!(*style == rustc_ast::AttrStyle::Outer);
++                        docs.push(doc);
++                    }
++                }
++                if docs.is_empty() {
++                    continue;
++                }
++                let ldid = owner.def_id;
++                let is_owner = tcx.local_def_id_to_hir_id(ldid) == hir_id;
++                let kind = if is_owner {
++                    match tcx.def_kind(ldid) {
++                        DefKind::Fn | DefKind::AssocFn => "function",
++                        DefKind::Struct | DefKind::Enum | DefKind::Union | DefKind::TyAlias => {
++                            "type"
++                        }
++                        DefKind::Trait => "trait",
++                        DefKind::Impl { of_trait: true } => "trait-impl",
++                        _ => "unsupported",
++                    }
++                } else {
++                    "unsupported"
++                };
++                let span = match tcx.hir_node(hir_id) {
++                    Node::Item(item) => item.span,
++                    Node::TraitItem(item) => item.span,
++                    Node::ImplItem(item) => item.span,
++                    _ => tcx.hir_span(hir_id),
++                };
++                nodes.push((ldid, serde_json::json!({
++                    "owner": tcx.def_path_str(ldid.to_def_id()),
++                    "node_kind": kind,
++                    "positive": kind == "trait-impl" && tcx.impl_polarity(ldid) == ty::ImplPolarity::Positive,
++                    "span": self.annotation_span(span),
++                    "docs": docs,
++                    "trait_impl_id": null,
++                })));
++            }
++        }
++        nodes
++    }
++
++    fn annotation_span(&mut self, span: rustc_span::Span) -> serde_json::Value {
++        let source = self.tcx.sess.source_map().lookup_source_file(span.lo());
++        let file = match self.translate_filename(source.name.clone()) {
++            FileName::Local(path) => path.to_string_lossy().into_owned(),
++            _ => source.name.prefer_local_unconditionally().to_string(),
++        };
++        serde_json::json!({
++            "file": file,
++            "begin": source.original_relative_byte_pos(span.lo()).0,
++            "end": source.original_relative_byte_pos(span.hi()).0,
+@@ -1036,0 +1151,24 @@
++        // A provided method omitted from its trait dictionary cannot be called. Check the
++        // compiler-resolved declaration, including inherited and overridden implementations,
++        // before translating its signature. Impl discovery uses the no-enqueue path.
++        if enqueue && let hax::FullDefKind::AssocFn(f) = self.poly_hax_def(&item.def_id)?.kind() {
++            let declaration_id = f.associated_item().implemented_trait_item_id();
++            let declaration = self.poly_hax_def(declaration_id)?;
++            if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
++                && declaration.associated_item().has_value
++                && matches!(
++                    &declaration.associated_item().container,
++                    hax::AssocItemContainer::TraitContainer { .. }
++                )
++            {
++                let source = TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
++                let name = self.translate_name(&source)?;
++                if self.opacity_for_name(&name).is_invisible() {
++                    charon_lib::errors::raise_error!(
++                        self,
++                        span,
++                        "referenced excluded provided trait method"
++                    );
++                }
++            }
++        }
+@@ -1189,0 +1328,40 @@
++    if ctx.options.monomorphize_with_hax
++        && (std::env::var_os("CHARON_ANNOTATION_ORIGINS").is_some()
++            || ctx
++                .options
++                .start_from
++                .iter()
++                .any(|root| matches!(root, StartFrom::DocOrigin(_))))
++    {
++        register_error!(
++            ctx,
++            Span::dummy(),
++            "annotation-origin evidence requires polymorphic translation"
++        );
++        return Err(Error::dummy());
++    }
++    let mut annotation_origins = ctx.annotation_origins();
++    // Bind the census to the compiler's complete local source inputs, including
++    // macro definitions with no docs. This reads rustc's captured normalized text,
++    // not files that could have changed after compilation.
++    let source_files = tcx.sess.source_map().files().iter().cloned().collect_vec();
++    let annotation_sources = source_files
++        .into_iter()
++        .filter_map(|source| {
++            let FileName::Local(file) = ctx.translate_filename(source.name.clone()) else {
++                return None;
++            };
++            if file.as_os_str().is_empty()
++                || file
++                    .components()
++                    .any(|c| !matches!(c, std::path::Component::Normal(_)))
++            {
++                return None;
++            }
++            source
++                .src
++                .as_ref()
++                .map(|text| serde_json::json!({"file":file,"text":text.as_str()}))
++        })
++        .collect_vec();
++
+@@ -1199,0 +1378,77 @@
++            }
++            StartFrom::SourceSpan(owner) => {
++                // Resolve against compiler owners, never against names, generics, or doc text.
++                let mut matches = Vec::new();
++                for ldid in tcx.hir_crate_items(()).definitions() {
++                    // `def_span` is only an impl header; the HIR item span covers
++                    // the exact authored owner, including its closing brace.
++                    let rustc_hir::Node::Item(item) =
++                        tcx.hir_node(tcx.local_def_id_to_hir_id(ldid))
++                    else {
++                        continue;
++                    };
++                    let span = item.span;
++                    if span.is_dummy() {
++                        continue;
++                    }
++                    if ctx.matches_source_owner(&owner, span)
++                        || (span.from_expansion()
++                            && ctx.matches_source_owner(&owner, span.source_callsite()))
++                    {
++                        matches.push((ldid, span));
++                    }
++                }
++                if matches.len() != 1 {
++                    register_error!(
++                        ctx,
++                        Span::dummy(),
++                        "source-owner root {owner:?} matched {} local owners; expected exactly one",
++                        matches.len()
++                    );
++                    continue;
++                }
++                let (ldid, span) = matches[0];
++                if span.from_expansion()
++                    || !matches!(
++                        tcx.def_kind(ldid),
++                        rustc_hir::def::DefKind::Impl { of_trait: true }
++                    )
++                    || tcx.impl_polarity(ldid) != ty::ImplPolarity::Positive
++                {
++                    let error_span = ctx.translate_span(&span);
++                    register_error!(
++                        ctx,
++                        error_span,
++                        "source-owner root requires a non-expanded positive trait impl"
++                    );
++                    continue;
++                }
++                let def_id: hax::DefId = ldid.to_def_id().sinto(&ctx.hax_state);
++                ctx.enqueue_module_item(&def_id, true);
++            }
++            StartFrom::DocOrigin(origin) => {
++                let matches = annotation_origins
++                    .iter()
++                    .filter(|(_, node)| {
++                        node["node_kind"] == "trait-impl"
++                            && node["positive"] == true
++                            && node["docs"].as_array().unwrap().iter().any(|doc| {
++                                doc["outer"] == true
++                                    && doc["file"].as_str() == origin.file.to_str()
++                                    && doc["begin"].as_u64() == Some(u64::from(origin.beg))
++                                    && doc["end"].as_u64() == Some(u64::from(origin.end))
++                            })
++                    })
++                    .map(|(ldid, _)| *ldid)
++                    .collect_vec();
++                if matches.len() != 1 {
++                    register_error!(
++                        ctx,
++                        Span::dummy(),
++                        "doc-origin root {origin:?} matched {} positive local trait impls; expected exactly one",
++                        matches.len()
++                    );
++                    continue;
++                }
++                let def_id: hax::DefId = matches[0].to_def_id().sinto(&ctx.hax_state);
++                ctx.enqueue_module_item(&def_id, true);
+@@ -1262,0 +1518,37 @@
++    if let Some(path) = std::env::var_os("CHARON_ANNOTATION_ORIGINS") {
++        for (ldid, node) in &mut annotation_origins {
++            if node["node_kind"] == "trait-impl" {
++                let def_id: hax::DefId = ldid.to_def_id().sinto(&ctx.hax_state);
++                let source = TransItemSource::polymorphic(
++                    &def_id,
++                    TransItemSourceKind::TraitImpl(TransImplSource::Normal),
++                );
++                if let Some(ItemId::TraitImpl(id)) = ctx.id_map.get(&source) {
++                    node["trait_impl_id"] = serde_json::json!(id.index());
++                    // The consumer compares this exact original dictionary with
++                    // the admission snapshot before using the id in final LLBC.
++                    node["trait_impl"] =
++                        serde_state_perfect_derive::SerializeState::serialize_state(
++                            &ctx.translated.trait_impls.get(*id),
++                            &(),
++                            serde_json::value::Serializer,
++                        )
++                        .expect("native trait dictionary serializes to JSON");
++                }
++            }
++        }
++        let output = serde_json::json!({"version": 1, "sources": annotation_sources,
++            "nodes": annotation_origins.into_iter().map(|(_, node)| node).collect_vec()});
++        if let Err(error) = std::fs::File::create(path)
++            .map_err(|e| e.to_string())
++            .and_then(|file| serde_json::to_writer(file, &output).map_err(|e| e.to_string()))
++        {
++            register_error!(
++                ctx,
++                Span::dummy(),
++                "cannot write annotation origins: {error}"
++            );
++            return Err(Error::dummy());
++        }
++    }
++
+--- a/src/bin/charon-driver/translate/translate_items.rs
++++ b/src/bin/charon-driver/translate/translate_items.rs
+@@ -902,0 +903,6 @@
++                    // Excluded provided methods have neither a dictionary field nor a default
++                    // body. Do not translate their signatures: even an unused signature can
++                    // import unrelated traits and types. The method id remains allocated.
++                    if hax_item.has_value && method_opacity.is_invisible() {
++                        continue;
++                    }
+@@ -1209,0 +1216,14 @@
++                    // Match the trait declaration's exclusion even when this impl overrides
++                    // the default. Discovery is not a call and must not import its signature.
++                    let declaration_id = impl_item.decl_def_id();
++                    let declaration = self.poly_hax_def(declaration_id)?;
++                    if let hax::FullDefKind::AssocFn(declaration) = declaration.kind()
++                        && declaration.associated_item().has_value
++                    {
++                        let source =
++                            TransItemSource::polymorphic(declaration_id, TransItemSourceKind::Fun);
++                        let name = self.translate_name(&source)?;
++                        if self.opacity_for_name(&name).is_invisible() {
++                            continue;
++                        }
++                    }
+--- a/src/options.rs
++++ b/src/options.rs
+@@ -91,0 +92,5 @@
++    /// An exact local positive trait impl can instead be selected with
++    /// `@span:FILE:BEGIN_BYTE:END_BYTE`, using its full authored HIR item span.
++    /// Macro impls can use `@doc-origin:FILE:BEGIN_BYTE:END_BYTE` to select the
++    /// unique positive impl carrying that outer authored doc fragment.
++    /// FILE is normalized crate-relative; offsets are UTF-8 bytes, end exclusive.
+@@ -677,0 +683,37 @@
++/// Exact source owner selector; deliberately independent of Rust name/type spelling.
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct SourceOwnerSpan {
++    pub file: PathBuf,
++    pub beg: u32,
++    pub end: u32,
++}
++
++impl SourceOwnerSpan {
++    fn parse(value: &str) -> Result<Self, String> {
++        let parts = value.rsplitn(3, ':').collect_vec();
++        if parts.len() != 3 {
++            return Err("expected FILE:BEGIN_BYTE:END_BYTE".into());
++        }
++        let number = |s: &str| {
++            s.parse::<u32>()
++                .map_err(|_| "invalid coordinate".to_owned())
++        };
++        let file = PathBuf::from(parts[2]);
++        // No path aliases: admission can compare the requested owner list literally.
++        if file.as_os_str().is_empty()
++            || file.components().collect::<PathBuf>().as_os_str() != file.as_os_str()
++            || file
++                .components()
++                .any(|c| !matches!(c, std::path::Component::Normal(_)))
++        {
++            return Err("FILE must be a normalized crate-relative path".into());
++        }
++        let beg = number(parts[1])?;
++        let end = number(parts[0])?;
++        if beg >= end {
++            return Err("expected a nonempty, ordered byte span".into());
++        }
++        Ok(Self { file, beg, end })
++    }
++}
++
+@@ -685,0 +728,4 @@
++    /// Exact local positive trait-impl owner.
++    SourceSpan(SourceOwnerSpan),
++    /// Positive trait impl uniquely carrying a physical authored doc fragment.
++    DocOrigin(SourceOwnerSpan),
+@@ -787 +833 @@
+-        let mut parse_pattern = |s: &str| -> Result<_, Error> {
++        fn parse_pattern(error_ctx: &mut ErrorCtx, s: &str) -> Result<NamePattern, Error> {
+@@ -792 +838 @@
+-        };
++        }
+@@ -799,9 +845,55 @@
+-        let mut start_from = options
+-            .start_from
+-            .iter()
+-            .filter_map(|path| parse_pattern(path).ok())
+-            .map(|p| StartFrom::Pattern {
+-                pattern: p,
+-                strict: true,
+-            })
+-            .collect_vec();
++        let mut start_from = Vec::new();
++        for value in &options.start_from {
++            if let Some(value) = value.strip_prefix("@span:") {
++                match SourceOwnerSpan::parse(value) {
++                    Ok(span) => {
++                        if start_from.iter().any(
++                            |root| matches!(root, StartFrom::SourceSpan(other) if other == &span),
++                        ) {
++                            register_error!(
++                                error_ctx,
++                                no_crate,
++                                "duplicate source-owner root `{value}`"
++                            );
++                        } else {
++                            start_from.push(StartFrom::SourceSpan(span));
++                        }
++                    }
++                    Err(message) => {
++                        register_error!(
++                            error_ctx,
++                            no_crate,
++                            "invalid source-owner root `{value}`: {message}"
++                        );
++                    }
++                }
++            } else if let Some(value) = value.strip_prefix("@doc-origin:") {
++                match SourceOwnerSpan::parse(value) {
++                    Ok(origin) => {
++                        if start_from.iter().any(
++                            |root| matches!(root, StartFrom::DocOrigin(other) if other == &origin),
++                        ) {
++                            register_error!(
++                                error_ctx,
++                                no_crate,
++                                "duplicate doc-origin root `{value}`"
++                            );
++                        } else {
++                            start_from.push(StartFrom::DocOrigin(origin));
++                        }
++                    }
++                    Err(message) => {
++                        register_error!(
++                            error_ctx,
++                            no_crate,
++                            "invalid doc-origin root `{value}`: {message}"
++                        );
++                    }
++                }
++            } else if let Ok(pattern) = parse_pattern(error_ctx, value) {
++                start_from.push(StartFrom::Pattern {
++                    pattern,
++                    strict: true,
++                });
++            }
++        }
+@@ -812 +904 @@
+-                .filter_map(|path| parse_pattern(path).ok())
++                .filter_map(|path| parse_pattern(error_ctx, path).ok())
+@@ -824 +916,2 @@
+-        if start_from.is_empty() {
++        // An invalid explicit root must never fall back to extracting the whole crate.
++        if start_from.is_empty() && options.start_from.is_empty() {
+@@ -826 +919 @@
+-                pattern: parse_pattern("crate").unwrap(),
++                pattern: parse_pattern(error_ctx, "crate").unwrap(),
+@@ -843 +936 @@
+-            .filter_map(|s| parse_pattern(s).ok())
++            .filter_map(|s| parse_pattern(error_ctx, s).ok())
+@@ -890 +983,3 @@
+-                .filter_map(|(s, opacity)| parse_pattern(&s).ok().map(|pat| (pat, opacity)))
++                .filter_map(|(s, opacity)| {
++                    parse_pattern(error_ctx, &s).ok().map(|pat| (pat, opacity))
++                })
+@@ -898 +993 @@
+-            .filter_map(|s| parse_pattern(s).ok())
++            .filter_map(|s| parse_pattern(error_ctx, s).ok())

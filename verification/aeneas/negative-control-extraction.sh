@@ -20,6 +20,9 @@ run() {
     python3 -B verification/aeneas/control_runner.py command \
         "$AENEAS_CONTROL_LOG_DIR/commands" -- "$@"
 }
+run python3 -B verification/aeneas/tests/provided_method_controls.py \
+    "$tools_dir/charon" "$work" "$repo" "$tools_dir/rust/lib"
+run bash verification/aeneas/tests/annotation-origins.sh "$tools_dir/charon" "$tools_dir/rust/lib"
 # Validate capability observations before interpreting absence as inapplicability.
 capabilities=$(python3 - "$project/bindings.json" <<'PY'
 import json, sys
