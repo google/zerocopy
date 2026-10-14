@@ -22,7 +22,9 @@ run() {
 }
 run python3 -B verification/aeneas/tests/provided_method_controls.py \
     "$tools_dir/charon" "$work" "$repo" "$tools_dir/rust/lib"
-run bash verification/aeneas/tests/annotation-origins.sh "$tools_dir/charon" "$tools_dir/rust/lib"
+run python3 -B verification/aeneas/tests/impl_root_controls.py \
+    "$tools_dir/charon" "$work/impl-roots" "$repo" "$tools_dir/rust/lib"
+run bash verification/aeneas/tests/annotation-origins.sh
 # Validate capability observations before interpreting absence as inapplicability.
 capabilities=$(python3 - "$project/bindings.json" <<'PY'
 import json, sys
@@ -32,8 +34,13 @@ if manifest.get('version') != 3 or manifest.get('mode') != 'verified-live':
     raise SystemExit('Invalid verified bindings for extraction controls')
 functions = {row['raw'] for row in manifest['bindings'].values() if row['kind'] == 'function'}
 print('storage' if 'Zerocopy.util.safety_checks.checked_bool' in functions else '')
+print('into-bytes' if any(row['rust'] == 'zerocopy::IntoBytes' for row in manifest['trait_laws']) else '')
 PY
 )
+if [[ $capabilities == *into-bytes* ]]; then
+    run python3 -B verification/aeneas/tests/trait_const_binding_controls.py "$project"
+    run python3 -B verification/aeneas/tests/unemitted_type_controls.py "$project"
+fi
 if [[ $capabilities == *storage* ]]; then
     run bash verification/aeneas/tests/producer-controls.sh generate "$AENEAS_CONTROL_PRODUCER_DIR"
 fi
