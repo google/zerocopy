@@ -10,6 +10,9 @@
 target
 lcov.info
 
+# Pinned sparse Linux source used by the standalone RfL experiments.
+/rfl-linux/
+
 # VSCode workspace files
 *.code-workspace
 

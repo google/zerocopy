@@ -1,0 +1,25 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+[package]
+name = "rfl-zerocopy-experiments"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+members = ["shims/pin-init", "shims/pin-init-internal", "shims/syn", "shims/quote", "shims/proc-macro2", "shims/rfl-projection-baseline"]
+
+[patch.crates-io]
+syn = { path = "shims/syn" }
+quote = { path = "shims/quote" }
+proc-macro2 = { path = "shims/proc-macro2" }
+
+[dependencies]
+zerocopy = { path = "../zerocopy", features = ["derive"] }
+pin-init = { path = "shims/pin-init", features = ["std"] }
+
+[dev-dependencies]
+rfl-projection-baseline = { path = "shims/rfl-projection-baseline" }
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"

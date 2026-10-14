@@ -1,0 +1,19 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+[package]
+name = "proc-macro2"
+version = "1.0.101"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../../../rfl-linux/rust/proc-macro2/lib.rs"
+
+[features]
+default = ["proc-macro"]
+proc-macro = []
+span-locations = []
+nightly = []
+
+[lints.rust]
+unexpected_cfgs = "allow"

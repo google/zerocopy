@@ -1,0 +1,20 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+[package]
+name = "quote"
+version = "1.0.40"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../../../rfl-linux/rust/quote/lib.rs"
+
+[features]
+default = ["proc-macro"]
+proc-macro = ["proc-macro2/proc-macro"]
+
+[dependencies]
+proc-macro2 = { version = "1.0.101", default-features = false }
+
+[lints.rust]
+unexpected_cfgs = "allow"

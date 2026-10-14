@@ -1,0 +1,31 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+[package]
+name = "syn"
+version = "2.0.106"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../../../rfl-linux/rust/syn/lib.rs"
+
+[features]
+default = ["derive", "parsing", "printing", "clone-impls", "proc-macro"]
+derive = []
+full = []
+parsing = []
+printing = ["dep:quote"]
+clone-impls = []
+proc-macro = ["proc-macro2/proc-macro", "quote?/proc-macro"]
+extra-traits = []
+visit = []
+visit-mut = []
+fold = []
+
+[dependencies]
+proc-macro2 = "1.0.101"
+quote = { version = "1.0.40", optional = true, default-features = false }
+
+[lints.rust]
+unexpected_cfgs = "allow"
+renamed_and_removed_lints = "allow"

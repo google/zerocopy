@@ -1,0 +1,23 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+[package]
+name = "pin-init"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../../../rfl-linux/rust/pin-init/src/lib.rs"
+
+[features]
+default = []
+std = []
+alloc = []
+unsafe-pinned = []
+
+[dependencies]
+pin-init-internal = { path = "../pin-init-internal" }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(kernel)', 'cfg(CONFIG_RUSTC_HAS_UNSAFE_PINNED)', 'cfg(USE_RUSTC_FEATURES)'] }
+
