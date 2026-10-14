@@ -1,0 +1,13 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/lib.rs (target-requested-nightly/debug/deps/minitest-a83aa495f6b66def)
+
+running 6 tests
+test tests::bool::bit_and_bool_works ... ok
+test tests::bool::bool_or_works ... ok
+test tests::bool::bool_xor_works ... ok
+test tests::bool::false_to_int_works ... ok
+test tests::bool::not_works_both_ways ... ok
+test tests::bool::true_to_int_works ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 335 filtered out; finished in 0.01s
+

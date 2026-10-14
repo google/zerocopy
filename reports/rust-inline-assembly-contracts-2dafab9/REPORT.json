@@ -1,0 +1,31 @@
+{
+  "topics": [
+    "rust/inline-assembly",
+    "assembly/contracts",
+    "proof/operand-allocation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust compiler and library 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

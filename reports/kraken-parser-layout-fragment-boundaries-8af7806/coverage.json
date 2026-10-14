@@ -1,0 +1,63 @@
+{
+  "package": "kraken-parser-layout-fragment-boundaries-8af7806",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS02",
+      "status": "partial",
+      "sections": [
+        "Findings / Direct parsing and file preprocessing have different subjects"
+      ],
+      "answered_scope": [
+        "Actual direct/file stripping semantics; byte-data and alignment-loss negative controls",
+        "Changed width/missing opcode/two-memory operand rejection scopes"
+      ],
+      "stronger_unestablished_claims": [
+        "Generic assembly source fidelity or proved parser/printer",
+        "Stripping is harmless for data/CFI/sections"
+      ],
+      "unexamined_gaps": [
+        "No actual print/assemble round trip or proved importer",
+        "Macro/preprocessor expansion and AArch64 directive specimens unexamined"
+      ]
+    },
+    {
+      "id": "AS03",
+      "status": "partial",
+      "sections": [
+        "Findings / Layout is an input, and instruction fetch is over laid-out directives",
+        "Findings / A narrow byte-binding experiment exposes distinct checks"
+      ],
+      "answered_scope": [
+        "External size/index layout, artificial fakeLayout, first duplicate/missing label, signed wrap and zero-size behavior executed",
+        "Manufactured tiny importer/certificate rejects wrong immediate/size/hash/labels/data/overflow"
+      ],
+      "stronger_unestablished_claims": [
+        "Kraken AST linked to real decoded instruction bytes",
+        "Manufactured importer is verified general x86 decoder"
+      ],
+      "unexamined_gaps": [
+        "Actual Kraken-to-object decode/layout proof and generic encoder/decoder correspondence not constructed"
+      ]
+    },
+    {
+      "id": "AS17",
+      "status": "partial",
+      "sections": [
+        "Findings / Baseline composition and proposed fragment WPs have different status"
+      ],
+      "answered_scope": [
+        "Exact baseline eventuality/map-frame infrastructure and four live PR states/heads; body claims explicitly distinguished"
+      ],
+      "stronger_unestablished_claims": [
+        "Open PR results are baseline theorems",
+        "Fragment WP source/body implies embedding or frame adequacy for arbitrary host layouts"
+      ],
+      "unexamined_gaps": [
+        "No PR-specific source proof closure or build",
+        "No fragment concatenate/embed or escaping-jump/overlapping-layout mutants executed"
+      ]
+    }
+  ],
+  "interpretation": "Statuses describe only the explicit answered scopes. Unexamined research is separate from stronger implementation/theorem claims."
+}

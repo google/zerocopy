@@ -1,0 +1,13 @@
+"value:\nmain: movq $42, %rax\nret\n"
+Except.error "line 1: unsupported instruction: .section"
+Except.ok 4
+true
+Except.ok 1
+Except.ok 0
+Except.error "line 1: can't have two memory operands"
+Except.error "line 1: unsupported instruction: syscall"
+Except.error "line 1: missing type annotation"
+4096
+-1
+[9223372036854775807, -9223372036854775808]
+2

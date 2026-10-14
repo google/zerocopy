@@ -1,0 +1,172 @@
+{
+  "observed_at": "2026-10-14",
+  "source": [
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/step/terminators.md",
+      "git_blob_sha": "35d4cecf373e272915d50cfd4ea80d2e9b50d98a",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/terminators.md",
+      "symbols": [
+        "StartUnwind",
+        "StopUnwind",
+        "ResumeUnwind"
+      ],
+      "excerpts": [
+        {
+          "start_line": 405,
+          "end_line": 490,
+          "text": "```rust\nimpl<M: Memory> Machine<M> {\n    fn eval_terminator(&mut self, Terminator::StopUnwind(block_name): Terminator) -> NdResult {\n        self.mutate_active_thread(|thread| -> Result<()>{\n            let Some(_) = thread.unwind_payloads.pop() else {\n                throw_ub!(\"StopUnwind: the payload stack is empty\");\n            };\n            ret(())\n        } )?;\n        self.jump_to_block(block_name)?;\n        ret(())\n    }\n}\n```\n\n## Resuming unwinding in the caller\n\n```rust\nimpl<M: Memory> Machine<M> {\n    fn eval_terminator(&mut self, Terminator::ResumeUnwind: Terminator) -> NdResult {\n        let mut frame = self.mutate_cur_stack(\n            |stack| stack.pop().unwrap()\n        );\n\n        // Deallocate everything.\n        while let Some(local) = frame.locals.keys().next() {\n            frame.storage_dead(&mut self.mem, local)?;\n        }\n\n        // Inform the memory model that this call has ended.\n        self.mem.end_call(frame.extra)?;\n\n        // Perform the stack pop action.\n        match frame.stack_pop_action {\n            StackPopAction::BottomOfStack => {\n                // Only the bottom frame in a stack has no caller.\n                // It is UB to unwind out of the bottom of the stack.\n                throw_ub!(\"the function at the bottom of the stack must not unwind\");\n            }\n            StackPopAction::BackToCaller { unwind_block, .. } => {\n                // Jump to the unwind block specified by the caller. Raise UB if `unwind_block` is `None`.\n                if let Some(unwind_block) = unwind_block {\n                    self.jump_to_block(unwind_block)?;\n                } else {\n                    throw_ub!(\"unwinding from a function where the caller did not specify an unwind_block\");\n                }\n            }\n        }\n        ret(())\n    }\n}\n```\n\n## Intrinsic calls\n\n```rust\nimpl<M: Memory> Machine<M> {\n    fn eval_terminator(\n        &mut self,\n        Terminator::Intrinsic { intrinsic, arguments, ret: ret_expr, next_block }: Terminator\n    ) -> NdResult {\n        // First evaluate return place (left-to-right evaluation).\n        let (ret_place, ret_ty) = self.eval_place(ret_expr)?;\n\n        // Evaluate all arguments.\n        let arguments = arguments.try_map(|arg| self.eval_value(arg))?;\n\n        // Run the actual intrinsic.\n        let value = self.eval_intrinsic(intrinsic, arguments, ret_ty)?;\n\n        // Store return value.\n        // `eval_intrinsic` above must guarantee that `value` has the right type.\n        self.place_store(ret_place, value, ret_ty)?;\n\n        // Jump to next block.\n        if let Some(next_block) = next_block {\n            self.jump_to_block(next_block)?;\n        } else {\n            throw_ub!(\"return from an intrinsic where caller did not specify next block\");\n        }\n\n        ret(())\n    }\n}\n```\n"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/machine.md",
+      "git_blob_sha": "12c78fcbb23d59c771ce006a74ee333a0266e5a8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/machine.md",
+      "symbols": [
+        "Thread::unwind_payloads"
+      ],
+      "excerpts": [
+        {
+          "start_line": 96,
+          "end_line": 112,
+          "text": "This defines the internal representation of a thread of execution.\n\n```rust\npub struct Thread<M: Memory> {\n    /// The stack. This is only the \"control\" part of the stack; the \"data\" part\n    /// lives in memory (and stack and memory are completely disjoint concepts\n    /// in the Abstract Machine).\n    stack: List<StackFrame<M>>,\n\n    /// Stores whether the thread is ready to run, blocked, or terminated.\n    state: ThreadState,\n\n    /// Stores the unwind payloads.\n    unwind_payloads: List<ThinPointer<M::Provenance>>,\n}\n\npub enum ThreadState {"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/syntax.md",
+      "git_blob_sha": "3406c107f9f07c5fe381cc17f5ca8d190dfa7b25",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/syntax.md",
+      "symbols": [
+        "Call::unwind_block",
+        "BbKind"
+      ],
+      "excerpts": [
+        {
+          "start_line": 359,
+          "end_line": 384,
+          "text": "        ret: PlaceExpr,\n        /// The block to jump to when this call returns.\n        /// If `None`, UB will be raised when the function returns.\n        next_block: Option<BbName>,\n        /// The block to jump to when this call unwinds.\n        /// If `None`, UB will be raised when the function unwinds.\n        /// This comes with a well-formedness requirement: if the current block is a regular block,\n        /// `unwind_block` must be either a cleanup block or a catch block;\n        /// otherwise, `unwind_block` must be a terminating block.\n        unwind_block: Option<BbName>,\n    },\n    /// Return from the current function.\n    Return,\n    /// Starts unwinding, jump to the indicated cleanup block.\n    StartUnwind {\n        /// The unwinding payload. This should evaluate to a thin pointer.\n        unwind_payload:  ValueExpr,\n        /// The cleanup or catch block the execution jumps to.\n        unwind_block: BbName,\n    },\n    /// Stops unwinding, jump to the indicated regular block.\n    /// This also removes the topmost unwinding payload.\n    /// UB if not currently unwinding.\n    StopUnwind(BbName),\n    /// Ends this function call. The unwinding should continue at the caller's stack frame.\n    ResumeUnwind,"
+        },
+        {
+          "start_line": 503,
+          "end_line": 514,
+          "text": "pub enum BbKind {\n    /// Regular blocks may use `Return` and `StartUnwind` but not `ResumeUnwind`.\n    Regular,\n    /// Cleanup blocks may use `ResumeUnwind` but not `Return` or `StartUnwind`.\n    Cleanup,\n    /// Catch blocks may use neither `Return` nor `ResumeUnwind` nor `StartUnwind`. \n    /// Catch blocks may branch to regular blocks.\n    Catch,\n    /// `Terminate` blocks may use neither `Return` nor `ResumeUnwind` nor `StartUnwind`.\n    Terminate,\n}\n"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/step/statements.md",
+      "git_blob_sha": "9845e97c9e4675f02b6fb4e9b3f2396fed8e650a",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/statements.md",
+      "symbols": [
+        "storage_live",
+        "storage_dead"
+      ],
+      "excerpts": [
+        {
+          "start_line": 160,
+          "end_line": 185,
+          "text": "## StorageDead and StorageLive\n\nThese operations (de)allocate the memory backing a local.\n\n```rust\nimpl<M: Memory> StackFrame<M> {\n    fn storage_live(&mut self, mem: &mut ConcurrentMemory<M>, local: LocalName) -> NdResult {\n        // First remove the old storage, if any.\n        // This means the same address may be re-used for the new stoage.\n        self.storage_dead(mem, local)?;\n        // Then allocate the new storage.\n        let pointee_size = self.func.locals[local].layout::<M::T>().expect_size(\"WF ensures all locals are sized\");\n        let pointee_align = self.func.locals[local].layout::<M::T>().expect_align(\"WF ensures all locals are sized\");\n        let ptr = mem.allocate(AllocationKind::Stack, pointee_size, pointee_align)?;\n        self.locals.insert(local, ptr);\n        ret(())\n    }\n\n    fn storage_dead(&mut self, mem: &mut ConcurrentMemory<M>, local: LocalName) -> NdResult {\n        let pointee_size = self.func.locals[local].layout::<M::T>().expect_size(\"WF ensures all locals are sized\");\n        let pointee_align = self.func.locals[local].layout::<M::T>().expect_align(\"WF ensures all locals are sized\");\n        if let Some(ptr) = self.locals.remove(local) {\n            mem.deallocate(ptr, AllocationKind::Stack, pointee_size, pointee_align)?;\n        }\n        ret(())\n    }"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/bb.rs",
+      "git_blob_sha": "45f794ea44bab2524861136279d282f8df7074b8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/bb.rs",
+      "symbols": [
+        "Drop lowering",
+        "translate_unwind_action",
+        "translate_panic",
+        "foreign calls"
+      ],
+      "excerpts": [
+        {
+          "start_line": 197,
+          "end_line": 274,
+          "text": "            rs::TerminatorKind::Assert { cond, expected, target, unwind, .. } => {\n                let mut condition = self.translate_operand(cond, span);\n                // Check equality of `condition` and `expected`.\n                // We do this by inverting `condition` if `expected` is false\n                // and then checking if `condition` is true.\n                if !expected {\n                    condition = build::not(condition);\n                }\n\n                // Create panic block in case of `expected != condition`\n                let terminator = self.translate_panic(*unwind, bb);\n                let panic_block_name = self.fresh_bb_name();\n                let block_kind = if bb.is_cleanup { BbKind::Cleanup } else { BbKind::Regular };\n                let panic_block = BasicBlock { statements: list![], terminator, kind: block_kind };\n                self.blocks.try_insert(panic_block_name, panic_block).unwrap();\n\n                let next_block = self.bb_name_map[target];\n                Terminator::Switch {\n                    value: build::bool_to_int::<u8>(condition),\n                    cases: [(Int::from(1), next_block)].into_iter().collect(),\n                    fallback: panic_block_name,\n                }\n            }\n            rs::TerminatorKind::Drop { place, target, .. } => {\n                let ty = place.ty(&self.body, self.tcx).ty;\n                let place = self.translate_place(place, span);\n                let (drop_fn, ptr_to_drop) = match ty.kind() {\n                    // For trait objects we must first fetch the drop function dynamically\n                    rs::TyKind::Dynamic(..) => {\n                        let Type::TraitObject(trait_name) = self.translate_ty(ty, span) else {\n                            rs::span_bug!(\n                                span,\n                                \"translate_ty for TyKind::Dynamic didn't give a Type::TraitObject\"\n                            );\n                        };\n                        // Compute the wide pointer pointing to `dyn Trait`.\n                        let ptr = build::addr_of(\n                            place,\n                            build::raw_ptr_ty(PointerMetaKind::VTablePointer(trait_name)),\n                        );\n                        // Fetch the drop function from the vtable.\n                        let drop_fn = build::vtable_method_lookup(\n                            build::get_metadata(ptr),\n                            TraitMethodName(Name::from_internal(\n                                rs::COMMON_VTABLE_ENTRIES_DROPINPLACE as _,\n                            )),\n                        );\n                        // Only the thin part of the pointer gets passed to the drop function.\n                        (drop_fn, build::get_thin_pointer(ptr))\n                    }\n                    // For other types we can just get the drop instance statically\n                    _ => {\n                        let drop_in_place_fn = rs::Instance::resolve_drop_in_place(self.tcx, ty);\n                        let ptr_to_drop = build::addr_of(place, build::raw_void_ptr_ty());\n                        let drop_fn = build::fn_ptr(self.cx.get_fn_name(drop_in_place_fn));\n                        (drop_fn, ptr_to_drop)\n                    }\n                };\n\n                Terminator::Call {\n                    callee: drop_fn,\n                    calling_convention: CallingConvention::Rust,\n                    arguments: list![ArgumentExpr::ByValue(ptr_to_drop)],\n                    ret: unit_place(),\n                    next_block: Some(self.bb_name_map[&target]),\n                    unwind_block: None,\n                }\n            }\n            rs::TerminatorKind::UnwindResume => Terminator::ResumeUnwind,\n\n            rs::TerminatorKind::UnwindTerminate(_)\n            | rs::TerminatorKind::TailCall { .. }\n            | rs::TerminatorKind::Yield { .. }\n            | rs::TerminatorKind::CoroutineDrop\n            | rs::TerminatorKind::FalseEdge { .. }\n            | rs::TerminatorKind::FalseUnwind { .. }\n            | rs::TerminatorKind::InlineAsm { .. } => {\n                rs::span_bug!(span, \"Terminator not supported: {:?}\", terminator.kind);"
+        },
+        {
+          "start_line": 619,
+          "end_line": 694,
+          "text": "    /// Translates an `UnwindAction` to MiniRust.\n    /// May insert a new block into `self`, as MiniRust does not support `UnwindAction` directly.\n    /// Returns the name of the first cleanup block to execute in case of unwinding.\n    fn translate_unwind_action(\n        &mut self,\n        unwind: rs::UnwindAction,\n        bb: &rs::BasicBlockData<'tcx>,\n    ) -> BbName {\n        // FIXME: cache and reuse the new blocks generated by this function.\n        match unwind {\n            rs::UnwindAction::Continue => {\n                // UnwindAction::Continue must only be used by a call in a regular block,\n                // therefore the unwind block should be a cleanup block.\n                assert!(\n                    !bb.is_cleanup,\n                    \"A call in a cleanup block cannot use UnwindAction::Continue\"\n                );\n                let block_kind = BbKind::Cleanup;\n                let unwind_bb_name = self.fresh_bb_name();\n                let unwind_bb = BasicBlock {\n                    statements: list![],\n                    terminator: Terminator::ResumeUnwind,\n                    kind: block_kind,\n                };\n                self.blocks.insert(unwind_bb_name, unwind_bb);\n                unwind_bb_name\n            }\n            rs::UnwindAction::Unreachable => {\n                let block_kind = if bb.is_cleanup { BbKind::Terminate } else { BbKind::Cleanup };\n                let unwind_bb_name = self.fresh_bb_name();\n                let unwind_bb = BasicBlock {\n                    statements: list![],\n                    terminator: Terminator::Unreachable,\n                    kind: block_kind,\n                };\n                self.blocks.insert(unwind_bb_name, unwind_bb);\n                unwind_bb_name\n            }\n            rs::UnwindAction::Terminate(_) => {\n                // FIXME: do not ignore UnwindTerminateReason\n                let block_kind = if bb.is_cleanup { BbKind::Terminate } else { BbKind::Cleanup };\n                let unwind_bb_name = self.fresh_bb_name();\n                let unwind_bb = BasicBlock {\n                    statements: list![],\n                    terminator: build::abort(),\n                    kind: block_kind,\n                };\n                self.blocks.insert(unwind_bb_name, unwind_bb);\n                unwind_bb_name\n            }\n            rs::UnwindAction::Cleanup(cleanup_block) => self.bb_name_map[&cleanup_block],\n        }\n    }\n\n    /// Simulates a panic function.\n    /// Returns a terminator that either initiates unwinding or aborts, based on the chosen panic strategy.\n    fn translate_panic(\n        &mut self,\n        unwind: rs::UnwindAction,\n        bb: &rs::BasicBlockData<'tcx>,\n    ) -> Terminator {\n        // FIXME: we should just call into the panic runtime here instead of replicating what it does.\n        let panic_strategy = self.cx.tcx.sess.panic_strategy();\n        match panic_strategy {\n            rustc_target::spec::PanicStrategy::Unwind => {\n                let cleanup_block = self.translate_unwind_action(unwind, bb);\n                Terminator::StartUnwind {\n                    // FIXME: Use actual unwind payload instead of temporary null pointer.\n                    unwind_payload: build::unit_ptr(),\n                    unwind_block: cleanup_block,\n                }\n            }\n            rustc_target::spec::PanicStrategy::Abort\n            | rustc_target::spec::PanicStrategy::ImmediateAbort => build::abort(),\n        }\n    }"
+        },
+        {
+          "start_line": 782,
+          "end_line": 796,
+          "text": "                ret: self.translate_place(&destination, span),\n                next_block: target.as_ref().map(|t| self.bb_name_map[t]),\n            }\n        } else if is_panic_fn(&instance.to_string()) {\n            // We can't translate this call, it takes a string. As a hack we just ignore the argument.\n            self.translate_panic(unwind, bb)\n        } else if self.tcx.is_foreign_item(instance.def_id()) {\n            // Foreign functions don't have MIR.\n            rs::span_bug!(span, \"cannot call foreign function {instance}\");\n        } else {\n            let abi = self\n                .cx\n                .tcx\n                .fn_abi_of_instance(self.typing_env().as_query_input((instance, rs::List::empty())))\n                .unwrap();"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/a-mir-formality",
+      "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+      "path": "README.md",
+      "git_blob_sha": "a42d8838ebe0220b9f583e3d2a0fca97b60642a8",
+      "url": "https://github.com/rust-lang/a-mir-formality/blob/71dc31c1b186df1f0a64d8464b8103195902a5a5/README.md",
+      "symbols": [
+        "layers of formality"
+      ],
+      "excerpts": [
+        {
+          "start_line": 1,
+          "end_line": 27,
+          "text": "# a-mir-formality\n\nThis repository is an early-stage experimental project that aims to be a complete, authoritative formal model of the [Rust MIR](https://rustc-dev-guide.rust-lang.org/mir/index.html).\nPresuming these experiments bear fruit, the intention is to bring this model into Rust as an RFC\nand develop it as an official part of the language definition.\n\n## Quickstart guide\n\nLike any Rust project:\n\n* Clone\n* `cargo test --all`\n\n## Documentation\nCheck out [a-mir-formality book](https://rust-lang.github.io/a-mir-formality/intro.html) for an overview and introduction to `a-mir-formality`.\n\n## Layers of formality\n\nFormality is structured into several layers:\n\n* **formality-macros**: Defines procedural macros like `#[term]` as well as various derives.\n  These are used to generate the boilerplate code for parsing, pretty printing, folding, etc.\n* **formality-core**: Language-independent foundation for formal semantics — variable binding,\n  the judgment/proof system, fixed-point computation, and collections.\n* **formality-rust**: The Rust-specific model. Contains `grammar/` (AST definitions),\n  `check/` (semantic checking, with `check_all_crates` as the entry point),\n  and `prove/` (trait solving and type normalization)."
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/destructors.md",
+      "git_blob_sha": "0103093cf98bb69825cf840fa04878f6ad545805",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/destructors.md",
+      "symbols": [
+        "drop scopes",
+        "destructors"
+      ],
+      "excerpts": [
+        {
+          "start_line": 1,
+          "end_line": 55,
+          "text": "r[destructors]\n# Destructors\n\nr[destructors.intro]\nWhen an [initialized]&#32;[variable] or [temporary] goes out of [scope](#drop-scopes), its *destructor* is run or it is *dropped*. [Assignment] also runs the destructor of its left-hand operand, if it's initialized. If a variable has been partially initialized, only its initialized fields are dropped.\n\nr[destructors.operation]\nThe destructor of a type `T` consists of:\n\n1. If `T: Drop`, calling [`<T as core::ops::Drop>::drop`](core::ops::Drop::drop)\n2. Recursively running the destructor of all of its fields.\n    * The fields of a [struct] are dropped in declaration order.\n    * The fields of the active [enum variant] are dropped in declaration order.\n    * The fields of a [tuple] are dropped in order.\n    * The elements of an [array] or owned [slice] are dropped from the first element to the last.\n    * The variables that a [closure] captures by move are dropped in an unspecified order.\n    * [Trait objects] run the destructor of the underlying type.\n    * Other types don't result in any further drops.\n\nr[destructors.drop_in_place]\nIf a destructor must be run manually, such as when implementing your own smart pointer, [`core::ptr::drop_in_place`] can be used.\n\nSome examples:\n\n```rust\nstruct PrintOnDrop(&'static str);\n\nimpl Drop for PrintOnDrop {\n    fn drop(&mut self) {\n        println!(\"{}\", self.0);\n    }\n}\n\nlet mut overwritten = PrintOnDrop(\"drops when overwritten\");\noverwritten = PrintOnDrop(\"drops when scope ends\");\n\nlet tuple = (PrintOnDrop(\"Tuple first\"), PrintOnDrop(\"Tuple second\"));\n\nlet moved;\n// No destructor run on assignment.\nmoved = PrintOnDrop(\"Drops when moved\");\n// Drops now, but is then uninitialized.\nmoved;\n\n// Uninitialized does not drop.\nlet uninitialized: PrintOnDrop;\n\n// After a partial move, only the remaining fields are dropped.\nlet mut partial_move = (PrintOnDrop(\"first\"), PrintOnDrop(\"forgotten\"));\n// Perform a partial move, leaving only `partial_move.0` initialized.\ncore::mem::forget(partial_move.1);\n// When partial_move's scope ends, only the first field is dropped.\n```\n\nr[destructors.scope]"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+      "locators": [
+        "3",
+        "5.3–5.4",
+        "6.1",
+        "A"
+      ],
+      "reported_revision": "120d9b3d1e868ddd00ce9163b2bb53d099154247"
+    },
+    {
+      "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf",
+      "doi": "10.1145/3158154",
+      "locators": [
+        "7"
+      ]
+    }
+  ],
+  "acquisition_limits": [
+    {
+      "url": "https://gitlab.inf.ethz.ch/ou-plf/rust-drop-elaboration/-/tree/120d9b3d1e868ddd00ce9163b2bb53d099154247",
+      "outcome": "web tool inaccessible; no source or axiom audit"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "python": "3.9.6",
+  "scope": "one location, explicit local/foreign actions; no tree traversal, retag, wildcard, release or memory execution",
+  "initial_states": 15,
+  "traces_per_initial_state": 5461,
+  "traces_checked": 81915,
+  "differences": 0,
+  "negative_controls": {
+    "protected_reserved_foreign_read_then_write": null,
+    "unprotected_reserved_foreign_read_then_write": [
+      "U",
+      false,
+      false,
+      false
+    ],
+    "unprotected_reserved_im_foreign_write_then_local_write": [
+      "U",
+      false,
+      false,
+      false
+    ],
+    "unprotected_reserved_foreign_write_then_local_write": null
+  },
+  "freeze_mask": {
+    "size": 4,
+    "unsafe_cells": [
+      [
+        1,
+        2
+      ]
+    ],
+    "frozen": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "shared_initial_permissions": [
+      "Frozen",
+      "Cell",
+      "Cell",
+      "Frozen"
+    ]
+  }
+}

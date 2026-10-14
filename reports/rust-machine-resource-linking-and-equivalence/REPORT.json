@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "rust/unsafe-verification",
+    "assembly/resource-linking",
+    "semantics/contextual-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Kraken",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "DimSum POPL 2023",
+      "identity": {
+        "doi": "10.1145/3571220",
+        "url": "https://plv.mpi-sws.org/dimsum/paper.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

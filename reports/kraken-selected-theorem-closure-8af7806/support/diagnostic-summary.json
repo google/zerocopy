@@ -1,0 +1,33 @@
+[
+  {
+    "architecture": "X64",
+    "trace_sha256": "11409a44773c9b1572eba26a5dfd84f4a1c9b1815762627f74c3ff441a79c6e7",
+    "pretty_printer_fallback_count": 4,
+    "messages": [
+      {
+        "excerpt": "Kraken/X64/Examples/Examples.lean:268:2: Found sep goal: [Error pretty printing expression: unknown free variable `_uniq.16980.3267`. Falling back to raw printer.]\nStd.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatN",
+        "message_sha256": "69de706365a129f6a081d6a3b81d3e9ab25b9ec774e25116da4f31887186ed1b"
+      },
+      {
+        "excerpt": "Kraken/X64/Examples/Examples.lean:268:2: Solved by exact: [Error pretty printing expression: unknown free variable `_uniq.16980.3267`. Falling back to raw printer.]\nStd.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNat",
+        "message_sha256": "568c83a5e7ce174a77a44390d20d9a6cf4bc3188b4f8199455766a5d60307de7"
+      },
+      {
+        "excerpt": "Kraken/X64/Examples/Examples.lean:268:2: Already solved: [Error pretty printing expression: unknown free variable `_uniq.16980.3267`. Falling back to raw printer.]\nStd.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatN",
+        "message_sha256": "c16dae3c7bb6474091fcfdc7b47c41ed481a4262beb0ebf7daf8639fbb81bd9e"
+      },
+      {
+        "excerpt": "Kraken/X64/Examples/Examples.lean:268:2: Already solved: [Error pretty printing expression: unknown free variable `_uniq.16980.3267`. Falling back to raw printer.]\nStd.ExtHashMap.sep (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) UInt8 (instBEqOfDecidableEq.{0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatN",
+        "message_sha256": "c16dae3c7bb6474091fcfdc7b47c41ed481a4262beb0ebf7daf8639fbb81bd9e"
+      }
+    ],
+    "scope": "copied diagnostic excerpts, not a root-cause reproduction or proof verdict"
+  },
+  {
+    "architecture": "AArch64",
+    "trace_sha256": "20ad6f2c7ac6563436daff9e5433957ffa12d003f588defb892f3c22ac86e910",
+    "pretty_printer_fallback_count": 0,
+    "messages": [],
+    "scope": "copied diagnostic excerpts, not a root-cause reproduction or proof verdict"
+  }
+]

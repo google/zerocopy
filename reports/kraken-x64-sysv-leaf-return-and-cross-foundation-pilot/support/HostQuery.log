@@ -1,0 +1,35 @@
+equations:
+private theorem Kraken.Executable.withAddresses.eq_1 : ∀ {Directive : Type},
+  Kraken.Executable.withAddresses =
+    ⋯.fix fun e a =>
+      (match (motive :=
+          (e : Kraken.Executable Directive) →
+            ((y : Kraken.Executable Directive) →
+                (invImage (fun x => x.program) sizeOfWFRel).1 y e → List (Kraken.Addressable Directive)) →
+              List (Kraken.Addressable Directive))
+          e with
+        | { startAddr := startAddr, program := program } => fun x =>
+          (match (motive :=
+              (program : List (Kraken.Sized Directive)) →
+                ((y : Kraken.Executable Directive) →
+                    (invImage (fun x => x.program) sizeOfWFRel).1 y { startAddr := startAddr, program := program } →
+                      List (Kraken.Addressable Directive)) →
+                  List (Kraken.Addressable Directive))
+              program with
+            | [] => fun x => []
+            | instr :: program => fun x =>
+              { toSized := instr, addr := startAddr } ::
+                x { startAddr := startAddr + Int64.ofNat instr.size, program := program } ⋯)
+            x)
+        a
+Kraken.Executable.withAddresses.eq_def {Directive : Type} (e : Kraken.Executable Directive) :
+  e.withAddresses =
+    match e with
+    | { startAddr := startAddr, program := program } =>
+      match program with
+      | [] => []
+      | instr :: program =>
+        { toSized := instr, addr := startAddr } ::
+          { startAddr := startAddr + Int64.ofNat instr.size, program := program }.withAddresses
+Kraken.Executable.withAddresses.eq_1 {Directive : Type} (startAddr : Int64) :
+  { startAddr := startAddr, program := [] }.withAddresses = []

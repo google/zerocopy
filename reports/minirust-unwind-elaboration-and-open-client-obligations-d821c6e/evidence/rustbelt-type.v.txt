@@ -1,0 +1,52 @@
+Lines 22-72:
+Record type `{typeG Σ} :=
+  { ty_size : nat;
+    ty_own : thread_id → list val → iProp Σ;
+    ty_shr : lft → thread_id → loc → iProp Σ;
+
+    ty_shr_persistent κ tid l : Persistent (ty_shr κ tid l);
+
+    ty_size_eq tid vl : ty_own tid vl -∗ ⌜length vl = ty_size⌝;
+    (* The mask for starting the sharing does /not/ include the
+       namespace N, for allowing more flexibility for the user of
+       this type (typically for the [own] type). AFAIK, there is no
+       fundamental reason for this.
+       This should not be harmful, since sharing typically creates
+       invariants, which does not need the mask.  Moreover, it is
+       more consistent with thread-local tokens, which we do not
+       give any.
+
+       The lifetime token is needed (a) to make the definition of simple types
+       nicer (they would otherwise require a "∨ □|=>[†κ]"), and (b) so that
+       we can have emp == sum [].
+     *)
+    ty_share E κ l tid q : lftE ⊆ E →
+      lft_ctx -∗ &{κ} (l ↦∗: ty_own tid) -∗ q.[κ] ={E}=∗
+      ty_shr κ tid l ∗ q.[κ];
+    ty_shr_mono κ κ' tid l :
+      κ' ⊑ κ -∗ ty_shr κ tid l -∗ ty_shr κ' tid l
+  }.
+Existing Instance ty_shr_persistent.
+Instance: Params (@ty_size) 2.
+Instance: Params (@ty_own) 2.
+Instance: Params (@ty_shr) 2.
+
+Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
+
+Class TyWf `{typeG Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.
+Arguments ty_lfts {_ _} _ {_}.
+Arguments ty_wf_E {_ _} _ {_}.
+
+Definition ty_outlives_E `{typeG Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
+  (λ α, κ ⊑ₑ α) <$> ty.(ty_lfts).
+
+Lemma ty_outlives_E_elctx_sat `{typeG Σ} E L ty `{!TyWf ty} α β :
+  ty.(ty_outlives_E) β ⊆+ E →
+  lctx_lft_incl E L α β →
+  elctx_sat E L (ty.(ty_outlives_E) α).
+Proof.
+  unfold ty_outlives_E. induction ty.(ty_lfts) as [|κ l IH]=>/= Hsub Hαβ.
+  - solve_typing.
+  - apply elctx_sat_lft_incl.
+    + etrans; first done. eapply lctx_lft_incl_external, elem_of_submseteq, Hsub.
+      set_solver.

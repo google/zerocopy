@@ -1,0 +1,7 @@
+{
+  "directory": "nightly-2026-02-05-aarch64-apple-darwin",
+  "rustc_binary_present": false,
+  "cargo_version": "cargo1.95.0-nightly(fe2f314ae2026-01-30)",
+  "build_performed": false,
+  "result": "version-check FileNotFoundError; stopped"
+}

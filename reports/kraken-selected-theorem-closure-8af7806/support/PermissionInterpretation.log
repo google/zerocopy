@@ -1,0 +1,4 @@
+'_private.PermissionInterpretation.0.permission_erasure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.PermissionInterpretation.0.permission_rejects_forbiddenRestore' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

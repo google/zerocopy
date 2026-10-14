@@ -1,0 +1,69 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "sha256": "8b49c492c20d1ab3885941236c7a3292582531f54baa3738d9a6f118512910f5",
+      "bytes": 538
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "65379391360a7416f56816d0ba1f45fe41ee1ac0cc6c5f3de658610ae26aa9b6",
+      "bytes": 13465
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "19374bd4e3cbd08ff40cb39011f8ff2ddb2e04b40e4c4ba2888daf371cdd24f3",
+      "bytes": 2590
+    },
+    {
+      "path": "public-path-projection.json",
+      "sha256": "06486ad973fa83d3ac97c53493e44784e6aa18cbd7081ef5a9fb1e5710c430c6",
+      "bytes": 1065
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "6b55fe1c674cedc2fe029690aab5ef2276bf2ae13df064f1fca77f9e8796fa80",
+      "bytes": 4018
+    },
+    {
+      "path": "support/ParserLayout.initial.log",
+      "sha256": "77e55c16af6527b285701994d6dacbc4f3e3a1e094f6d671b8b04d4845bd27c7",
+      "bytes": 848
+    },
+    {
+      "path": "support/ParserLayout.lean",
+      "sha256": "49b03fa1849a24ea77064705e978e20be84dc630b423edc902596c6b6cec7c64",
+      "bytes": 1632
+    },
+    {
+      "path": "support/ParserLayout.log",
+      "sha256": "11e577703c59e64ad62c2f0e4e17ec6e9f39ccd6f5babb551587839941c1163d",
+      "bytes": 347
+    },
+    {
+      "path": "support/binding_probe.json",
+      "sha256": "e828bb79505ea222f8e530acd9c2413f599eba85db3c87aab699b80a5d3be032",
+      "bytes": 1175
+    },
+    {
+      "path": "support/binding_probe.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/binding_probe.py",
+      "sha256": "32a4213f9fbdd9dd02293c8b30a3b00c28fb14741c53f12e46e041cc31f6add2",
+      "bytes": 2923
+    },
+    {
+      "path": "support/parser-result.json",
+      "sha256": "9db2d555e2e45cb8d2e4bdb691dba680e6a932e031eb89978e70b86435115fe4",
+      "bytes": 415
+    },
+    {
+      "path": "support/pr-observation.json",
+      "sha256": "dad0242b566123f2eccafa21f3406ec86ed37182be02c25077e1651ca5881eae",
+      "bytes": 10223
+    }
+  ]
+}

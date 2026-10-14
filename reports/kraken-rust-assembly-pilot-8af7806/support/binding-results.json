@@ -1,0 +1,71 @@
+[
+  {
+    "artifact": "pilot.o",
+    "artifact_sha256": "2379c362157be8399544ffc7355c53e4f72781d8c462210c1f16ffefa3bb434f",
+    "functions": {
+      "_naked_add": {
+        "file_offset": 312,
+        "address": 0,
+        "bytes": "0000018bc0035fd6",
+        "matches": true,
+        "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+      },
+      "_naked_store": {
+        "file_offset": 320,
+        "address": 8,
+        "bytes": "010000f9c0035fd6",
+        "matches": true,
+        "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+      }
+    },
+    "byte_mutant_rejected": true,
+    "truncations_rejected": 3,
+    "wrong_function_rejected": true
+  },
+  {
+    "artifact": "pilot-opt0",
+    "artifact_sha256": "310860ec388f561e0c59585ab5433c5351615ee5ed7dda5ed5c8803edf30ea6d",
+    "functions": {
+      "_naked_add": {
+        "file_offset": 2240,
+        "address": 4294969536,
+        "bytes": "0000018bc0035fd6",
+        "matches": true,
+        "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+      },
+      "_naked_store": {
+        "file_offset": 2248,
+        "address": 4294969544,
+        "bytes": "010000f9c0035fd6",
+        "matches": true,
+        "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+      }
+    },
+    "byte_mutant_rejected": true,
+    "truncations_rejected": 3,
+    "wrong_function_rejected": true
+  },
+  {
+    "artifact": "pilot-opt3",
+    "artifact_sha256": "e839f72a103033421018d4798a7d6371e669373b0831c036f1eb01a89c4d5cf6",
+    "functions": {
+      "_naked_add": {
+        "file_offset": 2240,
+        "address": 4294969536,
+        "bytes": "0000018bc0035fd6",
+        "matches": true,
+        "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+      },
+      "_naked_store": {
+        "file_offset": 2248,
+        "address": 4294969544,
+        "bytes": "010000f9c0035fd6",
+        "matches": true,
+        "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+      }
+    },
+    "byte_mutant_rejected": true,
+    "truncations_rejected": 3,
+    "wrong_function_rejected": true
+  }
+]

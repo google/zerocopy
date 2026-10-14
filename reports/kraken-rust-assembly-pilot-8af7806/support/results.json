@@ -1,0 +1,124 @@
+[
+  {
+    "phase": "rustc-version",
+    "command": [
+      "rustc",
+      "--version",
+      "--verbose"
+    ],
+    "exit": 0,
+    "seconds": 0.138413583,
+    "stdout_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "lean-version",
+    "command": [
+      "lean",
+      "--version"
+    ],
+    "exit": 0,
+    "seconds": 0.04398274999999999,
+    "stdout_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "kraken-proof",
+    "command": [
+      "lean",
+      "KrakenPilot.lean"
+    ],
+    "exit": 0,
+    "seconds": 3.970072917,
+    "stdout_sha256": "7bf08ef2e14fff3dc43be5a5654ec153a229bec6ca23f3748c52cb01537fe29f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "compile-0",
+    "command": [
+      "rustc",
+      "--edition=2024",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=abort",
+      "pilot.rs",
+      "-o",
+      "pilot-opt0"
+    ],
+    "exit": 0,
+    "seconds": 0.3850722909999993,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "native-0",
+    "command": [
+      "pilot-opt0"
+    ],
+    "exit": 0,
+    "seconds": 0.050818708000000434,
+    "stdout_sha256": "255de129467eb18516e48d0058745e41c55ee59352f6143736df812e13ac31c2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "compile-3",
+    "command": [
+      "rustc",
+      "--edition=2024",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "panic=abort",
+      "pilot.rs",
+      "-o",
+      "pilot-opt3"
+    ],
+    "exit": 0,
+    "seconds": 0.18257829200000053,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "native-3",
+    "command": [
+      "pilot-opt3"
+    ],
+    "exit": 0,
+    "seconds": 0.05113904199999997,
+    "stdout_sha256": "255de129467eb18516e48d0058745e41c55ee59352f6143736df812e13ac31c2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "object",
+    "command": [
+      "rustc",
+      "--edition=2024",
+      "--crate-type=lib",
+      "--emit=llvm-ir,asm,obj",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "panic=abort",
+      "pilot.rs"
+    ],
+    "exit": 0,
+    "seconds": 0.06928516600000023,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "binding",
+    "command": [
+      "python3",
+      "macho_binding.py",
+      "pilot.o",
+      "pilot-opt0",
+      "pilot-opt3"
+    ],
+    "exit": 0,
+    "seconds": 0.053145917000000154,
+    "stdout_sha256": "59f122abab9230da7f02c72d26a3c8d8da74fadafaf42fbe4daf7fa4a95f1348",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

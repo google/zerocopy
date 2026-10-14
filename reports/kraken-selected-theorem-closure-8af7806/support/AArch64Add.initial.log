@@ -1,0 +1,17 @@
+END KSTEP: 0 sub-goals left
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/AArch64Add.lean:10:26: error: Tactic `rfl` failed: The left-hand side
+  { toBitVec := res✝ }
+is not definitionally equal to the right-hand side
+  X1 + 42
+
+layout : Kraken.Layout Directive
+flags : StatusFlags
+mem : Std.ExtHashMap (BitVec 64) UInt8
+X0 X1 X2 X3 X4 X5 X6 X7 X8 X9 X10 X11 X12 X13 X14 X15 X16 X17 X18 X19 X20 X21 X22 X23 X24 X25 X26 X27 X28 X29 X30 SP :
+  UInt64
+ss✝ : MachineData := ⋯
+val1✝ : BitVec 64 := ⋯
+val2✝ : BitVec 64 := ⋯
+res✝ : BitVec 64 := ⋯
+⊢ { toBitVec := res✝ } = X1 + 42
+'_private.AArch64Add.0.addPilot_correct' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

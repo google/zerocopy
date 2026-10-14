@@ -1,0 +1,9 @@
+END KSTEP: 0 sub-goals left
+<PACKAGE_SUPPORT>/X64Pilot.lean:28:67: error: unsolved goals
+layout : Layout
+d : MachineData
+ra : BitVec 64
+hload : Mem.loadInt d.dmem d.regs.rsp.toBitVec 8 = some ra.toInt
+⊢ { toBitVec := d.regs.rdi.toBitVec.take 64 } + { toBitVec := d.regs.rsi.toBitVec.take 64 } = d.regs.rdi + d.regs.rsi
+'_private.X64Pilot.0.addBody_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_of_load' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

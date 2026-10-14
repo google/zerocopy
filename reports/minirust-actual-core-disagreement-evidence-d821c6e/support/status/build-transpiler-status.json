@@ -1,0 +1,18 @@
+{
+  "command": [
+    "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+    "build",
+    "--offline",
+    "--locked",
+    "--manifest-path",
+    "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/Cargo.toml",
+    "-p",
+    "specr-transpile"
+  ],
+  "returncode": 0,
+  "seconds": 3.558223125,
+  "RUSTC_BOOTSTRAP": "1",
+  "RUSTC": "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/rustc",
+  "network": "offline",
+  "source_edits": false
+}

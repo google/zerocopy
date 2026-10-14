@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/usr/bin/clang",
+    "--target=x86_64-unknown-linux-gnu",
+    "-c",
+    "-x",
+    "assembler-with-cpp",
+    "-I",
+    "<task-workspace>/work/research/phase2-assembly-foundations/reports/jasmin-vale-s2n-artifact-and-access-boundaries/support/upstream",
+    "<task-workspace>/work/research/phase2-assembly-foundations/reports/jasmin-vale-s2n-artifact-and-access-boundaries/support/upstream/bignum_add.S",
+    "-o",
+    "<task-workspace>/work/research/phase2-assembly-foundations/reports/jasmin-vale-s2n-artifact-and-access-boundaries/support/bignum_add.o"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

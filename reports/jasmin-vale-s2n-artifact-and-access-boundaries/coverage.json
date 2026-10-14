@@ -1,0 +1,70 @@
+{
+  "package": "jasmin-vale-s2n-artifact-and-access-boundaries",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS20",
+      "status": "partial",
+      "sections": [
+        "Findings / Jasmin's compiler theorem has a formal endpoint and a named relation"
+      ],
+      "answered_scope": [
+        "Exact it_compile_prog_to_asmP/full_pre/full_post and source-error-cutoff wkequiv_io boundary",
+        "Primary pass graph distinguishes proved, validated, trusted stages and formal assembly vs bytes"
+      ],
+      "stronger_unestablished_claims": [
+        "Compiler theorem proves arbitrary Rust source equivalence or downstream bytes",
+        "Documentation pass categories are fresh theorem closure audit"
+      ],
+      "unexamined_gaps": [
+        "No actual Jasmin shared arithmetic/memory or ABI-mutant proof",
+        "Individual pass dependency closure and final artifact checking unexecuted"
+      ]
+    },
+    {
+      "id": "AS21",
+      "status": "partial",
+      "sections": [
+        "Findings / Vale's logical frame depends on the selected architecture specification"
+      ],
+      "answered_scope": [
+        "Procedure reads/modifies/ok discipline and Dafny/F* tool endpoints",
+        "Named trusted Dafny x64 spec; operation-specific64bit updater support distinctions"
+      ],
+      "stronger_unestablished_claims": [
+        "Any Vale procedure validates arbitrary Rust inline assembly",
+        "Inspected Dafny unsupported updater applies to every Vale/F* library or every64bit write"
+      ],
+      "unexamined_gaps": [
+        "No actual scalar/memory port or hidden-clobber/footprint mutant verification",
+        "Verified extraction/wrapper/output correspondence and backend theorem closure unexamined"
+      ]
+    },
+    {
+      "id": "AS22",
+      "status": "partial",
+      "sections": [
+        "Findings / The selected s2n theorem binds code, entry resources, return state, and a final frame",
+        "Findings / Actual ELF symbol bytes match the proof's complete literal list",
+        "Findings / A functional final-state frame does not establish access safety",
+        "Findings / Downstream bytes and the caller/header remain explicit gaps"
+      ],
+      "answered_scope": [
+        "Exact functional/subroutine/Windows contracts and proof-byte imports inspected",
+        "Actual pinned ELF assembled;185bytes match literal; onebyte/target/symbol controls reject",
+        "Executable finite OOB-read and write/restore countermodels; separate safety/security/caller/downstream boundaries"
+      ],
+      "stronger_unestablished_claims": [
+        "New HOL Light theorem replay or selected axiom closure",
+        "Functional bignum_add theorem by itself excludes forbidden accesses",
+        "This object comparison binds every downstream executable or establishes Rust call-site resources"
+      ],
+      "unexamined_gaps": [
+        "HOL replay and selected theorem imported assumptions not measured",
+        "Actual separate access/constant-time theorem for chosen routine not located/replayed",
+        "End-to-end caller/header/Rust/linked-deployment relation not constructed"
+      ]
+    }
+  ],
+  "interpretation": "Statuses describe only the explicit answered scopes. Unexamined research is separate from stronger implementation/theorem claims."
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "minirust",
+    "url": "https://codeload.github.com/minirust/minirust/tar.gz/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+    "bytes": 224303,
+    "sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+    "members": 402
+  },
+  {
+    "name": "specr",
+    "url": "https://codeload.github.com/minirust/specr/tar.gz/15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+    "bytes": 36679,
+    "sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220",
+    "members": 78
+  }
+]

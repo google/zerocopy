@@ -1,0 +1,101 @@
+{
+  "python": "3.9.6",
+  "access_domain": 80,
+  "ordered_access_pairs_checked": 6400,
+  "byte_set_overlap_disagreements": 198,
+  "every_disagreement_has_an_empty_interval": true,
+  "first_disagreement": [
+    [
+      0,
+      2,
+      false,
+      false
+    ],
+    [
+      1,
+      0,
+      true,
+      false
+    ]
+  ],
+  "examples": {
+    "zero_interior": true,
+    "zero_boundary": false,
+    "mixed_atomic_nonatomic_reads": false,
+    "both_atomic_partial_overlap": false
+  },
+  "sc_message_passing": {
+    "schedules": 6,
+    "outcomes": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        42
+      ],
+      [
+        1,
+        42
+      ]
+    ],
+    "flag1_data0": false
+  },
+  "toy_view_message_passing": {
+    "rlx_rlx": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        42
+      ]
+    ],
+    "release_acquire": [
+      [
+        1,
+        42
+      ]
+    ],
+    "scope": "illustrates one view-transfer premise; not an ORC11/RC11 interpreter"
+  },
+  "previous_step_only": {
+    "separated_conflicts": [
+      [
+        0,
+        [
+          1,
+          1,
+          true,
+          false
+        ]
+      ],
+      [
+        1,
+        [
+          4,
+          1,
+          false,
+          false
+        ]
+      ],
+      [
+        2,
+        [
+          1,
+          1,
+          false,
+          false
+        ]
+      ]
+    ],
+    "adjacent_races": [
+      false,
+      false
+    ],
+    "nonadjacent_pair_races": true,
+    "scope": "per-schedule observation; not a universal counterexample to all scheduler choices"
+  }
+}

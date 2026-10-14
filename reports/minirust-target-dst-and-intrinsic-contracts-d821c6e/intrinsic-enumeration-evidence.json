@@ -1,0 +1,17 @@
+{
+  "repository": "minirust/minirust",
+  "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "path": "spec/lang/syntax.md",
+  "git_blob_sha": "3406c107f9f07c5fe381cc17f5ca8d190dfa7b25",
+  "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/syntax.md#L417",
+  "symbols": [
+    "IntrinsicOp"
+  ],
+  "excerpts": [
+    {
+      "start_line": 417,
+      "end_line": 442,
+      "text": "pub enum IntrinsicOp {\n    Abort,\n    Assume,\n    Exit,\n    PrintStdout,\n    PrintStderr,\n    Allocate,\n    Deallocate,\n    Spawn,\n    Join,\n    /// Determines whether the raw bytes pointed to by two pointers are equal.\n    /// (Can't be an operand because it reads from memory.)\n    RawEq,\n    AtomicStore,\n    AtomicLoad,\n    AtomicCompareExchange,\n    AtomicFetchAndOp(IntBinOp),\n    Lock(IntrinsicLockOp),\n    /// 'Expose' the provenance a pointer so that it can later be cast to an integer.\n    /// The address part of the pointer is stored in `destination`.\n    PointerExposeProvenance,\n    /// Create a new pointer from the given address with some previously exposed provenance.\n    PointerWithExposedProvenance,\n    /// Access the current unwinding payload. UB if not currently unwinding.\n    GetUnwindPayload,\n}"
+    }
+  ]
+}

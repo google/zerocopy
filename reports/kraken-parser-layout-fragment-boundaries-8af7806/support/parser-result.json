@@ -1,0 +1,10 @@
+{
+  "command": [
+    "lean",
+    "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-parser-layout-fragment-boundaries-8af7806/support/ParserLayout.lean"
+  ],
+  "lean_path": "<task-workspace>/work/research/phase2-parent/kraken-source/.lake/build/lib/lean",
+  "exit_code": 0,
+  "source_sha256": "49b03fa1849a24ea77064705e978e20be84dc630b423edc902596c6b6cec7c64",
+  "log": "ParserLayout.log"
+}

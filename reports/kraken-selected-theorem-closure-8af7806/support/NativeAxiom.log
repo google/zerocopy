@@ -1,0 +1,6 @@
+private axiom arith_shift_correct._native.bv_decide.ax_1_10 : Std.Tactic.BVDecide.Reflect.verifyBVExpr
+    arith_shift_correct._expr_def_1_1 arith_shift_correct._cert_def_1_1 =
+  true
+arith_shift_correct [layout : Layout] (d : MachineData) :
+  straightlineStep (Kraken.Layout.apply layout arith_shift) { data := d, pc := Kraken.Layout.start Directive } fun s' =>
+    s'.data.regs.getRegOrZr RegOrZr.X3 = 3 * (d.regs.getRegOrZr RegOrZr.X1 + 42)

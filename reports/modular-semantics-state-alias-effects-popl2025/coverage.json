@@ -1,0 +1,43 @@
+{
+  "mr_ids": [
+    "MR19"
+  ],
+  "status": "completed bounded source/fragment investigation; full MiniRust integration remains unestablished",
+  "coverage": [
+    {
+      "id": "MR19",
+      "sections": [
+        "Findings 1",
+        "Findings 2",
+        "Findings 3",
+        "Findings 4",
+        "Findings 5",
+        "Findings 6",
+        "Findings 7"
+      ],
+      "answered_scope": "Actual artifact handler/translation/adequacy theorem interfaces, state/choice/recursion/axiom boundaries, thesis state-expression limits, performed general finite-trace handler/direct equivalence plus omitted-read-effect counterexample.",
+      "stronger_unestablished_claims": [
+        "MiniRust byte/alias handler adequacy",
+        "Specr import correctness",
+        "maintenance cost superiority",
+        "source safety theorem"
+      ],
+      "actual_unexamined_gaps": [
+        "fresh Rocq assumption closure/build",
+        "complete concurrent composition",
+        "inaccessible thesis source",
+        "full predictive nondeterminism",
+        "real MiniRust effect port"
+      ]
+    }
+  ],
+  "performed": [
+    "source-only artifact audit",
+    "Lean Effects.lean checked"
+  ],
+  "primary_exclusions": [
+    "no upstream proof execution",
+    "no Rocq or VM installation",
+    "owned witness is not Tree Borrows"
+  ]
+}

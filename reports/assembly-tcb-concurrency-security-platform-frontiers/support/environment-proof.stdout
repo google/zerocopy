@@ -1,0 +1,5 @@
+'_private.EnvironmentContracts.0.default_rejects_device' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.EnvironmentContracts.0.response_satisfies_contract' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.EnvironmentContracts.0.omitted_memory_effect_rejected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

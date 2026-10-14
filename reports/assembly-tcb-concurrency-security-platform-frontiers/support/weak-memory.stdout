@@ -1,0 +1,95 @@
+{
+  "program": "T0: Wx=1;Ry / T1: Wy=1;Rx",
+  "sc_fragment": {
+    "states": 13,
+    "outcomes": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "witnesses": {
+      "(0, 1)": [
+        "T0:Wx=1",
+        "T0:Ry",
+        "T1:Wy=1",
+        "T1:Rx"
+      ],
+      "(1, 1)": [
+        "T0:Wx=1",
+        "T1:Wy=1",
+        "T0:Ry",
+        "T1:Rx"
+      ],
+      "(1, 0)": [
+        "T1:Wy=1",
+        "T1:Rx",
+        "T0:Wx=1",
+        "T0:Ry"
+      ]
+    }
+  },
+  "store_buffer_fragment": {
+    "states": 34,
+    "outcomes": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "witnesses": {
+      "(0, 0)": [
+        "T0:Wx=1",
+        "T0:Ry",
+        "T1:Wy=1",
+        "T1:Rx",
+        "flush0",
+        "flush1"
+      ],
+      "(0, 1)": [
+        "T0:Wx=1",
+        "T0:Ry",
+        "T1:Wy=1",
+        "flush0",
+        "T1:Rx",
+        "flush1"
+      ],
+      "(1, 0)": [
+        "T0:Wx=1",
+        "T1:Wy=1",
+        "T1:Rx",
+        "flush0",
+        "flush1",
+        "T0:Ry"
+      ],
+      "(1, 1)": [
+        "T0:Wx=1",
+        "T1:Wy=1",
+        "flush0",
+        "T1:Rx",
+        "flush1",
+        "T0:Ry"
+      ]
+    }
+  }
+}

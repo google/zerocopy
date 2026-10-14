@@ -1,0 +1,99 @@
+{
+  "package": "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS04",
+      "status": "partial",
+      "sections": [
+        "Findings / The return theorem has a complete modeled frame and a real stack witness",
+        "Findings / The shared arithmetic observation has different machine interfaces"
+      ],
+      "answered_scope": [
+        "Actual Kraken X64/AArch64 addition/return theorems and common low64 arithmetic observation, paired with independent-model s2n source theorem"
+      ],
+      "stronger_unestablished_claims": [
+        "Kraken selected instructions refine authoritative ISA or s2n ISA",
+        "Common output observation is ABI/contextual equivalence"
+      ],
+      "unexamined_gaps": [
+        "Detailed primary reference instruction semantics and native/oracle validation remain a separate pending investigation"
+      ]
+    },
+    {
+      "id": "AS05",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / The emitted footprint is checked for this actual leaf"
+      ],
+      "answered_scope": [
+        "Exact actual leaf permission iff, no emitted writes, complete8byte stack read, two modeled exec ranges",
+        "Actual deniedread/exec and7byteprefix negatives plus8bytepositive, with all closures checked"
+      ],
+      "stronger_unestablished_claims": [
+        "Every Kraken instruction producer is complete or AVX widths are repaired",
+        "Owned permission predicate represents VM or Rust borrows"
+      ],
+      "unexamined_gaps": [
+        "Model-to-physical access adequacy and Rust authority relation not examined for this leaf"
+      ]
+    },
+    {
+      "id": "AS17",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / A fixed host embedding has checked entry and two-step composition"
+      ],
+      "answered_scope": [
+        "Checked exact4directive host program identity and sizes/start; explicit executable identity and entryPC premises",
+        "Actual straightline host finalstate iff, separate two step1 lemmas and Eventually composition, exact host permission iff"
+      ],
+      "stronger_unestablished_claims": [
+        "Generic host WP, arbitrary relocation/linking, overlap/escape checker or general step1/straightline equivalence"
+      ],
+      "unexamined_gaps": [
+        "PR-specific WP theorem closures not checked",
+        "No generic escape/overlap validator mutants; fixed identity supplies narrow program/layout subject"
+      ]
+    },
+    {
+      "id": "AS23",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / The paired byte controls concern actual s2n object bytes"
+      ],
+      "answered_scope": [
+        "Selected s2n object-binding route addresses one actual missing Kraken arrow: rechecked185symbol bytes and patch/target/symbol rejection",
+        "Exact peer/theorem/observation interfaces retained instead of a name catalogue"
+      ],
+      "stronger_unestablished_claims": [
+        "Fresh HOL theorem replay or cross-logic ISA refinement",
+        "Other surveyed foundations have been ported or ranked"
+      ],
+      "unexamined_gaps": [
+        "Selected HOL imported assumptions/safety theorem replay not performed"
+      ]
+    },
+    {
+      "id": "AS28",
+      "status": "partial",
+      "sections": [
+        "Findings / The shared arithmetic observation has different machine interfaces",
+        "Findings / The paired byte controls concern actual s2n object bytes"
+      ],
+      "answered_scope": [
+        "Actual2arch add/return/fullframe pilot, fixed-host composition and semantic clobber/return/footprint controls",
+        "Reuse frozen swap/two-cell load-store/memory-arithmetic closures and distinguish s2n carry source theorem",
+        "Portable replay with one-sample Lean import/elaboration/check timing and real object-byte controls"
+      ],
+      "stronger_unestablished_claims": [
+        "A matched full Rust/assembly suite, complete source/context bridge, security theorem or production architecture selection"
+      ],
+      "unexamined_gaps": [
+        "Multiply/copy/pointer/helper-call and adequate SIMD pilots not performed here",
+        "Controlled source/ABI/version repair and matched multi-tool cost measurements remain unexamined"
+      ]
+    }
+  ],
+  "interpretation": "bounded-complete applies only to explicit selected mechanisms/experiments, not stronger universal implementation outcomes"
+}

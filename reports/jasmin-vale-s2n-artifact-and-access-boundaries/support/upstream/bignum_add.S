@@ -1,0 +1,163 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0 OR ISC OR MIT-0
+
+// ----------------------------------------------------------------------------
+// Add, z := x + y
+// Inputs x[m], y[n]; outputs function return (carry-out) and z[p]
+//
+//    extern uint64_t bignum_add(uint64_t p, uint64_t *z, uint64_t m,
+//                               const uint64_t *x, uint64_t n, const uint64_t *y);
+//
+// Does the z := x + y operation, truncating modulo p words in general and
+// returning a top carry (0 or 1) in the p'th place, only adding the input
+// words below p (as well as m and n respectively) to get the sum and carry.
+//
+// Standard x86-64 ABI: RDI = p, RSI = z, RDX = m, RCX = x, R8 = n, R9 = y, returns RAX
+// Microsoft x64 ABI:   RCX = p, RDX = z, R8 = m, R9 = x, [RSP+40] = n, [RSP+48] = y, returns RAX
+// ----------------------------------------------------------------------------
+
+#include "_internal_s2n_bignum_x86.h"
+
+        .intel_syntax noprefix
+        S2N_BN_SYM_VISIBILITY_DIRECTIVE(bignum_add)
+        S2N_BN_FUNCTION_TYPE_DIRECTIVE(bignum_add)
+        S2N_BN_SYM_PRIVACY_DIRECTIVE(bignum_add)
+        .text
+        .balign 32
+
+#define p rdi
+#define z rsi
+#define m rdx
+#define x rcx
+#define n r8
+#define y r9
+#define i r10
+#define a rax
+
+#define ashort eax
+
+
+
+S2N_BN_SYMBOL(bignum_add):
+        CFI_START
+        _CET_ENDBR
+
+#if WINDOWS_ABI
+        CFI_PUSH(rdi)
+        CFI_PUSH(rsi)
+        mov     rdi, rcx
+        mov     rsi, rdx
+        mov     rdx, r8
+        mov     rcx, r9
+        mov     r8, [rsp+56]
+        mov     r9, [rsp+64]
+#endif
+
+// Zero the main index counter for both branches
+
+        xor     i, i
+
+// First clamp the two input sizes m := min(p,m) and n := min(p,n) since
+// we'll never need words past the p'th. Can now assume m <= p and n <= p.
+// Then compare the modified m and n and branch accordingly
+
+        cmp     p, m
+        cmovc   m, p
+        cmp     p, n
+        cmovc   n, p
+        cmp     m, n
+        jc      Lbignum_add_ylonger
+
+// The case where x is longer or of the same size (p >= m >= n)
+
+        sub     p, m
+        sub     m, n
+        inc     m
+        test    n, n
+        jz      Lbignum_add_xtest
+Lbignum_add_xmainloop:
+        mov     a, [x+8*i]
+        adc     a, [y+8*i]
+        mov     [z+8*i],a
+        inc     i
+        dec     n
+        jnz     Lbignum_add_xmainloop
+        jmp     Lbignum_add_xtest
+Lbignum_add_xtoploop:
+        mov     a, [x+8*i]
+        adc     a, 0
+        mov     [z+8*i],a
+        inc     i
+Lbignum_add_xtest:
+        dec     m
+        jnz     Lbignum_add_xtoploop
+        mov     ashort, 0
+        adc     a, 0
+        test    p, p
+        jnz     Lbignum_add_tails
+#if WINDOWS_ABI
+        CFI_POP(rsi)
+        CFI_POP(rdi)
+#endif
+        ret
+
+// The case where y is longer (p >= n > m)
+
+#if WINDOWS_ABI
+  .cfi_def_cfa rsp, 24
+#else
+  .cfi_def_cfa rsp, 8
+#endif
+
+Lbignum_add_ylonger:
+        sub     p, n
+        sub     n, m
+        test    m, m
+        jz      Lbignum_add_ytoploop
+Lbignum_add_ymainloop:
+        mov     a, [x+8*i]
+        adc     a, [y+8*i]
+        mov     [z+8*i],a
+        inc     i
+        dec     m
+        jnz     Lbignum_add_ymainloop
+Lbignum_add_ytoploop:
+        mov     a, [y+8*i]
+        adc     a, 0
+        mov     [z+8*i],a
+        inc     i
+        dec     n
+        jnz     Lbignum_add_ytoploop
+        mov     ashort, 0
+        adc     a, 0
+        test    p, p
+        jnz     Lbignum_add_tails
+#if WINDOWS_ABI
+        CFI_POP(rsi)
+        CFI_POP(rdi)
+#endif
+        ret
+
+// Adding a non-trivial tail, when p > max(m,n)
+
+Lbignum_add_tails:
+        mov     [z+8*i],a
+        xor     a, a
+        jmp     Lbignum_add_tail
+Lbignum_add_tailloop:
+        mov     [z+8*i],a
+Lbignum_add_tail:
+        inc     i
+        dec     p
+        jnz     Lbignum_add_tailloop
+#if WINDOWS_ABI
+        CFI_POP(rsi)
+        CFI_POP(rdi)
+#endif
+        CFI_RET
+
+S2N_BN_SIZE_DIRECTIVE(bignum_add)
+
+#if defined(__linux__) && defined(__ELF__)
+.section .note.GNU-stack,"",%progbits
+#endif

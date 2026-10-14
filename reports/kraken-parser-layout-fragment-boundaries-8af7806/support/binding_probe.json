@@ -1,0 +1,60 @@
+{
+  "specimen": {
+    "bytes": "48c7c02a000000c3",
+    "sha256": "412f0ec53eab3926898a025b5bffb28ee0cddf8bd5517aefd2943db47b08beb5",
+    "ast": [
+      [
+        "mov_rax_signed_imm32",
+        42
+      ],
+      [
+        "ret"
+      ]
+    ],
+    "sizes": [
+      7,
+      1
+    ],
+    "start": 4096,
+    "labels": [
+      [
+        "entry",
+        0
+      ]
+    ]
+  },
+  "results": {
+    "positive": {
+      "accepted": true
+    },
+    "stale_byte_hash": {
+      "accepted": false,
+      "reason": "byte binding"
+    },
+    "changed_immediate": {
+      "accepted": false,
+      "reason": "decoded AST"
+    },
+    "wrong_size": {
+      "accepted": false,
+      "reason": "instruction sizes"
+    },
+    "duplicate_label": {
+      "accepted": false,
+      "reason": "duplicate label"
+    },
+    "interior_label": {
+      "accepted": false,
+      "reason": "label is not instruction boundary"
+    },
+    "embedded_data": {
+      "accepted": false,
+      "reason": "outside importer grammar"
+    },
+    "overflow": {
+      "accepted": false,
+      "reason": "signed layout overflow"
+    }
+  },
+  "scope": "owned protocol experiment; no upstream decoder or actual object file"
+}

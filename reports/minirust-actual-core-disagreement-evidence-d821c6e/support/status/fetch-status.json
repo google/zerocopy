@@ -1,0 +1,15 @@
+{
+  "command": [
+    "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+    "fetch",
+    "--locked",
+    "--manifest-path",
+    "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/Cargo.toml"
+  ],
+  "returncode": 0,
+  "seconds": 1.008867833,
+  "private_cargo_bytes": 28716688,
+  "copied_cached_crates": 25,
+  "new_dependency_cap_bytes": 250000000,
+  "source_edits": false
+}

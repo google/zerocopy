@@ -1,0 +1,118 @@
+{
+  "archive_sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378",
+  "members": [
+    {
+      "member": "the_artifact/iris-itree/src/handler.v",
+      "sha256": "c2d4010299316e1b3e621a3c3f99a212c32f555010fd0508e288251794b7a592",
+      "spans": [
+        [
+          11,
+          24
+        ],
+        [
+          39,
+          55
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/exec.v",
+      "sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+      "spans": [
+        [
+          533,
+          555
+        ],
+        [
+          707,
+          724
+        ],
+        [
+          830,
+          841
+        ],
+        [
+          880,
+          894
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/state.v",
+      "sha256": "04a25d2945d16ab2937acf832801417679504fea6fc3a16cbfc7d96f63352a78",
+      "spans": [
+        [
+          47,
+          67
+        ],
+        [
+          112,
+          118
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/choice.v",
+      "sha256": "375b860ad8322e937c0b24ad21d387820e8fde93ae5fb3ba0bc424e852ffe065",
+      "spans": [
+        [
+          20,
+          32
+        ],
+        [
+          50,
+          56
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/angelic_choice.v",
+      "sha256": "e84624cde0ab0109286516be844714b6a456c88c8fd722a1d9069d7f2693d8c4",
+      "spans": [
+        [
+          20,
+          48
+        ],
+        [
+          62,
+          96
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/axioms.v",
+      "sha256": "47c9c5cea1e8ad6456e5c8c809611e9fe819f49c15252b1042d087f3de704fab",
+      "spans": [
+        [
+          1,
+          24
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/step.v",
+      "sha256": "fc3abef006f65be3ee309ac81b90734c64fec055b06fa8c00cdfb8a874de110d",
+      "spans": [
+        [
+          9,
+          16
+        ],
+        [
+          31,
+          35
+        ]
+      ]
+    },
+    {
+      "member": "the_artifact/iris-itree/src/heaplang/opsem_adequacy.v",
+      "sha256": "8030a91c5ba114c6c0cc04508a4d92f85b362a2d895c02f7601558ed7ba9895d",
+      "spans": [
+        [
+          1558,
+          1603
+        ]
+      ]
+    }
+  ],
+  "role": "source inspected; no Rocq execution"
+}

@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-10-14",
+  "host": "aarch64-apple-darwin",
+  "compiler": {
+    "version": "rustc 1.99.0",
+    "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "commit_date": "2026-09-28",
+    "llvm": "23.1.1"
+  },
+  "working_directory": "phase2-memory-logic",
+  "compile": {
+    "command": "rustc -C panic=unwind -C opt-level=0 --edition=2021 --emit=link,mir reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs -o reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe-bin",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted\n\n"
+  },
+  "run": {
+    "command": "./reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe-bin > reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/results.txt",
+    "exit_code": 0,
+    "stdout_file": "results.txt",
+    "stderr": "",
+    "expected_panics": [
+      "expected body unwind",
+      "expected destructor unwind"
+    ],
+    "unexpected_panics": false
+  },
+  "portable_support": "Binary retained only in scratch build-artifacts; recompile probe.rs to reproduce. MIR and output retained in package."
+}

@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "sha256": "b6790e70ed6eba828a2d5e018d36fa99356c6490099570a6658ce0dfc2d8c88f",
+      "bytes": 1454
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "15aa5be5d1a3a9219e55a2038fb45dda6a25170747cd5bb165da06f00c79f2a2",
+      "bytes": 15335
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "0070c671063d69609948eaa5293af5d2a086448fd5c5e327452a9539e1a2b67c",
+      "bytes": 1326
+    },
+    {
+      "path": "source-evidence.json",
+      "sha256": "4e1505921dc0f96d7b5287d9d04c89be53e3b8b2da1b016cacd5a75941d265dd",
+      "bytes": 2376
+    },
+    {
+      "path": "support/Effects.lean",
+      "sha256": "cde672ee06dc661982178a12dc8d4bf011c8cdc264426861e132bc8542330d88",
+      "bytes": 1838
+    },
+    {
+      "path": "support/UPSTREAM-LICENSE",
+      "sha256": "f8e514d68cefc1bfd44f6cba19106e9cf17e24d97f09e57b7162077165bad2a9",
+      "bytes": 1794
+    },
+    {
+      "path": "support/lean.log",
+      "sha256": "e54d3837d681ace1ececee62b94eba52b3cdc5b34d5f5db594ead0a873b0d578",
+      "bytes": 170
+    },
+    {
+      "path": "support/theorem-excerpts.txt",
+      "sha256": "3b3c47cf1edeaac90a470342208d85fbcbe53e7e1b91fc76ac03eb0314138e9d",
+      "bytes": 12560
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "scope": "public projection of development-only logs; raw originals retained outside publishable package",
+  "rule": "UTF8-byte regex /Users/[^/\\n]+/[^\\n]*?/reports/kraken-x64-sysv-leaf-return-and-cross-foundation-pilot/support/ -> <PACKAGE_SUPPORT>/; gzip files recompressed with mtime0",
+  "files": [
+    {
+      "file": "X64Pilot.attempt1.log",
+      "raw_sha256": "6691dd25d754655cbc69925cad22bd9b99c673623e6414e457d2ff9a468d97ff",
+      "raw_uncompressed_sha256": "6691dd25d754655cbc69925cad22bd9b99c673623e6414e457d2ff9a468d97ff",
+      "public_sha256": "95f884f601c477ed511e3f20d53e96639121d70ddc3347259dece1b732d5dccb",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.attempt2.log",
+      "raw_sha256": "55c306455294028cc4b5611662b041004ba959899a8668595e6b82749554aecc",
+      "raw_uncompressed_sha256": "55c306455294028cc4b5611662b041004ba959899a8668595e6b82749554aecc",
+      "public_sha256": "0b005d653a468823d75b344179b049f1b53176833850c328ce3da9a1ca39412c",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.attempt3.log",
+      "raw_sha256": "b8350880e43861af57b9df13e60b4b202780684623a6719ac34c788d1868a191",
+      "raw_uncompressed_sha256": "b8350880e43861af57b9df13e60b4b202780684623a6719ac34c788d1868a191",
+      "public_sha256": "05ab0a359750c3e1952598d0f08f8c8fb437ab181285da04eb1eef2b6db56424",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.attempt4-host.log.gz",
+      "raw_sha256": "443c44c451cd6a02705fd5b0ebc71b15fd8015a2a626d0ad634ae021621827e9",
+      "raw_uncompressed_sha256": "4e0f28357009483c6e2bdfc611f0dfaa5e0b9753be1e65e0c3489d3e86b939f2",
+      "public_sha256": "c874b21ef5bf7a62f9b4e08a6eb544bbb93604272a80fb3f3ec3decd9a03721b",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.attempt5-host.log.gz",
+      "raw_sha256": "c1b7e50ed931b17af736da6ff302caf722d7d29924a36416fe1e8d7741e39ecf",
+      "raw_uncompressed_sha256": "7752104d2316a9b6c4184a4e6998910838a523073d4d84b85be0874a9e96057a",
+      "public_sha256": "fc4fa300be847cc11d5c53f9aafedeb3fff68c549aab6ebef13168dc0233104e",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.attempt6-host.log.gz",
+      "raw_sha256": "07e1c71e3964956000fd0695dce8402e493b8ed5b603c7d00b4664c8ccab089c",
+      "raw_uncompressed_sha256": "6cd84ef3e6801d3f6298d051fae0045e233c718f8dede26e37f9528062d0200f",
+      "public_sha256": "4707b7ddb188ae0c0976de47dcad2d5cdd34f92acd961cfed764b08108f5edf1",
+      "changed": true,
+      "recorded_exit_code": 1
+    },
+    {
+      "file": "X64Pilot.pre-generalization.log",
+      "raw_sha256": "315b818def9966c82794b01a05e444f181e608dd89243f4b51e39d0ba409911e",
+      "raw_uncompressed_sha256": "315b818def9966c82794b01a05e444f181e608dd89243f4b51e39d0ba409911e",
+      "public_sha256": "315b818def9966c82794b01a05e444f181e608dd89243f4b51e39d0ba409911e",
+      "changed": false,
+      "recorded_exit_code": 0
+    },
+    {
+      "file": "X64Pilot.pre-host.log",
+      "raw_sha256": "3d7390eaaf68774de5aab07620cd08645d381dade3504468fc0e416133b7b6b4",
+      "raw_uncompressed_sha256": "3d7390eaaf68774de5aab07620cd08645d381dade3504468fc0e416133b7b6b4",
+      "public_sha256": "3d7390eaaf68774de5aab07620cd08645d381dade3504468fc0e416133b7b6b4",
+      "changed": false,
+      "recorded_exit_code": 0
+    },
+    {
+      "file": "X64Pilot.pre-permissions.log",
+      "raw_sha256": "073449f485d01d6bc243aad6731e1e0e447eaa82e4346fb5c8628957ff0bb44b",
+      "raw_uncompressed_sha256": "073449f485d01d6bc243aad6731e1e0e447eaa82e4346fb5c8628957ff0bb44b",
+      "public_sha256": "073449f485d01d6bc243aad6731e1e0e447eaa82e4346fb5c8628957ff0bb44b",
+      "changed": false,
+      "recorded_exit_code": 0
+    },
+    {
+      "file": "X64Pilot.pre-region.log",
+      "raw_sha256": "371c7b078a4086342a387978fa9d88d8cbfddec45a37f395535419d3066e58eb",
+      "raw_uncompressed_sha256": "371c7b078a4086342a387978fa9d88d8cbfddec45a37f395535419d3066e58eb",
+      "public_sha256": "371c7b078a4086342a387978fa9d88d8cbfddec45a37f395535419d3066e58eb",
+      "changed": false,
+      "recorded_exit_code": 0
+    }
+  ]
+}

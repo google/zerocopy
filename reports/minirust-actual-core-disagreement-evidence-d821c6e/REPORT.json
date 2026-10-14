@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "minirust",
+    "verification/differential-testing",
+    "verification/evidence-classification",
+    "rust/representation",
+    "specr/generation"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust actual-core source",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "Specr transpiler and libspecr",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220"
+      }
+    },
+    {
+      "name": "Requested nightly successful core compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "version": "1.97.0-nightly",
+        "distribution_date": "2026-05-01"
+      }
+    },
+    {
+      "name": "Alternate-host compiler incompatibility observation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Cargo used for exact locked closure",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Owned probe",
+      "identity": {
+        "artifact": "support/actual_core_probe.rs",
+        "sha256": "63206f5c4b4f6bef4ff3bc1ed48d1041634f210c182552e093dcea349ac8365f"
+      }
+    },
+    {
+      "name": "Actual generated interpreter module",
+      "identity": {
+        "artifact": "support/generated/lang.rs",
+        "sha256": "106b8d33a2a99a87028e4f3771171447775f507825aa595f62fb6c1fd6cd5450"
+      }
+    },
+    {
+      "name": "Actual generated interpreter module",
+      "identity": {
+        "artifact": "support/generated/mem.rs",
+        "sha256": "bcfbed6c1d8f5bedafa282b7e55e7d3f12378540ff3653839209d7a92d73e421"
+      }
+    },
+    {
+      "name": "Actual generated interpreter module",
+      "identity": {
+        "artifact": "support/generated/prelude.rs",
+        "sha256": "a145fcbf99688857fad7f7feb438da4af8e4b8b69680af7f0707e06402426a35"
+      }
+    },
+    {
+      "name": "Actual generated interpreter module",
+      "identity": {
+        "artifact": "support/generated/lib.rs",
+        "sha256": "e3de42b4c496ea7a440724d350763bbea52048767cd5b5b6e69ddd698581db9d"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

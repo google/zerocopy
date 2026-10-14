@@ -1,0 +1,83 @@
+{
+  "lean": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "lean_path": "<task-workspace>/work/research/phase2-parent/kraken-source/.lake/build/lib/lean",
+  "probes": [
+    {
+      "probe": "X64Closure",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/X64Closure.lean"
+      ],
+      "source_sha256": "c3b6154137d15a5c471330f0942f8ef6d264fc8a2d241ec41a7485e5acfb1605",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "X64Closure.log"
+    },
+    {
+      "probe": "AArch64Closure",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/AArch64Closure.lean"
+      ],
+      "source_sha256": "42f439031f13c37092c9bbf4a06acecaed5cb2c45fef4d2adece02439b6420e7",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "AArch64Closure.log"
+    },
+    {
+      "probe": "NativeAxiom",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/NativeAxiom.lean"
+      ],
+      "source_sha256": "1b792ba3f2756ef8d11aab7da64079601522d5c08f465d3928635fa663888528",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "NativeAxiom.log"
+    },
+    {
+      "probe": "AArch64Add",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/AArch64Add.lean"
+      ],
+      "source_sha256": "7299186fea0af11c42a2c5266d7240903381c05c6c3e7123e59477851a301ffd",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "AArch64Add.log"
+    },
+    {
+      "probe": "EffectsProbe",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean"
+      ],
+      "source_sha256": "91e7f6ab28c71c7472d7a46e94687f4ec99817c70eef8075ffb2fac9bb987c17",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "EffectsProbe.log"
+    },
+    {
+      "probe": "PermissionInterpretation",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/PermissionInterpretation.lean"
+      ],
+      "source_sha256": "4c87b571d6b95a311feb44944268f0039219ca70ea5390c780da884372356024",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "PermissionInterpretation.log"
+    },
+    {
+      "probe": "MissingState",
+      "command": [
+        "<lean-toolchains>/leanprover--lean4---v4.34.1/bin/lean",
+        "<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/MissingState.lean"
+      ],
+      "source_sha256": "3c0f26466e0f98a6500aa879331ff2a645dfc376ef57805c68e3471ca5d33606",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "log": "MissingState.log"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "stage": "generate",
+    "command": [
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/target/debug/specr-transpile",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/generation.toml"
+    ],
+    "returncode": 0,
+    "seconds": 0.532072792
+  },
+  {
+    "stage": "harness-lock",
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "fetch",
+      "--offline",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml"
+    ],
+    "returncode": 0,
+    "seconds": 0.04809975
+  }
+]

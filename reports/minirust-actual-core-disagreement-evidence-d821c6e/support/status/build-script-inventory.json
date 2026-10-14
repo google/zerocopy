@@ -1,0 +1,67 @@
+[
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/im-15.1.0/build.rs",
+    "bytes": 838,
+    "sha256": "0c187f99a0ce4d13fba739f9dc6c92ed1e0f2307984e101556574796c81406cb"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.182/build.rs",
+    "bytes": 11327,
+    "sha256": "4a0e518de6403e762056b2eb2117d0041bd579a30da3cb19dac63485ab0e2ab2"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/num-traits-0.2.19/build.rs",
+    "bytes": 160,
+    "sha256": "d3969209fc1c9d201c66ed11820d0b328600d75b3971f8ceebeab04900bc0587"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/prettyplease-0.2.37/build.rs",
+    "bytes": 646,
+    "sha256": "79a5b2d260aa97aeac7105fbfa00774982f825cd708c100ea96d01c39974bb88"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.106/build.rs",
+    "bytes": 10277,
+    "sha256": "baeb20b52f6b536be8657a566591a507bb2e34a45cf8baa42b135510a0c3c729"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.44/build.rs",
+    "bytes": 882,
+    "sha256": "cd6808c02e476b09a520105e2c6f6d325cccb1ecd542cbbcc836a0ae6f6fb0f1"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/build.rs",
+    "bytes": 2471,
+    "sha256": "c99c25e1a11f3e51b61dd8c25bdbfbd090e43e5f1f2014f41f28e214dd8310d5"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.228/build.rs",
+    "bytes": 4252,
+    "sha256": "a5fdacb9913eeede5fc08f39acbd31b2508483fdc20c79d6bc274d74407a1816"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.149/build.rs",
+    "bytes": 1206,
+    "sha256": "a681e754be844c7dbef957f5d2d00b01f37c5dca160ef1055a8d8f975697a881"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/syn-1.0.109/build.rs",
+    "bytes": 1420,
+    "sha256": "b815649fd2929d3debd93a58f5da2fb8eba506047a6a5ba538347305828a87b0"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/typenum-1.19.0/build.rs",
+    "bytes": 10603,
+    "sha256": "5d8e1c7399d87bdaeda11bfef2654303e9c0262d2489874431fb3a191a532aa5"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.40/build.rs",
+    "bytes": 10095,
+    "sha256": "64c2a38a841872ae2a07a26fd63bea38bd8c1a66ecfd9f56d51b8349718992f6"
+  },
+  {
+    "path": "bootstrap-runtime/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.21/build.rs",
+    "bytes": 1109,
+    "sha256": "13201b550236a9ff2186b5303c77341d3b0874989fdaf39613a7452e4ce57817"
+  }
+]

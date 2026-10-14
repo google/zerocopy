@@ -1,0 +1,12 @@
+END KSTEP: 0 sub-goals left
+'_private.X64Pilot.0.result_is_wrapping_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addBody_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_of_load' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.wrong_return_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.hidden_clobber_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_permission_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.forbidden_stack_read_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.forbidden_exec_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.bounded_access_positive' depends on axioms: [propext, Classical.choice, Quot.sound]

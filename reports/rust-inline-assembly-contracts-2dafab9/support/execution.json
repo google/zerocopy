@@ -1,0 +1,52 @@
+[
+  {
+    "phase": "lean-version",
+    "command": [
+      "lean",
+      "--version"
+    ],
+    "exit": 0,
+    "seconds": 0.042102749999999994,
+    "stdout_sha256": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "inline-proof",
+    "command": [
+      "lean",
+      "InlineContracts.lean"
+    ],
+    "exit": 0,
+    "seconds": 0.776183584,
+    "stdout_sha256": "3e03b13fa14e0a79744dc55579181af6cf23640ea075e7457355c20e8cfdf93e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "rustc-version",
+    "command": [
+      "rustc",
+      "--version",
+      "--verbose"
+    ],
+    "exit": 0,
+    "seconds": 0.06531966600000005,
+    "stdout_sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "false-contracts-compile",
+    "command": [
+      "rustc",
+      "--edition=2024",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--out-dir",
+      ".",
+      "compile_only_invalid_contract.rs"
+    ],
+    "exit": 0,
+    "seconds": 0.07219600000000004,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "phase": "context-proof",
+    "command": [
+      "lean",
+      "ContextBridge.lean"
+    ],
+    "exit": 0,
+    "seconds": 0.691318208,
+    "stdout_sha256": "0919f628f1eb1f083c9ff32264b222bbeb4ba3c03c94fa8423ad281f8e8824cf",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

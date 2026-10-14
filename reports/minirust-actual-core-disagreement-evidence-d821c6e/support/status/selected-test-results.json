@@ -1,0 +1,100 @@
+[
+  {
+    "name": "padding",
+    "filter": "tests::no_preserve_padding::no_preserve_padding",
+    "exact": true,
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "test",
+      "--lib",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml",
+      "-p",
+      "minitest",
+      "tests::no_preserve_padding::no_preserve_padding",
+      "--",
+      "--exact",
+      "--nocapture"
+    ],
+    "returncode": 0,
+    "seconds": 0.25549366700000004,
+    "passed": 1,
+    "failed": 0,
+    "panic_observed": false
+  },
+  {
+    "name": "provenance",
+    "filter": "tests::no_preserve_prov::no_preserve_prov",
+    "exact": true,
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "test",
+      "--lib",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml",
+      "-p",
+      "minitest",
+      "tests::no_preserve_prov::no_preserve_prov",
+      "--",
+      "--exact",
+      "--nocapture"
+    ],
+    "returncode": 0,
+    "seconds": 0.09637087500000002,
+    "passed": 1,
+    "failed": 0,
+    "panic_observed": false
+  },
+  {
+    "name": "bool",
+    "filter": "tests::bool::",
+    "exact": false,
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "test",
+      "--lib",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml",
+      "-p",
+      "minitest",
+      "tests::bool::",
+      "--",
+      "--nocapture"
+    ],
+    "returncode": 0,
+    "seconds": 0.07984329099999998,
+    "passed": 6,
+    "failed": 0,
+    "panic_observed": false
+  },
+  {
+    "name": "enum",
+    "filter": "tests::enum_representation::",
+    "exact": false,
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "test",
+      "--lib",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml",
+      "-p",
+      "minitest",
+      "tests::enum_representation::",
+      "--",
+      "--nocapture"
+    ],
+    "returncode": 0,
+    "seconds": 0.08834266700000004,
+    "passed": 15,
+    "failed": 0,
+    "panic_observed": false
+  }
+]

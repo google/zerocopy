@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "assembly/verification",
+    "jasmin",
+    "vale",
+    "s2n-bignum",
+    "assembly/binary-binding",
+    "memory/access-traces"
+  ],
+  "subjects": [
+    {
+      "name": "Jasmin",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "Vale",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "s2n-bignum",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+      }
+    },
+    {
+      "name": "Apple clang 21.0.0",
+      "identity": {
+        "version": "clang-2100.3.34.2",
+        "artifact": "/usr/bin/clang",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+      }
+    },
+    {
+      "name": "Assembled bignum_add ELF object",
+      "identity": {
+        "artifact": "support/bignum_add.o",
+        "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+        "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+        "format": "ELF64LE x86_64 relocatable"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

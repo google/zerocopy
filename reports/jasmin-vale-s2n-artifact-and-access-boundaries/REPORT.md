@@ -1,0 +1,91 @@
+# Jasmin, Vale, and s2n-bignum artifact and access boundaries
+
+## Summary
+
+The compared systems close different arrows. Jasmin proves a relation from a controlled formal source language to formal assembly while trusting named front/back-end stages. Vale verifies procedure contracts against selected instruction/state specifications through Dafny or F*. s2n-bignum connects selected formal ISA proofs to object-code bytes, but its functional frame and its separate access/security claims remain distinct.
+
+A fresh bounded experiment assembled the exact pinned s2n-bignum `bignum_add.S` for x86-64 ELF and compared its 185 symbol bytes with the proof's literal list. Every byte matched; one-byte, wrong-target, and wrong-symbol controls were rejected. HOL Light was not replayed. Independent finite-memory executions demonstrate why a final-state frame permits an unused out-of-range read and a forbidden write followed by restoration.
+
+## Applicability
+
+The examined revisions are Jasmin `34f15840f10625bbc2cbf59b3d877e94c75bfbd9`, Vale `bbae0eb89143734363b14a77642dbf8dec36e288`, and s2n-bignum `4d1356a7470663c752660a59375dc3a9ef548428`. The Vale implementation-specific observations concern its pinned Dafny x64 specification and documentation; they are not a statement about every later F*/Vale library. The s2n theorem inspected in detail is X64 `BIGNUM_ADD_SUBROUTINE_CORRECT` and its core/no-IBT/Windows companions.
+
+The actual artifact experiment uses standard non-Windows x86-64 ELF, default IBT enabled, Apple clang 21.0.0 (`clang-2100.3.34.2`) invoked with `--target=x86_64-unknown-linux-gnu -c -x assembler-with-cpp`. It runs on an Arm host but never executes the resulting code. The source and one self-contained project header are preserved exactly with their Git blob and SHA256 identities. There was no system-header include on this selected preprocessing path.
+
+AS20/AS21 are answered as source/theorem-boundary investigations, with genuine unexecuted common-program ports retained. AS22 includes an actual object-byte equality experiment, exact selected theorem inspection, and owned frame/trace countermodels; it does not include fresh HOL proof replay or an established Rust caller bridge.
+
+## Findings
+
+### Jasmin's compiler theorem has a formal endpoint and a named relation
+
+`it_compile_prog_to_asmP` states that successful `compile_prog_to_asm` for a requested entry yields an exported assembly function and `wkequiv_io full_pre (isem_unit up fn) (isem_asm xp fn) full_post`. The precondition relates source/target memory, includes enough stack space, connects the target stack register, and relates arguments and pointers. The postcondition contains memory agreement, stack-call state, zeroization, pointer/result relations, and value inclusion. This is a concrete reusable source-to-formal-assembly interface; it is not merely a compiler success assertion. [Compiler theorem and interface](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/proofs/compiler/it_compiler_proof.v#L1688).
+
+The theorem is parameterized by architecture and calling-convention semantics, `h_architecture_params aparams`, and the `print_uprogP`/`print_sprogP`/`print_linearP` hypotheses that diagnostic print hooks return the unchanged formal program. Those identity hypotheses concern intermediate formal values; they do not prove the final assembly-text printer correct.
+
+The relation's definition matters: `wkequiv_io` quantifies over related inputs and uses `xrutt` with `errcutoff (is_error wE_l)` on the source and `nocutoff` on the target, plus event and result relations. It should not be paraphrased as unrestricted equality of arbitrary unsafe source/target executions. A program proof must establish the relevant source domain and the theorem's preconditions. This report records that exact relation rather than claiming to audit all its semantic metatheory. [Relation definition](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/proofs/lang/relational_logic.v#L222).
+
+The pinned pass inventory distinguishes proved transformations, validated transformations with proved checkers, and trusted stages. Its graph labels stack allocation, linearization, tunneling, and assembly generation as proved; live-range splitting and register allocation as validated; and parsing, preprocessing, type checking, and assembly pretty-printing as trusted. These are upstream classifications, not a fresh proof-closure audit of every pass. The dedicated register-allocation, linearization, and assembly-generation documentation pages inspected at this revision are TODO stubs, so the theorem/source graph provides firmer evidence than assuming detailed documentation exists. [Pass categories](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/index.md), [exact pass graph](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/passes.dot#L9).
+
+The endpoint is `isem_asm`, not linked executable bytes. Trusted printing and later assembling/linking remain artifact obligations. A verified Jasmin export also needs a caller relation to Rust values/resources and the chosen platform ABI. Generating assembly from controlled Jasmin source and importing arbitrary existing assembly are different inputs and require different front-end correctness arguments. Basis: **source** + upstream **documentation**; integration implications **derived**.
+
+### Vale's logical frame depends on the selected architecture specification
+
+Vale's documentation says it translates a low-level procedure language for verification through Dafny or F*. The tool modes either emit Dafny/F* files or invoke Dafny directly. The documented procedure discipline requires declared `reads`/`modifies` state and pre/postconditions; default specifications include `requires ok` and `ensures ok`, making the model's crash flag relevant to successful procedure verification. Procedure calls may be inlined during assembly printing. Those language-level contracts are useful mechanisms for detecting undeclared logical clobbers, but they do not identify a Rust `asm!` operand allocation, compiler effect annotation, or linked byte sequence. [Introduction](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/intro.rst), [procedure discipline](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/programs.rst#L92), [tool modes](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/tool.rst).
+
+The pinned trusted inventory explicitly places `dafny/specs` in the TCB and `dafny/code` outside it. The examined x64 state includes general registers, XMM values, flags, stack, heap, and `ok`. Its operand-validity predicates and instruction relation are semantic assumptions supplied to verification, not proved ISA-manual correspondence by their mere presence. [Trusted specification inventory](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/CODE.md), [state and operand definitions](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/dafny/specs/arch/x64/def.dfy#L56).
+
+A precise support limit appears in `evalUpdateAndHavocFlags64`: a register destination gets its updated value with unconstrained flags; stack and heap destinations instead set `ok` false and are marked unsupported. This is not a blanket prohibition on every 64-bit heap write: `evalUpdateAndMaintainFlags64`, used for MOV64, has explicit stack/heap update branches. Operation-specific updater selection therefore matters before porting a common memory case. [Distinct update relations](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/dafny/specs/arch/x64/def.dfy#L288).
+
+No Vale/Dafny/F* verification ran here. Backend-specific instruction assumptions, extracted wrapper correctness, and the final printing/assembly path need separate evidence before extending this logical-contract account to actual bytes. Basis: **source** + **documentation**.
+
+### The selected s2n theorem binds code, entry resources, return state, and a final frame
+
+`bignum_add_mc` is defined by `define_assert_from_elf` over `x86/generic/bignum_add.o` and an explicit byte list including ENDBR64. `bignum_add_tmc` is a trimmed variant used by the core execution rule. The Windows object variant uses `define_from_elf` over `bignum_add.obj`; that is a distinct artifact/configuration, not the exact literal-assertion experiment executed here. [Object imports and execution rule](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml#L15), [Windows import](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml#L724).
+
+The core theorem assumes code loaded at its PC, argument registers and input bignums, output/code separation, and allowed input/output aliases. It establishes the output sum modulo the chosen limb width and the carry relation at one of three core exit PCs, with named MAYCHANGE registers/flags/events/output memory. The standard subroutine theorem additionally assumes RSP and an eight-byte return-address cell, requires output separation from code and that cell, and concludes RIP equals the return address and RSP increases by eight. Its final frame permits the ABI's designated register/flag changes and the output buffer. These are substantive ABI-shaped premises and results, not a proof that any caller supplied them. [Core and subroutine statements](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml#L643).
+
+The source theorem declarations were inspected; they were not freshly derived in a HOL Light session and their imported axiom closure was not measured here. The exact source statement and the new object-byte check are separate evidence roles.
+
+### Actual ELF symbol bytes match the proof's complete literal list
+
+The preserved `upstream/bignum_add.S` has Git blob `23a977de3150ea04422af4ef03498d6ff79b529a` and SHA256 `e8b7d95ad2039a69bd26563b02ed7d5c931795a0c3fcaafc2f9e8a0369cfaa0c`. Its project header has Git blob `d613dc6ce24537c2cc010ee98fa89c9690fb54c5` and SHA256 `32e93f25e504f9aef6d16250e4eaf0e6214ca00c6312d44d909d6be13a0c249d`. These identities were recomputed from the exact preserved bytes, including Git's blob prefix.
+
+The recorded clang invocation succeeded with exit zero. The resulting relocatable ELF object is 1,312 bytes with SHA256 `777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797`. An owned, bounded stdlib ELF64LE importer locates the defined function symbol, checks its bounds and target, and rejects relocations in its code section. The function is 185 bytes at object offset 64, with SHA256 `2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216`. It matches all 185 bytes extracted from the pinned `define_assert_from_elf` list. A one-byte mutation in the code, a changed ELF machine, and a missing symbol are rejected. `object_binding.json` preserves the complete symbol bytes and all controls.
+
+This removes uncertainty about byte equality for this particular newly assembled symbol. It does not replay HOL's decoder or proof, certify the owned Python importer, bind final linked/deployed code, or compare Windows/NO_IBT variants. Other object metadata can differ without changing the symbol bytes; exact object hashing and symbol equality serve different purposes. Basis: **execution** + primary **source**.
+
+### A functional final-state frame does not establish access safety
+
+s2n's pinned soundness document states that the functional memory model is a flat byte-addressed array where accesses succeed. Its frame compares initial and final states. It explicitly separates out-of-range reads and temporary writes followed by restoration from that functional guarantee, and describes separate safety/constant-time proof infrastructure. The document's coverage claim concerns functions used by AWS-LC, not every routine by default; it also names a variable-time routine without the combined safety proof and a stack-discipline limitation. [Memory-safety boundary](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md#L132).
+
+The inspected `bignum_add.ml` declares functional/core/subroutine/Windows results; this inspection did not identify a separate safety theorem for this selected routine. That is not evidence that no such result exists elsewhere or can be generated. `x86/proofs/consttime.ml` supplies `mk_safety_spec` and `PROVE_SAFETY_SPEC_TAC` over memory/events components, but existence of a tactic is not a proof for each routine. [Safety infrastructure](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/consttime.ml#L18).
+
+`frame_trace_probe.py` executes a finite memory model with one permitted output byte. A valid write satisfies both frame and access predicates. An unused read outside that byte, a forbidden write/restoration pair, and a width-two read crossing the boundary all satisfy the final frame and fail the full access predicate. An independent two-input trace table rejects a missing feasible branch or omitted access and exhibits secret-dependent addresses. This is a concrete countermodel to the logical implication from a final frame to trace safety; it is not execution of s2n, Vale, Jasmin, or Rust code, and not a proof about an omitted upstream theorem.
+
+Constant-time is another claim: the documented architectural observation concerns instructions, addresses, and modeled variable-timing events. It does not establish physical side-channel immunity on an arbitrary processor. A functional result cannot supply that relational trace property. [Documented security scope](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md#L92).
+
+### Downstream bytes and the caller/header remain explicit gaps
+
+The soundness analysis identifies downstream reassembly without systematic byte comparison, a C-header/assembly interface checked by tooling/tests rather than a complete machine-checked link, and caller obligations to satisfy buffer/alias/mathematical preconditions. It also requires accessible mapped pages and selected machine configuration assumptions. Reassembling this specimen and matching its literal closes one concrete byte comparison, not all downstream integration. A Rust wrapper additionally needs its value/borrow/resources and compiler-facing contract proved against the selected ABI. [Downstream reassembly](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md#L183), [caller/header boundary](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md#L315).
+
+## Boundaries
+
+- **Established narrowly:** one pinned standard-ABI s2n assembly source/header produced ELF symbol bytes exactly equal to the inspected proof literal, with three rejection controls. No code was executed.
+- **Not examined:** HOL Light replay and selected theorem assumption closure, an actual s2n memory-safety/constant-time theorem for this routine, downstream final linking/loading, or a machine-checked caller/header/Rust bridge.
+- **Not examined:** actual common arithmetic/memory proofs and hidden-clobber/footprint mutants in Jasmin and Vale; their source/theorem-boundary comparison is complete for the files named, while these ports are genuine unexecuted research experiments.
+- **Not examined:** every Jasmin pass's proof closure, every Vale backend/library, verified extraction/wrappers, source errors outside the Jasmin relation's intended domain, or every s2n routine's safety coverage.
+- **Known not to apply:** a final-state MAYCHANGE frame alone does not rule out the demonstrated read/write traces. Byte equality alone does not prove instruction semantics, termination, or resource safety.
+
+## Evidence
+
+`source-manifest.json` identifies pinned primary files and relevant symbols. `support/upstream/` preserves the exact small assembly source and header under their upstream licensing; `upstream/README.md` records attribution and preprocessing scope. `clang-version.txt` and `assembly-log.json` preserve tool identity and exact command/status. `literal-bytes.json`, `bignum_add.o`, `object_binding.py`, and `object_binding.json` preserve the artifact check. `frame_trace_probe.py` and `.json` preserve the logical countermodels. No prover or solver ran for the comparative systems. Observation date: 2026-10-14.
+
+Historical command, generated-manifest path and log strings are explicitly path-normalized for publication; `public-path-projection.json` records original and public hashes. Raw process statuses and technical outcomes are unchanged. Historical producer hashes refer to their original observations; the package file manifest binds the published bytes. The retained Rust/Lean program and source-archive bytes are unchanged.
+
+## Revalidation
+
+Run `python3 support/object_binding.py` to compare the preserved object and literal and rerun the controls. To rebuild the specimen, use the recorded clang version/configuration or another explicitly identified assembler with `clang --target=x86_64-unknown-linux-gnu -c -x assembler-with-cpp -I support/upstream support/upstream/bignum_add.S -o support/bignum_add.o`, then rerun the checker. A new object hash is expected to require reassessment; unchanged symbol bytes are the claim that matters to the inspected literal. Audit the unverified importer if using it beyond this specimen.
+
+Run `python3 support/frame_trace_probe.py` for the finite countermodels. For a changed Jasmin compiler, inspect the exact `wkequiv_io` relation and formal assembly endpoint as well as trusted pass classifications. For Vale, identify the backend/specification and updater for the actual operand form. For s2n safety, name and replay a selected access theorem; do not infer it from the functional theorem or a project-level coverage paragraph.
+
+*Authored by an AI agent acting on joshlf's behalf.*

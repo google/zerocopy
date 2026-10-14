@@ -1,0 +1,131 @@
+{
+  "purpose": "Display-path privacy projection; historical source/tool/status hashes remain producer observations. Current package manifests bind public bytes.",
+  "replacements": [
+    {
+      "meaning": "task workspace prefix",
+      "public": "<task-workspace>"
+    },
+    {
+      "meaning": "rust toolchain home prefix",
+      "public": "<rust-toolchains>"
+    },
+    {
+      "meaning": "Lean toolchain home prefix",
+      "public": "<lean-toolchains>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/generated/observed-Cargo.toml",
+      "raw_sha256": "9af20d7fbc91e10d8dc49f50dc93cad96c5c44638c7e9fb874c69d6470e9143e",
+      "public_sha256": "41248082271d5b0e57e15c98d66cc9de4a8cb12703c1b2c31596269249d9006a",
+      "raw_bytes": 358,
+      "public_bytes": 295
+    },
+    {
+      "path": "support/logs/build-core-requested.log",
+      "raw_sha256": "cd79cd4c0077760a404d82ec328968d78df31f906a239f6dc648eb5a175eab6f",
+      "public_sha256": "90250ec49dff3d57d3d2278fe67844985814aea8a4d41a0cf7e8ee2c01e02b63",
+      "raw_bytes": 2120,
+      "public_bytes": 1805
+    },
+    {
+      "path": "support/logs/build-core.log",
+      "raw_sha256": "8156a49649ff1103fd0b482391b1b2112b3d3fe1698aea7ab3904a074e57ba77",
+      "public_sha256": "72cfd3d00fb2ea7c1e8acb75e091031c6de861f07e5a15c1528a61bb267b0d83",
+      "raw_bytes": 2190,
+      "public_bytes": 2001
+    },
+    {
+      "path": "support/logs/build-transpiler.log",
+      "raw_sha256": "c3c05eefd0acb24d36a128bc00f99a23088f5ef968479e5c3628fa81544328d6",
+      "public_sha256": "b83cc7b90c3928a798b2e853d79a6013b5d5a6b481e3b12a625c568676c72176",
+      "raw_bytes": 739,
+      "public_bytes": 676
+    },
+    {
+      "path": "support/logs/harness-lock.log",
+      "raw_sha256": "a21141c4bca3a04086c6756d91d747a9103be9af02302654491663f4cfec10d5",
+      "public_sha256": "6b2483e6e0c447be53f4afccb61f68296eef2d6a2da7f8bdaf6d9470bc66eb6e",
+      "raw_bytes": 247,
+      "public_bytes": 184
+    },
+    {
+      "path": "support/logs/owned-run.log",
+      "raw_sha256": "31e3dadc769f5d91cfc8d2364d0659e21d68e4c5240eb9b1879047632b71eb2f",
+      "public_sha256": "1677ade7ad43d5407256a7a037958d2b2b6bf978b0eaefba225c144b568510a1",
+      "raw_bytes": 1562,
+      "public_bytes": 1499
+    },
+    {
+      "path": "support/logs/portable-replay.log",
+      "raw_sha256": "f99137c38d7f30c09878a5473780396e0998fed7cad05d6f7e94c4efc395aee2",
+      "public_sha256": "f965c05c245be28f3d0d0440331e658632fa243e57fc51532d4ef59483dc4238",
+      "raw_bytes": 2552,
+      "public_bytes": 2237
+    },
+    {
+      "path": "support/logs/prepare-replay.log",
+      "raw_sha256": "185269b948a0ce7019bf95b892c7cf0b91cf8c0d9b3de8135da8fb9861ff615c",
+      "public_sha256": "cdc7f91d7886f6dd332b13c278bd50dbf27b6419333f29f6c35832f4168f677e",
+      "raw_bytes": 647,
+      "public_bytes": 458
+    },
+    {
+      "path": "support/status/build-core-requested-status.json",
+      "raw_sha256": "7db906819d0ef3380e2d33fc1dac1398670a005ea170075021d902c237a0a9b4",
+      "public_sha256": "e9896ecde13a2e0e2eb56141ebbfa9e0f38f071afdec483508db35c60454f758",
+      "raw_bytes": 748,
+      "public_bytes": 608
+    },
+    {
+      "path": "support/status/build-core-status.json",
+      "raw_sha256": "18c0242b47531c805084fbfa1c775f4a3c5dbbcf2cbe2fafb7fabcd543651cb1",
+      "public_sha256": "56ad2fb4bcf1acdff999925fb2fda91aeb8f7e7fcca56d1c645f61f545246c19",
+      "raw_bytes": 684,
+      "public_bytes": 607
+    },
+    {
+      "path": "support/status/build-transpiler-status.json",
+      "raw_sha256": "d5cac9b8aa951c27fa0075f09f95b38346de3529a4607b3709d89e3c3113a9fd",
+      "public_sha256": "716e8c3d122f761456c17b577a796703f4f7a9214733a14e0a002950f2cc4126",
+      "raw_bytes": 617,
+      "public_bytes": 526
+    },
+    {
+      "path": "support/status/fetch-status.json",
+      "raw_sha256": "7b8e36478fe5e17bbf195082c19238414e3409988bd370a8fcf4b4297b472b0f",
+      "public_sha256": "f91221930070bfe9db4d88eabba8bc6acca4c26d1b6a8f40aae342ecf249459c",
+      "raw_bytes": 539,
+      "public_bytes": 462
+    },
+    {
+      "path": "support/status/generate-status.json",
+      "raw_sha256": "1199293add5940b9e4ad7c7dd41585df73c4b2355cd33068f1b6868f1ee7f89f",
+      "public_sha256": "ce194c1c333f217c87387aa4fd4805c604e570404fc2cd320928d0a3d2bb0927",
+      "raw_bytes": 865,
+      "public_bytes": 662
+    },
+    {
+      "path": "support/status/owned-core-status.json",
+      "raw_sha256": "5a6ed5536d3174cc96161bc077d922ec22b31ba3160cca20c907bbe207b1dd47",
+      "public_sha256": "c1335739f87a19692773c268169fe0e3301922b37ec1c03ed09ae4ac7cdfcb09",
+      "raw_bytes": 918,
+      "public_bytes": 764
+    },
+    {
+      "path": "support/status/portable-replay.json",
+      "raw_sha256": "d19e238f3363046ec2720897f7a27bb64fbb996d56043d3a7c60886276b8ad1c",
+      "public_sha256": "7e7a403d8c50639094cdb78bf6ca253c5b928b785ae04cd27c5f75af2a750752",
+      "raw_bytes": 548,
+      "public_bytes": 471
+    },
+    {
+      "path": "support/status/selected-test-results.json",
+      "raw_sha256": "123c929eb5cd3932c1a102898e9ecfec02b1cdc5d07c63f9f5cbeae8404ba9d8",
+      "public_sha256": "1687ff2cfd3fce70d00f73fa9af9086d98a4aaf78eb256066ea95d452b43c491",
+      "raw_bytes": 2783,
+      "public_bytes": 2475
+    }
+  ]
+}

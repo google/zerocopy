@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "minirust/tree-borrows",
+    "iris/program-logic",
+    "rust/aliasing",
+    "semantics/correspondence"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Miri Tree Borrows",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+      }
+    },
+    {
+      "name": "Tree Borrows PLDI 2025",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "publication": "PACMPL 9 PLDI Article 188"
+      }
+    },
+    {
+      "name": "Rudy Peterson λTB thesis",
+      "identity": {
+        "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Rudy-Thesis.pdf",
+        "year": "2025",
+        "reported_development_revision": "ccca9f325f909dceed4fd88008862f64296dbfd9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

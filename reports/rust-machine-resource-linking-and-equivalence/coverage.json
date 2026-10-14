@@ -1,0 +1,13 @@
+{
+  "purpose": "Bounded research findings; final agenda synthesis maps exact questions and does not assert production theorem completion.",
+  "agenda_ids": [
+    "MR23",
+    "AS07",
+    "AS13",
+    "AS14",
+    "AS15"
+  ],
+  "findings": "REPORT.md#findings",
+  "stronger_claims": "REPORT.md#boundaries",
+  "evidence_scope": "Actual evidence roles and unexecuted domains are stated next to each finding."
+}

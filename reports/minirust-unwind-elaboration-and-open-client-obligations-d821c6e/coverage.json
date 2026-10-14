@@ -1,0 +1,104 @@
+{
+  "schema": "anneal-mr-coverage/v1",
+  "purpose": "Exact answered scope; no entry asserts the complete MR agenda is finished",
+  "entries": [
+    {
+      "id": "MR16",
+      "sections": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "answered_questions": [
+        "What core unwind payload/frame/end-call operations already exist?",
+        "Does the inspected Drop translator preserve the MIR unwind continuation?",
+        "What do the thesis's scalar and tuple proofs actually cover?",
+        "What cleanup traces/MIR does a safe source specimen produce?"
+      ],
+      "scope": "Direct source inspection, thesis-reported proof scopes, safe native partial-move and destructor-unwind controls with MIR. No minimize run.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.rs",
+        "probe-bin.mir",
+        "results.txt",
+        "execution.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Source-safety-reflecting drop/unwind elaboration",
+        "Full tuple proof or rustc pass verification from the 2024 thesis",
+        "Protected-reference resource restoration on all exceptional paths"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Double-panic abort execution",
+        "Exact inaccessible thesis proof assumptions",
+        "minimize execution with its pinned old toolchain",
+        "Every partial-initialization/returned-reference cleanup path"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR21",
+      "sections": [
+        "F4"
+      ],
+      "answered_questions": [
+        "How do the current formality README and executable-spec plan divide static/dynamic work?",
+        "What concrete feature pairs select different implementations/drop behavior?",
+        "What generated-code judgments must a future dynamic theorem receive?"
+      ],
+      "scope": "Pinned README and plan review plus method-receiver/binding/closure cleanup native/MIR controls. Table of other feature obligations is explicitly derived, not implementation coverage.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.rs",
+        "probe-bin.mir",
+        "results.txt"
+      ],
+      "stronger_unestablished_claims": [
+        "Complete static semantics or surface-to-MiniRust pipeline",
+        "Whole-item/generated-code coverage for arbitrary Rust",
+        "Correct Pin/async/generator lowering"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Trait solver rules/normalization theorem",
+        "Macro expansion and const evaluation",
+        "Temporary lifetime extension broadly",
+        "All pattern/auto-deref cases",
+        "Async hidden-state/drop proof"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR22",
+      "sections": [
+        "F5",
+        "F6"
+      ],
+      "answered_questions": [
+        "What client/state quantifiers appear in exact RustBelt typing/adequacy source?",
+        "What changes when claiming MiniRust contextual library safety?",
+        "Why do callback/unsafe-trait/dictionary premises exceed a closed successful example?"
+      ],
+      "scope": "Rehashed archived RustBelt endpoints, a safe mixed-field callback and selected impl controls; explicit proposed linking theorem/records. No new MiniRust client theorem or certificate checker.",
+      "evidence": [
+        "source-evidence.json",
+        "evidence/rustbelt-soundness.v.txt",
+        "evidence/rustbelt-programs.v.txt",
+        "probe.rs",
+        "results.txt"
+      ],
+      "stronger_unestablished_claims": [
+        "MiniRust fundamental/linking theorem",
+        "Vec or zerocopy contextual API soundness",
+        "Proof binding to all generic/trait instantiations",
+        "Adversarial safe callback closure"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Actual wrong-dictionary/monomorphization certificate mutation checker",
+        "All safe exports and public fields/derived impls",
+        "Reentrant/unwinding and foreign callbacks",
+        "Unsafe trait laws for concrete zerocopy implementations"
+      ],
+      "status": "partial-bounded-investigation"
+    }
+  ]
+}

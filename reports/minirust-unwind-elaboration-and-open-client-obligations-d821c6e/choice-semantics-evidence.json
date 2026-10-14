@@ -1,0 +1,23 @@
+{
+  "repository": "minirust/minirust",
+  "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "path": "spec/mem/intptrcast.md",
+  "git_blob_sha": "241ba96f5498bde49bf9b8c489bafcf12ba98b07",
+  "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/intptrcast.md",
+  "symbols": [
+    "IntPtrCast::int2ptr",
+    "predict favorable-choice explanation"
+  ],
+  "excerpts": [
+    {
+      "start_line": 3,
+      "end_line": 9,
+      "text": "This file defines the approach MiniRust takes to integer-pointer casts.\nIt is basically exactly what was outlined [in this blog post](https://www.ralfj.de/blog/2022/04/11/provenance-exposed.html).\nThe brief summary is that we treat pointer-to-integer casts as having the side-effect of recording, in a piece of global state, that the provenance of this pointer has been exposed.\nAn integer-to-pointer cast then non-deterministically guesses a suitable provenance for the new pointer.\nUsing the `predict` function means that this guess will be made maximally in the programmer's favor: if there *exists* a choice for the guess that makes program behavior well-defined, then that is the choice that will be made.\n\nNote that this is entirely independent of how the actual memory model works."
+    },
+    {
+      "start_line": 30,
+      "end_line": 41,
+      "text": "    pub fn int2ptr(&self, addr: Int) -> NdResult<ThinPointer<Provenance>> {\n        // Predict a suitable provenance. It must be either `None` or already exposed.\n        let provenance = predict(|prov: Option<Provenance>| {\n            prov.map_or(\n                true, // `None` is always an option\n                |p| self.exposed.contains(p),\n            )\n        })?;\n\n        // Construct a pointer with that provenance.\n        ret(ThinPointer { addr, provenance })\n    }"
+    }
+  ]
+}

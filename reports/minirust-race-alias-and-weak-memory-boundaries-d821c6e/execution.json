@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-10-14",
+  "interpreter": {
+    "version": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+    "executable_identity": "system python3 3.9.6"
+  },
+  "command": "python3 reports/minirust-race-alias-and-weak-memory-boundaries-d821c6e/probe.py > reports/minirust-race-alias-and-weak-memory-boundaries-d821c6e/results.json",
+  "working_directory": "phase2-memory-logic",
+  "exit_code": 0,
+  "stderr": "",
+  "stdout_file": "results.json",
+  "scope": "Owned mathematical/table reconstruction only; no upstream language semantics imported or executed."
+}

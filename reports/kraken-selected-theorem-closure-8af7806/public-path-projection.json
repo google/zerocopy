@@ -1,0 +1,68 @@
+{
+  "purpose": "Display-path privacy projection; historical source/tool/status hashes remain producer observations. Current package manifests bind public bytes.",
+  "replacements": [
+    {
+      "meaning": "task workspace prefix",
+      "public": "<task-workspace>"
+    },
+    {
+      "meaning": "rust toolchain home prefix",
+      "public": "<rust-toolchains>"
+    },
+    {
+      "meaning": "Lean toolchain home prefix",
+      "public": "<lean-toolchains>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/AArch64Add.initial.log",
+      "raw_sha256": "89f0afb8be667702bb0372f75ad78580c2f04dd2be37fc755497a125f9a4338e",
+      "public_sha256": "54e1c2684a658d075af68d6ee02d65c26d1264931451430ee99b9d3ca947d4de",
+      "raw_bytes": 836,
+      "public_bytes": 773
+    },
+    {
+      "path": "support/AArch64Closure.initial.log",
+      "raw_sha256": "e1204f6e6a019dca41db6a2f241b208b05f97dcbdd28e8a541f63552912e4b88",
+      "public_sha256": "98a24cbc5a8943c867fd96f1f76ca5a4af1ab67ed3e810162e2d6541bb8d0bfc",
+      "raw_bytes": 251,
+      "public_bytes": 188
+    },
+    {
+      "path": "support/EffectsProbe.initial.log",
+      "raw_sha256": "fdb1a894d10f521b713e198fc238edd7e2f04ce61dadd652b7beae92b59c58a0",
+      "public_sha256": "9a56cdf32326a308302bff266b9f65000facb9fd9ebad6e41eb82e154432415e",
+      "raw_bytes": 2410,
+      "public_bytes": 2032
+    },
+    {
+      "path": "support/MissingState.log",
+      "raw_sha256": "9321b886f108a0e77b8304abca2392818f25b4092f5c1705a4e6bf7d38b400c0",
+      "public_sha256": "0d2134acaa1899e0cd60886eb07fbe17b546ffed45dea2e25e0c5c190c055801",
+      "raw_bytes": 269,
+      "public_bytes": 206
+    },
+    {
+      "path": "support/X64Closure.initial.log",
+      "raw_sha256": "5cb316d19c23aae1143968cd2bc5f84b11b0b16aa0d08a424c38061df1b4170d",
+      "public_sha256": "2705e7c41f8654be6bb86909d26353f4ea797585af808a8a86ad00ada2730362",
+      "raw_bytes": 247,
+      "public_bytes": 184
+    },
+    {
+      "path": "support/initial-results.json",
+      "raw_sha256": "5395cd61df7caa8f9797f09c596bbbe8f54ff2fcacf232f8e78d658245577f11",
+      "public_sha256": "618c24fb4b439b9e3828a9c9d576f3505d000dcf9eb24e584e0e8a90079cf611",
+      "raw_bytes": 653,
+      "public_bytes": 527
+    },
+    {
+      "path": "support/results.json",
+      "raw_sha256": "85e3c5c2dd91fe82aedf5101d8e48fa56575a29cb2be8e5f19d5b520dc140db2",
+      "public_sha256": "fc7a19cecd2282e69c67963b280ca44781668438585499cb6d74d99efe4eefcc",
+      "raw_bytes": 4017,
+      "public_bytes": 3429
+    }
+  ]
+}

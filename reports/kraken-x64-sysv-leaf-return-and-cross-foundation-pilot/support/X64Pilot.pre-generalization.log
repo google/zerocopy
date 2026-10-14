@@ -1,0 +1,3 @@
+END KSTEP: 0 sub-goals left
+'_private.X64Pilot.0.addBody_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_of_load' depends on axioms: [propext, Classical.choice, Quot.sound]

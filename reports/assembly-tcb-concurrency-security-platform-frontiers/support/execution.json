@@ -1,0 +1,23 @@
+[
+  {
+    "phase": "weak-memory",
+    "command": [
+      "python3",
+      "weak_memory_probe.py"
+    ],
+    "exit": 0,
+    "seconds": 0.05339858399999997,
+    "stdout_sha256": "b919eca45091d438db8bc2674c3ebae6de724d1485c904551ea3bd2c539e3224",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "environment-proof",
+    "command": [
+      "lean",
+      "EnvironmentContracts.lean"
+    ],
+    "exit": 0,
+    "stdout_sha256": "9c9bbe59a04f51dfe54aceaf6026df99b2d37c96fe53acbb87c69e7c6f3d2d53",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -1,0 +1,26 @@
+END KSTEP: 0 sub-goals left
+<PACKAGE_SUPPORT>/X64Pilot.lean:80:41: error(lean.unknownIdentifier): Unknown constant `RegOrMem.set`
+<PACKAGE_SUPPORT>/X64Pilot.lean:75:45: error: unsolved goals
+layout : Layout
+d : MachineData
+ra : Int
+hload : Mem.loadInt d.dmem d.regs.rsp.toBitVec 8 = some ra
+hclobber : d.regs.rbx ≠ 99
+⊢ ¬OfNat.ofNat 99 = d.regs.rbx
+<PACKAGE_SUPPORT>/X64Pilot.lean:84:35: warning: This simp argument is unused:
+  hclobber
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [clobberReturn, Directives.interp, Directive.interp, Instr.interp, Operation.interp, Effects.All,
+    MachineData.load, hload, MachineData.setReg, MachineData.set, RegOrMem.set, Operand.interp, Reg64s.set,
+    Reg64s.set64, Reg64s.get64, AddrExpr.interp, ConstExpr.interp, returnState, Width.bits, Width.bytes,
+    BitVec.toAddressSize, BitVec.signed, BitVec.ofInt_add, BitVec.take]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+UInt64.toNat_add (a b : UInt64) : (a + b).toNat = (a.toNat + b.toNat) % 2 ^ 64
+'_private.X64Pilot.0.addBody_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_of_load' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.wrong_return_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.hidden_clobber_rejected' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

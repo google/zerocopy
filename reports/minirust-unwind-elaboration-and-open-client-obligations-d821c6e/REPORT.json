@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "minirust/unwinding",
+    "rust/drop-elaboration",
+    "rust/static-semantics",
+    "rust/library-soundness",
+    "rust/callbacks"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "a-mir-formality",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+      }
+    },
+    {
+      "name": "Rust compiler native specimen",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 source archive",
+      "identity": {
+        "artifact": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+      }
+    },
+    {
+      "name": "Formalization of Rust Drop Elaboration thesis",
+      "identity": {
+        "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+        "author": "Viktor Fukala",
+        "date": "2024-08-05",
+        "reported_development_revision": "120d9b3d1e868ddd00ce9163b2bb53d099154247"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

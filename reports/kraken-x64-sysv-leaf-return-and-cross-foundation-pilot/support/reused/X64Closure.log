@@ -1,0 +1,14 @@
+'_private.Kraken.X64.Examples.Examples.0.swap_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.Kraken.X64.Examples.Examples.0.move_2_regs_to_heap_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private.Kraken.X64.Examples.Examples.0.alu_mem_example_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private.Kraken.X64.Examples.Examples.0.p3_correct' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'_private.Kraken.X64.Examples.Examples.0.dynamic_stack_example_correct' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'Mem.loadInt_sep' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Mem.storeInt_sep' depends on axioms: [propext, Classical.choice, Quot.sound]

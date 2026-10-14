@@ -1,0 +1,37 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (target-requested-nightly/debug/deps/minitest-a83aa495f6b66def)
+
+running 1 test
+union T0 (size=8, align=8) {
+  at byte 0: [&pointee_info(thin, size=4, align=4); 1],
+  at byte 0: [u64; 1],
+  at byte 0: &pointee_info(thin, size=4, align=4),
+  chunk(at=0, size=8),
+}
+
+tuple T1 (size=0, align=1) {
+}
+
+
+
+start fn f0() -> _3 {
+  let _0: i32;
+  let _1: T0;
+  let _2: i32;
+  let _3: T1;
+  start bb0:
+    storage_live(_0);
+    storage_live(_1);
+    storage_live(_2);
+    _0 = 42;
+    _1.0[0] = &_0;
+    _1.1 = load(_1.1);
+    _2 = load(deref<i32>(load(_1.2)));
+    deref<T1>(invalid_ptr(1)) = exit();
+}
+
+
+test tests::no_preserve_prov::no_preserve_prov ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+

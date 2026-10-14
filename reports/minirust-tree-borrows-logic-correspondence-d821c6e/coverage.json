@@ -1,0 +1,94 @@
+{
+  "schema": "anneal-mr-coverage/v1",
+  "purpose": "Exact answered scope; no entry asserts the complete MR agenda is finished",
+  "entries": [
+    {
+      "id": "MR11",
+      "sections": [
+        "F1",
+        "F2"
+      ],
+      "answered_questions": [
+        "How do the pinned per-location MiniRust and Miri permission states correspond?",
+        "Which operation interfaces require more than state-table agreement?",
+        "What does an exhaustive bounded access comparison establish?"
+      ],
+      "scope": "Direct source comparison plus two independently coded owned table reconstructions: 15 representative starts, all four-action traces of length 0–6. Operation map covers retag, protector release, range representation, zero-size, interior mutability, exposure and race hooks.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Complete calculus–MiniRust–Miri equivalence or simulation in either direction",
+        "Exact exposed/wildcard provenance correspondence",
+        "Upstream interpreter execution agreement"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Arbitrary tree construction/topologies",
+        "Retag/exit trace enumeration",
+        "Complete dead-allocation/zero-size retag cases",
+        "Simuliris artifact-level retag-size scope"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR12",
+      "sections": [
+        "F3",
+        "F4"
+      ],
+      "answered_questions": [
+        "Which λTB reasoning principles and adequacy scope are reported?",
+        "Why cannot its theorem be applied directly to byte/protector-sensitive MiniRust?",
+        "What local tree effects must a future compositional contract preserve?"
+      ],
+      "scope": "Thesis/paper theorem-boundary review and MiniRust-derived interface obligations. Adequacy is paper-reported, exact theorem signature unavailable.",
+      "evidence": [
+        "source-evidence.json",
+        "REPORT.md#f3-what-λtb-establishes-and-what-it-leaves-out"
+      ],
+      "stronger_unestablished_claims": [
+        "An Iris logic/lifetime layer for MiniRust",
+        "Kernel-checked adequacy or axiom closure of λTB at reported commit",
+        "A frame rule concealing all ancestor/sibling tree effects"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Rocq source access and theorem signature",
+        "Recursive reborrow and callback proof scripts",
+        "A byte/provenance state interpretation",
+        "A proved λTB-to-MiniRust operational relation"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR13",
+      "sections": [
+        "F2",
+        "F4"
+      ],
+      "answered_questions": [
+        "Which entry settings determine strong/weak protection, implicit writes and Cell behavior?",
+        "Why is whole numeric range ownership insufficient for callbacks/returned references?",
+        "How do simple mixed-field masks and protection-erasure negative controls behave?"
+      ],
+      "scope": "Pinned source inspection and a four-byte freeze-mask reconstruction; normal/exceptional restoration obligations stated, not proved.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Field-sensitive Iris contracts for full protector lifecycle",
+        "Proof that arbitrary callbacks/returned reborrows preserve caller resources"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Nested-cell layout/mask invariants",
+        "MiniRust execution with callback aliases",
+        "Several-level returned-reborrow proof",
+        "Exceptional exit resource proof"
+      ],
+      "status": "partial-bounded-investigation"
+    }
+  ]
+}

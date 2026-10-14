@@ -1,0 +1,23 @@
+Lines 9-17:
+  (** Function Body *)
+  (* This is an iProp because it is also used by the function type. *)
+  Definition typed_body (E : elctx) (L : llctx) (C : cctx) (T : tctx)
+                        (e : expr) : iProp Σ :=
+    (∀ tid, lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp L 1 -∗
+               cctx_interp tid C -∗ tctx_interp tid T -∗
+               WP e {{ _, cont_postcondition }})%I.
+  Global Arguments typed_body _ _ _ _ _%E.
+
+
+Lines 85-95:
+
+Definition typed_val `{typeG Σ} (v : val) (ty : type) : Prop :=
+  ∀ E L, typed_instruction_ty E L [] (of_val v) ty.
+Arguments typed_val _ _ _%V _%T.
+
+Section typing_rules.
+  Context `{typeG Σ}.
+
+  (* This lemma is helpful when switching from proving unsafe code in Iris
+     back to proving it in the type system. *)
+  Lemma type_type E L C T e :

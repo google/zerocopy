@@ -1,0 +1,69 @@
+{
+  "mr_ids": [
+    "MR20"
+  ],
+  "status": "completed bounded actual-core validation and evidence classification; general correspondence remains unestablished",
+  "coverage": [
+    {
+      "id": "MR20",
+      "sections": [
+        "Findings 1",
+        "Findings 2",
+        "Findings 3",
+        "Findings 4",
+        "Findings 5",
+        "Findings 6",
+        "Findings 7"
+      ],
+      "answered_scope": "Actual exact-source transpiler/generation/core build, 23 upstream tests and eight owned discriminator outcomes, source/lock/host/target identities and negative controls; compiler-failure/semantic-outcome classification; portable retained replay corpus.",
+      "stronger_unestablished_claims": [
+        "universal MiniRust/Miri/Rust correspondence",
+        "real minimize produces owned candidate types",
+        "verified Specr import",
+        "universal safety over allocator choices"
+      ],
+      "actual_unexamined_gaps": [
+        "Miri execution/comparison",
+        "actual Rust/MIR/minimize disagreement corpus",
+        "Tree Borrows/exposed provenance execution",
+        "target families and exhaustive trace coverage"
+      ]
+    }
+  ],
+  "related_bounded_evidence": [
+    {
+      "id": "MR03",
+      "scope": "actual pinned Rust transpiler generation, not formal backend correctness"
+    },
+    {
+      "id": "MR06",
+      "scope": "real core enum coherence counterexample"
+    },
+    {
+      "id": "MR07",
+      "scope": "real upstream padding/provenance discriminators"
+    },
+    {
+      "id": "MR09",
+      "scope": "host/toolchain vs modeled x86_64 target retained"
+    },
+    {
+      "id": "MR10",
+      "scope": "wide-pointer union chunk candidate core execution, not source lowering"
+    }
+  ],
+  "performed": [
+    "source Git blob verification before/after",
+    "offline locked actual core build on requested nightly",
+    "23 named upstream tests pass",
+    "8 owned core-API cases",
+    "portable replay preparation"
+  ],
+  "primary_exclusions": [
+    "No minimize/rustc-dev",
+    "No Miri",
+    "No source patches",
+    "No invalid host Rust",
+    "No general formal correspondence"
+  ]
+}

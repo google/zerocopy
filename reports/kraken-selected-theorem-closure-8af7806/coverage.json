@@ -1,0 +1,67 @@
+{
+  "package": "kraken-selected-theorem-closure-8af7806",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS01",
+      "status": "bounded-complete",
+      "sections": [
+        "Findings / The state and proof endpoint are explicit and selective",
+        "Findings / Selected theorem closure is more informative than a build or admission count",
+        "Findings / Default effect interpretation checks some modeled failures but no permissions"
+      ],
+      "answered_scope": [
+        "Pinned both-architecture syntax/state/effect inventory; selected closed arithmetic and bounded-map memory theorem closures",
+        "Fresh AArch64 addition theorem; expected missing state/opcode and admitted-dependency controls",
+        "Named native verification axiom distinguished from sorryAx; debug fallback isolated"
+      ],
+      "stronger_unestablished_claims": [
+        "Every theorem in the repository is closed",
+        "Observed cross-version build reproduces requested nightly or proves hardware/ISA correspondence"
+      ],
+      "unexamined_gaps": [
+        "Exhaustive theorem closure and pinned nightly replay were not performed"
+      ]
+    },
+    {
+      "id": "AS04",
+      "status": "partial",
+      "sections": [
+        "Findings / The state and proof endpoint are explicit and selective",
+        "Boundaries"
+      ],
+      "answered_scope": [
+        "Exact model scope, selected state omissions, MXCSR TODO, and validation-vs-correspondence distinction"
+      ],
+      "stronger_unestablished_claims": [
+        "A Lean proof about Kraken establishes authoritative ISA refinement",
+        "Native testing guidance proves every modeled instruction matches hardware"
+      ],
+      "unexamined_gaps": [
+        "Authoritative instruction semantics for flags/partial registers/shifts/overlap/faults were not independently analyzed",
+        "No per-instruction reference-model relation or differential counterexample run"
+      ]
+    },
+    {
+      "id": "AS05",
+      "status": "partial",
+      "sections": [
+        "Findings / Default effect interpretation checks some modeled failures but no permissions",
+        "Findings / Full map membership, access requests, and authority are separate premises"
+      ],
+      "answered_scope": [
+        "Default continuations ignore permissions; full byte-map range behavior distinguished from authority",
+        "Actual AVX request widths measured8 vs32/64; checked PermissionAll strengthening and erasure theorem"
+      ],
+      "stronger_unestablished_claims": [
+        "All actual scalar/vector/execute accesses satisfy permissions",
+        "Request-level strengthening proves complete trace or Rust resource adequacy"
+      ],
+      "unexamined_gaps": [
+        "Producer completeness and vector-width repair not proved",
+        "No full ISA access-trace adequacy theorem or Rust permission relation"
+      ]
+    }
+  ],
+  "interpretation": "Statuses describe only the explicit answered scopes. Unexamined research is separate from stronger implementation/theorem claims."
+}

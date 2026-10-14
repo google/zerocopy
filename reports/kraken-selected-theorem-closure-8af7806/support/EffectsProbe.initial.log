@@ -1,0 +1,16 @@
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:3:5: error: unknown namespace `Kraken.X64.Parser`
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:20:2: error: Tactic `contradiction` failed
+
+h :
+  Effects.All (fun s => s.data.regs.rax = 0)
+    (undefined fun b => Effects.done { data := { regs := { rax := if b = true then 1 else 0 } }, pc := 0 })
+hf :
+  Effects.All (fun s => s.data.regs.rax = 0)
+    ((fun b => Effects.done { data := { regs := { rax := if b = true then 1 else 0 } }, pc := 0 }) true)
+⊢ False
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:30:0: error: Invalid `meta` definition `_eval`, `MachineData.loadAvx` is not accessible here; consider adding `public meta import Kraken.X64.Semantics`
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:31:0: error: Invalid `meta` definition `_eval`, `MachineData.storeAvx` is not accessible here; consider adding `public meta import Kraken.X64.Semantics`
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:32:0: error: Invalid `meta` definition `_eval`, `AvxWidth.W256` is not accessible here; consider adding `public meta import Kraken.X64.Syntax`
+<task-workspace>/work/research/phase2-assembly-foundations/reports/kraken-selected-theorem-closure-8af7806/support/EffectsProbe.lean:33:0: error: Invalid `meta` definition `_eval`, `AvxWidth.bytes` is not accessible here; consider adding `public meta import Kraken.X64.Syntax`
+'_private.EffectsProbe.0.read_request_ignored' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.EffectsProbe.0.undefined_must_cover_both' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

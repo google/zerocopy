@@ -1,0 +1,190 @@
+{
+  "observed_at": "2026-10-14",
+  "source": [
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/concurrent.md",
+      "git_blob_sha": "4f404d9e1a9d439f4886bf2b353e90358732e927",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/concurrent.md",
+      "symbols": [
+        "ConcurrentMemory",
+        "Access::races",
+        "check_data_races"
+      ],
+      "excerpts": [
+        {
+          "start_line": 1,
+          "end_line": 37,
+          "text": "# MiniRust atomic memory\n\nThis is a wrapper for a memory that distinguishes between non-atomic and atomic memory accesses.\nFor now atomicity is ignored; this will change in the future.\n\n```rust\npub struct ConcurrentMemory<M: Memory> {\n    memory: M,\n\n    /// List of all memory access done by the active thread in the current step.\n    accesses: List<Access>,\n}\n\n/// The different kinds of atomicity.\npub enum Atomicity {\n    /// A sequentially consistent atomic access.\n    Atomic,\n\n    /// A non-atomic memory access.\n    None,\n}\n\n/// Internal type used to track the type of a memory access.\nenum AccessType {\n    Store,\n    Load,\n}\n\n/// Access contains all information the data race detection needs about a single access.\npub struct Access {\n    ty: AccessType,\n    atomicity: Atomicity,\n    addr: Address,\n    len: Size,\n}\n```\n"
+        },
+        {
+          "start_line": 59,
+          "end_line": 98,
+          "text": "    pub fn deallocate(&mut self, ptr: ThinPointer<M::Provenance>, kind: AllocationKind, size: Size, align: Align) -> Result {\n        self.memory.deallocate(ptr, kind, size, align)\n    }\n\n    /// Write some bytes to memory and check for data races.\n    pub fn store(&mut self, ptr: ThinPointer<M::Provenance>, bytes: List<AbstractByte<M::Provenance>>, align: Align, atomicity: Atomicity) -> Result {\n        let access = Access {\n            ty: AccessType::Store,\n            atomicity,\n            addr: ptr.addr,\n            len: Size::from_bytes(bytes.len()).unwrap(),\n        };\n        self.accesses.push(access);\n\n        self.memory.store(ptr, bytes, align)\n    }\n\n    /// Read some bytes from memory and check for data races.\n    pub fn load(&mut self, ptr: ThinPointer<M::Provenance>, len: Size, align: Align, atomicity: Atomicity) -> Result<List<AbstractByte<M::Provenance>>> {\n        let access = Access {\n            ty: AccessType::Load,\n            atomicity,\n            addr: ptr.addr,\n            len,\n        };\n        self.accesses.push(access);\n\n        self.memory.load(ptr, len, align)\n    }\n\n    /// Test whether the given pointer is dereferenceable for the given size.\n    /// Raises UB if that is not the case.\n    pub fn dereferenceable(&self, ptr: ThinPointer<M::Provenance>, len: Size) -> Result {\n        self.memory.dereferenceable(ptr, len)\n    }\n\n    /// A derived form of `dereferenceable` that works with a signed notion on \"length\".\n    pub fn signed_dereferenceable(&self, ptr: ThinPointer<M::Provenance>, len: Int) -> Result {\n        self.memory.signed_dereferenceable(ptr, len)\n    }"
+        },
+        {
+          "start_line": 120,
+          "end_line": 141,
+          "text": "        self.memory.leak_check()\n    }\n}\n```\n\n## Data race detection\n\nHere we define the operations needed to make data race detection.\nThe type `ThreadId` is used to identify threads.\n\n```rust\n/// The ID of a thread is an index into the machine's `threads` list.\npub type ThreadId = Int;\n\nimpl<M: Memory> ConcurrentMemory<M> {\n    /// Given a list of previous accesses, checks if any of the current accesses is in a data race with any of those.\n    pub fn check_data_races(\n        &self,\n        current_thread: ThreadId,\n        (prev_sync_threads, prev_accesses): (Set<ThreadId>, List<Access>),\n    ) -> Result {\n        if prev_sync_threads.contains(current_thread) { return Ok(()) }"
+        },
+        {
+          "start_line": 152,
+          "end_line": 178,
+          "text": "    /// Prepare memory to track accesses of next step: reset the internal access list to\n    /// be empty, and return the list of previously collected accesses.\n    pub fn reset_accesses(&mut self) -> List<Access> {\n        let prev_accesses = self.accesses;\n        self.accesses = list![];\n        prev_accesses\n    }\n}\n\nimpl Access {\n    /// Indicates if a races happend between the two given accesses.\n    /// We assume they happen on different threads.\n    fn races(self, other: Self) -> bool {\n        // At least one access modifies the data.\n        if self.ty == AccessType::Load && other.ty == AccessType::Load { return false; }\n\n        // At least one access is non atomic\n        if self.atomicity == Atomicity::Atomic && other.atomicity == Atomicity::Atomic { return false; }\n\n        // The accesses overlap.\n        let end_addr = self.addr + self.len.bytes();\n        let other_end_addr = other.addr + other.len.bytes();\n        end_addr > other.addr && other_end_addr > self.addr\n    }\n}\n```\n"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/machine.md",
+      "git_blob_sha": "12c78fcbb23d59c771ce006a74ee333a0266e5a8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/machine.md",
+      "symbols": [
+        "Machine::step",
+        "reset_data_race_tracking"
+      ],
+      "excerpts": [
+        {
+          "start_line": 197,
+          "end_line": 240,
+          "text": "    pub fn step(&mut self) -> NdResult {\n        if !self.threads.any( |thread| thread.state == ThreadState::Enabled ) {\n            throw_deadlock!();\n        }\n\n        // Reset the data race tracking *before* we change `active_thread`.\n        let prev_step_information = self.reset_data_race_tracking();\n\n        // Update current thread.\n        let distr = libspecr::IntDistribution {\n            start: Int::ZERO,\n            end: Int::from(self.threads.len()),\n            divisor: Int::ONE,\n        };\n        self.active_thread = pick(distr, |id: ThreadId| {\n            let Some(thread) = self.threads.get(id) else {\n                return false;\n            };\n\n            thread.state == ThreadState::Enabled\n        })?;\n\n        // Execute this step.\n        let frame = self.cur_frame();\n        let block = &frame.func.blocks[frame.next_block];\n        if frame.next_stmt == block.statements.len() {\n            // It is the terminator. Evaluating it will update `frame.next_block` and `frame.next_stmt`.\n            self.eval_terminator(block.terminator)?;\n        } else {\n            // Bump up PC, evaluate this statement.\n            let stmt = block.statements[frame.next_stmt];\n            self.eval_statement(stmt)?;\n            self.try_mutate_cur_frame(|frame, _mem| {\n                frame.next_stmt += 1;\n                ret(())\n            })?;\n        }\n\n        // Check for data races with the previous step.\n        self.mem.check_data_races(self.active_thread, prev_step_information)?;\n\n        ret(())\n    }\n}"
+        },
+        {
+          "start_line": 355,
+          "end_line": 370,
+          "text": "    ///\n    /// The first component of the return value is the set of threads that were synchronized by the previous step,\n    /// the second is the list of accesses in the previous step.\n    fn reset_data_race_tracking(&mut self) -> (Set<ThreadId>, List<Access>) {\n        // Remember threads synchronized by the previous step for data race detection\n        // after this step.\n        let mut prev_sync = self.synchronized_threads;\n        // Every thread is always synchronized with itself.\n        prev_sync.insert(self.active_thread);\n\n        // Reset access tracking list.\n        let prev_accesses = self.mem.reset_accesses();\n\n        (prev_sync, prev_accesses)\n    }\n"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/tree_borrows/memory.md",
+      "git_blob_sha": "6fe36283dfebfeea596e238da0bb0a4448c6e41b",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/memory.md",
+      "symbols": [
+        "implicit reborrow access",
+        "release_protector"
+      ],
+      "excerpts": [
+        {
+          "start_line": 128,
+          "end_line": 144,
+          "text": "            // Perform a read or write access on all bytes inside the pointee whose permission requires such an access.\n            for (idx, perm) in settings.inside.iter().enumerate() {\n                let idx = Int::from(idx); // FIXME: we need a version of `enumerate` that yields `Int`s.\n                let idx = Size::from_bytes(idx).unwrap();\n                if let Some(access) = perm.init_access() {\n                    allocation.extra.root.access(Some(child_path), access, offset+idx, Offset::from_bytes_const(1))?\n                }\n            }\n\n            ret::<Result<Path>>(child_path)\n        })?;\n\n        // Track the new protector\n        if settings.protected.yes() { frame_extra.protectors.push((alloc_id, child_path)); }\n\n        // Create the child pointer and return it\n        ret(ThinPointer {"
+        },
+        {
+          "start_line": 152,
+          "end_line": 177,
+          "text": "    /// Perform a special implicit access on all locations that have been accessed.\n    fn release_protector(&mut self, provenance: TreeBorrowsProvenance) -> Result {\n        let (alloc_id, path) = provenance;\n        self.mem.allocations.mutate_at(alloc_id.0, |allocation| {\n            let protector_accesses : List<_> = allocation.extra.root.access_node(path, |node| {\n                assert!(node.protected.yes());\n                // We get a list of pairs, and need to turn this into a pair of lists.\n                let list_of_perms_and_accesses = node.permissions.map(|x| x.unprotect());\n                // The list of unprotected permissions is stored back in the tree.\n                node.permissions = list_of_perms_and_accesses.map(|(perm, _acc)| perm);\n                // The resulting accesses are used further down.\n                list_of_perms_and_accesses.map(|(_perm, acc)| acc)\n            });\n\n            if !allocation.live {\n                // Looks like the protected memory got deallocated already. This is fine,\n                // and expected for weak allocations. For strong allocations, this can e.g.\n                // happen if the protector was zero-sized, or on interior mutable data.\n                return ret(());\n            }\n\n            allocation.extra.root.release_protector(Some(path), &protector_accesses)\n        })\n    }\n}\n```"
+        },
+        {
+          "start_line": 241,
+          "end_line": 263,
+          "text": "    fn retag_ptr(\n        &mut self,\n        frame_extra: &mut Self::FrameExtra,\n        ptr: Pointer<Self::Provenance>,\n        ptr_type: PtrType,\n        fn_entry: bool,\n        fn_implicit_writes: bool, // wether implicit_writes are enabled for the currently evaluated function, or not\n        vtable_lookup: impl Fn(ThinPointer<Self::Provenance>) -> crate::lang::VTable + 'static,\n    ) -> Result<Pointer<Self::Provenance>> {\n        ret(if let Some(perms) = ReborrowSettings::new(ptr, ptr_type, fn_entry, self.params, fn_implicit_writes, vtable_lookup) {\n            self.reborrow(ptr.thin_pointer, perms, frame_extra)?.widen(ptr.metadata)\n        } else {\n            ptr\n        })\n    }\n\n    fn new_call() -> Self::FrameExtra {  Self::FrameExtra::new() }\n\n    fn end_call(&mut self, extra: Self::FrameExtra) -> Result {\n        extra.protectors.try_map(|provenance| self.release_protector(provenance))?;\n        ret(())\n    }\n"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/miri",
+      "revision": "0e1a23b0794bec7860df8c06a774f4316746795a",
+      "path": "src/borrow_tracker/tree_borrows/mod.rs",
+      "git_blob_sha": "f2875548d08d583a1d3e27097f01f2c262d6a8c7",
+      "url": "https://github.com/rust-lang/miri/blob/0e1a23b0794bec7860df8c06a774f4316746795a/src/borrow_tracker/tree_borrows/mod.rs",
+      "symbols": [
+        "retag data-race reporting"
+      ],
+      "excerpts": [
+        {
+          "start_line": 390,
+          "end_line": 417,
+          "text": "                    diagnostics::AccessCause::Reborrow(access),\n                    this.machine.borrow_tracker.as_ref().unwrap(),\n                    alloc_id,\n                    this.machine.current_user_relevant_span(),\n                )?;\n\n                // Also inform the data race model (but only if any bytes are actually affected).\n                if range_in_alloc.size.bytes() > 0 {\n                    if let Some(data_race) = alloc_extra.data_race.as_vclocks_ref() {\n                        match access {\n                            AccessKind::Read =>\n                                data_race.read_non_atomic(\n                                    alloc_id,\n                                    range_in_alloc,\n                                    NaReadType::Retag,\n                                    Some(place.layout.ty),\n                                    &this.machine,\n                                )?,\n                            AccessKind::Write =>\n                                data_race.write_non_atomic(\n                                    alloc_id,\n                                    range_in_alloc,\n                                    NaWriteType::Retag,\n                                    Some(place.layout.ty),\n                                    &this.machine,\n                                )?,\n                        };\n                    }"
+        }
+      ]
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/step/intrinsics.md",
+      "git_blob_sha": "0a2eb8e67affb71bd5b73375c6f9483dae64b469",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/intrinsics.md",
+      "symbols": [
+        "AtomicCompareExchange"
+      ],
+      "excerpts": [
+        {
+          "start_line": 425,
+          "end_line": 543,
+          "text": "\n## Atomic accesses\n\nThese intrinsics provide atomic accesses.\n\n```rust\nimpl<M: Memory> Machine<M> {\n    fn eval_intrinsic(\n        &mut self,\n        IntrinsicOp::AtomicStore: IntrinsicOp,\n        arguments: List<(Value<M>, Type)>,\n        ret_ty: Type,\n    ) -> NdResult<Value<M>> {\n        if arguments.len() != 2 {\n            throw_ub!(\"invalid number of arguments for `AtomicStore` intrinsic\");\n        }\n\n        let Value::Ptr(Pointer { thin_pointer: ptr, metadata: None }) = arguments[0].0 else {\n            throw_ub!(\"invalid first argument to `AtomicStore` intrinsic: not a thin pointer\");\n        };\n\n        let (val, ty) = arguments[1];\n        let LayoutStrategy::Sized(size, _) = ty.layout::<M::T>() else {\n            throw_ub!(\"invalid second argument to `AtomicStore` intrinsic: unsized type\");\n        };\n        let Some(align) = Align::from_bytes(size.bytes()) else {\n            throw_ub!(\"invalid second argument to `AtomicStore` intrinsic: size not power of two\");\n        };\n        if size > M::T::MAX_ATOMIC_SIZE {\n            throw_ub!(\"invalid second argument to `AtomicStore` intrinsic: size too big\");\n        }\n\n        if ret_ty != unit_type() {\n            throw_ub!(\"invalid return type for `AtomicStore` intrinsic\")\n        }\n\n        self.typed_store(ptr, val, ty, align, Atomicity::Atomic)?;\n        ret(unit_value())\n    }\n\n    fn eval_intrinsic(\n        &mut self,\n        IntrinsicOp::AtomicLoad: IntrinsicOp,\n        arguments: List<(Value<M>, Type)>,\n        ret_ty: Type,\n    ) -> NdResult<Value<M>> {\n        if arguments.len() != 1 {\n            throw_ub!(\"invalid number of arguments for `AtomicLoad` intrinsic\");\n        }\n    \n        let Value::Ptr(Pointer { thin_pointer: ptr, metadata: None }) = arguments[0].0 else {\n            throw_ub!(\"invalid first argument to `AtomicLoad` intrinsic: not a thin pointer\");\n        };\n\n        let size = ret_ty.layout::<M::T>().expect_size(\"WF ensures intrinsic return types are sized\");\n        let Some(align) = Align::from_bytes(size.bytes()) else {\n            throw_ub!(\"invalid return type for `AtomicLoad` intrinsic: size not power of two\");\n        };\n        if size > M::T::MAX_ATOMIC_SIZE {\n            throw_ub!(\"invalid return type for `AtomicLoad` intrinsic: size too big\");\n        }\n\n        // `ret_ty` is ensured to be sized above.\n        let val = self.typed_load(ptr, ret_ty, align, Atomicity::Atomic)?;\n        ret(val)\n    }\n\n    fn eval_intrinsic(\n        &mut self,\n        IntrinsicOp::AtomicCompareExchange: IntrinsicOp,\n        arguments: List<(Value<M>, Type)>,\n        ret_ty: Type,\n    ) -> NdResult<Value<M>> {\n        if arguments.len() != 3 {\n            throw_ub!(\"invalid number of arguments for `AtomicCompareExchange` intrinsic\");\n        }\n\n        let Value::Ptr(Pointer { thin_pointer: ptr, metadata: None }) = arguments[0].0 else {\n            throw_ub!(\"invalid first argument to `AtomicCompareExchange` intrinsic: not a thin pointer\");\n        };\n\n        let (current, curr_ty) = arguments[1];\n        if curr_ty != ret_ty {\n            throw_ub!(\"invalid second argument to `AtomicCompareExchange` intrinsic: not same type as return value\");\n        }\n\n        let (next, next_ty) = arguments[2];\n        if next_ty != ret_ty {\n            throw_ub!(\"invalid third argument to `AtomicCompareExchange` intrinsic: not same type as return value\");\n        }\n\n        if !matches!(ret_ty, Type::Int(_)) {\n            throw_ub!(\"invalid return type for `Intrinis::AtomicCompareExchange`: only works with integers\");\n        }\n\n        // All integers are sized with a power of two size.\n        let size = ret_ty.layout::<M::T>().expect_size(\"`ret_ty` is an integer\");\n        let align = Align::from_bytes(size.bytes()).unwrap();\n        if size > M::T::MAX_ATOMIC_SIZE {\n            throw_ub!(\"invalid return type for `AtomicCompareExchange` intrinsic: size too big\");\n        }\n\n        // The value at the location right now.\n        let before = self.typed_load(ptr, ret_ty, align, Atomicity::Atomic)?;\n\n        // This is the central part of the operation. If the expected before value at ptr is the current value,\n        // then we exchange it for the next value.\n        // FIXME: The memory model might have to know that this is a compare-exchange.\n        if current == before {\n            self.typed_store(ptr, next, ret_ty, align, Atomicity::Atomic)?;\n        } else {\n            // We do *not* do a store on a failing AtomicCompareExchange. This means that races between\n            // a non-atomic load and a failing AtomicCompareExchange are not considered UB!\n        }\n\n        ret(before)\n    }\n\n    fn eval_intrinsic("
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/sync/atomic.rs",
+      "git_blob_sha": "14e33019a45ff25f2107f175d6c9b26b9731cbfc",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/sync/atomic.rs",
+      "symbols": [
+        "Rust memory model"
+      ],
+      "excerpts": [
+        {
+          "start_line": 26,
+          "end_line": 58,
+          "text": "//!\n//! Rust atomics currently follow the same rules as [C++20 atomics][cpp], specifically the rules\n//! from the [`intro.races`][cpp-intro.races] section, without the \"consume\" memory ordering. Since\n//! C++ uses an object-based memory model whereas Rust is access-based, a bit of translation work\n//! has to be done to apply the C++ rules to Rust: whenever C++ talks about \"the value of an\n//! object\", we understand that to mean the resulting bytes obtained when doing a read. When the C++\n//! standard talks about \"the value of an atomic object\", this refers to the result of doing an\n//! atomic load (via the operations provided in this module). A \"modification of an atomic object\"\n//! refers to an atomic store.\n//!\n//! The end result is *almost* equivalent to saying that creating a *shared reference* to one of the\n//! Rust atomic types corresponds to creating an `atomic_ref` in C++, with the `atomic_ref` being\n//! destroyed when the lifetime of the shared reference ends. The main difference is that Rust\n//! permits concurrent atomic and non-atomic reads to the same memory as those cause no issue in the\n//! C++ memory model, they are just forbidden in C++ because memory is partitioned into \"atomic\n//! objects\" and \"non-atomic objects\" (with `atomic_ref` temporarily converting a non-atomic object\n//! into an atomic object).\n//!\n//! The most important aspect of this model is that *data races* are undefined behavior. A data race\n//! is defined as conflicting non-synchronized accesses where at least one of the accesses is\n//! non-atomic. Here, accesses are *conflicting* if they affect overlapping regions of memory and at\n//! least one of them is a write. (A `compare_exchange` or `compare_exchange_weak` that does not\n//! succeed is not considered a write.) They are *non-synchronized* if neither of them\n//! *happens-before* the other, according to the happens-before order of the memory model.\n//!\n//! The other possible cause of undefined behavior in the memory model are mixed-size accesses: Rust\n//! inherits the C++ limitation that non-synchronized conflicting atomic accesses may not partially\n//! overlap. In other words, every pair of non-synchronized atomic accesses must be either disjoint,\n//! access the exact same memory (including using the same access size), or both be reads.\n//!\n//! Each atomic access takes an [`Ordering`] which defines how the operation interacts with the\n//! happens-before order. These orderings behave the same as the corresponding [C++20 atomic\n//! orderings][cpp_memory_order]. For more information, see the [nomicon]."
+        }
+      ]
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/base_logic/adequacy.v",
+      "git_blob_sha": "23e27bf6fe9f547ff14c5d8210d446589f35f96c",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/base_logic/adequacy.v",
+      "symbols": [
+        "noprolGpreS",
+        "noprol_adequacy",
+        "noprol_adequacy'"
+      ],
+      "excerpts": [
+        {
+          "start_line": 17,
+          "end_line": 31,
+          "text": "Class noprolGpreS (Σ : gFunctors) : Set := NoprolG {\n  noprolGpreS_ownPG : ownPGpreS nopro_lang Σ;\n  noprolGpreS_histG : gen_heapGpreS loc (option cell) Σ;\n  (* for ownership of block deallocations *)\n  noprolGpreS_freeable : inG Σ (authR hist_freeableUR);\n  (* for tracking read events *)\n  noprolGpreS_read : inG Σ (authR hist_readUR);\n  (* for tracking simple views *)\n  noprolGpreS_na_view : inG Σ viewR;\n  (* for tracking atomic write events *)\n  noprolGpreS_at_write : inG Σ (authR hist_writesUR);\n  (* for thread views *)\n  noprolGpreS_tview : inG Σ (authR (latUR tview_Lat));\n}.\n"
+        },
+        {
+          "start_line": 50,
+          "end_line": 55,
+          "text": "Lemma noprol_adequacy Σ `{!noprolGpreS Σ} e (σ : state) 𝓥 φ :\n  Wf σ →\n  𝓥 ∈ σ.(mem) →\n  (∀ `{noprolG Σ} tid, ⊢ WP e @ tid; ⊤ {{ v, ⌜φ v⌝ }}) →\n  adequate NotStuck (e at 𝓥) σ (λ v _, φ v).\nProof."
+        },
+        {
+          "start_line": 100,
+          "end_line": 107,
+          "text": "Proof.\n  intros. eapply noprol_adequacy=>//. split=>//. split=> l /=.\n  - destruct (memory_loc_not_elem_of_dom (VAL := val) l ∅) as [EQ _].\n    rewrite EQ //. intros t m. naive_solver.\n  - destruct (memory_loc_not_elem_of_dom (VAL := val) l ∅) as [EQ _].\n    rewrite EQ //.\nQed.\n"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "url": "https://plv.mpi-sws.org/rustbelt/rbrlx/paper.pdf",
+      "doi": "10.1145/3371102",
+      "locators": [
+        "4–6"
+      ]
+    },
+    {
+      "url": "https://plv.mpi-sws.org/rustbelt/rbrlx/appendix.pdf",
+      "locators": [
+        "preface",
+        "2 correspondence",
+        "3 lifetime logic",
+        "4 unsynchronized counterexample"
+      ],
+      "identity_scope": "author-hosted PDF edition; no fresh byte hash"
+    }
+  ],
+  "acquisition_limits": []
+}

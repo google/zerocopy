@@ -1,0 +1,29 @@
+[
+  {
+    "stage": "owned-lock",
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "fetch",
+      "--offline",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/owned-probe/Cargo.toml"
+    ],
+    "returncode": 0,
+    "seconds": 0.075876917,
+    "panic_observed": false
+  },
+  {
+    "stage": "owned-run",
+    "command": [
+      "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+      "run",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/owned-probe/Cargo.toml"
+    ],
+    "returncode": 0,
+    "seconds": 0.45746837500000004,
+    "panic_observed": false
+  }
+]

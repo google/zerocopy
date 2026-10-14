@@ -1,0 +1,90 @@
+{
+  "observed_at": "2026-10-14",
+  "sources": [
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "README.md",
+      "git_blob": "202f0094e97815f3272742032f5c1984f6772ee1",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/README.md"
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "src/sail_lean_backend/sail_plugin_lean.ml",
+      "git_blob": "0b3d7956d87d63ea615dda62471926896c714bcd",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/src/sail_lean_backend/sail_plugin_lean.ml"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "README.md",
+      "git_blob": "1750da7e6e65c568f75aa4512a9376b0b4142fe9",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/README.md"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "theories/adequacy.v",
+      "git_blob": "2e0fc811e6da399f0f041e14654d130067a9a258",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/theories/adequacy.v"
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "x86/Asm.v",
+      "git_blob": "14999445de01aad586b10c362e7f52a083139d50",
+      "url": "https://github.com/AbsInt/CompCert/blob/74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6/x86/Asm.v"
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "src/sail_lean_backend/Sail/FakeReal.lean",
+      "git_blob": "84d18cb33914a5a0171ea531d26cfe9af4f6a9b7",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/src/sail_lean_backend/Sail/FakeReal.lean"
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+      "path": "src/sail_lean_backend/Sail/SpecializationArchSem.lean",
+      "git_blob": "9175baf8d390774e15e9b811b58d0ed6cca9031d",
+      "url": "https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/src/sail_lean_backend/Sail/SpecializationArchSem.lean"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "theories/opsem.v",
+      "git_blob": "be55c9a4e89b9cb8ea9568d452dab89a12b24aa7",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/theories/opsem.v"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail/README.md",
+      "git_blob": "dc9ae341802a4c6a771033a625c1fa9d2008bbdc",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail/README.md"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail/sail_opsem.v",
+      "git_blob": "7fc29b78209a760de6e3fecb4d2e0f31b2e90d68",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail/sail_opsem.v"
+    },
+    {
+      "repository": "rems-project/islaris",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail/test.v",
+      "git_blob": "260787ebd3d0a8501f8dc02b7892f836f8759916",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail/test.v"
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Memory.v",
+      "git_blob": "a6276dd082473a458514f000a2272077abe8f917",
+      "url": "https://github.com/AbsInt/CompCert/blob/74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6/common/Memory.v"
+    }
+  ],
+  "role": "source/documentation as identified per finding; no upstream theorem execution unless separately recorded"
+}

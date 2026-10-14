@@ -1,0 +1,40 @@
+   Compiling owned-core-probe v0.1.0 (<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/owned-probe)
+warning: unused import: `minirust_rs::libspecr::prelude::*`
+ --> src/main.rs:6:5
+  |
+6 | use minirust_rs::libspecr::prelude::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `minirust_rs::lang::*`
+ --> src/main.rs:7:5
+  |
+7 | use minirust_rs::lang::*;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `minirust_rs::prelude::*`
+ --> src/main.rs:8:5
+  |
+8 | use minirust_rs::prelude::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `owned-core-probe` (bin "owned-core-probe") generated 3 warnings (run `cargo fix --bin "owned-core-probe" -p owned-core-probe` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target-requested-nightly/debug/owned-core-probe`
+CASE bool_transmute_1
+OUTCOME MachineStop
+CASE bool_transmute_2
+OUTCOME Ub(String("transmuted value is not valid at new type"))
+CASE unchecked_u8_overflow
+OUTCOME Ub(String("overflow in unchecked add"))
+CASE incoherent_known0_observes0
+OUTCOME MachineStop
+CASE coherent_tag1_observes1
+OUTCOME MachineStop
+CASE wrong_expected1_negative_control
+OUTCOME Ub(String("reached unreachable code"))
+CASE wide_pointer_union_twoword_chunk
+OUTCOME MachineStop
+CASE wide_pointer_union_oneword_chunk
+OUTCOME Ub(String("transmuted value is not valid at new type"))

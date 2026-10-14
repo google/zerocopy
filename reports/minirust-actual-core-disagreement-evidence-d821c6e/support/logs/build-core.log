@@ -1,0 +1,43 @@
+   Compiling libc v0.2.182
+   Compiling unicode-ident v1.0.24
+   Compiling cfg-if v1.0.4
+   Compiling zerocopy v0.8.40
+   Compiling serde_core v1.0.228
+   Compiling typenum v1.19.0
+   Compiling autocfg v1.5.0
+   Compiling version_check v0.9.5
+   Compiling serde v1.0.228
+   Compiling syn v1.0.109
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.44
+   Compiling zmij v1.0.21
+   Compiling serde_json v1.0.149
+   Compiling memchr v2.8.0
+   Compiling im v15.1.0
+   Compiling itoa v1.0.18
+   Compiling num-traits v0.2.19
+   Compiling syn v2.0.117
+   Compiling getrandom v0.2.17
+   Compiling bitmaps v2.1.0
+   Compiling rand_core v0.6.4
+   Compiling rand_xoshiro v0.6.0
+   Compiling num-integer v0.1.46
+   Compiling sized-chunks v0.6.5
+   Compiling serde_derive v1.0.228
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.3.1
+   Compiling rand v0.8.5
+   Compiling gccompat-derive v0.1.2 (<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/gccompat-derive)
+   Compiling num-bigint v0.4.6
+   Compiling libspecr v0.1.41 (<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr)
+error[E0046]: not all trait items implemented, missing: `forward_overflowing`, `backward_overflowing`
+ --> <task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr/src/int/step.rs:5:1
+  |
+5 | impl Step for Int {
+  | ^^^^^^^^^^^^^^^^^ missing `forward_overflowing`, `backward_overflowing` in implementation
+  |
+  = help: implement the missing item: `fn forward_overflowing(_: Self, _: usize) -> (Self, bool) { todo!() }`
+  = help: implement the missing item: `fn backward_overflowing(_: Self, _: usize) -> (Self, bool) { todo!() }`
+
+For more information about this error, try `rustc --explain E0046`.
+error: could not compile `libspecr` (lib) due to 1 previous error

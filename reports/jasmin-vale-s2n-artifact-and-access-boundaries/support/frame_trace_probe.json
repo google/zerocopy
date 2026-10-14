@@ -1,0 +1,60 @@
+{
+  "scope": "owned finite countermodels, not an upstream safety or constant-time theorem",
+  "cases": {
+    "positive_bounded_write": {
+      "final_frame": true,
+      "trace_safe": true,
+      "trace": [
+        {
+          "kind": "write",
+          "addr": 0,
+          "width": 1
+        }
+      ]
+    },
+    "out_of_range_read": {
+      "final_frame": true,
+      "trace_safe": false,
+      "trace": [
+        {
+          "kind": "read",
+          "addr": 8,
+          "width": 1
+        }
+      ]
+    },
+    "forbidden_write_restore": {
+      "final_frame": true,
+      "trace_safe": false,
+      "trace": [
+        {
+          "kind": "write",
+          "addr": 8,
+          "width": 1
+        },
+        {
+          "kind": "write",
+          "addr": 8,
+          "width": 1
+        }
+      ]
+    },
+    "crossing_width": {
+      "final_frame": true,
+      "trace_safe": false,
+      "trace": [
+        {
+          "kind": "read",
+          "addr": 0,
+          "width": 2
+        }
+      ]
+    }
+  },
+  "finite_trace_validation": {
+    "positive": true,
+    "omitted_branch": false,
+    "omitted_access": false
+  },
+  "secret_independent_addresses": false
+}

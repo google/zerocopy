@@ -1,0 +1,1036 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:5:1: 5:20>::drop(_1: &mut Token) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: &mut std::vec::Vec<&str>;
+    let mut _4: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _5: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _6: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _7: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _8: &str;
+
+    bb0: {
+        _7 = &((*_1).1: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _6 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _7) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _5 = RefCell::<Vec<&str>>::borrow_mut(copy _6) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _4 = &mut _5;
+        _3 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _4) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        _8 = copy ((*_1).0: &str);
+        _2 = Vec::<&str>::push(copy _3, move _8) -> [return: bb4, unwind: bb6];
+    }
+
+    bb4: {
+        drop(_5) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        return;
+    }
+
+    bb6 (cleanup): {
+        drop(_5) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        resume;
+    }
+}
+
+fn <impl at reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:7:1: 7:19>::drop(_1: &mut Bomb) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: &mut std::vec::Vec<&str>;
+    let mut _4: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _5: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _6: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _7: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _8: !;
+    let mut _9: std::fmt::Arguments<'_>;
+
+    bb0: {
+        _7 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _6 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _7) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _5 = RefCell::<Vec<&str>>::borrow_mut(copy _6) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _4 = &mut _5;
+        _3 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _4) -> [return: bb3, unwind: bb7];
+    }
+
+    bb3: {
+        _2 = Vec::<&str>::push(copy _3, const "bomb") -> [return: bb4, unwind: bb7];
+    }
+
+    bb4: {
+        drop(_5) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        _9 = Arguments::<'_>::from_str(const "expected destructor unwind") -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        _8 = std::rt::panic_fmt(move _9) -> unwind continue;
+    }
+
+    bb7 (cleanup): {
+        drop(_5) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+}
+
+alloc2 (size: 26, align: 1) {
+    0x00 │ 65 78 70 65 63 74 65 64 20 64 65 73 74 72 75 63 │ expected destruc
+    0x10 │ 74 6f 72 20 75 6e 77 69 6e 64                   │ tor unwind
+}
+
+alloc1 (size: 4, align: 1) {
+    62 6f 6d 62                                     │ bomb
+}
+
+fn <impl at reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:10:1: 10:21>::pick(_1: Select) -> u8 {
+    debug self => const Select;
+    let mut _0: u8;
+
+    bb0: {
+        _0 = const 1_u8;
+        return;
+    }
+}
+
+fn <impl at reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:11:1: 11:22>::pick(_1: &Select) -> u8 {
+    debug self => _1;
+    let mut _0: u8;
+
+    bb0: {
+        _0 = const 2_u8;
+        return;
+    }
+}
+
+fn with_fields(_1: &mut (u8, Cell<u8>), _2: impl FnOnce(&Cell<u8>)) -> &mut u8 {
+    debug p => _1;
+    debug cb => _2;
+    let mut _0: &mut u8;
+    let _3: ();
+    let mut _4: (&std::cell::Cell<u8>,);
+    let _5: &std::cell::Cell<u8>;
+
+    bb0: {
+        _5 = &((*_1).1: std::cell::Cell<u8>);
+        _4 = (copy _5,);
+        _3 = <impl FnOnce(&Cell<u8>) as FnOnce<(&Cell<u8>,)>>::call_once(copy _2, move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = &mut ((*_1).0: u8);
+        return;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: std::boxed::Box<dyn for<'a, 'b> std::ops::Fn(&'a std::panic::PanicHookInfo<'b>) + std::marker::Send + std::marker::Sync>;
+    let mut _3: std::boxed::Box<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:17:32: 17:35}>;
+    let _4: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _6: std::panic::AssertUnwindSafe<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10}>;
+    let mut _7: {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10};
+    let mut _9: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _10: ();
+    let mut _11: std::fmt::Arguments<'_>;
+    let mut _13: &bool;
+    let _14: bool;
+    let mut _15: &std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let _16: &std::vec::Vec<&str>;
+    let mut _17: &std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _18: std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _19: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _20: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _22: core::fmt::rt::Argument<'_>;
+    let mut _23: core::fmt::rt::Argument<'_>;
+    let mut _24: &[u8; 29];
+    let _25: &[core::fmt::rt::Argument<'_>; 2];
+    let _26: ();
+    let mut _27: &mut std::vec::Vec<&str>;
+    let mut _28: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _29: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _30: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _31: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _33: std::panic::AssertUnwindSafe<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10}>;
+    let mut _34: {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10};
+    let mut _36: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _37: ();
+    let mut _38: std::fmt::Arguments<'_>;
+    let mut _40: &bool;
+    let _41: bool;
+    let mut _42: &std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let _43: &std::vec::Vec<&str>;
+    let mut _44: &std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _45: std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _46: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _47: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _49: core::fmt::rt::Argument<'_>;
+    let mut _50: core::fmt::rt::Argument<'_>;
+    let mut _51: &[u8; 32];
+    let _52: &[core::fmt::rt::Argument<'_>; 2];
+    let _53: ();
+    let mut _54: &mut std::vec::Vec<&str>;
+    let mut _55: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _56: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _57: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _58: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _59: Token;
+    let mut _60: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _61: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _62: ();
+    let mut _63: &mut std::vec::Vec<&str>;
+    let mut _64: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _65: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _66: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _67: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _69: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _70: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _71: ();
+    let mut _72: &mut std::vec::Vec<&str>;
+    let mut _73: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _74: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _75: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _76: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _77: ();
+    let mut _78: std::fmt::Arguments<'_>;
+    let _80: &std::vec::Vec<&str>;
+    let mut _81: &std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _82: std::cell::Ref<'_, std::vec::Vec<&str>>;
+    let _83: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _84: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _86: core::fmt::rt::Argument<'_>;
+    let mut _87: &[u8; 24];
+    let _88: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _90: std::cell::Cell<u8>;
+    let mut _91: &mut u8;
+    let mut _92: &mut (u8, std::cell::Cell<u8>);
+    let _93: ();
+    let mut _94: std::fmt::Arguments<'_>;
+    let mut _96: &u8;
+    let mut _97: &u8;
+    let _98: u8;
+    let mut _99: &std::cell::Cell<u8>;
+    let mut _101: core::fmt::rt::Argument<'_>;
+    let mut _102: core::fmt::rt::Argument<'_>;
+    let mut _103: &[u8; 24];
+    let _104: &[core::fmt::rt::Argument<'_>; 2];
+    let _105: ();
+    let mut _106: std::fmt::Arguments<'_>;
+    let mut _108: &u8;
+    let _109: u8;
+    let mut _110: &u8;
+    let _111: u8;
+    let _112: &Select;
+    let mut _114: core::fmt::rt::Argument<'_>;
+    let mut _115: core::fmt::rt::Argument<'_>;
+    let mut _116: &[u8; 23];
+    let _117: &[core::fmt::rt::Argument<'_>; 2];
+    let mut _118: &bool;
+    let mut _119: &std::vec::Vec<&str>;
+    let mut _120: &bool;
+    let mut _121: &std::vec::Vec<&str>;
+    let mut _122: &std::vec::Vec<&str>;
+    let mut _123: &u8;
+    let mut _124: &u8;
+    let mut _125: &u8;
+    let mut _126: &u8;
+    scope 1 {
+        debug l => _4;
+        let _5: std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+        let _8: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+        scope 2 {
+            debug partial => _5;
+            let _12: (&bool, &std::vec::Vec<&str>);
+            let _32: std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+            let _35: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+            scope 4 {
+                debug args => _12;
+                let _21: [core::fmt::rt::Argument<'_>; 2];
+                scope 5 {
+                    debug args => _21;
+                }
+            }
+            scope 6 {
+                debug destructor => _32;
+                let _39: (&bool, &std::vec::Vec<&str>);
+                let _79: (&std::vec::Vec<&str>,);
+                let mut _89: (u8, std::cell::Cell<u8>);
+                scope 8 {
+                    debug args => _39;
+                    let _48: [core::fmt::rt::Argument<'_>; 2];
+                    scope 9 {
+                        debug args => _48;
+                    }
+                }
+                scope 10 {
+                    let _68: Token;
+                    scope 11 {
+                        debug _bound => _68;
+                    }
+                }
+                scope 12 {
+                    debug args => _79;
+                    let _85: [core::fmt::rt::Argument<'_>; 1];
+                    scope 13 {
+                        debug args => _85;
+                    }
+                }
+                scope 14 {
+                    debug pair => _89;
+                    let _95: (&u8, &u8);
+                    let _107: (&u8, &u8);
+                    scope 15 {
+                        debug args => _95;
+                        let _100: [core::fmt::rt::Argument<'_>; 2];
+                        scope 16 {
+                            debug args => _100;
+                        }
+                    }
+                    scope 17 {
+                        debug args => _107;
+                        let _113: [core::fmt::rt::Argument<'_>; 2];
+                        scope 18 {
+                            debug args => _113;
+                        }
+                    }
+                }
+            }
+            scope 7 {
+                debug l => _35;
+            }
+        }
+        scope 3 {
+            debug l => _8;
+        }
+    }
+
+    bb0: {
+        _3 = Box::<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:17:32: 17:35}>::new(const ZeroSized: {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:17:32: 17:35}) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = move _3 as std::boxed::Box<dyn for<'a, 'b> std::ops::Fn(&'a std::panic::PanicHookInfo<'b>) + std::marker::Send + std::marker::Sync> (PointerCoercion(Unsize, Implicit));
+        _1 = set_hook(move _2) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _4 = <Rc<RefCell<Vec<&str>>> as Default>::default() -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _9 = &_4;
+        _8 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _9) -> [return: bb4, unwind: bb83];
+    }
+
+    bb4: {
+        _7 = {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10} { l: move _8 };
+        _6 = AssertUnwindSafe::<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10}>(move _7);
+        _5 = std::panic::catch_unwind::<AssertUnwindSafe<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10}>, ()>(move _6) -> [return: bb5, unwind: bb83];
+    }
+
+    bb5: {
+        _15 = &_5;
+        _14 = Result::<(), Box<dyn Any + Send>>::is_err(move _15) -> [return: bb6, unwind: bb82];
+    }
+
+    bb6: {
+        _13 = &_14;
+        _20 = &_4;
+        _19 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _20) -> [return: bb7, unwind: bb82];
+    }
+
+    bb7: {
+        _18 = RefCell::<Vec<&str>>::borrow(copy _19) -> [return: bb8, unwind: bb82];
+    }
+
+    bb8: {
+        _17 = &_18;
+        _16 = <Ref<'_, Vec<&str>> as Deref>::deref(move _17) -> [return: bb9, unwind: bb81];
+    }
+
+    bb9: {
+        _12 = (move _13, copy _16);
+        _118 = no_retag copy (_12.0: &bool);
+        _22 = core::fmt::rt::Argument::<'_>::new_display::<bool>(copy _118) -> [return: bb10, unwind: bb81];
+    }
+
+    bb10: {
+        _119 = no_retag copy (_12.1: &std::vec::Vec<&str>);
+        _23 = core::fmt::rt::Argument::<'_>::new_debug::<Vec<&str>>(copy _119) -> [return: bb11, unwind: bb81];
+    }
+
+    bb11: {
+        _21 = [move _22, move _23];
+        _24 = const b"\x0fpartial_caught=\xc0\x07;drops=\xc0\x01\n\x00";
+        _25 = &_21;
+        _11 = Arguments::<'_>::new::<29, 2>(move _24, copy _25) -> [return: bb12, unwind: bb81];
+    }
+
+    bb12: {
+        _10 = std::io::_print(move _11) -> [return: bb13, unwind: bb81];
+    }
+
+    bb13: {
+        drop(_18) -> [return: bb14, unwind: bb82];
+    }
+
+    bb14: {
+        _31 = &_4;
+        _30 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _31) -> [return: bb15, unwind: bb82];
+    }
+
+    bb15: {
+        _29 = RefCell::<Vec<&str>>::borrow_mut(copy _30) -> [return: bb16, unwind: bb82];
+    }
+
+    bb16: {
+        _28 = &mut _29;
+        _27 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _28) -> [return: bb17, unwind: bb80];
+    }
+
+    bb17: {
+        _26 = Vec::<&str>::clear(copy _27) -> [return: bb18, unwind: bb80];
+    }
+
+    bb18: {
+        drop(_29) -> [return: bb19, unwind: bb82];
+    }
+
+    bb19: {
+        _36 = &_4;
+        _35 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _36) -> [return: bb20, unwind: bb82];
+    }
+
+    bb20: {
+        _34 = {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10} { l: move _35 };
+        _33 = AssertUnwindSafe::<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10}>(move _34);
+        _32 = std::panic::catch_unwind::<AssertUnwindSafe<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10}>, ()>(move _33) -> [return: bb21, unwind: bb82];
+    }
+
+    bb21: {
+        _42 = &_32;
+        _41 = Result::<(), Box<dyn Any + Send>>::is_err(move _42) -> [return: bb22, unwind: bb79];
+    }
+
+    bb22: {
+        _40 = &_41;
+        _47 = &_4;
+        _46 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _47) -> [return: bb23, unwind: bb79];
+    }
+
+    bb23: {
+        _45 = RefCell::<Vec<&str>>::borrow(copy _46) -> [return: bb24, unwind: bb79];
+    }
+
+    bb24: {
+        _44 = &_45;
+        _43 = <Ref<'_, Vec<&str>> as Deref>::deref(move _44) -> [return: bb25, unwind: bb78];
+    }
+
+    bb25: {
+        _39 = (move _40, copy _43);
+        _120 = no_retag copy (_39.0: &bool);
+        _49 = core::fmt::rt::Argument::<'_>::new_display::<bool>(copy _120) -> [return: bb26, unwind: bb78];
+    }
+
+    bb26: {
+        _121 = no_retag copy (_39.1: &std::vec::Vec<&str>);
+        _50 = core::fmt::rt::Argument::<'_>::new_debug::<Vec<&str>>(copy _121) -> [return: bb27, unwind: bb78];
+    }
+
+    bb27: {
+        _48 = [move _49, move _50];
+        _51 = const b"\x12destructor_caught=\xc0\x07;drops=\xc0\x01\n\x00";
+        _52 = &_48;
+        _38 = Arguments::<'_>::new::<32, 2>(move _51, copy _52) -> [return: bb28, unwind: bb78];
+    }
+
+    bb28: {
+        _37 = std::io::_print(move _38) -> [return: bb29, unwind: bb78];
+    }
+
+    bb29: {
+        drop(_45) -> [return: bb30, unwind: bb79];
+    }
+
+    bb30: {
+        _58 = &_4;
+        _57 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _58) -> [return: bb31, unwind: bb79];
+    }
+
+    bb31: {
+        _56 = RefCell::<Vec<&str>>::borrow_mut(copy _57) -> [return: bb32, unwind: bb79];
+    }
+
+    bb32: {
+        _55 = &mut _56;
+        _54 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _55) -> [return: bb33, unwind: bb77];
+    }
+
+    bb33: {
+        _53 = Vec::<&str>::clear(copy _54) -> [return: bb34, unwind: bb77];
+    }
+
+    bb34: {
+        drop(_56) -> [return: bb35, unwind: bb79];
+    }
+
+    bb35: {
+        _61 = &_4;
+        _60 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _61) -> [return: bb36, unwind: bb79];
+    }
+
+    bb36: {
+        _59 = Token(const "wildcard", move _60);
+        drop(_59) -> [return: bb37, unwind: bb79];
+    }
+
+    bb37: {
+        _67 = &_4;
+        _66 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _67) -> [return: bb38, unwind: bb79];
+    }
+
+    bb38: {
+        _65 = RefCell::<Vec<&str>>::borrow_mut(copy _66) -> [return: bb39, unwind: bb79];
+    }
+
+    bb39: {
+        _64 = &mut _65;
+        _63 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _64) -> [return: bb40, unwind: bb76];
+    }
+
+    bb40: {
+        _62 = Vec::<&str>::push(copy _63, const "after_wildcard") -> [return: bb41, unwind: bb76];
+    }
+
+    bb41: {
+        drop(_65) -> [return: bb42, unwind: bb79];
+    }
+
+    bb42: {
+        _70 = &_4;
+        _69 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _70) -> [return: bb43, unwind: bb79];
+    }
+
+    bb43: {
+        _68 = Token(const "binding", move _69);
+        _76 = &_4;
+        _75 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _76) -> [return: bb44, unwind: bb75];
+    }
+
+    bb44: {
+        _74 = RefCell::<Vec<&str>>::borrow_mut(copy _75) -> [return: bb45, unwind: bb75];
+    }
+
+    bb45: {
+        _73 = &mut _74;
+        _72 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _73) -> [return: bb46, unwind: bb74];
+    }
+
+    bb46: {
+        _71 = Vec::<&str>::push(copy _72, const "after_binding") -> [return: bb47, unwind: bb74];
+    }
+
+    bb47: {
+        drop(_74) -> [return: bb48, unwind: bb75];
+    }
+
+    bb48: {
+        drop(_68) -> [return: bb49, unwind: bb79];
+    }
+
+    bb49: {
+        _84 = &_4;
+        _83 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _84) -> [return: bb50, unwind: bb79];
+    }
+
+    bb50: {
+        _82 = RefCell::<Vec<&str>>::borrow(copy _83) -> [return: bb51, unwind: bb79];
+    }
+
+    bb51: {
+        _81 = &_82;
+        _80 = <Ref<'_, Vec<&str>> as Deref>::deref(move _81) -> [return: bb52, unwind: bb73];
+    }
+
+    bb52: {
+        _79 = (copy _80,);
+        _122 = no_retag copy (_79.0: &std::vec::Vec<&str>);
+        _86 = core::fmt::rt::Argument::<'_>::new_debug::<Vec<&str>>(copy _122) -> [return: bb53, unwind: bb73];
+    }
+
+    bb53: {
+        _85 = [move _86];
+        _87 = const b"\x13binding_drop_order=\xc0\x01\n\x00";
+        _88 = &_85;
+        _78 = Arguments::<'_>::new::<24, 1>(move _87, copy _88) -> [return: bb54, unwind: bb73];
+    }
+
+    bb54: {
+        _77 = std::io::_print(move _78) -> [return: bb55, unwind: bb73];
+    }
+
+    bb55: {
+        drop(_82) -> [return: bb56, unwind: bb79];
+    }
+
+    bb56: {
+        _90 = Cell::<u8>::new(const 4_u8) -> [return: bb57, unwind: bb79];
+    }
+
+    bb57: {
+        _89 = (const 3_u8, move _90);
+        _92 = &mut _89;
+        _91 = with_fields::<{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:38:25: 38:28}>(copy _92, const ZeroSized: {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:38:25: 38:28}) -> [return: bb58, unwind: bb79];
+    }
+
+    bb58: {
+        (*_91) = const 7_u8;
+        _96 = &(_89.0: u8);
+        _99 = &(_89.1: std::cell::Cell<u8>);
+        _98 = Cell::<u8>::get(move _99) -> [return: bb59, unwind: bb79];
+    }
+
+    bb59: {
+        _97 = &_98;
+        _95 = (move _96, move _97);
+        _123 = no_retag copy (_95.0: &u8);
+        _101 = core::fmt::rt::Argument::<'_>::new_display::<u8>(copy _123) -> [return: bb60, unwind: bb79];
+    }
+
+    bb60: {
+        _124 = no_retag copy (_95.1: &u8);
+        _102 = core::fmt::rt::Argument::<'_>::new_display::<u8>(copy _124) -> [return: bb61, unwind: bb79];
+    }
+
+    bb61: {
+        _100 = [move _101, move _102];
+        _103 = const b"\x10callback_fields=\xc0\x01,\xc0\x01\n\x00";
+        _104 = &_100;
+        _94 = Arguments::<'_>::new::<24, 2>(move _103, copy _104) -> [return: bb62, unwind: bb79];
+    }
+
+    bb62: {
+        _93 = std::io::_print(move _94) -> [return: bb63, unwind: bb79];
+    }
+
+    bb63: {
+        _109 = <Select as Pick>::pick(const Select) -> [return: bb64, unwind: bb79];
+    }
+
+    bb64: {
+        _108 = &_109;
+        _112 = const main::promoted[0];
+        _111 = <&Select as Pick>::pick(copy _112) -> [return: bb65, unwind: bb79];
+    }
+
+    bb65: {
+        _110 = &_111;
+        _107 = (move _108, move _110);
+        _125 = no_retag copy (_107.0: &u8);
+        _114 = core::fmt::rt::Argument::<'_>::new_display::<u8>(copy _125) -> [return: bb66, unwind: bb79];
+    }
+
+    bb66: {
+        _126 = no_retag copy (_107.1: &u8);
+        _115 = core::fmt::rt::Argument::<'_>::new_display::<u8>(copy _126) -> [return: bb67, unwind: bb79];
+    }
+
+    bb67: {
+        _113 = [move _114, move _115];
+        _116 = const b"\x0fselected_impls=\xc0\x01,\xc0\x01\n\x00";
+        _117 = &_113;
+        _106 = Arguments::<'_>::new::<23, 2>(move _116, copy _117) -> [return: bb68, unwind: bb79];
+    }
+
+    bb68: {
+        _105 = std::io::_print(move _106) -> [return: bb69, unwind: bb79];
+    }
+
+    bb69: {
+        drop(_32) -> [return: bb70, unwind: bb82];
+    }
+
+    bb70: {
+        drop(_5) -> [return: bb71, unwind: bb83];
+    }
+
+    bb71: {
+        drop(_4) -> [return: bb72, unwind continue];
+    }
+
+    bb72: {
+        return;
+    }
+
+    bb73 (cleanup): {
+        drop(_82) -> [return: bb79, unwind terminate(cleanup)];
+    }
+
+    bb74 (cleanup): {
+        drop(_74) -> [return: bb75, unwind terminate(cleanup)];
+    }
+
+    bb75 (cleanup): {
+        drop(_68) -> [return: bb79, unwind terminate(cleanup)];
+    }
+
+    bb76 (cleanup): {
+        drop(_65) -> [return: bb79, unwind terminate(cleanup)];
+    }
+
+    bb77 (cleanup): {
+        drop(_56) -> [return: bb79, unwind terminate(cleanup)];
+    }
+
+    bb78 (cleanup): {
+        drop(_45) -> [return: bb79, unwind terminate(cleanup)];
+    }
+
+    bb79 (cleanup): {
+        drop(_32) -> [return: bb82, unwind terminate(cleanup)];
+    }
+
+    bb80 (cleanup): {
+        drop(_29) -> [return: bb82, unwind terminate(cleanup)];
+    }
+
+    bb81 (cleanup): {
+        drop(_18) -> [return: bb82, unwind terminate(cleanup)];
+    }
+
+    bb82 (cleanup): {
+        drop(_5) -> [return: bb83, unwind terminate(cleanup)];
+    }
+
+    bb83 (cleanup): {
+        drop(_4) -> [return: bb84, unwind terminate(cleanup)];
+    }
+
+    bb84 (cleanup): {
+        resume;
+    }
+}
+
+alloc11 (size: 23, align: 1) {
+    0x00 │ 0f 73 65 6c 65 63 74 65 64 5f 69 6d 70 6c 73 3d │ .selected_impls=
+    0x10 │ c0 01 2c c0 01 0a 00                            │ ..,....
+}
+
+alloc10 (size: 24, align: 1) {
+    0x00 │ 10 63 61 6c 6c 62 61 63 6b 5f 66 69 65 6c 64 73 │ .callback_fields
+    0x10 │ 3d c0 01 2c c0 01 0a 00                         │ =..,....
+}
+
+alloc9 (size: 24, align: 1) {
+    0x00 │ 13 62 69 6e 64 69 6e 67 5f 64 72 6f 70 5f 6f 72 │ .binding_drop_or
+    0x10 │ 64 65 72 3d c0 01 0a 00                         │ der=....
+}
+
+alloc8 (size: 13, align: 1) {
+    61 66 74 65 72 5f 62 69 6e 64 69 6e 67          │ after_binding
+}
+
+alloc7 (size: 7, align: 1) {
+    62 69 6e 64 69 6e 67                            │ binding
+}
+
+alloc6 (size: 14, align: 1) {
+    61 66 74 65 72 5f 77 69 6c 64 63 61 72 64       │ after_wildcard
+}
+
+alloc5 (size: 8, align: 1) {
+    77 69 6c 64 63 61 72 64                         │ wildcard
+}
+
+alloc4 (size: 32, align: 1) {
+    0x00 │ 12 64 65 73 74 72 75 63 74 6f 72 5f 63 61 75 67 │ .destructor_caug
+    0x10 │ 68 74 3d c0 07 3b 64 72 6f 70 73 3d c0 01 0a 00 │ ht=..;drops=....
+}
+
+alloc3 (size: 29, align: 1) {
+    0x00 │ 0f 70 61 72 74 69 61 6c 5f 63 61 75 67 68 74 3d │ .partial_caught=
+    0x10 │ c0 07 3b 64 72 6f 70 73 3d c0 01 0a 00          │ ..;drops=....
+}
+
+const main::promoted[0]: &Select = {
+    let mut _0: &Select;
+    let mut _1: Select;
+
+    bb0: {
+        _1 = Select;
+        _0 = &_1;
+        return;
+    }
+}
+
+fn main::{closure#0}(_1: &{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:17:32: 17:35}, _2: &PanicHookInfo<'_>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        return;
+    }
+}
+
+fn main::{closure#1}(_1: &{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:21:3: 21:10}) -> () {
+    debug l => ((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+    let mut _0: ();
+    let _2: Token;
+    let mut _3: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _4: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _6: Token;
+    let mut _7: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _8: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _9: Token;
+    let mut _10: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _11: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _13: ();
+    let _14: !;
+    let mut _15: std::fmt::Arguments<'_>;
+    scope 1 {
+        debug _outer => _2;
+        let _5: (Token, Token);
+        scope 2 {
+            debug pair => _5;
+            let _12: Token;
+            scope 3 {
+                debug moved => _12;
+            }
+        }
+    }
+
+    bb0: {
+        _4 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _3 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = Token(const "outer", move _3);
+        _8 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _7 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _8) -> [return: bb2, unwind: bb7];
+    }
+
+    bb2: {
+        _6 = Token(const "left", move _7);
+        _11 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _10 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _11) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        _9 = Token(const "right", move _10);
+        _5 = (move _6, move _9);
+        _12 = move (_5.0: Token);
+        _13 = std::mem::drop::<Token>(copy _12) -> [return: bb4, unwind: bb9];
+    }
+
+    bb4: {
+        _15 = Arguments::<'_>::from_str(const "expected body unwind") -> [return: bb5, unwind: bb9];
+    }
+
+    bb5: {
+        _14 = std::rt::panic_fmt(move _15) -> bb9;
+    }
+
+    bb6 (cleanup): {
+        drop(_6) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        drop(_2) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+
+    bb9 (cleanup): {
+        drop((_5.1: Token)) -> [return: bb7, unwind terminate(cleanup)];
+    }
+}
+
+alloc15 (size: 20, align: 1) {
+    0x00 │ 65 78 70 65 63 74 65 64 20 62 6f 64 79 20 75 6e │ expected body un
+    0x10 │ 77 69 6e 64                                     │ wind
+}
+
+alloc14 (size: 5, align: 1) {
+    72 69 67 68 74                                  │ right
+}
+
+alloc13 (size: 4, align: 1) {
+    6c 65 66 74                                     │ left
+}
+
+alloc12 (size: 5, align: 1) {
+    6f 75 74 65 72                                  │ outer
+}
+
+fn main::{closure#2}(_1: &{closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:29:3: 29:10}) -> () {
+    debug l => ((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+    let mut _0: ();
+    let _2: Token;
+    let mut _3: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _4: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _6: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let mut _7: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    let _8: ();
+    let mut _9: &mut std::vec::Vec<&str>;
+    let mut _10: &mut std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let mut _11: std::cell::RefMut<'_, std::vec::Vec<&str>>;
+    let _12: &std::cell::RefCell<std::vec::Vec<&str>>;
+    let mut _13: &std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>;
+    scope 1 {
+        debug _outer => _2;
+        let _5: Bomb;
+        scope 2 {
+            debug _bomb => _5;
+        }
+    }
+
+    bb0: {
+        _4 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _3 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = Token(const "outer", move _3);
+        _7 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _6 = <Rc<RefCell<Vec<&str>>> as Clone>::clone(move _7) -> [return: bb2, unwind: bb12];
+    }
+
+    bb2: {
+        _5 = Bomb(move _6);
+        _13 = &((*_1).0: std::rc::Rc<std::cell::RefCell<std::vec::Vec<&str>>>);
+        _12 = <Rc<RefCell<Vec<&str>>> as Deref>::deref(move _13) -> [return: bb3, unwind: bb11];
+    }
+
+    bb3: {
+        _11 = RefCell::<Vec<&str>>::borrow_mut(copy _12) -> [return: bb4, unwind: bb11];
+    }
+
+    bb4: {
+        _10 = &mut _11;
+        _9 = <RefMut<'_, Vec<&str>> as DerefMut>::deref_mut(move _10) -> [return: bb5, unwind: bb10];
+    }
+
+    bb5: {
+        _8 = Vec::<&str>::push(copy _9, const "body") -> [return: bb6, unwind: bb10];
+    }
+
+    bb6: {
+        drop(_11) -> [return: bb7, unwind: bb11];
+    }
+
+    bb7: {
+        drop(_5) -> [return: bb8, unwind: bb12];
+    }
+
+    bb8: {
+        drop(_2) -> [return: bb9, unwind continue];
+    }
+
+    bb9: {
+        return;
+    }
+
+    bb10 (cleanup): {
+        drop(_11) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        drop(_5) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        drop(_2) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        resume;
+    }
+}
+
+alloc16 (size: 4, align: 1) {
+    62 6f 64 79                                     │ body
+}
+
+alloc12 (size: 5, align: 1) {
+    6f 75 74 65 72                                  │ outer
+}
+
+fn main::{closure#3}(_1: {closure@reports/minirust-unwind-elaboration-and-open-client-obligations-d821c6e/probe.rs:38:25: 38:28}, _2: &Cell<u8>) -> () {
+    debug c => _2;
+    let mut _0: ();
+
+    bb0: {
+        _0 = Cell::<u8>::set(copy _2, const 9_u8) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn Token(_1: &str, _2: Rc<RefCell<Vec<&str>>>) -> Token {
+    let mut _0: Token;
+
+    bb0: {
+        _0 = Token(move _1, move _2);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Token(_1: &str, _2: Rc<RefCell<Vec<&str>>>) -> Token {
+    let mut _0: Token;
+
+    bb0: {
+        _0 = Token(move _1, move _2);
+        return;
+    }
+}
+
+fn Bomb(_1: Rc<RefCell<Vec<&str>>>) -> Bomb {
+    let mut _0: Bomb;
+
+    bb0: {
+        _0 = Bomb(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Bomb(_1: Rc<RefCell<Vec<&str>>>) -> Bomb {
+    let mut _0: Bomb;
+
+    bb0: {
+        _0 = Bomb(move _1);
+        return;
+    }
+}

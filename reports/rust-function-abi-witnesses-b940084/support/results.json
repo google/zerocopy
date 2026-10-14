@@ -1,0 +1,81 @@
+[
+  {
+    "phase": "clang-version",
+    "command": [
+      "clang",
+      "--version"
+    ],
+    "exit": 0,
+    "seconds": 0.029609291999999954,
+    "stdout_sha256": "a856ec74c559401131ad608625ef252fb2db6c78bc0c480c1c4c782ee4896db1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "x86_64-unknown-linux-gnu",
+    "command": [
+      "clang",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-S",
+      "-O2",
+      "abi_witness.c",
+      "-o",
+      "x86_64-unknown-linux-gnu.s"
+    ],
+    "exit": 0,
+    "seconds": 0.033632792000000133,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "x86_64-pc-windows-msvc",
+    "command": [
+      "clang",
+      "-target",
+      "x86_64-pc-windows-msvc",
+      "-S",
+      "-O2",
+      "abi_witness.c",
+      "-o",
+      "x86_64-pc-windows-msvc.s"
+    ],
+    "exit": 0,
+    "seconds": 0.03447120800000003,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "aarch64-unknown-linux-gnu",
+    "command": [
+      "clang",
+      "-target",
+      "aarch64-unknown-linux-gnu",
+      "-S",
+      "-O2",
+      "abi_witness.c",
+      "-o",
+      "aarch64-unknown-linux-gnu.s"
+    ],
+    "exit": 0,
+    "seconds": 0.044747249999999905,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "phase": "arm64-apple-macos14",
+    "command": [
+      "clang",
+      "-target",
+      "arm64-apple-macos14",
+      "-S",
+      "-O2",
+      "abi_witness.c",
+      "-o",
+      "arm64-apple-macos14.s"
+    ],
+    "exit": 0,
+    "seconds": 0.03854308299999998,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

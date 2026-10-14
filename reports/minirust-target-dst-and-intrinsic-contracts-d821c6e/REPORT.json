@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "minirust/target",
+    "rust/layout",
+    "rust/dst",
+    "rust/intrinsics",
+    "rust/allocators"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust atomic documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "path": "library/core/src/sync/atomic.rs"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

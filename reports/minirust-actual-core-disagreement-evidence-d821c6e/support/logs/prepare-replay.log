@@ -1,0 +1,6 @@
+{
+  "work": "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/replay-preparation-check",
+  "status": "prepared; no compiler or network execution",
+  "harness": "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/replay-preparation-check/harness/Cargo.toml",
+  "owned_probe": "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/replay-preparation-check/owned-probe/Cargo.toml"
+}

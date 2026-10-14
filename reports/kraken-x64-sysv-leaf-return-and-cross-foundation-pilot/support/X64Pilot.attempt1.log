@@ -1,0 +1,24 @@
+END KSTEP: 0 sub-goals left
+<PACKAGE_SUPPORT>/X64Pilot.lean:22:23: error: unsolved goals
+layout : Kraken.Layout Directive
+zmms : RegZmms
+flags : StatusFlags
+mem : Std.ExtHashMap (BitVec 64) UInt8
+rax rbx rcx rdx rsi rdi rsp rbp r8 r9 r10 r11 r12 r13 r14 r15 : UInt64
+ss✝ : MachineData :=
+  {
+    regs :=
+      { rax := rax, rbx := rbx, rcx := rcx, rdx := rdx, rsi := rsi, rdi := rdi, rsp := rsp, rbp := rbp, r8 := r8,
+        r9 := r9, r10 := r10, r11 := r11, r12 := r12, r13 := r13, r14 := r14, r15 := r15 },
+    zmms := zmms, status := flags, dmem := mem }
+⊢ { toBitVec := BitVec.ofInt 64 (rdi.toBitVec.toInt + rsi.toBitVec.toInt) } = rdi + rsi
+<PACKAGE_SUPPORT>/X64Pilot.lean:35:29: error(lean.unknownIdentifier): Unknown constant `Width.toAddressSize`
+<PACKAGE_SUPPORT>/X64Pilot.lean:28:67: error: unsolved goals
+layout : Layout
+d : MachineData
+ra : BitVec 64
+hload : Mem.loadInt d.dmem d.regs.rsp.toBitVec 8 = some ra.toInt
+⊢ { toBitVec := d.regs.rdi.toBitVec.toAddressSize } + { toBitVec := d.regs.rsi.toBitVec.toAddressSize } =
+    d.regs.rdi + d.regs.rsi
+'_private.X64Pilot.0.addBody_correct' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'_private.X64Pilot.0.addReturn_of_load' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

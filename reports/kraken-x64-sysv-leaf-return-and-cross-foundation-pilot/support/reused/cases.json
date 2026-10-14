@@ -1,0 +1,80 @@
+{
+  "origin": "frozen first-wave kraken-selected-theorem-closure-8af7806; exact copies, not new ports",
+  "files": [
+    {
+      "file": "AArch64Closure.lean",
+      "sha256": "42f439031f13c37092c9bbf4a06acecaed5cb2c45fef4d2adece02439b6420e7"
+    },
+    {
+      "file": "AArch64Closure.log",
+      "sha256": "2ab1617162cdb04515d19f4523b2f4ffcd27f6a2b5909eb58aff2c2459e60f65"
+    },
+    {
+      "file": "X64Closure.lean",
+      "sha256": "c3b6154137d15a5c471330f0942f8ef6d264fc8a2d241ec41a7485e5acfb1605"
+    },
+    {
+      "file": "X64Closure.log",
+      "sha256": "abbf9a3b2171437bd4b87176098f88972c39ef4fb555d8d6689798c3eb8f825d"
+    }
+  ],
+  "cases": [
+    {
+      "case": "X64 register XOR swap",
+      "theorem": "swap_correct",
+      "closure": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "scope": "two selected register results, not a full unchanged-state frame"
+    },
+    {
+      "case": "AArch64 register XOR swap",
+      "theorem": "swap_correct",
+      "closure": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "scope": "two selected register results"
+    },
+    {
+      "case": "X64 two-cell eight-byte store/load",
+      "theorem": "move_2_regs_to_heap_correct",
+      "closure": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "scope": "two owned cells and remainder premise; output register/base clauses"
+    },
+    {
+      "case": "AArch64 two-cell eight-byte store/load",
+      "theorem": "move_2_regs_to_heap_correct",
+      "closure": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "scope": "two owned cells and remainder premise; output register/base clauses"
+    },
+    {
+      "case": "X64 bounded memory arithmetic",
+      "theorem": "alu_mem_example_correct",
+      "closure": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "scope": "named upstream projected postcondition"
+    },
+    {
+      "case": "s2n one-limb sum and carry",
+      "theorem": "BIGNUM_ADD_SUBROUTINE_CORRECT",
+      "closure": "not measured: HOL not replayed",
+      "scope": "upstream source theorem plus actual object-byte binding, carry in RAX and low sum in output buffer"
+    }
+  ],
+  "not_claimed": "No new Kraken carry/multiply/copy/helper proof is invented from these cases. An arithmetic/shift theorem with a native verification axiom and admitted X64 negatives remain visible in the copied closure logs."
+}

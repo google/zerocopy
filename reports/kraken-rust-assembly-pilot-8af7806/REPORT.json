@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "kraken/aarch64",
+    "rust/inline-assembly",
+    "assembly/byte-binding",
+    "verification/pilots"
+  ],
+  "subjects": [
+    {
+      "name": "Kraken",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Rust compiler and library 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "LLVM ThinLTO documentation",
+      "identity": {
+        "url": "https://clang.llvm.org/docs/ThinLTO.html",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "LLD linking concepts",
+      "identity": {
+        "url": "https://lld.llvm.org/NewLLD.html",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "RISC-V ELF linker relaxation",
+      "identity": {
+        "url": "https://docs.riscv.org/reference/abi/riscv-elf-linker-relaxation.html",
+        "observed-date": "2026-10-14"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

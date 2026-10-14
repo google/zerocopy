@@ -1,0 +1,22 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/lib.rs (target-requested-nightly/debug/deps/minitest-a83aa495f6b66def)
+
+running 15 tests
+test tests::enum_representation::ill_formed_discriminator ... ok
+test tests::enum_representation::ill_formed_discriminator_branch ... ok
+test tests::enum_representation::ill_formed_enum_must_have_maximal_alignment_of_inner ... ok
+test tests::enum_representation::ill_formed_discriminator_overlaps_2 ... ok
+test tests::enum_representation::ill_formed_discriminator_overlaps ... ok
+test tests::enum_representation::ill_sized_enum_variant ... ok
+test tests::enum_representation::ill_formed_variant_constant ... ok
+test tests::enum_representation::ill_formed_variant_constant_data ... ok
+test tests::enum_representation::inconsistently_sized_enum_variants ... ok
+test tests::enum_representation::ill_formed_discriminant_value ... ok
+test tests::enum_representation::larger_tag_has_no_alignment ... ok
+test tests::enum_representation::larger_sized_tag_works ... ok
+test tests::enum_representation::simple_two_variant_works ... ok
+test tests::enum_representation::negative_discriminants_work ... ok
+test tests::enum_representation::loading_uninhabited_enum_is_ub ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 326 filtered out; finished in 0.01s
+

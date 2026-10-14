@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "assembly/isa-models",
+    "sail",
+    "islaris",
+    "compcert",
+    "memory/permissions"
+  ],
+  "subjects": [
+    {
+      "name": "Sail",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
+      }
+    },
+    {
+      "name": "Islaris",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "CompCert 3.18",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Islaris PLDI 2022 paper",
+      "identity": {
+        "doi": "10.1145/3519939.3523434",
+        "publication": "PLDI 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

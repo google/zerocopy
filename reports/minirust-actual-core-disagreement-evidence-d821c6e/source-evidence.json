@@ -1,0 +1,98 @@
+{
+  "observed_at": "2026-10-14",
+  "files": [
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "README.md",
+      "sha256": "0cf8eef4f7ea8163dc9746e8b148206d4722be5fd3106cb9c16b3f4b7efb4cb8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/README.md"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "mini",
+      "sha256": "c47b140a80badec067b45d7e163c86c37bb4efabba2be10d86212ea116c68701",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/mini"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "specr.toml",
+      "sha256": "a3f167021c4a7f3e9ecc326cd6a87b302e649de1210b220e7cd935bbc0631d04",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/specr.toml"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/Cargo.toml",
+      "sha256": "b039cdfd75a18c60e60bcede4db043995175ee8402b0a19563a598caf2f9a41c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/Cargo.toml"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/miniutil/src/run.rs",
+      "sha256": "a0d42f29d8fd6c8ff921b15f7b00f06c5c04e3b349feb4630d0c6c70212f2429",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/miniutil/src/run.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/miniutil/src/lib.rs",
+      "sha256": "000f60e1caf9ae6677c93ffd7019f2fc8a19e6c1859dc1dd8954c878039fe8df",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/miniutil/src/lib.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minitest/src/tests/no_preserve_padding.rs",
+      "sha256": "07e7a81dfbf1625514b75e240facf877ad412e19584d470109da81087cc85def",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minitest/src/tests/no_preserve_padding.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minitest/src/tests/no_preserve_prov.rs",
+      "sha256": "23c65bab735fcd22947b81f8b789953447961120fc0b07624728e3cdd26e7be3",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minitest/src/tests/no_preserve_prov.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minitest/src/tests/bool.rs",
+      "sha256": "f5cf4449b94658e2c38c247bda31757cca8678ef105f42df1d1f96efb0bc9628",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minitest/src/tests/bool.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minitest/src/tests/enum_representation.rs",
+      "sha256": "343f5451de60ba489b6569b85659ac14179bee643458e174cd0ed10b2b7365cc",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minitest/src/tests/enum_representation.rs"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/representation.md",
+      "sha256": "3b101b30e85a6aea580b5b06371116abaab97f87b622f62de7459e0363f37844",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md"
+    },
+    {
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/well-formed.md",
+      "sha256": "4aef03dfaa6b8e12128951143bb2a0b98c1de2dd8f5c2a762ffeef334b6d0bcb",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/well-formed.md"
+    }
+  ],
+  "source_archives": "support/status/sources.json",
+  "generated_identity": "support/status/generated-manifest.json",
+  "locks": [
+    "support/locks/specr.Cargo.lock",
+    "support/locks/harness.Cargo.lock",
+    "support/locks/owned.Cargo.lock"
+  ],
+  "executed_statuses": "support/status/",
+  "result_corpus": "support/actual-results.json"
+}

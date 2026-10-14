@@ -1,0 +1,139 @@
+{
+  "observed_at": "2026-10-14",
+  "sources": [
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/compiler/passes/index.md",
+      "git_blob": "16c26ce7031c9aa985d0add56f82b093c07a18a0",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/index.md"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "proofs/compiler/it_compiler_proof.v",
+      "git_blob": "895da7377d5b0a9525e3272d3f3b65dcc5036ae2",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/proofs/compiler/it_compiler_proof.v"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "doc/rtd/intro.rst",
+      "git_blob": "2ea8874ab538218535ae21ba348ac7ef23740c5f",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/intro.rst"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "CODE.md",
+      "git_blob": "fdd67371e805a034665a82036f55215aef0df723",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/CODE.md"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "SOUNDNESS.md",
+      "git_blob": "d32f08b970a184ab54f239a35df58150972523f4",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/proofs/bignum_add.ml",
+      "git_blob": "180570d3b223d58a2212c5d84ed068856281ce57",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/proofs/consttime.ml",
+      "git_blob": "8f849022d747f57161398908820d39d7d59e8db6",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/consttime.ml"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/proofs/bignum_add_p256.ml",
+      "git_blob": "1f8b394257ab2e6bcb61116f8cc49d9ba258b1d0",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add_p256.ml"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/compiler/passes/passes.dot",
+      "git_blob": "118270cffbc97a0db73a80a54fcbf95e30cbebd0",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/passes.dot"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "dafny/specs/arch/x64/def.dfy",
+      "git_blob": "25415074a7303a05b7d4b7d0fd95aa86da6cb991",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/dafny/specs/arch/x64/def.dfy"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "doc/rtd/programs.rst",
+      "git_blob": "017f64d31e78265b1aa25e1e7693ffbb281f2846",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/programs.rst"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "doc/rtd/example_specs.rst",
+      "git_blob": "ea7b23b32840899c405beb94bab6d08e0322dd31",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/example_specs.rst"
+    },
+    {
+      "repository": "project-everest/vale",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "path": "doc/rtd/tool.rst",
+      "git_blob": "8d80fe768be20046e83a4f6dec656501d6310ebb",
+      "url": "https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/tool.rst"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "proofs/lang/relational_logic.v",
+      "git_blob": "b41008f0d36f37a972b2f426a0304cde9ef4eb67",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/proofs/lang/relational_logic.v"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/generic/bignum_add.S",
+      "git_blob": "23a977de3150ea04422af4ef03498d6ff79b529a",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/generic/bignum_add.S"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "include/_internal_s2n_bignum_x86.h",
+      "git_blob": "d613dc6ce24537c2cc010ee98fa89c9690fb54c5",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/include/_internal_s2n_bignum_x86.h"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/compiler/passes/reg_alloc.md",
+      "git_blob": "158d7ae69920c6c00863535ac7b2067b0ccfd4c0",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/reg_alloc.md"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/compiler/passes/asm_gen.md",
+      "git_blob": "09a967aa65cd0f0ff8c266bd8122eeff13748798",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/asm_gen.md"
+    },
+    {
+      "repository": "jasmin-lang/jasmin",
+      "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "path": "docs/source/compiler/passes/linearization.md",
+      "git_blob": "1ae7cf5146ba176eb85e2d5f80e9bc356dc5750e",
+      "url": "https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/linearization.md"
+    }
+  ],
+  "role": "source/documentation as identified per finding; no upstream theorem execution unless separately recorded"
+}

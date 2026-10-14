@@ -1,0 +1,44 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running unittests src/lib.rs (target-requested-nightly/debug/deps/minitest-a83aa495f6b66def)
+
+running 1 test
+union T0 (size=4, align=4) {
+  at byte 0: T1,
+  at byte 0: u32,
+  chunk(at=0, size=4),
+}
+
+tuple T1 (size=4, align=2) {
+  at byte 0: u8,
+  at byte 2: u16,
+}
+
+tuple T2 (size=0, align=1) {
+}
+
+
+
+start fn f0() -> _4 {
+  let _0: T0;
+  let _1: T1;
+  let _2: *raw(thin);
+  let _3: u8;
+  let _4: T2;
+  start bb0:
+    storage_live(_0);
+    storage_live(_1);
+    storage_live(_2);
+    storage_live(_3);
+    _0.1 = 0;
+    _1 = load(_0.0);
+    _2 = &raw _1;
+    _2 = offset_inbounds(load(_2), 1);
+    _3 = load(deref<u8>(load(_2)));
+    deref<T2>(invalid_ptr(1)) = exit();
+}
+
+
+test tests::no_preserve_padding::no_preserve_padding ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 340 filtered out; finished in 0.00s
+

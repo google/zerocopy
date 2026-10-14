@@ -1,0 +1,7 @@
+'AnnealAssembly.context_replacement' does not depend on any axioms
+'AnnealAssembly.exact_spec_equivalence' does not depend on any axioms
+'AnnealAssembly.loose_spec_is_not_equivalence' does not depend on any axioms
+'AnnealAssembly.value_equivalence_is_not_context_safety' does not depend on any axioms
+'AnnealAssembly.overflow_policy_changes_behavior' does not depend on any axioms
+'AnnealAssembly.fixed_trace_noninterference' does not depend on any axioms
+'AnnealAssembly.same_result_can_leak' does not depend on any axioms

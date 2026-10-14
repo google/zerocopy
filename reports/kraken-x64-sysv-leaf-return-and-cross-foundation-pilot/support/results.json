@@ -1,0 +1,55 @@
+{
+  "lean": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "lean_path": "caller-selected KRAKEN_LIB for pinned source",
+  "scope": "one-sample fresh Lean elaboration/checking/import time; not comparable native performance or HOL timing",
+  "results": [
+    {
+      "probe": "X64Pilot",
+      "command": [
+        "lean",
+        "X64Pilot.lean"
+      ],
+      "source_sha256": "737c35e29fd36f662c31a5bbd3da15c55b58396ddc036755f77c4c10e2617944",
+      "exit_code": 0,
+      "wall_seconds_one_sample": 4.464565959000001,
+      "checked_declarations_with_foundational_trio": 18,
+      "checked_declarations_without_axioms": 1,
+      "axioms_exactly": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "X64Pilot.log"
+    },
+    {
+      "probe": "AArch64Peer",
+      "command": [
+        "lean",
+        "AArch64Peer.lean"
+      ],
+      "source_sha256": "df213609f081f4defe211e6aa449d62a1b3836dd21c6bf6a13661f3ece67aebe",
+      "exit_code": 0,
+      "wall_seconds_one_sample": 4.549641625,
+      "checked_declarations_with_foundational_trio": 2,
+      "checked_declarations_without_axioms": 0,
+      "axioms_exactly": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "AArch64Peer.log"
+    },
+    {
+      "probe": "s2n-object-binding",
+      "command": [
+        "python3",
+        "object_binding.py"
+      ],
+      "cwd": "public companion support",
+      "exit_code": 0,
+      "symbol_bytes": 185,
+      "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+      "scope": "byte check only, reused assembled object, no HOL replay"
+    }
+  ]
+}

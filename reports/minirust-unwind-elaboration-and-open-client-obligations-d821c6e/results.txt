@@ -1,0 +1,5 @@
+partial_caught=true;drops=["left", "right", "outer"]
+destructor_caught=true;drops=["body", "bomb", "outer"]
+binding_drop_order=["wildcard", "after_wildcard", "after_binding", "binding"]
+callback_fields=7,9
+selected_impls=1,2

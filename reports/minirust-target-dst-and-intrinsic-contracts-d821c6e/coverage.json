@@ -1,0 +1,95 @@
+{
+  "schema": "anneal-mr-coverage/v1",
+  "purpose": "Exact answered scope; no entry asserts the complete MR agenda is finished",
+  "entries": [
+    {
+      "id": "MR09",
+      "sections": [
+        "F1",
+        "F3"
+      ],
+      "answered_questions": [
+        "Which target parameters govern current MiniRust operations?",
+        "How do mathematical arithmetic, bounded wrapping/unchecked operations and shifts differ?",
+        "What discriminates sampled width/endian families from portable theorems?"
+      ],
+      "scope": "Direct source inventory plus four owned mathematical 32/64-bit little/big-endian families; not real cross-target interpreter/native runs.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Target-parametric representation/operation soundness",
+        "Matching the example x86_64 target to all hardware/ABI facts",
+        "Full target atomic availability or FP semantics"
+      ],
+      "genuinely_unexamined_gaps": [
+        "FP semantics and tests",
+        "Compiler target/layout certificate generation",
+        "Actual 32-bit or big-endian compilation/execution",
+        "All boundary integer operators"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR10",
+      "sections": [
+        "F2",
+        "F3"
+      ],
+      "answered_questions": [
+        "How are count/vtable metadata validated and dynamic size/alignment computed?",
+        "Which conditions differ for raw and safe pointers, including ZST/oversized slices?",
+        "What additional layout/validity facts are supplied rather than derived?"
+      ],
+      "scope": "Pointer/type/representation/retag source review; negative cases reconstructed without forged native references/vtables.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Recursive Rust referent validity",
+        "rustc niche/vtable/layout extraction correctness",
+        "Full DST retag/layout adequacy"
+      ],
+      "genuinely_unexamined_gaps": [
+        "All enum/niche forms",
+        "Arbitrary recursive unsized-tail layouts",
+        "Malformed unsafe-cell mask invariants",
+        "Compiler-generated metadata proofs"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR17",
+      "sections": [
+        "F4"
+      ],
+      "answered_questions": [
+        "What exact allocation/deallocation primitive checks and address-reuse rules are defined?",
+        "What does allocation failure currently mean?",
+        "Which inspected intrinsic/lowering leaves are defined, explicitly rejected, or still need path inspection?"
+      ],
+      "scope": "Direct core/translator source review and tiny candidate-address enumeration; no upstream runtime or allocator implementation verification.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "A verified allocator/standard library/panic environment",
+        "Adequate allocation-failure/reallocation behavior",
+        "General support/absence claims for library unaligned and copy paths"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Actual read_unaligned/write_unaligned/realloc lowering",
+        "Overlapping-copy refinement",
+        "Foreign callbacks",
+        "Allocator failure/callback executions"
+      ],
+      "status": "partial-bounded-investigation"
+    }
+  ]
+}

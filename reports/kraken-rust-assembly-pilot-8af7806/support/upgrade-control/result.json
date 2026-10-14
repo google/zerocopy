@@ -1,0 +1,38 @@
+{
+  "command": [
+    "rustc",
+    "--edition=2024",
+    "--crate-type=lib",
+    "--emit=obj",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "panic=abort",
+    "changed.rs"
+  ],
+  "exit": 0,
+  "seconds": 0.48522591699999995,
+  "original_source_sha256": "604392b7f3c665f8efe24540c3e921768c48468e0dc0c373964f5b9266f104dd",
+  "changed_source_sha256": "8aa73ba0062d7a5518a24854398a2b96ded81083ac2082e2156f1d48933e7647",
+  "old_add_claim_rejected": true,
+  "unchanged_store_claim_matches": true,
+  "changed_object_sha256": "91a8c0c0b02cfe5a8ee8d8c799b6022af2d8c8c2aebde5c8decb869c66321c8c",
+  "selected_ranges": {
+    "_naked_add": {
+      "file_offset": 312,
+      "address": 0,
+      "bytes": "000001cbc0035fd6",
+      "matches": false,
+      "sha256": "8338d9b0c902e7b5315732265201b8e2b593edfa3a32f39c338f7a10d78117ea"
+    },
+    "_naked_store": {
+      "file_offset": 320,
+      "address": 8,
+      "bytes": "010000f9c0035fd6",
+      "matches": true,
+      "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+    }
+  },
+  "native_execution": false,
+  "new_semantic_proof": false
+}

@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "rust/abi",
+    "rust/fnabi",
+    "assembly/calling-conventions"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and library 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "AAPCS64",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264"
+      }
+    },
+    {
+      "name": "Microsoft x64 calling convention",
+      "identity": {
+        "repository": "MicrosoftDocs/cpp-docs",
+        "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+      }
+    },
+    {
+      "name": "Apple ARM64 ABI documentation",
+      "identity": {
+        "url": "https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "Apple clang",
+      "identity": {
+        "version": "21.0.0 (clang-2100.3.34.2)",
+        "target": "arm64-apple-darwin27.0.0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "minirust",
+    "semantics/modularity",
+    "iris/handlers",
+    "interaction-trees",
+    "verification/adequacy"
+  ],
+  "subjects": [
+    {
+      "name": "Program Logics a la Carte source artifact",
+      "identity": {
+        "zenodo": "14180355",
+        "version": "v2",
+        "archive": "the_artifact.zip",
+        "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378"
+      }
+    },
+    {
+      "name": "Logical Relations a la Carte thesis",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf",
+        "document_date": "March 2026",
+        "source_commit_cited_not_accessed": "5ed76562ee78badeb8768e7cb00c1ea37557b709"
+      }
+    },
+    {
+      "name": "MiniRust memory interface",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Owned interacting-effect mechanization",
+      "identity": {
+        "artifact": "support/Effects.lean",
+        "sha256": "cde672ee06dc661982178a12dc8d4bf011c8cdc264426861e132bc8542330d88"
+      }
+    },
+    {
+      "name": "Lean",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

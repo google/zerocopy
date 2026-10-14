@@ -1,0 +1,16 @@
+{
+  "command": [
+    "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+    "run",
+    "--offline",
+    "--locked",
+    "--manifest-path",
+    "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/replay-preparation-check/owned-probe/Cargo.toml"
+  ],
+  "returncode": 0,
+  "seconds": 7.370612208000001,
+  "cases": 8,
+  "panic_observed": false,
+  "source": "prepared solely from report package material",
+  "matches_original_corpus": true
+}

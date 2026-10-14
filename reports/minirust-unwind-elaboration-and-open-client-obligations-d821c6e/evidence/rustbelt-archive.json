@@ -1,0 +1,45 @@
+{
+  "artifact": "lambda-rust-popl18.tar.gz",
+  "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+  "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+  "members": [
+    {
+      "member": "lambda-rust-popl18/theories/typing/soundness.v",
+      "sha256": "cb77d69baed0df2078d8a5cc00ede727c7f2109c4f4a0d09fbf26233ec471940",
+      "excerpts": [
+        {
+          "start_line": 1,
+          "end_line": 70,
+          "text": "From iris.algebra Require Import frac.\nFrom iris.base_logic Require Import big_op.\nFrom iris.base_logic.lib Require Import na_invariants.\nFrom iris.proofmode Require Import tactics.\nFrom lrust.lang Require Import races adequacy proofmode notation.\nFrom lrust.lifetime Require Import lifetime frac_borrow.\nFrom lrust.typing Require Import typing.\n\nSet Default Proof Using \"Type\".\n\nClass typePreG Σ := PreTypeG {\n  type_heapG :> lrustPreG Σ;\n  type_lftG :> lftPreG Σ;\n  type_preG_na_invG :> na_invG Σ;\n  type_frac_borrowG :> frac_borG Σ\n}.\n\nDefinition typeΣ : gFunctors :=\n  #[lrustΣ; lftΣ; na_invΣ; GFunctor (constRF fracR)].\nInstance subG_typePreG {Σ} : subG typeΣ Σ → typePreG Σ.\nProof. solve_inG. Qed.\n\nSection type_soundness.\n  Definition exit_cont : val := λ: [<>], #☠.\n\n  Definition main_type `{typeG Σ} := (fn(∅) → unit)%T.\n\n  Theorem type_soundness `{typePreG Σ} (main : val) σ t :\n    (∀ `{typeG Σ}, typed_val main main_type) →\n    rtc step ([main [exit_cont]%E], ∅) (t, σ) →\n    nonracing_threadpool t σ ∧\n    (∀ e, e ∈ t → is_Some (to_val e) ∨ reducible e σ).\n  Proof.\n    intros Hmain Hrtc.\n    cut (adequate (main [exit_cont]%E) ∅ (λ _, True)).\n    { split. by eapply adequate_nonracing.\n      intros. by eapply (adequate_safe (main [exit_cont]%E)). }\n    apply: lrust_adequacy=>?. iIntros \"_\".\n    iMod lft_init as (?) \"#LFT\". done.\n    iMod na_alloc as (tid) \"Htl\". set (Htype := TypeG _ _ _ _ _).\n    wp_bind (of_val main). iApply (wp_wand with \"[Htl]\").\n    iApply (Hmain _ [] [] $! tid with \"LFT [] Htl [] []\").\n    { by rewrite /elctx_interp big_sepL_nil. }\n    { by rewrite /llctx_interp big_sepL_nil. }\n    { by rewrite tctx_interp_nil. }\n    clear Hrtc Hmain main. iIntros (main) \"(Htl & _ & Hmain & _)\".\n    iDestruct \"Hmain\" as (?) \"[EQ Hmain]\".\n    rewrite eval_path_of_val. iDestruct \"EQ\" as %[= <-].\n    iDestruct \"Hmain\" as (f k x e ?) \"(EQ & % & Hmain)\". iDestruct \"EQ\" as %[= ->].\n    destruct x; try done. wp_rec.\n    iMod (lft_create with \"LFT\") as (ϝ) \"Hϝ\"; first done.\n    iApply (\"Hmain\" $! () ϝ exit_cont [#] tid with \"LFT [] Htl [Hϝ] []\");\n      last by rewrite tctx_interp_nil.\n    { by rewrite /elctx_interp /=. }\n    { rewrite /llctx_interp /=. iSplit; last done. iExists ϝ. iFrame. by rewrite /= left_id. }\n    rewrite cctx_interp_singleton. simpl. iIntros (args) \"_ _\".\n    inv_vec args. iIntros (x) \"_ /=\". by wp_lam.\n  Qed.\nEnd type_soundness.\n\n(* Soundness theorem when no other CMRA is needed. *)\n\nTheorem type_soundness_closed (main : val) σ t :\n  (∀ `{typeG typeΣ}, typed_val main main_type) →\n  rtc step ([main [exit_cont]%E], ∅) (t, σ) →\n  nonracing_threadpool t σ ∧\n  (∀ e, e ∈ t → is_Some (to_val e) ∨ reducible e σ).\nProof.\n  intros. eapply @type_soundness; try done. apply _.\nQed."
+        }
+      ]
+    },
+    {
+      "member": "lambda-rust-popl18/theories/typing/programs.v",
+      "sha256": "e777ceb80a277cd31ffbba8d9a1b5044ae54405a08c9a8e7c99717cfda60702b",
+      "excerpts": [
+        {
+          "start_line": 9,
+          "end_line": 17,
+          "text": "  (** Function Body *)\n  (* This is an iProp because it is also used by the function type. *)\n  Definition typed_body (E : elctx) (L : llctx) (C : cctx) (T : tctx)\n                        (e : expr) : iProp Σ :=\n    (∀ tid, lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp L 1 -∗\n               cctx_interp tid C -∗ tctx_interp tid T -∗\n               WP e {{ _, cont_postcondition }})%I.\n  Global Arguments typed_body _ _ _ _ _%E.\n"
+        },
+        {
+          "start_line": 85,
+          "end_line": 95,
+          "text": "\nDefinition typed_val `{typeG Σ} (v : val) (ty : type) : Prop :=\n  ∀ E L, typed_instruction_ty E L [] (of_val v) ty.\nArguments typed_val _ _ _%V _%T.\n\nSection typing_rules.\n  Context `{typeG Σ}.\n\n  (* This lemma is helpful when switching from proving unsafe code in Iris\n     back to proving it in the type system. *)\n  Lemma type_type E L C T e :"
+        }
+      ]
+    },
+    {
+      "member": "lambda-rust-popl18/theories/typing/type.v",
+      "sha256": "044011bd867cb15e58b7cbf2a2e24876e198858d70010ede2f2e4b0b4f800110",
+      "excerpts": [
+        {
+          "start_line": 22,
+          "end_line": 72,
+          "text": "Record type `{typeG Σ} :=\n  { ty_size : nat;\n    ty_own : thread_id → list val → iProp Σ;\n    ty_shr : lft → thread_id → loc → iProp Σ;\n\n    ty_shr_persistent κ tid l : Persistent (ty_shr κ tid l);\n\n    ty_size_eq tid vl : ty_own tid vl -∗ ⌜length vl = ty_size⌝;\n    (* The mask for starting the sharing does /not/ include the\n       namespace N, for allowing more flexibility for the user of\n       this type (typically for the [own] type). AFAIK, there is no\n       fundamental reason for this.\n       This should not be harmful, since sharing typically creates\n       invariants, which does not need the mask.  Moreover, it is\n       more consistent with thread-local tokens, which we do not\n       give any.\n\n       The lifetime token is needed (a) to make the definition of simple types\n       nicer (they would otherwise require a \"∨ □|=>[†κ]\"), and (b) so that\n       we can have emp == sum [].\n     *)\n    ty_share E κ l tid q : lftE ⊆ E →\n      lft_ctx -∗ &{κ} (l ↦∗: ty_own tid) -∗ q.[κ] ={E}=∗\n      ty_shr κ tid l ∗ q.[κ];\n    ty_shr_mono κ κ' tid l :\n      κ' ⊑ κ -∗ ty_shr κ tid l -∗ ty_shr κ' tid l\n  }.\nExisting Instance ty_shr_persistent.\nInstance: Params (@ty_size) 2.\nInstance: Params (@ty_own) 2.\nInstance: Params (@ty_shr) 2.\n\nArguments ty_own {_ _} !_ _ _ / : simpl nomatch.\n\nClass TyWf `{typeG Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.\nArguments ty_lfts {_ _} _ {_}.\nArguments ty_wf_E {_ _} _ {_}.\n\nDefinition ty_outlives_E `{typeG Σ} ty `{!TyWf ty} (κ : lft) : elctx :=\n  (λ α, κ ⊑ₑ α) <$> ty.(ty_lfts).\n\nLemma ty_outlives_E_elctx_sat `{typeG Σ} E L ty `{!TyWf ty} α β :\n  ty.(ty_outlives_E) β ⊆+ E →\n  lctx_lft_incl E L α β →\n  elctx_sat E L (ty.(ty_outlives_E) α).\nProof.\n  unfold ty_outlives_E. induction ty.(ty_lfts) as [|κ l IH]=>/= Hsub Hαβ.\n  - solve_typing.\n  - apply elctx_sat_lft_incl.\n    + etrans; first done. eapply lctx_lft_incl_external, elem_of_submseteq, Hsub.\n      set_solver."
+        }
+      ]
+    }
+  ]
+}

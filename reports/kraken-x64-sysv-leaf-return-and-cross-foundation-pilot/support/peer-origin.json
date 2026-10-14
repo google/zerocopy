@@ -1,0 +1,7 @@
+{
+  "source_artifact": "parent-authored KrakenPilot.lean, read-only input",
+  "preserved_as": "AArch64Peer.lean",
+  "sha256": "df213609f081f4defe211e6aa449d62a1b3836dd21c6bf6a13661f3ece67aebe",
+  "byte_identical": true,
+  "scope": "new local check of peer proof; no peer native Rust or object experiment repeated"
+}

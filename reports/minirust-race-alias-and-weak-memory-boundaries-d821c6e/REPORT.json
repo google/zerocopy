@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "minirust/concurrency",
+    "rust/data-races",
+    "rust/weak-memory",
+    "iris/adequacy",
+    "rust/aliasing"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Miri Tree Borrows",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+      }
+    },
+    {
+      "name": "GPFSL-derived 2024 adequacy",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "Rust atomic documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "path": "library/core/src/sync/atomic.rs"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "publication": "PACMPL 4 POPL Article 34"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

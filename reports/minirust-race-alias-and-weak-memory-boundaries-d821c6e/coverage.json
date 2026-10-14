@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-mr-coverage/v1",
+  "purpose": "Exact answered scope; no entry asserts the complete MR agenda is finished",
+  "entries": [
+    {
+      "id": "MR14",
+      "sections": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "answered_questions": [
+        "What accesses and step pairs does the current concurrent wrapper track?",
+        "How do empty, mixed-atomic and partially overlapping ranges behave under its predicate?",
+        "Where do retag/protector and allocation effects require a combined memory theorem?"
+      ],
+      "scope": "Direct wrapper/machine/TB/Miri source review; 6,400 owned formula checks and per-schedule granularity witness. No actual upstream concurrent execution.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "Race-detector completeness across all schedules with alias UB",
+        "Machine-level alias/race adequacy or MiniRust–Miri correspondence",
+        "Source Rust UB verdict from the empty-range predicate alone"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Commutation proof under Tree Borrows",
+        "Disjoint-field and reuse concurrent execution traces",
+        "Complete synchronization/reset invariants",
+        "Per-event end-call and allocator races"
+      ],
+      "status": "partial-bounded-investigation"
+    },
+    {
+      "id": "MR15",
+      "sections": [
+        "F4",
+        "F5"
+      ],
+      "answered_questions": [
+        "Which weak-memory/resource changes are needed beyond the SC wrapper?",
+        "What are exact named GPFSL adequacy premises and theorem conclusion?",
+        "What model/order boundaries block wholesale reuse for MiniRust and Rust?"
+      ],
+      "scope": "Paper/appendix scope review plus direct 2024 adequacy source; SC finite interleavings and explicitly toy view-transfer discriminator. Existing reclamation report re-reviewed at primary endpoints.",
+      "evidence": [
+        "source-evidence.json",
+        "probe.py",
+        "results.json"
+      ],
+      "stronger_unestablished_claims": [
+        "An ORC11/RC11/C++20 or hardware equivalence theorem",
+        "A byte/provenance/alias weak-memory MiniRust model",
+        "Verified actual Arc/reference-count/reclamation algorithm"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Full ORC11/RC11 proof details and axiom closure",
+        "Actual message-passing model-checker run",
+        "Reference-counting/hazard/epoch implementation verification",
+        "SC addition to the selected weak-memory logic",
+        "Fairness/progress proofs"
+      ],
+      "status": "partial-bounded-investigation"
+    }
+  ]
+}

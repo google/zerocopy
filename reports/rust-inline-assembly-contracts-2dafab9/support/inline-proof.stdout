@@ -1,0 +1,5 @@
+'atomicAdd_all_allocations' depends on axioms: [propext]
+'atomicAdd_frame' depends on axioms: [propext]
+'illegal_lateout_witness' depends on axioms: [propext]
+'final_frame_does_not_imply_trace_safety' depends on axioms: [propext]
+'same_address_is_not_resource_authority' does not depend on any axioms

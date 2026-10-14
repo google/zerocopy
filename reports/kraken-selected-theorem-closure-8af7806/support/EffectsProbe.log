@@ -1,0 +1,6 @@
+8
+8
+32
+64
+'_private.EffectsProbe.0.read_request_ignored' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private.EffectsProbe.0.undefined_must_cover_both' depends on axioms: [propext, Classical.choice, Quot.sound]

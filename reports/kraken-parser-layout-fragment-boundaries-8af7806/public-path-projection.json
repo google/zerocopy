@@ -1,0 +1,33 @@
+{
+  "purpose": "Display-path privacy projection; historical source/tool/status hashes remain producer observations. Current package manifests bind public bytes.",
+  "replacements": [
+    {
+      "meaning": "task workspace prefix",
+      "public": "<task-workspace>"
+    },
+    {
+      "meaning": "rust toolchain home prefix",
+      "public": "<rust-toolchains>"
+    },
+    {
+      "meaning": "Lean toolchain home prefix",
+      "public": "<lean-toolchains>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/ParserLayout.initial.log",
+      "raw_sha256": "ddccffdc6daafbd38d14ea1b6244606371dd9e6351c8981541ddecda273843c6",
+      "public_sha256": "77e55c16af6527b285701994d6dacbc4f3e3a1e094f6d671b8b04d4845bd27c7",
+      "raw_bytes": 974,
+      "public_bytes": 848
+    },
+    {
+      "path": "support/parser-result.json",
+      "raw_sha256": "3e6a3f2ef8ba22373ff31153d66e13be5778816e3d8bb7005326dea09b9f7b13",
+      "public_sha256": "9db2d555e2e45cb8d2e4bdb691dba680e6a932e031eb89978e70b86435115fe4",
+      "raw_bytes": 541,
+      "public_bytes": 415
+    }
+  ]
+}

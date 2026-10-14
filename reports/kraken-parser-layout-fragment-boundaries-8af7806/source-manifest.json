@@ -1,0 +1,77 @@
+{
+  "observed_at": "2026-10-14",
+  "sources": [
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "README.md",
+      "git_blob": "7aaaf367629126c74c71392dc1228542134cfe08",
+      "sha256": "4120770f1549f134ee93d8c466205ea144b458b5e038208204e94407f456041d",
+      "symbols": "scope and incidental encodability",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/README.md"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/Layout.lean",
+      "git_blob": "82c19f88b96879ada2d18a28f0d9161f508c4f26",
+      "sha256": "b14d53739de354670f6996cb0ec596897be0276fbe2b4d358cb3e5e3e7168d6b",
+      "symbols": "Layout.apply, withAddresses, directivesAtAddress/directivesFromAddress",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Layout.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/SeparationMem.lean",
+      "git_blob": "69b609daeb693546112d64fef65ea3d2d66783a9",
+      "sha256": "cb04e13771966794e8d025d32fc565dc37d5db42d4bf61cc0c652a94065f5ccd",
+      "symbols": "Mem.loadInt_sep, Mem.storeInt_sep",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/SeparationMem.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/OmniSemantics.lean",
+      "git_blob": "8cfdbc4fbc2ed8d232f3c465f5b2666a6e803391",
+      "sha256": "87e19661dcc00b0149c10e77f1c1e5bb75ecbb0e29a69046b8ab0fcae50d60d6",
+      "symbols": "Eventually, eventually_trans, eventually_weaken, reg_dec_loop",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/OmniSemantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Syntax.lean",
+      "git_blob": "84ac0c0975978c7979e84a3d35704676c078a023",
+      "sha256": "355045a86dbdc9e48ef9855b0c74e6e0ef8bbe54de0ae6e2c082ed8d68db3753",
+      "symbols": "Width, AvxWidth, Operation, AvxOperation, Instr, Directive",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Syntax.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Semantics.lean",
+      "git_blob": "8a850cd678bff9f77b14ca2fb7a3cec472141951",
+      "sha256": "ec2541b8698a0672ea90bd44ee6beb9192fb69fc08afba468e3706eb27564cf6",
+      "symbols": "MachineData, Effects, load/store/AVX, Instr.interp, labels, fakeLayout",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Semantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Parser.lean",
+      "git_blob": "38de2cf814130c73c2e6c2feec33683c552e44fe",
+      "sha256": "69240afbb63b5ef0c69db557d494e59b77b24e6ab417b5d115ebedcf7ebd7847",
+      "symbols": "parse and parseFile elaborators",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Parser.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Parser/Basic.lean",
+      "git_blob": "246ea0df60e2f66149e017776da0ca8eca4c246f",
+      "sha256": "c13b9878e83e708ef4e242ae81f7565b8c1588ccf60bf38568d09ff70da41fe5",
+      "symbols": "parseLine, parse, parseAlign, stripDirectives",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Parser/Basic.lean"
+    }
+  ]
+}

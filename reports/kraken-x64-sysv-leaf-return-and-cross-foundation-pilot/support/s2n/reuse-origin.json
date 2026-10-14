@@ -1,0 +1,52 @@
+{
+  "origin": "jasmin-vale-s2n-artifact-and-access-boundaries/support",
+  "scope": "reference to exact first-wave public companion support; no duplicated object/source/header in this package; independently rechecked via relative sibling path",
+  "files": [
+    {
+      "path": "assembly-log.json",
+      "sha256": "6e9d2fb58cb2dcccef9b9dde582cc17f4ba0f7c48f92ae413e3a7e2533020ac2",
+      "bytes": 821
+    },
+    {
+      "path": "bignum_add.o",
+      "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+      "bytes": 1312
+    },
+    {
+      "path": "clang-version.txt",
+      "sha256": "a856ec74c559401131ad608625ef252fb2db6c78bc0c480c1c4c782ee4896db1",
+      "bytes": 158
+    },
+    {
+      "path": "compiler-identity.json",
+      "sha256": "f59adb4b3318d2236e3ffa6595186a63eeb77b6f820c8a8bdc3f224e22a7db81",
+      "bytes": 261
+    },
+    {
+      "path": "literal-bytes.json",
+      "sha256": "c9f20b44bea6cbb42c29892fd3ef1ee63514b6f79610463cc9d35c07f44cfeeb",
+      "bytes": 781
+    },
+    {
+      "path": "object_binding.py",
+      "sha256": "a06d62f52e5e32fd544fb4c4457336b59441abebd1af2f8f7985547c1939e4b7",
+      "bytes": 3935
+    },
+    {
+      "path": "upstream/README.md",
+      "sha256": "a8df8774a3cfa56bc5e6bfbefe12481c5a3175a742295b44e0868e6e0aa62a3e",
+      "bytes": 738
+    },
+    {
+      "path": "upstream/_internal_s2n_bignum_x86.h",
+      "sha256": "32e93f25e504f9aef6d16250e4eaf0e6214ca00c6312d44d909d6be13a0c249d",
+      "bytes": 2702
+    },
+    {
+      "path": "upstream/bignum_add.S",
+      "sha256": "e8b7d95ad2039a69bd26563b02ed7d5c931795a0c3fcaafc2f9e8a0369cfaa0c",
+      "bytes": 4067
+    }
+  ],
+  "public_companion": "../../jasmin-vale-s2n-artifact-and-access-boundaries/support"
+}

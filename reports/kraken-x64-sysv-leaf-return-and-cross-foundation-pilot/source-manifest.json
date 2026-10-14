@@ -1,0 +1,124 @@
+{
+  "observed_at": "2026-10-14",
+  "sources": [
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/Layout.lean",
+      "git_blob": "82c19f88b96879ada2d18a28f0d9161f508c4f26",
+      "sha256": "b14d53739de354670f6996cb0ec596897be0276fbe2b4d358cb3e5e3e7168d6b",
+      "symbols": "Layout.apply, withAddresses, directivesAtAddress/directivesFromAddress",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Layout.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/Mem.lean",
+      "git_blob": "b2d6239e8c98ad37e5d20f4e5d18070ae57a64a1",
+      "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01",
+      "symbols": "Mem.loadBytes/loadInt/storeBytes/storeInt",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Mem.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/SeparationMem.lean",
+      "git_blob": "69b609daeb693546112d64fef65ea3d2d66783a9",
+      "sha256": "cb04e13771966794e8d025d32fc565dc37d5db42d4bf61cc0c652a94065f5ccd",
+      "symbols": "Mem.loadInt_sep, Mem.storeInt_sep",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/SeparationMem.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/OmniSemantics.lean",
+      "git_blob": "8cfdbc4fbc2ed8d232f3c465f5b2666a6e803391",
+      "sha256": "87e19661dcc00b0149c10e77f1c1e5bb75ecbb0e29a69046b8ab0fcae50d60d6",
+      "symbols": "Eventually, eventually_trans, eventually_weaken, reg_dec_loop",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/OmniSemantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Syntax.lean",
+      "git_blob": "84ac0c0975978c7979e84a3d35704676c078a023",
+      "sha256": "355045a86dbdc9e48ef9855b0c74e6e0ef8bbe54de0ae6e2c082ed8d68db3753",
+      "symbols": "Width, AvxWidth, Operation, AvxOperation, Instr, Directive",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Syntax.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/Semantics.lean",
+      "git_blob": "8a850cd678bff9f77b14ca2fb7a3cec472141951",
+      "sha256": "ec2541b8698a0672ea90bd44ee6beb9192fb69fc08afba468e3706eb27564cf6",
+      "symbols": "MachineData, Effects, load/store/AVX, Instr.interp, labels, fakeLayout",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Semantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/X64/OmniSemantics.lean",
+      "git_blob": "e75090897887255ca4198a95f9f5347df8f315c0",
+      "sha256": "ebc38906f936005d28eb8c41804bea803c7206bec3e4d502fc985d271db399f1",
+      "symbols": "Effects.All, step1, straightlineStep",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/OmniSemantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/AArch64/Semantics.lean",
+      "git_blob": "0a25b01a0778e7cf4487e10258568efd6d17055d",
+      "sha256": "6836d7e542cacdffb8d67070fe1d69d402503788ee6f3010c514f28bdd442be7",
+      "symbols": "MachineData, Effects, load/store, Instr.interp",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/Semantics.lean"
+    },
+    {
+      "repository": "AeneasVerif/kraken",
+      "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "path": "Kraken/AArch64/OmniSemantics.lean",
+      "git_blob": "9588f643bdef212be18b88cdb5df7c5b46e80005",
+      "sha256": "bfdd4e19572558f28f08bc68ddb6715ff32634c5acc23cadb073c6250d636608",
+      "symbols": "Effects.All",
+      "url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/OmniSemantics.lean"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "SOUNDNESS.md",
+      "git_blob": "d32f08b970a184ab54f239a35df58150972523f4",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/proofs/bignum_add.ml",
+      "git_blob": "180570d3b223d58a2212c5d84ed068856281ce57",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "x86/generic/bignum_add.S",
+      "git_blob": "23a977de3150ea04422af4ef03498d6ff79b529a",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/generic/bignum_add.S"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": "include/_internal_s2n_bignum_x86.h",
+      "git_blob": "d613dc6ce24537c2cc010ee98fa89c9690fb54c5",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/include/_internal_s2n_bignum_x86.h"
+    }
+  ],
+  "owned_probes": [
+    {
+      "path": "support/X64Pilot.lean",
+      "sha256": "737c35e29fd36f662c31a5bbd3da15c55b58396ddc036755f77c4c10e2617944"
+    },
+    {
+      "path": "support/AArch64Peer.lean",
+      "sha256": "df213609f081f4defe211e6aa449d62a1b3836dd21c6bf6a13661f3ece67aebe"
+    }
+  ]
+}

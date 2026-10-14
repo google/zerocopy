@@ -12314,6 +12314,67 @@
         "cakeml"
       ]
     },
+    "assembly-tcb-concurrency-security-platform-frontiers": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust compiler and library 1.99.0"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "s2n-bignum soundness analysis"
+        },
+        {
+          "identity": {
+            "observed-date": "2026-10-14",
+            "updated-date": "2025-09-10",
+            "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html"
+          },
+          "name": "Intel DOIT guidance"
+        }
+      ],
+      "topics": [
+        "assembly/tcb",
+        "assembly/concurrency",
+        "assembly/constant-time",
+        "assembly/platform-effects"
+      ]
+    },
     "autocorres-guarded-model-certificates-pldi-2014": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -16365,6 +16426,58 @@
         "anneal/orchestration"
       ]
     },
+    "jasmin-vale-s2n-artifact-and-access-boundaries": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          },
+          "name": "Jasmin"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Vale"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "s2n-bignum"
+        },
+        {
+          "identity": {
+            "artifact": "/usr/bin/clang",
+            "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "clang-2100.3.34.2"
+          },
+          "name": "Apple clang 21.0.0"
+        },
+        {
+          "identity": {
+            "artifact": "support/bignum_add.o",
+            "format": "ELF64LE x86_64 relocatable",
+            "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+            "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216"
+          },
+          "name": "Assembled bignum_add ELF object"
+        }
+      ],
+      "topics": [
+        "assembly/verification",
+        "jasmin",
+        "vale",
+        "s2n-bignum",
+        "assembly/binary-binding",
+        "memory/access-traces"
+      ]
+    },
     "jvm-ebpf-and-typed-admission-frontiers": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -16513,6 +16626,154 @@
         "swift/sourcekit-lsp",
         "reference/version-review",
         "anneal/interactive"
+      ]
+    },
+    "kraken-parser-layout-fragment-boundaries-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        }
+      ],
+      "topics": [
+        "kraken",
+        "assembly/parsing",
+        "assembly/layout",
+        "assembly/composition"
+      ]
+    },
+    "kraken-rust-assembly-pilot-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust compiler and library 1.99.0"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "observed-date": "2026-10-14",
+            "url": "https://clang.llvm.org/docs/ThinLTO.html"
+          },
+          "name": "LLVM ThinLTO documentation"
+        },
+        {
+          "identity": {
+            "observed-date": "2026-10-14",
+            "url": "https://lld.llvm.org/NewLLD.html"
+          },
+          "name": "LLD linking concepts"
+        },
+        {
+          "identity": {
+            "observed-date": "2026-10-14",
+            "url": "https://docs.riscv.org/reference/abi/riscv-elf-linker-relaxation.html"
+          },
+          "name": "RISC-V ELF linker relaxation"
+        }
+      ],
+      "topics": [
+        "kraken/aarch64",
+        "rust/inline-assembly",
+        "assembly/byte-binding",
+        "verification/pilots"
+      ]
+    },
+    "kraken-selected-theorem-closure-8af7806": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        }
+      ],
+      "topics": [
+        "kraken",
+        "assembly/semantics",
+        "lean/axioms",
+        "memory/permissions"
+      ]
+    },
+    "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "s2n-bignum"
+        },
+        {
+          "identity": {
+            "artifact": "companion jasmin-vale-s2n-artifact-and-access-boundaries/support/bignum_add.o",
+            "sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+            "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216"
+          },
+          "name": "Preserved bignum_add ELF object"
+        }
+      ],
+      "topics": [
+        "kraken",
+        "assembly/calling-conventions",
+        "assembly/composition",
+        "assembly/access-traces",
+        "assembly/pilot-comparison",
+        "s2n-bignum"
       ]
     },
     "lake-artifact-cache-architecture-v4-30-0-rc2": {
@@ -19528,6 +19789,94 @@
         "proof/trust"
       ]
     },
+    "minirust-actual-core-disagreement-evidence-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+          },
+          "name": "MiniRust actual-core source"
+        },
+        {
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220"
+          },
+          "name": "Specr transpiler and libspecr"
+        },
+        {
+          "identity": {
+            "distribution_date": "2026-05-01",
+            "repository": "rust-lang/rust",
+            "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+            "version": "1.97.0-nightly"
+          },
+          "name": "Requested nightly successful core compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Alternate-host compiler incompatibility observation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "1.99.0"
+          },
+          "name": "Cargo used for exact locked closure"
+        },
+        {
+          "identity": {
+            "artifact": "support/actual_core_probe.rs",
+            "sha256": "63206f5c4b4f6bef4ff3bc1ed48d1041634f210c182552e093dcea349ac8365f"
+          },
+          "name": "Owned probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/generated/lang.rs",
+            "sha256": "106b8d33a2a99a87028e4f3771171447775f507825aa595f62fb6c1fd6cd5450"
+          },
+          "name": "Actual generated interpreter module"
+        },
+        {
+          "identity": {
+            "artifact": "support/generated/mem.rs",
+            "sha256": "bcfbed6c1d8f5bedafa282b7e55e7d3f12378540ff3653839209d7a92d73e421"
+          },
+          "name": "Actual generated interpreter module"
+        },
+        {
+          "identity": {
+            "artifact": "support/generated/prelude.rs",
+            "sha256": "a145fcbf99688857fad7f7feb438da4af8e4b8b69680af7f0707e06402426a35"
+          },
+          "name": "Actual generated interpreter module"
+        },
+        {
+          "identity": {
+            "artifact": "support/generated/lib.rs",
+            "sha256": "e3de42b4c496ea7a440724d350763bbea52048767cd5b5b6e69ddd698581db9d"
+          },
+          "name": "Actual generated interpreter module"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "verification/differential-testing",
+        "verification/evidence-classification",
+        "rust/representation",
+        "specr/generation"
+      ]
+    },
     "minirust-core-semantics-d821c6e": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19597,6 +19946,54 @@
         "minirust/memory-model",
         "rust/unsafe-verification",
         "semantics/correspondence"
+      ]
+    },
+    "minirust-race-alias-and-weak-memory-boundaries-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+          },
+          "name": "Miri Tree Borrows"
+        },
+        {
+          "identity": {
+            "repository": "kaist-cp/relaxed-memory-separation-logic",
+            "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+          },
+          "name": "GPFSL-derived 2024 adequacy"
+        },
+        {
+          "identity": {
+            "path": "library/core/src/sync/atomic.rs",
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust atomic documentation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371102",
+            "publication": "PACMPL 4 POPL Article 34"
+          },
+          "name": "RustBelt Meets Relaxed Memory"
+        }
+      ],
+      "topics": [
+        "minirust/concurrency",
+        "rust/data-races",
+        "rust/weak-memory",
+        "iris/adequacy",
+        "rust/aliasing"
       ]
     },
     "minirust-representation-copy-provenance-laws-d821c6e": {
@@ -19752,6 +20149,137 @@
         "rust/interior-mutability"
       ]
     },
+    "minirust-target-dst-and-intrinsic-contracts-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "path": "library/core/src/sync/atomic.rs",
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust atomic documentation"
+        }
+      ],
+      "topics": [
+        "minirust/target",
+        "rust/layout",
+        "rust/dst",
+        "rust/intrinsics",
+        "rust/allocators"
+      ]
+    },
+    "minirust-tree-borrows-logic-correspondence-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+          },
+          "name": "Miri Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "publication": "PACMPL 9 PLDI Article 188"
+          },
+          "name": "Tree Borrows PLDI 2025"
+        },
+        {
+          "identity": {
+            "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Rudy-Thesis.pdf",
+            "reported_development_revision": "ccca9f325f909dceed4fd88008862f64296dbfd9",
+            "year": "2025"
+          },
+          "name": "Rudy Peterson \u03bbTB thesis"
+        }
+      ],
+      "topics": [
+        "minirust/tree-borrows",
+        "iris/program-logic",
+        "rust/aliasing",
+        "semantics/correspondence"
+      ]
+    },
+    "minirust-unwind-elaboration-and-open-client-obligations-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/a-mir-formality",
+            "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+          },
+          "name": "a-mir-formality"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler native specimen"
+        },
+        {
+          "identity": {
+            "artifact": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+          },
+          "name": "RustBelt POPL 2018 source archive"
+        },
+        {
+          "identity": {
+            "author": "Viktor Fukala",
+            "date": "2024-08-05",
+            "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+            "reported_development_revision": "120d9b3d1e868ddd00ce9163b2bb53d099154247"
+          },
+          "name": "Formalization of Rust Drop Elaboration thesis"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        }
+      ],
+      "topics": [
+        "minirust/unwinding",
+        "rust/drop-elaboration",
+        "rust/static-semantics",
+        "rust/library-soundness",
+        "rust/callbacks"
+      ]
+    },
     "modular-foreign-contracts-and-open-execution": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19790,6 +20318,57 @@
         "verification/open-modules",
         "veriffi",
         "translation/calling-conventions"
+      ]
+    },
+    "modular-semantics-state-alias-effects-popl2025": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive": "the_artifact.zip",
+            "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378",
+            "version": "v2",
+            "zenodo": "14180355"
+          },
+          "name": "Program Logics a la Carte source artifact"
+        },
+        {
+          "identity": {
+            "document_date": "March 2026",
+            "source_commit_cited_not_accessed": "5ed76562ee78badeb8768e7cb00c1ea37557b709",
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf"
+          },
+          "name": "Logical Relations a la Carte thesis"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust memory interface"
+        },
+        {
+          "identity": {
+            "artifact": "support/Effects.lean",
+            "sha256": "cde672ee06dc661982178a12dc8d4bf011c8cdc264426861e132bc8542330d88"
+          },
+          "name": "Owned interacting-effect mechanization"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "semantics/modularity",
+        "iris/handlers",
+        "interaction-trees",
+        "verification/adequacy"
       ]
     },
     "mvcc-snapshot-isolation-proof-work-consistency-1981-2026": {
@@ -22798,6 +23377,58 @@
         "charon/ffi"
       ]
     },
+    "rust-function-abi-witnesses-b940084": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust compiler and library 1.99.0"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264"
+          },
+          "name": "AAPCS64"
+        },
+        {
+          "identity": {
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "281a0a0eae55fe97f5decd244db18ed5096d4687"
+          },
+          "name": "Microsoft x64 calling convention"
+        },
+        {
+          "identity": {
+            "observed-date": "2026-10-14",
+            "url": "https://developer.apple.com/documentation/xcode/writing-arm64-code-for-apple-platforms"
+          },
+          "name": "Apple ARM64 ABI documentation"
+        },
+        {
+          "identity": {
+            "target": "arm64-apple-darwin27.0.0",
+            "version": "21.0.0 (clang-2100.3.34.2)"
+          },
+          "name": "Apple clang"
+        }
+      ],
+      "topics": [
+        "rust/abi",
+        "rust/fnabi",
+        "assembly/calling-conventions"
+      ]
+    },
     "rust-gat-laws-and-selected-implementation-evidence-2026": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -22875,6 +23506,37 @@
         "rust/padding",
         "rust/typed-copy",
         "rust/validity"
+      ]
+    },
+    "rust-inline-assembly-contracts-2dafab9": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust compiler and library 1.99.0"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4.34.1"
+        }
+      ],
+      "topics": [
+        "rust/inline-assembly",
+        "assembly/contracts",
+        "proof/operand-allocation"
       ]
     },
     "rust-inline-global-assembly-nightly-2026-05-31": {
@@ -23160,6 +23822,44 @@
         "rustc/defpath",
         "rustc/defid",
         "anneal/item-identity"
+      ]
+    },
+    "rust-machine-resource-linking-and-equivalence": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571220",
+            "url": "https://plv.mpi-sws.org/dimsum/paper.pdf"
+          },
+          "name": "DimSum POPL 2023"
+        }
+      ],
+      "topics": [
+        "rust/unsafe-verification",
+        "assembly/resource-linking",
+        "semantics/contextual-equivalence"
       ]
     },
     "rust-maybe-uninit-nightly-2026-05-31": {
@@ -24464,6 +25164,47 @@
         "rust/unsafe",
         "certificates/source-safety",
         "lean/kernel"
+      ]
+    },
+    "sail-islaris-compcert-access-foundations": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
+          },
+          "name": "Sail"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "publication": "PLDI 2022"
+          },
+          "name": "Islaris PLDI 2022 paper"
+        }
+      ],
+      "topics": [
+        "assembly/isa-models",
+        "sail",
+        "islaris",
+        "compcert",
+        "memory/permissions"
       ]
     },
     "salsa-rustc-current-source-review": {

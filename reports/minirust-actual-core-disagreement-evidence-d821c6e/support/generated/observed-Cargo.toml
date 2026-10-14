@@ -1,0 +1,8 @@
+[package]
+name = "minirust-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libspecr = { path = "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/source/specr-15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr" }
+serde = {version = "1.0", features = ["derive"]}

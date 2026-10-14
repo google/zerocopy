@@ -1,0 +1,45 @@
+{
+  "subject": "actual generated pinned MiniRust core via owned safe Rust API harness",
+  "target": "miniutil::DefaultTarget = x86_64",
+  "memory": "BasicMem",
+  "cases": [
+    {
+      "id": "bool_transmute_1",
+      "outcome": "MachineStop"
+    },
+    {
+      "id": "bool_transmute_2",
+      "outcome": "Ub(String(\"transmuted value is not valid at new type\"))"
+    },
+    {
+      "id": "unchecked_u8_overflow",
+      "outcome": "Ub(String(\"overflow in unchecked add\"))"
+    },
+    {
+      "id": "incoherent_known0_observes0",
+      "outcome": "MachineStop"
+    },
+    {
+      "id": "coherent_tag1_observes1",
+      "outcome": "MachineStop"
+    },
+    {
+      "id": "wrong_expected1_negative_control",
+      "outcome": "Ub(String(\"reached unreachable code\"))"
+    },
+    {
+      "id": "wide_pointer_union_twoword_chunk",
+      "outcome": "MachineStop"
+    },
+    {
+      "id": "wide_pointer_union_oneword_chunk",
+      "outcome": "Ub(String(\"transmuted value is not valid at new type\"))"
+    }
+  ],
+  "no_unexpected_panic": true,
+  "compiler_boundary": {
+    "rustc1.99": "compile incompatibility: Step trait new required methods",
+    "nightly2026-02-05": "compiler binary absent; no build",
+    "nightly2026-05-01": "build and selected tests/owned probes succeeded"
+  }
+}

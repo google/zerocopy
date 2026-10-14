@@ -1,0 +1,23 @@
+{
+  "command": [
+    "<rust-toolchains>/1.99.0-aarch64-apple-darwin/bin/cargo",
+    "test",
+    "--offline",
+    "--locked",
+    "--manifest-path",
+    "<task-workspace>/work/research/phase2-minirust-foundations/bootstrap-runtime/harness/Cargo.toml",
+    "-p",
+    "minitest",
+    "--no-run"
+  ],
+  "returncode": 101,
+  "seconds": 4.111956708,
+  "total_build_seconds": 7.670179833000001,
+  "RUSTC_BOOTSTRAP": "1",
+  "source_edits": false,
+  "harness_only_workspace_members": [
+    "minitest",
+    "miniutil"
+  ],
+  "harness_lock_sha256": "73c82d92d37abca00a25e12e78b6e16f759f22ba836b148c32a65adc421a045c"
+}
