@@ -1,0 +1,128 @@
+{
+  "observed_at": "2026-10-14",
+  "evidence_role": "source; no upstream execution",
+  "files": [
+    {
+      "key": "source3",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/representation.md",
+      "git_blob_sha": "f87753d9d75d438e964d0a7ce445eca433c6d259",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md"
+    },
+    {
+      "key": "minirust-ops",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/step/operators.md",
+      "git_blob_sha": "e6c1d5382be593894bed047efbf9dd728819b8a3",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/operators.md"
+    },
+    {
+      "key": "minirust-memory",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/interface.md",
+      "git_blob_sha": "0ede2c2cefdbb2e00ab70cf428e42bb4b1202a4c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/interface.md"
+    },
+    {
+      "key": "minirust-tree-memory",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/tree_borrows/memory.md",
+      "git_blob_sha": "6fe36283dfebfeea596e238da0bb0a4448c6e41b",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/memory.md"
+    },
+    {
+      "key": "gillian-contract-emitter",
+      "repository": "GillianPlatform/gillian-rust",
+      "revision": "83d739e83034d71162fb66b569041cf301123df7",
+      "path": "creusillian/src/lib.rs",
+      "git_blob_sha": "9a8373bafad8216117c99257bc99af3f4d7031c0",
+      "url": "https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/creusillian/src/lib.rs"
+    },
+    {
+      "key": "aeneas-config",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Config.ml",
+      "git_blob_sha": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ac9f1bc5262a5e4ff1e24ca78617121382202727/src/Config.ml"
+    }
+  ],
+  "archive_members": [
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/lang/lang.v",
+      "sha256": "c052de66b07d969b227255260880d546bc7df9efc829a637b86fb6b31835582f",
+      "lines": 656,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/lang/adequacy.v",
+      "sha256": "665bcc0016852d04d5ee75a4d34379af36dcbcd19aa13df107042ed247584cbc",
+      "lines": 32,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/typing/soundness.v",
+      "sha256": "cb77d69baed0df2078d8a5cc00ede727c7f2109c4f4a0d09fbf26233ec471940",
+      "lines": 70,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/typing/type.v",
+      "sha256": "044011bd867cb15e58b7cbf2a2e24876e198858d70010ede2f2e4b0b4f800110",
+      "lines": 690,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/typing/product_split.v",
+      "sha256": "9d02212056dd5e69737fd863b5fcbc8684061e64508167f5cdb4ba0139e595ad",
+      "lines": 325,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/typing/lib/cell.v",
+      "sha256": "9c0abc9598c84a78b5bb6591bc505f31d75c60da595edea9e79d26c97f3169cc",
+      "lines": 217,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/loc.v",
+      "sha256": "c4be19ce56793ae8e3da7af90710708d0b635bac5d60bf62577ce830c237f1ae",
+      "lines": 315,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/val.v",
+      "sha256": "9096e8873b0adfe3a768263ef1e2d2cb7fb6c53e5c36551755e3462a3f9c491b",
+      "lines": 788,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/rust_typing/typing/adequacy.v",
+      "sha256": "766a0e8bd819669e85ba7d3f68123763ac76d8f303540faf83ef5b86db2d854c",
+      "lines": 329,
+      "status": "source inspected; no Rocq execution"
+    }
+  ]
+}

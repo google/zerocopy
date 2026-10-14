@@ -1,0 +1,305 @@
+{
+  "kind": "owned-model",
+  "python": "3.9.6",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "checks": {
+    "empty_demonic_no_behavior": true,
+    "empty_angelic_no_witness": true,
+    "one_run_does_not_prove_all": true,
+    "incomplete_demonic_certificate_rejected": true,
+    "invalid_angelic_witness_rejected": true,
+    "normal_fence_routes_agree": true,
+    "fence_boundary_mutants_discriminate": true,
+    "rare_valid_choice_sampler_miss": true,
+    "quantifier_order_differs": true,
+    "bad_execution_erasure_detected": true
+  },
+  "fences": {
+    "normal": {
+      "exact": {
+        "status": "ok",
+        "code": "fn f() -> i32 { 7 }\n\n"
+      },
+      "independent": "fn f() -> i32 { 7 }\n\n"
+    },
+    "ignored": {
+      "exact": {
+        "status": "ok",
+        "code": ""
+      },
+      "independent": ""
+    },
+    "at_start": {
+      "exact": {
+        "status": "ok",
+        "code": ""
+      },
+      "independent": "fn f() -> i32 { 7 }\n\n"
+    },
+    "no_final_newline": {
+      "exact": {
+        "status": "unclosed"
+      },
+      "independent": "fn f() -> i32 { 7 }\n\n"
+    }
+  },
+  "quantifier_tables": [
+    {
+      "bits": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        false,
+        false,
+        true
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        false,
+        true,
+        true,
+        false
+      ],
+      "forall_exists": true,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        true,
+        false,
+        false,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "forall_exists": false,
+      "exists_forall": false
+    },
+    {
+      "bits": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    },
+    {
+      "bits": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "forall_exists": true,
+      "exists_forall": true
+    }
+  ],
+  "rare_choice": {
+    "domain": 4096,
+    "valid_candidate": 4095,
+    "sample_budget": 50,
+    "legal_miss_stream": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "budget_exhausted": true,
+    "semantic_allowed_set_nonempty": true,
+    "uniform_failure_probability": 0.9878657000386669
+  },
+  "erasure_control": [
+    {
+      "source": [
+        "return"
+      ],
+      "source_outcome": "Return",
+      "imported": [
+        "return"
+      ],
+      "imported_outcome": "Return"
+    },
+    {
+      "source": [
+        "bad_bool_load",
+        "return"
+      ],
+      "source_outcome": "UB",
+      "imported": [
+        "return"
+      ],
+      "imported_outcome": "Return"
+    },
+    {
+      "source": [
+        "bad_bool_load",
+        "unreachable",
+        "return"
+      ],
+      "source_outcome": "UB",
+      "imported": [
+        "unreachable",
+        "return"
+      ],
+      "imported_outcome": "Return"
+    }
+  ],
+  "status": "pass"
+}

@@ -1,0 +1,842 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn parser(_1: &[u8]) -> Option<u16> {
+    debug bytes => _1;
+    let mut _0: std::option::Option<u16>;
+    let mut _2: bool;
+    let mut _3: usize;
+    let mut _4: u16;
+    let mut _5: [u8; 2];
+    let mut _6: u8;
+    let _7: usize;
+    let mut _8: usize;
+    let mut _9: bool;
+    let mut _10: u8;
+    let _11: usize;
+    let mut _12: usize;
+    let mut _13: bool;
+
+    bb0: {
+        _3 = PtrMetadata(copy _1);
+        _2 = Lt(move _3, const 2_usize);
+        switchInt(move _2) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _0 = Option::<u16>::None;
+        goto -> bb6;
+    }
+
+    bb2: {
+        _7 = const 0_usize;
+        _8 = PtrMetadata(copy _1);
+        _9 = Lt(copy _7, copy _8);
+        assert(move _9, "index out of bounds: the length is {} but the index is {}", move _8, copy _7) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _6 = copy (*_1)[_7];
+        _11 = const 1_usize;
+        _12 = PtrMetadata(copy _1);
+        _13 = Lt(copy _11, copy _12);
+        assert(move _13, "index out of bounds: the length is {} but the index is {}", move _12, copy _11) -> [success: bb4, unwind continue];
+    }
+
+    bb4: {
+        _10 = copy (*_1)[_11];
+        _5 = [move _6, move _10];
+        _4 = core::num::<impl u16>::from_le_bytes(move _5) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        _0 = Option::<u16>::Some(move _4);
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+fn callback_read(_1: &Cell<u8>, _2: impl FnOnce()) -> (u8, u8) {
+    debug cell => _1;
+    debug callback => _2;
+    let mut _0: (u8, u8);
+    let _3: u8;
+    let _4: ();
+    let mut _5: impl FnOnce();
+    let mut _6: u8;
+    let mut _7: bool;
+    scope 1 {
+        debug before => _3;
+    }
+
+    bb0: {
+        _7 = const false;
+        _7 = const true;
+        _3 = Cell::<u8>::get(copy _1) -> [return: bb1, unwind: bb6];
+    }
+
+    bb1: {
+        _7 = const false;
+        _5 = move _2;
+        _4 = <impl FnOnce() as FnOnce<()>>::call_once(move _5, const ()) -> [return: bb2, unwind: bb6];
+    }
+
+    bb2: {
+        _6 = Cell::<u8>::get(copy _1) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        _0 = (copy _3, move _6);
+        return;
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+
+    bb5 (cleanup): {
+        drop(_2) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        switchInt(copy _7) -> [0: bb4, otherwise: bb5];
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let mut _1: i32;
+    let mut _2: std::ops::RangeInclusive<u8>;
+    let mut _3: std::ops::RangeInclusive<u8>;
+    let mut _5: std::option::Option<u8>;
+    let mut _6: &mut std::ops::RangeInclusive<u8>;
+    let mut _7: isize;
+    let mut _9: std::ops::RangeInclusive<u8>;
+    let mut _10: std::ops::RangeInclusive<u8>;
+    let mut _12: std::option::Option<u8>;
+    let mut _13: &mut std::ops::RangeInclusive<u8>;
+    let mut _14: isize;
+    let mut _17: &[u8];
+    let _18: &[u8; 2];
+    let _19: [u8; 2];
+    let mut _21: u16;
+    let mut _22: u16;
+    let mut _23: u16;
+    let mut _24: u16;
+    let mut _25: (u16, bool);
+    let mut _26: (u16, bool);
+    let mut _27: bool;
+    let mut _28: &std::option::Option<u16>;
+    let mut _29: &std::option::Option<u16>;
+    let _30: ();
+    let mut _31: std::fmt::Arguments<'_>;
+    let _32: !;
+    let mut _33: (i32, bool);
+    let mut _35: std::ops::RangeInclusive<usize>;
+    let mut _36: std::ops::RangeInclusive<usize>;
+    let mut _38: std::option::Option<usize>;
+    let mut _39: &mut std::ops::RangeInclusive<usize>;
+    let mut _40: isize;
+    let mut _42: std::ops::RangeInclusive<usize>;
+    let mut _43: std::ops::RangeInclusive<usize>;
+    let mut _45: std::option::Option<usize>;
+    let mut _46: &mut std::ops::RangeInclusive<usize>;
+    let mut _47: isize;
+    let mut _52: (&mut [u8], &mut [u8]);
+    let mut _53: &mut [u8];
+    let mut _54: &mut std::vec::Vec<u8>;
+    let mut _55: std::slice::IterMut<'_, u8>;
+    let mut _57: std::option::Option<&mut u8>;
+    let mut _58: &mut std::slice::IterMut<'_, u8>;
+    let mut _59: isize;
+    let mut _61: std::slice::IterMut<'_, u8>;
+    let mut _63: std::option::Option<&mut u8>;
+    let mut _64: &mut std::slice::IterMut<'_, u8>;
+    let mut _65: isize;
+    let mut _67: bool;
+    let mut _68: &mut std::slice::Iter<'_, u8>;
+    let mut _69: std::slice::Iter<'_, u8>;
+    let _70: &[u8];
+    let mut _71: &std::vec::Vec<u8>;
+    let mut _72: std::ops::RangeTo<usize>;
+    let mut _73: bool;
+    let mut _74: &mut std::slice::Iter<'_, u8>;
+    let mut _75: std::slice::Iter<'_, u8>;
+    let _76: &[u8];
+    let mut _77: &std::vec::Vec<u8>;
+    let mut _78: std::ops::RangeFrom<usize>;
+    let _79: ();
+    let mut _80: std::fmt::Arguments<'_>;
+    let _81: !;
+    let mut _82: (i32, bool);
+    let mut _85: std::ops::RangeInclusive<u8>;
+    let mut _86: std::ops::RangeInclusive<u8>;
+    let mut _88: std::option::Option<u8>;
+    let mut _89: &mut std::ops::RangeInclusive<u8>;
+    let mut _90: isize;
+    let mut _92: std::ops::RangeInclusive<u8>;
+    let mut _93: std::ops::RangeInclusive<u8>;
+    let mut _95: std::option::Option<u8>;
+    let mut _96: &mut std::ops::RangeInclusive<u8>;
+    let mut _97: isize;
+    let mut _102: (u8, u8);
+    let _103: &std::cell::Cell<u8>;
+    let mut _104: {closure@safe_clients.rs:37:39: 37:41};
+    let mut _105: &std::cell::Cell<u8>;
+    let mut _106: &u8;
+    let mut _107: bool;
+    let mut _108: bool;
+    let _109: ();
+    let mut _110: std::fmt::Arguments<'_>;
+    let _111: !;
+    let mut _112: bool;
+    let mut _113: (i32, bool);
+    let mut _114: (i32, bool);
+    let _115: ();
+    let mut _116: std::fmt::Arguments<'_>;
+    let mut _118: &i32;
+    let mut _119: &i32;
+    let mut _120: &i32;
+    let mut _121: &i32;
+    let mut _123: core::fmt::rt::Argument<'_>;
+    let mut _124: core::fmt::rt::Argument<'_>;
+    let mut _125: core::fmt::rt::Argument<'_>;
+    let mut _126: core::fmt::rt::Argument<'_>;
+    let mut _127: &[u8; 107];
+    let _128: &[core::fmt::rt::Argument<'_>; 4];
+    let mut _129: &i32;
+    let mut _130: &i32;
+    let mut _131: &i32;
+    let mut _132: &i32;
+    scope 1 {
+        debug parser_cases => _1;
+        let mut _4: std::ops::RangeInclusive<u8>;
+        let mut _34: i32;
+        scope 2 {
+            debug iter => _4;
+            let _8: u8;
+            scope 3 {
+                debug a => _8;
+                let mut _11: std::ops::RangeInclusive<u8>;
+                scope 4 {
+                    debug iter => _11;
+                    let _15: u8;
+                    scope 5 {
+                        debug b => _15;
+                        let _16: std::option::Option<u16>;
+                        scope 6 {
+                            debug actual => _16;
+                            let _20: std::option::Option<u16>;
+                            scope 7 {
+                                debug expected => _20;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        scope 8 {
+            debug split_cases => _34;
+            let mut _37: std::ops::RangeInclusive<usize>;
+            let mut _83: i32;
+            scope 9 {
+                debug iter => _37;
+                let _41: usize;
+                scope 10 {
+                    debug n => _41;
+                    let mut _44: std::ops::RangeInclusive<usize>;
+                    scope 11 {
+                        debug iter => _44;
+                        let _48: usize;
+                        scope 12 {
+                            debug mid => _48;
+                            let mut _49: std::vec::Vec<u8>;
+                            scope 13 {
+                                debug values => _49;
+                                let _50: &mut [u8];
+                                let _51: &mut [u8];
+                                scope 14 {
+                                    debug left => _50;
+                                    debug right => _51;
+                                    let mut _56: std::slice::IterMut<'_, u8>;
+                                    let mut _62: std::slice::IterMut<'_, u8>;
+                                    scope 15 {
+                                        debug iter => _56;
+                                        let _60: &mut u8;
+                                        scope 16 {
+                                            debug x => _60;
+                                        }
+                                    }
+                                    scope 17 {
+                                        debug iter => _62;
+                                        let _66: &mut u8;
+                                        scope 18 {
+                                            debug x => _66;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            scope 19 {
+                debug callback_cases => _83;
+                let mut _84: i32;
+                scope 20 {
+                    debug stale_read_counterexamples => _84;
+                    let mut _87: std::ops::RangeInclusive<u8>;
+                    let _117: (&i32, &i32, &i32, &i32);
+                    scope 21 {
+                        debug iter => _87;
+                        let _91: u8;
+                        scope 22 {
+                            debug before => _91;
+                            let mut _94: std::ops::RangeInclusive<u8>;
+                            scope 23 {
+                                debug iter => _94;
+                                let _98: u8;
+                                scope 24 {
+                                    debug after => _98;
+                                    let _99: std::cell::Cell<u8>;
+                                    scope 25 {
+                                        debug cell => _99;
+                                        let _100: u8;
+                                        let _101: u8;
+                                        scope 26 {
+                                            debug x => _100;
+                                            debug y => _101;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    scope 27 {
+                        debug args => _117;
+                        let _122: [core::fmt::rt::Argument<'_>; 4];
+                        scope 28 {
+                            debug args => _122;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _1 = const 0_i32;
+        _3 = std::ops::RangeInclusive::<u8>::new(const 0_u8, const u8::MAX) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = <std::ops::RangeInclusive<u8> as IntoIterator>::into_iter(move _3) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _4 = move _2;
+        goto -> bb3;
+    }
+
+    bb3: {
+        _6 = &mut _4;
+        _5 = <std::ops::RangeInclusive<u8> as Iterator>::next(copy _6) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        _7 = discriminant(_5);
+        switchInt(move _7) -> [0: bb7, 1: bb6, otherwise: bb5];
+    }
+
+    bb5: {
+        unreachable;
+    }
+
+    bb6: {
+        _8 = copy ((_5 as Some).0: u8);
+        _10 = std::ops::RangeInclusive::<u8>::new(const 0_u8, const u8::MAX) -> [return: bb8, unwind continue];
+    }
+
+    bb7: {
+        _34 = const 0_i32;
+        _36 = std::ops::RangeInclusive::<usize>::new(const 0_usize, const 16_usize) -> [return: bb24, unwind continue];
+    }
+
+    bb8: {
+        _9 = <std::ops::RangeInclusive<u8> as IntoIterator>::into_iter(move _10) -> [return: bb9, unwind continue];
+    }
+
+    bb9: {
+        _11 = move _9;
+        goto -> bb10;
+    }
+
+    bb10: {
+        _13 = &mut _11;
+        _12 = <std::ops::RangeInclusive<u8> as Iterator>::next(copy _13) -> [return: bb11, unwind continue];
+    }
+
+    bb11: {
+        _14 = discriminant(_12);
+        switchInt(move _14) -> [0: bb3, 1: bb12, otherwise: bb5];
+    }
+
+    bb12: {
+        _15 = copy ((_12 as Some).0: u8);
+        _19 = [copy _8, copy _15];
+        _18 = &_19;
+        _17 = copy _18 as &[u8] (PointerCoercion(Unsize, Implicit));
+        _16 = parser(move _17) -> [return: bb13, unwind continue];
+    }
+
+    bb13: {
+        _22 = <u16 as From<u8>>::from(copy _8) -> [return: bb14, unwind continue];
+    }
+
+    bb14: {
+        _24 = <u16 as From<u8>>::from(copy _15) -> [return: bb15, unwind continue];
+    }
+
+    bb15: {
+        _25 = MulWithOverflow(const 256_u16, copy _24);
+        assert(!move (_25.1: bool), "attempt to compute `{} * {}`, which would overflow", const 256_u16, move _24) -> [success: bb16, unwind continue];
+    }
+
+    bb16: {
+        _23 = move (_25.0: u16);
+        _26 = AddWithOverflow(copy _22, copy _23);
+        assert(!move (_26.1: bool), "attempt to compute `{} + {}`, which would overflow", move _22, move _23) -> [success: bb17, unwind continue];
+    }
+
+    bb17: {
+        _21 = move (_26.0: u16);
+        _20 = Option::<u16>::Some(move _21);
+        _28 = &_16;
+        _29 = &_20;
+        _27 = <Option<u16> as PartialEq>::ne(move _28, move _29) -> [return: bb18, unwind continue];
+    }
+
+    bb18: {
+        switchInt(move _27) -> [0: bb22, otherwise: bb19];
+    }
+
+    bb19: {
+        _31 = Arguments::<'_>::from_str(const "parser mismatch\n") -> [return: bb20, unwind continue];
+    }
+
+    bb20: {
+        _30 = std::io::_eprint(move _31) -> [return: bb21, unwind continue];
+    }
+
+    bb21: {
+        _32 = exit(const 1_i32) -> unwind continue;
+    }
+
+    bb22: {
+        _33 = AddWithOverflow(copy _1, const 1_i32);
+        assert(!move (_33.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, const 1_i32) -> [success: bb23, unwind continue];
+    }
+
+    bb23: {
+        _1 = move (_33.0: i32);
+        goto -> bb10;
+    }
+
+    bb24: {
+        _35 = <std::ops::RangeInclusive<usize> as IntoIterator>::into_iter(move _36) -> [return: bb25, unwind continue];
+    }
+
+    bb25: {
+        _37 = move _35;
+        goto -> bb26;
+    }
+
+    bb26: {
+        _39 = &mut _37;
+        _38 = <std::ops::RangeInclusive<usize> as Iterator>::next(copy _39) -> [return: bb27, unwind continue];
+    }
+
+    bb27: {
+        _40 = discriminant(_38);
+        switchInt(move _40) -> [0: bb29, 1: bb28, otherwise: bb5];
+    }
+
+    bb28: {
+        _41 = copy ((_38 as Some).0: usize);
+        _43 = std::ops::RangeInclusive::<usize>::new(const 0_usize, copy _41) -> [return: bb30, unwind continue];
+    }
+
+    bb29: {
+        _83 = const 0_i32;
+        _84 = const 0_i32;
+        _86 = std::ops::RangeInclusive::<u8>::new(const 0_u8, const u8::MAX) -> [return: bb60, unwind continue];
+    }
+
+    bb30: {
+        _42 = <std::ops::RangeInclusive<usize> as IntoIterator>::into_iter(move _43) -> [return: bb31, unwind continue];
+    }
+
+    bb31: {
+        _44 = move _42;
+        goto -> bb32;
+    }
+
+    bb32: {
+        _46 = &mut _44;
+        _45 = <std::ops::RangeInclusive<usize> as Iterator>::next(copy _46) -> [return: bb33, unwind continue];
+    }
+
+    bb33: {
+        _47 = discriminant(_45);
+        switchInt(move _47) -> [0: bb26, 1: bb34, otherwise: bb5];
+    }
+
+    bb34: {
+        _48 = copy ((_45 as Some).0: usize);
+        _49 = std::vec::from_elem::<u8>(const 0_u8, copy _41) -> [return: bb35, unwind continue];
+    }
+
+    bb35: {
+        _54 = &mut _49;
+        _53 = <Vec<u8> as DerefMut>::deref_mut(move _54) -> [return: bb36, unwind: bb88];
+    }
+
+    bb36: {
+        _52 = core::slice::<impl [u8]>::split_at_mut(copy _53, copy _48) -> [return: bb37, unwind: bb88];
+    }
+
+    bb37: {
+        _50 = move (_52.0: &mut [u8]);
+        _51 = move (_52.1: &mut [u8]);
+        _55 = <&mut [u8] as IntoIterator>::into_iter(copy _50) -> [return: bb38, unwind: bb88];
+    }
+
+    bb38: {
+        _56 = move _55;
+        goto -> bb39;
+    }
+
+    bb39: {
+        _58 = &mut _56;
+        _57 = <std::slice::IterMut<'_, u8> as Iterator>::next(copy _58) -> [return: bb40, unwind: bb88];
+    }
+
+    bb40: {
+        _59 = discriminant(_57);
+        switchInt(move _59) -> [0: bb42, 1: bb41, otherwise: bb5];
+    }
+
+    bb41: {
+        _60 = move ((_57 as Some).0: &mut u8);
+        (*_60) = const 1_u8;
+        goto -> bb39;
+    }
+
+    bb42: {
+        _61 = <&mut [u8] as IntoIterator>::into_iter(copy _51) -> [return: bb43, unwind: bb88];
+    }
+
+    bb43: {
+        _62 = move _61;
+        goto -> bb44;
+    }
+
+    bb44: {
+        _64 = &mut _62;
+        _63 = <std::slice::IterMut<'_, u8> as Iterator>::next(copy _64) -> [return: bb45, unwind: bb88];
+    }
+
+    bb45: {
+        _65 = discriminant(_63);
+        switchInt(move _65) -> [0: bb47, 1: bb46, otherwise: bb5];
+    }
+
+    bb46: {
+        _66 = move ((_63 as Some).0: &mut u8);
+        (*_66) = const 2_u8;
+        goto -> bb44;
+    }
+
+    bb47: {
+        _71 = &_49;
+        _72 = RangeTo::<usize> { end: copy _48 };
+        _70 = <Vec<u8> as Index<RangeTo<usize>>>::index(move _71, move _72) -> [return: bb48, unwind: bb88];
+    }
+
+    bb48: {
+        _69 = core::slice::<impl [u8]>::iter(copy _70) -> [return: bb49, unwind: bb88];
+    }
+
+    bb49: {
+        _68 = &mut _69;
+        _67 = <std::slice::Iter<'_, u8> as Iterator>::any::<{closure@safe_clients.rs:28:37: 28:40}>(move _68, const ZeroSized: {closure@safe_clients.rs:28:37: 28:40}) -> [return: bb50, unwind: bb88];
+    }
+
+    bb50: {
+        switchInt(move _67) -> [0: bb51, otherwise: bb55];
+    }
+
+    bb51: {
+        _77 = &_49;
+        _78 = std::ops::RangeFrom::<usize> { start: copy _48 };
+        _76 = <Vec<u8> as Index<std::ops::RangeFrom<usize>>>::index(move _77, move _78) -> [return: bb52, unwind: bb88];
+    }
+
+    bb52: {
+        _75 = core::slice::<impl [u8]>::iter(copy _76) -> [return: bb53, unwind: bb88];
+    }
+
+    bb53: {
+        _74 = &mut _75;
+        _73 = <std::slice::Iter<'_, u8> as Iterator>::any::<{closure@safe_clients.rs:28:75: 28:78}>(move _74, const ZeroSized: {closure@safe_clients.rs:28:75: 28:78}) -> [return: bb54, unwind: bb88];
+    }
+
+    bb54: {
+        switchInt(move _73) -> [0: bb58, otherwise: bb55];
+    }
+
+    bb55: {
+        _80 = Arguments::<'_>::from_str(const "split mismatch\n") -> [return: bb56, unwind: bb88];
+    }
+
+    bb56: {
+        _79 = std::io::_eprint(move _80) -> [return: bb57, unwind: bb88];
+    }
+
+    bb57: {
+        _81 = exit(const 1_i32) -> bb88;
+    }
+
+    bb58: {
+        _82 = AddWithOverflow(copy _34, const 1_i32);
+        assert(!move (_82.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _34, const 1_i32) -> [success: bb59, unwind: bb88];
+    }
+
+    bb59: {
+        _34 = move (_82.0: i32);
+        drop(_49) -> [return: bb32, unwind continue];
+    }
+
+    bb60: {
+        _85 = <std::ops::RangeInclusive<u8> as IntoIterator>::into_iter(move _86) -> [return: bb61, unwind continue];
+    }
+
+    bb61: {
+        _87 = move _85;
+        goto -> bb62;
+    }
+
+    bb62: {
+        _89 = &mut _87;
+        _88 = <std::ops::RangeInclusive<u8> as Iterator>::next(copy _89) -> [return: bb63, unwind continue];
+    }
+
+    bb63: {
+        _90 = discriminant(_88);
+        switchInt(move _90) -> [0: bb65, 1: bb64, otherwise: bb5];
+    }
+
+    bb64: {
+        _91 = copy ((_88 as Some).0: u8);
+        _93 = std::ops::RangeInclusive::<u8>::new(const 0_u8, const u8::MAX) -> [return: bb66, unwind continue];
+    }
+
+    bb65: {
+        _118 = &_1;
+        _119 = &_34;
+        _120 = &_83;
+        _121 = &_84;
+        _117 = (move _118, move _119, move _120, move _121);
+        _129 = no_retag copy (_117.0: &i32);
+        _123 = core::fmt::rt::Argument::<'_>::new_display::<i32>(copy _129) -> [return: bb82, unwind continue];
+    }
+
+    bb66: {
+        _92 = <std::ops::RangeInclusive<u8> as IntoIterator>::into_iter(move _93) -> [return: bb67, unwind continue];
+    }
+
+    bb67: {
+        _94 = move _92;
+        goto -> bb68;
+    }
+
+    bb68: {
+        _96 = &mut _94;
+        _95 = <std::ops::RangeInclusive<u8> as Iterator>::next(copy _96) -> [return: bb69, unwind continue];
+    }
+
+    bb69: {
+        _97 = discriminant(_95);
+        switchInt(move _97) -> [0: bb62, 1: bb70, otherwise: bb5];
+    }
+
+    bb70: {
+        _98 = copy ((_95 as Some).0: u8);
+        _99 = Cell::<u8>::new(copy _91) -> [return: bb71, unwind continue];
+    }
+
+    bb71: {
+        _103 = &_99;
+        _105 = &_99;
+        _106 = &_98;
+        _104 = {closure@safe_clients.rs:37:39: 37:41} { cell: move _105, after: move _106 };
+        _102 = callback_read::<{closure@safe_clients.rs:37:39: 37:41}>(copy _103, move _104) -> [return: bb72, unwind continue];
+    }
+
+    bb72: {
+        _100 = copy (_102.0: u8);
+        _101 = copy (_102.1: u8);
+        _107 = Ne(copy _100, copy _91);
+        switchInt(move _107) -> [0: bb73, otherwise: bb74];
+    }
+
+    bb73: {
+        _108 = Ne(copy _101, copy _98);
+        switchInt(move _108) -> [0: bb77, otherwise: bb74];
+    }
+
+    bb74: {
+        _110 = Arguments::<'_>::from_str(const "callback mismatch\n") -> [return: bb75, unwind continue];
+    }
+
+    bb75: {
+        _109 = std::io::_eprint(move _110) -> [return: bb76, unwind continue];
+    }
+
+    bb76: {
+        _111 = exit(const 1_i32) -> unwind continue;
+    }
+
+    bb77: {
+        _112 = Ne(copy _100, copy _101);
+        switchInt(move _112) -> [0: bb80, otherwise: bb78];
+    }
+
+    bb78: {
+        _113 = AddWithOverflow(copy _84, const 1_i32);
+        assert(!move (_113.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _84, const 1_i32) -> [success: bb79, unwind continue];
+    }
+
+    bb79: {
+        _84 = move (_113.0: i32);
+        goto -> bb80;
+    }
+
+    bb80: {
+        _114 = AddWithOverflow(copy _83, const 1_i32);
+        assert(!move (_114.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _83, const 1_i32) -> [success: bb81, unwind continue];
+    }
+
+    bb81: {
+        _83 = move (_114.0: i32);
+        goto -> bb68;
+    }
+
+    bb82: {
+        _130 = no_retag copy (_117.1: &i32);
+        _124 = core::fmt::rt::Argument::<'_>::new_display::<i32>(copy _130) -> [return: bb83, unwind continue];
+    }
+
+    bb83: {
+        _131 = no_retag copy (_117.2: &i32);
+        _125 = core::fmt::rt::Argument::<'_>::new_display::<i32>(copy _131) -> [return: bb84, unwind continue];
+    }
+
+    bb84: {
+        _132 = no_retag copy (_117.3: &i32);
+        _126 = core::fmt::rt::Argument::<'_>::new_display::<i32>(copy _132) -> [return: bb85, unwind continue];
+    }
+
+    bb85: {
+        _122 = [move _123, move _124, move _125, move _126];
+        _127 = const b" {\"status\":\"pass\",\"parser_cases\":\xc0\x0f,\"split_cases\":\xc0\x12,\"callback_cases\":\xc0\x1e,\"stale_read_counterexamples\":\xc0\x02}\n\x00";
+        _128 = &_122;
+        _116 = Arguments::<'_>::new::<107, 4>(move _127, copy _128) -> [return: bb86, unwind continue];
+    }
+
+    bb86: {
+        _115 = std::io::_print(move _116) -> [return: bb87, unwind continue];
+    }
+
+    bb87: {
+        return;
+    }
+
+    bb88 (cleanup): {
+        drop(_49) -> [return: bb89, unwind terminate(cleanup)];
+    }
+
+    bb89 (cleanup): {
+        resume;
+    }
+}
+
+alloc6 (size: 107, align: 1) {
+    0x00 │ 20 7b 22 73 74 61 74 75 73 22 3a 22 70 61 73 73 │  {"status":"pass
+    0x10 │ 22 2c 22 70 61 72 73 65 72 5f 63 61 73 65 73 22 │ ","parser_cases"
+    0x20 │ 3a c0 0f 2c 22 73 70 6c 69 74 5f 63 61 73 65 73 │ :..,"split_cases
+    0x30 │ 22 3a c0 12 2c 22 63 61 6c 6c 62 61 63 6b 5f 63 │ ":..,"callback_c
+    0x40 │ 61 73 65 73 22 3a c0 1e 2c 22 73 74 61 6c 65 5f │ ases":..,"stale_
+    0x50 │ 72 65 61 64 5f 63 6f 75 6e 74 65 72 65 78 61 6d │ read_counterexam
+    0x60 │ 70 6c 65 73 22 3a c0 02 7d 0a 00                │ ples":..}..
+}
+
+alloc5 (size: 18, align: 1) {
+    0x00 │ 63 61 6c 6c 62 61 63 6b 20 6d 69 73 6d 61 74 63 │ callback mismatc
+    0x10 │ 68 0a                                           │ h.
+}
+
+alloc4 (size: 15, align: 1) {
+    73 70 6c 69 74 20 6d 69 73 6d 61 74 63 68 0a    │ split mismatch.
+}
+
+alloc3 (size: 16, align: 1) {
+    70 61 72 73 65 72 20 6d 69 73 6d 61 74 63 68 0a │ parser mismatch.
+}
+
+fn main::{closure#0}(_1: &mut {closure@safe_clients.rs:28:37: 28:40}, _2: &u8) -> bool {
+    debug x => _2;
+    let mut _0: bool;
+    let mut _3: u8;
+
+    bb0: {
+        _3 = copy (*_2);
+        _0 = Ne(move _3, const 1_u8);
+        return;
+    }
+}
+
+fn main::{closure#1}(_1: &mut {closure@safe_clients.rs:28:75: 28:78}, _2: &u8) -> bool {
+    debug x => _2;
+    let mut _0: bool;
+    let mut _3: u8;
+
+    bb0: {
+        _3 = copy (*_2);
+        _0 = Ne(move _3, const 2_u8);
+        return;
+    }
+}
+
+fn main::{closure#2}(_1: {closure@safe_clients.rs:37:39: 37:41}) -> () {
+    debug cell => (*(_1.0: &std::cell::Cell<u8>));
+    debug after => (*(_1.1: &u8));
+    let mut _0: ();
+    let mut _2: u8;
+    let mut _3: &std::cell::Cell<u8>;
+    let mut _4: &u8;
+
+    bb0: {
+        _3 = no_retag copy (_1.0: &std::cell::Cell<u8>);
+        _4 = no_retag copy (_1.1: &u8);
+        _2 = copy (*_4);
+        _0 = Cell::<u8>::set(copy _3, move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}

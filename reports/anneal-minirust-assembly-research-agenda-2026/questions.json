@@ -1,0 +1,277 @@
+{
+  "observed_at": "2026-10-14",
+  "issues": [
+    {
+      "number": 3873,
+      "url": "https://github.com/google/zerocopy/issues/3873",
+      "body_sha256": "8d2b55791a7500bf3991337edbb01a53494fa94fcd96cbf0f6055561e727d1c6"
+    },
+    {
+      "number": 3874,
+      "url": "https://github.com/google/zerocopy/issues/3874",
+      "body_sha256": "0fcc2e9dea04c83b15d1a770c9f2e1317329eecc28f2877846030034494324fb"
+    }
+  ],
+  "questions": [
+    {
+      "id": "MR01",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR01 — The precise RustBelt → MiniRust bridge.** Separate reuse of Iris, lifetime logic, semantic type definitions, typing rules and existing library proofs. What simulation, logical relation or new fundamental theorem connects value-cell λRust to byte/provenance/alias-sensitive execution? **Why:** sharing a proof framework does not transfer its language soundness theorem. **Experiments:** port an allocation API, `split_at_mut` and an interior-mutability API; independently add overflow, invalid Boolean representation and reference invalidation. State which direction reflects source UB, which clients are quantified over, and which representation invariants are required. Start from the RustBelt paper and appendix above."
+    },
+    {
+      "id": "MR02",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR02 — MiniRust, the Rust Reference and an end-to-end executable specification.** Map Reference clauses to core operations, elaboration steps, static judgments and unresolved policy choices. Study the proposed authoritative/non-authoritative split, feature evolution, implementation-defined parameters and standard-library/environment exclusions. **Why:** Anneal must distinguish Rust guarantees from a convenient experimental interpretation. **Experiments:** build a small clause-linked disagreement corpus for raw places, invalid referents, zero-size operations, metadata and unions; record disputed outcomes rather than choosing an implementation as the authority. Follow the [executable-spec goal](https://goals.rust-lang.org/2026/executable-spec.html) and [Reference UB chapter](https://doc.rust-lang.org/reference/behavior-considered-undefined.html)."
+    },
+    {
+      "id": "MR03",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR03 — Specr semantics, elaboration and formal backends.** Specify and compare name resolution, recursive definitions, implicit copying, references, pattern matching, early returns and effect propagation in literate Specr. Inventory existing Rust transpilation, typecheckers and any Rocq/Lean backend; distinguish working code, proposed work and inaccessible artifacts. **Why:** a checked proof about an incorrectly imported interpreter proves the wrong semantics. **Experiments:** translate the same small snippets through independent paths; test semantic mutants and unsupported constructs. Compare verified translation, a deliberately small trusted elaborator, and proof-producing import. Begin with [pinned transpiler documentation](https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/README.md). A verified formal backend is an investigation target, not assumed available."
+    },
+    {
+      "id": "MR04",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR04 — Angelic and demonic nondeterminism, UB and executability.** Define universal safety, existential provenance prediction, failed choice, divergence and unsupported interpreter execution separately. **Why:** replacing semantic quantifiers with one successful run can reverse the claim. At the observed Specr pin, executable `pick` samples at most 50 times and `predict` is unimplemented; these operational limitations must not become language semantics. **Experiments:** exhaust finite choice spaces, introduce rare valid allocations, and compare competing exposed provenances. Design explicit certificates for choices and negative controls that reject an unjustified quantifier swap. See [nondet.rs](https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr/src/nondet.rs)."
+    },
+    {
+      "id": "MR05",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR05 — Rust → MIR → MiniRust source-safety correspondence.** Audit the `minimize` pipeline, retag insertion, UB-preserving flags, optimization stages, unsupported branches, constants, moves and eliminated computations. **Why:** a refinement theorem premised on source UB-freedom cannot independently establish that same UB-freedom. **Experiments:** paired sources differing by one safety-relevant operation, including discarded results and unreachable-after-UB paths; retain each intermediate representation. Propose checked per-pass obligations and an initial source/import adequacy boundary, cross-referencing open P127 in #3867. See [tooling scope](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/README.md) and [translator flags](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/main.rs)."
+    },
+    {
+      "id": "MR06",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR06 — Mechanized representation laws for zerocopy contracts.** Determine which encode/decode, well-formedness, initialization and monotonicity laws support `FromBytes`, `IntoBytes`, `TryFromBytes` and alignment obligations. **Why:** an interface with stated laws is not yet a proof of those laws or their applicability to a Rust API. **Experiments:** bounded counterexample search followed by general proofs for scalars, arrays, enums and unions; preserve padding, provenance and validity hypotheses. Bind any result to the physical access interpretation, rather than silently closing P131 in #3867. Start with [representation definitions and proposed generic properties](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md)."
+    },
+    {
+      "id": "MR07",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR07 — Typed copies, byte copies and observations of storage.** Compare aggregate moves, byte copies, integer loads/stores and overlapping copies for padding, partial initialization, `MaybeUninit`, unions and fragmented pointers. **Why:** equality of typed values can forget information that an unsafe client observes later. **Experiments:** perform equivalent-looking copies through each route and compare subsequent permitted observations; prove the exact abstraction or refinement under which replacement is valid. Use [MiniRust representations](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md) and the [Miri/MiniRust discrepancy tracker](https://github.com/rust-lang/miri/issues/2159) as sources of discriminating cases."
+    },
+    {
+      "id": "MR08",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR08 — Strict provenance, exposed provenance and aliasing jointly.** Separate address extraction, address replacement, exposure, integer casts and integer transmutation. Study deallocation, address reuse, bytewise reconstruction and selection among exposed alias tags. **Why:** preserving a numeric address does not establish authority to access memory. **Experiments:** compare exact semantic choices with wildcard approximations, especially when tags sharing an address have different permissions. Seek a provenance/aliasing compatibility theorem and compositional cast contracts. Sources include [pointer APIs](https://doc.rust-lang.org/std/primitive.pointer.html), [exposed provenance](https://doc.rust-lang.org/stable/std/ptr/fn.with_exposed_provenance.html) and the [wildcard-provenance thesis](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2025-Roy-Thesis.pdf)."
+    },
+    {
+      "id": "MR09",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR09 — Target parameters, numeric semantics and portable claims.** Inventory address widths, fixed-width overflow and shifts, endianness, alignment, supported atomics and floating-point behavior. Distinguish specification integers from modeled machine operations and host-language arithmetic. **Why:** a proof for one target or one interpreter host is not automatically a portable Rust result. **Experiments:** small 32/64-bit and little/big-endian target families, boundary arithmetic, packed fields and zero-sized types; add FP cases only with an explicit semantics. Compare target-parametric theorems with target-specific layout certificates. Start with the [target interface](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/prelude/target.md) and [Reference layout guarantees](https://doc.rust-lang.org/reference/type-layout.html)."
+    },
+    {
+      "id": "MR10",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR10 — Dynamic layout, DSTs, vtables and validity.** Connect metadata interpretation, dynamic size/alignment, dereferenceability, retag ranges and dynamic dispatch. Include niches, enum discriminants, unsized tails, recursive layout and compiler-generated metadata. **Why:** a wide pointer treated as an arbitrary pair of words omits important safety obligations. **Experiments:** oversized slices, zero-sized elements, valid metadata paired with an invalid data pointer, and wrong-trait vtables; reject candidates in the model without executing invalid Rust. See [pointer definitions](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/pointer.md) and [representation checks](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md)."
+    },
+    {
+      "id": "MR11",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR11 — Correspondence among the Tree Borrows calculus, MiniRust and Miri.** Compare protector release, implicit accesses, range splitting, retagging, zero-size operations, interior mutability and exposed provenance operation by operation. **Why:** the name “Tree Borrows” does not identify one interchangeable semantics or make all optimization theorems applicable to every implementation. **Experiments:** exhaustive short access traces followed by targeted simulations and minimized disagreement cases. State every supported fragment and direction. Sources: [PLDI paper](https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf), [MiniRust implementation](https://github.com/minirust/minirust/tree/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows), and pinned Miri source chosen by the report."
+    },
+    {
+      "id": "MR12",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR12 — An Iris program logic for byte- and alias-sensitive MiniRust memory.** Evaluate lifetime resources, permission weakening, subtree abstraction, lateral separation and frame rules without exposing complete borrow trees in every API contract. **Why:** a useful operational model still needs a compositional reasoning interface. **Experiments:** split/recombine, recursive reborrowing and callbacks accessing sibling aliases. Rudy Peterson's [2025 thesis](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Rudy-Thesis.pdf) supplies a simplified λTB logic and adequacy result to examine; full protectors, interior mutability, byte representations and dynamic retag sizes need explicit gap analysis. Reuse results only after establishing the model relation."
+    },
+    {
+      "id": "MR13",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR13 — Protectors, `UnsafeCell` and field-sensitive invariants.** Study call-duration protection, implicit accesses on exit, frozen subfields, nested interior mutability, returned references and exceptional exits. **Why:** exclusive ownership of a numeric byte range alone may fail to preserve a caller's protected resources. **Experiments:** mixed mutable/immutable fields, retained callback aliases and references returned through several reborrows. Derive local contracts and resource-restoration obligations, with negative controls for premature permission recovery. Start with [retag settings](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/reborrow_settings.md) and the λTB thesis above."
+    },
+    {
+      "id": "MR14",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR14 — Composing byte-level race detection with alias-sensitive memory.** Examine overlapping ranges, disjoint fields in one allocation, allocation reuse, synchronization and protector updates. **Why:** correctness of two memory components separately does not establish correctness of their combination. **Experiments:** concurrent reads, mixed atomic/non-atomic operations and partial overlaps; make access granularity and atomicity explicit. Seek a machine-level adequacy/composition theorem. The current [concurrent wrapper](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/concurrent.md) provides an SC-atomic/non-atomic starting point, not a model of every Rust memory ordering."
+    },
+    {
+      "id": "MR15",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR15 — Extending toward relaxed memory.** Compare RustBelt Meets Relaxed Memory, relevant Iris weak-memory logics, MiniRust's current wrapper and candidate hardware/language models. Track what changes in heap interpretation, lifetimes, synchronization and reclamation. **Why:** proofs under sequential consistency can miss behaviors of optimized concurrent Rust. **Experiments:** message passing, reference counting and reclamation under explicit orderings; include forbidden-outcome controls. State which operations the chosen weak-memory model supports rather than substituting one named model wholesale. Sources: [RustBelt Meets Relaxed Memory](https://plv.mpi-sws.org/rustbelt/rbrlx/paper.pdf) and [appendix](https://plv.mpi-sws.org/rustbelt/rbrlx/appendix.pdf)."
+    },
+    {
+      "id": "MR16",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR16 — Unwinding, drop elaboration and resource restoration.** Relate source destructors and cleanup paths to MiniRust's existing unwind payloads and start/stop/resume operations. Include partial initialization, moved fields, panic during destruction, catches and protected references. **Why:** checking normal returns alone can miss invalid cleanup or lost ownership. **Experiments:** drop counters plus memory/alias assertions on every exit; derive exceptional contracts and a safety-reflecting elaboration obligation. Sources: [current terminators](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/terminators.md) and [2024 drop-elaboration thesis](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf). Record each thesis theorem's actual fragment."
+    },
+    {
+      "id": "MR17",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR17 — Intrinsics, allocation and standard-library/environment contracts.** Determine which operations expand into verified MiniRust code and which require external contracts. Include unaligned operations, copy primitives, allocation/reallocation failure, address reuse, panic runtime and foreign calls. **Why:** otherwise the unsafe leaves needed by a verified API remain hidden assumptions. **Experiments:** vary alignment, size zero, overlap, allocation failure and callbacks; quantify allowed environment behavior and implementation identity. Sources: [intrinsics](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/intrinsics.md), [basic memory](https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/basic.md), and the executable-spec goal's exclusions."
+    },
+    {
+      "id": "MR18",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR18 — Linking functional safe-code proofs with spatial unsafe-code proofs.** Compare Aeneas/Charon, RefinedRust/Radium, Gillian-Rust and other previously surveyed routes specifically at this interface. What may be forgotten about storage, provenance and ownership when exposing a functional contract? **Why:** separately proving a value-level parser and a low-level memory wrapper does not establish their composition. **Experiments:** pure parser, shared and mutable slice views, and an interior-mutable wrapper with adversarial safe callbacks. Seek a contextual safety/functional abstraction theorem and explicitly bind lowerings, primitive contracts and caller domains. Use the [RefinedRust paper](https://plv.mpi-sws.org/refinedrust/paper-refinedrust.pdf) and existing corpus as starting evidence, not a fresh tool-name survey."
+    },
+    {
+      "id": "MR19",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR19 — Modular semantics and reusable proof components.** Evaluate factoring state, UB, nondeterminism, control and concurrency into handlers or semantic modules, versus a direct monolithic definition. **Why:** a maintainable formalization should permit checked evolution without hiding interaction obligations in a generic framework. **Experiments:** formalize one sequential byte-memory fragment, then add an interacting effect and compare proof/TCB cost. Investigate [Program Logics à la Carte](https://plf.inf.ethz.ch/research/popl25-itree-program-logic.html), interaction-tree approaches and [Logical Relations à la Carte](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf). Inspect state-access and recursion restrictions before treating extension mechanisms as ready-made unsafe-memory plugins."
+    },
+    {
+      "id": "MR20",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR20 — Disagreement-driven validation and evidence classification.** Compare MiniRust, Miri, formal embeddings and compiled executions without treating one implementation as an infallible oracle. **Why:** unsupported lowering, sampler failure, semantic UB and a genuine model discrepancy require different conclusions. **Experiments:** metamorphic tests, exhaustive bounded traces, minimized counterexamples and deliberately faulty translators; preserve exact pins, target, memory model and outcome class. Sources include the [discrepancy tracker](https://github.com/rust-lang/miri/issues/2159) and [proposed MiniRust/Miri validation project](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjectProposals/minirust-miri-test-suite.pdf). Report what the tests establish and which universal correspondence obligations remain."
+    },
+    {
+      "id": "MR21",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR21 — Static semantics, elaboration and the full Rust feature boundary.** Study a-mir-formality, trait solving, method resolution, auto-deref, pattern matching, temporary lifetimes, generics, const evaluation and macros as sources of obligations before the dynamic core. Include `Pin`/async/generators and closures where lowering exposes hidden state or drop behavior. **Why:** a faithful core interpreter cannot repair an incorrect choice of resolved operation or omitted compiler-generated code. **Experiments:** small feature pairs whose elaboration differs while surface syntax looks similar; test whole-item and generated-code coverage. Connect each judgment to the accepted [surface-to-core specification plan](https://goals.rust-lang.org/2026/executable-spec.html); treat unsupported features as explicit scope boundaries."
+    },
+    {
+      "id": "MR22",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR22 — Open libraries, unsafe traits and contextual API soundness.** Define safe-client quantification, abstraction invariants, lifetime parameters, trait/dictionary assumptions, reentrant callbacks and foreign callers. Distinguish unsafe callers violating a precondition from a safe API that permits an invalid state. **Why:** a closed executable example or a hand-picked valid initial state cannot establish a reusable unsafe abstraction. **Experiments:** `Vec`-like storage, zerocopy trait implementations and an API whose clients retain aliases; mutate an unsafe-trait premise or attach a proof to the wrong monomorphization. Seek an explicit fundamental/linking theorem over the selected MiniRust semantics, building on MR01/MR18 rather than assuming Rust's type checker supplies the whole result."
+    },
+    {
+      "id": "MR23",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR23 — MiniRust memory at an ABI or assembly boundary.** Define the relation between logical allocation/provenance/tagged byte state and concrete machine registers/addresses. Study pointer round trips, byte accesses, callbacks, stack ownership, clobbers and exceptional exits. **Why:** an assembly proof over flat bytes cannot by itself justify resuming Rust under its validity and aliasing rules. **Experiments:** read-only loads, in-place updates, pointer-returning functions and a callback, each with a permission/provenance mutant. Coordinate with the [assembly/Kraken agenda](https://github.com/google/zerocopy/issues/3874); keep hardware, ABI, compiler and source/import arrows separately named."
+    },
+    {
+      "id": "MR24",
+      "issue": 3873,
+      "original_checklist_text": "- [ ] **MR24 — Adoption alternatives, internal TCB and shared benchmark decisions.** Compare a direct Iris/Rocq formalization, a Lean embedding, a checked Specr import, translation to an existing concrete Rust semantics, and mixed-backend certificates. Account for parsers, semantics definitions, kernels, axioms, solver evidence, extraction and version maintenance. **Why:** the smallest proof kernel is only one component of a defensible Anneal trust boundary. **Experiments:** one common byte/alias API across viable routes, with proof-generation/checking costs, negative controls and upgrade repair measured separately. Reuse #3866's completed TCB research; publish a conditional decision matrix, not an architecture selected by familiarity or a build-green result."
+    },
+    {
+      "id": "AS01",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS01 — Kraken capability, semantic coverage and theorem closure.** Inventory architectures, instruction forms, effects, state components, parser paths, execution/proof APIs, package pins and selected theorem axioms. Distinguish fully proved examples from admitted examples and unsupported operations. **Why:** every subsequent claim depends on the actual fragment used. **Experiments:** one closed arithmetic theorem and one bounded-memory theorem, with negative controls for a missing opcode, missing state component and an admitted dependency. Audit the theorem's dependency closure rather than equating a successful build or a repository-wide `sorry` count with its soundness. Start with [syntax/semantics](https://github.com/AeneasVerif/kraken/tree/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken) and [proof composition](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/OmniSemantics.lean)."
+    },
+    {
+      "id": "AS02",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS02 — Assembly source → checked AST fidelity.** Study instruction/operand parsing, widths, labels, macro/preprocessor expansion, directives, alignment, sections and CFI metadata. **Why:** a valid proof about a transformed or incompletely parsed program can describe the wrong implementation. **Experiments:** parse/print/assemble round trips; deliberately dropped data directives, changed operands and ambiguous widths. Compare round-trip checking with a proved parser or a small independent importer. Kraken [issue #5](https://github.com/AeneasVerif/kraken/issues/5) proposes assembled round trips; the [X64 parser](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Parser.lean) and [preprocessing implementation](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Parser/Basic.lean) are the pinned subjects, not evidence that such a theorem already exists."
+    },
+    {
+      "id": "AS03",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS03 — AST, encoding, decoding and executable layout certificates.** Connect instruction boundaries, external sizes, label arithmetic, alignment padding and actual bytes; distinguish pseudo-instructions and unencodable ASTs. **Why:** textual assembly semantics and binary semantics have different subjects. **Experiments:** a relocation-free leaf with a checked decode/layout witness, followed by wrong immediate, wrong size, duplicate label, embedded data and boundary-overflow mutants. Compare assembler round trips, independently checked decoding and verified encoding; state exactly which assembler assumptions each removes. Start with [Kraken Layout](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Layout.lean)."
+    },
+    {
+      "id": "AS04",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS04 — Kraken instructions versus authoritative/reference ISA semantics.** Relate selected operations to an independent ISA model under explicit mode, feature and system-state assumptions. Include implicit outputs, partial-register behavior, carry/overflow flags, overlapping operands, shift counts, alignment and faults. **Why:** proof-kernel checking cannot establish that the chosen instruction definition matches a real architecture. **Experiments:** per-instruction equivalence/refinement proofs plus differential counterexample search; separate architectural underspecification from an implementation bug. Include omitted SIMD/FP state such as the [current MXCSR TODO](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/Semantics.lean#L759), and follow [Kraken's semantic-review guidance](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/CONTRIBUTING.md) to primary architecture manuals."
+    },
+    {
+      "id": "AS05",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS05 — Complete access traces, permission checks and frame preservation.** Define the meaning of every read/write/execute request, its full width, ownership premise and fault outcome. Compare partial byte-map membership, virtual-memory permission and Rust permission as separate predicates. **Why:** unchanged final bytes do not rule out forbidden intermediate accesses. **Experiments:** bounded scalar load/store, crossing vector access, OOB read, temporary forbidden write/restore, and execution from a forbidden range. Evaluate a new effect interpretation versus trace instrumentation and prove its adequacy. Use [Effects.All](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/X64/OmniSemantics.lean), [memory](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Mem.lean) and [separation lemmas](https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/SeparationMem.lean). Reobserve upstream changes rather than assuming open access-width work is merged."
+    },
+    {
+      "id": "AS06",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS06 — Rust values, validity and register/byte representations.** Define input/result encodings for integers, pointers, aggregates, vectors and metadata, with initialization, padding, niches and discriminants explicit. **Why:** machine-bit equality can still return an invalid Rust value. **Experiments:** wrapping `u64` and byte arrays first, then noncanonical Boolean, invalid enum, uninitialized output and incorrect padding assumptions. Separate layout, ABI classification and semantic validity; do not infer one from another. Sources: [Rust type layout](https://doc.rust-lang.org/reference/type-layout.html), [UB/validity](https://doc.rust-lang.org/reference/behavior-considered-undefined.html), and the MiniRust follow-up agenda."
+    },
+    {
+      "id": "AS07",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS07 — Rust allocation, provenance and borrows versus machine addresses.** Define the extra logical resources accompanying flat addresses, and their preservation across loads, stores, integer arithmetic and pointer returns. **Why:** Kraken's concrete bytes alone do not identify a live Rust allocation or permission to use its pointer. **Experiments:** live bounded exclusive region and read-only shared region, then expired provenance at the same address, invalidated tag, mutable overlap, or returned pointer whose numeric bits look right but whose authority is wrong. Relate the result to a pinned MiniRust/Radium model and its alias rules; a separation-map proof by itself is only one component of this bridge."
+    },
+    {
+      "id": "AS08",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS08 — Inline operands, register allocation and overlap.** Formalize ties, input/output timing, early writes, `lateout`/`inlateout`, explicit registers, classes, subregisters, upper bits and implicit operands. **Why:** an inline block must work for the compiler-permitted allocations covered by its source contract, not just a convenient test allocation. **Experiments:** valid tied operands and delayed output; mutants that overwrite an overlapping input early, use undeclared scratch registers or depend on unspecified bits. Compare universal source-level allocation contracts with certificates for specific compiled instances. Use the [inline-assembly operand specification](https://doc.rust-lang.org/reference/inline-assembly.html#operand-type)."
+    },
+    {
+      "id": "AS09",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS09 — Proving compiler-facing inline effect options.** Derive proof obligations for `pure`, `nomem`, `readonly`, `preserves_flags`, `nostack`, `noreturn` and ABI clobbers. Include determinism, permitted observations and all relevant architectural state. **Why:** a false effect annotation can license invalid compiler transformations even when one direct run gives the intended output. **Experiments:** memory or synchronization under too-strong options, hidden flag changes, private stack versus external memory, and an undeclared input dependence. Prove each advertised guarantee or reject it when the model lacks required state. The [Rust inline contract](https://doc.rust-lang.org/reference/inline-assembly.html) is the authority; compiler lowering is a separate connection."
+    },
+    {
+      "id": "AS10",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS10 — Inline stack, exits and surrounding continuations.** Model restored stack/register resources, allowed scratch regions, labels, noreturn/divergence, outlining, duplication and context switching where relevant. **Why:** a block verified as an isolated function may have a different interface from an inline block embedded in compiler-managed code. **Experiments:** valid internal branch and restored SP, then changed SP, wrong label exit, fallthrough from a nonreturning block, cross-block jump and unwind through ordinary `asm!`. State the continuation theorem and assumptions permitting compiler motion or duplication. Use the [inline control/stack rules](https://doc.rust-lang.org/reference/inline-assembly.html#rules-for-inline-assembly)."
+    },
+    {
+      "id": "AS11",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS11 — Whole-function contracts for named platform ABIs.** Formalize argument/result classification, return address, preserved registers, SP alignment, scratch space, red zones and shadow space, aggregate/indirect returns, varargs and platform variants. **Why:** instruction-level `call`/`ret` behavior is not a calling-convention theorem. **Experiments:** a scalar `extern \"C\"` leaf, then clobbered callee-saved state, wrong sign/zero extension, missing caller space and a SysV/Windows mismatch. Use primary [x86-64 psABI sources](https://gitlab.com/x86-psABIs/x86-64-ABI), [Microsoft x64 convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention), and [AAPCS64](https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst). Pin the precise document/platform variant in each report."
+    },
+    {
+      "id": "AS12",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS12 — Native Rust ABI, `FnAbi` witnesses and wrapper alternatives.** Investigate exporting and independently checking compiler-pinned argument/result/layout information, including compiler flags, target triple, monomorphization, hidden arguments, ZSTs, wide pointers, aggregates and indirect returns. **Why:** native Rust ABI instability prevents a timeless handwritten register convention from describing all builds. **Experiments:** compare a C ABI wrapper, external assembly, supported naked functions and a compiler-specific native-Rust entry; invalidate a witness after a signature/compiler/target change. Account for what remains compiler-trusted. Sources: [ABI stability statement](https://doc.rust-lang.org/reference/items/external-blocks.html#abi), [naked restrictions](https://doc.rust-lang.org/reference/attributes/codegen.html#the-naked-attribute) and compiler implementation inspected by the eventual report."
+    },
+    {
+      "id": "AS13",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS13 — Verified callees, callbacks, panic and unwinding.** Specify compositional calls, scratch/preserved resources, reentrancy, tail calls, function pointers, cleanup and unwind metadata. Distinguish ordinary inline assembly's unwind restrictions from whole-function ABI policies. **Why:** a leaf proof does not cover calls into arbitrary Rust or foreign code. **Experiments:** call a verified helper and a safe callback, then missing clobber, callback violating a borrow invariant, unexpected panic/unwind, and stripped/mismatched CFI. Use [Rust function unwinding rules](https://doc.rust-lang.org/reference/items/functions.html#unwinding) and the chosen platform unwind specification; keep forced unwinding and nonlocal jumps explicit scope questions."
+    },
+    {
+      "id": "AS14",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS14 — What “behaviorally identical to pure Rust” must mean.** Choose a shared domain, observation model and relation covering results, writes, permitted reads, panic/error behavior, divergence, allocation and externally visible events. Study both refinement directions where equivalence is requested. **Why:** matching outputs on terminating valid tests, or satisfying a loose postcondition twice, does not prove identical behavior. **Experiments:** assembly versus Rust `wrapping_add`, multiword carry, byte copy and a checked wrapper; introduce overflow-panic, oversized-shift, aliasing and termination mismatches. Compare a direct relational proof with both implementations refining a sufficiently complete functional/state specification. Retain the Rust-source/import obligation from P127 in #3867."
+    },
+    {
+      "id": "AS15",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS15 — Linking an assembly certificate into Anneal's Rust semantics.** Define contracts that transfer values and resources into machine states and restore the caller's invariants on every permitted exit. Compare logical relations, mixed-language operational semantics and event/module interfaces. **Why:** ABI conformance and a standalone assembly theorem still need a rule justifying replacement inside an arbitrary supported Rust context. **Experiments:** one unsafe wrapper with retained aliases and callbacks, plus a mutant that preserves scalar results while breaking a live borrow. Investigate [DimSum](https://plv.mpi-sws.org/dimsum/) and existing RustBelt/RefinedRust interfaces, recording their actual language/concurrency scope; an idealized multi-language example is a methodology, not a ready Rust adapter."
+    },
+    {
+      "id": "AS16",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS16 — Object files, linking, loading and deployed-code identity.** Trace symbols, relocations, code/data sections, thunks, PIC/PLT, linker relaxation, interposition, LTO, deduplication, target-feature dispatch and patching. **Why:** the bytes executed may differ from the object or source proved. **Experiments:** bind a certificate to a final symbol/range and relocation environment; reject a one-byte patch, stale object, alternate dispatch branch, wrong symbol and changed relocation. Compare relocation-parametric proofs, post-link checking and restricted immutable deployments. Reuse prior claim-binding research; do not infer final executable coverage from a source hash alone."
+    },
+    {
+      "id": "AS17",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS17 — Kraken fragment/WP/frame infrastructure and upstream evolution.** Evaluate compositional straight-line and looping fragments, jump targets, frame rules, calls, layout independence and separately checked summaries. **Why:** a usable Anneal adapter should compose local theorems without relying on accidental code placement or duplicated whole-program proofs. **Experiments:** concatenate and embed proved fragments; reject an escaping jump, overlapping layout or violated invariant. Compare the pinned baseline with the actual states of upstream work such as [#140](https://github.com/AeneasVerif/kraken/pull/140), [#165](https://github.com/AeneasVerif/kraken/pull/165), [#166](https://github.com/AeneasVerif/kraken/pull/166) and [#161](https://github.com/AeneasVerif/kraken/pull/161). Label baseline, PR-specific, proposed and executed findings separately."
+    },
+    {
+      "id": "AS18",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS18 — Sail and generated ISA definitions, especially Lean.** Inventory current authoritative/generated ISA sources, supported targets, architecture effects and Lean/Rocq/Isabelle backends. Compare a Kraken-to-reference relation with using generated semantics directly. **Why:** a larger architecture definition can reduce handwritten semantic assumptions while making proof automation harder. **Experiments:** independently import/decode and prove a few shared instructions, including an underspecified result and a fault case. Account for model preprocessing, backend correctness, unsupported effects and configuration restrictions. A concrete starting point is the [Sail Lean backend](https://github.com/rems-project/sail/blob/7e0e53d183cad75b8f36bfbbecc0ef75614a8418/src/sail_lean_backend/sail_plugin_lean.ml); generated code alone does not establish a verified translation."
+    },
+    {
+      "id": "AS19",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS19 — Isla/Islaris and Iris reasoning over realistic machine code.** Study symbolic ISA traces, program-logic adequacy, opcode summaries, memory effects and the distinction between trusted trace generation and checked trace validation. **Why:** this is a concrete route to manageable foundational proofs over a large ISA model, and offers a comparison for Kraken's effect interpretation. **Experiments:** a bounded load/store routine and an instruction with multiple semantic paths; mutate a pruned branch or omitted access. Inspect the [Islaris paper](https://www.cl.cam.ac.uk/~pes20/2022-pldi-islaris.pdf) and [adequacy source](https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/theories/adequacy.v). Verify architecture-specific validation coverage rather than applying a RISC-V result to Arm by analogy."
+    },
+    {
+      "id": "AS20",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS20 — Jasmin and verified compilation from an assembly-oriented language.** Evaluate source-to-assembly relations, register allocation, calling conventions, memory/stack models and proof-preserving optimization. **Why:** generating proved assembly from a controlled language may remove different obligations from verifying arbitrary imported assembly. **Experiments:** the same arithmetic and bounded-memory routine as Kraken, with shared contract/ABI mutants; examine export boundaries and final-byte identity. Pin and classify proved, validated and trusted passes using [Jasmin's pass inventory](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/docs/source/compiler/passes/index.md) and [compiler theorem](https://github.com/jasmin-lang/jasmin/blob/34f15840f10625bbc2cbf59b3d877e94c75bfbd9/proofs/compiler/it_compiler_proof.v). Keep Rust equivalence and callers as additional obligations."
+    },
+    {
+      "id": "AS21",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS21 — Vale, F*/Dafny and verified cryptographic assembly.** Examine procedure contracts, trusted instruction/state specifications, preservation discipline, verified wrappers and extraction/output boundaries, including connections to Low*/EverCrypt where useful. **Why:** these systems offer mature patterns for composing functional and low-level obligations, but their automation and trust boundaries differ from a Lean kernel route. **Experiments:** port the shared scalar/memory cases; compare both successful proofs and rejection of hidden clobber/footprint mutants. Sources: [Vale introduction](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/doc/rtd/intro.rst) and [trusted specification inventory](https://github.com/project-everest/vale/blob/bbae0eb89143734363b14a77642dbf8dec36e288/CODE.md). Do not equate a Vale procedure with arbitrary Rust inline assembly."
+    },
+    {
+      "id": "AS22",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS22 — HOL Light/s2n-bignum: actual bytes, subroutine contracts and access safety.** Study binary binding, decoded instructions, ABI return/frame conditions and the separation of functional, trace-safety and constant-time theorems. **Why:** this supplies a useful concrete shape for whole-function certificates and exposes what output equality leaves unproved. **Experiments:** an object-bound routine, an out-of-range read and a temporary forbidden write that restores final memory; audit downstream reassembly and caller/header boundaries. Start with [a subroutine proof](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/x86/proofs/bignum_add.ml) and [SOUNDNESS.md](https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/SOUNDNESS.md). Record exact theorem coverage instead of assuming every routine has every safety result."
+    },
+    {
+      "id": "AS23",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS23 — Other machine-code foundations and lifting/validation techniques.** Compare relevant ACL2 x86isa, K x86 semantics, HOL4/HolBA, CompCert assembly semantics, CakeML, Bedrock/bedrock2 and RISC-V proof ecosystems, using precise reusable mechanisms rather than a catalogue of names. Include binary-analysis/SMT tools only where they can produce checkable evidence or useful counterexamples. **Why:** architecture coverage, verified lifting, open-module linking or small checkers may be stronger in another ecosystem. **Experiments:** select at least one competing route based on an actual missing Kraken obligation and run the common positive/negative cases. Use the existing corpus and primary project papers/code to avoid duplicating general compiler surveys; leave irrelevant families explicitly deferred."
+    },
+    {
+      "id": "AS24",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS24 — Internal TCB and proof-producing assembly adapters.** Account for kernels, theorem axioms, elaborators, parsers, ISA/memory definitions, solver reductions, ABI witnesses, byte decoders and artifact binding. Compare direct proof terms, reflection, verified lifting and independently checked certificates. **Why:** untrusted automation is useful only when a small checker validates the exact semantic claim; a kernel can still check a theorem about the wrong program or model. **Experiments:** corrupt an opcode, proof, effect summary, ABI witness and certificate binding independently; measure which component rejects each. Reuse #3866/#3867 and the prior kernel/version findings rather than assuming an axiom printout proves the whole checker implementation correct."
+    },
+    {
+      "id": "AS25",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS25 — Atomics, fences and Rust/hardware weak-memory compatibility.** Study access granularity, atomic instruction semantics, locked operations, compiler barriers, hardware fences, mixed atomic/non-atomic accesses and Rust's data-race rules. **Why:** sequential instruction correctness cannot establish concurrent inline assembly soundness or justify synchronization annotations. **Experiments:** bounded litmus tests and a small atomic wrapper against a named language/hardware memory model; reject a missing fence and a falsely declared memory effect. Identify what can be proved using a sequential Kraken model and which new semantics are required; preserve unsupported atomic/SIMD/FP boundaries rather than silently treating instructions as ordinary accesses."
+    },
+    {
+      "id": "AS26",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS26 — Constant-time and other security properties beyond functional equivalence.** Define public/secret inputs and the observation model for control flow, addresses, instruction timing, speculation and declassification. **Why:** functional equivalence may preserve outputs while changing leakage; architectural constant-time is also distinct from physical side-channel resistance. **Experiments:** relational two-run proofs for the shared arithmetic routine, plus a secret branch/address mutant and explicit variable-latency assumptions. Compare s2n-bignum, Jasmin and Vale techniques where supported. State which hardware assumptions, speculative behaviors and fault-injection models are outside the claim; do not burden ordinary soundness with an implicit security theorem."
+    },
+    {
+      "id": "AS27",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS27 — Platform and privileged extensions: explicit scope and environment contracts.** Investigate interrupts, signals, TLS, context switching, stack probing, virtual memory, MMIO/volatile access, syscalls, DMA, self-modifying code and platform control-flow protections where a real Anneal use case requires them. Include PAC/BTI/CET, shadow stacks and unwind/security metadata as conditional obligations. **Why:** these effects can invalidate an otherwise valid hosted sequential proof, and Kraken's current restricted model does not automatically cover them. **Experiments:** choose one motivated extension and state its environment/interference contract; reject an omitted effect. Compare extending Kraken with using a system-level ISA model, keeping unsupported cases visible."
+    },
+    {
+      "id": "AS28",
+      "issue": 3874,
+      "original_checklist_text": "- [ ] **AS28 — Shared pilot corpus, costs and conditional architecture decision.** Combine representative cases: add/carry/multiply, byte swap, bounded load/store/copy, pointer return, inline labels, a whole C ABI leaf and a verified helper call. Include at least one actual zerocopy-style byte operation, both x86-64 and AArch64 where supported, and scalar/SIMD variants only with adequate semantics. **Why:** architecture choices should compare the same theorem and negative controls, not proof-line counts from different domains. **Experiments:** measure proof production, checking, import/byte-binding cost, reuse and repair after a controlled source/ABI/version change; distinguish compilation, modeled execution and checked theorems. Publish a conditional matrix of discharged arrows, residual TCB, unsupported scope and implementation effort."
+    }
+  ]
+}

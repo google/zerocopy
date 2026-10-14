@@ -11153,6 +11153,30 @@
         "macos/relocation"
       ]
     },
+    "anneal-minirust-assembly-research-agenda-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "8d2b55791a7500bf3991337edbb01a53494fa94fcd96cbf0f6055561e727d1c6",
+            "url": "https://github.com/google/zerocopy/issues/3873"
+          },
+          "name": "Research agenda issue3873"
+        },
+        {
+          "identity": {
+            "body_sha256": "0fcc2e9dea04c83b15d1a770c9f2e1317329eecc28f2877846030034494324fb",
+            "url": "https://github.com/google/zerocopy/issues/3874"
+          },
+          "name": "Research agenda issue3874"
+        }
+      ],
+      "topics": [
+        "anneal/research-agenda",
+        "minirust",
+        "assembly/verification"
+      ]
+    },
     "anneal-nix-fixed-output-downloads-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -19575,6 +19599,159 @@
         "semantics/correspondence"
       ]
     },
+    "minirust-representation-copy-provenance-laws-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust operational specification"
+        },
+        {
+          "identity": {
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "zenodo": "21636474"
+          },
+          "name": "RefinedRust 2026 source artifact"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "url": "https://doc.rust-lang.org/std/ptr/fn.with_exposed_provenance.html",
+            "version": "1.99.0"
+          },
+          "name": "Rust exposed-provenance API documentation"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean proof checker"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "89d8c1111825049296abb845f47451cdfb8685561e8296f8184a3aef46eedeac"
+          },
+          "name": "Owned investigation fragment"
+        },
+        {
+          "identity": {
+            "artifact": "support/enum_wf_probe.py",
+            "sha256": "6ed461bbb3ed08b0cceb147ea5c0ef173934dbece2dff200250a9a952cd33b05"
+          },
+          "name": "Owned investigation fragment"
+        },
+        {
+          "identity": {
+            "artifact": "support/Representation.lean",
+            "sha256": "d573f64e1ebb9117376be9dfb0d057795fd4c2a73ee87fc37b88d882e983fd3c"
+          },
+          "name": "Owned investigation fragment"
+        },
+        {
+          "identity": {
+            "artifact": "support/EnumCoherence.lean",
+            "sha256": "fcc40a8d7c108e1cdb9de885cbdf8435163c780e68f5600914f4587c50bdcbcc"
+          },
+          "name": "Owned investigation fragment"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "rust/representation",
+        "rust/provenance",
+        "rust/typed-copies",
+        "verification/representation-laws",
+        "zerocopy/contracts"
+      ]
+    },
+    "minirust-rustbelt-spatial-linking-obligations-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust operational specification"
+        },
+        {
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          },
+          "name": "RustBelt original LambdaRust source archive"
+        },
+        {
+          "identity": {
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "zenodo": "21636474"
+          },
+          "name": "RefinedRust 2026 source artifact"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas configuration and prior-corpus comparison"
+        },
+        {
+          "identity": {
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          },
+          "name": "Gillian dual contract emitter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust compiler used for safe client probe"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean proof checker"
+        },
+        {
+          "identity": {
+            "artifact": "support/Bridge.lean",
+            "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554"
+          },
+          "name": "Owned investigation fragment"
+        },
+        {
+          "identity": {
+            "artifact": "support/safe_clients.rs",
+            "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9"
+          },
+          "name": "Owned investigation fragment"
+        }
+      ],
+      "topics": [
+        "minirust",
+        "rustbelt",
+        "refinedrust",
+        "verification/linking",
+        "verification/source-safety",
+        "rust/interior-mutability"
+      ]
+    },
     "modular-foreign-contracts-and-open-execution": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -24844,6 +25021,85 @@
         "proof/elaboration",
         "proof/costs",
         "verification/diagnostics"
+      ]
+    },
+    "specr-import-nondeterminism-source-adequacy-15200eb": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust operational specification"
+        },
+        {
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "version": "0.1.41"
+          },
+          "name": "Specr Rust transpiler and executable support"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference comparison"
+        },
+        {
+          "identity": {
+            "document_date": "2025-02-08",
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Philipp-Thesis.pdf"
+          },
+          "name": "A Type-Checker for Specr thesis"
+        },
+        {
+          "identity": {
+            "document_date": "2025-03-24",
+            "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/PracticalWork-reports/2025-Jakub-Description.pdf"
+          },
+          "name": "Specr Compiler project description"
+        },
+        {
+          "identity": {
+            "goal_period": "2026",
+            "observed_document": "2026-10-14",
+            "url": "https://goals.rust-lang.org/2026/executable-spec.html"
+          },
+          "name": "Accepted executable Rust specification goal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean proof checker"
+        },
+        {
+          "identity": {
+            "artifact": "support/Choices.lean",
+            "sha256": "d084b2a332bc4cd849b026be005e8ac0c282b575a55639ffcdd6b7e8546d7dfd"
+          },
+          "name": "Owned investigation fragment"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "6306465ab2b89108bcfb32c3aeead927606d27e16e13278579ee5314a9f5e9f0"
+          },
+          "name": "Owned investigation fragment"
+        }
+      ],
+      "topics": [
+        "specr",
+        "minirust",
+        "semantics/nondeterminism",
+        "verification/import",
+        "verification/source-safety",
+        "rust/reference"
       ]
     },
     "staged-code-generation-and-certirocq-endpoint-linkage": {

@@ -1,0 +1,158 @@
+{
+  "observed_at": "2026-10-14",
+  "evidence_role": "source; no upstream execution",
+  "files": [
+    {
+      "key": "source1",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/README.md",
+      "git_blob_sha": "54c5fd0dd7f6a544d41cdad35a51ba934a658071",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/README.md"
+    },
+    {
+      "key": "source2",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "libspecr/src/nondet.rs",
+      "git_blob_sha": "95d1779861cccaaeeee767c7571e88debcf8433b",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr/src/nondet.rs"
+    },
+    {
+      "key": "source3",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/representation.md",
+      "git_blob_sha": "f87753d9d75d438e964d0a7ce445eca433c6d259",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md"
+    },
+    {
+      "key": "specr-main",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/src/main.rs",
+      "git_blob_sha": "200101db305821837bb88ff7b4f6c084613cbd3c",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/src/main.rs"
+    },
+    {
+      "key": "specr-source",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/src/source.rs",
+      "git_blob_sha": "9fbd977d089becddd233d5f652b4155944dbb6d9",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/src/source.rs"
+    },
+    {
+      "key": "specr-typerec",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/src/typerec/fix.rs",
+      "git_blob_sha": "2822cb35a0728bca20145993ce6f3028e8a88be6",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/src/typerec/fix.rs"
+    },
+    {
+      "key": "specr-argmatch",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/src/argmatch.rs",
+      "git_blob_sha": "42051cb60148f0a6f3d853c1fe8c250c96610c40",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/src/argmatch.rs"
+    },
+    {
+      "key": "specr-ret",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "libspecr/src/ret.rs",
+      "git_blob_sha": "e88ea46c1ba4b2772189d153681ec0931bf6e31a",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr/src/ret.rs"
+    },
+    {
+      "key": "specr-result",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "libspecr/src/ndresult.rs",
+      "git_blob_sha": "e0c597c42e903a1eb4538fd80cf785ca1b5c33af",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/libspecr/src/ndresult.rs"
+    },
+    {
+      "key": "specr-config",
+      "repository": "minirust/specr",
+      "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "path": "specr-transpile/src/config.rs",
+      "git_blob_sha": "12cb4fabe9f658c7b8395f267219d382bff9297d",
+      "url": "https://github.com/minirust/specr/blob/15200eb5e676e2ee91f43bd79e674f8fc32e5348/specr-transpile/src/config.rs"
+    },
+    {
+      "key": "minirust-readme",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "README.md",
+      "git_blob_sha": "1fa12c10854fbf28f3c00ed81b1b696d374823cb",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/README.md"
+    },
+    {
+      "key": "minirust-main",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/main.rs",
+      "git_blob_sha": "5a4a4d57dc3c705ae059a0e2f1427add3519ca22",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/main.rs"
+    },
+    {
+      "key": "minirust-function",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/function.rs",
+      "git_blob_sha": "b0e37aeb332e8d76b8a8eb23495b280b9b1c9a2f",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/function.rs"
+    },
+    {
+      "key": "minirust-rvalue",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/rvalue.rs",
+      "git_blob_sha": "4034fa970f3e66bdf0866ea3a440c75f77ce8540",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/rvalue.rs"
+    },
+    {
+      "key": "minirust-bb",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "tooling/minimize/src/bb.rs",
+      "git_blob_sha": "45f794ea44bab2524861136279d282f8df7074b8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/tooling/minimize/src/bb.rs"
+    },
+    {
+      "key": "minirust-basic",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/basic.md",
+      "git_blob_sha": "b050a1d14b9589d0908f8b70e58ec7411896bcaa",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/basic.md"
+    },
+    {
+      "key": "reference-ub",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/behavior-considered-undefined.md",
+      "git_blob_sha": "ff34d0af28ca3ec42f548abf6cd3bce5840a6798",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/behavior-considered-undefined.md"
+    },
+    {
+      "key": "reference-operators",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/expressions/operator-expr.md",
+      "git_blob_sha": "3b63884a5e445787078c19422fe627105e2a4933",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/expressions/operator-expr.md"
+    },
+    {
+      "key": "reference-union",
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/items/unions.md",
+      "git_blob_sha": "7b3d836e08dba7da2ebc125f8a8f6090089b2714",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/items/unions.md"
+    }
+  ]
+}

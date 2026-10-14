@@ -1,0 +1,91 @@
+{
+  "mr_ids": [
+    "MR02",
+    "MR03",
+    "MR04",
+    "MR05"
+  ],
+  "status": "completed bounded investigation; agenda entries only partially discharged",
+  "coverage": [
+    {
+      "id": "MR02",
+      "sections": [
+        "Findings 6"
+      ],
+      "answered_scope": "Five clause-linked current-Reference/core comparisons and accepted-spec authority/exclusion boundary; no invalid Rust execution.",
+      "stronger_unestablished_claims": [
+        "complete clause-to-core mapping",
+        "MiniRust normative authority for all Rust"
+      ],
+      "actual_unexamined_gaps": [
+        "complete Reference/static-judgment/desugaring mapping",
+        "actual disagreement executions"
+      ]
+    },
+    {
+      "id": "MR03",
+      "sections": [
+        "Findings 1",
+        "Findings 2",
+        "Findings 3"
+      ],
+      "answered_scope": "Exact working transpiler extraction/pass/resolution/Copy/effect interfaces; formal backend inventory; separate Specr2 thesis/project artifact status and 404.",
+      "stronger_unestablished_claims": [
+        "verified formal import/backend",
+        "global absence of other backend work"
+      ],
+      "actual_unexamined_gaps": [
+        "inaccessible Specr2 source",
+        "real independent transpilation run",
+        "formal recursion/return/reference/effect semantics"
+      ]
+    },
+    {
+      "id": "MR04",
+      "sections": [
+        "Findings 4"
+      ],
+      "answered_scope": "Exact semantic/executable choice split; finite exhaustive quantifier certificates/negative controls; performed deterministic sampler-budget model.",
+      "stronger_unestablished_claims": [
+        "full mixed angelic/demonic MiniRust adequacy",
+        "running exposed-provenance support"
+      ],
+      "actual_unexamined_gaps": [
+        "full future-dependent choice/divergence interpretation",
+        "rare actual BasicMemory allocations",
+        "actual competing alias-tag prediction"
+      ]
+    },
+    {
+      "id": "MR05",
+      "sections": [
+        "Findings 5"
+      ],
+      "answered_scope": "Exact flags/MIR query and selected retag/cast/Copy-Move/drop/unsupported branches; performed faulty-erasure negative control.",
+      "stronger_unestablished_claims": [
+        "source-safety-reflecting full Rust-to-MiniRust theorem",
+        "real translator discrepancy from toy control"
+      ],
+      "actual_unexamined_gaps": [
+        "real paired Rust/MIR/core specimens",
+        "complete constants/moves/pass audit",
+        "end-to-end cleanup discriminator"
+      ]
+    }
+  ],
+  "related_not_discharged": [
+    {
+      "id": "MR19",
+      "scope": "Formal effect interpretation requirement only; no modular semantics theorem."
+    }
+  ],
+  "performed": [
+    "Python finite choice/fence/erasure probes",
+    "Lean Choices.lean checked"
+  ],
+  "primary_exclusions": [
+    "No upstream transpiler/interpreter/minimize execution",
+    "Specr2 inaccessible",
+    "No invalid Rust execution"
+  ]
+}

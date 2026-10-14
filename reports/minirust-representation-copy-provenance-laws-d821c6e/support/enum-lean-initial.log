@@ -1,0 +1,6 @@
+support/EnumCoherence.lean:11:48: error: failed to synthesize
+  Decidable branchChecks
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+'EnumCoherence.checker_conditions' depends on axioms: [sorryAx]
+'EnumCoherence.known_discriminator_breaks_roundtrip' does not depend on any axioms

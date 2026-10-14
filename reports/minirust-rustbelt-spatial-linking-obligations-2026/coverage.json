@@ -1,0 +1,61 @@
+{
+  "mr_ids": [
+    "MR01",
+    "MR18"
+  ],
+  "status": "completed bounded investigation; agenda entries only partially discharged",
+  "coverage": [
+    {
+      "id": "MR01",
+      "sections": [
+        "Findings 1",
+        "Findings 2",
+        "Findings 3"
+      ],
+      "answered_scope": "Exact original and newer adequacy/type interfaces; component reuse distinction; safety-reflection direction; checked abstraction counterexamples and interval fragment.",
+      "stronger_unestablished_claims": [
+        "lambdaRust-to-MiniRust/Radium-to-MiniRust simulation",
+        "MiniRust fundamental theorem",
+        "actual allocation/split/Cell library proof port"
+      ],
+      "actual_unexamined_gaps": [
+        "complete original/Radium proof builds and assumption closure",
+        "real alias/protector operations",
+        "all source-lowering behavior"
+      ]
+    },
+    {
+      "id": "MR18",
+      "sections": [
+        "Findings 4",
+        "Findings 5"
+      ],
+      "answered_scope": "Functional/spatial linking interface and caller quantifiers; performed safe parser/slice/Cell callback probes; comparison of exact Aeneas, RefinedRust and Gillian exchange boundaries.",
+      "stronger_unestablished_claims": [
+        "contextual source-Rust safety and functional abstraction theorem",
+        "cross-tool contract equivalence"
+      ],
+      "actual_unexamined_gaps": [
+        "actual cross-tool handshake execution",
+        "mutable borrow final-value transport",
+        "callbacks with full alias/protector state",
+        "foreign/unsafe clients"
+      ]
+    }
+  ],
+  "related_not_discharged": [
+    {
+      "id": "MR19",
+      "scope": "Interacting effects identified only; no handler-framework artifact/theorem investigated."
+    }
+  ],
+  "performed": [
+    "Lean Bridge.lean checked",
+    "safe rustc client/MIR/run: parser65536 split153 callback65536"
+  ],
+  "primary_exclusions": [
+    "No upstream native code or proof builds",
+    "No real MiniRust bridge",
+    "No invalid Rust execution"
+  ]
+}

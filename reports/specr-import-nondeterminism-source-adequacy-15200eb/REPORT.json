@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "specr",
+    "minirust",
+    "semantics/nondeterminism",
+    "verification/import",
+    "verification/source-safety",
+    "rust/reference"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust operational specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Specr Rust transpiler and executable support",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "0.1.41"
+      }
+    },
+    {
+      "name": "Rust Reference comparison",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "A Type-Checker for Specr thesis",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Philipp-Thesis.pdf",
+        "document_date": "2025-02-08"
+      }
+    },
+    {
+      "name": "Specr Compiler project description",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/PracticalWork-reports/2025-Jakub-Description.pdf",
+        "document_date": "2025-03-24"
+      }
+    },
+    {
+      "name": "Accepted executable Rust specification goal",
+      "identity": {
+        "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+        "goal_period": "2026",
+        "observed_document": "2026-10-14"
+      }
+    },
+    {
+      "name": "Lean proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/Choices.lean",
+        "sha256": "d084b2a332bc4cd849b026be005e8ac0c282b575a55639ffcdd6b7e8546d7dfd"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "6306465ab2b89108bcfb32c3aeead927606d27e16e13278579ee5314a9f5e9f0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

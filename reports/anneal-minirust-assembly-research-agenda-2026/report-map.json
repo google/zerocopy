@@ -1,0 +1,21 @@
+{
+  "candidate_grouping": true,
+  "reports": {
+    "minirust-rustbelt-spatial-linking-obligations-2026": [
+      "MR01",
+      "MR18"
+    ],
+    "specr-import-nondeterminism-source-adequacy-15200eb": [
+      "MR02",
+      "MR03",
+      "MR04",
+      "MR05"
+    ],
+    "minirust-representation-copy-provenance-laws-d821c6e": [
+      "MR06",
+      "MR07",
+      "MR08"
+    ]
+  },
+  "scope": "Published bounded foundation investigations; not full52-question completion"
+}

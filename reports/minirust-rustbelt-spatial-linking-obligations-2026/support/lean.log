@@ -1,0 +1,12 @@
+support/Bridge.lean:39:49: warning: Variable name `hm` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hm
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+'Bridge.safety_transfer' does not depend on any axioms
+'Bridge.invalid_bool_erasure' depends on axioms: [propext]
+'Bridge.invalid_tag_erasure' depends on axioms: [propext]
+'Bridge.split_disjoint' depends on axioms: [propext, Quot.sound]
+'Bridge.split_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Bridge.contextual_link' does not depend on any axioms

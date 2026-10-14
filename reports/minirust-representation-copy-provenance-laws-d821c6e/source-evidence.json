@@ -1,0 +1,88 @@
+{
+  "observed_at": "2026-10-14",
+  "evidence_role": "source; no upstream execution",
+  "files": [
+    {
+      "key": "source3",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/representation.md",
+      "git_blob_sha": "f87753d9d75d438e964d0a7ce445eca433c6d259",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md"
+    },
+    {
+      "key": "minirust-cast",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/intptrcast.md",
+      "git_blob_sha": "241ba96f5498bde49bf9b8c489bafcf12ba98b07",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/intptrcast.md"
+    },
+    {
+      "key": "minirust-intrinsics",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/step/intrinsics.md",
+      "git_blob_sha": "0a2eb8e67affb71bd5b73375c6f9483dae64b469",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/intrinsics.md"
+    },
+    {
+      "key": "minirust-memory",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/interface.md",
+      "git_blob_sha": "0ede2c2cefdbb2e00ab70cf428e42bb4b1202a4c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/interface.md"
+    },
+    {
+      "key": "minirust-basic",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/basic.md",
+      "git_blob_sha": "b050a1d14b9589d0908f8b70e58ec7411896bcaa",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/basic.md"
+    },
+    {
+      "key": "minirust-wf",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/lang/well-formed.md",
+      "git_blob_sha": "798f60af355bd892d57a9d659e9f36b09dcb0a14",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/well-formed.md"
+    },
+    {
+      "key": "minirust-tree-memory",
+      "repository": "minirust/minirust",
+      "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+      "path": "spec/mem/tree_borrows/memory.md",
+      "git_blob_sha": "6fe36283dfebfeea596e238da0bb0a4448c6e41b",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/memory.md"
+    }
+  ],
+  "archive_members": [
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/loc.v",
+      "sha256": "c4be19ce56793ae8e3da7af90710708d0b635bac5d60bf62577ce830c237f1ae",
+      "lines": 315,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/val.v",
+      "sha256": "9096e8873b0adfe3a768263ef1e2d2cb7fb6c53e5c36551755e3462a3f9c491b",
+      "lines": 788,
+      "status": "source inspected; no Rocq execution"
+    },
+    {
+      "archive": "refinedrust-2026-v2.tar.gz",
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/rust_typing/typing/adequacy.v",
+      "sha256": "766a0e8bd819669e85ba7d3f68123763ac76d8f303540faf83ef5b86db2d854c",
+      "lines": 329,
+      "status": "source inspected; no Rocq execution"
+    }
+  ]
+}

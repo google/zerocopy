@@ -1,0 +1,78 @@
+{
+  "mr_ids": [
+    "MR06",
+    "MR07",
+    "MR08"
+  ],
+  "status": "completed bounded investigation; agenda entries only partially discharged",
+  "coverage": [
+    {
+      "id": "MR06",
+      "sections": [
+        "Findings 1",
+        "Findings 2",
+        "Findings 3",
+        "Findings 4",
+        "Findings 8"
+      ],
+      "answered_scope": "Exact law hypotheses; seven-shape bounded search; general Lean scalar/mask laws; source-derived checker-admitted enum coherence counterexample with Python/Lean witness; conditional zerocopy contract map.",
+      "stronger_unestablished_claims": [
+        "general MiniRust codec laws",
+        "Rust zerocopy trait/API applicability",
+        "closure of P131"
+      ],
+      "actual_unexamined_gaps": [
+        "full arbitrary enums/unions/arrays/layouts",
+        "proof that real code satisfies coherence",
+        "physical access interpretation"
+      ]
+    },
+    {
+      "id": "MR07",
+      "sections": [
+        "Findings 4",
+        "Findings 5"
+      ],
+      "answered_scope": "Performed padding, pointer fragment and integer-v-byte/typed-route discriminators; exact observation restriction for replacement.",
+      "stronger_unestablished_claims": [
+        "general copy-route contextual equivalence"
+      ],
+      "actual_unexamined_gaps": [
+        "overlapping-copy primitive execution",
+        "all MaybeUninit and union lowerings",
+        "alias effects of actual transfers"
+      ]
+    },
+    {
+      "id": "MR08",
+      "sections": [
+        "Findings 1",
+        "Findings 6",
+        "Findings 7"
+      ],
+      "answered_scope": "Exact exposure/transmutation state distinction; finite invalidated/usable equal-address tag example; Radium/MiniRust helper mismatch.",
+      "stronger_unestablished_claims": [
+        "provenance-alias compatibility theorem",
+        "Miri wildcard approximation theorem"
+      ],
+      "actual_unexamined_gaps": [
+        "Miri wildcard thesis/source audit",
+        "real exposed interpreter execution",
+        "deallocation/address reuse traces",
+        "whole Radium cast/load behavior"
+      ]
+    }
+  ],
+  "performed": [
+    "Python seven-shape search",
+    "196608 full pointer value roundtrips",
+    "768 Boolean cases",
+    "enum WF counterexample transcription",
+    "Lean Representation.lean and EnumCoherence.lean checked"
+  ],
+  "primary_exclusions": [
+    "No generated MiniRust/Miri execution",
+    "No general codec mechanization",
+    "No invalid Rust execution"
+  ]
+}

@@ -1,0 +1,8 @@
+'Representation.below_refl' depends on axioms: [propext]
+'Representation.strip_below' depends on axioms: [propext]
+'Representation.mask_below' depends on axioms: [propext]
+'Representation.mask_idempotent' depends on axioms: [Quot.sound]
+'Representation.mask_preserves_kept' depends on axioms: [propext]
+'Representation.scalar_roundtrip' does not depend on any axioms
+'Representation.scalar_deflation' depends on axioms: [propext]
+'Representation.padding_observer_distinguishes' depends on axioms: [propext]

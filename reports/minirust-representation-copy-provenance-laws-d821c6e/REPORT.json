@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "minirust",
+    "rust/representation",
+    "rust/provenance",
+    "rust/typed-copies",
+    "verification/representation-laws",
+    "zerocopy/contracts"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust operational specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Rust exposed-provenance API documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "url": "https://doc.rust-lang.org/std/ptr/fn.with_exposed_provenance.html"
+      }
+    },
+    {
+      "name": "Lean proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "89d8c1111825049296abb845f47451cdfb8685561e8296f8184a3aef46eedeac"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/enum_wf_probe.py",
+        "sha256": "6ed461bbb3ed08b0cceb147ea5c0ef173934dbece2dff200250a9a952cd33b05"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/Representation.lean",
+        "sha256": "d573f64e1ebb9117376be9dfb0d057795fd4c2a73ee87fc37b88d882e983fd3c"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/EnumCoherence.lean",
+        "sha256": "fcc40a8d7c108e1cdb9de885cbdf8435163c780e68f5600914f4587c50bdcbcc"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

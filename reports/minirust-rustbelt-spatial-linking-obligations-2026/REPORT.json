@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "minirust",
+    "rustbelt",
+    "refinedrust",
+    "verification/linking",
+    "verification/source-safety",
+    "rust/interior-mutability"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust operational specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "RustBelt original LambdaRust source archive",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Aeneas configuration and prior-corpus comparison",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+      }
+    },
+    {
+      "name": "Gillian dual contract emitter",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Rust compiler used for safe client probe",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Lean proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/Bridge.lean",
+        "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554"
+      }
+    },
+    {
+      "name": "Owned investigation fragment",
+      "identity": {
+        "artifact": "support/safe_clients.rs",
+        "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

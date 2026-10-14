@@ -1,0 +1,80 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "sha256": "0843d423b02eaebb0f198ace71382a936748773fd5e2de6f759a2331592761e5",
+      "bytes": 2076
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "e954f1a5bd6bb843b43e411f02bddb7ff5ae64d1eeda849e5d223525a7442c2f",
+      "bytes": 18752
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "8cf677e985c59f146b26bd242921edce7843cd1ca30291a94b4aca34bcace0b8",
+      "bytes": 2495
+    },
+    {
+      "path": "source-evidence.json",
+      "sha256": "932ee040dee1987a8f9bf99269ba49378b18327c999cc6fe7eb842aa9fc5d88f",
+      "bytes": 4019
+    },
+    {
+      "path": "support/EnumCoherence.lean",
+      "sha256": "fcc40a8d7c108e1cdb9de885cbdf8435163c780e68f5600914f4587c50bdcbcc",
+      "bytes": 818
+    },
+    {
+      "path": "support/Representation.lean",
+      "sha256": "d573f64e1ebb9117376be9dfb0d057795fd4c2a73ee87fc37b88d882e983fd3c",
+      "bytes": 2469
+    },
+    {
+      "path": "support/enum-lean-initial.log",
+      "sha256": "d5890972963802ff8a2cdc95917d331951094b540506f805e2b21f7fd4ea6088",
+      "bytes": 341
+    },
+    {
+      "path": "support/enum-lean.log",
+      "sha256": "62e1fbacaa98e19cc549c3df666b5974746dcceea1b8ca8f57016e995a1d148b",
+      "bytes": 148
+    },
+    {
+      "path": "support/enum-wf-counterexample.json",
+      "sha256": "5ab82f409af2fa22c246ebf69c48ced88835021e902c8139f23ea6a09cfd0545",
+      "bytes": 1411
+    },
+    {
+      "path": "support/enum-wf-python.log",
+      "sha256": "5ab82f409af2fa22c246ebf69c48ced88835021e902c8139f23ea6a09cfd0545",
+      "bytes": 1411
+    },
+    {
+      "path": "support/enum_wf_probe.py",
+      "sha256": "6ed461bbb3ed08b0cceb147ea5c0ef173934dbece2dff200250a9a952cd33b05",
+      "bytes": 2230
+    },
+    {
+      "path": "support/lean.log",
+      "sha256": "0678f5c3f5b37b770a9f42458bf7cfdd32c9c3ef8c795df3ae0c1fece8aa680e",
+      "bytes": 507
+    },
+    {
+      "path": "support/probe.py",
+      "sha256": "89d8c1111825049296abb845f47451cdfb8685561e8296f8184a3aef46eedeac",
+      "bytes": 6857
+    },
+    {
+      "path": "support/python.log",
+      "sha256": "0706d4bc782b87acb3f2a425baa8947bbb9326e57e8814678b97573e3e74e71d",
+      "bytes": 2119
+    },
+    {
+      "path": "support/results.json",
+      "sha256": "e1064e8d9b62480fdb43456030ea485e77e979f55c4999a05254ead374f47306",
+      "bytes": 3115
+    }
+  ],
+  "excluded_local_builds": []
+}

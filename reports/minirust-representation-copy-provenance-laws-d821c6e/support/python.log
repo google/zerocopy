@@ -1,0 +1,87 @@
+{
+  "status": "pass",
+  "checks": {
+    "bool": {
+      "byte_vectors": 21,
+      "accepted": 10,
+      "ordered_pairs": 57,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "u8": {
+      "byte_vectors": 21,
+      "accepted": 20,
+      "ordered_pairs": 57,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "ptr": {
+      "byte_vectors": 441,
+      "accepted": 400,
+      "ordered_pairs": 3249,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "padded": {
+      "byte_vectors": 441,
+      "accepted": 420,
+      "ordered_pairs": 3249,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "array": {
+      "byte_vectors": 441,
+      "accepted": 400,
+      "ordered_pairs": 3249,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "union": {
+      "byte_vectors": 441,
+      "accepted": 441,
+      "ordered_pairs": 3249,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "enum": {
+      "byte_vectors": 441,
+      "accepted": 150,
+      "ordered_pairs": 3249,
+      "laws": [
+        "decode(encode(decoded_value))=decoded_value",
+        "encode(decode(bytes))<=bytes",
+        "decode monotone"
+      ]
+    },
+    "bool_full": {
+      "initialized_cases": 768,
+      "valid": 6,
+      "uninit_valid": false
+    },
+    "ptr_full_value_roundtrips": 196608
+  },
+  "mutants": {
+    "require_byte_roundtrip_equality_killed": true,
+    "ignore_fragment_positions_killed": true,
+    "integer_route_preserves_provenance_killed": true,
+    "all_initialized_bytes_valid_bool_killed": true
+  }
+}

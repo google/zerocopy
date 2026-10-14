@@ -1,0 +1,62 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "sha256": "96388616a86d4553dda184e765e660ec48eb6a89386a32699433c599d73c4173",
+      "bytes": 2295
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "58248a059cafa373b803f01e851e09673e96c94712e9e6b025ac675dce80050a",
+      "bytes": 16527
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "b5bb02889dd0d32dffaf4ed573edc1e2d9e438e4d19774e763c9cd257bee5cdc",
+      "bytes": 2029
+    },
+    {
+      "path": "source-evidence.json",
+      "sha256": "d3631daa2a05c426e8b4d4d534591712747d27255445c512b67506d35d343359",
+      "bytes": 5897
+    },
+    {
+      "path": "support/Bridge.lean",
+      "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554",
+      "bytes": 2510
+    },
+    {
+      "path": "support/lean.log",
+      "sha256": "7cd292b612ce704b2d00dd50e341fdb0d6af9994d24c2cd4f2ba3c4bc5b234aa",
+      "bytes": 699
+    },
+    {
+      "path": "support/rustc-version.txt",
+      "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+      "bytes": 192
+    },
+    {
+      "path": "support/rustc.log",
+      "sha256": "7ebd0827d0286054d2208a1a2e21ca7982daa14cd4d7d95f6caaa68e8894e272",
+      "bytes": 157
+    },
+    {
+      "path": "support/safe-client-results.json",
+      "sha256": "fed5d2bc0ec29b42cf07f91a305b41b2636416d96ebb623622be2cfb4342a6e3",
+      "bytes": 115
+    },
+    {
+      "path": "support/safe_clients.mir",
+      "sha256": "7ab679e95f7e94e3fb22bc737bdff7e8f5c1d1d32421a33fd7d2cbcab33d35ce",
+      "bytes": 25443
+    },
+    {
+      "path": "support/safe_clients.rs",
+      "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9",
+      "bytes": 1708
+    }
+  ],
+  "excluded_local_builds": [
+    "support/safe_clients"
+  ]
+}

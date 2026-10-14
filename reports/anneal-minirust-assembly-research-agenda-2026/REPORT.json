@@ -1,0 +1,24 @@
+{
+  "topics": [
+    "anneal/research-agenda",
+    "minirust",
+    "assembly/verification"
+  ],
+  "subjects": [
+    {
+      "name": "Research agenda issue3873",
+      "identity": {
+        "url": "https://github.com/google/zerocopy/issues/3873",
+        "body_sha256": "8d2b55791a7500bf3991337edbb01a53494fa94fcd96cbf0f6055561e727d1c6"
+      }
+    },
+    {
+      "name": "Research agenda issue3874",
+      "identity": {
+        "url": "https://github.com/google/zerocopy/issues/3874",
+        "body_sha256": "0fcc2e9dea04c83b15d1a770c9f2e1317329eecc28f2877846030034494324fb"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

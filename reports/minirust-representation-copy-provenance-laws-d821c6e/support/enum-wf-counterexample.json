@@ -1,0 +1,65 @@
+{
+  "status": "counterexample-confirmed",
+  "subject": "owned branch transcription; not executable MiniRust",
+  "type": {
+    "size": 1,
+    "align": 1,
+    "discriminant_bits": 8,
+    "variants": {
+      "0": {
+        "payload": {
+          "kind": "Tuple",
+          "fields": [],
+          "size": 1,
+          "align": 1
+        },
+        "tagger": [
+          {
+            "offset": 0,
+            "bits": 8,
+            "value": 0
+          }
+        ]
+      },
+      "1": {
+        "payload": {
+          "kind": "Tuple",
+          "fields": [],
+          "size": 1,
+          "align": 1
+        },
+        "tagger": [
+          {
+            "offset": 0,
+            "bits": 8,
+            "value": 1
+          }
+        ]
+      }
+    },
+    "discriminator": {
+      "Known": 0
+    }
+  },
+  "well_formed_branch_checks": {
+    "discriminants_representable": true,
+    "payloads_well_formed": true,
+    "same_variant_size": true,
+    "variant_align_bounded": true,
+    "taggers_valid_and_in_bounds": true,
+    "known_discriminator_names_variant": true
+  },
+  "input": {
+    "variant": 1,
+    "payload": []
+  },
+  "encoded": [
+    1
+  ],
+  "decoded": {
+    "variant": 0,
+    "payload": []
+  },
+  "violated_claim": "decode(encode(value)) == Some(value) from checker-admitted WF alone",
+  "extra_hypothesis_needed": "each variant tagger/discriminator pair returns that variant without altering payload"
+}

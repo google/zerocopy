@@ -1,0 +1,6 @@
+'Choices.empty_demonic' depends on axioms: [propext, Quot.sound]
+'Choices.empty_angelic' depends on axioms: [propext, Quot.sound]
+'Choices.existential_is_not_universal' depends on axioms: [propext, Quot.sound]
+'Choices.uniform_choice_is_stronger' depends on axioms: [propext]
+'Choices.complete_demonic_certificate' does not depend on any axioms
+'Choices.angelic_certificate' does not depend on any axioms
