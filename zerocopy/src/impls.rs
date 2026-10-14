@@ -906,7 +906,12 @@ const _: () = unsafe {
 impl_for_transmute_from!(T: TryFromBytes => TryFromBytes for Wrapping<T>[T]);
 impl_for_transmute_from!(T: FromZeros => FromZeros for Wrapping<T>[T]);
 impl_for_transmute_from!(T: FromBytes => FromBytes for Wrapping<T>[T]);
-impl_for_transmute_from!(T: IntoBytes => IntoBytes for Wrapping<T>[T]);
+impl_for_transmute_from!(
+    /// ```aeneas
+    /// invariant_proof
+    /// ```
+    T: IntoBytes => IntoBytes for Wrapping<T>[T]
+);
 assert_unaligned!(Wrapping<()>, Wrapping<u8>);
 
 // SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`. Since its single
@@ -980,7 +985,12 @@ const _: () = unsafe { unsafe_impl!(T: ?Sized + Immutable => Immutable for Manua
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>[T]);
-impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(
+    /// ```aeneas
+    /// invariant_proof
+    /// ```
+    T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[T]
+);
 // SAFETY: `ManuallyDrop<T>` has the same layout as `T` [1], and thus has the
 // same alignment as `T`.
 //
@@ -1070,7 +1080,12 @@ const _: () = {
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for Cell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for Cell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for Cell<T>[T]);
-impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for Cell<T>[T]);
+impl_for_transmute_from!(
+    /// ```aeneas
+    /// invariant_proof
+    /// ```
+    T: ?Sized + IntoBytes => IntoBytes for Cell<T>[T]
+);
 // SAFETY: `Cell<T>` has the same in-memory representation as `T` [1], and thus
 // has the same alignment as `T`.
 //
@@ -1081,7 +1096,12 @@ const _: () = unsafe { unsafe_impl!(T: ?Sized + Unaligned => Unaligned for Cell<
 
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>[T]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>[T]);
-impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>[T]);
+impl_for_transmute_from!(
+    /// ```aeneas
+    /// invariant_proof
+    /// ```
+    T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>[T]
+);
 // SAFETY: `UnsafeCell<T>` has the same in-memory representation as `T` [1], and
 // thus has the same alignment as `T`.
 //
