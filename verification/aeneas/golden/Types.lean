@@ -46,6 +46,14 @@ structure core.num.nonzero.ZeroablePrimitive (Self : Type) (Self_NonZeroInner :
   markerCopyInst : core.marker.Copy Self
   innerCopyInst : core.marker.Copy Self_NonZeroInner
 
+/-- [core::num::wrapping::Wrapping]
+    Source: '/rustc/library/core/src/num/wrapping.rs', lines 43:0-43:22
+    Name pattern: [core::num::wrapping::Wrapping]
+    Visibility: public -/
+@[rust_type "core::num::wrapping::Wrapping"]
+structure core.num.wrapping.Wrapping (T : Type) where
+  _0 : T
+
 /-- [zerocopy::byteorder::Order]
     Source: 'src/byteorder.rs', lines 103:0-108:1
     Visibility: public -/
@@ -99,6 +107,76 @@ structure byteorder.U32 (O : Type) where
   _0 : Array Std.U8 4#usize
   _1 : core.marker.PhantomData O
 
+/-- [zerocopy::byteorder::U64]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.U64 (O : Type) where
+  _0 : Array Std.U8 8#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::U128]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.U128 (O : Type) where
+  _0 : Array Std.U8 16#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::Usize]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.Usize (O : Type) where
+  _0 : Array Std.U8 8#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::I16]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.I16 (O : Type) where
+  _0 : Array Std.U8 2#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::I32]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.I32 (O : Type) where
+  _0 : Array Std.U8 4#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::I64]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.I64 (O : Type) where
+  _0 : Array Std.U8 8#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::I128]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.I128 (O : Type) where
+  _0 : Array Std.U8 16#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::Isize]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.Isize (O : Type) where
+  _0 : Array Std.U8 8#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::F32]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.F32 (O : Type) where
+  _0 : Array Std.U8 4#usize
+  _1 : core.marker.PhantomData O
+
+/-- [zerocopy::byteorder::F64]
+    Source: 'src/byteorder.rs', lines 528:12-528:62
+    Visibility: public -/
+structure byteorder.F64 (O : Type) where
+  _0 : Array Std.U8 8#usize
+  _1 : core.marker.PhantomData O
+
 /-- Trait declaration: [zerocopy::IntoBytes]
     Source: 'src/lib.rs', lines 5941:0-6446:1
     Visibility: public -/
@@ -119,5 +197,17 @@ structure trait_checks.XorCodec where
     Source: 'src/trait_checks.rs', lines 47:0-47:34 -/
 structure trait_checks.Forward (C : Type) where
   _0 : core.marker.PhantomData C
+
+/-- [zerocopy::wrappers::Unalign]
+    Source: 'src/wrappers.rs', lines 118:0-118:25
+    Visibility: public -/
+structure wrappers.Unalign (T : Type) where
+  _0 : T
+
+/-- [zerocopy::wrappers::read_only_def::ReadOnly]
+    Source: 'src/wrappers.rs', lines 630:4-634:5
+    Visibility: public -/
+structure wrappers.read_only_def.ReadOnly (T : Type) where
+  inner : T
 
 end Zerocopy
