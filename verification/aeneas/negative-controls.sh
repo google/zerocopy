@@ -22,9 +22,11 @@ provided_controls=$(mktemp -d)
 trap 'rm -rf "$provided_controls"' EXIT
 python3 -B verification/aeneas/tests/provided_method_controls.py \
     "$tools_dir/charon" "$provided_controls" "$repo" "$tools_dir/rust/lib"
+python3 -B verification/aeneas/tests/impl_root_controls.py \
+    "$tools_dir/charon" "$provided_controls/impl-roots" "$repo" "$tools_dir/rust/lib"
+bash verification/aeneas/tests/annotation-origins.sh
 rm -rf "$provided_controls"
 trap - EXIT
-bash verification/aeneas/tests/annotation-origins.sh "$tools_dir/charon" "$tools_dir/rust/lib"
 # Golden and live projects have separate generated sources, caches, and
 # backups. Each subshell restores its own project even when a control fails.
 check_workspace() (
@@ -151,6 +153,83 @@ PYCONTROL
 has_model() {
     has_binding function "Zerocopy.$1"
 }
+# Native dictionaries remain an independent coverage boundary. These controls
+# change only the manifest, so the compiled implementation and its valid proof
+# stay available: rejection must come from the binding/coverage audit itself.
+if [[ -f TraitLaws.lean ]]; then
+    trait_impls=$(python3 - <<'PYCONTROL'
+import json
+from pathlib import Path
+manifest = json.loads(Path("bindings.json").read_text())
+if not isinstance(manifest.get("trait_impl_laws"), list):
+    raise SystemExit("Missing mandatory trait implementation coverage")
+print(len(manifest["trait_impl_laws"]))
+PYCONTROL
+    )
+    if [[ $trait_impls != 0 ]]; then
+        audit > "$backup/trait-audit-baseline.log" 2>&1 || {
+            cat "$backup/trait-audit-baseline.log" >&2; exit 1;
+        }
+        for mutation in omitted-impl wrong-proof wrong-count; do
+            python3 - "$mutation" <<'PYCONTROL'
+from pathlib import Path
+import json, sys
+path = Path("bindings.json")
+manifest = json.loads(path.read_text())
+if sys.argv[1] == 'omitted-impl':
+    manifest['trait_impl_laws'].pop()
+elif sys.argv[1] == 'wrong-proof':
+    manifest['trait_impl_laws'][0]['proof'] = 'Zerocopy.Proofs.missing_trait_law'
+elif sys.argv[1] == 'wrong-count':
+    candidates = [entry for entry in manifest['bindings'].values()
+                  if entry['kind'] == 'function' and entry['dictionary_count'] > 0]
+    if not candidates:
+        raise SystemExit("Missing generic trait consumer control")
+    candidates[0]['dictionary_count'] -= 1
+else:
+    raise SystemExit("Unknown trait coverage control")
+path.write_text(json.dumps(manifest))
+PYCONTROL
+            case $mutation in
+                omitted-impl) diagnostic="Compiled trait implementations disagree with required law coverage" ;;
+                wrong-proof) diagnostic="Missing ordinary trait implementation theorem" ;;
+                wrong-count) diagnostic="changed its source model or original input prefix" ;;
+            esac
+            expect_failure "trait coverage mutation $mutation" trait-coverage.log audit
+            grep -Fq "$diagnostic" "$backup/trait-coverage.log" || {
+                cat "$backup/trait-coverage.log" >&2; exit 1;
+            }
+            # No source or compiled declaration changed in this control.
+            cp "$backup/bindings.json" bindings.json
+        done
+        # A valid authored proof and native dictionary are not enough: the
+        # generated ordinary theorem must bind the two through the kernel.
+        # Removing its command must still leave Required well formed, so the
+        # final compiled audit supplies this independent rejection boundary.
+        python3 - <<'PYCONTROL'
+from pathlib import Path
+import json
+row = json.loads(Path("bindings.json").read_text())["trait_impl_laws"][0]
+command = f"check_trait_law @{row['law']} for @{row['dictionary']} using @{row['proof']}\n"
+path = Path("Required.lean")
+text = path.read_text()
+if text.count(command) != 1:
+    raise SystemExit("Missing exact implementation witness control")
+path.write_text(text.replace(command, ""))
+PYCONTROL
+        build_required > "$backup/trait-witness-build.log" 2>&1 || {
+            cat "$backup/trait-witness-build.log" >&2; exit 1;
+        }
+        expect_failure "a removed trait implementation witness" trait-witness.log audit
+        grep -Fq "Missing kernel-checked trait implementation witness" "$backup/trait-witness.log" || {
+            cat "$backup/trait-witness.log" >&2; exit 1;
+        }
+        cp "$backup/Required.lean" Required.lean
+        build_required > "$backup/trait-witness-restored.log" 2>&1 || {
+            cat "$backup/trait-witness-restored.log" >&2; exit 1;
+        }
+    fi
+fi
 # A constrained mathematical value can still break an operation promise or its
 # required raw input domain. Probe the unchanged constructor source fence in an
 # isolated module so reorganizing helper proofs does not change these controls.
@@ -206,6 +285,105 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# Successful-input proofs cannot detect changing UB into an ordinary panic.
+# Check the independent primitive interpretation, then directly compile the
+# rejection examples so --old cannot replay a test from the unchanged model.
+if has_model layout.add_scaled_metadata; then
+    [[ -f UnsafeArithmeticTests.lean ]] || {
+        echo "Unchecked arithmetic requires UnsafeArithmeticTests.lean" >&2; exit 1;
+    }
+    python3 - <<'PYCONTROL'
+from pathlib import Path
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+# Mutate only arithmetic. Changing the shared marker would also break the
+# Boolean/copy interpretations, allowing an earlier diagnostic to mask which
+# primitive this control exercises.
+for primitive in ('unchecked_add', 'unchecked_mul'):
+    start = s.index('def core.num.Usize.' + primitive)
+    end = s.index('\n\n', start)
+    before = s[start:end]
+    after = before.replace('else forbiddenExecution', 'else .fail .panic', 1)
+    if before == after:
+        raise SystemExit('Unchecked arithmetic tag control no longer matches')
+    s = s[:start] + after + s[end:]
+p.write_text(s)
+PYCONTROL
+    check_model_mutant "unchecked overflow modeled as panic" Zerocopy.FunsExternal
+    expect_failure "unchecked overflow modeled as panic" unsafe-tag-audit.log audit
+    if ! grep -Fq 'forbidden-execution interpretation' "$backup/unsafe-tag-audit.log"; then
+        cat "$backup/unsafe-tag-audit.log" >&2; exit 1
+    fi
+    expect_failure "the wrong unsafe arithmetic tag" unsafe-tag-proof.log \
+        aeneas_lake env lean -DwarningAsError=true UnsafeArithmeticTests.lean
+    restore_build
+fi
+
+# A successful nonzero caller cannot detect a changed zero branch. Mutate only
+# this leaf, verify that the mutation still typechecks, and require the whole
+# definition audit and the zero-execution tests to reject it independently.
+if has_model trait_checks.divide_by_unaligned; then
+    python3 -B "$repo/verification/aeneas/tests/nonzero_instantiation_controls.py" \
+        "$repo/target/aeneas/verification"
+    [[ -f NonZeroSafetyTests.lean ]] || {
+        echo "Unchecked NonZero construction requires NonZeroSafetyTests.lean" >&2; exit 1;
+    }
+    for outcome in panic success; do
+        python3 - "$outcome" <<'PYCONTROL'
+from pathlib import Path
+import sys
+p = Path("Zerocopy/FunsExternal.lean")
+s = p.read_text()
+before = "if (cast h x : Usize) = 0#usize then forbiddenExecution else .ok ⟨x⟩"
+replacement = ".fail .panic" if sys.argv[1] == "panic" else ".ok ⟨x⟩"
+after = before.replace("then forbiddenExecution", "then " + replacement)
+if s.count(before) != 1:
+    raise SystemExit("Unchecked NonZero zero-branch control no longer matches")
+p.write_text(s.replace(before, after, 1))
+PYCONTROL
+        check_model_mutant "zero NonZero constructor modeled as $outcome" Zerocopy.FunsExternal
+        expect_failure "zero NonZero constructor modeled as $outcome" nonzero-audit.log audit
+        if ! grep -Fq 'NonZero::new_unchecked changed its complete forbidden-execution interpretation' "$backup/nonzero-audit.log"; then
+            cat "$backup/nonzero-audit.log" >&2; exit 1
+        fi
+        expect_failure "zero NonZero constructor modeled as $outcome in the kernel" nonzero-proof.log \
+            aeneas_lake env lean -DwarningAsError=true NonZeroSafetyTests.lean
+        restore_build
+    done
+    cat > NegativeControl.lean <<'LEAN'
+import Proofs.TraitChecks
+open Aeneas Aeneas.Std AeneasSpecs Zerocopy
+-- A model dictionary supplies no proof of the original trait dictionary's law.
+example (T : Type) (dictionary : Unaligned T) (x : Usize) [RustModel T] : True := by
+  have _ := Zerocopy.Proofs.divide_by_unaligned_spec T dictionary x
+  trivial
+LEAN
+    expect_failure "the generic unsafe caller without its Unaligned law" nonzero-law.log \
+        aeneas_lake env lean -DwarningAsError=true NegativeControl.lean
+    if ! grep -Fq 'TraitLaws.unaligned' "$backup/nonzero-law.log"; then
+        cat "$backup/nonzero-law.log" >&2; exit 1
+    fi
+fi
+
+# Original usize const identities must survive real compiler simplification.
+# This is selected by the annotated trait, not by a fixed implementation name.
+into_bytes=$(python3 - <<'PYCONTROL'
+import json
+from pathlib import Path
+manifest = json.loads(Path("bindings.json").read_text())
+print("yes" if any(law["rust"] == "zerocopy::IntoBytes"
+                   for law in manifest["trait_laws"]) else "no")
+PYCONTROL
+)
+if [[ $into_bytes == yes ]]; then
+    # The original/final Rust evidence belongs to the live extraction. The
+    # golden project separately checks its compiled dictionary and theorem.
+    python3 "$repo/verification/aeneas/tests/trait_const_binding_controls.py" \
+        "$repo/target/aeneas/verification"
+    python3 "$repo/verification/aeneas/tests/unemitted_type_controls.py" \
+        "$repo/target/aeneas/verification"
+fi
+
 # An opaque helper must not conceal an adapter which discards forbidden
 # failures. This mutation leaves NonZero::get's returned value unchanged, so
 # ordinary functional proofs alone would not detect the unsupported dependency.
@@ -244,7 +422,11 @@ fi
 # never take that branch. First establish that the mutation still compiles, then
 # require the independent complete-definition audit to reject it.
 if has_model util.safety_checks.checked_bool; then
-    for mutation in boolean copy; do
+    for mutation in boolean copy offset read; do
+        # These leaves are external interpretations, not annotated Rust roots:
+        # bindings.json therefore cannot answer whether their controls apply.
+        if [[ $mutation == offset ]] && ! grep -q '^def util\.copy_unchecked_at ' Zerocopy/FunsExternal.lean; then continue; fi
+        if [[ $mutation == read ]] && ! grep -q '^def util\.validity\.read_byte ' Zerocopy/FunsExternal.lean; then continue; fi
         python3 - "$mutation" <<'PYCONTROL'
 from pathlib import Path
 import sys
@@ -255,18 +437,28 @@ if sys.argv[1] == 'boolean':
     end = s.index('\n\n', start)
     before = s[start:end]
     after = before.replace('else forbiddenExecution', 'else .ok (cast hd.symm false)', 1)
-else:
+elif sys.argv[1] == 'copy':
     start = s.index('def util.copy_unchecked')
-    end = s.index('-- Only the u8-to-bool', start)
+    end = s.index('\n\n', start)
     before = s[start:end]
     after = before.replace('else forbiddenExecution', 'else .ok dst', 1)
+elif sys.argv[1] == 'offset':
+    start = s.index('def util.copy_unchecked_at')
+    end = s.index('\n\n', start)
+    before = s[start:end]
+    after = before.replace('else forbiddenExecution', 'else .ok dst', 1)
+else:
+    start = s.index('def util.validity.read_byte')
+    end = s.index('\n\n', start)
+    before = s[start:end]
+    after = before.replace('else .fail .panic', 'else .ok (0#u8)', 1)
 if before == after:
     raise SystemExit('Storage boundary control no longer matches')
 p.write_text(s[:start] + after + s[end:])
 PYCONTROL
         check_model_mutant "permitted bad $mutation input" Zerocopy.FunsExternal
         expect_failure "permitted bad $mutation input" storage-guard-audit.log audit
-        if ! grep -Eq 'Boolean conversion changed|byte copy changed' "$backup/storage-guard-audit.log"; then
+        if ! grep -Eq 'Boolean conversion changed|byte copy changed|offset copy changed|candidate byte read changed' "$backup/storage-guard-audit.log"; then
             cat "$backup/storage-guard-audit.log" >&2; exit 1
         fi
         expect_failure "permitted bad $mutation input" storage-guard-proof.log \
@@ -650,7 +842,7 @@ def replace(old, new):
         raise SystemExit("External-input negative control no longer matches: " + old)
     s = s.replace(old, new)
 size = 'axiom Zerocopy.RustLayout.size (T : Type) : Usize'
-align = 'axiom Zerocopy.RustLayout.align (T : Type) : Usize'
+align = 'axiom Zerocopy.RustLayout.alignInput (T : Type) : Usize'
 mutation = sys.argv[1]
 if mutation in ('missing-size', 'missing-align', 'missing-both'):
     if mutation != 'missing-align':
@@ -658,8 +850,7 @@ if mutation in ('missing-size', 'missing-align', 'missing-both'):
         replace('Zerocopy.RustLayout.size T', '0#usize')
     if mutation != 'missing-size':
         replace(align, '')
-        replace('Zerocopy.RustLayout.align T', '1#usize')
-        replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+        replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'wrong-kind':
     replace(size, 'def Zerocopy.RustLayout.size (_T : Type) : Usize := 0#usize')
 elif mutation == 'wrong-signature':
@@ -668,6 +859,8 @@ elif mutation == 'wrong-signature':
 elif mutation == 'ignored-align':
     replace('Zerocopy.RustLayout.align T', '1#usize')
     replace('core.mem.align_of (T : Type)', 'core.mem.align_of (_T : Type)')
+elif mutation == 'ignored-align-input':
+    replace('Zerocopy.RustLayout.alignInput T', '1#usize')
 elif mutation == 'ignored-size':
     replace('Zerocopy.RustLayout.size T', '0#usize')
 elif mutation == 'wrong-pointer-width':
@@ -687,7 +880,7 @@ PYCONTROL
     reject_abi "a missing generic ABI size input" missing-size \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a missing generic ABI alignment input" missing-align \
-        "Missing external layout input Zerocopy.RustLayout.align"
+        "Missing external layout input Zerocopy.RustLayout.alignInput"
     reject_abi "both generic ABI inputs missing" missing-both \
         "Missing external layout input Zerocopy.RustLayout.size"
     reject_abi "a definition replacing an arbitrary ABI data input" wrong-kind \
@@ -696,6 +889,8 @@ PYCONTROL
         "External layout input Zerocopy.RustLayout.size changed its data-only signature"
     reject_abi "an alignment read ignoring its ABI input" ignored-align \
         "External alignment read changed its data-input interpretation"
+    reject_abi "an alignment interpretation ignoring its abstract input" ignored-align-input \
+        "External alignment model changed its concrete or generic interpretation"
     reject_abi "a generic size read ignoring its ABI input" ignored-size \
         "External size read changed its data-input interpretation"
     reject_abi "an incorrect Usize pointer-width read" wrong-pointer-width \

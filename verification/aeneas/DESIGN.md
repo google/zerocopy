@@ -62,8 +62,15 @@ decoder construction without requiring another public typeclass. Distinct raw
 nominal types remain distinct through the pinned Aeneas tuple-newtype option.
 
 Function annotations precede their Rust owner and contain exactly one `spec`
-or `partial spec`. Original source type parameters and value arguments are
-inferred from the verified extraction. Every original type parameter receives
+or `partial spec`. Original source type parameters, trait dictionaries, and
+value arguments are
+inferred from the verified extraction. Computational trait dictionaries keep
+Aeneas's original types. They are not decoded as stored Rust values. Annotated
+traits generate separate proposition classes about those exact dictionaries;
+generic specifications receive their laws, including laws of retained parent
+dictionaries. Every extracted local implementation must provide an ordinary
+checked theorem, assuming only laws of its original dictionary inputs. Every
+original type parameter receives
 a modeling dictionary, including unused and result-only parameters. Automatic
 providers are fixed before decoded witnesses, ghosts, requirements, and
 authored instances.
@@ -319,8 +326,10 @@ the library already models every part of Rust's abstract machine.
   per-model tactics, or new loop abstraction only after concrete repeated
   failures show a net benefit over ordinary lemmas and a thin tactic.
 - **Broader carriers and effects.** Recursive nominal groups, indexed carriers,
-  trait/const generics, and escaping borrow reconstruction remain unsupported
-  with explicit errors. Add semantics and admission checks before accepting
+  const generics, associated-type trait laws, higher-ranked bounds, bounded
+  nominal models, and escaping borrow reconstruction remain unsupported with
+  explicit errors. The first trait-law bridge supports `Self`-only traits and
+  simple generic bounds, with a total byte codec as a checked example. Add semantics and admission checks before accepting
   them. Stateful or nondeterministic APIs may need observable traces and
   effects, rather than only result contracts.
 - **Abstract storage and bit validity.** Check byte-to-value production before

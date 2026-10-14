@@ -54,6 +54,11 @@ scan=scan
 if "$update_goldens"; then scan=scan-update; fi
 "${inline_cmd[@]}" "$scan" "${inline_args[@]}" --work "$work"
 roots=$(cat "$work/roots.txt")
+root_args=()
+[[ -z "$roots" ]] || root_args+=(--start-from "$roots")
+while IFS= read -r span; do
+    [[ -z "$span" ]] || root_args+=(--start-from "$span")
+done < "$work/impl-roots.txt"
 # Admission requires controlled compiler inputs and both inspection stages.
 # Registry-derived opaque selections cannot hide arbitrary local functions.
 python3 -B verification/aeneas/admission.py inputs > "$work/extraction-inputs.json"
@@ -75,7 +80,7 @@ export CHARON_ANNOTATION_ORIGINS="$work/annotation-origins.json"
     cd zerocopy
     CARGO_TARGET_DIR="$repo/target/aeneas/rust" \
         "$tools_dir/charon" cargo --preset=aeneas --sysroot default \
-        --start-from "$roots" \
+        "${root_args[@]}" \
         --mir promoted --no-dedup-serialized-ast \
         "${opaque_args[@]}" \
         "${excluded_args[@]}" \
@@ -94,7 +99,7 @@ export CHARON_ANNOTATION_ORIGINS="$work/annotation-origins.json"
 python3 verification/aeneas/prepare.py llbc "$work/zerocopy.llbc"
 "${inline_cmd[@]}" bindings "${inline_args[@]}" --work "$work"
 "$tools_dir/aeneas" -backend lean -namespace Zerocopy -dest "$work/Zerocopy" \
-    -split-files -abort-on-error -warnings-as-errors -no-progress-bar \
+    -split-files -emit-json -abort-on-error -warnings-as-errors -no-progress-bar \
     -use-tuple-structs false \
     "$work/zerocopy.llbc"
 unset CHARON_ADMISSION_SNAPSHOT CHARON_ANNOTATION_ORIGINS
@@ -122,6 +127,11 @@ python3 -B verification/aeneas/golden.py compare-projections "$work" verificatio
 # live bodies into the golden proof build. Fuzzy documentation cannot select a
 # different function; both projects must pass their own proofs and axiom audit.
 cp "$work/bindings.json" "$golden_work/bindings.json"
+# Saved physical model plans remain bound to native layout observations in both
+# projects; these snapshots do not replace the rendered golden Lean bodies.
+cp "$work/zerocopy.llbc" "$work/zerocopy.before.ullbc" \
+    "$work/annotation-origins.json" "$golden_work/"
+cp "$work/Zerocopy/translation.json" "$golden_work/Zerocopy/translation.json"
 "${inline_cmd[@]}" assemble "${inline_args[@]}" --work "$golden_work"
 python3 verification/aeneas/prepare.py workspace "$golden_work" --backend "$backend"
 python3 -B verification/aeneas/golden.py compare-projections "$golden_work" verification/aeneas/projections

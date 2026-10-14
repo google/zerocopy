@@ -66,6 +66,23 @@ def llbc(annotation, source):
                                'end': {'line': annotation['end_line'], 'col': annotation['end_col']}}}}}}]}}
 
 
+def origins(annotations):
+    nodes = []
+    for annotation in [*annotations.values(), *annotations.trait_proofs]:
+        file = annotation['file'].removeprefix('zerocopy/')
+        nodes.append({'owner': annotation['rust'], 'node_kind': annotation['kind'],
+                      'positive': annotation['kind'] == 'trait-impl',
+                      'trait_impl_id': len(nodes) if annotation.get('macro_input') else None,
+                      'span': {'file': file, 'begin': annotation['declaration_begin'],
+                               'end': annotation['declaration_end']},
+                      'docs': [{'file': file, 'outer': True, **d}
+                               for d in annotation['doc_fragments']]})
+    return {'version': 1, 'nodes': nodes,
+            'sources': [{'file': path.removeprefix('zerocopy/'),
+                         'text': data.decode('utf-8').removeprefix('\ufeff').replace('\r\n', '\n')}
+                        for path, data in annotations.source_snapshots.items()]}
+
+
 class InlineTests(unittest.TestCase):
     def setUp(self):
         patch = mock.patch('admission.inspect', return_value={'version': 1})
@@ -77,6 +94,288 @@ class InlineTests(unittest.TestCase):
 
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
+
+    def test_unemitted_native_nominal_requires_exact_unannotated_empty_owner(self):
+        rust = 'zerocopy::private::Never'
+        source = {'file': 'zerocopy/src/private.rs', 'syntax': 'Never',
+                  'open_line': 1, 'end_line': 1, 'end_col': 18}
+        declaration = {'def_id': 3, 'kind': {'Enum': []},
+            'item_meta': {'name': [{'Ident': [part, 0]} for part in rust.split('::')],
+                          'is_local': True, 'started_from': False, 'span': {'exact': 1}},
+            'generics': {'types': [], 'regions': [], 'const_generics': [],
+                         'trait_clauses': [], 'trait_type_constraints': []}}
+        final = {'type_decls': [declaration]}
+        before = copy.deepcopy(final)
+        native = {'types': []}
+        def omitted(annotations=None):
+            return inline.unemitted_nominals(annotations or {}, {rust: source}, {rust}, final, before, native)
+        [row] = omitted()
+        self.assertEqual(row['category'], 'unemitted-uninhabited')
+        self.assertEqual(row['expected_raw'], 'Zerocopy.private.Never')
+        self.assertIsNone(row['raw'])
+        for change in ('annotated', 'nonempty', 'source', 'generic', 'original_generic', 'emitted', 'rooted'):
+            saved, old, metadata = copy.deepcopy(final), copy.deepcopy(before), copy.deepcopy(native)
+            try:
+                if change == 'annotated':
+                    with self.assertRaises(ValueError):
+                        omitted({rust: {'kind': 'type'}})
+                    continue
+                if change == 'nonempty':
+                    declaration['kind'] = {'Enum': [{'fields': []}]}
+                elif change == 'source':
+                    before['type_decls'][0]['item_meta']['span'] = {'exact': 2}
+                elif change == 'generic':
+                    declaration['generics']['types'] = [{'name': 'T'}]
+                elif change == 'original_generic':
+                    before['type_decls'][0]['generics']['types'] = [{'name': 'T'}]
+                elif change == 'emitted':
+                    native['types'] = [{'def_id': 3, 'rust_name': rust}]
+                else:
+                    declaration['item_meta']['started_from'] = True
+                with self.subTest(change=change), self.assertRaises(ValueError):
+                    omitted()
+            finally:
+                declaration.clear(); declaration.update(saved['type_decls'][0])
+                before.clear(); before.update(old)
+                native.clear(); native.update(metadata)
+        self.assertEqual(omitted(), [row])
+
+    def test_raw_identifier_docs_cannot_escape_inactive_source_census(self):
+        marker = '#[r#doc = "```aeneas\\ninvariant_proof\\n```"]'
+        self.assertEqual(len(self.parse(marker + ' impl Marker for u8 {}')), 1)
+        self.assertEqual(len(self.parse('forward!(' + marker + ' u8);')), 1)
+        conditional = '#[r#cfg_attr(any(), r#doc = "```aeneas\\ninvariant_proof\\n```") ]'
+        for source in (conditional + ' impl Marker for u8 {}',
+                       'forward!(' + conditional + ' u8);',
+                       '#[cfg(any())] macro_rules! hidden { () => {' + marker + ' impl Marker for u8 {} }; }',
+                       '#[r#doc = r#include_str!("hidden.md")] fn f() {}'):
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                self.parse(source)
+
+    def test_macro_marker_origin_binding_positive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = ('unsafe_impl!(u8: Immutable,\n'
+                      '/// ```aeneas\n/// invariant_proof\n/// ```\n'
+                      'IntoBytes, Unaligned,);\n')
+            annotations = fixture(root, source)
+            [marker] = annotations.trait_proofs
+            self.assertTrue(marker['macro_input'])
+            self.assertTrue(inline.impl_root(marker).startswith('@doc-origin:src/util/mod.rs:'))
+            evidence = origins(annotations)
+            inline.reconcile_origins(annotations, evidence)
+            self.assertEqual(marker['native_trait_impl_id'], 0)
+            self.assertEqual(len(annotations.annotation_origins), 1)
+
+    def test_origin_join_rejects_duplication_swallowing_reordering_and_rewriting(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            annotations = fixture(root, 'unsafe_impl!(\n'
+                '/// ```aeneas\n/// invariant_proof\n/// ```\n'
+                'const N: usize, T: IntoBytes => IntoBytes for [T; N]);')
+            baseline = origins(annotations)
+            inline.reconcile_origins(annotations, baseline)
+            for change in ('duplicate', 'drop', 'reorder', 'rewrite', 'inner',
+                           'unsupported', 'missing_owner', 'computed', 'negative'):
+                bad = copy.deepcopy(baseline)
+                node = bad['nodes'][0]
+                if change == 'duplicate':
+                    bad['nodes'].append(copy.deepcopy(node))
+                elif change == 'drop':
+                    node['docs'].pop(1)
+                elif change == 'reorder':
+                    node['docs'].reverse()
+                elif change == 'rewrite':
+                    node['docs'][1]['text'] = 'different payload'
+                elif change == 'inner':
+                    node['docs'][0]['outer'] = False
+                elif change == 'unsupported':
+                    node['node_kind'] = 'unsupported'
+                elif change == 'missing_owner':
+                    node['trait_impl_id'] = None
+                elif change == 'computed':
+                    node['docs'][0]['begin'] += 1
+                else:
+                    node['positive'] = False
+                with self.subTest(change=change), self.assertRaises(ValueError):
+                    inline.reconcile_origins(annotations, bad)
+
+    def test_origin_join_requires_fresh_sources_and_exact_original_dictionary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            annotations = fixture(root, 'forward!(\n'
+                '/// ```aeneas\n/// invariant_proof\n/// ```\nu8);')
+            evidence = origins(annotations)
+            original = {'def_id': 0, 'native_dictionary': {'self_type': 'u8'}}
+            evidence['nodes'][0]['trait_impl'] = original
+            before = {'trait_impls': [original]}
+            inline.reconcile_origins(annotations, evidence, before)
+            bad = copy.deepcopy(evidence)
+            bad['nodes'][0]['trait_impl']['native_dictionary']['self_type'] = 'u16'
+            with self.assertRaisesRegex(ValueError, 'original extracted dictionary'):
+                inline.reconcile_origins(annotations, bad, before)
+            bad = copy.deepcopy(evidence)
+            bad['sources'][0]['text'] += '// changed macro definition\n'
+            with self.assertRaisesRegex(ValueError, 'changed source contents'):
+                inline.reconcile_origins(annotations, bad, before)
+            bad = copy.deepcopy(evidence)
+            bad['sources'] = []
+            with self.assertRaisesRegex(ValueError, 'compiler source snapshot'):
+                inline.reconcile_origins(annotations, bad, before)
+
+    def test_origin_join_retains_direct_attachment_and_scope(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            annotations = fixture(root)
+            baseline = origins(annotations)
+            inline.reconcile_origins(annotations, baseline)
+            for change in ('owner', 'namespace', 'span', 'kind', 'extra_annotation'):
+                bad = copy.deepcopy(baseline)
+                node = bad['nodes'][0]
+                if change == 'owner':
+                    node['owner'] = node['owner'].replace('::f', '::bar')
+                elif change == 'namespace':
+                    node['owner'] = node['owner'].replace('::f', '::generated::f')
+                elif change == 'span':
+                    node['span']['begin'] += 1
+                elif change == 'kind':
+                    node['node_kind'] = 'type'
+                else:
+                    node['docs'].append({'file': 'src/util/mod.rs', 'begin': 1,
+                                         'end': 2, 'text': '```aeneas', 'outer': True})
+                with self.subTest(change=change), self.assertRaises(ValueError):
+                    inline.reconcile_origins(annotations, bad)
+
+    def test_macro_marker_census_rejects_unsupported_forms(self):
+        positive = 'unsafe_impl!(#[doc = "```aeneas\\ninvariant_proof\\n```"] u8: IntoBytes);'
+        self.assertEqual(len(self.parse(positive)), 1)
+        self.assertEqual(len(self.parse(positive.replace('"```aeneas\\ninvariant_proof\\n```"',
+            'r#"```aeneas\ninvariant_proof\n```"#'))), 1)
+        self.assertEqual(len(self.parse(positive.replace('unsafe_impl!', 'other!'))), 1)
+        for source in (positive.replace('doc = ', 'cfg_attr(all(), doc = ').replace('] u8', ')] u8'),
+                       positive.replace('doc = "', 'doc = concat!("').replace('] u8', ')] u8'),
+                       positive.replace('#[doc', '#![doc'),
+                       'macro_rules! template { () => {' + positive + '}; }',
+                       'forward!(macro_rules! template { () => {' + positive + '}; });',
+                       positive.replace('invariant_proof', 'invariant bad for self => True'),
+                       '#[cfg(any())] ' + positive.replace('#[doc', '#![doc')):
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                self.parse(source)
+
+    def test_trait_law_and_impl_proof_ownership(self):
+        source = ('/// ```aeneas\n/// invariant marker for self => Self = Self\n/// ```\n'
+                  '#[doc = concat!("ordinary", " documentation")]\ntrait Marker {}\n'
+                  '/// ```aeneas\n/// invariant_proof\n/// ```\nimpl Marker for u8 {}')
+        declarations = self.parse(source)
+        self.assertEqual([d['kind'] for d in declarations], ['trait', 'trait-impl'])
+        self.assertEqual(declarations[0]['generics'], ['Self'])
+        self.assertEqual(declarations[0]['predicate'], 'Self = Self')
+        self.assertIsNone(declarations[1]['theorem'])
+        self.assertEqual(len(self.parse(source.replace('impl Marker', 'impl crate::Marker'))), 2)
+        with self.assertRaisesRegex(ValueError, 'nameless'):
+            self.parse(source.replace('invariant_proof', 'invariant_proof marker_u8'))
+        with self.assertRaisesRegex(ValueError, 'Unsupported|unsupported|computed|Computed'):
+            self.parse(source.replace('concat!("ordinary", " documentation")', 'include_str!("hidden.rs")'))
+
+    def test_nameless_marker_owns_generic_array_impl(self):
+        source = ('const _: () = unsafe {\n'
+                  '    /// ```aeneas\n    /// invariant_proof\n    /// ```\n'
+                  '    #[allow(non_local_definitions)]\n'
+                  '    unsafe impl<const N: usize, T: Marker> Marker for [T; N] {}\n};')
+        [marker] = self.parse(source)
+        self.assertEqual(marker['generics'], ['T'])
+        self.assertEqual(marker['const_generics'], ['N'])
+        self.assertEqual((marker['open_line'], marker['open_col']), (6, 4))
+        with self.assertRaisesRegex(ValueError, 'ASCII without tabs'):
+            self.parse(source.replace('    unsafe impl', '\tunsafe impl'))
+        with self.assertRaisesRegex(ValueError, 'unsupported'):
+            self.parse(source.replace('N: usize', 'N: u32'))
+
+    def test_impl_marker_requests_extraction_without_a_caller(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = ('/// ```aeneas\n/// invariant marker for self => True\n/// ```\n'
+                      'trait Marker {}\n'
+                      '/// ```aeneas\n/// invariant_proof\n/// ```\n'
+                      'unsafe impl<const N: usize, T: Marker> Marker for [T; N] {}\n')
+            annotations = fixture(root, source)
+            work = root / 'work'
+            work.mkdir()
+            inline.write_scan(annotations, work)
+            self.assertEqual((work / 'roots.txt').read_text(), '\n')
+            [marker] = annotations.trait_proofs
+            expected = ('@span:src/util/mod.rs:' + str(source.index('unsafe impl'))
+                        + ':' + str(source.index('}', source.index('unsafe impl')) + 1))
+            self.assertEqual((work / 'impl-roots.txt').read_text(), expected + '\n')
+
+    def test_trait_law_is_dependency_not_root_and_still_requires_binding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trait = 'zerocopy::util::Marker'
+            source = ('/// ```aeneas\n'
+                      '/// invariant marker for self => Self = Self\n'
+                      '/// ```\ntrait Marker {}\n'
+                      + BLOCK + 'fn f<T: Marker>(x: usize) {}\n')
+            annotations = fixture(root, source)
+            work = root / 'work'
+            work.mkdir()
+            inline.write_scan(annotations, work)
+            self.assertEqual((work / 'roots.txt').read_text(), RUST + '\n')
+            scanned = json.loads((work / 'annotations.json').read_text())
+            self.assertEqual(scanned[trait]['kind'], 'trait')
+            self.assertEqual(scanned[trait]['theorem'], 'marker')
+
+            data = llbc(annotations[RUST], source)
+            function = data['translated']['fun_decls'][0]
+            function['def_id'] = 1
+            function['generics']['types'] = [{'name': 'T'}]
+            function['generics']['trait_clauses'] = [{
+                'clause_id': 7, 'trait_': {'regions': [], 'skip_binder': {
+                    'id': 0, 'generics': {'regions': [], 'const_generics': [],
+                        'trait_refs': [], 'types': [{'TypeVar': {'Free': 0}}]}}}}]
+            declaration = copy.deepcopy(function)
+            declaration.pop('signature')
+            declaration.pop('body')
+            declaration['def_id'] = 0
+            declaration['generics'] = {'types': [{'name': 'Self'}],
+                'const_generics': [], 'trait_clauses': []}
+            declaration['item_meta']['name'] = [
+                {'Ident': [part, 0]} for part in trait.split('::')]
+            declaration['item_meta']['started_from'] = False
+            declaration['item_meta']['span']['Untagged']['data']['end'] = {
+                'line': annotations[trait]['end_line'],
+                'col': annotations[trait]['end_col']}
+            data['translated']['trait_decls'] = [declaration]
+            before = copy.deepcopy(data)
+            bound = before['translated']['fun_decls'][0]['generics']['trait_clauses'][0]
+            bound['clause_id'] = 2
+            bound['trait_']['skip_binder']['generics']['types'] = [
+                {'TypeVar': {'Bound': [1, 0]}}]
+            (work / 'zerocopy.before.ullbc').write_text(json.dumps(before))
+            (work / 'annotation-origins.json').write_text(json.dumps(origins(annotations)))
+            path = work / 'zerocopy.llbc'
+            path.write_text(json.dumps(data))
+            inline.check_bindings(root, annotations, path)
+            self.assertEqual(annotations.function_dictionaries[RUST], [{
+                'rust': trait, 'arguments': [['parameter', 0]], 'clause_id': 7}])
+
+            # Dropping the non-root trait must still reject the extraction.
+            data['translated']['trait_decls'] = []
+            path.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'Extracted type roots do not match'):
+                inline.check_bindings(root, annotations, path)
+
+    def test_generic_trait_bound_source_evidence(self):
+        for signature in ('fn f<T: Marker>(x: usize) {}',
+                          'fn f<T>(x: usize) where T: crate::Marker {}'):
+            declaration = self.parse(BLOCK + signature)[0]
+            self.assertEqual(declaration['generics'], ['T'])
+            self.assertEqual(declaration['trait_bounds'][0]['subject'], 'T')
+        for signature in ('fn f<T: Marker<u8>>(x: usize) {}',
+                          'fn f<T: ?Sized>(x: usize) {}',
+                          'fn f<T>(x: usize) where T::Assoc: Marker {}'):
+            with self.assertRaisesRegex(ValueError, 'unsupported Rust owner'):
+                self.parse(BLOCK + signature)
 
     def test_doc_ownership_crlf_unicode_attributes_and_source_map(self):
         for eol in ('\n', '\r\n'):
@@ -801,17 +1100,8 @@ class InlineTests(unittest.TestCase):
                     inline.check_bindings(root, annotations, path)
 
             decorated = source.replace('struct $name<O>(O);', '#[doc = "```aeneas"] struct $name<O>(O);')
-            decorated_annotations = fixture(root, decorated)
-            decorated_data = llbc(decorated_annotations[RUST], decorated)
-            item = copy.deepcopy(declaration)
-            decorated_line = decorated.splitlines()[0]
-            item['item_meta']['span']['Untagged']['data']['beg']['col'] = decorated_line.index('struct $name')
-            item['item_meta']['span']['Untagged']['data']['end']['col'] = (
-                decorated_line.index('struct $name') + len('struct $name<O>(O);'))
-            decorated_data['translated']['type_decls'] = [item]
-            path.write_text(json.dumps(decorated_data))
-            with self.assertRaisesRegex(ValueError, 'exact supported Rust source ownership'):
-                inline.check_bindings(root, decorated_annotations, path)
+            with self.assertRaisesRegex(ValueError, 'unsupported Rust owner'):
+                fixture(root, decorated)
 
     def test_raw_type_image_classifies_traits_and_external_nominals(self):
         with tempfile.TemporaryDirectory() as tmp:
