@@ -138,7 +138,8 @@ class InstalledToolchainTests(unittest.TestCase):
         key = toolchain.cache_key(clone)
         self.assertEqual(key, toolchain.cache_key(ROOT))
         for name in ['anneal/flake.lock', 'anneal/flake.nix', 'anneal/lean/Rust.lean',
-                     'verification/aeneas/build-aeneas.nix']:
+                     'verification/aeneas/build-aeneas.nix',
+                     'verification/aeneas/patches/admission-snapshot.patch']:
             target = clone / name
             original = target.read_bytes()
             target.write_bytes(original + b'\n')
@@ -283,6 +284,8 @@ class InstalledToolchainTests(unittest.TestCase):
         tar_script.chmod(0o755)
         artifact = scratch / 'patched-cli'
         artifact.mkdir()
+        for name in ('charon', 'charon-driver'):
+            shutil.copy2(self.tools / name, artifact / name)
         binary = artifact / 'aeneas'
         binary.write_text('#!/bin/sh\nif [ "$1" = -help ]; then echo -use-tuple-structs; else echo "aeneas ' + self.data['aeneas-release'] + toolchain.PATCH_SUFFIX + '"; fi\n')
         binary.chmod(0o755)
@@ -364,6 +367,56 @@ class InstalledToolchainTests(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [str(self.tools / 'rust/bin/cargo'), 'nightly-2099-01-01'])
+
+    def test_shell_exports_validated_runtime_for_admission_with_and_without_override(self):
+        root = Path(self.scratch.name) / 'project with spaces'
+        for name in ['anneal/flake.lock', 'verification/aeneas/toolchain.sh',
+                     'verification/aeneas/toolchain.py', 'verification/aeneas/admission.py',
+                     'verification/aeneas/source_inventory.py',
+                     'verification/aeneas/patches/use-tuple-structs.patch',
+                     'verification/aeneas/patches/admission-snapshot.patch']:
+            target = root / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / name).read_bytes())
+        source = root / 'zerocopy/src/lib.rs'
+        source.parent.mkdir(parents=True)
+        source.write_text('fn f() {}\n')
+        default = root / 'target/aeneas/toolchain'
+        default.parent.mkdir(parents=True)
+        default.symlink_to(self.tools, target_is_directory=True)
+        child = ('import json,os,sys; from pathlib import Path; '
+                 'sys.path.insert(0,"verification/aeneas"); import admission; '
+                 'print(json.dumps({"tools":os.environ["AENEAS_TOOLCHAIN_DIR"],'
+                 '"identity":admission.input_identity(Path.cwd())}))')
+        command = ('source verification/aeneas/toolchain.sh || exit; ' +
+                   shlex.quote(sys.executable) + ' -B -c ' + shlex.quote(child))
+        for override in (None, str(self.tools)):
+            with self.subTest(override=override):
+                env = dict(os.environ)
+                env.pop('AENEAS_TOOLCHAIN_DIR', None)
+                if override is not None:
+                    env['AENEAS_TOOLCHAIN_DIR'] = override
+                result = subprocess.run(['bash', '-c', command], cwd=root, env=env,
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                report = json.loads(result.stdout)
+                self.assertEqual(report['tools'], override or
+                                 str(root.resolve() / 'target/aeneas/toolchain'))
+                self.assertEqual(report['identity']['runtime'],
+                                 toolchain.digest(self.tools / 'aeneas-build.json'))
+                self.assertTrue(report['identity']['project'])
+                # Exporting the directory must not bypass archive validation.
+                record = self.tools / 'aeneas-build.json'
+                original = record.read_bytes()
+                try:
+                    record.write_text('{}')
+                    rejected = subprocess.run(['bash', '-c', command], cwd=root, env=env,
+                                              capture_output=True, text=True)
+                    self.assertNotEqual(rejected.returncode, 0)
+                    self.assertIn('provenance mismatch', rejected.stderr)
+                    self.assertEqual(rejected.stdout, '')
+                finally:
+                    record.write_bytes(original)
 
     def test_shell_lake_policy_preserves_ci_and_failure_status(self):
         for status in (0, 19):
