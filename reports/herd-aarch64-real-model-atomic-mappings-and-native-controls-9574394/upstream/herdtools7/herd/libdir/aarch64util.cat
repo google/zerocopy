@@ -1,0 +1,162 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * memory-model@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ * https://developer.arm.com/documentation/ddi0487/
+ *
+ * Authors:
+ * Will Deacon <will.deacon@arm.com>
+ * Jade Alglave <jade.alglave@arm.com>
+ * Nikos Nikoleris <nikos.nikoleris@arm.com>
+ * Artem Khyzha <artem.khyzha@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+
+let iico_data = iico_data+
+let iico_ctrl = iico_ctrl+
+let iico_order = iico_order+
+let ii_addr = [ADDR]; iico_data
+let ii_data = [DATA]; (iico_data|iico_ctrl)+
+
+(*
+ * Include default definitions for sets that are undefined without
+ * -variant vmsa
+*)
+
+let TTD = if "vmsa" then PTE else emptyset
+let TTDV = if "vmsa" then PTEV else emptyset
+let TTDINV = if "vmsa" then PTEINV else emptyset
+let TTDAF0 = if "vmsa" then PTEAF0 else emptyset
+let inv-domain = if "vmsa" then inv-domain else 0
+let D-TTD = if "vmsa" then D-PTE else emptyset
+let I-TTD = if "vmsa" && "ifetch" then PTE \ D-PTE else emptyset
+let AF = if "vmsa" then AF else emptyset
+let DB = if "vmsa" then DB else emptyset
+let MMU = if "vmsa" then MMU else emptyset
+let D-MMU = if "vmsa" then D-MMU else emptyset
+let I-MMU = if "vmsa" && "ifetch" then MMU \ D-MMU else emptyset
+let Translation = if "vmsa" then Translation else emptyset
+let AccessFlag = if "vmsa" then AccessFlag else emptyset
+
+
+(*
+ * Include default definitions for sets that might be undefined without
+ * -variant ifetch
+*)
+let Instr = if "ifetch" then Instr else emptyset
+let Within-CMODX-List = if "ifetch" then Restricted-CMODX else emptyset
+
+(*
+ * Include the cos.cat file shipped with herd.
+ * This builds the co relation as a total order over writes to the same
+ * location and then consequently defines the fr relation using co and
+ * rf.
+ *)
+let AFtoDB = same-instance & ((AF\DB) * (DB\AF))
+let co0=co0 | AFtoDB
+
+include "cos.cat"
+
+(*
+ * A shorthand for cache maintenance effects used by -variant ifetch
+ *)
+let IC = IC.IALLUIS | IC.IALLU | IC.IVAU
+
+(* Renaming default herd names *)
+let Imp = NExp
+let SPONTANEOUS = SPURIOUS
+let inv-scope = inv-domain
+let D-TTD = if "vmsa" then D-PTE else emptyset
+let I-TTD = if "vmsa" then I-PTE else emptyset
+let Tag = T
+(* In herd, all translations are in the same context *)
+let same-translation-context = (Imp & TTD) * (Imp & TTD)
+
+
+(* HW TTD Updates permitted only for the AF or DB *)
+assert empty (Imp & TTD & W) \ (AF | DB)
+
+(*
+ * Include aarch64fences.cat to define barriers.
+ *)
+include "aarch64fences.cat"
+
+(*
+ * Include aarch64bbm.cat to define relations on Break-Before-Make semantics.
+ *)
+include "aarch64bbm.cat"
+
+(* Show relations in generated diagrams *)
+include "aarch64show.cat"
+
+(* Helper functions *)
+procedure included(r1, r2) =
+  empty r1 \ r2
+end
+
+procedure equal(r1, r2) =
+  call included(r1, r2)
+  call included(r2, r1)
+end
+
+(* Intervening Effect *)
+let intervening(S,r) = r; [S]; r
+
+(* Properties of single-copy atomic accesses *)
+let sca-class = [M & Exp]; sm; [M & Exp]
+
+(* Flag any occurrence of writes to two different locations that might be on
+ * the same cache line. *)
+flag ~empty (((W \ IW) & Instr) * ((W \ IW) & Instr) \ loc)
+  as Assuming-no-two-modified-instructions-are-on-the-same-cache-line
+
+(* Flag the runs of herd7 with unsupported combinations of variants *)
+flag ~empty (if "vmsa" && "memtag" then _ else 0)
+  as combining-vmsa-and-memtag-is-not-supported
+flag ~empty (if "vmsa" && "ifetch" then _ else 0)
+  as combining-vmsa-and-ifetch-is-not-supported
+flag ~empty (if "memtag" && "ifetch" then _ else 0)
+  as combining-memtag-and-ifetch-is-not-supported
+
+(* Flag the runs of herd7 with work-in-progress features *)
+flag ~empty (if "sve" then _ else 0)
+  as Scalable-Vector-Extensions-is-work-in-progress
+
+flag ~empty (if "sme" then _ else 0)
+  as Scalable-Matrix-Extensions-is-work-in-progress
+
+flag ~empty (if "shadowstack" then _ else 0)
+  as Guarded-Control-Stack-is-work-in-progress
+include "aarch64loc.cat"

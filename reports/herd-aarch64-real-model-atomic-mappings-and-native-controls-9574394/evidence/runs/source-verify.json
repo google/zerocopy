@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "<HERD_SOURCE>",
+    "<OWNED_CONTAINER>",
+    "sha256sum",
+    "-c",
+    "<HERD_SOURCE_INVENTORY>"
+  ],
+  "exit": 0,
+  "seconds": 0.20534250000491738,
+  "stdout_sha256": "b6abf8e3c9636d71f5c5ac30c13c223b632e33674aebbec47400eec898ab0507",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

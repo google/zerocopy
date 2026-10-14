@@ -1,0 +1,42 @@
+{
+  "milestones": [
+    {
+      "id": "E38",
+      "role": "bounded experiment assessment for parent review; no checkbox mutation",
+      "acceptance": "Execute pinned herd/rmem and rustc atomic mappings, missing-fence/effect annotation controls and an actual selected concurrent assembly wrapper; record model configurations and observed graph/outcome evidence.",
+      "completed_scope": [
+        "Ten actual herd AArch64 cases with explicit pinned aarch64.cat, case/model/tool/source bindings, full final-state outputs and missing release/acquire/fence controls",
+        "Eight actual May1 rustc AtomicU32 function mappings, default apple-m1 Acquire LDAPR versus SeqCst LDAR",
+        "Three compiler-only assembly effect specimens, two intentionally incorrect contracts, actual IR and assembly reload/fold distinction",
+        "Six native raw-FFI global_asm wrapper cases, each10000 rounds, valid live aligned AtomicU32 locations and round barriers inspected",
+        "All native observed states checked against selected model state sets; no weak target outcome observed"
+      ],
+      "assessment": "Bounded experiment criteria are substantively investigated and evidenced, subject to parent independent review and publication. Outcome evidence is retained; graph images were not captured.",
+      "not_claimed": [
+        "Observed hardware weak outcome",
+        "Direct native execution of the eight safe Rust atomic functions",
+        "Native execution of invalid annotation controls",
+        "Complete event-graph equivalence of full concurrent runtime wrapper and tiny litmus inputs"
+      ],
+      "genuinely_unexamined_within_selected_experiment": []
+    },
+    {
+      "id": "E39",
+      "role": "stronger proof goal remains unestablished",
+      "acceptance": "Connect byte-range race/access rules, LLVM/compiler effects, atomic/RMW/fence events and selected hardware consistency/refinement; discharge complete-wrapper and mixed-width premises.",
+      "progress": "Concrete mapping and effect countercontrols provide bounded inputs for a future proof; no refinement theorem supplied.",
+      "remaining_proof_obligations": [
+        "Rust/raw-FFI atomic event interpretation and live-resource/race adequacy",
+        "Compiler lowering/refinement to exact assembly events, including memory effects and complete wrapper context",
+        "Selected hardware consistency/refinement and configuration premises",
+        "Byte-range overlap/mixed-width rules, RMW/failure-ordering and fence composition beyond these loads/stores"
+      ]
+    }
+  ],
+  "source_questions": ["MR15", "AS09", "AS25"],
+  "further_topics_outside_bounded_subject": [
+    "Mixed-width/overlap and RMW specimens were not part of this selected experiment",
+    "No RCpc transitive-publication pattern beyond the two-thread message passing and store buffering cases"
+  ],
+  "reporting_actions": "Static read/hash/projection/audit only; no compiler, herd, Docker or native replay by report author"
+}

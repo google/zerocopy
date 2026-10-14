@@ -1,0 +1,77 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * memory-model@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ * https://developer.arm.com/documentation/ddi0487/
+ *
+ * Authors:
+ * Nikos Nikoleris <nikos.nikoleris@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+
+(*** Device Memory ***)
+
+(* Device Memory Types *)
+let Device-GRE = try PTEDevice-GRE with emptyset
+let Device-nGRE = try PTEDevice-nGRE with emptyset
+let Device-nGnRE = try PTEDevice-nGnRE with emptyset
+let Device-nGnRnE = try PTEDevice-nGnRnE with emptyset
+let Device = Device-GRE | Device-nGRE | Device-nGnRE | Device-nGnRnE
+
+(* Device memory cannot have more than one Device subtypes *)
+assert empty Device-GRE & Device-nGRE & Device-nGnRE & Device-nGnRnE as Conflicting-Device-types
+
+(*** Normal Memory ***)
+
+let NSH = try PTENSH with emptyset
+let ISH = try PTEISH with emptyset
+let OSH = try PTEOSH with emptyset
+let Shareability = NSH | ISH | OSH
+
+let iWB = try PTEiWB with emptyset
+let iWT = try PTEiWT with emptyset
+let iNC = try PTEiNC with emptyset
+let InnerCacheability = iWB | iWT | iNC
+
+let oWB = try PTEoWB with emptyset
+let oWT = try PTEoWT with emptyset
+let oNC = try PTEoNC with emptyset
+let OuterCacheability = oWB | oWT | oNC
+
+let TaggedNormal = try PTETaggedNormal with emptyset
+let Normal = try PTENormal with emptyset
+
+(*** Common attributes ***)
+let PTEXS = try PTEXS with emptyset

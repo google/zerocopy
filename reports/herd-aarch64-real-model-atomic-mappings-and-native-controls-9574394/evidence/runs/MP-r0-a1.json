@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "<HERD_SOURCE>",
+    "<OWNED_CONTAINER>",
+    "opam",
+    "exec",
+    "--",
+    "./_build_verified/default/herd/herd.exe",
+    "-I",
+    "herd/libdir",
+    "-model",
+    "herd/libdir/aarch64.cat",
+    "<HERD_INPUTS>/MP-r0-a1.litmus"
+  ],
+  "exit": 0,
+  "seconds": 0.05583987501449883,
+  "stdout_sha256": "4682f16e0032180b2c0acc5fe96194614bf793705c321343f88521413ddd4adb",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+}

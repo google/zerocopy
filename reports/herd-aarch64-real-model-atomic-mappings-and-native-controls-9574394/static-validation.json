@@ -1,0 +1,2317 @@
+{
+  "role": "static audit of preserved evidence; no subject re-execution",
+  "checks": [
+    {
+      "check": "projection binding evidence/annotation_controls.ll",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/annotation_controls.ll",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/annotation_controls.rs",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/annotation_controls.rs",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/annotation_controls.s",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/annotation_controls.s",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/atomic_wrappers-initial.rs",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/atomic_wrappers-initial.rs",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/atomic_wrappers-initial.s",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/atomic_wrappers-initial.s",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/atomic_wrappers.rs",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/atomic_wrappers.rs",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/atomic_wrappers.s",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/atomic_wrappers.s",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/concurrent_assembly.rs",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/concurrent_assembly.rs",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/concurrent_assembly.s",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/concurrent_assembly.s",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/herd-source.sha256",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/herd-source.sha256",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/input-identities.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/input-identities.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r0-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r0-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r0-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r0-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r0-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r0-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r1-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r1-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r1-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r1-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/MP-r1-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/MP-r1-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/SB-STLR-LDAPR.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/SB-STLR-LDAPR.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/SB-STLR-LDAR.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/SB-STLR-LDAR.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/SB-dmb.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/SB-dmb.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/inputs/SB.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/inputs/SB.litmus",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/may1-tool-identities.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/may1-tool-identities.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a0.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a0.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a0.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a0.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a0.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a0.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a1.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a1.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-a1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-a1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-p1.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-p1.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-p1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-p1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r0-p1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r0-p1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a0.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a0.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a0.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a0.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a0.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a0.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a1.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a1.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-a1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-a1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-p1.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-p1.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-p1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-p1.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/MP-r1-p1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/MP-r1-p1.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAPR.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAPR.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAPR.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAPR.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAPR.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAPR.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAR.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAR.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAR.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAR.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-STLR-LDAR.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-STLR-LDAR.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-dmb.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-dmb.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-dmb.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-dmb.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB-dmb.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB-dmb.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/SB.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/SB.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/annotation-compile.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/annotation-compile.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/annotation-compile.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/annotation-compile.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/annotation-compile.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/annotation-compile.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-build.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-build.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-native.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-native.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-native.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-native.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/concurrent-native.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/concurrent-native.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/final-rustc-atomic-asm.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/final-rustc-atomic-asm.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/final-rustc-atomic-asm.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/final-rustc-atomic-asm.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/final-rustc-atomic-asm.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/final-rustc-atomic-asm.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-binary-hash.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-binary-hash.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-binary-hash.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-binary-hash.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-binary-hash.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-binary-hash.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-version.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-version.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/herd-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/herd-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-cpu-query.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-cpu-query.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-cpu-query.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-cpu-query.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-cpu-query.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-cpu-query.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-os.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-os.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-os.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-os.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-os.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-os.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-process-arch.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-process-arch.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-process-arch.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-process-arch.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/host-process-arch.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/host-process-arch.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-atomic-asm.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-atomic-asm.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-atomic-asm.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-atomic-asm.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-atomic-asm.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-atomic-asm.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-cfg.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-cfg.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-cfg.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-cfg.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-cfg.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-cfg.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-version.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-version.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-version.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/rustc-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/rustc-version.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/source-verify.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/source-verify.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/source-verify.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/source-verify.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/runs/source-verify.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/runs/source-verify.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64bbm.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64bbm.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64deps.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64deps.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64fences.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64fences.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64hwreqs.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64hwreqs.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64loc.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64loc.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64memattrs.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64memattrs.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64show.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64show.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/aarch64util.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/aarch64util.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/cos-no-opt.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/cos-no-opt.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/cos-ok-opt.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/cos-ok-opt.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/cos.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/cos.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/cross.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/cross.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/enumerations.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/enumerations.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/libdir/stdlib.cat",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/libdir/stdlib.cat",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/AArch64Sem.ml",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/AArch64Sem.ml",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/AArch64Annot.ml",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/AArch64Annot.ml",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/lib/AArch64Base.ml",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/lib/AArch64Base.ml",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/opts.ml",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/opts.ml",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herd/herd.ml",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herd/herd.ml",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/VERSION.txt",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/VERSION.txt",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/LICENSE.txt",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/LICENSE.txt",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/INSTALL.md",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/INSTALL.md",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/herdtools7/herdtools7.opam",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/herdtools7/herdtools7.opam",
+      "pass": true
+    },
+    {
+      "check": "projection binding upstream/rust-reference/inline-assembly.md",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure upstream/rust-reference/inline-assembly.md",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/environment/container-resource.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/environment/container-resource.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/herd-verified-build-parent-note.json",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/herd-verified-build-parent-note.json",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/herd-verified-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/herd-verified-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/herd-verified-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/herd-verified-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/herd-dependencies.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/herd-dependencies.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/herd-dependencies.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/herd-dependencies.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/prior-diagnostics/herd-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/prior-diagnostics/herd-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/prior-diagnostics/herd-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/prior-diagnostics/herd-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/prior-diagnostics/herd-container-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/prior-diagnostics/herd-container-build.stdout",
+      "pass": true
+    },
+    {
+      "check": "projection binding evidence/build/prior-diagnostics/herd-container-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "projection disclosure evidence/build/prior-diagnostics/herd-container-build.stderr",
+      "pass": true
+    },
+    {
+      "check": "6580 local/container source bindings",
+      "pass": true
+    },
+    {
+      "check": "selected sources match pinned inventory",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r0-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r0-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r0-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r1-a0.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r1-a1.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding MP-r1-p1.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding SB-STLR-LDAPR.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding SB-STLR-LDAR.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding SB-dmb.litmus",
+      "pass": true
+    },
+    {
+      "check": "litmus input binding SB.litmus",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "herd exit MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "herd observation MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "herd state count MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "model target membership MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "herd exit SB",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation SB",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides SB",
+      "pass": true
+    },
+    {
+      "check": "herd observation SB",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts SB",
+      "pass": true
+    },
+    {
+      "check": "herd state count SB",
+      "pass": true
+    },
+    {
+      "check": "model target membership SB",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified SB",
+      "pass": true
+    },
+    {
+      "check": "herd exit SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "herd observation SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "herd state count SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "model target membership SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "herd exit SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "herd observation SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "herd state count SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "model target membership SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "herd exit SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "explicit pinned model invocation SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "no explicit variant/config overrides SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "herd observation SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "herd witness counts SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "herd state count SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "model target membership SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "herd stderr classified SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "MP actual release/acquire instructions MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "actual store/load ordering control SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "actual store/load ordering control SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "actual two-sided DMB control",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions publish_relaxed",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions publish_release",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions observe_relaxed",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions observe_acquire",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions store_then_load_relaxed",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions store_then_load_fenced",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions store_then_load_release_acquire",
+      "pass": true
+    },
+    {
+      "check": "actual compiler instructions store_then_load_seqcst",
+      "pass": true
+    },
+    {
+      "check": "observed LLVM target cpu apple-m1",
+      "pass": true
+    },
+    {
+      "check": "compiler default RCpc/64-bit cfg",
+      "pass": true
+    },
+    {
+      "check": "May1 rustc actual commit",
+      "pass": true
+    },
+    {
+      "check": "final eight-wrapper source binding",
+      "pass": true
+    },
+    {
+      "check": "control actual Rust+asm stores complete",
+      "pass": true
+    },
+    {
+      "check": "control reload distinction complete",
+      "pass": true
+    },
+    {
+      "check": "control folded result distinction complete",
+      "pass": true
+    },
+    {
+      "check": "LLVM folded return complete",
+      "pass": true
+    },
+    {
+      "check": "LLVM reload distinction complete",
+      "pass": true
+    },
+    {
+      "check": "control actual Rust+asm stores wrong_nomem",
+      "pass": true
+    },
+    {
+      "check": "control reload distinction wrong_nomem",
+      "pass": true
+    },
+    {
+      "check": "control folded result distinction wrong_nomem",
+      "pass": true
+    },
+    {
+      "check": "LLVM folded return wrong_nomem",
+      "pass": true
+    },
+    {
+      "check": "LLVM reload distinction wrong_nomem",
+      "pass": true
+    },
+    {
+      "check": "control actual Rust+asm stores wrong_readonly",
+      "pass": true
+    },
+    {
+      "check": "control reload distinction wrong_readonly",
+      "pass": true
+    },
+    {
+      "check": "control folded result distinction wrong_readonly",
+      "pass": true
+    },
+    {
+      "check": "LLVM folded return wrong_readonly",
+      "pass": true
+    },
+    {
+      "check": "LLVM reload distinction wrong_readonly",
+      "pass": true
+    },
+    {
+      "check": "bad annotation compile-only policy",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping publish_relaxed",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf publish_relaxed",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping publish_release",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf publish_release",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping observe_relaxed",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf observe_relaxed",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping observe_acquire",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf observe_acquire",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping sb_relaxed",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf sb_relaxed",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping sb_ra",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf sb_ra",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping sb_sc",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf sb_sc",
+      "pass": true
+    },
+    {
+      "check": "native leaf matches compiler mapping sb_fence",
+      "pass": true
+    },
+    {
+      "check": "unchanged extracted native leaf sb_fence",
+      "pass": true
+    },
+    {
+      "check": "native exact extraction hash",
+      "pass": true
+    },
+    {
+      "check": "native run successful no diagnostics",
+      "pass": true
+    },
+    {
+      "check": "original binary hash checked without execution",
+      "pass": true
+    },
+    {
+      "check": "native original assembly binding before path projection",
+      "pass": true
+    },
+    {
+      "check": "native source build/run binding",
+      "pass": true
+    },
+    {
+      "check": "six native run cases",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count MP-relaxed",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed MP-relaxed",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed MP-relaxed",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count MP-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed MP-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed MP-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count SB-relaxed",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed SB-relaxed",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed SB-relaxed",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count SB-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed SB-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed SB-release-acquire",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count SB-seqcst",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed SB-seqcst",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed SB-seqcst",
+      "pass": true
+    },
+    {
+      "check": "native output grammar",
+      "pass": true
+    },
+    {
+      "check": "native complete outcome count SB-fence",
+      "pass": true
+    },
+    {
+      "check": "native observed outcomes model-allowed SB-fence",
+      "pass": true
+    },
+    {
+      "check": "weak target not observed SB-fence",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r0-a0",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r0-a0 stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r0-a0 stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r0-a1",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r0-a1 stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r0-a1 stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r0-p1",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r1-a0",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r1-a0 stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r1-a0 stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r1-a1",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r1-a1 stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt MP-r1-a1 stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command MP-r1-p1",
+      "pass": true
+    },
+    {
+      "check": "captured successful command SB-STLR-LDAPR",
+      "pass": true
+    },
+    {
+      "check": "captured successful command SB-STLR-LDAR",
+      "pass": true
+    },
+    {
+      "check": "captured successful command SB-dmb",
+      "pass": true
+    },
+    {
+      "check": "original output receipt SB-dmb stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt SB-dmb stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command SB",
+      "pass": true
+    },
+    {
+      "check": "original output receipt SB stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt SB stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command annotation-compile",
+      "pass": true
+    },
+    {
+      "check": "captured successful command concurrent-build",
+      "pass": true
+    },
+    {
+      "check": "captured successful command concurrent-native",
+      "pass": true
+    },
+    {
+      "check": "captured successful command final-rustc-atomic-asm",
+      "pass": true
+    },
+    {
+      "check": "captured successful command herd-binary-hash",
+      "pass": true
+    },
+    {
+      "check": "original output receipt herd-binary-hash stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt herd-binary-hash stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command herd-version",
+      "pass": true
+    },
+    {
+      "check": "original output receipt herd-version stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt herd-version stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command host-cpu-query",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-cpu-query stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-cpu-query stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command host-os",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-os stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-os stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command host-process-arch",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-process-arch stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt host-process-arch stderr",
+      "pass": true
+    },
+    {
+      "check": "captured successful command rustc-atomic-asm",
+      "pass": true
+    },
+    {
+      "check": "captured successful command rustc-cfg",
+      "pass": true
+    },
+    {
+      "check": "captured successful command rustc-version",
+      "pass": true
+    },
+    {
+      "check": "captured successful command source-verify",
+      "pass": true
+    },
+    {
+      "check": "original output receipt source-verify stdout",
+      "pass": true
+    },
+    {
+      "check": "original output receipt source-verify stderr",
+      "pass": true
+    },
+    {
+      "check": "observed host CPU receipt",
+      "pass": true
+    },
+    {
+      "check": "observed host OS/process architecture",
+      "pass": true
+    },
+    {
+      "check": "herd version receipt",
+      "pass": true
+    }
+  ],
+  "all_passed": true,
+  "model_cases": [
+    {
+      "case": "MP-r0-a0",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "MP-r0-a1",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "MP-r0-p1",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "MP-r1-a0",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "MP-r1-a1",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Never",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 0,
+      "negative": 3
+    },
+    {
+      "case": "MP-r1-p1",
+      "target": [
+        1,
+        0
+      ],
+      "model_status": "Never",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 0,
+      "negative": 3
+    },
+    {
+      "case": "SB",
+      "target": [
+        0,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "SB-STLR-LDAPR",
+      "target": [
+        0,
+        0
+      ],
+      "model_status": "Sometimes",
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 1,
+      "negative": 3
+    },
+    {
+      "case": "SB-STLR-LDAR",
+      "target": [
+        0,
+        0
+      ],
+      "model_status": "Never",
+      "states": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 0,
+      "negative": 3
+    },
+    {
+      "case": "SB-dmb",
+      "target": [
+        0,
+        0
+      ],
+      "model_status": "Never",
+      "states": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "positive": 0,
+      "negative": 3
+    }
+  ],
+  "compiler_functions": {
+    "publish_relaxed": [
+      "mov w8,#1",
+      "str w8,[x0]",
+      "str w8,[x1]",
+      "ret"
+    ],
+    "publish_release": [
+      "mov w8,#1",
+      "str w8,[x0]",
+      "stlr w8,[x1]",
+      "ret"
+    ],
+    "observe_relaxed": [
+      "ldr w8,[x1]",
+      "ldr w9,[x0]",
+      "orr x0,x9,x8,lsl #32",
+      "ret"
+    ],
+    "observe_acquire": [
+      "ldapr w8,[x1]",
+      "ldr w9,[x0]",
+      "orr x0,x9,x8,lsl #32",
+      "ret"
+    ],
+    "store_then_load_relaxed": [
+      "mov w8,#1",
+      "str w8,[x0]",
+      "ldr w0,[x1]",
+      "ret"
+    ],
+    "store_then_load_fenced": [
+      "mov w8,#1",
+      "str w8,[x0]",
+      "dmb ish",
+      "ldr w0,[x1]",
+      "ret"
+    ],
+    "store_then_load_release_acquire": [
+      "mov w8,#1",
+      "stlr w8,[x0]",
+      "ldapr w0,[x1]",
+      "ret"
+    ],
+    "store_then_load_seqcst": [
+      "mov w8,#1",
+      "stlr w8,[x0]",
+      "ldar w0,[x1]",
+      "ret"
+    ]
+  },
+  "native_cases": [
+    {
+      "case": "MP-relaxed",
+      "model_case": "MP-r0-a0",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        4957,
+        0,
+        0,
+        5043
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    },
+    {
+      "case": "MP-release-acquire",
+      "model_case": "MP-r1-p1",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        4947,
+        0,
+        0,
+        5053
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    },
+    {
+      "case": "SB-relaxed",
+      "model_case": "SB",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        0,
+        4960,
+        5040,
+        0
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    },
+    {
+      "case": "SB-release-acquire",
+      "model_case": "SB-STLR-LDAPR",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        0,
+        5032,
+        4968,
+        0
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    },
+    {
+      "case": "SB-seqcst",
+      "model_case": "SB-STLR-LDAR",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        0,
+        5007,
+        4993,
+        0
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    },
+    {
+      "case": "SB-fence",
+      "model_case": "SB-dmb",
+      "rounds": 10000,
+      "counts00_01_10_11": [
+        0,
+        4936,
+        5064,
+        0
+      ],
+      "all_observed_states_model_allowed": true,
+      "weak_target_observed": false
+    }
+  ],
+  "limits": [
+    "Does not replay herd or rustc or execute native wrappers",
+    "Does not prove a Rust/compiler/hardware refinement",
+    "No weak target was observed on hardware",
+    "Plain external assembly accesses retain the raw-FFI semantic trust boundary"
+  ]
+}

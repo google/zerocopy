@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "<HERD_SOURCE>",
+    "<OWNED_CONTAINER>",
+    "opam",
+    "exec",
+    "--",
+    "./_build_verified/default/herd/herd.exe",
+    "-I",
+    "herd/libdir",
+    "-model",
+    "herd/libdir/aarch64.cat",
+    "<HERD_INPUTS>/SB-STLR-LDAPR.litmus"
+  ],
+  "exit": 0,
+  "seconds": 0.05698983301408589,
+  "input_sha256": "22761e426ada031cead7c770e91818da82fcfbf62bdfa0da9d1803a3d0d2397d"
+}

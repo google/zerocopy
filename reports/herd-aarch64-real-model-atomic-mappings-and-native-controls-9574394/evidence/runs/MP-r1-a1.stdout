@@ -1,0 +1,13 @@
+Test MP-r1-a1 Allowed
+States 3
+1:X4=0; 1:X6=0;
+1:X4=0; 1:X6=1;
+1:X4=1; 1:X6=1;
+No
+Witnesses
+Positive: 0 Negative: 3
+Condition exists (1:X4=1 /\ 1:X6=0)
+Observation MP-r1-a1 Never 0 3
+Time MP-r1-a1 0.00
+Hash=30ed28ecfce62002c1227c3bb82cc324
+

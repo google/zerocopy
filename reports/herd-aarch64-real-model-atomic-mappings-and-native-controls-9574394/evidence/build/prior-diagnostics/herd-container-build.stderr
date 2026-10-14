@@ -1,0 +1,6 @@
+[WARNING] Running as root is not recommended
+File "herd/dune", lines 7-8, characters 0-39:
+7 | (rule
+8 |  (copy ../Version.ml Version.ml))
+Error: No rule found for Version.ml
+Read 42 sample input sentences and 6 error messages.

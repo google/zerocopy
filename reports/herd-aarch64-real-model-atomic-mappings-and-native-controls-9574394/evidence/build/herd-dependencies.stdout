@@ -1,0 +1,77 @@
+The following actions will be performed:
+  - install conf-pkg-config 5        [required by zarith]
+  - install dune            3.17.2
+  - install ocamlbuild      0.16.1   [required by logs]
+  - install ocamlfind       1.9.8    [required by logs, zarith]
+  - install conf-gmp        5        [required by zarith]
+  - install menhirSdk       20240715 [required by menhir]
+  - install menhirLib       20240715 [required by menhir]
+  - install menhirCST       20240715 [required by menhir]
+  - install topkg           1.1.1    [required by logs]
+  - install zarith          1.14
+  - install menhir          20240715
+  - install logs            0.8.0
+===== 12 to install =====
+
+The following system packages will first need to be installed:
+    libgmp-dev pkg-config
+
+<><> Handling external dependencies <><><><><><><><><><><><><><><><><><><><><><>
+Let opam run your package manager to install the required system packages?
+(answer 'n' for other options) [Y/n] y
++ /usr/bin/apt-get "install" "-qq" "-yy" "libgmp-dev" "pkg-config"
+- debconf: delaying package configuration, since apt-utils is not installed
+- Selecting previously unselected package libgmpxx4ldbl:arm64.
+- (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18785 files and directories currently installed.)
+- Preparing to unpack .../0-libgmpxx4ldbl_2%3a6.2.1+dfsg1-1.1_arm64.deb ...
+- Unpacking libgmpxx4ldbl:arm64 (2:6.2.1+dfsg1-1.1) ...
+- Selecting previously unselected package libgmp-dev:arm64.
+- Preparing to unpack .../1-libgmp-dev_2%3a6.2.1+dfsg1-1.1_arm64.deb ...
+- Unpacking libgmp-dev:arm64 (2:6.2.1+dfsg1-1.1) ...
+- Selecting previously unselected package libpkgconf3:arm64.
+- Preparing to unpack .../2-libpkgconf3_1.8.1-1_arm64.deb ...
+- Unpacking libpkgconf3:arm64 (1.8.1-1) ...
+- Selecting previously unselected package pkgconf-bin.
+- Preparing to unpack .../3-pkgconf-bin_1.8.1-1_arm64.deb ...
+- Unpacking pkgconf-bin (1.8.1-1) ...
+- Selecting previously unselected package pkgconf:arm64.
+- Preparing to unpack .../4-pkgconf_1.8.1-1_arm64.deb ...
+- Unpacking pkgconf:arm64 (1.8.1-1) ...
+- Selecting previously unselected package pkg-config:arm64.
+- Preparing to unpack .../5-pkg-config_1.8.1-1_arm64.deb ...
+- Unpacking pkg-config:arm64 (1.8.1-1) ...
+- Setting up libpkgconf3:arm64 (1.8.1-1) ...
+- Setting up libgmpxx4ldbl:arm64 (2:6.2.1+dfsg1-1.1) ...
+- Setting up pkgconf-bin (1.8.1-1) ...
+- Setting up libgmp-dev:arm64 (2:6.2.1+dfsg1-1.1) ...
+- Setting up pkgconf:arm64 (1.8.1-1) ...
+- Setting up pkg-config:arm64 (1.8.1-1) ...
+- Processing triggers for libc-bin (2.36-9+deb12u14) ...
+
+<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+-> retrieved conf-gmp.5  (https://opam.ocaml.org/cache)
+-> installed conf-gmp.5
+-> retrieved logs.0.8.0  (https://opam.ocaml.org/cache)
+-> retrieved conf-pkg-config.5  (2 extra sources)
+-> retrieved dune.3.17.2  (https://opam.ocaml.org/cache)
+-> installed conf-pkg-config.5
+-> retrieved menhir.20240715  (https://opam.ocaml.org/cache)
+-> retrieved menhirSdk.20240715  (cached)
+-> retrieved ocamlbuild.0.16.1  (https://opam.ocaml.org/cache)
+-> retrieved menhirCST.20240715  (https://opam.ocaml.org/cache)
+-> retrieved ocamlfind.1.9.8  (https://opam.ocaml.org/cache)
+-> retrieved topkg.1.1.1  (https://opam.ocaml.org/cache)
+-> retrieved zarith.1.14  (https://opam.ocaml.org/cache)
+-> retrieved menhirLib.20240715  (https://opam.ocaml.org/cache)
+-> installed ocamlbuild.0.16.1
+-> installed ocamlfind.1.9.8
+-> installed topkg.1.1.1
+-> installed zarith.1.14
+-> installed logs.0.8.0
+-> installed dune.3.17.2
+-> installed menhirCST.20240715
+-> installed menhirLib.20240715
+-> installed menhirSdk.20240715
+-> installed menhir.20240715
+Done.
+# Run eval $(opam env) to update the current shell environment

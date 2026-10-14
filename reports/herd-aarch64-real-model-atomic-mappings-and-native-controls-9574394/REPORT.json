@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "assembly/weak-memory",
+    "herd/aarch64",
+    "rust/atomics",
+    "rust/inline-assembly",
+    "compiler/effects"
+  ],
+  "subjects": [
+    {
+      "name": "herdtools7 executable and selected AArch64 model",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+        "version": "7.58+1, Rev: exported",
+        "executable_sha256": "b50b95ab172b076b01d44b49e35cc86566ee6332550edce282a896db55e5095e"
+      }
+    },
+    {
+      "name": "Rust May 1 nightly atomic code generation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "toolchain": "nightly-2026-05-01-aarch64-apple-darwin",
+        "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+      }
+    },
+    {
+      "name": "Rust inline assembly effect contract",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "path": "src/inline-assembly.md"
+      }
+    },
+    {
+      "name": "Concurrent assembly specimen",
+      "identity": {
+        "artifact": "concurrent_assembly.rs",
+        "sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249",
+        "original_native_binary_sha256": "0e0192997852c3a7816ac52bc4ac9b3e61e5fdbf2887ab9ece4a950396c2ac83"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "arch"
+  ],
+  "exit": 0,
+  "seconds": 0.009578292025253177,
+  "stdout_sha256": "f69162950f235e3cdbbad33f1f912d1a504be90d8a37d002c735d6f3e3882265",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

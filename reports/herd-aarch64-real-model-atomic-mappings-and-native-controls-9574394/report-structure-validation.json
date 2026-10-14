@@ -1,0 +1,13 @@
+{
+  "role": "report format, local authored links, public-path and JSON structural audit",
+  "passed": true,
+  "report_metadata_top_fields": [
+    "observed_at",
+    "subjects",
+    "topics"
+  ],
+  "local_report_links_checked": 31,
+  "one_exact_italic_AI_notice": true,
+  "no_private_User_or_container_home_display_paths": true,
+  "no_symlinks": true
+}

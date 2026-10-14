@@ -1,0 +1,13 @@
+{
+  "owner": "Anneal execution initiative google/zerocopy#3876",
+  "container_name": "<OWNED_CONTAINER>",
+  "container_id": "25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013",
+  "image": "ocaml/opam@sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+  "cpus": 2,
+  "memory": "3g",
+  "pids_limit": 512,
+  "host_mount": "work/execution/formal-tools",
+  "container_mount": "/work",
+  "authority": "Parent owns container execution, retirement and external effects; no credentials/socket/home/repository mounted.",
+  "disposition": "Preserve active until experiment replays complete, then reconcile evidence before retirement."
+}

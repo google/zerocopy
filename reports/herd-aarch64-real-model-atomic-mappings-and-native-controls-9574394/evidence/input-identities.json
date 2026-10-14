@@ -1,0 +1,52 @@
+[
+  {
+    "path": "MP-r0-a0.litmus",
+    "sha256": "889b80c9d7ee39e890d2a03cadc9c709442ebaa762bb38917bbe7c9abf62b7dc",
+    "bytes": 246
+  },
+  {
+    "path": "MP-r0-a1.litmus",
+    "sha256": "4ee7578d6ef29f1020aef104b8556817f3119ceb8217f1e990f44efca58ea92e",
+    "bytes": 247
+  },
+  {
+    "path": "MP-r0-p1.litmus",
+    "sha256": "69cd86540246be0cfa8b2df3d5b5400f2e68c3c053fa33323698b53746ecc04e",
+    "bytes": 248
+  },
+  {
+    "path": "MP-r1-a0.litmus",
+    "sha256": "531288c6b1521830d1ce7a9391c02e1129111773e84e545ab2701b0aadade4e0",
+    "bytes": 247
+  },
+  {
+    "path": "MP-r1-a1.litmus",
+    "sha256": "08d31b450012503a4139651108d75a3aff3047dcd5268900678a867d7f02de02",
+    "bytes": 248
+  },
+  {
+    "path": "MP-r1-p1.litmus",
+    "sha256": "4fc5dc2f80d006f2e0d69354821dfdaa8d439c055eac635ecafee563943dc59d",
+    "bytes": 249
+  },
+  {
+    "path": "SB-STLR-LDAPR.litmus",
+    "sha256": "22761e426ada031cead7c770e91818da82fcfbf62bdfa0da9d1803a3d0d2397d",
+    "bytes": 224
+  },
+  {
+    "path": "SB-STLR-LDAR.litmus",
+    "sha256": "22372ea85d2326476b6298fd3ba697bd7a714ea182bded512a9d001a8da0b8c2",
+    "bytes": 221
+  },
+  {
+    "path": "SB-dmb.litmus",
+    "sha256": "eec9b1c31bb8af18b933a17c123746af408ff40e0ae804f63ccc06bac809b62e",
+    "bytes": 236
+  },
+  {
+    "path": "SB.litmus",
+    "sha256": "da62bac53a8af15350065f0e5cf715df65a1ab0f75cd3d185bf9651cd330be83",
+    "bytes": 203
+  }
+]

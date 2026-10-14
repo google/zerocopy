@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "<MAY1_TOOLCHAIN>/bin/rustc",
+    "-Vv"
+  ],
+  "exit": 0,
+  "seconds": 0.1062745419330895
+}

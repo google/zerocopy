@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "repository": "herd/herdtools7",
+      "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+      "path": "herd/libdir/aarch64hwreqs.cat",
+      "region": "bob, lines128\u2013138",
+      "role": "source",
+      "supports": "A/Q follow-on ordering, L-to-A ordering and DMB; derived explanation of actual outcome distinction",
+      "preserved_sha256": "0d24db3b580dcaee96b025c3e9ad6b33217e4e34dd79a3765703eaaede1f1697"
+    },
+    {
+      "repository": "herd/herdtools7",
+      "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+      "path": "herd/libdir/aarch64.cat",
+      "region": "ob/external, lines155\u2013161",
+      "role": "source",
+      "supports": "selected model ordered-before closure and irreflexivity",
+      "preserved_sha256": "1d6bcac1194cded0f89717f3bf892c2105d8a17e7aff0304fa79ebc240b07d1d"
+    },
+    {
+      "repository": "herd/herdtools7",
+      "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+      "path": "herd/AArch64Sem.ml",
+      "region": "ldar2056\u20132072;stlr2173\u20132174",
+      "role": "source",
+      "supports": "selected instruction to A/Q/L event annotations",
+      "preserved_sha256": "4006108c09ce94b1d9f5f7518b50461bc9b6d50675ca35705728502837d1720a"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/inline-assembly.md",
+      "region": "asm.options.supported-options-nomem1104\u20131105;readonly1150\u20131151;asm.rules.mem-same-as-ffi1338\u20131342",
+      "role": "normative",
+      "supports": "declared memory/synchronization restrictions; does not prove raw-FFI Rust atomic adequacy",
+      "preserved_sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e"
+    }
+  ],
+  "execution_basis": "Actual preserved per-command JSON/stdout/stderr, source/output identities and full cases; static-validation is report-owned analysis, not subject replay.",
+  "provenance_note": "Source archive and executable/source-copy hashes are distinct identities. Version query says exported; no embedded Git identity invented."
+}

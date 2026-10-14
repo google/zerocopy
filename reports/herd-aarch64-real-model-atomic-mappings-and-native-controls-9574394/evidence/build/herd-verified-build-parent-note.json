@@ -1,0 +1,36 @@
+{
+  "evidence_role": "Parent integration note transcribing the actual tool invocation and completion, rather than an original subprocess-capture receipt",
+  "session_id": 87031,
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "<HERD_SOURCE>",
+    "<OWNED_CONTAINER>",
+    "opam",
+    "exec",
+    "--",
+    "dune",
+    "build",
+    "--build-dir",
+    "_build_verified",
+    "--profile",
+    "release",
+    "-j2",
+    "herd/herd.exe"
+  ],
+  "observed_exit_code": 0,
+  "stdout": {
+    "path": "herd-verified-build.stdout",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "herd-verified-build.stderr",
+    "sha256": "b66f449cdf871eab56cd8cee5c9de2310968a1d6f4f74ca2ad5b5de4c80b479b"
+  },
+  "source_revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+  "archive_sha256": "b109f81e61e26f8bf74d6343b568ccc747cc0c40c41b8084103d557b3ab8a9fb",
+  "binary_sha256": "b50b95ab172b076b01d44b49e35cc86566ee6332550edce282a896db55e5095e",
+  "prior_failed_builds": "Earlier incomplete-copy/Version.ml diagnostic attempts are not accepted build evidence. Fresh _build_verified followed completed source copy and reviewed make Version.ml generation. All6580 copied regular source files were verified against the pinned archive before model execution.",
+  "elapsed_seconds": "not preserved in this note"
+}

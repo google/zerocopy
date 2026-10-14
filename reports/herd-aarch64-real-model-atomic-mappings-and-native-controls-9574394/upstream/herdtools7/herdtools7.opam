@@ -1,0 +1,34 @@
+opam-version: "2.0"
+synopsis: "The herdtools suite for simulating and studying weak memory models"
+maintainer: "Luc Maranget <Luc.Maranget@inria.fr>"
+authors: [
+  "Luc Maranget <Luc.Maranget@inria.fr>"
+  "Jade Alglave <j.alglave@ucl.ac.uk>"
+]
+homepage: "http://diy.inria.fr/"
+bug-reports: "http://github.com/herd/herdtools7/issues/"
+doc: "http://diy.inria.fr/doc/index.html"
+dev-repo: "git+https://github.com/herd/herdtools7.git"
+license: "CECILL-B"
+build: [make "build-release" "PREFIX=%{prefix}%"]
+install: [make "install-herdtools" "PREFIX=%{prefix}%"]
+# @todo Add "build-doc" field
+# @todo Add "build-test" field
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "dune"  {>= "3.14.0" }
+  "menhir" {>= "20231231"}
+  "zarith" {>= "1.13"}
+  "conf-which"
+  "logs"
+  "conf-python-3" {= "9.0.0" & with-test}
+  "conf-gcc" {with-test}
+]
+conflicts: ["ocaml-option-bytecode-only"]
+url {
+  src: "https://github.com/herd/herdtools7/archive/refs/tags/7.57.tar.gz"
+  checksum: [
+    "md5=94f321f138662ba84f519376b6a9ec44"
+    "sha512=08c6d99e8bcd1774f40daed2965f286401404dbf42c4871246edd5b64ce4fd89ead1f36d2c6d7bfc534d769888cf61b0c8cd6decca9434272c32cbef1bcd29ba"
+  ]
+}
