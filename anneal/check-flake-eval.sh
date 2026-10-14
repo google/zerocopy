@@ -35,6 +35,7 @@ packages=(
   omnibus-archive-layout-check
   omnibus-tar
   rust-toolchain
+  rust-model-compiled
 )
 
 for system in "${systems[@]}"; do
