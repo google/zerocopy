@@ -1,0 +1,401 @@
+{
+  "observed_at": "2026-10-14",
+  "entries": [
+    {
+      "id": "R022",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Cameras preserve compatible frames rather than just byte geometry"
+      ]
+    },
+    {
+      "id": "R023",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Guarded recursion is a contract on definitions"
+      ]
+    },
+    {
+      "id": "R024",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Lifetime access carries the closing and recovery resources"
+      ]
+    },
+    {
+      "id": "R025",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ordinary and parametric prophecies have different consistency premises"
+      ]
+    },
+    {
+      "id": "R026",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ]
+    },
+    {
+      "id": "R027",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ]
+    },
+    {
+      "id": "R028",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Safety credits and progress obligations have distinct conclusions",
+        "Guarded recursion is a contract on definitions"
+      ]
+    },
+    {
+      "id": "R032",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments"
+      ]
+    },
+    {
+      "id": "R059",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "not-examined-comparison",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments",
+        "Cameras preserve compatible frames rather than just byte geometry"
+      ]
+    },
+    {
+      "id": "R079",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments",
+        "Lifetime access carries the closing and recovery resources",
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ]
+    },
+    {
+      "id": "R080",
+      "package": "resource-algebra-lifetime-and-automation-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments"
+      ]
+    },
+    {
+      "id": "R019",
+      "package": "relaxed-memory-reclamation-premises-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Rust orders accesses and forbids unsynchronized conflicting races",
+        "The modeled language and adequacy are explicit",
+        "View-indexed ownership connects tokens to observation"
+      ]
+    },
+    {
+      "id": "R020",
+      "package": "relaxed-memory-reclamation-premises-2026",
+      "status": "partial",
+      "findings_sections": [
+        "The modeled language and adequacy are explicit",
+        "Source compatibility and progress require separate relations"
+      ]
+    },
+    {
+      "id": "R076",
+      "package": "relaxed-memory-reclamation-premises-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Send and Sync constrain thread transfer but do not prove a reclamation protocol",
+        "View-indexed ownership connects tokens to observation"
+      ]
+    },
+    {
+      "id": "T074",
+      "package": "relaxed-memory-reclamation-premises-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "The modeled language and adequacy are explicit",
+        "Source compatibility and progress require separate relations"
+      ]
+    },
+    {
+      "id": "R061",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "Physical admission and mathematical decoding are independent in the PR model",
+        "The checked byte-copy model exposes its trust boundary"
+      ]
+    },
+    {
+      "id": "R067",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "By-value conversion has different ownership exits",
+        "Physical admission and mathematical decoding are independent in the PR model"
+      ]
+    },
+    {
+      "id": "R068",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "By-value conversion has different ownership exits",
+        "Partial initialization and destructor suppression need independent state"
+      ]
+    },
+    {
+      "id": "R069",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Partial initialization and destructor suppression need independent state"
+      ]
+    },
+    {
+      "id": "R070",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Allocator identity, reallocation and capacity are separate resources"
+      ]
+    },
+    {
+      "id": "T077",
+      "package": "rust-storage-transfer-and-drop-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "Physical admission and mathematical decoding are independent in the PR model",
+        "The checked byte-copy model exposes its trust boundary"
+      ]
+    },
+    {
+      "id": "R062",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ptr supplies a resource invariant beyond its numerical range",
+        "Projection consumes access and transfers selected invariants",
+        "Validity conversion is directional and mutation-sensitive"
+      ]
+    },
+    {
+      "id": "R063",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Projection consumes access and transfers selected invariants",
+        "Validation needs stable observations until every consumer"
+      ]
+    },
+    {
+      "id": "R064",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Slice separation includes padding and ZST cases",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ]
+    },
+    {
+      "id": "R065",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Validation needs stable observations until every consumer",
+        "The Safe documentation has an unresolved local contract tension"
+      ]
+    },
+    {
+      "id": "R066",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The Safe documentation has an unresolved local contract tension"
+      ]
+    },
+    {
+      "id": "R067",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Validity conversion is directional and mutation-sensitive",
+        "Packed DST layout and dictionary identity remain explicit"
+      ]
+    },
+    {
+      "id": "R071",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The packed probe discriminates reference formation from raw unaligned access",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ]
+    },
+    {
+      "id": "R072",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Validation needs stable observations until every consumer",
+        "Validity conversion is directional and mutation-sensitive",
+        "The Safe documentation has an unresolved local contract tension"
+      ]
+    },
+    {
+      "id": "R073",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Union and SIMD support cannot be inferred from field syntax"
+      ]
+    },
+    {
+      "id": "R075",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Validity conversion is directional and mutation-sensitive",
+        "Validation needs stable observations until every consumer",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ]
+    },
+    {
+      "id": "T078",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ptr supplies a resource invariant beyond its numerical range",
+        "Projection consumes access and transfers selected invariants",
+        "Slice separation includes padding and ZST cases",
+        "Packed DST layout and dictionary identity remain explicit"
+      ]
+    },
+    {
+      "id": "T079",
+      "package": "zerocopy-projection-validation-and-layout-cce761ad",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The Safe documentation has an unresolved local contract tension"
+      ]
+    },
+    {
+      "id": "R077",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Pin protects validity until destruction, not just a numerical address",
+        "Pending futures retain state; wakeup does not itself execute the task",
+        "The native probe observes two destruction paths",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ]
+    },
+    {
+      "id": "R078",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Foreign callbacks require temporal ABI and ownership contracts",
+        "Volatile and assembly contracts expose hardware-specific premises"
+      ]
+    },
+    {
+      "id": "T075",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Erased execution must preserve relevant failure and infinite behavior",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ]
+    },
+    {
+      "id": "P100",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Erased execution must preserve relevant failure and infinite behavior",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ]
+    },
+    {
+      "id": "R020",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject",
+        "Erased execution must preserve relevant failure and infinite behavior"
+      ]
+    },
+    {
+      "id": "R028",
+      "package": "pin-async-and-external-resource-contracts-2026",
+      "status": "partial",
+      "findings_sections": [
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject",
+        "Erased execution must preserve relevant failure and infinite behavior"
+      ]
+    }
+  ],
+  "unique_ids": [
+    "P100",
+    "R019",
+    "R020",
+    "R022",
+    "R023",
+    "R024",
+    "R025",
+    "R026",
+    "R027",
+    "R028",
+    "R032",
+    "R059",
+    "R061",
+    "R062",
+    "R063",
+    "R064",
+    "R065",
+    "R066",
+    "R067",
+    "R068",
+    "R069",
+    "R070",
+    "R071",
+    "R072",
+    "R073",
+    "R075",
+    "R076",
+    "R077",
+    "R078",
+    "R079",
+    "R080",
+    "T074",
+    "T075",
+    "T077",
+    "T078",
+    "T079"
+  ]
+}

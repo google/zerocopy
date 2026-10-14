@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "rust/pin",
+    "rust/async",
+    "rust/ffi",
+    "rust/volatile",
+    "rust/hardware",
+    "certificates/progress"
+  ],
+  "subjects": [
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+      "identity": {
+        "arxiv": "2610.09198v1",
+        "submitted": "2026-10-06",
+        "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30"
+      }
+    },
+    {
+      "name": "A Complete Formal Semantics for Rust Source Code",
+      "identity": {
+        "arxiv": "2610.06003v1",
+        "submitted": "2026-10-05",
+        "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d"
+      }
+    },
+    {
+      "name": "Native async drop probe compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "host": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

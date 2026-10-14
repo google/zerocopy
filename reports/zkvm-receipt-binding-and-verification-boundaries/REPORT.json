@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "checking/cryptographic-execution",
+    "zkvm/risc-zero",
+    "zkvm/sp1",
+    "checking/artifact-binding",
+    "verification/development-modes"
+  ],
+  "subjects": [
+    {
+      "name": "RISC Zero receipt verification implementation",
+      "identity": {
+        "repository": "risc0/risc0",
+        "revision": "3bbcd44d6459b9ef6ac0df3846dc9215514934e8"
+      }
+    },
+    {
+      "name": "SP1 normal/mock verification implementation",
+      "identity": {
+        "repository": "succinctlabs/sp1",
+        "revision": "02fa30185ecd658174b211d56128b14867ab8e81"
+      }
+    },
+    {
+      "name": "RISC Zero zkVM: Scalable, Transparent Arguments of RISC-V Integrity",
+      "identity": {
+        "version": "DRAFT August 11, 2023",
+        "url": "https://dev.risczero.com/proof-system-in-detail.pdf",
+        "pages": "35"
+      }
+    },
+    {
+      "name": "RISC Zero documented security, development and setup interfaces",
+      "identity": {
+        "version": "API 3.0",
+        "security_model": "https://dev.risczero.com/api/security-model",
+        "development": "https://dev.risczero.com/api/generating-proofs/dev-mode",
+        "trusted_setup": "https://dev.risczero.com/api/trusted-setup-ceremony"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

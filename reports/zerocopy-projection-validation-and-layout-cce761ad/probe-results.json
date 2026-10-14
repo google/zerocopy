@@ -1,0 +1,54 @@
+{
+  "role": "execution; bounded host-specific probes",
+  "working_directory": "package directory",
+  "results": [
+    {
+      "command": [
+        "rustc",
+        "--version",
+        "--verbose"
+      ],
+      "exit_code": 0,
+      "stdout": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "./packed_good.rs",
+        "-o",
+        "./packed-good"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "./packed-good"
+      ],
+      "exit_code": 0,
+      "stdout": "value=12345678\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "./packed_bad.rs",
+        "--emit=metadata",
+        "-o",
+        "./packed-bad.rmeta"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> ./packed_bad.rs:5:22\n  |\n5 |     let _reference = &packet.value;\n  |                      ^^^^^^^^^^^^^\n  |\n  = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`.\n"
+    }
+  ],
+  "unexpected_failure": false,
+  "input_sha256": {
+    "packed_good.rs": "e9b1fc5345222e9ddac3d6a8bfe14f6a8622abdc911c274aaf7ac90077135801",
+    "packed_bad.rs": "1e2a5af8da98f74c69e57d289e69b9e3c276e26b2ea84357305b19498466ccf6"
+  }
+}

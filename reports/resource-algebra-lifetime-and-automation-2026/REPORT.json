@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "iris/resource-algebra",
+    "iris/lifetimes",
+    "iris/prophecy",
+    "iris/automation",
+    "rust/interior-mutability"
+  ],
+  "subjects": [
+    {
+      "name": "Iris resource and execution interfaces",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "RustBelt lifetime archive",
+      "identity": {
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+      }
+    },
+    {
+      "name": "RustHornBelt 2022 prophecy artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6417462",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      }
+    },
+    {
+      "name": "RefinedRust 2026-v2 resource/Lithium source",
+      "identity": {
+        "doi": "10.5281/zenodo.21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Diaframe 2022 source artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6414787",
+        "artifact": "diaframe-artifact-source.tgz",
+        "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+      }
+    },
+    {
+      "name": "Quiver",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/quiver",
+        "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d"
+      }
+    },
+    {
+      "name": "Quiver PLDI 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656413",
+        "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

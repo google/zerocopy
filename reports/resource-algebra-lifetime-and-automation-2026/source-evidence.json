@@ -1,0 +1,222 @@
+{
+  "role": "Pinned source/contract inspection; no fresh formal build or theorem assumption audit",
+  "files": [
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/base_logic/lib/invariants.v",
+      "git_blob_sha": "6ef1acf203f7bf1f9136a8908896aadfa37ac317",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/base_logic/lib/invariants.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/base_logic/lib/cancelable_invariants.v",
+      "git_blob_sha": "b6654097ec0583b9f5692c37e605f02312c5f379",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/base_logic/lib/cancelable_invariants.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/base_logic/lib/later_credits.v",
+      "git_blob_sha": "f1b183d50758b52191ea8906bfdbccfd7c63413c",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/base_logic/lib/later_credits.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/program_logic/atomic.v",
+      "git_blob_sha": "ad0d6a7e140fc466bedfa5f22f6cb571eff83bde",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/atomic.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/bi/lib/atomic.v",
+      "git_blob_sha": "fafeedb3c26570180bd14130d8729cd1d0f68cae",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/bi/lib/atomic.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/program_logic/total_weakestpre.v",
+      "git_blob_sha": "e823086e8f48473afa2c58f8a8664f9e7f5dee71",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/total_weakestpre.v"
+    },
+    {
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+      "path": "iris/program_logic/total_adequacy.v",
+      "git_blob_sha": "aa63a7aa3ddac7abc4afb4e75b72d4f481aef59d",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/total_adequacy.v"
+    },
+    {
+      "path": "iris/program_logic/language.v",
+      "git_blob_sha": "b73c1ee70b1b57487f5a3418f87a40797395490c",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/language.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/program_logic/weakestpre.v",
+      "git_blob_sha": "f22217a066918cf60c2905f42c89f5d9d3f337ef",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/weakestpre.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/program_logic/adequacy.v",
+      "git_blob_sha": "81d48bbea9d574576d6a4905e47936b8b859bc5e",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/adequacy.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/algebra/cmra.v",
+      "git_blob_sha": "b9b24670d726c082c0e4f42b59d25abac0148e39",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/cmra.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/algebra/updates.v",
+      "git_blob_sha": "d580d861d9de07f2d1283e45c91762268adf94dd",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/updates.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/algebra/auth.v",
+      "git_blob_sha": "590ea6c5486ffbd80ffbead04e8ad190677b8beb",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/auth.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/algebra/ofe.v",
+      "git_blob_sha": "92032a4ea4c29b23e9669eedf2297d1aee6af21d",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/ofe.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/bi/lib/fixpoint_banach.v",
+      "git_blob_sha": "9a3b1b6859568377974ee9e39aaa8f2fe3daffad",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/bi/lib/fixpoint_banach.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/base_logic/lib/proph_map.v",
+      "git_blob_sha": "60b5b3ac39749a2b007d76fd50dcf89daa59e8c2",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/base_logic/lib/proph_map.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "path": "iris/proofmode/classes.v",
+      "git_blob_sha": "c4845407c59fa582876c9968b652f4399e952009",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/proofmode/classes.v",
+      "repository": "rocq-iris/iris",
+      "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/cell.rs",
+      "git_blob_sha": "d37f0eaa512a6be4db70842c048ed5434c738047",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/cell.rs"
+    },
+    {
+      "repository": "iris/quiver",
+      "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "path": "README.md",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fquiver/repository/files/README.md/raw?ref=e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "sha256": "ae976597f20cf5a2e2551dc177963bc92b2d999e2eb3f85589ca784e436a014d",
+      "bytes": 5206,
+      "saved": "quiver-README.md"
+    },
+    {
+      "repository": "iris/quiver",
+      "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "path": "theories/argon/abduction/abduct.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fquiver/repository/files/theories%2Fargon%2Fabduction%2Fabduct.v/raw?ref=e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "sha256": "db027eb6ba03ebb078ab1d6ee210c39364666fb71d444fca6ab4d001f94b8335",
+      "bytes": 43662,
+      "saved": "quiver-theories--argon--abduction--abduct.v"
+    },
+    {
+      "repository": "iris/quiver",
+      "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "path": "theories/thorium/typing/typing.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fquiver/repository/files/theories%2Fthorium%2Ftyping%2Ftyping.v/raw?ref=e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "sha256": "e3c64f33f365581b3a74ad66ac4783cf5753aaee3b43424e5ca55ac089c6ac3f",
+      "bytes": 430,
+      "saved": "quiver-theories--thorium--typing--typing.v"
+    },
+    {
+      "repository": "iris/quiver",
+      "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "path": "theories/thorium/typing/syntax.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fquiver/repository/files/theories%2Fthorium%2Ftyping%2Fsyntax.v/raw?ref=e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "sha256": "dbd8c21f4c8faffc1483aa9bd31e3436d7de49dd5741317d16f45d2fc9fdf5a7",
+      "bytes": 19428,
+      "saved": "quiver-theories--thorium--typing--syntax.v"
+    },
+    {
+      "repository": "iris/quiver",
+      "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "path": "docs/OUTPUT.md",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fquiver/repository/files/docs%2FOUTPUT.md/raw?ref=e9636365a782e5a7e86cb14afb0016065116bf8d",
+      "sha256": "6a4b3a78cb1009cbf067287ff4d4a8101e01c7b84527f29e72596c019f624191",
+      "bytes": 3408,
+      "saved": "quiver-docs--OUTPUT.md"
+    }
+  ],
+  "archive_members": [
+    {
+      "archive_sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12",
+      "member": "diaframe-artifact-source/diaframe/theories/solve_defs.v",
+      "sha256": "7dd1423993dfb0768656751a6aee855a989db356a2d6a2da42f105290b67abea",
+      "saved": "diaframe-solve_defs.v"
+    },
+    {
+      "archive_sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12",
+      "member": "diaframe-artifact-source/diaframe/theories/symb_exec/weakestpre.v",
+      "sha256": "a8f05d2ca463b2d9803e69045a49b48b9534ae6b75edeebe1c8d932558012bbc",
+      "saved": "diaframe-weakestpre.v"
+    },
+    {
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/lithium/definitions.v",
+      "sha256": "2611e19aa233e1a090483f5e1902b0a4a42fd21fe1f37296a47b83d0f4df6886",
+      "saved": "lithium-definitions.v"
+    },
+    {
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "member": "lambda-rust-popl18/theories/lifetime/lifetime_sig.v",
+      "sha256": "2e324d03e5b173516d61d0e17361a10368d703321de559656e689de6c35ae809",
+      "saved": "rustbelt-lifetime_sig.v"
+    },
+    {
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/ghost_state.v",
+      "sha256": "326def85cf567fc0be067aeb134cade6c8442a3500bd620945edf35afa6c6e8e"
+    },
+    {
+      "archive_sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121",
+      "member": "the_artifact/lambda-rust/theories/prophecy/prophecy.v",
+      "sha256": "a6ce223d78e5de4768c6e09645e2600a7b957bd58ac8f8de447afba626cd1e90"
+    },
+    {
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/loc.v",
+      "sha256": "c4be19ce56793ae8e3da7af90710708d0b635bac5d60bf62577ce830c237f1ae"
+    },
+    {
+      "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+      "member": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/val.v",
+      "sha256": "9096e8873b0adfe3a768263ef1e2d2cb7fb6c53e5c36551755e3462a3f9c491b"
+    }
+  ]
+}

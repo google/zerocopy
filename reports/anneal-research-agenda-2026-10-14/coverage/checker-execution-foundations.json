@@ -1,0 +1,272 @@
+{
+  "observed_at": "2026-10-14",
+  "assignment": "Bounded checker execution foundations research",
+  "interpretation": "answered means the identified mechanism/literature question is answered within its explicit primary-source scope; partial records genuine unexamined research, not the absence of a future Anneal integration. Actual prototype/measurement questions stay not_examined.",
+  "reference_baseline": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+  "anneal_subject": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "packages": [
+    "ddc-and-proof-produced-checker-executables",
+    "parser-roundtrips-admission-and-byte-meaning",
+    "proof-producing-frontends-and-derived-checker-interfaces",
+    "zkvm-receipt-binding-and-verification-boundaries"
+  ],
+  "question_coverage": [
+    {
+      "id": "P018",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "CairoZero: machine-bound partial correctness"
+        }
+      ],
+      "remaining_gap": "None for the generated-specification, modular-code-placement and partial-correctness mechanism comparison; no all-current-Cairo theorem or deployment claim made.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P019",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "\u0152uf: bind the original logical function before compilation"
+        }
+      ],
+      "remaining_gap": "None for the scoped validated-reflection/serialization mechanism and theorem endpoint. Complete historical dependency build is not asserted.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P024",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "Verdict: retained specification and generated implementation"
+        }
+      ],
+      "remaining_gap": "None for the actual Verdict DSL generation/spec-retention/proof-interface comparison. Verus and policy semantics remain stated trust premises.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P026",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "Derived inductive checkers: three outcomes and separate proofs"
+        }
+      ],
+      "remaining_gap": "None for the fuel-bounded generation and distinct soundness/completeness interfaces. A new extracted checker or admission-free tutorial application is not claimed.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P113",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "Independent meaning and maintenance obligations"
+        }
+      ],
+      "remaining_gap": "Generation mechanisms and independent-meaning requirement inspected; an artifact proving complete VC generation implies all independently defined Rust/source properties was not inspected.",
+      "future_engineering": "Design/replay a specific Anneal obligation-completeness theorem after selecting its source semantics and certificate relation."
+    },
+    {
+      "id": "P116",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "RISC Zero: the standard expected claim"
+        },
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "SP1's verifying-key hash binds machine configuration"
+        },
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "Derived Anneal execution proposition"
+        }
+      ],
+      "remaining_gap": "None for the scoped artifact-binding mechanism/limitations: guest identity, public commitments, configuration and missing automatic private-input/source binding are explicit.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P117",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "\u0152uf: an inverse on serializer-produced ASTs"
+        },
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "Narcissus: relational formats and state agreement"
+        }
+      ],
+      "remaining_gap": "None for the scoped same-formal-value round trip and stronger format-relative inversion comparison. Complete/unique-byte admission is explicitly a different proposition.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P120",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "proof-producing-frontends-and-derived-checker-interfaces",
+          "section": "Derived inductive checkers: three outcomes and separate proofs"
+        },
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Proof-produced compilation supplies an artifact-specific theorem"
+        }
+      ],
+      "remaining_gap": "None for the literature route connecting logical checker definitions, generated implementations and artifact-specific compilation theorems.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P121",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "CakeML LPR: from modeled I/O to a logical result"
+        },
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "The I/O wrapper is part of the proof-facing program"
+        }
+      ],
+      "remaining_gap": "None for the inspected executable-wrapper theorem mechanism and its runtime/FFI/model premises. No native Anneal wrapper proof is asserted.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "P136",
+      "coverage_status": "not_examined",
+      "sections": [
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Derived adoption and maintenance gates"
+        }
+      ],
+      "remaining_gap": "No actual generated checker implementation, kernel-versus-executable comparison, performance measurement or integration-cost/trust-reduction measurement performed.",
+      "future_engineering": "Perform the actual prototype and measurement; the finite DDC/serialization specimens do not substitute for it."
+    },
+    {
+      "id": "T041",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "Certificate admission needs syntax and semantic rules"
+        },
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "Original finite specimen: round trip does not force rejection"
+        }
+      ],
+      "remaining_gap": "Malformed/prefix/canonicality and arithmetic mechanisms inspected; actual certificate graph-reference/cycle validation and protocol-specific unknown/version rules not investigated.",
+      "future_engineering": "Select a concrete certificate schema, define semantic graph admission and test/replay its actual parser and consumer."
+    },
+    {
+      "id": "T043",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Runtime and native FFI remain a concrete frontier"
+        }
+      ],
+      "remaining_gap": "Selected native read/write/allocation interfaces and modeled runtime premises inspected; complete memory-management, concurrency, native library and host unsafe-operation proof/dependency closure not audited.",
+      "future_engineering": "Instantiate the selected native runtime/environment contract for the deployed checker."
+    },
+    {
+      "id": "T045",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Wheeler's implication and its assumptions"
+        },
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Proof-produced compilation supplies an artifact-specific theorem"
+        }
+      ],
+      "remaining_gap": "None for the DDC-versus-proof-produced/bootstrap proposition comparison and retained semantic assumptions. A real DDC/build comparison is not claimed.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "T047",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "The I/O wrapper is part of the proof-facing program"
+        },
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "EverParse: prefix and complete-buffer validation differ"
+        }
+      ],
+      "remaining_gap": "None for the inspected modeled file/stream/decoding/output correctness mechanisms and explicit external-operation premises. Native correspondence is not silently inferred.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "T050",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "Cryptographic soundness and circuit correspondence are separate"
+        },
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "Derived Anneal execution proposition"
+        }
+      ],
+      "remaining_gap": "Receipt/checker-execution proposition and RISC Zero protocol/security assumptions inspected; complete current SP1 mathematical soundness/setup identity and either current all-constraints circuit/ISA correspondence were not independently audited.",
+      "future_engineering": "Acquire selected guest/verifier/key artifacts, bind an independently sound checker to them, and measure the actual proving/verification route."
+    },
+    {
+      "id": "T051",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "Image identity and journal identity have distinct roles"
+        },
+        {
+          "package": "parser-roundtrips-admission-and-byte-meaning",
+          "section": "Cached hashes preserve evidence identity only under the selected mode"
+        }
+      ],
+      "remaining_gap": "None for the scoped authentication/identity versus semantic-validity distinction, including explicit source examples.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    },
+    {
+      "id": "T052",
+      "coverage_status": "answered",
+      "sections": [
+        {
+          "package": "zkvm-receipt-binding-and-verification-boundaries",
+          "section": "Derived Anneal execution proposition"
+        },
+        {
+          "package": "ddc-and-proof-produced-checker-executables",
+          "section": "Correspondence is not checker soundness"
+        }
+      ],
+      "remaining_gap": "None for the scoped distinction among producer/artifact/input identity, execution evidence and semantic correspondence.",
+      "future_engineering": "Choose an actual Anneal subject, replay applicable proofs and bind its generated/installed artifacts; that implementation work is separate from this literature answer."
+    }
+  ],
+  "operational_effects": {
+    "write_scope": "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/research/checker-execution-foundations",
+    "canonical_or_git_mutations": "none in this wave",
+    "installs_or_large_builds": "none",
+    "upstream_execution_or_proof_replay": "none",
+    "original_finite_execution": "two small illustrative specimens only",
+    "bytecode_cache_policy": "python -B -I and sys.dont_write_bytecode before canonical validator import",
+    "prior_wave_cache_side_effect": "Parent-owned reconciliation; no new canonical cache write or cleanup in this wave."
+  }
+}

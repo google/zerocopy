@@ -1,0 +1,124 @@
+{
+  "scope": "Research subquestions; future implementation is separately recorded and does not determine research completion",
+  "entries": [
+    {
+      "id": "R077",
+      "status": "partial",
+      "findings_sections": [
+        "Pin protects validity until destruction, not just a numerical address",
+        "Pending futures retain state; wakeup does not itself execute the task",
+        "The native probe observes two destruction paths",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ],
+      "answered_subquestions": [
+        "Pin/Future/await contracts, two native destructor paths and scoped progress theorem premises examined."
+      ],
+      "remaining_research": [
+        "Complete self-reference/suspended-borrow/generator cancellation model and Jackdaw/Rust-LAGC implementation artifacts not examined."
+      ],
+      "future_engineering": [
+        "Prove state/drop/cancel/registration transitions for the selected actual future/runtime."
+      ],
+      "question": "Model address-sensitive invariants, self-reference, suspended borrows, generator state, cancellation, and destructors.",
+      "issue": 3865
+    },
+    {
+      "id": "R078",
+      "status": "partial",
+      "findings_sections": [
+        "Foreign callbacks require temporal ABI and ownership contracts",
+        "Volatile and assembly contracts expose hardware-specific premises"
+      ],
+      "answered_subquestions": [
+        "Rust ABI/unwind, callback lifetime, volatile-MMIO exception and asm environmental-premise boundaries examined."
+      ],
+      "remaining_research": [
+        "Concrete foreign ABI/library, ISA/device/cache/DMA implementations and formal models not examined."
+      ],
+      "future_engineering": [
+        "Select exact external contracts and prove CPU/device/foreign ownership transfer."
+      ],
+      "question": "Cover FFI, callbacks, assembly, volatile operations, MMIO, DMA, external mutation, and explicit environmental contracts.",
+      "issue": 3865
+    },
+    {
+      "id": "T075",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Erased execution must preserve relevant failure and infinite behavior",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ],
+      "answered_subquestions": [
+        "Why finite-result agreement cannot prove termination/progress under silent-step erasure established."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove an infinite-execution/stuttering relation retaining source failure and fairness premises."
+      ],
+      "question": "Check that abstractions and silent transitions do not create unjustified termination results.",
+      "issue": 3866
+    },
+    {
+      "id": "P100",
+      "status": "partial",
+      "findings_sections": [
+        "Erased execution must preserve relevant failure and infinite behavior",
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject"
+      ],
+      "answered_subquestions": [
+        "Scoped infinite-execution/fairness/progress transfer constraints and two named paper endpoints identified."
+      ],
+      "remaining_research": [
+        "Complete generic stuttering/termination-transfer theory and implementation artifact closure not examined."
+      ],
+      "future_engineering": [
+        "Instantiate the required progress/reflection relation and its environment premises."
+      ],
+      "question": "Study stuttering, fairness, blocking, and termination transfer; erased steps require more than finite-result agreement.",
+      "issue": 3867
+    },
+    {
+      "id": "R020",
+      "status": "partial",
+      "findings_sections": [
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject",
+        "Erased execution must preserve relevant failure and infinite behavior"
+      ],
+      "answered_subquestions": [
+        "Recent preprints are confirmed available by cutoff and their formal language and unsafe/progress boundaries distinguished."
+      ],
+      "remaining_research": [
+        "Actual Rust-LAGC/Jackdaw source semantics, MiniRust compatibility and cross-model formal relation remain unexamined."
+      ],
+      "future_engineering": [
+        "Only import results with their exact premise/domain relation."
+      ],
+      "question": "Determine how to relate models with different borrowing, provenance, byte, and concurrency rules; include recent source-level trace semantics and async models.",
+      "issue": 3865
+    },
+    {
+      "id": "R028",
+      "status": "partial",
+      "findings_sections": [
+        "Responsiveness is conditional obligation discharge in LART",
+        "LAGC fairness has a restricted safe-Rust subject",
+        "Erased execution must preserve relevant failure and infinite behavior"
+      ],
+      "answered_subquestions": [
+        "Async obligation discharge and scheduler/environment hypotheses contrasted with strong normalization."
+      ],
+      "remaining_research": [
+        "Full transfinite/fairness logic comparison remains unexamined."
+      ],
+      "future_engineering": [
+        "Choose and implement the matching supported progress judgment."
+      ],
+      "question": "Compare credits, obligations, fairness assumptions, transfinite techniques, and their interaction with partial correctness.",
+      "issue": 3865
+    }
+  ]
+}

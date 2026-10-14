@@ -1,0 +1,230 @@
+{
+  "scope": "Research subquestions; future implementation is separately recorded and does not determine research completion",
+  "entries": [
+    {
+      "id": "R062",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ptr supplies a resource invariant beyond its numerical range",
+        "Projection consumes access and transfers selected invariants",
+        "Validity conversion is directional and mutation-sensitive"
+      ],
+      "answered_subquestions": [
+        "Exact Ptr invariant tuple, source allocation/provenance/lifetime and geometry/resource distinction examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove composable operational ownership rules and source correspondence."
+      ],
+      "question": "Relate aliasing, alignment, validity, lifetime, provenance, and access permissions to composable logical resources.",
+      "issue": 3865
+    },
+    {
+      "id": "R063",
+      "status": "partial",
+      "findings_sections": [
+        "Projection consumes access and transfers selected invariants",
+        "Validation needs stable observations until every consumer"
+      ],
+      "answered_subquestions": [
+        "Conditional field projection, consumed parent and validation/reborrow mechanisms traced."
+      ],
+      "remaining_research": [
+        "Exhaustive escaping-reference/suspended-ancestor/reconstruction paths not modeled or audited."
+      ],
+      "future_engineering": [
+        "Implement checked borrow suspension/recovery for selected source paths."
+      ],
+      "question": "Model field projections, reborrows, reference reconstruction, escaping references, and suspended ancestor capabilities.",
+      "issue": 3865
+    },
+    {
+      "id": "R064",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Slice separation includes padding and ZST cases",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ],
+      "answered_subquestions": [
+        "Slice and padded-DST footprint overlap, ZST geometry and operation-specific residual permissions examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Check exact complete footprints and transfer source permissions through every split."
+      ],
+      "question": "Cover slices, subobjects, overlapping footprints, ZSTs, and the connection between numerical non-overlap and permission separation.",
+      "issue": 3865
+    },
+    {
+      "id": "R065",
+      "status": "partial",
+      "findings_sections": [
+        "Validation needs stable observations until every consumer",
+        "The Safe documentation has an unresolved local contract tension"
+      ],
+      "answered_subquestions": [
+        "Local field-validation closure and why constructor facts cannot become universal invariants established."
+      ],
+      "remaining_research": [
+        "All constructors/public fields/methods/callbacks/destructors/unannotated transitions not inventoried; Safe contract tension unresolved."
+      ],
+      "future_engineering": [
+        "Audit and enforce the selected invariant boundary with every transition accounted for."
+      ],
+      "question": "Examine constructors, mutation, public fields, modules, callbacks, destructors, and unannotated code.",
+      "issue": 3865
+    },
+    {
+      "id": "R066",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The Safe documentation has an unresolved local contract tension"
+      ],
+      "answered_subquestions": [
+        "Named trait/associated-type law consumers and provider identity identified."
+      ],
+      "remaining_research": [
+        "Blanket/downstream impl universe, specialization and coinductive recursive laws not examined."
+      ],
+      "future_engineering": [
+        "Retain selected exact dictionaries and their checked implementation laws."
+      ],
+      "question": "Cover dictionaries, associated items, blanket implementations, coinduction, specialization, and downstream implementations.",
+      "issue": 3865
+    },
+    {
+      "id": "R067",
+      "status": "partial",
+      "findings_sections": [
+        "Validity conversion is directional and mutation-sensitive",
+        "Packed DST layout and dictionary identity remain explicit"
+      ],
+      "answered_subquestions": [
+        "Both mutation-preservation directions and surviving source views distinguished from initial cast validity."
+      ],
+      "remaining_research": [
+        "Complete metadata/representation correspondence for generic and unsized casts not examined."
+      ],
+      "future_engineering": [
+        "Transport actual dictionaries/metadata and preserve both mutation directions."
+      ],
+      "question": "Compare directional validity, mutation compatibility, surviving source views, metadata, and representation correspondence.",
+      "issue": 3865
+    },
+    {
+      "id": "R071",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The packed probe discriminates reference formation from raw unaligned access",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ],
+      "answered_subquestions": [
+        "Mathematical final-padding theorem boundary, concrete derive analog and packed-reference diagnostic examined."
+      ],
+      "remaining_research": [
+        "Complete recursive/default-Rust layout, niches and valid DST-object-creation correspondence not examined."
+      ],
+      "future_engineering": [
+        "Supply target layouts, bounds and metadata laws per admitted type."
+      ],
+      "question": "Connect recursive layout proofs to physical fields, metadata, unaligned accesses, and valid object creation.",
+      "issue": 3865
+    },
+    {
+      "id": "R072",
+      "status": "partial",
+      "findings_sections": [
+        "Validation needs stable observations until every consumer",
+        "Validity conversion is directional and mutation-sensitive",
+        "The Safe documentation has an unresolved local contract tension"
+      ],
+      "answered_subquestions": [
+        "Exact TryFromBytes check-to-use transition, bool/enum field validation order and mutation-stability obligations examined."
+      ],
+      "remaining_research": [
+        "Full niche/enum generation cases and Safe contract reconciliation not examined."
+      ],
+      "future_engineering": [
+        "Close selected validation laws and interference permissions before every consumer."
+      ],
+      "question": "Model TryFromBytes, booleans, enums, niches, validation-to-use intervals, and mutation or interference during validation.",
+      "issue": 3865
+    },
+    {
+      "id": "R073",
+      "status": "partial",
+      "findings_sections": [
+        "Union and SIMD support cannot be inferred from field syntax"
+      ],
+      "answered_subquestions": [
+        "Union field-disjunction implementation, unsettled validity bridge and target-feature obligation identified."
+      ],
+      "remaining_research": [
+        "SIMD/vector/intrinsic implementations, ISA effects and full sufficient-union-validity bridge not examined."
+      ],
+      "future_engineering": [
+        "Select explicit semantics/target cases or reject unsupported cases visibly."
+      ],
+      "question": "Identify semantic interpretations and proof obligations for union access, vector representations, target features, and intrinsic operations.",
+      "issue": 3865
+    },
+    {
+      "id": "R075",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Validity conversion is directional and mutation-sensitive",
+        "Validation needs stable observations until every consumer",
+        "Ptr supplies a resource invariant beyond its numerical range"
+      ],
+      "answered_subquestions": [
+        "UnsafeCell exception, shared-cached-observation stability and mutual safe-view validity requirements examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove each chosen interior-mutation protocol and state observation interval."
+      ],
+      "question": "Examine UnsafeCell, cells, cached observations, mutation through aliases, and when value-level specifications remain faithful.",
+      "issue": 3865
+    },
+    {
+      "id": "T078",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ptr supplies a resource invariant beyond its numerical range",
+        "Projection consumes access and transfers selected invariants",
+        "Slice separation includes padding and ZST cases",
+        "Packed DST layout and dictionary identity remain explicit"
+      ],
+      "answered_subquestions": [
+        "Exact geometry/source invariant bridge requirements identified; no dereference power inferred from mathematical records."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Check provenance/lifetime/alignment/access witnesses at each real consumer."
+      ],
+      "question": "Connect geometry to provenance, lifetime, alignment, and permissions without hiding obligations in trusted primitives.",
+      "issue": 3866
+    },
+    {
+      "id": "T079",
+      "status": "partial",
+      "findings_sections": [
+        "Packed DST layout and dictionary identity remain explicit",
+        "The Safe documentation has an unresolved local contract tension"
+      ],
+      "answered_subquestions": [
+        "Selected associated-type and trait-law consumers and a direct local documentation tension recorded."
+      ],
+      "remaining_research": [
+        "Complete implementation/recursive dictionary/law audit not performed."
+      ],
+      "future_engineering": [
+        "Validate exact provider law closure and admission/rejection paths."
+      ],
+      "question": "Check exact dictionaries, implementations, recursive relationships, and the laws generic proofs consume.",
+      "issue": 3866
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "compilation/proof-producing",
+    "reflection/validated",
+    "rust/specification-dsl",
+    "checking/derived-relations"
+  ],
+  "subjects": [
+    {
+      "name": "CairoZero retained Lean3 proof-producing compiler",
+      "identity": {
+        "repository": "starkware-libs/formal-proofs",
+        "revision": "d0dd8279612a248cbc6bf6d286030bf0bb2a37ff"
+      }
+    },
+    {
+      "name": "Oeuf source and reflection/serialization interfaces",
+      "identity": {
+        "repository": "uwplse/oeuf",
+        "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+      }
+    },
+    {
+      "name": "Verdict policy DSL and selected DER interface",
+      "identity": {
+        "repository": "secure-foundations/verdict",
+        "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+      }
+    },
+    {
+      "name": "QuickChick checker proof interfaces",
+      "identity": {
+        "repository": "QuickChick/QuickChick",
+        "revision": "e35dc8e917f0e36b4ab7cbc66b7d0f7131122588"
+      }
+    },
+    {
+      "name": "A Proof-Producing Compiler for Blockchain Applications",
+      "identity": {
+        "arxiv": "2501.15002v1",
+        "url": "https://arxiv.org/pdf/2501.15002v1"
+      }
+    },
+    {
+      "name": "Oeuf: Minimizing the Coq Extraction TCB",
+      "identity": {
+        "doi": "10.1145/3167089",
+        "url": "https://homes.cs.washington.edu/~djg/papers/oeuf2018.pdf"
+      }
+    },
+    {
+      "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+      "identity": {
+        "publication": "USENIX Security 2025",
+        "url": "https://verified.how/papers/verdict.pdf",
+        "pages": "17"
+      }
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "doi": "10.1145/3519939.3523707",
+        "publication": "PLDI 2022",
+        "url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

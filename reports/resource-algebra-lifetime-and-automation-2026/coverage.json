@@ -1,0 +1,195 @@
+{
+  "scope": "Research subquestions; future implementation is separately recorded and does not determine research completion",
+  "entries": [
+    {
+      "id": "R022",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Cameras preserve compatible frames rather than just byte geometry"
+      ],
+      "answered_subquestions": [
+        "Concrete camera laws, frame-preserving updates and Radium byte/allocation/access resources examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Instantiate and prove the chosen operational memory interpretation for supported Rust cases."
+      ],
+      "question": "Evaluate cameras for allocation ownership, byte ranges, initializedness, provenance, permissions, and authoritative state.",
+      "issue": 3865
+    },
+    {
+      "id": "R023",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Guarded recursion is a contract on definitions"
+      ],
+      "answered_subquestions": [
+        "OFE contractiveness and later-credit premises, and practical recursive-invariant consequences examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Author resource definitions and check their contractiveness in the selected prover environment."
+      ],
+      "question": "Examine recursive types, higher-order state, guarded recursion, later modalities, and their practical proof consequences.",
+      "issue": 3865
+    },
+    {
+      "id": "R024",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Lifetime access carries the closing and recovery resources"
+      ],
+      "answered_subquestions": [
+        "Token consistency, inclusion direction, shortening, nested borrow and recovery/accessor premises examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Bind concrete Rust reborrow/escape transitions to these resources."
+      ],
+      "question": "Study lifetime tokens, inclusion, shortening, nested borrows, reborrowing, and recovery of ownership when borrows end.",
+      "issue": 3865
+    },
+    {
+      "id": "R025",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Ordinary and parametric prophecies have different consistency premises"
+      ],
+      "answered_subquestions": [
+        "Ordinary trace prophecy and parametric dependency/consistency/resolution endpoints compared."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Preserve prophecy semantics in the chosen frontend and verify mutable-reference contract providers."
+      ],
+      "question": "Compare ordinary and parametric prophecies, their consistency conditions, and their role in mutable-borrow specifications.",
+      "issue": 3865
+    },
+    {
+      "id": "R026",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ],
+      "answered_subquestions": [
+        "Masks, fractional cancellation and UnsafeCell protocol obligations examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove concrete loads/stores satisfy the invariant protocol and source contracts."
+      ],
+      "question": "Examine invariant opening, masks, fractional resources, shared ownership, and protocols for UnsafeCell-based abstractions.",
+      "issue": 3865
+    },
+    {
+      "id": "R027",
+      "status": "partial",
+      "findings_sections": [
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ],
+      "answered_subquestions": [
+        "Atomic-update abort/commit/retry and atomic-WP invariant premises examined."
+      ],
+      "remaining_research": [
+        "Full cross-model interference/linearizability comparison and concrete thread-transfer protocol proofs not examined."
+      ],
+      "future_engineering": [
+        "Implement the selected protocol and check its complete proof closure."
+      ],
+      "question": "Study logically atomic specifications, interference, synchronization protocols, and ownership transfer between threads.",
+      "issue": 3865
+    },
+    {
+      "id": "R028",
+      "status": "partial",
+      "findings_sections": [
+        "Safety credits and progress obligations have distinct conclusions",
+        "Guarded recursion is a contract on definitions"
+      ],
+      "answered_subquestions": [
+        "Later-credit safety, TWP strong normalization and conditional progress distinction examined."
+      ],
+      "remaining_research": [
+        "Transfinite/fair-termination framework theorem endpoints and comparative examples remain unexamined."
+      ],
+      "future_engineering": [
+        "Select a supported progress property and preserve its environment/scheduler premises."
+      ],
+      "question": "Compare credits, obligations, fairness assumptions, transfinite techniques, and their interaction with partial correctness.",
+      "issue": 3865
+    },
+    {
+      "id": "R032",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments"
+      ],
+      "answered_subquestions": [
+        "MoSeL, Lithium, Diaframe and Quiver inspected entailment judgments, extension mechanisms and semantic/assumption boundaries compared."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Run and retain checked proof closures for selected Anneal examples; port/import evidence only under an established interface."
+      ],
+      "question": "Compare MoSeL, Lithium, Diaframe, and Quiver for resource reasoning, inference, extension mechanisms, and generated proof evidence.",
+      "issue": 3865
+    },
+    {
+      "id": "R059",
+      "status": "not-examined-comparison",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments",
+        "Cameras preserve compatible frames rather than just byte geometry"
+      ],
+      "answered_subquestions": [
+        "Higher-order resource/entailment mechanisms provide a lead for comparison."
+      ],
+      "remaining_research": [
+        "Dynamic frames, implicit dynamic frames and first-order SL on common Anneal examples were not compared."
+      ],
+      "future_engineering": [
+        "None inferred from an unperformed comparison."
+      ],
+      "question": "Compare dynamic frames, implicit dynamic frames, first-order separation logic, and higher-order separation logic on Anneal examples.",
+      "issue": 3865
+    },
+    {
+      "id": "R079",
+      "status": "partial",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments",
+        "Lifetime access carries the closing and recovery resources",
+        "Masks and protocols justify interior mutation and logical atomicity"
+      ],
+      "answered_subquestions": [
+        "Available Rust-relevant resource and inference interfaces identified."
+      ],
+      "remaining_research": [
+        "No Rust-facing specification design or evaluation with users lacking prover expertise was performed."
+      ],
+      "future_engineering": [
+        "Implement and evaluate an interface after research/design selection."
+      ],
+      "question": "Design and evaluate ways to express ownership, lifetimes, permissions, invariants, and protocols without requiring prover expertise.",
+      "issue": 3865
+    },
+    {
+      "id": "R080",
+      "status": "partial",
+      "findings_sections": [
+        "Automation infers witnesses for different judgments"
+      ],
+      "answered_subquestions": [
+        "Inferred missing resources/remainders, predicate-transformer summaries and proof-bearing specialist extensions compared."
+      ],
+      "remaining_research": [
+        "Loop-invariant and predicate synthesis completeness/scale on shared Rust cases not examined."
+      ],
+      "future_engineering": [
+        "Measure and retain proof evidence for chosen inference routes."
+      ],
+      "question": "Compare inferred frames, loop invariants, summaries, predicates, and proof synthesis with specialist-authored extensions.",
+      "issue": 3865
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust/pointer-resources",
+    "rust/validation",
+    "rust/layout",
+    "rust/unsafe-traits",
+    "zerocopy/projection"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy PR source and Lean interfaces",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Native packed probe compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "host": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

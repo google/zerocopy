@@ -1,0 +1,109 @@
+{
+  "role": "Pinned source/contract inspection; no fresh formal build or theorem assumption audit",
+  "files": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/util/macro_util.rs",
+      "git_blob_sha": "f374a089f414614ea81764ae1ee078af05d27109",
+      "sha256": "eca22752ac26166fb92b20a69f44457e88625a9a665a3b054cdc46ec08131591",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/util/macro_util.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/lib.rs",
+      "git_blob_sha": "afb28dd238800ed5fbc66e3c59d0cad94a93af88",
+      "sha256": "1f8d9ba4528687aa4ddcb3e9c4fff4bc70268633999a570c3ed33b2dfe11d0fb",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/lib.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "anneal/lean/Rust/Storage.lean",
+      "git_blob_sha": "e76b621e27344c349d9436ab1df3bb68aaa0656b",
+      "sha256": "1f7feb011e7bf0d7ab4b4dcfa103476104357452976f28aa739dcf9a6f22ebcf",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/anneal/lean/Rust/Storage.lean"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/lean/RustModel.lean",
+      "git_blob_sha": "b9d592609fadc2cb7f700a3e1d03739fca830365",
+      "sha256": "51224b006f3f0ba24c76489238731f22d7374487ffb7166d101da9342e529c0b",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/verification/aeneas/lean/RustModel.lean"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/lean/Zerocopy/FunsExternal.lean",
+      "git_blob_sha": "39c92d4337dd5adbea32f8693b77a00e5ce3cf7a",
+      "sha256": "f389c236aaffee4972b0b5406821113e8faac2bcf36c30b151a1817ee2649a18",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/verification/aeneas/lean/Zerocopy/FunsExternal.lean"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/mem/maybe_uninit.rs",
+      "git_blob_sha": "94703940baa1f8dfdbcf84f157f5dfebad93931e",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/mem/maybe_uninit.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/mem/manually_drop.rs",
+      "git_blob_sha": "3fb844c7c2927876ad082f2ba904e51d520a0f1e",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/mem/manually_drop.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/ptr/mod.rs",
+      "git_blob_sha": "be3dc5e013b32bcffe9fd3e8d8d85382300508b8",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/ptr/mod.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/alloc/global.rs",
+      "git_blob_sha": "e1e08ab7a2cb9a2ef20c1616032bce6034677b10",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/alloc/global.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/alloc/src/raw_vec/mod.rs",
+      "git_blob_sha": "2f284bb4229ebf8391aca2b4b95f8bb1fae9c7ce",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/alloc/src/raw_vec/mod.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "git_blob_sha": "3a5ec85f507ec7c9ba8712eea5adc58c07491643",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/intrinsics/mod.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/mem/mod.rs",
+      "git_blob_sha": "a22e52f3a3bc72edbdeaa526f3a45f4d0c7a49d7",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/mem/mod.rs"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/type-layout.md",
+      "git_blob_sha": "9d56ea757019745702ab5b50c04e129a073bee5d",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/type-layout.md"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/destructors.md",
+      "git_blob_sha": "0103093cf98bb69825cf840fa04878f6ad545805",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/destructors.md"
+    }
+  ],
+  "archive_members": []
+}

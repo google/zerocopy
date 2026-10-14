@@ -1,0 +1,130 @@
+{
+  "role": "Pinned source/contract inspection; no fresh formal build or theorem assumption audit",
+  "files": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/util/macro_util.rs",
+      "git_blob_sha": "f374a089f414614ea81764ae1ee078af05d27109",
+      "sha256": "eca22752ac26166fb92b20a69f44457e88625a9a665a3b054cdc46ec08131591",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/util/macro_util.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "git_blob_sha": "2a492171d6e87394667acca510a9a551138827f1",
+      "sha256": "eca76e67328cd86b6dd2eba35b5f4b3a83a6c7751c8c295852cf83c468e4205a",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/pointer/ptr.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/inner.rs",
+      "git_blob_sha": "eeef49f948544cd83952195e9b3afff378ac65f1",
+      "sha256": "452495e5e44aa811cd7ae723cc7b9892fd205c387ee746d5b8e37df3f9d58096",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/pointer/inner.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/invariant.rs",
+      "git_blob_sha": "e798feb4f1f0c90d9f048afc75791f4614fe59a5",
+      "sha256": "a5ed83dad776e25101d4a7af3f041a9583444658b0f8cc21810dfc672069525e",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/pointer/invariant.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/transmute.rs",
+      "git_blob_sha": "7aabb149def839a3775cf939355061dad1b2c839",
+      "sha256": "98c0839a2b9a8ff264f540578dd39bf21c1d07d5666b6d2d501ee6c9c80a69bf",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/pointer/transmute.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/split_at.rs",
+      "git_blob_sha": "7f15e4f585d2c27b7f9c4cfbf51cd11c28b611e7",
+      "sha256": "87c4b820d21c63218400a726a0b342d9f9e7614a6292a9466cdbe0e2d83bd94b",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/split_at.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/lib.rs",
+      "git_blob_sha": "afb28dd238800ed5fbc66e3c59d0cad94a93af88",
+      "sha256": "1f8d9ba4528687aa4ddcb3e9c4fff4bc70268633999a570c3ed33b2dfe11d0fb",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/src/lib.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/zerocopy-derive/src/derive/known_layout.rs",
+      "git_blob_sha": "8ff7d809defecfa9f7fde0944de9fa60eb1678f2",
+      "sha256": "abc0325f71428e4d357a745bbf235ff950f62ec3b5b53ba3d5d8b82dbc676d16",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/zerocopy-derive/src/derive/known_layout.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs",
+      "git_blob_sha": "5be26ba9fccb4d52cc1dffa850b840f241b7994c",
+      "sha256": "c5ef4996afd692800ba99a5d544ac554f5b80282b0aa532eceb55b4febce038a",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "anneal/lean/Rust/Storage.lean",
+      "git_blob_sha": "e76b621e27344c349d9436ab1df3bb68aaa0656b",
+      "sha256": "1f7feb011e7bf0d7ab4b4dcfa103476104357452976f28aa739dcf9a6f22ebcf",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/anneal/lean/Rust/Storage.lean"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "anneal/lean/Rust/Layout.lean",
+      "git_blob_sha": "a380c01ca752d3cf4e8fa5ed73a82813ea03aa3d",
+      "sha256": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/anneal/lean/Rust/Layout.lean"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "anneal/lean/Rust/Memory.lean",
+      "git_blob_sha": "6f29babfd4f6b42c98bc460a907d69a3044026ed",
+      "sha256": "f2616c9ce32b1ff339d84904fc543e8a2af1e80a812341383fc30fd2266302c9",
+      "url": "https://github.com/google/zerocopy/blob/cce761ad53785973ec2f4a6b13715b770b340c87/anneal/lean/Rust/Memory.lean"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/cell.rs",
+      "git_blob_sha": "d37f0eaa512a6be4db70842c048ed5434c738047",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/cell.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/ptr/mod.rs",
+      "git_blob_sha": "be3dc5e013b32bcffe9fd3e8d8d85382300508b8",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/ptr/mod.rs"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/behavior-considered-undefined.md",
+      "git_blob_sha": "ff34d0af28ca3ec42f548abf6cd3bce5840a6798",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/behavior-considered-undefined.md"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/type-layout.md",
+      "git_blob_sha": "9d56ea757019745702ab5b50c04e129a073bee5d",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/type-layout.md"
+    }
+  ],
+  "archive_members": []
+}

@@ -1,0 +1,12 @@
+{
+  "both_decoders_invert_canonical_encoder": true,
+  "complete_decoder_rejects_trailing_bytes": true,
+  "local_strict_decoder_rejects_duplicate": true,
+  "malformed_specimens_rejected": 3,
+  "prefix_decoder_accepts_trailing_bytes": true,
+  "scope": "original finite illustration, no upstream theorem or executable claim",
+  "stdlib_json_duplicate_value": {
+    "id": 2
+  },
+  "value_domain": 256
+}

@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "serialization/verified",
+    "parsing/verified",
+    "checking/admission",
+    "everparse",
+    "narcissus",
+    "verdict"
+  ],
+  "subjects": [
+    {
+      "name": "Oeuf source and reflection/serialization interfaces",
+      "identity": {
+        "repository": "uwplse/oeuf",
+        "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+      }
+    },
+    {
+      "name": "Narcissus current format/decoder proof interfaces",
+      "identity": {
+        "repository": "mit-plv/fiat",
+        "revision": "b7757d28f68c39c3c58192a27f217064b0b35e3b"
+      }
+    },
+    {
+      "name": "Verdict policy DSL and selected DER interface",
+      "identity": {
+        "repository": "secure-foundations/verdict",
+        "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+      }
+    },
+    {
+      "name": "EverParse current library/hash interfaces",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "ad9414befa0241e8b3a9c84f9ee979445bad85d4"
+      }
+    },
+    {
+      "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats",
+      "identity": {
+        "doi": "10.1145/3341686",
+        "publication": "ICFP 2019 Article 82",
+        "url": "https://adam.chlipala.net/papers/NarcissusICFP19/NarcissusICFP19.pdf"
+      }
+    },
+    {
+      "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+      "identity": {
+        "publication": "USENIX Security 2025",
+        "url": "https://verified.how/papers/verdict.pdf",
+        "pages": "17"
+      }
+    },
+    {
+      "name": "EverParse 3d manual",
+      "identity": {
+        "version_scope": "releases v2025.05.20 or later; observed 2026-10-14",
+        "api": "https://project-everest.github.io/everparse/3d.html",
+        "language": "https://project-everest.github.io/everparse/3d-lang.html"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

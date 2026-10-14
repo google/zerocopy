@@ -13897,6 +13897,49 @@
         "verification/viper"
       ]
     },
+    "ddc-and-proof-produced-checker-executables": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML selected LPR checker/executable theorem"
+        },
+        {
+          "identity": {
+            "errata": "https://dwheeler.com/trusting-trust/dissertation-errata.html",
+            "errata_date": "2019-07-25",
+            "publication": "Wheeler dissertation, Fall 2009",
+            "url": "https://dwheeler.com/trusting-trust/dissertation/html/wheeler-trusting-trust-ddc.html"
+          },
+          "name": "Fully Countering Trusting Trust through Diverse Double-Compiling"
+        },
+        {
+          "identity": {
+            "artifact": "ddc.in",
+            "url": "https://dwheeler.com/trusting-trust/dissertation/ddc.in"
+          },
+          "name": "Wheeler primary Proof1 formal input"
+        },
+        {
+          "identity": {
+            "author": "Oskar Abrahamsson",
+            "pages": "31",
+            "url": "https://cakeml.org/jlamp20.pdf",
+            "version": "author preprint dated October 28, 2019; related JLAMP 2020 publication"
+          },
+          "name": "A Verified Proof Checker for Higher-Order Logic"
+        }
+      ],
+      "topics": [
+        "compilation/diverse-double-compilation",
+        "checking/proof-produced-executable",
+        "checking/io",
+        "cakeml"
+      ]
+    },
     "diagnostic-format-controls-nightly-2026-05-31-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -18899,6 +18942,71 @@
         "software-merging/semantic-conflicts"
       ]
     },
+    "parser-roundtrips-admission-and-byte-meaning": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+          },
+          "name": "Oeuf source and reflection/serialization interfaces"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/fiat",
+            "revision": "b7757d28f68c39c3c58192a27f217064b0b35e3b"
+          },
+          "name": "Narcissus current format/decoder proof interfaces"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/verdict",
+            "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+          },
+          "name": "Verdict policy DSL and selected DER interface"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "ad9414befa0241e8b3a9c84f9ee979445bad85d4"
+          },
+          "name": "EverParse current library/hash interfaces"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341686",
+            "publication": "ICFP 2019 Article 82",
+            "url": "https://adam.chlipala.net/papers/NarcissusICFP19/NarcissusICFP19.pdf"
+          },
+          "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats"
+        },
+        {
+          "identity": {
+            "pages": "17",
+            "publication": "USENIX Security 2025",
+            "url": "https://verified.how/papers/verdict.pdf"
+          },
+          "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict"
+        },
+        {
+          "identity": {
+            "api": "https://project-everest.github.io/everparse/3d.html",
+            "language": "https://project-everest.github.io/everparse/3d-lang.html",
+            "version_scope": "releases v2025.05.20 or later; observed 2026-10-14"
+          },
+          "name": "EverParse 3d manual"
+        }
+      ],
+      "topics": [
+        "serialization/verified",
+        "parsing/verified",
+        "checking/admission",
+        "everparse",
+        "narcissus",
+        "verdict"
+      ]
+    },
     "pcc-tal-foundational-policy-certificates": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19010,6 +19118,58 @@
         "filesystem/copy-on-write",
         "anneal/snapshots",
         "anneal/generation-reclamation"
+      ]
+    },
+    "pin-async-and-external-resource-contracts-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard-library contracts"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.09198v1",
+            "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30",
+            "submitted": "2026-10-06"
+          },
+          "name": "Modular Responsiveness Verification of Rust Async Runtimes"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.06003v1",
+            "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d",
+            "submitted": "2026-10-05"
+          },
+          "name": "A Complete Formal Semantics for Rust Source Code"
+        },
+        {
+          "identity": {
+            "host": "aarch64-apple-darwin",
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Native async drop probe compiler"
+        }
+      ],
+      "topics": [
+        "rust/pin",
+        "rust/async",
+        "rust/ffi",
+        "rust/volatile",
+        "rust/hardware",
+        "certificates/progress"
       ]
     },
     "plutus-inductive-pass-certificates-scp-2024": {
@@ -19149,6 +19309,75 @@
         "verified-systems/compcert",
         "verified-systems/project-everest",
         "anneal/architecture"
+      ]
+    },
+    "proof-producing-frontends-and-derived-checker-interfaces": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "starkware-libs/formal-proofs",
+            "revision": "d0dd8279612a248cbc6bf6d286030bf0bb2a37ff"
+          },
+          "name": "CairoZero retained Lean3 proof-producing compiler"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+          },
+          "name": "Oeuf source and reflection/serialization interfaces"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/verdict",
+            "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+          },
+          "name": "Verdict policy DSL and selected DER interface"
+        },
+        {
+          "identity": {
+            "repository": "QuickChick/QuickChick",
+            "revision": "e35dc8e917f0e36b4ab7cbc66b7d0f7131122588"
+          },
+          "name": "QuickChick checker proof interfaces"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.15002v1",
+            "url": "https://arxiv.org/pdf/2501.15002v1"
+          },
+          "name": "A Proof-Producing Compiler for Blockchain Applications"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3167089",
+            "url": "https://homes.cs.washington.edu/~djg/papers/oeuf2018.pdf"
+          },
+          "name": "Oeuf: Minimizing the Coq Extraction TCB"
+        },
+        {
+          "identity": {
+            "pages": "17",
+            "publication": "USENIX Security 2025",
+            "url": "https://verified.how/papers/verdict.pdf"
+          },
+          "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523707",
+            "publication": "PLDI 2022",
+            "url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf"
+          },
+          "name": "Computing Correctly with Inductive Relations"
+        }
+      ],
+      "topics": [
+        "compilation/proof-producing",
+        "reflection/validated",
+        "rust/specification-dsl",
+        "checking/derived-relations"
       ]
     },
     "proof-producing-versus-validating-translations-1997-2022": {
@@ -19812,6 +20041,121 @@
         "logic/separation",
         "proof/extensions",
         "verification/invariants"
+      ]
+    },
+    "relaxed-memory-reclamation-premises-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard-library contracts"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/gpfsl",
+            "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14"
+          },
+          "name": "iRC11/ORC11 formalization"
+        },
+        {
+          "identity": {
+            "repository": "kaist-cp/relaxed-memory-separation-logic",
+            "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+          },
+          "name": "Author-associated relaxed-memory artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371102",
+            "sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+          },
+          "name": "RustBelt Meets Relaxed Memory POPL 2020 paper"
+        }
+      ],
+      "topics": [
+        "rust/concurrency",
+        "rust/weak-memory",
+        "iris/reclamation",
+        "rust/send-sync"
+      ]
+    },
+    "resource-algebra-lifetime-and-automation-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris resource and execution interfaces"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard-library contracts"
+        },
+        {
+          "identity": {
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          },
+          "name": "RustBelt lifetime archive"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.6417462",
+            "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+          },
+          "name": "RustHornBelt 2022 prophecy artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.21636474",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+          },
+          "name": "RefinedRust 2026-v2 resource/Lithium source"
+        },
+        {
+          "identity": {
+            "artifact": "diaframe-artifact-source.tgz",
+            "doi": "10.5281/zenodo.6414787",
+            "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+          },
+          "name": "Diaframe 2022 source artifact"
+        },
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/quiver",
+            "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d"
+          },
+          "name": "Quiver"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656413",
+            "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+          },
+          "name": "Quiver PLDI 2024 paper"
+        }
+      ],
+      "topics": [
+        "iris/resource-algebra",
+        "iris/lifetimes",
+        "iris/prophecy",
+        "iris/automation",
+        "rust/interior-mutability"
       ]
     },
     "resource-logics-effects-and-compilation-interfaces": {
@@ -21535,6 +21879,40 @@
         "rustc/source-map",
         "rustc/hygiene",
         "charon/source-spans"
+      ]
+    },
+    "rust-storage-transfer-and-drop-cce761ad": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+          },
+          "name": "zerocopy PR source and Lean interfaces"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard-library contracts"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        }
+      ],
+      "topics": [
+        "rust/initializedness",
+        "rust/typed-transfers",
+        "rust/drop",
+        "rust/allocators",
+        "zerocopy/conversions"
       ]
     },
     "rust-symbolic-completeness-boundaries-2026": {
@@ -23389,6 +23767,49 @@
         "rust/option-representation"
       ]
     },
+    "zerocopy-projection-validation-and-layout-cce761ad": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+          },
+          "name": "zerocopy PR source and Lean interfaces"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard-library contracts"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "host": "aarch64-apple-darwin",
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Native packed probe compiler"
+        }
+      ],
+      "topics": [
+        "rust/pointer-resources",
+        "rust/validation",
+        "rust/layout",
+        "rust/unsafe-traits",
+        "zerocopy/projection"
+      ]
+    },
     "zerocopy-rust-intrinsics-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -23468,6 +23889,49 @@
         "rust/layout",
         "verification/cross-target",
         "verification/costs"
+      ]
+    },
+    "zkvm-receipt-binding-and-verification-boundaries": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "risc0/risc0",
+            "revision": "3bbcd44d6459b9ef6ac0df3846dc9215514934e8"
+          },
+          "name": "RISC Zero receipt verification implementation"
+        },
+        {
+          "identity": {
+            "repository": "succinctlabs/sp1",
+            "revision": "02fa30185ecd658174b211d56128b14867ab8e81"
+          },
+          "name": "SP1 normal/mock verification implementation"
+        },
+        {
+          "identity": {
+            "pages": "35",
+            "url": "https://dev.risczero.com/proof-system-in-detail.pdf",
+            "version": "DRAFT August 11, 2023"
+          },
+          "name": "RISC Zero zkVM: Scalable, Transparent Arguments of RISC-V Integrity"
+        },
+        {
+          "identity": {
+            "development": "https://dev.risczero.com/api/generating-proofs/dev-mode",
+            "security_model": "https://dev.risczero.com/api/security-model",
+            "trusted_setup": "https://dev.risczero.com/api/trusted-setup-ceremony",
+            "version": "API 3.0"
+          },
+          "name": "RISC Zero documented security, development and setup interfaces"
+        }
+      ],
+      "topics": [
+        "checking/cryptographic-execution",
+        "zkvm/risc-zero",
+        "zkvm/sp1",
+        "checking/artifact-binding",
+        "verification/development-modes"
       ]
     }
   }

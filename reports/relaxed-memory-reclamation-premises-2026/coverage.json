@@ -1,0 +1,80 @@
+{
+  "scope": "Research subquestions; future implementation is separately recorded and does not determine research completion",
+  "entries": [
+    {
+      "id": "R019",
+      "status": "partial",
+      "findings_sections": [
+        "Rust orders accesses and forbids unsynchronized conflicting races",
+        "The modeled language and adequacy are explicit",
+        "View-indexed ownership connects tokens to observation"
+      ],
+      "answered_subquestions": [
+        "Rust C++20-derived access model, ORC11 omitted SC domain, race checks and view-sensitive deallocation examined."
+      ],
+      "remaining_research": [
+        "Full compiler transformation/compilation mappings and all order/fence rules remain unexamined."
+      ],
+      "future_engineering": [
+        "Pin source/target order and prove correspondence for the selected domain."
+      ],
+      "question": "Examine atomic ordering, data races, fences, compiler transformations, and the relationship to C/C++ memory models.",
+      "issue": 3865
+    },
+    {
+      "id": "R020",
+      "status": "partial",
+      "findings_sections": [
+        "The modeled language and adequacy are explicit",
+        "Source compatibility and progress require separate relations"
+      ],
+      "answered_subquestions": [
+        "Exact model domains and direction needed for bad-source execution preservation established."
+      ],
+      "remaining_research": [
+        "Complete relations across borrowing/provenance/byte/concurrency models remain unknown; async source artifacts not examined."
+      ],
+      "future_engineering": [
+        "Supply the selected relation before importing safety results."
+      ],
+      "question": "Determine how to relate models with different borrowing, provenance, byte, and concurrency rules; include recent source-level trace semantics and async models.",
+      "issue": 3865
+    },
+    {
+      "id": "R076",
+      "status": "partial",
+      "findings_sections": [
+        "Send and Sync constrain thread transfer but do not prove a reclamation protocol",
+        "View-indexed ownership connects tokens to observation"
+      ],
+      "answered_subquestions": [
+        "Send/Sync meaning, view-sensitive reclamation endpoint and allocation-liveness obligations examined."
+      ],
+      "remaining_research": [
+        "Current std::Arc full implementation and hazard-pointer/RCU algorithms/proofs not examined."
+      ],
+      "future_engineering": [
+        "Audit selected implementation, terminal allocator permission and downstream trait scope."
+      ],
+      "question": "Cover Send/Sync, atomics, reference counting, hazard pointers, RCU, and use after reclamation.",
+      "issue": 3865
+    },
+    {
+      "id": "T074",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "The modeled language and adequacy are explicit",
+        "Source compatibility and progress require separate relations"
+      ],
+      "answered_subquestions": [
+        "Finite reachable-state adequacy, divergence/fork/environment and reflection requirements examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Instantiate the complete source/model execution relation including all effects and spawned code."
+      ],
+      "question": "Account for failure, divergence, interference, spawned execution, and environmental choices.",
+      "issue": 3866
+    }
+  ]
+}

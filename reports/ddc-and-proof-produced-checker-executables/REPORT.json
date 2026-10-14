@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "compilation/diverse-double-compilation",
+    "checking/proof-produced-executable",
+    "checking/io",
+    "cakeml"
+  ],
+  "subjects": [
+    {
+      "name": "CakeML selected LPR checker/executable theorem",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "Fully Countering Trusting Trust through Diverse Double-Compiling",
+      "identity": {
+        "publication": "Wheeler dissertation, Fall 2009",
+        "url": "https://dwheeler.com/trusting-trust/dissertation/html/wheeler-trusting-trust-ddc.html",
+        "errata": "https://dwheeler.com/trusting-trust/dissertation-errata.html",
+        "errata_date": "2019-07-25"
+      }
+    },
+    {
+      "name": "Wheeler primary Proof1 formal input",
+      "identity": {
+        "artifact": "ddc.in",
+        "url": "https://dwheeler.com/trusting-trust/dissertation/ddc.in"
+      }
+    },
+    {
+      "name": "A Verified Proof Checker for Higher-Order Logic",
+      "identity": {
+        "author": "Oskar Abrahamsson",
+        "version": "author preprint dated October 28, 2019; related JLAMP 2020 publication",
+        "url": "https://cakeml.org/jlamp20.pdf",
+        "pages": "31"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

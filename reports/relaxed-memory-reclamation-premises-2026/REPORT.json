@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "rust/concurrency",
+    "rust/weak-memory",
+    "iris/reclamation",
+    "rust/send-sync"
+  ],
+  "subjects": [
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "iRC11/ORC11 formalization",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/gpfsl",
+        "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14"
+      }
+    },
+    {
+      "name": "Author-associated relaxed-memory artifact",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory POPL 2020 paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

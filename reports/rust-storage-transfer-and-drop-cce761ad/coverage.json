@@ -1,0 +1,112 @@
+{
+  "scope": "Research subquestions; future implementation is separately recorded and does not determine research completion",
+  "entries": [
+    {
+      "id": "R061",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "Physical admission and mathematical decoding are independent in the PR model",
+        "The checked byte-copy model exposes its trust boundary"
+      ],
+      "answered_subquestions": [
+        "Typed/untyped documented transfer distinction and exact PR physical-versus-mathematical storage boundary examined."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove each admitted native storage transition satisfies the chosen representation relation."
+      ],
+      "question": "Determine how representation changes affect initializedness and byte observations, including the PR stack's explicit storage-model boundary.",
+      "issue": 3865
+    },
+    {
+      "id": "R067",
+      "status": "partial",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "By-value conversion has different ownership exits",
+        "Physical admission and mathematical decoding are independent in the PR model"
+      ],
+      "answered_subquestions": [
+        "Representation and conversion exit prerequisites examined; shared mutation directions are mapped in the pointer report."
+      ],
+      "remaining_research": [
+        "Full generic/DST metadata correspondence not examined."
+      ],
+      "future_engineering": [
+        "Carry exact cast/dictionary identity and surviving-view validity through the frontend."
+      ],
+      "question": "Compare directional validity, mutation compatibility, surviving source views, metadata, and representation correspondence.",
+      "issue": 3865
+    },
+    {
+      "id": "R068",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "By-value conversion has different ownership exits",
+        "Partial initialization and destructor suppression need independent state"
+      ],
+      "answered_subquestions": [
+        "Success, failure recovery, validation panic, source-destructor suppression and exactly-once ownership obligation traced at the exact function."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Close cast/ReadOnly/trait laws and supported-configuration correspondence for a source-safety certificate."
+      ],
+      "question": "Model successful conversion, failure recovery, destructor suppression, representation stability, and exactly-once ownership.",
+      "issue": 3865
+    },
+    {
+      "id": "R069",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Partial initialization and destructor suppression need independent state"
+      ],
+      "answered_subquestions": [
+        "MaybeUninit, ManuallyDrop, initialization prefixes, unwind cleanup, leaks, forget and double-drop mechanisms distinguished."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Verify actual partial-aggregate cleanup/ownership algorithms for supported exits and panic policies."
+      ],
+      "question": "Cover MaybeUninit, ManuallyDrop, partial aggregates, unwinding, leaks, forget, and double-drop prevention.",
+      "issue": 3865
+    },
+    {
+      "id": "R070",
+      "status": "partial",
+      "findings_sections": [
+        "Allocator identity, reallocation and capacity are separate resources"
+      ],
+      "answered_subquestions": [
+        "Global allocator identity, deinitialization, success/failure realloc, zero-size/zeroing method contracts, failure null/unwind boundary, address stability and operation-optimization constraints examined."
+      ],
+      "remaining_research": [
+        "Container/allocator-wrapper OOM policies and complete Vec length/capacity paths not examined."
+      ],
+      "future_engineering": [
+        "Model exact selected allocator and Vec APIs before checking implementations."
+      ],
+      "question": "Cover allocation identity, allocator contracts, reallocation, zeroing, OOM, Vec capacity, and address stability.",
+      "issue": 3865
+    },
+    {
+      "id": "T077",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "Typed validity does not imply initialized padding or exact byte preservation",
+        "Physical admission and mathematical decoding are independent in the PR model",
+        "The checked byte-copy model exposes its trust boundary"
+      ],
+      "answered_subquestions": [
+        "Normative initialization/padding distinction and exact byte/model admission interface related with explicit source bridge premises."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove the native typed-transfer relation; do not model generic T moves as exact initialized U8 copies."
+      ],
+      "question": "Relate logical byte models to initializedness, padding, validity, and actual Rust moves and copies.",
+      "issue": 3866
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "role": "Pinned source/contract inspection; no fresh formal build or theorem assumption audit",
+  "files": [
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "gpfsl/base_logic/adequacy.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/gpfsl%2Fbase_logic%2Fadequacy.v/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "869c04a5df3a56b12688f976a46086e3906a940e4f1555e22c2447afeee65609",
+      "bytes": 6247,
+      "saved": "gpfsl-gpfsl--base_logic--adequacy.v"
+    },
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "gpfsl/base_logic/vprop.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/gpfsl%2Fbase_logic%2Fvprop.v/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "a1158e22bc0747348bebc931ecbc722891e884bf503ddd941b30d2355f851f19",
+      "bytes": 32512,
+      "saved": "gpfsl-gpfsl--base_logic--vprop.v"
+    },
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "README.md",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/README.md/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "41fe80a8579b0bd133cc4d138e64e045d9940ba891a51a5ccd11db32245bc676",
+      "bytes": 8414,
+      "saved": "gpfsl-README.md"
+    },
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "gpfsl/gps/surface.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/gpfsl%2Fgps%2Fsurface.v/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "7dfedbec3257067de765ac104af4fb8066f400e344c5f8881c2d960a07d0085c",
+      "saved": "gpfsl-gpfsl--gps--surface.v"
+    },
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "gpfsl/orc11/thread.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/gpfsl%2Forc11%2Fthread.v/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "5851d994bdb8e9c454ee13e0518845d56085ebb8a0b29c647390beb32c1fbe8e",
+      "saved": "gpfsl-gpfsl--orc11--thread.v"
+    },
+    {
+      "repository": "iris/gpfsl",
+      "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "path": "gpfsl/gps/surface_vSP.v",
+      "url": "https://gitlab.mpi-sws.org/api/v4/projects/iris%2Fgpfsl/repository/files/gpfsl%2Fgps%2Fsurface_vSP.v/raw?ref=48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+      "sha256": "dde2947721d926e51fb1abf343d894e709f2c6fa0dc98db9afbe9d3cc985fc21",
+      "saved": "gpfsl-gpfsl--gps--surface_vSP.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/base_logic/adequacy.v",
+      "git_blob_sha": "23e27bf6fe9f547ff14c5d8210d446589f35f96c",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/base_logic/adequacy.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/base_logic/vprop.v",
+      "git_blob_sha": "a01b4052182dce4b92b44f526938be792e8ea994",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/base_logic/vprop.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/base_logic/weakestpre.v",
+      "git_blob_sha": "ea830d09f64a22445444e0f659852dc263148ff8",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/base_logic/weakestpre.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/base_logic/na.v",
+      "git_blob_sha": "5a8a850c6813169faee2c763077d878d72dd617b",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/base_logic/na.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl/diaframe/proof_automation.v",
+      "git_blob_sha": "23d823d4a5c56c952ace3e7c3845604a4366c222",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl/diaframe/proof_automation.v"
+    },
+    {
+      "repository": "kaist-cp/relaxed-memory-separation-logic",
+      "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472",
+      "path": "gpfsl-examples/arc/comparison/arc.v",
+      "git_blob_sha": "08ebdf3d373e88830b7dadebccfb043f5d36ee3a",
+      "url": "https://github.com/kaist-cp/relaxed-memory-separation-logic/blob/6fe1475af1f8c49f8c144a67d9175b5b3e6bc472/gpfsl-examples/arc/comparison/arc.v"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/cell.rs",
+      "git_blob_sha": "d37f0eaa512a6be4db70842c048ed5434c738047",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/cell.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/sync/atomic.rs",
+      "git_blob_sha": "14e33019a45ff25f2107f175d6c9b26b9731cbfc",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/sync/atomic.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/marker.rs",
+      "git_blob_sha": "530af0c3af656b0388b64456a36012a87cdfaa4b",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/marker.rs"
+    }
+  ],
+  "archive_members": []
+}
