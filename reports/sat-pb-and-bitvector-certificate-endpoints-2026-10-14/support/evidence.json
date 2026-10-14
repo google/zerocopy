@@ -1,0 +1,131 @@
+{
+  "observed_at": "2026-10-14",
+  "source_units": [
+    {
+      "repository": "IsaFoL/IsaFoL",
+      "revision": "1475076cea603c64d3dfe70c91014a5264e0479b",
+      "path": "GRAT/gratchk/Unsat_Check.thy",
+      "url": "https://raw.githubusercontent.com/IsaFoL/IsaFoL/1475076cea603c64d3dfe70c91014a5264e0479b/GRAT/gratchk/Unsat_Check.thy",
+      "retrieved_utf8_sha256": "54f50920cc60c44a20b280ea8485146278545a03090f8a2f448f1776a3ee698b",
+      "bytes": 129421,
+      "role": "source"
+    },
+    {
+      "repository": "IsaFoL/IsaFoL",
+      "revision": "1475076cea603c64d3dfe70c91014a5264e0479b",
+      "path": "GRAT/gratchk/Dimacs_Format.thy",
+      "url": "https://raw.githubusercontent.com/IsaFoL/IsaFoL/1475076cea603c64d3dfe70c91014a5264e0479b/GRAT/gratchk/Dimacs_Format.thy",
+      "retrieved_utf8_sha256": "59a153ef455f3ab08c84c291b54281fd5a39d83629868331293b0b3fa7f4413f",
+      "bytes": 7721,
+      "role": "source"
+    },
+    {
+      "repository": "digama0/frat",
+      "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/digama0/frat/aa18581497830b49a6ab6cbc9e0dc778c14885b5/README.md",
+      "retrieved_utf8_sha256": "61c253171c67c4ca4c3383e8df80507a81003e4f13b7f18066eafe4fc79f0b90",
+      "bytes": 5274,
+      "role": "documentation"
+    },
+    {
+      "repository": "StephanGocht/VeriPB",
+      "revision": "01b7b5088c8a67f1611427174501191bc5f5b365",
+      "path": "veripb/rules.py",
+      "url": "https://raw.githubusercontent.com/StephanGocht/VeriPB/01b7b5088c8a67f1611427174501191bc5f5b365/veripb/rules.py",
+      "retrieved_utf8_sha256": "de15f454560f61e176458947dbc49a5639b9d8a6a172e6fbe3ed7896a265f04e",
+      "bytes": 23908,
+      "role": "source"
+    },
+    {
+      "repository": "StephanGocht/VeriPB",
+      "revision": "01b7b5088c8a67f1611427174501191bc5f5b365",
+      "path": "veripb/verifier.py",
+      "url": "https://raw.githubusercontent.com/StephanGocht/VeriPB/01b7b5088c8a67f1611427174501191bc5f5b365/veripb/verifier.py",
+      "retrieved_utf8_sha256": "8227ca05d2097f5ecc5c93ba71a9993e81d1389f5a59e5519bd987755faee6d4",
+      "bytes": 14222,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Std/Tactic/BVDecide/LRAT/Checker.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Std/Tactic/BVDecide/LRAT/Checker.lean",
+      "retrieved_utf8_sha256": "60f639df2cef44af474e85887857fd9ececac652cbfd8eed493ce08a72e9693d",
+      "bytes": 1516,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Std/Tactic/BVDecide/Reflect.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Std/Tactic/BVDecide/Reflect.lean",
+      "retrieved_utf8_sha256": "912d52f783dde28ca43460dbd6a0bc009c0c4276b674ef0b816eba6dbba60650",
+      "bytes": 6506,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean",
+      "retrieved_utf8_sha256": "30b7c18485bdb819a5cb4832a6a337c650ba09d7ce15b19e07248661dec07e30",
+      "bytes": 4520,
+      "role": "source"
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "examples/lpr_checker/array/compilation/proofs/lpr_arrayProofScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/examples/lpr_checker/array/compilation/proofs/lpr_arrayProofScript.sml",
+      "retrieved_utf8_sha256": "71a9c79fa4857cc269d9491c0d61bbf6c0c9b5cf014c54be270a71e5637828e7",
+      "bytes": 15703,
+      "role": "source"
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "examples/pseudo_bool/array/compilation/proofs/npbc_fullProofScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/examples/pseudo_bool/array/compilation/proofs/npbc_fullProofScript.sml",
+      "retrieved_utf8_sha256": "58b519e6666657fcc299ff9950c8a405a7ef1be99cdbc1e56201a6b7e22cd774",
+      "bytes": 4367,
+      "role": "source"
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "examples/pseudo_bool/npbcScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/examples/pseudo_bool/npbcScript.sml",
+      "retrieved_utf8_sha256": "5cf524d96c9813d2c6bd710a4e1b101e7d4be8b4bdff761ad166f824e5fa87f6",
+      "bytes": 98709,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Std/Tactic/BVDecide/LRAT/Internal/Formula/Implementation.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Std/Tactic/BVDecide/LRAT/Internal/Formula/Implementation.lean",
+      "retrieved_utf8_sha256": "86c4f8faa2f821a9ae6ee288819076d353907e1a713cbe7f210f49601b6ee9dc",
+      "bytes": 18176,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATChecker.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Std/Tactic/BVDecide/LRAT/Internal/CompactLRATChecker.lean",
+      "retrieved_utf8_sha256": "3cd27b63554c823066be6d9d8e2bd7fffd673916e60a6658d9382a3bdd7d5892",
+      "bytes": 2001,
+      "role": "source"
+    },
+    {
+      "repository": "marijnheule/drat-trim",
+      "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/marijnheule/drat-trim/2e3b2dc0ecf938addbd779d42877b6ed69d9a985/README.md",
+      "retrieved_utf8_sha256": "fa0b7c5b81b332aad990a1980c5d7a5fda41b153159cf331982bf36d87483054",
+      "bytes": 12939,
+      "role": "normative"
+    }
+  ]
+}

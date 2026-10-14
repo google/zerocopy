@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "certificates/pcc",
+    "certificates/foundational-pcc",
+    "certificates/typed-assembly",
+    "certificates/property-scope",
+    "twam"
+  ],
+  "subjects": [
+    {
+      "name": "Necula Compiling with Proofs",
+      "identity": {
+        "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+        "publication": "CMU-CS-98-154;1998-09-18",
+        "coordinates": "chapter2 Theorem2.1;277-page dissertation"
+      }
+    },
+    {
+      "name": "From System F to Typed Assembly Language",
+      "identity": {
+        "primary_url": "https://www.cs.cmu.edu/~dpw/papers/tal-toplas.pdf",
+        "doi": "10.1145/319301.319345",
+        "publication": "TOPLAS21(3),1999",
+        "coordinates": "section7.3;41-page author PDF"
+      }
+    },
+    {
+      "name": "Appel FPCC primary project account",
+      "identity": {
+        "primary_url": "https://www.cs.princeton.edu/~appel/fpcc.html",
+        "publication": "Princeton FPCC project1999-2005"
+      }
+    },
+    {
+      "name": "Appel Foundational Proof-Carrying Code",
+      "identity": {
+        "primary_url": "https://www.cs.princeton.edu/~appel/papers/fpcc.pdf",
+        "doi": "10.1109/LICS.2001.932501",
+        "publication": "LICS2001",
+        "inspection": "full10-page author PDF;sections2,5",
+        "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+      }
+    },
+    {
+      "name": "Bohrer/Crary TWAM",
+      "identity": {
+        "primary_url": "https://www.cs.cmu.edu/~crary/papers/2018/twam.pdf",
+        "publication": "2018 author paper",
+        "coordinates": "Theorem1 and section3.5;23-page PDF"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

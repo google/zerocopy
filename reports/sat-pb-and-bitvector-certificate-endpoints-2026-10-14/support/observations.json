@@ -1,0 +1,14 @@
+{
+  "invocation": [
+    "lean",
+    "LratControls.lean"
+  ],
+  "version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "host": "macOS-27.0.1-arm64-arm-64bit",
+  "exit_code": 0,
+  "stdout_file": "LratControls.stdout",
+  "stderr_file": "LratControls.stderr",
+  "fixture_sha256": "ca9021b6bc55ab0e1ac9757d55490bb17c42432ec85abd85ef3a47c36c723e96",
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal",
+    "proof/interchange",
+    "proof/metamath",
+    "proof/mm0",
+    "proof/dedukti",
+    "proof/lambdapi",
+    "proof/trust"
+  ],
+  "subjects": [
+    {
+      "name": "Deducteam/lambdapi",
+      "identity": {
+        "repository": "Deducteam/lambdapi",
+        "revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7"
+      }
+    },
+    {
+      "name": "Deducteam/Dedukti",
+      "identity": {
+        "repository": "Deducteam/Dedukti",
+        "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+      }
+    },
+    {
+      "name": "digama0/mm0",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "metamath/metamath-exe",
+      "identity": {
+        "repository": "metamath/metamath-exe",
+        "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

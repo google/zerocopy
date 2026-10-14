@@ -1,0 +1,697 @@
+{
+  "investigation_status": "bounded-wave-complete-with-explicit-gaps",
+  "question_status_policy": "Version-scoped literature and theorem-interface answers are distinguished from genuinely unexamined research and future implementation or artifact-replay work. Parent-reviewed full entries do not claim an implemented Anneal integration.",
+  "observed_at": "2026-10-14",
+  "reference_baseline": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+  "source_revisions": {
+    "mit-plv/fiat": "b7757d28f68c39c3c58192a27f217064b0b35e3b",
+    "mit-plv/rupicola": "d33f7024a7a03c9e0f05f746dff8434d450a4f6e",
+    "lammich/isabelle_llvm": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+    "AbsInt/CompCert": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+    "CakeML/cakeml": "f73189499bb295f0859dec7ee38c169c48da682c",
+    "CertiRocq/certirocq": "906241771e0ac0088403dec12a0027213f114dd1",
+    "AliveToolkit/alive2": "5d0eb277235b73f71000501c3a4f5ab9b2586915",
+    "0xADE1A1DE/CryptOpt": "c089d8ce3cace748a0a22e25d7adfbf2cfc6a883",
+    "uw-unsat/jitterbug": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+    "vellvm/vellvm": "4c6db50077cbc0df3fb3156c0570129201cc35f3",
+    "mit-plv/fiat-crypto": "b4ad623c6a5bde0c71169493963a308c612fce3f",
+    "HOL-Theorem-Prover/HOL": "166fd15df77be1f2e79dc8592a933b1a65540526",
+    "kth-step/HolBA": "c20c5aeae7c4464c3a5032ee66d9e31324937fe1"
+  },
+  "question_coverage": [
+    {
+      "id": "P001",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "The consumer chooses the proposition"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Target-policy construction and historical arithmetic caveat inspected; complete thesis memory/arithmetic/VCGen proof and executable artifact not audited."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P002",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "Foundational checking reduces assumptions about typing rules"
+        }
+      ],
+      "answered_research_scope": [
+        "Full primary FPCC LICS2001 \u00a7\u00a72/5 inspected: foundational LF/Twelf encoding, semantic typing lemmas, historical recursive/mutable model boundaries and fixed machine policy."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "No fresh Twelf checking or full current checker-binary dependency audit was performed."
+      ]
+    },
+    {
+      "id": "P003",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "TAL: preservation of typing supports a target safety theorem"
+        },
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "Derived Anneal policy and authority lessons"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Basic TAL metatheory inspected; Cyclone/staged code generation and concrete runtime loader not investigated."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P004",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Per-run synthesis and schemas"
+        }
+      ],
+      "answered_research_scope": [
+        "Primary proof-schema representation, global side conditions and weak bisimulation mechanism inspected."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Program-counter and representation witnesses inspected; full current schema implementation and checking performance not replayed."
+      ]
+    },
+    {
+      "id": "P005",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Compilation through byte decompilation"
+        }
+      ],
+      "answered_research_scope": [
+        "Primary HOL proof-producing code generation mechanism and theorem-governed extensibility inspected; full ESOP2007 \u00a7\u00a72/4 additionally examined by parent."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "No new machine bytes or generated HOL certificate were replayed. Primary-paper access is resolved; current executable correspondence remains future integration work."
+      ]
+    },
+    {
+      "id": "P006",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Pure and stateful representation relations"
+        }
+      ],
+      "answered_research_scope": [
+        "Pure-function shallow-to-deep certificates and Eval/Arrow representation interfaces examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Eval/Arrow definitions and paper representation theorem inspected; complete translator dependency closure and generated-certificate replay absent."
+      ]
+    },
+    {
+      "id": "P007",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Pure and stateful representation relations"
+        }
+      ],
+      "answered_research_scope": [
+        "EvalM success/exception/frame/FFI contract examined, with exact effect premises."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "EvalM success/exception/frame/FFI contract inspected in paper; current monadic translator and concrete FFI implementation not independently replayed."
+      ]
+    },
+    {
+      "id": "P011",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "constructive-imperative-refinement-memory-bridges",
+          "section": "Fiat: safety is an explicit conjunct"
+        }
+      ],
+      "answered_research_scope": [
+        "Fiat ProgOk safety conjunct, separation representation and separately justified foreign ADTs examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Core ProgOk and paper byte-memory bridge inspected; concrete foreign ADT and backend proofs plus legacy dependencies not built."
+      ]
+    },
+    {
+      "id": "P012",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "constructive-imperative-refinement-memory-bridges",
+          "section": "Rupicola: the program is a witness in a proof"
+        }
+      ],
+      "answered_research_scope": [
+        "Rupicola relational witness construction and total weakest-precondition interface examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Paper relational-construction mechanism and current composition rule inspected; artifact VM and generated code proof not replayed."
+      ]
+    },
+    {
+      "id": "P013",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "constructive-imperative-refinement-memory-bridges",
+          "section": "Sepref and Isabelle-LLVM: successful termination in the model"
+        }
+      ],
+      "answered_research_scope": [
+        "Sepref total model correctness, representability, framing and expressly trusted historical LLVM text generator examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Paper total-correctness model and trusted text-generation boundary inspected; current generator changes and entire LLVM lowering path not audited."
+      ]
+    },
+    {
+      "id": "P020",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "A validator can export the required pass theorem"
+        }
+      ],
+      "answered_research_scope": [
+        "Verified scheduling validator theorem and definedness checks examined; mixed verified-pass/validator design explained."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Generic wrapper theorem and definedness constraints inspected; current executable validator/extraction path not checked."
+      ]
+    },
+    {
+      "id": "P021",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CertiRocq: retain the exact local scope"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Selected current ANF proof statements and flags inspected; predicate-name linkage, quoting, erasure, printing, FFI and complete plugin/runtime path unresolved."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P025",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Verified equivalence checking and JIT preservation"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Paper checker proposition and producer/readme identities inspected; current Fiat Cryptography checker theorem and extracted binary not audited."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P026",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Relation-derived checks are still checks of that relation"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Primary paper partial-checker/fuel distinction inspected; exact current derivation implementation, supported constraints, and generated soundness/completeness proof not replayed."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P027",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Optimization refinement and its checking path"
+        }
+      ],
+      "answered_research_scope": [
+        "Versioned Trivet supported fragment, proof scaffolding and semantic limits examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Versioned Trivet refinement and proof-scaffold mechanism inspected; current executable artifact, exact LLVM encoding proof, and all supported loop shapes not checked."
+      ]
+    },
+    {
+      "id": "P028",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Binary refinement can have explicit exceptional allowances"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Versioned EquiVM runtime proposition/code binding/resource cases inspected; unknown-code context details, specification authoring and checked artifact remain unverified."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P029",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Ownership checking adds a safety argument"
+        }
+      ],
+      "answered_research_scope": [
+        "Versioned Owlang open-safety/ownership contract and partial-source-safety premise examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Versioned open-safety theorem, ownership interface, and partial-source premise inspected; ownership-checker artifact and heterogeneous-composition proofs not replayed."
+      ]
+    },
+    {
+      "id": "P030",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Ownership checking adds a safety argument"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Paper parser/fragment/partial-safety boundaries retained; inclusion-direction prose conflicts with its equation; actual checked relation must resolve conflict before relying on endpoint."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P031",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Derived Anneal taxonomy and maintenance implications"
+        },
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "Derived Anneal policy and authority lessons"
+        },
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Lifting assertions are obligations"
+        }
+      ],
+      "answered_research_scope": [
+        "Taxonomy compares actual conclusions across the inspected systems and supplies discriminating finite witnesses."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Taxonomy derives from inspected endpoints and finite illustration; no exhaustive classifier or Anneal translation theorem constructed."
+      ]
+    },
+    {
+      "id": "P032",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Derived Anneal taxonomy and maintenance implications"
+        },
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Lifting assertions are obligations"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Adjacent analysis identifies source-failure reflection requirement; no formal Anneal theorem implemented."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "P033",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Ownership checking adds a safety argument"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CompCert: accepted compilation exports a simulation"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Adjacent comparison exposes safe-source premises and added safety argument; complete prefix-preservation construction remains to be proved."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T021",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "A validator can export the required pass theorem"
+        }
+      ],
+      "answered_research_scope": [
+        "Arbitrary proposed scheduling transformations accepted only through proved semantic validators examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Scheduling family and generic acceptance theorem inspected; full current CompCert validator inventory and executable paths not audited."
+      ]
+    },
+    {
+      "id": "T022",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CakeML: the installed-code theorem keeps its premises"
+        }
+      ],
+      "answered_research_scope": [
+        "Pinned CakeML source traces compile_correct through installed-code and bootstrap theorems, retaining machine/FFI/resource premises."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Adjacent coverage traces model-to-binary boundary; complete CakeML verified-application/runtime literature not reviewed."
+      ]
+    },
+    {
+      "id": "T023",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CertiRocq: retain the exact local scope"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Adjacent coverage supplies selected ANF predicates/flags; full MetaRocq typechecking/erasure and compiled safe checker endpoint not established."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T024",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Optimization refinement and its checking path"
+        },
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Original discriminating finite witness"
+        }
+      ],
+      "answered_research_scope": [
+        "Exact Alive2 refinement direction and source UB/nondeterminism consequences explained."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Adjacent coverage explicitly separates removed UB/nondeterminism from source safety; no full LLVM memory model or new upstream check."
+      ]
+    },
+    {
+      "id": "T028",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Optimization refinement and its checking path"
+        }
+      ],
+      "answered_research_scope": [
+        "Versioned Lean-based Trivet semantic encoding, proof scaffold and correspondence boundary examined."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Versioned proof proposition/scaffolding and semantic-boundary analysis supplied; no Trivet build or emitted proof replay."
+      ]
+    },
+    {
+      "id": "T029",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "The consumer chooses the proposition"
+        },
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "Foundational checking reduces assumptions about typing rules"
+        }
+      ],
+      "answered_research_scope": [
+        "Foundational target-policy proofs are compared with correspondence certificates and their different premises."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Policy versus correspondence comparison supplied; full FPCC foundational proof/checker dependencies remain a gap."
+      ]
+    },
+    {
+      "id": "T030",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "TAL: preservation of typing supports a target safety theorem"
+        },
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "TWAM: successful search, failure, and divergence are different"
+        },
+        {
+          "package": "refinement-policy-and-safety-direction-comparison",
+          "section": "Verified equivalence checking and JIT preservation"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "TAL/TWAM/Jitterbug endpoints inspected; JVM and actual eBPF admission-verifier proofs, runtime loading and present kernel JIT coverage not audited."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T043",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CakeML: the installed-code theorem keeps its premises"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "FFI/machine/resource premises exposed; full GC, concurrency, native libraries and host unsafe runtime audit absent."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T044",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CompCert: accepted compilation exports a simulation"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CakeML: the installed-code theorem keeps its premises"
+        },
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Compilation through byte decompilation"
+        }
+      ],
+      "answered_research_scope": [
+        "Verified compilation, bootstrap, binary lifting and per-run proof-producing synthesis endpoints compared."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "Logical compiler, installed code, and byte-validation endpoints compared; no actual checker binary hash or run verified."
+      ]
+    },
+    {
+      "id": "T045",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CakeML: the installed-code theorem keeps its premises"
+        },
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "In-logic bootstrap and retained machine/resource assumptions inspected; diverse double-compilation literature and executable comparison not performed."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T046",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        },
+        {
+          "package": "pcc-tal-foundational-policy-certificates",
+          "section": "Derived Anneal policy and authority lessons"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Isolation is separated analytically from theorem strength and artifact binding; no concrete producer-containment architecture evaluated."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T047",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "Derived Anneal trust decomposition"
+        },
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Pure and stateful representation relations"
+        }
+      ],
+      "answered_research_scope": [
+        "Scoped mechanisms and exact theorem endpoints in the cited Findings sections were inspected."
+      ],
+      "unanswered_research_scope": [
+        "Model FFI/framing and admission/serialization obligations exposed; concrete filesystem/parser/output wrapper verification absent."
+      ],
+      "future_implementation_or_replay_obligations": []
+    },
+    {
+      "id": "T048",
+      "coverage_status": "full",
+      "sections": [
+        {
+          "package": "verified-compilers-bootstrap-and-executable-endpoints",
+          "section": "CakeML: the installed-code theorem keeps its premises"
+        },
+        {
+          "package": "hol-proof-producing-synthesis-and-binary-lifting",
+          "section": "Compilation through byte decompilation"
+        },
+        {
+          "package": "constructive-imperative-refinement-memory-bridges",
+          "section": "Sepref and Isabelle-LLVM: successful termination in the model"
+        }
+      ],
+      "answered_research_scope": [
+        "Logical arithmetic, modeled instructions, resource extensions and physical execution are separated at examined theorem endpoints."
+      ],
+      "unanswered_research_scope": [],
+      "future_implementation_or_replay_obligations": [
+        "ISA/model/resource/logical arithmetic boundaries compared; hardware fidelity and actual execution not tested."
+      ]
+    }
+  ],
+  "not_investigated": [
+    "Historic Li/Owens/Slind executable artifact; primary-paper mechanism inspection is complete.",
+    "Cyclone staged compilation",
+    "Concrete JVM admission verifier",
+    "Full current Vellvm transformation theorem",
+    "Complete Trivet/EquiVM/Owlang executable artifacts",
+    "Diverse double-compilation primary literature"
+  ],
+  "parent_review": {
+    "observed_at": "2026-10-14",
+    "primary_additions": [
+      "ESOP2007 full15-page PDF \u00a7\u00a72/4",
+      "LICS2001 full10-page PDF \u00a7\u00a72/5"
+    ],
+    "definition_of_full": "The requested version-scoped research mechanism/interface comparison is answered, not future implementation or independent replay of all upstream proofs.",
+    "counts": {
+      "full": 19,
+      "partial": 15
+    }
+  }
+}

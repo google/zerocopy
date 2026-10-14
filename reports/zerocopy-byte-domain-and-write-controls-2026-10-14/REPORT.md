@@ -60,7 +60,7 @@ Basis: **execution**, `main.rs` assertions; **derived**, contract observation re
 
 ## Evidence
 
-- **source:** [exact crate source](https://github.com/google/zerocopy/tree/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy), particularly `src/lib.rs`, `src/impls.rs`, `src/util/validity.rs` and byte-order implementations.
+- **source:** [exact crate source](https://github.com/google/zerocopy/tree/cce761ad53785973ec2f4a6b13715b770b340c87/zerocopy), particularly `src/lib.rs`, `src/impls.rs`, `src/util/validity/mod.rs` and byte-order implementations.
 - **execution/source:** `support/main.rs`, hash recorded in `support/results.json`; immutable source archive selection and hash.
 - **execution:** retained `rust-version.stdout.txt`, `cargo-run.stdout.txt`, stderr, statuses, and resolved `Cargo.lock`; both recorded commands succeed.
 - **derived:** comparison requirements and stated semantic exclusions.

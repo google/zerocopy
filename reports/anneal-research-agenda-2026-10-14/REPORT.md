@@ -42,11 +42,13 @@ Basis: **source**, retained content-audit representation; **derived**, evidence 
 
 ### Published technical scopes and remaining gaps
 
-`coverage/` preserves scoped question-to-report crosswalks for the certifying-model, proof-kernel, translation-pass and Iris/Rust verification investigations. Each records what the actual report establishes and the remaining research or implementation scope. These crosswalks include partial evidence and unexamined questions; they are not blanket completion attestations.
+`coverage/` preserves scoped question-to-report crosswalks for the certifying-model, proof-kernel, translation-pass, Iris/Rust verification, compiler-family and automation-certificate investigations. Each records what the actual report establishes and the remaining research or implementation scope. These crosswalks include partial evidence and unexamined questions; they are not blanket completion attestations.
 
 The second tranche adds twelve packages: proof-construction/statement authority, verified checker endpoints, Lean admission/import/native controls, Iris adequacy, RustBelt/RustHornBelt contracts, RefinedRust operational/extraction boundaries, Plutus pass relations, Crellvm refinement, property-proof translation, Anneal acceptance/trust gates, exact-pin pure-model controls, and native zerocopy byte-domain controls. The latter enumerate 256 scalar and 65,536 pair encodings; the pure-library run audits 252 declarations under Lean 4.31. These results retain their exact scope and do not close the entire agenda.
 
 Basis: **source**, preserved crosswalks; **execution**, identified technical reports; **derived**, completion interpretation.
+
+The third tranche adds ten packages comparing HOL proof-producing synthesis, constructive imperative refinement, verified compiler endpoints, PCC/TAL, semantic refinement directions, SMT reconstruction, SAT/PB certificates, numerical witnesses, reflected resource gates, and minimal proof interchange. The full ESOP 2007 and LICS 2001 primary papers were acquired and inspected for their mechanism and semantic interfaces. The parent independently replayed the finite refinement witness and both Lean 4.34 certificate controls, reproducing their recorded outputs and axiom dependencies. These ten additions bring the initiative to 31 packages including this agenda; they do not imply 364 completed questions.
 
 ### Research completion is separate from implementation feasibility
 

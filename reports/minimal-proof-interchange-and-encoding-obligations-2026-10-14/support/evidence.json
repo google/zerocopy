@@ -1,0 +1,59 @@
+{
+  "observed_at": "2026-10-14",
+  "source_units": [
+    {
+      "repository": "Deducteam/Dedukti",
+      "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0",
+      "path": "kernel/typing.ml",
+      "url": "https://raw.githubusercontent.com/Deducteam/Dedukti/f3c0eba869ddd46f2e75c123a59f2b612076dba0/kernel/typing.ml",
+      "retrieved_utf8_sha256": "b2361ad478caa37055e9e39e021266994469368f639601fd62e66b7fae5c61be",
+      "bytes": 15482,
+      "role": "source"
+    },
+    {
+      "repository": "Deducteam/Dedukti",
+      "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0",
+      "path": "kernel/confluence.ml",
+      "url": "https://raw.githubusercontent.com/Deducteam/Dedukti/f3c0eba869ddd46f2e75c123a59f2b612076dba0/kernel/confluence.ml",
+      "retrieved_utf8_sha256": "a8503c47abd49f330da381342e9f36c6daa07462e6aaec46314ba69aaad6d9f0",
+      "bytes": 7656,
+      "role": "source"
+    },
+    {
+      "repository": "digama0/mm0",
+      "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+      "path": "mm0-c/mmb.md",
+      "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0-c/mmb.md",
+      "retrieved_utf8_sha256": "e93f3058650104b3f538fd8b2c583239c1e2fb076c7a75fa93b4fe93c16bc9a0",
+      "bytes": 39485,
+      "role": "normative"
+    },
+    {
+      "repository": "digama0/mm0",
+      "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+      "path": "mm0-c/verifier.c",
+      "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0-c/verifier.c",
+      "retrieved_utf8_sha256": "71428a117c96a37b81e183ce57ef34b71e99efecba019e65a47ce27dd4faa4b5",
+      "bytes": 31817,
+      "role": "source"
+    },
+    {
+      "repository": "metamath/metamath-exe",
+      "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e",
+      "path": "src/mmveri.c",
+      "url": "https://raw.githubusercontent.com/metamath/metamath-exe/9898f5d1bb27045d764dd01672862a1c2a3b4f5e/src/mmveri.c",
+      "retrieved_utf8_sha256": "8e394c593e16dc0cfeb7f1b64a81ce8a1f8c648a5555364189bb795e6c5e3671",
+      "bytes": 34736,
+      "role": "source"
+    },
+    {
+      "repository": "Deducteam/Dedukti",
+      "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0",
+      "path": "TUTORIAL.md",
+      "url": "https://raw.githubusercontent.com/Deducteam/Dedukti/f3c0eba869ddd46f2e75c123a59f2b612076dba0/TUTORIAL.md",
+      "retrieved_utf8_sha256": "82480ab9ca1ae8988ad248f18ad674bb6ace3db583b5dfa4d274652e192700a6",
+      "bytes": 16381,
+      "role": "documentation"
+    }
+  ]
+}

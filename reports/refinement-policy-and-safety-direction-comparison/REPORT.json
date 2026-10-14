@@ -1,0 +1,121 @@
+{
+  "topics": [
+    "compilation/refinement",
+    "compilation/llvm",
+    "compilation/translation-validation",
+    "safety/reflection",
+    "certificates/conclusion-taxonomy"
+  ],
+  "subjects": [
+    {
+      "name": "Alive2 bounded translation validation",
+      "identity": {
+        "primary_url": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI2021",
+        "coordinates": "sections5,7,8.1;15-page author PDF"
+      }
+    },
+    {
+      "name": "CryptOpt verified equivalence checking",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2211.10665v3",
+        "arxiv": "2211.10665v3",
+        "publication": "2023-05-22 full paper",
+        "coordinates": "sections6.1-6.4;32-page PDF"
+      }
+    },
+    {
+      "name": "Jitterbug BPF JIT verification",
+      "identity": {
+        "primary_url": "https://www.usenix.org/system/files/osdi20-nelson.pdf",
+        "publication": "OSDI2020",
+        "coordinates": "section4 Definitions1-5 Theorem1;sections6-7;22-page PDF"
+      }
+    },
+    {
+      "name": "Trivet LLVM Lean validation",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2609.19583v1",
+        "arxiv": "2609.19583v1",
+        "publication": "2026-09-17 preprint",
+        "coordinates": "Definition2.1 and section3;14-page PDF"
+      }
+    },
+    {
+      "name": "EquiVM foundational bytecode refinement",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2607.26306v1",
+        "arxiv": "2607.26306v1",
+        "publication": "2026-07-28 preprint",
+        "coordinates": "section5 Figure9;34-page PDF"
+      }
+    },
+    {
+      "name": "Owlang compositional open safety",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2510.10015v1",
+        "arxiv": "2510.10015v1",
+        "publication": "2025-10-11 preprint",
+        "coordinates": "section5 Theorems5.1-5.2;34-page PDF"
+      }
+    },
+    {
+      "name": "RustCompCert ongoing work",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2602.07455v1",
+        "arxiv": "2602.07455v1",
+        "publication": "2026-02-07 preprint",
+        "coordinates": "section2 and footnote2;3-page PDF"
+      }
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "primary_url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf",
+        "publication": "PLDI2022",
+        "coordinates": "section3 Figure1 and section6.3;15-page author PDF"
+      }
+    },
+    {
+      "name": "AliveToolkit/alive2",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "5d0eb277235b73f71000501c3a4f5ab9b2586915",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "0xADE1A1DE/CryptOpt",
+      "identity": {
+        "repository": "0xADE1A1DE/CryptOpt",
+        "revision": "c089d8ce3cace748a0a22e25d7adfbf2cfc6a883",
+        "path": "Readme.md"
+      }
+    },
+    {
+      "name": "uw-unsat/jitterbug",
+      "identity": {
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "vellvm/vellvm",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "4c6db50077cbc0df3fb3156c0570129201cc35f3",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "mit-plv/fiat-crypto",
+      "identity": {
+        "repository": "mit-plv/fiat-crypto",
+        "revision": "b4ad623c6a5bde0c71169493963a308c612fce3f"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

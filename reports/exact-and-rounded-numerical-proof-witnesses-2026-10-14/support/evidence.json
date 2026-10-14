@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-10-14",
+  "source_units": [
+    {
+      "repository": "SMTCoq/smtcoq",
+      "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3",
+      "path": "theories/checker/small-checkers/lia/LIA.v",
+      "url": "https://raw.githubusercontent.com/SMTCoq/smtcoq/7b870140f2ff7e4547a7db614a305d8b2945afa3/theories/checker/small-checkers/lia/LIA.v",
+      "retrieved_utf8_sha256": "0434a02c89ccf8e0d9d07a59673813396688064f92ad636f4375a87524cd7e34",
+      "bytes": 77815,
+      "role": "source"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/checker/rules/linear_arithmetic.rs",
+      "url": "https://raw.githubusercontent.com/ufmg-smite/carcara/20bf49c5ce31089ac83118574c888669355aaae1/src/checker/rules/linear_arithmetic.rs",
+      "retrieved_utf8_sha256": "46e79c897c6b4c4a65d9ef22d1e89355b9f868bd18b0960874b9dc39656ba251",
+      "bytes": 17826,
+      "role": "source"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40",
+      "path": "Mathlib/Tactic/Linarith/Verification.lean",
+      "url": "https://raw.githubusercontent.com/leanprover-community/mathlib4/b16cf9ed26f2e49057943824f2f74f9783b7cb40/Mathlib/Tactic/Linarith/Verification.lean",
+      "retrieved_utf8_sha256": "42747a5f201fbd09302e498c1e601ea6ad69301e9cf60de11774c3c9258d0fd0",
+      "bytes": 10344,
+      "role": "source"
+    },
+    {
+      "repository": "jrh13/hol-light",
+      "revision": "233b83c3202370e03c54de2bd090e4d34f677e91",
+      "path": "Examples/sos.ml",
+      "url": "https://raw.githubusercontent.com/jrh13/hol-light/233b83c3202370e03c54de2bd090e4d34f677e91/Examples/sos.ml",
+      "retrieved_utf8_sha256": "63b830e5871d88958a835dfc226d65fc86e9e5004f7a46260ea5b0dd0339a789",
+      "bytes": 77995,
+      "role": "source"
+    }
+  ]
+}

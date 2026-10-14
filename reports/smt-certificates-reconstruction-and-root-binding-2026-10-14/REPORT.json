@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "anneal",
+    "automation/smt",
+    "proof/certificates",
+    "proof/reconstruction",
+    "proof/trust"
+  ],
+  "subjects": [
+    {
+      "name": "SMTCoq/smtcoq",
+      "identity": {
+        "repository": "SMTCoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "ufmg-smite/carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "cvc5/LFSC",
+      "identity": {
+        "repository": "cvc5/LFSC",
+        "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+      }
+    },
+    {
+      "name": "cvc5/cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "f0bc3373ef032a3fc5006f22778aaae7b274f429"
+      }
+    },
+    {
+      "name": "ufmg-smite/lean-smt",
+      "identity": {
+        "repository": "ufmg-smite/lean-smt",
+        "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894"
+      }
+    },
+    {
+      "name": "isabelle-prover/mirror-isabelle",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

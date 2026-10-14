@@ -1,0 +1,20 @@
+{
+  "scope": "Direct imported olean artifacts only; transitive library/shared runtime not fully hashed.",
+  "artifacts": [
+    {
+      "module_artifact": "Lean.olean",
+      "sha256": "b8359b642dd3037001c530588b5aff1545202b7830234f068db1fca3a16c5d8e",
+      "bytes": 6216
+    },
+    {
+      "module_artifact": "Std/Tactic/BVDecide/LRAT/Checker.olean",
+      "sha256": "0fac309f2eab41e8c378c58f8d906156c8fc413feebcce1c1fd555497b27ea1a",
+      "bytes": 12032
+    },
+    {
+      "module_artifact": "Std/Tactic/BVDecide/LRAT/Parser.olean",
+      "sha256": "4b9aef440b1c582d8e5dadfa421bf706200cda7b5d959d89d71a0d36b80248f5",
+      "bytes": 133280
+    }
+  ]
+}

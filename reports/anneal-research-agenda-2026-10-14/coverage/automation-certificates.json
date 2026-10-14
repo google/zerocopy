@@ -1,0 +1,300 @@
+{
+  "entries": [
+    {
+      "id": "R084",
+      "scope": "partial",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+        "minimal-proof-interchange-and-encoding-obligations-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "SMTCoq checker theorem/root interpretation, Alethe/Carcara checking and elaboration, LFSC signature/side-condition authority, Lean SMT reconstruction, and consumer-root binding."
+      ],
+      "unanswered_research_scope": [
+        "Concrete Lean/Rocq proof transport and measured checking costs."
+      ],
+      "question": "Investigate Lean/Rocq transport, SMT certificates, SMTCoq, Alethe, and LFSC, including checking costs and remaining trust.",
+      "title": "Proof certificates and cross-prover interoperability"
+    },
+    {
+      "id": "T006",
+      "scope": "partial",
+      "packages": [
+        "minimal-proof-interchange-and-encoding-obligations-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Metamath substitution/disjointness and MM0 specification/proof separation; exact format/checker mechanisms; qualitative burden of richer encodings."
+      ],
+      "unanswered_research_scope": [
+        "A representative richer program-logic encoding, quantified proof-size/time costs, and full minimal-checker loader/implementation assurance."
+      ],
+      "question": "Examine explicit substitutions, specification/proof separation, checker simplicity, and costs of encoding richer program logics.",
+      "title": "Metamath and MM0\u2019s minimal checking languages"
+    },
+    {
+      "id": "T007",
+      "scope": "full",
+      "packages": [
+        "minimal-proof-interchange-and-encoding-obligations-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Dedukti term typing and rule typing/conversion endpoints, optional external confluence route, normalization/confluence/encoding correspondence obligations, and consumer-selected source theory.",
+        "Parent inspected Lambdapi 72cc2f10d391932fe078ba5a401765e29a1d4cb7: default conditional rule-typing check, incomplete local confluence checks, user general confluence/termination obligations, and explicit admitted proof branch."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Investigate proof interchange and the additional obligations introduced by rewriting, conversion, and logical encodings. [Dedukti](https://github.com/Deducteam/Dedukti/blob/master/TUTORIAL.md).",
+      "title": "Dedukti and Lambdapi as checking foundations"
+    },
+    {
+      "id": "T011",
+      "scope": "partial",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Isabelle SMT replay versus explicit oracle dispatch, plus related Lean reconstruction goal closure; survey-level translation/reconstruction distinction."
+      ],
+      "unanswered_research_scope": [
+        "Full Sledgehammer ATP/metis replay through kernel inference and solver-specific replay proof audit."
+      ],
+      "question": "Study Isabelle\u2019s Sledgehammer and related systems: what must be reconstructed through kernel inferences? [Isabelle study](https://isabelle.in.tum.de/~blanchet/h4qed.pdf).",
+      "title": "External proof search with reconstruction"
+    },
+    {
+      "id": "T012",
+      "scope": "full",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+        "exact-and-rounded-numerical-proof-witnesses-2026-10-14",
+        "minimal-proof-interchange-and-encoding-obligations-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "The chain from consumer goal and proved encoding to fixed roots, solver-produced witness, checker soundness theorem, checked execution/reconstruction, and imported host theorem; separate quotation/interpretation obligations."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Trace the relationship between encoded goals, solver certificates, checker soundness, and imported theorems.",
+      "title": "SMTCoq\u2019s certified witness checking"
+    },
+    {
+      "id": "T013",
+      "scope": "full",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "LFSC supplied-signature interpretation and side-condition program/evaluator contribution to trust, with a concrete RUN/provided endpoint and example signature."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Determine what theory signatures and side-condition programs add to the trusted boundary.",
+      "title": "LFSC\u2019s executable side conditions"
+    },
+    {
+      "id": "T014",
+      "scope": "full",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Carcara elaboration versus checking, explicit bypass/hole options, independent final-output checking against original roots, and related FRAT trimming/hint elaboration distinctions."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Separate certificate checking from certificate elaboration and investigate checking the elaborator\u2019s output independently. [Carcara](https://ufmg-smite.github.io/carcara/).",
+      "title": "Alethe and Carcara"
+    },
+    {
+      "id": "T015",
+      "scope": "partial",
+      "packages": [
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "DRAT RAT/add/delete specification; LRAT hints and checker soundness; FRAT trimming/strict hints; GRAT candidate coverage and modeled implementation theorem; CakeML parsed-input-to-x64 endpoint."
+      ],
+      "unanswered_research_scope": [
+        "Formal worst-case replay cost bounds, preprocessing coverage on representative SAT encodings, and empirical time/memory/proof-volume comparison."
+      ],
+      "question": "Compare DRAT, LRAT, FRAT, GRAT, and CakeML checking for preprocessing, hints, and replay complexity.",
+      "title": "SAT proof formats and verified checkers"
+    },
+    {
+      "id": "T016",
+      "scope": "full",
+      "packages": [
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Current VeriPB format3 feasibility/contradiction/bounds/optimality semantics, historical Python original-solution and semantic-outcome distinction, and related CakeML PB compiled endpoint."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Study VeriPB and related checkers, including the difference between feasibility, bounds, and optimality. [VeriPB](https://github.com/StephanGocht/VeriPB).",
+      "title": "Pseudo-Boolean and optimization certificates"
+    },
+    {
+      "id": "T017",
+      "scope": "partial",
+      "packages": [
+        "exact-and-rounded-numerical-proof-witnesses-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Exact Farkas/linarith reconstruction, rational SOS identity proof, published FloVer range/error/IEEE64 theorem premises, and Gappa rounding/import interface."
+      ],
+      "unanswered_research_scope": [
+        "Immutable current FloVer/Gappa theorem source, exact interval/rounding-library arithmetic rules, and current exceptional-value feature support."
+      ],
+      "question": "Examine Gappa, FloVer, interval witnesses, rounding models, and the arithmetic trusted by the checker.",
+      "title": "Numerical certificate checking"
+    },
+    {
+      "id": "T018",
+      "scope": "partial",
+      "packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Generic inductive safety invariant proof interface; why bounded absence needs a completeness threshold; liveness requires additional progress/fairness evidence."
+      ],
+      "unanswered_research_scope": [
+        "Actual IC3/PDR, completeness-bound, and liveness certificate grammars/checker theorems and their comparison."
+      ],
+      "question": "Compare inductive invariants, IC3/PDR evidence, bounded traces, completeness bounds, and liveness certificates.",
+      "title": "Model-checking certificates"
+    },
+    {
+      "id": "T019",
+      "scope": "full",
+      "packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Consumer-fixed transition system plus initiation/preservation/consequence evidence from an untrusted proposed invariant, with a checked generic Reach induction theorem and concrete Lean witness."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Study how an untrusted analyzer can propose invariants that a smaller checker validates.",
+      "title": "Certified abstract interpretation"
+    },
+    {
+      "id": "T020",
+      "scope": "partial",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+        "exact-and-rounded-numerical-proof-witnesses-2026-10-14",
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Proved Boolean certificate checking, semantic reflection/rewriting endpoints, proof reconstruction, quotation correctness as an independent obligation, and kernel/native evaluation distinction."
+      ],
+      "unanswered_research_scope": [
+        "A directly audited complete verified decision procedure versus certificate checker, with concrete full quotation theorem and completeness/evaluation endpoint."
+      ],
+      "question": "Compare verified decision procedures with proof reconstruction, including quotation correctness and kernel versus native evaluation.",
+      "title": "Proof by reflection"
+    },
+    {
+      "id": "T033",
+      "scope": "partial",
+      "packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Direct semantic ownership splitting, exclusivity and framing lemmas; obligations for a quoted spatial-certificate interface."
+      ],
+      "unanswered_research_scope": [
+        "A small proved spatial certificate checker, predicate-unfolding certificate validation, resource-update certificate mechanisms, and their costs."
+      ],
+      "question": "Compare certificates for ownership splitting, framing, predicate unfolding, and resource updates.",
+      "title": "Checking spatial entailments and frames"
+    },
+    {
+      "id": "T089",
+      "scope": "partial",
+      "packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Direct Lean proofs of spatial resource rules and how a future checker soundness theorem would connect quoted judgments to them."
+      ],
+      "unanswered_research_scope": [
+        "An actual small spatial checker implementation/theorem and comparative cost/application evidence."
+      ],
+      "question": "Compare small checkers for spatial judgments with direct Lean proofs of resource rules and their application.",
+      "title": "Resource-derivation certificates"
+    },
+    {
+      "id": "T094",
+      "scope": "full",
+      "packages": [
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Kernel proof/reduction, reflected proved checking, explicit native-computation dependencies, and verified compiled execution compared at exact acceptance endpoints; successful discriminating LRAT and generic-interface probes."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Compare kernel reduction, reflected certificate checking, verified executable evaluation, and explicit native-computation policies.",
+      "title": "Eliminating native-evaluation trust"
+    },
+    {
+      "id": "T095",
+      "scope": "full",
+      "packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Evidence-gated extension design: consumer-fixed statement meaning, check soundness, primitive semantic adequacy, property interpretation/rule correctness, and specialization preservation."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Let new primitive models and property domains register only through checked adequacy evidence.",
+      "title": "Proof-carrying semantic extensions"
+    },
+    {
+      "id": "P051",
+      "scope": "full",
+      "packages": [
+        "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+        "exact-and-rounded-numerical-proof-witnesses-2026-10-14",
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Comparative trust/performance mechanisms of kernel reduction, proved Boolean checking, native execution and verified compilation; exact version-specific theorem/runtime endpoints and explicit remaining execution premises."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Compare kernel reduction, proved Boolean checkers, and native execution; these choices change both checking performance and the remaining trusted execution path.",
+      "title": "Reflection and computation during checking"
+    },
+    {
+      "id": "P054",
+      "scope": "full",
+      "packages": [
+        "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14",
+        "minimal-proof-interchange-and-encoding-obligations-2026-10-14"
+      ],
+      "answered_research_scope": [
+        "Proposed extension contracts for host lemmas/tactics, certificate solvers, reflected rewriting, e-graph rewrites, logical encodings, and staged specialization requiring checked interpretation/preservation evidence."
+      ],
+      "unanswered_research_scope": [],
+      "question": "Design extension interfaces for lemmas, tactics, solvers, and staged specialization; new capabilities should require checked evidence rather than new trusted algorithms.",
+      "title": "Extensible proof-producing translation rules"
+    }
+  ],
+  "future_implementation_obligations": [
+    "Select compatible pinned toolchain/library bundles and bind executable/import artifacts to their asserted checking paths.",
+    "Implement Anneal quotation and source-to-model correspondence; primitive-model adequacy is separately required before a Rust property is claimed.",
+    "Implement evidence-gated extension registration and original-statement selection rather than trusting producer-selected roots.",
+    "Measure costs on representative Anneal obligations before choosing checking/staging policies."
+  ],
+  "definition_of_full": "An answered version-scoped research question, subject to parent review, not a claim that future Anneal integration is implemented or that the global topic registry has been changed.",
+  "definition_of_partial": "The named answered subquestions are reusable; the explicitly named unanswered research scope remains open.",
+  "observed_at": "2026-10-14",
+  "assigned_count": 19,
+  "package_count": 5,
+  "counts": {
+    "full": 10,
+    "partial": 9
+  },
+  "tracking_mutation": "none; parent owns global topic disposition and publication"
+}

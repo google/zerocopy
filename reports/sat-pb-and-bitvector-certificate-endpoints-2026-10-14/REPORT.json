@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "anneal",
+    "automation/sat",
+    "automation/pseudo-boolean",
+    "lean/bitvectors",
+    "proof/certificates",
+    "proof/evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "marijnheule/drat-trim",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "digama0/frat",
+      "identity": {
+        "repository": "digama0/frat",
+        "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+      }
+    },
+    {
+      "name": "IsaFoL/IsaFoL",
+      "identity": {
+        "repository": "IsaFoL/IsaFoL",
+        "revision": "1475076cea603c64d3dfe70c91014a5264e0479b"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "StephanGocht/VeriPB",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "VeriPB current proof format overview",
+      "identity": {
+        "url": "https://veripb.org/overview.html",
+        "format": "version 3",
+        "observed": "2026-10-14"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

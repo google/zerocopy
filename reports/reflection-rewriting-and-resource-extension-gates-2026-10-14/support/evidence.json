@@ -1,0 +1,68 @@
+{
+  "observed_at": "2026-10-14",
+  "source_units": [
+    {
+      "repository": "mit-plv/rewriter",
+      "revision": "902bd7bfd807f4511fa07b0b1f07ca640f9da4a8",
+      "path": "src/Rewriter/Rewriter/Rewriter.v",
+      "url": "https://raw.githubusercontent.com/mit-plv/rewriter/902bd7bfd807f4511fa07b0b1f07ca640f9da4a8/src/Rewriter/Rewriter/Rewriter.v",
+      "retrieved_utf8_sha256": "356402f1f56e9a90b59929210642c366609e90f99c663e8daee3d748d063421f",
+      "bytes": 81637,
+      "role": "source"
+    },
+    {
+      "repository": "mit-plv/rewriter",
+      "revision": "902bd7bfd807f4511fa07b0b1f07ca640f9da4a8",
+      "path": "src/Rewriter/Rewriter/InterpProofs.v",
+      "url": "https://raw.githubusercontent.com/mit-plv/rewriter/902bd7bfd807f4511fa07b0b1f07ca640f9da4a8/src/Rewriter/Rewriter/InterpProofs.v",
+      "retrieved_utf8_sha256": "7716ed4f610315fd4bb02effd52225a9af335d106efb14a14d644dd483390e65",
+      "bytes": 101151,
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "75fb1479040d32d43d31b74510167ee3b873d28a",
+      "path": "backends/lean/Aeneas/SepLogic/Basic.lean",
+      "url": "https://raw.githubusercontent.com/AeneasVerif/aeneas/75fb1479040d32d43d31b74510167ee3b873d28a/backends/lean/Aeneas/SepLogic/Basic.lean",
+      "retrieved_utf8_sha256": "c8bc212cc93a36f47dd0862af2e39da09df748e98857d0cdede474621b2830e8",
+      "bytes": 25842,
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "75fb1479040d32d43d31b74510167ee3b873d28a",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "url": "https://raw.githubusercontent.com/AeneasVerif/aeneas/75fb1479040d32d43d31b74510167ee3b873d28a/backends/lean/Aeneas/Std/WP.lean",
+      "retrieved_utf8_sha256": "86b9f0dbfa06502a5992a95e367559cc15cd6faf0c8e6ddac49a3f82c5d873ea",
+      "bytes": 71397,
+      "role": "source"
+    },
+    {
+      "repository": "marcusrossel/lean-egg",
+      "revision": "2605a63b6a78407114c692f5dc626531ff62df55",
+      "path": "Lean/Egg/Core/Explanation/Proof.lean",
+      "url": "https://raw.githubusercontent.com/marcusrossel/lean-egg/2605a63b6a78407114c692f5dc626531ff62df55/Lean/Egg/Core/Explanation/Proof.lean",
+      "retrieved_utf8_sha256": "23bd3561d75b3dd1e2b85659246e4b50697a2395da8f59fabdd631394fdfbd9e",
+      "bytes": 12688,
+      "role": "source"
+    },
+    {
+      "repository": "marcusrossel/lean-egg",
+      "revision": "2605a63b6a78407114c692f5dc626531ff62df55",
+      "path": "Lean/Egg/Tactic/Basic.lean",
+      "url": "https://raw.githubusercontent.com/marcusrossel/lean-egg/2605a63b6a78407114c692f5dc626531ff62df55/Lean/Egg/Tactic/Basic.lean",
+      "retrieved_utf8_sha256": "c7ff12df1acee1242b91dc7e7ede1068ef06ef01c036119b9e804642ddadc7ad",
+      "bytes": 6264,
+      "role": "source"
+    },
+    {
+      "repository": "marcusrossel/lean-egg",
+      "revision": "2605a63b6a78407114c692f5dc626531ff62df55",
+      "path": "Lean/Egg/Core/Config.lean",
+      "url": "https://raw.githubusercontent.com/marcusrossel/lean-egg/2605a63b6a78407114c692f5dc626531ff62df55/Lean/Egg/Core/Config.lean",
+      "retrieved_utf8_sha256": "3d64d8326865d389c35415648f90553be5938792dc3e5f810eee12a92306f8d6",
+      "bytes": 1779,
+      "role": "source"
+    }
+  ]
+}

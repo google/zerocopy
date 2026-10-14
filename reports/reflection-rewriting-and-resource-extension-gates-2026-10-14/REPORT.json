@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "anneal",
+    "automation/reflection",
+    "automation/rewriting",
+    "automation/egraphs",
+    "logic/separation",
+    "proof/extensions",
+    "verification/invariants"
+  ],
+  "subjects": [
+    {
+      "name": "mit-plv/rewriter",
+      "identity": {
+        "repository": "mit-plv/rewriter",
+        "revision": "902bd7bfd807f4511fa07b0b1f07ca640f9da4a8"
+      }
+    },
+    {
+      "name": "marcusrossel/lean-egg",
+      "identity": {
+        "repository": "marcusrossel/lean-egg",
+        "revision": "2605a63b6a78407114c692f5dc626531ff62df55"
+      }
+    },
+    {
+      "name": "AeneasVerif/aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Verified rewriting engine ITP2022 publication",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2022.17",
+        "title": "Accelerating Verified-Compiler Development with a Verified Rewriting Engine"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

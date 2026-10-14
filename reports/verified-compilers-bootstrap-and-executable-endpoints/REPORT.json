@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "compilation/verified",
+    "compilation/translation-validation",
+    "compilation/bootstrap",
+    "checking/executable-boundary",
+    "certirocq"
+  ],
+  "subjects": [
+    {
+      "name": "AbsInt/CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "path": "driver/Compiler.v"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "path": "compiler/proofs/compilerProofScript.sml"
+      }
+    },
+    {
+      "name": "CertiRocq/certirocq",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+        "path": "theories/Compiler/correctness.v"
+      }
+    },
+    {
+      "name": "Tristan/Leroy verified validators",
+      "identity": {
+        "primary_url": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+        "doi": "10.1145/1328897.1328444",
+        "publication": "POPL2008",
+        "coordinates": "section2.1 Theorem1 and section2.2;11-page author PDF"
+      }
+    },
+    {
+      "name": "CakeML primary bootstrap description",
+      "identity": {
+        "primary_url": "https://cakeml.org/",
+        "inspection": "project documentation;no release binary inspected"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

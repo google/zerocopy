@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "anneal",
+    "automation/numerical",
+    "proof/certificates",
+    "proof/floating-point"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40"
+      }
+    },
+    {
+      "name": "jrh13/hol-light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+      }
+    },
+    {
+      "name": "ufmg-smite/carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "SMTCoq/smtcoq",
+      "identity": {
+        "repository": "SMTCoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "FloVer FMCAD 2018 paper",
+      "identity": {
+        "title": "A Verified Certificate Checker for Finite-Precision Error Bounds in Coq and HOL4",
+        "venue": "FMCAD 2018",
+        "url": "https://www.cs.utexas.edu/~hunt/FMCAD/FMCAD18/papers/paper2.pdf"
+      }
+    },
+    {
+      "name": "Gappa upstream integration documentation",
+      "identity": {
+        "url": "https://gappa.gitlabpages.inria.fr/gappa/tools.html",
+        "observed": "2026-10-14"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

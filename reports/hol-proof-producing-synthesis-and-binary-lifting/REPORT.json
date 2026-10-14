@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "compilation/proof-producing",
+    "compilation/decompilation",
+    "hol4",
+    "cakeml/synthesis",
+    "holba/lifting"
+  ],
+  "subjects": [
+    {
+      "name": "Li/Owens/Slind ESOP2007 primary paper",
+      "identity": {
+        "primary_url": "https://link.springer.com/chapter/10.1007/978-3-540-71316-6_15",
+        "doi": "10.1007/978-3-540-71316-6_15",
+        "inspection": "full15-page primary PDF;sections2,4",
+        "sha256": "f077d7ef766635bf34c4ea3c46297b0fde5ec88135695034d2c0fd903752bd1c"
+      }
+    },
+    {
+      "name": "Blech/Poetzsch-Heffter code-generation paper",
+      "identity": {
+        "primary_url": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+        "doi": "10.1016/j.entcs.2007.09.008",
+        "publication": "ENTCS190(4),2007",
+        "coordinates": "sections2.3,3.2,4;17-page author PDF"
+      }
+    },
+    {
+      "name": "Myreen/Slind/Gordon extensible compilation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/extensible-compilation.pdf",
+        "doi": "10.1007/978-3-642-00722-4_2",
+        "publication": "CC2009",
+        "coordinates": "section2;15-page author PDF"
+      }
+    },
+    {
+      "name": "Myreen/Owens pure and stateful ML translation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/jfp14.pdf",
+        "doi": "10.1017/S0956796813000282",
+        "publication": "JFP24(2-3),2014",
+        "coordinates": "sections4.3-4.4;32-page author PDF"
+      }
+    },
+    {
+      "name": "Monadic CakeML synthesis",
+      "identity": {
+        "primary_url": "https://cakeml.org/jar20.pdf",
+        "publication": "JAR2020 author paper",
+        "coordinates": "sections3.3-3.5;20-page PDF"
+      }
+    },
+    {
+      "name": "HOL-Theorem-Prover/HOL",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "166fd15df77be1f2e79dc8592a933b1a65540526",
+        "path": "examples/machine-code/compiler/codegenLib.sml"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "path": "translator/ml_translatorScript.sml"
+      }
+    },
+    {
+      "name": "kth-step/HolBA",
+      "identity": {
+        "repository": "kth-step/HolBA",
+        "revision": "c20c5aeae7c4464c3a5032ee66d9e31324937fe1",
+        "path": "src/theory/tools/lifter/bir_inst_liftingScript.sml"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}
