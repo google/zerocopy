@@ -1,0 +1,41 @@
+{
+  "policy": "Exact task-private host prefixes in three copy-command receipts and the container-inspection mount fields are replaced with public display tokens. Raw originals remain in the author/parent scratch; process statuses and source/proof bytes are unchanged. The container-inspection stdout has only its two host mount-source values projected. Container-runtime paths remain literal.",
+  "private_prefix_sha256": "d8a615bac7361a6235c673d43d27403de6c41a3dce2eadd007f8d7d38091bcd1",
+  "replacement": "<TASK_SCRATCH>",
+  "files": [
+    {
+      "path": "support/logs/copy-AuditCore.v.json",
+      "original_sha256": "0f7e8b917062ff6a9de4f6805a1922f998f28dfdaa6301ffe0d8ae0916db650b",
+      "public_sha256": "e3f767ab97c421d3125086c9ebdcd09f51c128b77d8a3913a60acf3e5a96172d",
+      "replacement_count": 1,
+      "original_bytes": 577,
+      "public_bytes": 483
+    },
+    {
+      "path": "support/logs/copy-AuditHeapLang.v.json",
+      "original_sha256": "ba273b17c8a9848b1cda28598604d4adc0e185e0e69ba76f7c013a7d20847a0d",
+      "public_sha256": "6664face222ed6a2199140b066bd8fa0c24c94ec671b75aa208a84952325f89b",
+      "replacement_count": 1,
+      "original_bytes": 589,
+      "public_bytes": 495
+    },
+    {
+      "path": "support/logs/copy-AuditIslaris.v.json",
+      "original_sha256": "47354fb2e2abf99bd6001fc4c0449cbabd3e7c9b7f170cbe1dab493b450aecc6",
+      "public_sha256": "ee1b48d1fd35e4b8a319d96993647a4ca0283711a14e8857ad6aef4efb00389a",
+      "replacement_count": 1,
+      "original_bytes": 585,
+      "public_bytes": 491
+    },
+    {
+      "path": "support/logs/container-inspect.stdout",
+      "original_sha256": "26796added66df5b5512af911dc7f667157183111613d9299ad5f76fefd799bf",
+      "public_sha256": "41ebc9bfb71f2791bd02d215731fbfc6b571a388f9a01762ee7bcb19219a4754",
+      "replacement_count": 2,
+      "original_bytes": 7936,
+      "public_bytes": 7760,
+      "private_prefix_sha256": "7c74f2ca536d55cb3663b51b622aeb0d858724a502c8cb2372b53fc3b7b99d1f",
+      "replacement": "<TASK_FORMAL_TOOLS>"
+    }
+  ]
+}

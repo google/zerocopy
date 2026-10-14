@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "rustc",
+    "-vV"
+  ],
+  "exit_code": 0,
+  "seconds": 0.12765716700000002,
+  "timestamp_utc": "2026-10-14T23:15:38.241550+00:00"
+}

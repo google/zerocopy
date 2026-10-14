@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-i",
+    "anneal-formal-experiments-20261014",
+    "sha256sum",
+    "--check",
+    "--strict"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.124307375,
+  "verified_lines": 476,
+  "chronology": "After permission-diagnosis established Makefile.coq absent; run after root Makefile generation/core build launched. No source correction occurred."
+}

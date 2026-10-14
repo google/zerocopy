@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "sh",
+    "-c",
+    "set -eu; head -n 5 /anneal-e08/layout-aarch64.ll; head -n 5 /anneal-e08/layout-s390x.ll; sha256sum /anneal-e08/layout-aarch64.ll /anneal-e08/layout-s390x.ll"
+  ],
+  "exit_code": 0,
+  "seconds": 0.043937124999999966,
+  "timestamp_utc": "2026-10-14T23:17:52.956214+00:00"
+}

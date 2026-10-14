@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "rustc",
+    "--print",
+    "target-libdir",
+    "--target",
+    "s390x-unknown-linux-gnu"
+  ],
+  "exit_code": 0,
+  "seconds": 0.05965562499999999,
+  "timestamp_utc": "2026-10-14T23:15:38.497529+00:00"
+}

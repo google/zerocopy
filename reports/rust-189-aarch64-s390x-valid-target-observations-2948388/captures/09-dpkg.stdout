@@ -1,0 +1,4 @@
+gcc-s390x-linux-gnu	4:12.2.0-3	arm64
+libc6-dev-s390x-cross	2.36-8cross1	all
+libc6-s390x-cross	2.36-8cross1	all
+qemu-user	1:7.2+dfsg-7+deb12u18+b3	arm64

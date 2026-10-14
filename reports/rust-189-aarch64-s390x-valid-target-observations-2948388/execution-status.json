@@ -1,0 +1,9 @@
+{
+  "native_capture": "captures/27-run-native",
+  "big_capture": "captures/28-run-big",
+  "check_count_each": 78,
+  "all_checks_passed": true,
+  "execution_stderr_bytes_each": 0,
+  "run_count_each": 1,
+  "scope": "one paired finite valid-program run at opt-level0, overflow-checks=yes, codegen-units=1"
+}

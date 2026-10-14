@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "sha256sum",
+    "/anneal-e08/main.rs",
+    "/anneal-e08/numeric.rs",
+    "/anneal-e08/layout.rs",
+    "/anneal-e08/readiness.rs",
+    "/anneal-e08/wide_copy_drop.rs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.05659845800000002,
+  "timestamp_utc": "2026-10-14T23:16:31.122298+00:00"
+}

@@ -1,0 +1,13 @@
+COQC islaris/isla_lang.v
+COQC islaris/base.v
+COQC islaris/opsem.v
+COQC islaris/spec.v
+COQC islaris/ghost_state.v
+COQC islaris/lifting.v
+COQC islaris/adequacy.v
+COQC src/halt.v
+COQC islaris/spec_itree.v
+COQC islaris/opsem_itree.v
+COQC islaris/lifting_itree.v
+COQC islaris/adequacy_itree.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=46 start_bytes=14708708 peak_bytes=21174526 final_bytes=21844316

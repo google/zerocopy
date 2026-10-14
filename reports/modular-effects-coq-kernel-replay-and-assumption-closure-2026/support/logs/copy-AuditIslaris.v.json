@@ -1,0 +1,16 @@
+{
+  "label": "copy-AuditIslaris.v",
+  "argv": [
+    "docker",
+    "cp",
+    "<TASK_SCRATCH>/AuditIslaris.v",
+    "anneal-formal-experiments-20261014:/home/opam/anneal-itree/iris-itree/AuditIslaris.v"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.03,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

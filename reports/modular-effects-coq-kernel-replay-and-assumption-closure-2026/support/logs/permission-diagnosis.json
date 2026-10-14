@@ -1,0 +1,26 @@
+{
+  "label": "permission-diagnosis",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "/bin/sh",
+    "-c",
+    "id; stat -c \"%u %g %a %n\" . .. _CoqProject AuditCore.v; test ! -e Makefile.coq"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.056,
+  "stdout_bytes": 112,
+  "stderr_bytes": 0,
+  "stdout_sha256": "96a35cfadf01cd8794a02b9cff7d83a8793e67577e3b106251917756355e5dcb",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

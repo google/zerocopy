@@ -1,0 +1,24 @@
+{
+  "schema": "anneal-e08-valid-target-cases-v1",
+  "initial_status": "prepared_not_compiled_or_executed",
+  "edition": "2021",
+  "rust_version": "1.89.0",
+  "rust_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "llvm_version": "20.1.7",
+  "subjects": [
+    {"target": "aarch64-unknown-linux-gnu", "execution": "container-native", "endian": "little", "pointer_bits": 64},
+    {"target": "s390x-unknown-linux-gnu", "execution": "qemu-s390x", "sysroot": "/usr/s390x-linux-gnu", "endian": "big", "pointer_bits": 64}
+  ],
+  "sources": ["main.rs", "numeric.rs", "layout.rs", "readiness.rs", "wide_copy_drop.rs"],
+  "oracle": "ORACLE.md",
+  "requested_arguments": ["--edition=2021", "-C", "opt-level=0", "-C", "overflow-checks=yes"],
+  "expected_execution": {"exit_code": 0, "stderr_bytes": 0, "failed_check_count": 0},
+  "cross_target_comparison": {
+    "require_same": ["source_bytes", "compiler_version_and_commit", "check_key_set", "check_outcomes", "explicit_little_big_byte_arrays", "finite_defined_numeric_results", "safe_payload_and_dispatch_values", "readiness_decisions", "normal_drop_count"],
+    "expect_different": ["META.arch", "META.endian", "OBS.integer.u64.native_bytes", "OBS.layout.CRecord.word_native_bytes"],
+    "observe_without_same_value_requirement": ["type_layouts", "wide_reference_layouts", "data_enum_layout", "Option_bool_layout", "CHOICE.float_nan_bits"]
+  },
+  "not_claimed": ["all_target_numeric_or_FP_theorem_E49", "physical_s390x_validation", "official_ISA_adequacy", "stable_vtable_layout", "arithmetic_NaN_canonicalization", "Rust_permission_or_provenance_from_boolean_masks", "MiniRust_replay_or_E05_erasure", "concurrent_resource_semantics"],
+  "stop_on": ["unexpected_panic_or_assertion", "failed_portable_check", "unexpected_runtime_status", "source_identity_disagreement"],
+  "initial_target_environment_limit": "PowerPC64 cross-linker package absent from observed Debian arm64 index; s390x selected instead. No Rust/ISA semantic unsupportedness inference."
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "uname",
+    "-a"
+  ],
+  "exit_code": 0,
+  "seconds": 0.03784554100000001,
+  "timestamp_utc": "2026-10-14T23:16:04.818383+00:00"
+}

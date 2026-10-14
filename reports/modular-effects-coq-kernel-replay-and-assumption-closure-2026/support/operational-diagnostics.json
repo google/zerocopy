@@ -1,0 +1,43 @@
+{
+  "proof_outcomes": "All selected original build phases, all three audits and recursive native coqchk exited 0. No unexpected proof/kernel panic or assertion occurred.",
+  "operational_diagnostics": [
+    {
+      "case": "No Python in container",
+      "status": "preflight exit 127 before command execution",
+      "evidence": "logs/preflight.stdout",
+      "resolution": "Use existing shell/coreutils; no install"
+    },
+    {
+      "case": "coqchk help",
+      "status": "usage output exit 1",
+      "evidence": "logs/coqchk-help.stderr",
+      "resolution": "Inspect documented flags, then normal checker invocation"
+    },
+    {
+      "case": "Makefile permission",
+      "status": "exit 2; Fatal error Sys_error Makefile.coq Permission denied",
+      "evidence": "logs/generate-makefile.stderr",
+      "diagnosis": "Explicit --user opam had UID 1000, copied directory UID 501 mode 755; Makefile.coq absent per captured diagnostic",
+      "resolution": "Use authorized container default root, no chmod/chown/source-byte changes",
+      "source_check_chronology": "all 476 source check before attempts; post-permission source check after root generation/core launch; finalall 476 check again PASS"
+    },
+    {
+      "case": "Guessed opam installed metadata path absent",
+      "status": "read-only cat exit 1",
+      "evidence": "logs/installed-opam-metadata.stderr",
+      "resolution": "read-only find located switch-state; captured actual file"
+    },
+    {
+      "case": "Source-coordinate metadata extractor",
+      "status": "ValueError before publication for threadpool_adequacy",
+      "evidence": "packaging-coordinate-diagnostic.json",
+      "resolution": "Source uses Corollary; add that keyword to extractor only, no Coq/proof rerun"
+    },
+    {
+      "case": "Parent prerequisite package installation mode",
+      "status": "separate pre-replay dependency setup initial exit 31",
+      "evidence": "parent-mode-diagnosis.json",
+      "resolution": "Parent restored two make-package executable modes matching ZIP, preserved source bytes, fresh dependency install PASS before READY"
+    }
+  ]
+}

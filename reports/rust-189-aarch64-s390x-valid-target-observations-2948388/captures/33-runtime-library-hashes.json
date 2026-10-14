@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "sha256sum",
+    "/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+    "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+    "/lib/aarch64-linux-gnu/libc.so.6",
+    "/lib/aarch64-linux-gnu/libm.so.6",
+    "/usr/s390x-linux-gnu/lib/ld64.so.1",
+    "/usr/s390x-linux-gnu/lib/libgcc_s.so.1",
+    "/usr/s390x-linux-gnu/lib/libc.so.6",
+    "/usr/s390x-linux-gnu/lib/libm.so.6"
+  ],
+  "exit_code": 0,
+  "seconds": 0.04583029199999994,
+  "timestamp_utc": "2026-10-14T23:17:53.046764+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "overflow-checks=yes",
+    "-C",
+    "codegen-units=1",
+    "--target=s390x-unknown-linux-gnu",
+    "-C",
+    "linker=s390x-linux-gnu-gcc",
+    "main.rs",
+    "-o",
+    "/anneal-e08/valid-s390x"
+  ],
+  "exit_code": 0,
+  "seconds": 0.12896654200000002,
+  "timestamp_utc": "2026-10-14T23:16:31.414497+00:00"
+}

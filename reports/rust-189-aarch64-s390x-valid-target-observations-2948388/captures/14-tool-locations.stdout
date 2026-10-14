@@ -1,0 +1,14 @@
+/usr/local/cargo/bin/rustc
+/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc
+cc (Debian 12.2.0-14+deb12u1) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+s390x-linux-gnu
+12.2.0
+GNU readelf (GNU Binutils for Debian) 2.40
+Copyright (C) 2023 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) any later version.
+This program has absolutely no warranty.

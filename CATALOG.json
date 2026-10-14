@@ -20981,6 +20981,53 @@
         "rust/callbacks"
       ]
     },
+    "modular-effects-coq-kernel-replay-and-assumption-closure-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive": "the_artifact.zip",
+            "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378",
+            "version": "v2",
+            "zenodo": "14180355"
+          },
+          "name": "Program Logics a la Carte source artifact"
+        },
+        {
+          "identity": {
+            "coqc_sha256": "73e0ac064f017c4c00e4f5a40c458c2bb4c3ef159b6a7e9680dd97272b7d38c6",
+            "coqchk_sha256": "9c2be314b44dd7f8e874dad47e885c8861ba50b8e0a506500b025b5f051057fb",
+            "ocaml_version": "4.14.4",
+            "version": "8.19.2"
+          },
+          "name": "Coq compiler and native checker"
+        },
+        {
+          "identity": {
+            "artifact": "support/logs/loaded-object-hashes.stdout",
+            "container_image": "ocaml/opam@sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+            "sha256": "372366664c5a9524bbec1e0b6386be0842269ec8489a9fd13a35ead156cebe27"
+          },
+          "name": "Observed542-object Coq dependency closure"
+        },
+        {
+          "identity": {
+            "manifest": "support/audit-source.sha256",
+            "sha256": "8c93f383c7e0b9a6edeedcf8ed640608be58e63c441bcdb5413ad8bfae200905"
+          },
+          "name": "Owned observation-only Coq audits"
+        }
+      ],
+      "topics": [
+        "coq/kernel-replay",
+        "interaction-trees",
+        "iris/handlers",
+        "verification/adequacy",
+        "heaplang",
+        "islaris",
+        "minirust/modularity"
+      ]
+    },
     "modular-foreign-contracts-and-open-execution": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -23468,6 +23515,68 @@
         "roslyn/incrementality",
         "roslyn/remote",
         "anneal/architecture"
+      ]
+    },
+    "rust-189-aarch64-s390x-valid-target-observations-2948388": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "compiler_host": "aarch64-unknown-linux-gnu",
+            "compiler_sha256": "93c98482c1bdedf3789c2bd0a86ff82a7075a58528abbca2990066f4e8faedb7",
+            "llvm_version": "20.1.7",
+            "repository": "rust-lang/rust",
+            "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+            "version": "1.89.0"
+          },
+          "name": "Rust compiler and paired Linux target libraries"
+        },
+        {
+          "identity": {
+            "artifact": "preparation-manifest.json",
+            "sha256": "6d9eb9dad9f4885c19d7a32336bd69ba468a07c146972ee671ba6300adce55a6"
+          },
+          "name": "Owned valid target fixtures and pre-execution oracle"
+        },
+        {
+          "identity": {
+            "artifact": "valid-aarch64",
+            "sha256": "b693e1947614e60776d31994adcb6c67bb9e72fa700c7e49783dccc43287a055",
+            "target": "aarch64-unknown-linux-gnu"
+          },
+          "name": "Native AArch64 Linux fixture executable"
+        },
+        {
+          "identity": {
+            "artifact": "valid-s390x",
+            "sha256": "06d1cb88a0300840e1bef51af0e0552aa090c39012cf4105b8f269e4b78099ab",
+            "target": "s390x-unknown-linux-gnu"
+          },
+          "name": "Emulated big-endian s390x Linux fixture executable"
+        },
+        {
+          "identity": {
+            "binary_sha256": "f1796dc51e3dfdbca9ed24ea9b089b24d4827f07d0cdc34e06ae4fccb452fd58",
+            "debian_package": "qemu-user 1:7.2+dfsg-7+deb12u18+b3 arm64",
+            "version": "7.2.22"
+          },
+          "name": "QEMU s390x user-mode emulator"
+        },
+        {
+          "identity": {
+            "binary_sha256": "702a7ac06147e3762eac71a5d1414616cf622bf073031fb8c8c8e7ae95e93a96",
+            "debian_package": "gcc-12-s390x-linux-gnu 12.2.0-14cross1 arm64",
+            "version": "12.2.0"
+          },
+          "name": "s390x GCC cross-link driver"
+        }
+      ],
+      "topics": [
+        "rust/target-semantics",
+        "rust/big-endian",
+        "rust/layout",
+        "rust/floating-point",
+        "anneal/experiments"
       ]
     },
     "rust-199-cargo-source-followup-2026-10-03": {

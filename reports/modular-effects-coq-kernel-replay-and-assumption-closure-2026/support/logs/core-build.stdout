@@ -1,0 +1,22 @@
+COQDEP VFILES
+COQC src/axioms.v
+COQC src/itree.v
+COQC src/handler.v
+COQC src/wpi.v
+COQC src/exec.v
+COQC src/trace.v
+COQC src/choice.v
+COQC src/ub.v
+COQC src/step.v
+COQC src/state.v
+COQC src/heap.v
+COQC src/threadpool/handler.v
+COQC src/threadpool/exec.v
+COQC src/threadpool/interleaving.v
+COQC src/void.v
+COQC src/threadpool/scheduler.v
+COQC src/threadpool/ctrace.v
+COQC src/examplelang/lang.v
+COQC src/examplelang/program_logic.v
+COQC src/examplelang/adequacy.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=68 start_bytes=816522 peak_bytes=6900277 final_bytes=6997579

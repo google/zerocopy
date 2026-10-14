@@ -1,0 +1,13 @@
+/home/opam/.opam/4.14/bin/coqc
+/home/opam/.opam/4.14/bin/coqchk
+/home/opam/.opam/4.14/bin/coq_makefile
+/home/opam/.opam/4.14/bin/coqdep
+/home/opam/.opam/4.14/bin/ocamlc
+/usr/bin/timeout
+/usr/bin/du
+/usr/bin/sha256sum
+/usr/bin/find
+/usr/bin/setsid
+/usr/bin/ps
+/usr/bin/awk
+/usr/bin/stat

@@ -1,0 +1,40 @@
+{
+  "stage": "prepared_before_compilation",
+  "files": [
+    {
+      "path": "main.rs",
+      "bytes": 1184,
+      "sha256": "c3c5ce96f330597f2de8668d6d3f528c39e6ac4faa67836804def600e57f6ef2"
+    },
+    {
+      "path": "numeric.rs",
+      "bytes": 4621,
+      "sha256": "6c882c872a81671cad361d313c8bbb5ceb1aedb7e9578ddb17c30b9742db7852"
+    },
+    {
+      "path": "layout.rs",
+      "bytes": 5475,
+      "sha256": "a46244dd816f165a2fd9866f895932955a71afe627cd2fcb0934e7a898bf2bdb"
+    },
+    {
+      "path": "readiness.rs",
+      "bytes": 2462,
+      "sha256": "c38ade93e824ee26c9ac5bc9c2c78531a20402d7f361078ad1b8a0a4c7dfd0c6"
+    },
+    {
+      "path": "wide_copy_drop.rs",
+      "bytes": 2393,
+      "sha256": "caa9f2ee1e87bdda03c7ab965d77b0af5ab0a9550e77e57829a39407b14e3cc8"
+    },
+    {
+      "path": "ORACLE.md",
+      "bytes": 8011,
+      "sha256": "16183bfafe4d509b5c53a2ef2910c9e0be9ab974710648fcce0d3746682da0bc"
+    },
+    {
+      "path": "case-plan.json",
+      "bytes": 2003,
+      "sha256": "9a6628503931134349bc93a685c18262de60117f4fd36ea9faa1abc33cce6d03"
+    }
+  ]
+}

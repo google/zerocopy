@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "s390x-linux-gnu-gcc",
+    "--version"
+  ],
+  "exit_code": 0,
+  "seconds": 0.03452362499999995,
+  "timestamp_utc": "2026-10-14T23:15:38.532211+00:00"
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "test",
+    "!",
+    "-e",
+    "/anneal-e08"
+  ],
+  "exit_code": 0,
+  "seconds": 0.03552479100000028,
+  "timestamp_utc": "2026-10-14T23:16:06.900972+00:00"
+}

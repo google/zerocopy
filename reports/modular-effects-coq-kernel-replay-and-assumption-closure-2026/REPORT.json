@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "coq/kernel-replay",
+    "interaction-trees",
+    "iris/handlers",
+    "verification/adequacy",
+    "heaplang",
+    "islaris",
+    "minirust/modularity"
+  ],
+  "subjects": [
+    {
+      "name": "Program Logics a la Carte source artifact",
+      "identity": {
+        "zenodo": "14180355",
+        "version": "v2",
+        "archive": "the_artifact.zip",
+        "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378"
+      }
+    },
+    {
+      "name": "Coq compiler and native checker",
+      "identity": {
+        "version": "8.19.2",
+        "ocaml_version": "4.14.4",
+        "coqc_sha256": "73e0ac064f017c4c00e4f5a40c458c2bb4c3ef159b6a7e9680dd97272b7d38c6",
+        "coqchk_sha256": "9c2be314b44dd7f8e874dad47e885c8861ba50b8e0a506500b025b5f051057fb"
+      }
+    },
+    {
+      "name": "Observed542-object Coq dependency closure",
+      "identity": {
+        "artifact": "support/logs/loaded-object-hashes.stdout",
+        "sha256": "372366664c5a9524bbec1e0b6386be0842269ec8489a9fd13a35ead156cebe27",
+        "container_image": "ocaml/opam@sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2"
+      }
+    },
+    {
+      "name": "Owned observation-only Coq audits",
+      "identity": {
+        "manifest": "support/audit-source.sha256",
+        "sha256": "8c93f383c7e0b9a6edeedcf8ed640608be58e63c441bcdb5413ad8bfae200905"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

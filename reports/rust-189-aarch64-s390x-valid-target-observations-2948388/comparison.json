@@ -1,0 +1,28 @@
+{
+  "same_line_count": true,
+  "line_count_each": 127,
+  "checks_each": 78,
+  "all_checks_pass": true,
+  "native_stderr_bytes": 0,
+  "big_stderr_bytes": 0,
+  "different_lines": [
+    {
+      "native": "META arch=aarch64",
+      "big": "META arch=s390x"
+    },
+    {
+      "native": "META endian=little",
+      "big": "META endian=big"
+    },
+    {
+      "native": "OBS integer.u64.native_bytes=[239, 205, 171, 137, 103, 69, 35, 1]",
+      "big": "OBS integer.u64.native_bytes=[1, 35, 69, 103, 137, 171, 205, 239]"
+    },
+    {
+      "native": "OBS layout.CRecord.word_native_bytes=[154, 120, 86, 52]",
+      "big": "OBS layout.CRecord.word_native_bytes=[52, 86, 120, 154]"
+    }
+  ],
+  "NaN_choice_observation": "All three observed NaN bit results happened to agree; only NaN classification was required.",
+  "layout_observation": "All reported finite type layouts happened to agree despite distinct LLVM target data layouts. No general ABI sameness inferred."
+}

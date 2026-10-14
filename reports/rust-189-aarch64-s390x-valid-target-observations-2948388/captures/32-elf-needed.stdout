@@ -1,0 +1,67 @@
+
+File: /anneal-e08/valid-aarch64
+
+Dynamic section at offset 0x5fae0 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x5820
+ 0x000000000000000d (FINI)               0x45fc8
+ 0x0000000000000019 (INIT_ARRAY)         0x6c7b8
+ 0x000000000000001b (INIT_ARRAYSZ)       32 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x6c7d8
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x2d0
+ 0x0000000000000005 (STRTAB)             0x980
+ 0x0000000000000006 (SYMTAB)             0x2f0
+ 0x000000000000000a (STRSZ)              968 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x6fce0
+ 0x0000000000000002 (PLTRELSZ)           1560 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x5208
+ 0x0000000000000007 (RELA)               0xe88
+ 0x0000000000000008 (RELASZ)             17280 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0xdd8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0xd48
+ 0x000000006ffffff9 (RELACOUNT)          714
+ 0x0000000000000000 (NULL)               0x0
+
+File: /anneal-e08/valid-s390x
+
+Dynamic section at offset 0x7bae8 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld64.so.1]
+ 0x000000000000000c (INIT)               0x6208
+ 0x000000000000000d (FINI)               0x66808
+ 0x0000000000000019 (INIT_ARRAY)         0x78618
+ 0x000000000000001b (INIT_ARRAYSZ)       16 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x78628
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x2c8
+ 0x0000000000000005 (STRTAB)             0xbf8
+ 0x0000000000000006 (SYMTAB)             0x3a0
+ 0x000000000000000a (STRSZ)              2980 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x7bcf8
+ 0x0000000000000002 (PLTRELSZ)           1440 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x5c68
+ 0x0000000000000007 (RELA)               0x1960
+ 0x0000000000000008 (RELASZ)             17160 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0x1850
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x000000006ffffff0 (VERSYM)             0x179c
+ 0x000000006ffffff9 (RELACOUNT)          709
+ 0x0000000000000000 (NULL)               0x0

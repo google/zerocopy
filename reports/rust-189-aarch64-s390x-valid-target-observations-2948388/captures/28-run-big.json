@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "qemu-s390x",
+    "-L",
+    "/usr/s390x-linux-gnu",
+    "/anneal-e08/valid-s390x"
+  ],
+  "exit_code": 0,
+  "seconds": 0.063693625,
+  "timestamp_utc": "2026-10-14T23:17:04.483943+00:00"
+}

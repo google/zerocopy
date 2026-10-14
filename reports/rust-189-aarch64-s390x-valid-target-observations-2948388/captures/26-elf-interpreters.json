@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "readelf",
+    "-l",
+    "/anneal-e08/valid-aarch64",
+    "/anneal-e08/valid-s390x"
+  ],
+  "exit_code": 0,
+  "seconds": 0.03454558399999996,
+  "timestamp_utc": "2026-10-14T23:16:31.547816+00:00"
+}

@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "sha256sum",
+    "/anneal-e08/main.rs",
+    "/anneal-e08/numeric.rs",
+    "/anneal-e08/layout.rs",
+    "/anneal-e08/readiness.rs",
+    "/anneal-e08/wide_copy_drop.rs",
+    "/anneal-e08/valid-aarch64",
+    "/anneal-e08/valid-s390x"
+  ],
+  "exit_code": 0,
+  "seconds": 0.058920042000000006,
+  "timestamp_utc": "2026-10-14T23:17:53.105860+00:00"
+}

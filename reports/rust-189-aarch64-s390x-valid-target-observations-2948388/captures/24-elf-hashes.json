@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "sha256sum",
+    "/anneal-e08/valid-aarch64",
+    "/anneal-e08/valid-s390x"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06022408300000004,
+  "timestamp_utc": "2026-10-14T23:16:31.475278+00:00"
+}

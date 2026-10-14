@@ -1,0 +1,127 @@
+META suite=valid-target-v1
+META arch=s390x
+META os=linux
+META endian=big
+META pointer_bits=64
+META debug_assertions=true
+OBS integer.u64.native_bytes=[1, 35, 69, 103, 137, 171, 205, 239]
+OBS integer.u64.little_bytes=[239, 205, 171, 137, 103, 69, 35, 1]
+OBS integer.u64.big_bytes=[1, 35, 69, 103, 137, 171, 205, 239]
+CHECK integer.explicit_byte_orders=PASS
+CHECK integer.native_byte_order=PASS
+CHECK integer.native_roundtrip=PASS
+CHECK control.native_bytes_need_endian=PASS
+CHECK integer.wrapping_add=PASS
+CHECK integer.checked_add=PASS
+CHECK integer.wrapping_signed_sub=PASS
+CHECK integer.checked_signed_sub=PASS
+CHECK integer.checked_div_overflow=PASS
+CHECK integer.wrapping_div_overflow=PASS
+CHECK integer.checked_div_zero=PASS
+CHECK integer.checked_shift_in_range=PASS
+CHECK integer.checked_shift_out_of_range=PASS
+CHECK integer.wrapping_shift_masks_count=PASS
+CHECK integer.signed_right_shift=PASS
+CHECK integer.narrowing_cast=PASS
+CHECK integer.signed_unsigned_cast=PASS
+CHECK control.checked_is_not_wrapping=PASS
+OBS float.f32.input=00000000 roundtrip=00000000 nan=false
+CHECK float.f32.bit_roundtrip.00000000=PASS
+OBS float.f32.input=80000000 roundtrip=80000000 nan=false
+CHECK float.f32.bit_roundtrip.80000000=PASS
+OBS float.f32.input=00000001 roundtrip=00000001 nan=false
+CHECK float.f32.bit_roundtrip.00000001=PASS
+OBS float.f32.input=3fc00000 roundtrip=3fc00000 nan=false
+CHECK float.f32.bit_roundtrip.3fc00000=PASS
+OBS float.f32.input=7f800000 roundtrip=7f800000 nan=false
+CHECK float.f32.bit_roundtrip.7f800000=PASS
+OBS float.f32.input=ff800000 roundtrip=ff800000 nan=false
+CHECK float.f32.bit_roundtrip.ff800000=PASS
+OBS float.f32.input=7fc01234 roundtrip=7fc01234 nan=true
+CHECK float.f32.bit_roundtrip.7fc01234=PASS
+OBS float.f32.input=7f801234 roundtrip=7f801234 nan=true
+CHECK float.f32.bit_roundtrip.7f801234=PASS
+OBS float.f64.input=0000000000000000 roundtrip=0000000000000000 nan=false
+CHECK float.f64.bit_roundtrip.0000000000000000=PASS
+OBS float.f64.input=8000000000000000 roundtrip=8000000000000000 nan=false
+CHECK float.f64.bit_roundtrip.8000000000000000=PASS
+OBS float.f64.input=0000000000000001 roundtrip=0000000000000001 nan=false
+CHECK float.f64.bit_roundtrip.0000000000000001=PASS
+OBS float.f64.input=3ff8000000000000 roundtrip=3ff8000000000000 nan=false
+CHECK float.f64.bit_roundtrip.3ff8000000000000=PASS
+OBS float.f64.input=7ff0000000000000 roundtrip=7ff0000000000000 nan=false
+CHECK float.f64.bit_roundtrip.7ff0000000000000=PASS
+OBS float.f64.input=7ff8000000001234 roundtrip=7ff8000000001234 nan=true
+CHECK float.f64.bit_roundtrip.7ff8000000001234=PASS
+CHECK float.exact_binary_arithmetic=PASS
+CHECK float.exact_cross_width_cast=PASS
+CHECK float.subnormal_bit_value=PASS
+CHECK float.finite_cast_truncates=PASS
+CHECK float.cast_saturates_unsigned=PASS
+CHECK float.cast_nan_zero=PASS
+CHECK float.cast_infinities_saturate=PASS
+CHECK control.float_equality_is_not_bit_equality=PASS
+CHOICE float.f32.arithmetic_nan_bits=7fc01234
+CHOICE float.f64.arithmetic_nan_bits=7ff8000000001234
+CHOICE float.f64_to_f32.nan_bits=7fc00000
+CHECK float.arithmetic_nan_class=PASS
+CHECK float.nan_cast_class=PASS
+CHECK control.nan_not_reflexively_equal=PASS
+OBS layout.CRecord.size=12 align=4 offsets=0,4,8
+CHECK layout.repr_c_formula=PASS
+CHECK layout.fields_preserved=PASS
+OBS layout.CRecord.word_native_bytes=[52, 86, 120, 154]
+OBS layout.array.size=6 align=2
+OBS layout.slice.reference_size=16 reference_align=8 pointee_size=6 pointee_align=2 len=3
+CHECK layout.array_stride=PASS
+CHECK layout.slice_metadata_semantics=PASS
+OBS layout.Tail.size=16 align=4 payload_offset=4 unsized_size=16 unsized_align=4 len=3
+CHECK layout.unsized_tail_semantics=PASS
+OBS layout.enum.tag_size=1 tag_align=1 payload_size=8 payload_align=4
+CHECK layout.repr_u8_fieldless_enum=PASS
+CHECK layout.data_enum_match=PASS
+OBS layout.niche.nonzero_option_size=2 align=2 reference_option_size=8 align=8 bool_option_size=1
+CHECK layout.documented_niche_sizes=PASS
+CHECK layout.niche_values=PASS
+OBS layout.trait_object.reference_size=16 reference_align=8
+OBS layout.dyn.Pair.size=8 align=4 value=1007
+CHECK layout.dyn.Pair.dispatch=PASS
+CHECK layout.dyn.Pair.pointee_layout=PASS
+OBS layout.dyn.Byte.size=1 align=1 value=18
+CHECK layout.dyn.Byte.dispatch=PASS
+CHECK layout.dyn.Byte.pointee_layout=PASS
+OBS readiness.ready_prefix start=0 len=2 allowed=true
+CHECK readiness.ready_prefix=PASS
+OBS readiness.uninitialized_mask start=2 len=1 allowed=false
+CHECK readiness.uninitialized_mask=PASS
+OBS readiness.unreadable_mask start=4 len=1 allowed=false
+CHECK readiness.unreadable_mask=PASS
+OBS readiness.unstable_mask start=5 len=1 allowed=false
+CHECK readiness.unstable_mask=PASS
+OBS readiness.ready_suffix start=6 len=2 allowed=true
+CHECK readiness.ready_suffix=PASS
+OBS readiness.whole_range start=0 len=8 allowed=false
+CHECK readiness.whole_range=PASS
+OBS readiness.empty_at_end start=8 len=0 allowed=true
+CHECK readiness.empty_at_end=PASS
+OBS readiness.empty_outside start=9 len=0 allowed=false
+CHECK readiness.empty_outside=PASS
+OBS readiness.range_past_end start=7 len=2 allowed=false
+CHECK readiness.range_past_end=PASS
+OBS readiness.addition_overflow start=18446744073709551615 len=1 allowed=false
+CHECK readiness.addition_overflow=PASS
+CHECK readiness.guarded_sum_prefix=PASS
+CHECK readiness.guarded_sum_denied=PASS
+CHECK readiness.guarded_sum_empty=PASS
+CHECK readiness.empty_allocation_model=PASS
+CHECK control.array_presence_does_not_imply_model_readiness=PASS
+CHECK wide_union.pointer_identity=PASS
+CHECK wide_union.slice_value_and_len=PASS
+OBS wide_union.pointer_size=16 pointer_align=8 one_field_size=16 one_field_align=8 with_words_size=16 with_words_align=8
+CHECK drop.move_not_drop=PASS
+CHECK drop.explicit_once=PASS
+CHECK drop.no_double_drop_after_move=PASS
+CHECK drop.live_scope=PASS
+CHECK drop.normal_scope_once=PASS
+OBS drop.normal_source_count=2
+SUMMARY checks=78 failures=0

@@ -1,0 +1,88 @@
+
+File: /anneal-e08/valid-aarch64
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0xa240
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000000040 0x0000000000000040
+                 0x0000000000000230 0x0000000000000230  R      0x8
+  INTERP         0x0000000000000270 0x0000000000000270 0x0000000000000270
+                 0x000000000000001b 0x000000000000001b  R      0x1
+      [Requesting program interpreter: /lib/ld-linux-aarch64.so.1]
+  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000058ac8 0x0000000000058ac8  R E    0x10000
+  LOAD           0x000000000005c798 0x000000000006c798 0x000000000006c798
+                 0x00000000000041d8 0x0000000000004308  RW     0x10000
+  DYNAMIC        0x000000000005fae0 0x000000000006fae0 0x000000000006fae0
+                 0x0000000000000200 0x0000000000000200  RW     0x8
+  NOTE           0x000000000000028c 0x000000000000028c 0x000000000000028c
+                 0x0000000000000044 0x0000000000000044  R      0x4
+  TLS            0x000000000005c798 0x000000000006c798 0x000000000006c798
+                 0x0000000000000020 0x0000000000000050  R      0x8
+  GNU_EH_FRAME   0x000000000004c260 0x000000000004c260 0x000000000004c260
+                 0x0000000000001abc 0x0000000000001abc  R      0x4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x10
+  GNU_RELRO      0x000000000005c798 0x000000000006c798 0x000000000006c798
+                 0x0000000000003868 0x0000000000003868  R      0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame .gcc_except_table 
+   03     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   04     .dynamic 
+   05     .note.gnu.build-id .note.ABI-tag 
+   06     .tdata .tbss 
+   07     .eh_frame_hdr 
+   08     
+   09     .tdata .init_array .fini_array .data.rel.ro .dynamic .got 
+
+File: /anneal-e08/valid-s390x
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0xdfe8
+There are 10 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000000040 0x0000000000000040
+                 0x0000000000000230 0x0000000000000230  R      0x8
+  INTERP         0x0000000000000270 0x0000000000000270 0x0000000000000270
+                 0x000000000000000f 0x000000000000000f  R      0x1
+      [Requesting program interpreter: /lib/ld64.so.1]
+  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000077788 0x0000000000077788  R E    0x1000
+  LOAD           0x00000000000785f0 0x00000000000785f0 0x00000000000785f0
+                 0x0000000000004380 0x0000000000004490  RW     0x1000
+  DYNAMIC        0x000000000007bae8 0x000000000007bae8 0x000000000007bae8
+                 0x0000000000000210 0x0000000000000210  RW     0x8
+  NOTE           0x0000000000000280 0x0000000000000280 0x0000000000000280
+                 0x0000000000000044 0x0000000000000044  R      0x4
+  TLS            0x00000000000785f0 0x00000000000785f0 0x00000000000785f0
+                 0x0000000000000021 0x0000000000000068  R      0x8
+  GNU_EH_FRAME   0x000000000006e5f0 0x000000000006e5f0 0x000000000006e5f0
+                 0x00000000000017a4 0x00000000000017a4  R      0x4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x10
+  GNU_RELRO      0x00000000000785f0 0x00000000000785f0 0x00000000000785f0
+                 0x0000000000003a10 0x0000000000003a10  R      0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame .gcc_except_table 
+   03     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .data .bss 
+   04     .dynamic 
+   05     .note.gnu.build-id .note.ABI-tag 
+   06     .tdata .tbss 
+   07     .eh_frame_hdr 
+   08     
+   09     .tdata .init_array .fini_array .data.rel.ro .dynamic .got 

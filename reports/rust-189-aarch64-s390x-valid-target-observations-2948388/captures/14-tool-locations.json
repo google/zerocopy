@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "sh",
+    "-c",
+    "set -eu; command -v rustc cc s390x-linux-gnu-gcc qemu-s390x readelf; rustup which rustc; cc --version; s390x-linux-gnu-gcc -dumpmachine; s390x-linux-gnu-gcc -dumpfullversion; readelf --version"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06695179099999998,
+  "timestamp_utc": "2026-10-14T23:16:04.885502+00:00"
+}

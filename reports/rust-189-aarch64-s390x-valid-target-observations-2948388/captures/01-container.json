@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "inspect",
+    "--format",
+    "{{.Id}}|{{.Name}}|{{.State.Status}}|{{.HostConfig.Memory}}|{{.HostConfig.NanoCpus}}|{{json .Mounts}}",
+    "anneal-big-endian-20261014"
+  ],
+  "exit_code": 0,
+  "seconds": 0.090586375,
+  "timestamp_utc": "2026-10-14T23:15:38.113279+00:00"
+}

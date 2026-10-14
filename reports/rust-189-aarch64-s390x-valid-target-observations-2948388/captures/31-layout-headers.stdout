@@ -1,0 +1,12 @@
+; ModuleID = 'main.9ebecd75cb1c9c0d-cgu.0'
+source_filename = "main.9ebecd75cb1c9c0d-cgu.0"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32"
+target triple = "aarch64-unknown-linux-gnu"
+
+; ModuleID = 'main.9ebecd75cb1c9c0d-cgu.0'
+source_filename = "main.9ebecd75cb1c9c0d-cgu.0"
+target datalayout = "E-m:e-i1:8:16-i8:8:16-i64:64-f128:64-v128:64-a:8:16-n32:64"
+target triple = "s390x-unknown-linux-gnu"
+
+a4744037b1040a91e3be11bc29f40686ee9f8856591138c9a3f61d7b8d9a038a  /anneal-e08/layout-aarch64.ll
+7dbf8052ae36223eae2edd3460370f9b42b3efd8884a8e4975b9a7fbcdd9a5f5  /anneal-e08/layout-s390x.ll

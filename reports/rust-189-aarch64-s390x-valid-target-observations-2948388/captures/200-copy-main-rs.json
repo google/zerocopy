@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "cp",
+    "@CASES@/main.rs",
+    "anneal-big-endian-20261014:/anneal-e08/main.rs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.030357916999999984,
+  "timestamp_utc": "2026-10-14T23:16:30.969148+00:00"
+}

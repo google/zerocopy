@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "dpkg-query",
+    "-W",
+    "-f=${Package}\t${Version}\t${Architecture}\n",
+    "gcc-s390x-linux-gnu",
+    "gcc-12-s390x-linux-gnu",
+    "libc6-dev-s390x-cross",
+    "libc6-s390x-cross",
+    "qemu-user",
+    "gcc",
+    "libc6",
+    "binutils-s390x-linux-gnu"
+  ],
+  "exit_code": 0,
+  "seconds": 0.079674666,
+  "timestamp_utc": "2026-10-14T23:16:04.780164+00:00"
+}

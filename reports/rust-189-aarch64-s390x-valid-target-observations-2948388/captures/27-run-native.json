@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "-e",
+    "TMPDIR=/anneal-e08/tmp",
+    "-w",
+    "/anneal-e08",
+    "anneal-big-endian-20261014",
+    "/anneal-e08/valid-aarch64"
+  ],
+  "exit_code": 0,
+  "seconds": 0.102005916,
+  "timestamp_utc": "2026-10-14T23:17:04.419488+00:00"
+}

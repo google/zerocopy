@@ -1,0 +1,351 @@
+{
+  "selected_result_constants": 25,
+  "explicit_axiom_observations": 3,
+  "rows": [
+    {
+      "constant": "iris.itree.axioms.AxChoice",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "AxChoice",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "AxChoice"
+      ],
+      "observation_block_sha256": "f988ae48699755a7309a76fe3d577fe296cae9056487436a8501f203172a9f97",
+      "observation_block": "AxChoice\n     : \u2200 A B : Type, ChoiceFacts.FunctionalChoice_on A B\nAxioms:\nAxChoice : \u2200 A B : Type, ChoiceFacts.FunctionalChoice_on A B\n"
+    },
+    {
+      "constant": "iris.itree.axioms.Ax.eq_rect_eq",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "Ax.eq_rect_eq",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq"
+      ],
+      "observation_block_sha256": "ee45a29bb354e245b2fcd7837133cb3b9e4781c528c0e3de1abcd5a6961c8e52",
+      "observation_block": "Ax.eq_rect_eq\n     : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\n"
+    },
+    {
+      "constant": "bisimulation_is_eq",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@bisimulation_is_eq",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "5295e81fb6993e84206ae7fdf4beb08a512c273f05e5f4ee14f4298a670cfe32",
+      "observation_block": "@bisimulation_is_eq\n     : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\nAxioms:\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.exec.handler_adequate_from_simple",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@handler_adequate_from_simple",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "0c9cc564b29358d887cd0253c872d02e287fda27df8c06a4d4b4257c922c7256",
+      "observation_block": "@handler_adequate_from_simple\n     : \u2200 (\u03a3 : gFunctors) (GE : Type \u2192 Type) (R : Type) (E : Type \u2192 Type) (H : handler.iHandler \u03a3 E) \n         (EH : seHandler E) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3),\n         seHandlerAdequate H EH \u2192 eHandlerAdequate H EH\nClosed under the global context\n"
+    },
+    {
+      "constant": "iris.itree.exec.sumEH_adequate",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@sumEH_adequate",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "70721f003942e0d821fe706f1dc7b7bf77494f6ac42ab310c3cc143f03729a0e",
+      "observation_block": "@sumEH_adequate\n     : \u2200 (\u03a3 : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3) (GE : Type \u2192 Type) (R : Type) \n         (E1 E2 : Type \u2192 Type) (H1 : handler.iHandler \u03a3 E1) (EH1 : eHandler E1 GE R) (H2 : handler.iHandler \u03a3 E2) \n         (EH2 : eHandler E2 GE R),\n         eHandlerAdequate H1 EH1 \u2192 eHandlerAdequate H2 EH2 \u2192 eHandlerAdequate (handler.sumH H1 H2) (EH1 \u2295\u2091 EH2)\nClosed under the global context\n"
+    },
+    {
+      "constant": "iris.itree.exec.sumSEH_adequate",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@sumSEH_adequate",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "a055efb292720046ddb759ca5d414637cbaed7b08f4043b7e965349a54f03e14",
+      "observation_block": "@sumSEH_adequate\n     : \u2200 (\u03a3 : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3) (E1 E2 : Type \u2192 Type) \n         (H1 : handler.iHandler \u03a3 E1) (EH1 : seHandler E1) (H2 : handler.iHandler \u03a3 E2) (EH2 : seHandler E2),\n         seHandlerAdequate H1 EH1 \u2192 seHandlerAdequate H2 EH2 \u2192 seHandlerAdequate (handler.sumH H1 H2) (EH1 \u2295\u2091\u209b EH2)\nClosed under the global context\n"
+    },
+    {
+      "constant": "iris.itree.exec.wpi_adequate",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wpi_adequate",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "b9cfa011c4cce8376526aa269b44585fe98ef7336ceea6e395a503e99736ee2c",
+      "observation_block": "@wpi_adequate\n     : \u2200 (\u03a3 : gFunctors) (E : Type \u2192 Type) (R : Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3) \n         (\u03a6 : R \u2192 iProp \u03a3) (H : handler.iHandler \u03a3 E) (EH : eHandler E E R) (A : eHandlerAdequate H EH) \n         (t : ITreeDefinition.itree E R) (s : eh_state EH) (C : ITreeDefinition.itree E R \u2192 eh_state EH \u2192 Prop) \n         (m : coPset),\n         exec EH t s C\n         \u2192 wpi.wpi_mask m t (\u03bb v : R, \u03a6 v) -\u2217\n           ehandler_inv s [] ={m,\u2205}=\u2217\n           \u2203 (t' : ITreeDefinition.itree E R) (s' : eh_state EH) (Ms' : list\n                                                                          ((ITreeDefinition.itree E R \u2192 iProp \u03a3)\n                                                                           \u2192 iProp \u03a3)) (M' : \n                                                                                        (ITreeDefinition.itree E R\n                                                                                         \u2192 \n                                                                                         iPropI \u03a3) \u2192 \n                                                                                        iPropI \u03a3), \u231c\n             C t' s'\u231d \u2217 ehandler_inv s' Ms' \u2217\n             bi_close (Eqit.eutt eq)\n               (\u03bb t'0 : ITreeDefinition.itree E R, \u2200 P : ITreeDefinition.itree E R \u2192 iPropI \u03a3, M' P ={\u2205}=\u2217 P t'0) t' \u2217\n             WPi_tp M' :: Ms' @ H {{ v, |={\u2205,m}=> \u03a6 v }}\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.exec.wpi_adequate_pure",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wpi_adequate_pure",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "44fd268bf7673954447810e0bc3579291e088a689baa9268c1ce12278110a32a",
+      "observation_block": "@wpi_adequate_pure\n     : \u2200 (\u03a3 : gFunctors) (E : Type \u2192 Type) (R : Type),\n         invGpreS \u03a3\n         \u2192 \u2200 (hlc : has_lc) (n : nat) (m : coPset) (EH : eHandler E E R) (t : ITreeDefinition.itree E R) \n             (s : eh_state EH) (C : ITreeDefinition.itree E R \u2192 eh_state EH \u2192 Prop) (\u03a8 : Prop),\n             exec EH t s C\n             \u2192 (\u2200 Hinv : invGS_gen hlc \u03a3,\n                  \u00a3 n ={\u22a4,m}=\u2217\n                  \u2203 (H : handler.iHandler \u03a3 E) (A : eHandlerAdequate H EH) (\u03a6 : R \u2192 iProp \u03a3),\n                    wpi.wpi_mask m t (\u03bb v : R, \u03a6 v) \u2217 ehandler_inv s [] \u2217\n                    \u2200 (t' : ITreeDefinition.itree E R) (s' : eh_state EH) (Ms' : list\n                                                                                   ((ITreeDefinition.itree E R\n                                                                                     \u2192 iProp \u03a3) \u2192 \n                                                                                    iProp \u03a3)) \n                      (M' : (ITreeDefinition.itree E R \u2192 iPropI \u03a3) \u2192 iPropI \u03a3),\n                      \u231cC t' s'\u231d -\u2217\n                      ehandler_inv s' Ms' -\u2217\n                      bi_close (Eqit.eutt eq)\n                        (\u03bb t'0 : ITreeDefinition.itree E R,\n                           \u2200 P : ITreeDefinition.itree E R \u2192 iPropI \u03a3, M' P ={\u2205}=\u2217 P t'0) t' \u2217\n                      WPi_tp M' :: Ms' @ H {{ v, |={\u2205,m}=> \u03a6 v }} ={\u2205}=\u2217 \u231c\u03a8\u231d) \u2192 \u03a8\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.state.stateEH_adequate",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@stateEH_adequate",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "1a4c60a433e6d6d1bc8dec72efa1a52b6a0ea61e324bbfaae7372c2fac1b632d",
+      "observation_block": "@stateEH_adequate\n     : \u2200 (\u03a3 : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3) (S : Type) (stateInterp0 : stateInterp \u03a3 S),\n         seHandlerAdequate (stateH S) (stateEH S)\nClosed under the global context\n"
+    },
+    {
+      "constant": "iris.itree.state.state_adequacy",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@state_adequacy",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "5e05706073045d11c07c28ee8979ea69135328b4d27951490138f081a6c803f6",
+      "observation_block": "@state_adequacy\n     : \u2200 (S : Type) (E : Type \u2192 Type) (hlc : has_lc) (\u03a3 : gFunctors) (invGS_gen0 : invGS_gen hlc \u03a3) \n         (stateInterp0 : stateInterp \u03a3 S) (H : handler.iHandler \u03a3 E) (R : Type),\n         handler.Sequential H\n         \u2192 \u2200 (s : S) (t : ITreeDefinition.itree (Sum.sum1 (stateE S) E) R) (t' : ITreeDefinition.itree E (S * R)) \n             (M : coPset) (\u03a6 : R \u2192 iProp \u03a3),\n             state_irel s t t'\n             \u2192 state_interp s -\u2217\n               wpi.wpi_mask M t (\u03bb v : R, \u03a6 v) -\u2217\n               wpi.wpi_mask M t' (\u03bb x : S * R, let (s0, v) := x in state_interp s0 \u2217 \u03a6 v)\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heap.wpi_load",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wpi_load",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "a42f6c0e6c088e69770a85d26bfd8eccfcd9aa7e7ab9ead7be86b37fd8f4c7b2",
+      "observation_block": "@wpi_load\n     : \u2200 (V : Type) (E : Type \u2192 Type) (\u03a3 : gFunctors) (H : handler.iHandler \u03a3 E) (hlc : has_lc) \n         (invGS_gen0 : invGS_gen hlc \u03a3) (heapHGS0 : heapHGS \u03a3 V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),\n         handler.inH (heapH V) H\n         \u2192 \u2200 (M : coPset) (l : loc) (v : V) (dq : dfrac) (\u03a6 : option V \u2192 iPropI \u03a3),\n             \u2191heapH_inv_name \u2286 M\n             \u2192 l \u21a6{dq} v -\u2217 (l \u21a6{dq} v -\u2217 \u03a6 (Some v)) -\u2217 wpi.wpi_mask M (load l) (\u03bb v0 : option V, \u03a6 v0)\nAxioms:\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heap.wpi_store",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wpi_store",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "1999dc983d21a9f861920ccce92aa405c77be286f92057cef8f24f8bc5eba11c",
+      "observation_block": "@wpi_store\n     : \u2200 (V : Type) (E : Type \u2192 Type) (\u03a3 : gFunctors) (H : handler.iHandler \u03a3 E) (hlc : has_lc) \n         (invGS_gen0 : invGS_gen hlc \u03a3) (heapHGS0 : heapHGS \u03a3 V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),\n         handler.inH (heapH V) H\n         \u2192 \u2200 (M : coPset) (l : loc) (v : option V) (v' : V) (\u03a6 : option V \u2192 iPropI \u03a3),\n             \u2191heapH_inv_name \u2286 M \u2192 l \u21a6? v -\u2217 (l \u21a6 v' -\u2217 \u03a6 v) -\u2217 wpi.wpi_mask M (store l v') (\u03bb v0 : option V, \u03a6 v0)\nAxioms:\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heap.wpi_allocN",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wpi_allocN",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "c0de8af85a7c3074c32bc619dca97675487d7eae9c7fe0c79ec63337da5867ae",
+      "observation_block": "@wpi_allocN\n     : \u2200 (V : Type) (E : Type \u2192 Type) (\u03a3 : gFunctors) (H : handler.iHandler \u03a3 E) (hlc : has_lc) \n         (invGS_gen0 : invGS_gen hlc \u03a3) (heapHGS0 : heapHGS \u03a3 V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),\n         handler.inH (heapH V) H\n         \u2192 \u2200 (M : coPset) (n : nat) (v : V) (\u03a6 : loc \u2192 iPropI \u03a3),\n             \u2191heapH_inv_name \u2286 M\n             \u2192 (\u2200 l : loc, ([\u2217 list] i \u2208 seq 0 n, (l +\u2097 i) \u21a6 v) -\u2217 \u03a6 l) -\u2217\n               wpi.wpi_mask M (allocN n v) (\u03bb v0 : loc, \u03a6 v0)\nAxioms:\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heap.heap_adequacy",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@heap_adequacy",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "1bfcb5d9f16bd7243b5e51133fedb845df42ce176b107fdc4583f9a5e56d6b60",
+      "observation_block": "@heap_adequacy\n     : \u2200 (V : Type) (E : Type \u2192 Type) (hlc : has_lc) (\u03a3 : gFunctors) (invGS_gen0 : invGS_gen hlc \u03a3) \n         (heapHGS0 : heapHGS \u03a3 V) (H : handler.iHandler \u03a3 E),\n         handler.Sequential H\n         \u2192 \u2200 (R : Type) (\u03c3 : heap V) (t : ITreeDefinition.itree (Sum.sum1 (heapE V) E) R) (t' : \n                                                                                          ITreeDefinition.itree E\n                                                                                          (heap V * R)) \n             (M : coPset) (\u03a6 : R \u2192 iProp \u03a3),\n             heap_irel \u03c3 t t'\n             \u2192 state_interp \u03c3 -\u2217\n               wpi.wpi_mask M t (\u03bb v : R, \u03a6 v) -\u2217\n               wpi.wpi_mask M t' (\u03bb x : heap V * R, let (\u03c3', v) := x in state_interp \u03c3' \u2217 \u03a6 v)\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.threadpool.exec.threadpoolEH_adequate",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@threadpoolEH_adequate",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "3bee906d66c13d34fade948a9f2eb92b149a4ccac3dd36c5191e88b897e9140c",
+      "observation_block": "@threadpoolEH_adequate\n     : \u2200 (\u03a3 : gFunctors) (GE : Type \u2192 Type) (R : Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3),\n         eHandlerAdequate handler.threadpoolH threadpoolEH\nClosed under the global context\n"
+    },
+    {
+      "constant": "iris.itree.threadpool.interleaving.threadpool_adequacy",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@threadpool_adequacy",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "5c6a87c576d830db99cd6ac035d93a2aa8e356b8445b7a8bfa935ffcd9347a59",
+      "observation_block": "@threadpool_adequacy\n     : \u2200 (\u03a3 : gFunctors) (R : Type) (E : Type \u2192 Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc \u03a3) \n         (H : handler.iHandler \u03a3 E),\n         handler.Sequential H\n         \u2192 \u2200 (concurrent : ITreeDefinition.itree (Sum.sum1 handler.threadpoolE E) R) (interleaving : \n                                                                                      ITreeDefinition.itree E\n                                                                                        (R + last_thread_killed)) \n             (\u03a6 : R \u2192 iProp \u03a3),\n             threadpool_irel concurrent interleaving\n             \u2192 wpi.wpi_mask \u22a4 concurrent (\u03bb v : R, \u03a6 v) -\u2217\n               wpi.wpi_mask \u22a4 interleaving\n                 (\u03bb r : R + last_thread_killed, match r with\n                                                | inl r0 => \u03a6 r0\n                                                | inr _ => True\n                                                end)\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.examplelang.adequacy.wp_adequacy_irel",
+      "audit": "AuditCore.v",
+      "log": "logs/audit-core.stdout",
+      "observed_header": "@wp_adequacy_irel",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "Ax.eq_rect_eq",
+        "bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "a7f4e6fc88a3f7b2457d2bf649eab889be46cc46fcbb1dd21d9a0160b3f9a255",
+      "observation_block": "@wp_adequacy_irel\n     : \u2200 (\u03a3 : gFunctors) (invGS0 : invGS \u03a3) (exampleHGS0 : program_logic.exampleHGS \u03a3) (R : Type) \n         (t : ITreeDefinition.itree lang.exampleE R) (\u03c3 : heap lang.val) (te : Execution R) \n         (\u03a6 : R \u2192 iProp \u03a3) (n : option nat),\n         examplelang_irel \u03c3 n t te\n         \u2192 state_interp \u03c3 -\u2217\n           wpi.wpi_mask \u22a4 t (\u03bb v : R, \u03a6 v) ={\u22a4,\u2205}=\u2217\n           \u2203 x : Outcome R, \u231cEqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}\u231d \u2217\n             (let (\u03c30, s) := x in\n              match s with\n              | inl (inl v) => |={\u2205,\u22a4}=> state_interp \u03c30 \u2217 \u03a6 v\n              | inl (inr LastThreadKilled) => |={\u2205,\u22a4}=> state_interp \u03c30\n              | inr ub.UbCrash => |={\u2205,\u22a4}=> False\n              end)\nAxioms:\nAx.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nbisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.adequacy.wp_adequacy_irel",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "@wp_adequacy_irel",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "d88d44b23ab0317a6ee3940903788761ce27e671e404a7fbebcb98726701327f",
+      "observation_block": "@wp_adequacy_irel\n     : forall (\u03a3 : iprop.gFunctors) (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3)\n         (heaplangHGS0 : program_logic.heaplangHGS \u03a3) (R : Type) (t : ITreeDefinition.itree lang.heaplangE R)\n         (\u03c3 : gmap.gmap locations.loc (option definition.heap_lang.val)) (te : Execution R)\n         (\u03a6 : R -> upred.uPred (iprop.iProp_solution.iResUR \u03a3)) (n : option nat) (m : step.later_modality),\n       heaplang_irel \u03c3 n t te ->\n       interface.bi_emp_valid\n         (interface.bi_wand\n            (interface.bi_impl (interface.bi_pure (m = step.Later))\n               match n with\n               | Some n0 => later_credits.lc n0\n               | None => interface.bi_pure False\n               end)\n            (interface.bi_wand (state.state_interp \u03c3)\n               (interface.bi_wand (wpi.wpi_mask base.top t (fun v : R => \u03a6 v))\n                  (updates.fupd base.top base.empty\n                     (interface.bi_exist\n                        (fun x : Outcome R =>\n                         interface.bi_sep\n                           (interface.bi_pure\n                              (Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}))\n                           match x with\n                           | TermRet (\u03c30, TermRet (TermRet v)) =>\n                               updates.fupd base.empty base.top (interface.bi_sep (state.state_interp \u03c30) (\u03a6 v))\n                           | TermRet (\u03c30, TermRet (inr interleaving.LastThreadKilled)) =>\n                               updates.fupd base.empty base.top (state.state_interp \u03c30)\n                           | TermRet (\u03c30, TermUb) => updates.fupd base.empty base.top (interface.bi_pure False)\n                           | inr step.StepExhausted => interface.bi_pure (option.is_Some n)\n                           end))))))\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.adequacy.wp_adequacy_eval",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "@wp_adequacy_eval",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "6a5e57d0e0c9626934d76b8fc1147f685b19978ce6c63755c3a87b99d1aae359",
+      "observation_block": "@wp_adequacy_eval\n     : forall (\u03a3 : iprop.gFunctors) (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3)\n         (heaplangHGS0 : program_logic.heaplangHGS \u03a3) (e : definition.heap_lang.expr)\n         (\u03c3 : gmap.gmap locations.loc (option definition.heap_lang.val)) (te : Execution definition.heap_lang.val)\n         (\u03a6 : definition.heap_lang.val -> upred.uPred (iprop.iProp_solution.iResUR \u03a3)) (n : option nat)\n         (m : step.later_modality),\n       heaplang_eval e \u03c3 n te ->\n       interface.bi_emp_valid\n         (interface.bi_wand\n            (interface.bi_impl (interface.bi_pure (m = step.Later))\n               match n with\n               | Some n0 => later_credits.lc n0\n               | None => interface.bi_pure False\n               end)\n            (interface.bi_wand (state.state_interp \u03c3)\n               (interface.bi_wand (weakestpre.wp m base.top e \u03a6)\n                  (updates.fupd base.top base.empty\n                     (interface.bi_exist\n                        (fun x : Outcome definition.heap_lang.val =>\n                         interface.bi_sep\n                           (interface.bi_pure\n                              (Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}))\n                           match x with\n                           | TermRet (\u03c30, TermRet (TermRet v)) =>\n                               updates.fupd base.empty base.top (interface.bi_sep (state.state_interp \u03c30) (\u03a6 v))\n                           | TermRet (\u03c30, TermRet (inr interleaving.LastThreadKilled)) =>\n                               updates.fupd base.empty base.top (state.state_interp \u03c30)\n                           | TermRet (\u03c30, TermUb) => updates.fupd base.empty base.top (interface.bi_pure False)\n                           | inr step.StepExhausted => interface.bi_pure (option.is_Some n)\n                           end))))))\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.adequacy.wp_partial_soundness",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "@wp_partial_soundness",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "d1b109746eb436a5c536f95390e8b18f4e44011b1b8c14529d93bbd1920a2c97",
+      "observation_block": "@wp_partial_soundness\n     : forall \u03a3 : iprop.gFunctors,\n       fancy_updates.invGpreS \u03a3 ->\n       program_logic.heaplangHGpreS \u03a3 ->\n       forall (e : definition.heap_lang.expr) (\u03c3 : gmap.gmap locations.loc (option definition.heap_lang.val))\n         (\u03c6 : definition.heap_lang.val -> Prop),\n       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3) (heaplangHGS0 : program_logic.heaplangHGS \u03a3),\n        interface.bi_emp_valid\n          (weakestpre.wp step.Later base.top e (fun v : definition.heap_lang.val => interface.bi_pure (\u03c6 v)))) ->\n       partially_adequate e \u03c3 \u03c6\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.adequacy.wp_total_soundness",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "@wp_total_soundness",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "19b770ed3d7eca2ea241198f2c9884fc749f63fd40209e567fb5c85b74280cbc",
+      "observation_block": "@wp_total_soundness\n     : forall \u03a3 : iprop.gFunctors,\n       fancy_updates.invGpreS \u03a3 ->\n       program_logic.heaplangHGpreS \u03a3 ->\n       forall (e : definition.heap_lang.expr) (\u03c3 : gmap.gmap locations.loc (option definition.heap_lang.val))\n         (\u03c6 : definition.heap_lang.val -> Prop),\n       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3) (heaplangHGS0 : program_logic.heaplangHGS \u03a3),\n        interface.bi_emp_valid\n          (weakestpre.wp step.Identity base.top e (fun v : definition.heap_lang.val => interface.bi_pure (\u03c6 v)))) ->\n       totally_adequate e \u03c3 \u03c6\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.opsem_adequacy.execution_from_opsem_trace",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "execution_from_opsem_trace",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq",
+        "axioms.AxChoice"
+      ],
+      "observation_block_sha256": "8137605462ee0b6a3eefad896230f304562632c917d11dd53ec3ce0ccd260368",
+      "observation_block": "execution_from_opsem_trace\n     : forall (n : nat) (e : language.expr definition.heap_lang) (\u03c3 : language.state definition.heap_lang)\n         (tp' : list (language.expr definition.heap_lang)) (\u03c3' : language.state definition.heap_lang)\n         (\u03ba : list (language.observation definition.heap_lang)) (tx : Terminal definition.heap_lang.val),\n       language.nsteps n ((e :: nil)%list, \u03c3) \u03ba (tp', \u03c3') ->\n       tp_termination tp' \u03c3' tx ->\n       exists (te : Execution definition.heap_lang.val) (x : Outcome definition.heap_lang.val),\n         heaplang_eval e (definition.heap_lang.heap \u03c3) (Some n) te /\\\n         Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |} /\\\n         (exists \u03c3'0 : gmap.gmap locations.loc (option definition.heap_lang.val),\n            match tx with\n            | TermRet r => x = TermRet (\u03c3'0, TermRet (TermRet r))\n            | TermUb => x = TermRet (\u03c3'0, TermUb)\n            end)\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\naxioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.opsem_adequacy.partially_adequate_opsem_adequate",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "partially_adequate_opsem_adequate",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq",
+        "axioms.AxChoice"
+      ],
+      "observation_block_sha256": "222aa1a9a10e63b333541a8d0810506562e2f98d2a17fc4b6e8779f924ff00b1",
+      "observation_block": "partially_adequate_opsem_adequate\n     : forall (e : definition.heap_lang.expr) (\u03c3 : definition.heap_lang.state) (\u03c6 : definition.heap_lang.val -> Prop),\n       partially_adequate e (definition.heap_lang.heap \u03c3) \u03c6 ->\n       adequacy.adequate weakestpre.NotStuck e \u03c3\n         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => \u03c6 v)\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\naxioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.opsem_adequacy.wp_later_opsem_adequate",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "wp_later_opsem_adequate",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq",
+        "axioms.AxChoice"
+      ],
+      "observation_block_sha256": "b1cbce64150333818e49fb65edbbc079053f1f13d58966ac8e7561f7417f6485",
+      "observation_block": "wp_later_opsem_adequate\n     : forall \u03a3 : iprop.gFunctors,\n       fancy_updates.invGpreS \u03a3 ->\n       program_logic.heaplangHGpreS \u03a3 ->\n       forall (e : language.expr definition.heap_lang) (\u03c3 : language.state definition.heap_lang)\n         (\u03c6 : language.val definition.heap_lang -> Prop),\n       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3) (heaplangHGS0 : program_logic.heaplangHGS \u03a3),\n        interface.bi_emp_valid\n          (weakestpre.wp step.Later base.top e (fun v : language.val definition.heap_lang => interface.bi_pure (\u03c6 v)))) ->\n       adequacy.adequate weakestpre.NotStuck e \u03c3\n         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => \u03c6 v)\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\naxioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B\n"
+    },
+    {
+      "constant": "iris.itree.heaplang.opsem_adequacy.wp_total_opsem_adequate",
+      "audit": "AuditHeapLang.v",
+      "log": "logs/audit-heaplang.stdout",
+      "observed_header": "wp_total_opsem_adequate",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq",
+        "axioms.AxChoice"
+      ],
+      "observation_block_sha256": "d19d6240fed421eabb657b1b17f7996951520f04c920f154c6f1e8aaad2c8a87",
+      "observation_block": "wp_total_opsem_adequate\n     : forall \u03a3 : iprop.gFunctors,\n       fancy_updates.invGpreS \u03a3 ->\n       program_logic.heaplangHGpreS \u03a3 ->\n       forall (e : language.expr definition.heap_lang) (\u03c3 : language.state definition.heap_lang)\n         (\u03c6 : language.val definition.heap_lang -> Prop),\n       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc \u03a3) (heaplangHGS0 : program_logic.heaplangHGS \u03a3),\n        interface.bi_emp_valid\n          (weakestpre.wp step.Identity base.top e\n             (fun v : language.val definition.heap_lang => interface.bi_pure (\u03c6 v)))) ->\n       adequacy.adequate weakestpre.NotStuck e \u03c3\n         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => \u03c6 v)\nAxioms:\naxioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2\naxioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B\n"
+    },
+    {
+      "constant": "isla.adequacy.isla_adequacy",
+      "audit": "AuditIslaris.v",
+      "log": "logs/audit-islaris.stdout",
+      "observed_header": "adequacy.isla_adequacy",
+      "context_status": "closed-under-global-context",
+      "reported_axioms": [],
+      "observation_block_sha256": "a761a507e179aaedc6055c67b8873d12365ebdb7b4a282b8ceef1e24745f7172",
+      "observation_block": "adequacy.isla_adequacy\n     : \u2200 (\u03a3 : gFunctors) (H : Arch),\n         islaPreG \u03a3\n         \u2192 \u2200 (instrs : gmap (bv 64) isla_trace) (mem : mem_map) (regs : list reg_map) (P\u03bas : spec) \n             (t2 : list (expr isla_lang)) (\u03c32 : state isla_lang) (\u03bas : list (observation isla_lang)) \n             (n : nat),\n             P\u03bas []\n             \u2192 (\u2200 HG : islaG \u03a3,\n                  instr_table instrs -\u2217\n                  backed_mem (dom mem) -\u2217\n                  spec_trace P\u03bas -\u2217\n                  ([\u2217 map] a\u21a6b \u2208 mem, bv_unsigned a \u21a6\u2098 b) ={\u22a4}=\u2217\n                  [\u2217 list] rs \u2208 regs, \u2200 H0 : threadG, ([\u2217 map] r\u21a6v \u2208 rs, r \u21a6\u1d63 v) -\u2217 WPasm tnil)\n               \u2192 nsteps n (initial_local_state <$> regs, {| seq_instrs := instrs; seq_mem := mem |}) \u03bas (t2, \u03c32)\n                 \u2192 (\u2200 e2 : expr isla_lang, e2 \u2208 t2 \u2192 not_stuck e2 \u03c32) \u2227 P\u03bas \u03bas\nClosed under the global context\n"
+    },
+    {
+      "constant": "isla.adequacy_itree.isla_exec_adequate",
+      "audit": "AuditIslaris.v",
+      "log": "logs/audit-islaris.stdout",
+      "observed_header": "@isla_exec_adequate",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "d88c94218a956443fcdabf04e36e7186ba6567ec245517749898690dde67e99a",
+      "observation_block": "@isla_exec_adequate\n     : \u2200 (H : Arch) (n : nat) (P\u03bas : list seq_label \u2192 Prop) (regs : reg_map) (instrs : gmap (bv 64) isla_trace) \n         (mem : mem_map) (\u03bas : list (observation isla_lang)) (t2 : list (expr isla_lang)) (\u03c32 : state isla_lang),\n         nsteps n ([initial_local_state regs], {| seq_instrs := instrs; seq_mem := mem |}) \u03bas (t2, \u03c32)\n         \u2192 P\u03bas []\n           \u2192 exec.exec (exec.se_to_eHandler islaE islaE Empty_set (islaEH P\u03bas))\n               (compile_trace (seq_trace (initial_local_state regs)))\n               ((),\n                ([],\n                 ({| seq_local := initial_local_state regs; seq_global := {| seq_instrs := instrs; seq_mem := mem |} |},\n                  (S n, ((), ())))))\n               (\u03bb (_ : ITreeDefinition.itree islaE Empty_set) (_ : exec.eh_state\n                                                                     (exec.se_to_eHandler islaE islaE Empty_set\n                                                                        (islaEH P\u03bas))),\n                  (\u2200 e2 : expr isla_lang, e2 \u2208 t2 \u2192 not_stuck e2 \u03c32) \u2227 P\u03bas \u03bas)\nAxioms:\naxioms.Ax.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    },
+    {
+      "constant": "isla.adequacy_itree.isla_adequacy",
+      "audit": "AuditIslaris.v",
+      "log": "logs/audit-islaris.stdout",
+      "observed_header": "isla_adequacy",
+      "context_status": "axioms",
+      "reported_axioms": [
+        "axioms.Ax.eq_rect_eq",
+        "EqAxiom.bisimulation_is_eq"
+      ],
+      "observation_block_sha256": "d74e5b5553a588c00f320d071ee75d80dad2ae48cb04d06ba368b1d801bb7742",
+      "observation_block": "isla_adequacy\n     : \u2200 (\u03a3 : gFunctors) (H : Arch),\n         islaPreG \u03a3\n         \u2192 lifting_itree.statePreG \u03a3\n           \u2192 \u2200 (instrs : gmap (bv 64) isla_trace) (mem : mem_map) (regs : reg_map) (P\u03bas : spec) \n               (t2 : list (expr isla_lang)) (\u03c32 : state isla_lang) (\u03bas : list (observation isla_lang)) \n               (n : nat),\n               P\u03bas []\n               \u2192 (\u2200 (HG : islaG \u03a3) (HS : lifting_itree.stateG \u03a3),\n                    instr_table instrs -\u2217\n                    backed_mem (dom mem) -\u2217\n                    spec_trace P\u03bas -\u2217\n                    ([\u2217 map] a\u21a6b \u2208 mem, bv_unsigned a \u21a6\u2098 b) ={\u22a4}=\u2217\n                    \u2200 H0 : threadG, ([\u2217 map] r\u21a6v \u2208 regs, r \u21a6\u1d63 v) -\u2217 lifting_itree.wp_asm tnil)\n                 \u2192 nsteps n ([initial_local_state regs], {| seq_instrs := instrs; seq_mem := mem |}) \u03bas (t2, \u03c32)\n                   \u2192 (\u2200 e2 : expr isla_lang, e2 \u2208 t2 \u2192 not_stuck e2 \u03c32) \u2227 P\u03bas \u03bas\nAxioms:\naxioms.Ax.eq_rect_eq : \u2200 (U : Type) (p : U) (Q : U \u2192 Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h\nEqAxiom.bisimulation_is_eq\n  : \u2200 (E : Type \u2192 Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 \u2192 t1 = t2\n"
+    }
+  ],
+  "basis": "Actual coqc Check and Print Assumptions stdout; full observation blocks retained. Labels canonicalized only in summary below."
+}

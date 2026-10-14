@@ -1,0 +1,56 @@
+adequacy.isla_adequacy
+     : ∀ (Σ : gFunctors) (H : Arch),
+         islaPreG Σ
+         → ∀ (instrs : gmap (bv 64) isla_trace) (mem : mem_map) (regs : list reg_map) (Pκs : spec) 
+             (t2 : list (expr isla_lang)) (σ2 : state isla_lang) (κs : list (observation isla_lang)) 
+             (n : nat),
+             Pκs []
+             → (∀ HG : islaG Σ,
+                  instr_table instrs -∗
+                  backed_mem (dom mem) -∗
+                  spec_trace Pκs -∗
+                  ([∗ map] a↦b ∈ mem, bv_unsigned a ↦ₘ b) ={⊤}=∗
+                  [∗ list] rs ∈ regs, ∀ H0 : threadG, ([∗ map] r↦v ∈ rs, r ↦ᵣ v) -∗ WPasm tnil)
+               → nsteps n (initial_local_state <$> regs, {| seq_instrs := instrs; seq_mem := mem |}) κs (t2, σ2)
+                 → (∀ e2 : expr isla_lang, e2 ∈ t2 → not_stuck e2 σ2) ∧ Pκs κs
+Closed under the global context
+@isla_exec_adequate
+     : ∀ (H : Arch) (n : nat) (Pκs : list seq_label → Prop) (regs : reg_map) (instrs : gmap (bv 64) isla_trace) 
+         (mem : mem_map) (κs : list (observation isla_lang)) (t2 : list (expr isla_lang)) (σ2 : state isla_lang),
+         nsteps n ([initial_local_state regs], {| seq_instrs := instrs; seq_mem := mem |}) κs (t2, σ2)
+         → Pκs []
+           → exec.exec (exec.se_to_eHandler islaE islaE Empty_set (islaEH Pκs))
+               (compile_trace (seq_trace (initial_local_state regs)))
+               ((),
+                ([],
+                 ({| seq_local := initial_local_state regs; seq_global := {| seq_instrs := instrs; seq_mem := mem |} |},
+                  (S n, ((), ())))))
+               (λ (_ : ITreeDefinition.itree islaE Empty_set) (_ : exec.eh_state
+                                                                     (exec.se_to_eHandler islaE islaE Empty_set
+                                                                        (islaEH Pκs))),
+                  (∀ e2 : expr isla_lang, e2 ∈ t2 → not_stuck e2 σ2) ∧ Pκs κs)
+Axioms:
+axioms.Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+isla_adequacy
+     : ∀ (Σ : gFunctors) (H : Arch),
+         islaPreG Σ
+         → lifting_itree.statePreG Σ
+           → ∀ (instrs : gmap (bv 64) isla_trace) (mem : mem_map) (regs : reg_map) (Pκs : spec) 
+               (t2 : list (expr isla_lang)) (σ2 : state isla_lang) (κs : list (observation isla_lang)) 
+               (n : nat),
+               Pκs []
+               → (∀ (HG : islaG Σ) (HS : lifting_itree.stateG Σ),
+                    instr_table instrs -∗
+                    backed_mem (dom mem) -∗
+                    spec_trace Pκs -∗
+                    ([∗ map] a↦b ∈ mem, bv_unsigned a ↦ₘ b) ={⊤}=∗
+                    ∀ H0 : threadG, ([∗ map] r↦v ∈ regs, r ↦ᵣ v) -∗ lifting_itree.wp_asm tnil)
+                 → nsteps n ([initial_local_state regs], {| seq_instrs := instrs; seq_mem := mem |}) κs (t2, σ2)
+                   → (∀ e2 : expr isla_lang, e2 ∈ t2 → not_stuck e2 σ2) ∧ Pκs κs
+Axioms:
+axioms.Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=4 start_bytes=21844316 peak_bytes=21844384 final_bytes=21891326

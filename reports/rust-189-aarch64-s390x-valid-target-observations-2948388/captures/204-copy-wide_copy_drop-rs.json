@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "cp",
+    "@CASES@/wide_copy_drop.rs",
+    "anneal-big-endian-20261014:/anneal-e08/wide_copy_drop.rs"
+  ],
+  "exit_code": 0,
+  "seconds": 0.02636441700000003,
+  "timestamp_utc": "2026-10-14T23:16:31.065471+00:00"
+}

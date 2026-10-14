@@ -1,0 +1,70 @@
+{
+  "milestone": "E03",
+  "milestone_status": "Selected modular-artifact slice checked; broad E03 remains open",
+  "actual_results": {
+    "fresh_original_vo": 38,
+    "fresh_audit_vo": 3,
+    "selected_result_constants": 25,
+    "explicit_axiom_observations": 3,
+    "recursive_libraries_checked": 542,
+    "all_success": true
+  },
+  "questions": [
+    {
+      "id": "MR19",
+      "sections": [
+        "Findings1",
+        "Findings2",
+        "Findings3",
+        "Findings4",
+        "Findings5"
+      ],
+      "scope": "Actual artifact handler composition, state/value-heap/threadpool/example adequacy and HeapLang operational bridge were freshly compiled, assumption-audited and recursively kernel-checked. Existing byte/effect experiments are separate evidence.",
+      "stronger_unestablished_claims": [
+        "No coupled MiniRust byte/provenance/alias/race handler instance or its adequacy theorem",
+        "No proof that sum handlers automatically discharge interacting-state compatibility"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Six original artifact Coq files outside the selected closure, enumerated in Boundaries",
+        "Newer Logical Relations a la Carte source and Rust instantiation were not replayed here"
+      ]
+    },
+    {
+      "id": "MR12",
+      "sections": [
+        "Findings2",
+        "Findings3",
+        "Boundaries"
+      ],
+      "scope": "Concrete proven interfaces and actual assumption costs available for future proof-port planning.",
+      "stronger_unestablished_claims": [
+        "No MiniRust program-logic port or source-to-logic fundamental theorem"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Other Rust-logic kernel replays remain separate E03 work"
+      ]
+    },
+    {
+      "id": "AS01",
+      "sections": [
+        "Findings1",
+        "Findings2",
+        "Findings6"
+      ],
+      "scope": "Freshly checked original-versus-ITree Islaris adequacy interfaces and their scope.",
+      "stronger_unestablished_claims": [
+        "No decoder, Sail trace-origin, machine-byte, ABI or source-correspondence theorem"
+      ],
+      "genuinely_unexamined_gaps": [
+        "Other ISA proof artifacts were not part of this selected replay"
+      ]
+    }
+  ],
+  "not_claimed_completed": [
+    "E03 overall",
+    "MR12 broader proof port",
+    "MR19 coupled MiniRust instantiation",
+    "AS01 all-tool replay"
+  ],
+  "consequential_scope": "Only theorem subjects and premises in actual Check output; original source unchanged; standard axioms, native checker and runtime remain trust assumptions."
+}

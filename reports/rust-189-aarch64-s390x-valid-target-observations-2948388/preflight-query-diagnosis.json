@@ -1,0 +1,6 @@
+{
+  "failed_capture": "09-dpkg",
+  "cause": "Receipt query named a guessed gcc-14 package; observed compiler is GCC12.2 and the requested version14 package is not installed. This is an incorrect metadata-query premise, not compilation/runtime failure.",
+  "effects_before_stop": "read-only container inspection; no source transfer or new container directory",
+  "recovery": "query installed gcc-12 package, then verify tool identities and source destination absence before writes"
+}

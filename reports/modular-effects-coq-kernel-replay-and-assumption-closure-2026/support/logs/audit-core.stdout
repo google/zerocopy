@@ -1,0 +1,183 @@
+AxChoice
+     : ∀ A B : Type, ChoiceFacts.FunctionalChoice_on A B
+Axioms:
+AxChoice : ∀ A B : Type, ChoiceFacts.FunctionalChoice_on A B
+Ax.eq_rect_eq
+     : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+@bisimulation_is_eq
+     : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+Axioms:
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@handler_adequate_from_simple
+     : ∀ (Σ : gFunctors) (GE : Type → Type) (R : Type) (E : Type → Type) (H : handler.iHandler Σ E) 
+         (EH : seHandler E) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ),
+         seHandlerAdequate H EH → eHandlerAdequate H EH
+Closed under the global context
+@sumEH_adequate
+     : ∀ (Σ : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ) (GE : Type → Type) (R : Type) 
+         (E1 E2 : Type → Type) (H1 : handler.iHandler Σ E1) (EH1 : eHandler E1 GE R) (H2 : handler.iHandler Σ E2) 
+         (EH2 : eHandler E2 GE R),
+         eHandlerAdequate H1 EH1 → eHandlerAdequate H2 EH2 → eHandlerAdequate (handler.sumH H1 H2) (EH1 ⊕ₑ EH2)
+Closed under the global context
+@sumSEH_adequate
+     : ∀ (Σ : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ) (E1 E2 : Type → Type) 
+         (H1 : handler.iHandler Σ E1) (EH1 : seHandler E1) (H2 : handler.iHandler Σ E2) (EH2 : seHandler E2),
+         seHandlerAdequate H1 EH1 → seHandlerAdequate H2 EH2 → seHandlerAdequate (handler.sumH H1 H2) (EH1 ⊕ₑₛ EH2)
+Closed under the global context
+@wpi_adequate
+     : ∀ (Σ : gFunctors) (E : Type → Type) (R : Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ) 
+         (Φ : R → iProp Σ) (H : handler.iHandler Σ E) (EH : eHandler E E R) (A : eHandlerAdequate H EH) 
+         (t : ITreeDefinition.itree E R) (s : eh_state EH) (C : ITreeDefinition.itree E R → eh_state EH → Prop) 
+         (m : coPset),
+         exec EH t s C
+         → wpi.wpi_mask m t (λ v : R, Φ v) -∗
+           ehandler_inv s [] ={m,∅}=∗
+           ∃ (t' : ITreeDefinition.itree E R) (s' : eh_state EH) (Ms' : list
+                                                                          ((ITreeDefinition.itree E R → iProp Σ)
+                                                                           → iProp Σ)) (M' : 
+                                                                                        (ITreeDefinition.itree E R
+                                                                                         → 
+                                                                                         iPropI Σ) → 
+                                                                                        iPropI Σ), ⌜
+             C t' s'⌝ ∗ ehandler_inv s' Ms' ∗
+             bi_close (Eqit.eutt eq)
+               (λ t'0 : ITreeDefinition.itree E R, ∀ P : ITreeDefinition.itree E R → iPropI Σ, M' P ={∅}=∗ P t'0) t' ∗
+             WPi_tp M' :: Ms' @ H {{ v, |={∅,m}=> Φ v }}
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@wpi_adequate_pure
+     : ∀ (Σ : gFunctors) (E : Type → Type) (R : Type),
+         invGpreS Σ
+         → ∀ (hlc : has_lc) (n : nat) (m : coPset) (EH : eHandler E E R) (t : ITreeDefinition.itree E R) 
+             (s : eh_state EH) (C : ITreeDefinition.itree E R → eh_state EH → Prop) (Ψ : Prop),
+             exec EH t s C
+             → (∀ Hinv : invGS_gen hlc Σ,
+                  £ n ={⊤,m}=∗
+                  ∃ (H : handler.iHandler Σ E) (A : eHandlerAdequate H EH) (Φ : R → iProp Σ),
+                    wpi.wpi_mask m t (λ v : R, Φ v) ∗ ehandler_inv s [] ∗
+                    ∀ (t' : ITreeDefinition.itree E R) (s' : eh_state EH) (Ms' : list
+                                                                                   ((ITreeDefinition.itree E R
+                                                                                     → iProp Σ) → 
+                                                                                    iProp Σ)) 
+                      (M' : (ITreeDefinition.itree E R → iPropI Σ) → iPropI Σ),
+                      ⌜C t' s'⌝ -∗
+                      ehandler_inv s' Ms' -∗
+                      bi_close (Eqit.eutt eq)
+                        (λ t'0 : ITreeDefinition.itree E R,
+                           ∀ P : ITreeDefinition.itree E R → iPropI Σ, M' P ={∅}=∗ P t'0) t' ∗
+                      WPi_tp M' :: Ms' @ H {{ v, |={∅,m}=> Φ v }} ={∅}=∗ ⌜Ψ⌝) → Ψ
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@stateEH_adequate
+     : ∀ (Σ : gFunctors) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ) (S : Type) (stateInterp0 : stateInterp Σ S),
+         seHandlerAdequate (stateH S) (stateEH S)
+Closed under the global context
+@state_adequacy
+     : ∀ (S : Type) (E : Type → Type) (hlc : has_lc) (Σ : gFunctors) (invGS_gen0 : invGS_gen hlc Σ) 
+         (stateInterp0 : stateInterp Σ S) (H : handler.iHandler Σ E) (R : Type),
+         handler.Sequential H
+         → ∀ (s : S) (t : ITreeDefinition.itree (Sum.sum1 (stateE S) E) R) (t' : ITreeDefinition.itree E (S * R)) 
+             (M : coPset) (Φ : R → iProp Σ),
+             state_irel s t t'
+             → state_interp s -∗
+               wpi.wpi_mask M t (λ v : R, Φ v) -∗
+               wpi.wpi_mask M t' (λ x : S * R, let (s0, v) := x in state_interp s0 ∗ Φ v)
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@wpi_load
+     : ∀ (V : Type) (E : Type → Type) (Σ : gFunctors) (H : handler.iHandler Σ E) (hlc : has_lc) 
+         (invGS_gen0 : invGS_gen hlc Σ) (heapHGS0 : heapHGS Σ V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),
+         handler.inH (heapH V) H
+         → ∀ (M : coPset) (l : loc) (v : V) (dq : dfrac) (Φ : option V → iPropI Σ),
+             ↑heapH_inv_name ⊆ M
+             → l ↦{dq} v -∗ (l ↦{dq} v -∗ Φ (Some v)) -∗ wpi.wpi_mask M (load l) (λ v0 : option V, Φ v0)
+Axioms:
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@wpi_store
+     : ∀ (V : Type) (E : Type → Type) (Σ : gFunctors) (H : handler.iHandler Σ E) (hlc : has_lc) 
+         (invGS_gen0 : invGS_gen hlc Σ) (heapHGS0 : heapHGS Σ V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),
+         handler.inH (heapH V) H
+         → ∀ (M : coPset) (l : loc) (v : option V) (v' : V) (Φ : option V → iPropI Σ),
+             ↑heapH_inv_name ⊆ M → l ↦? v -∗ (l ↦ v' -∗ Φ v) -∗ wpi.wpi_mask M (store l v') (λ v0 : option V, Φ v0)
+Axioms:
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@wpi_allocN
+     : ∀ (V : Type) (E : Type → Type) (Σ : gFunctors) (H : handler.iHandler Σ E) (hlc : has_lc) 
+         (invGS_gen0 : invGS_gen hlc Σ) (heapHGS0 : heapHGS Σ V) (f : CategoryOps.ReSum Function.IFun (heapE V) E),
+         handler.inH (heapH V) H
+         → ∀ (M : coPset) (n : nat) (v : V) (Φ : loc → iPropI Σ),
+             ↑heapH_inv_name ⊆ M
+             → (∀ l : loc, ([∗ list] i ∈ seq 0 n, (l +ₗ i) ↦ v) -∗ Φ l) -∗
+               wpi.wpi_mask M (allocN n v) (λ v0 : loc, Φ v0)
+Axioms:
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@heap_adequacy
+     : ∀ (V : Type) (E : Type → Type) (hlc : has_lc) (Σ : gFunctors) (invGS_gen0 : invGS_gen hlc Σ) 
+         (heapHGS0 : heapHGS Σ V) (H : handler.iHandler Σ E),
+         handler.Sequential H
+         → ∀ (R : Type) (σ : heap V) (t : ITreeDefinition.itree (Sum.sum1 (heapE V) E) R) (t' : 
+                                                                                          ITreeDefinition.itree E
+                                                                                          (heap V * R)) 
+             (M : coPset) (Φ : R → iProp Σ),
+             heap_irel σ t t'
+             → state_interp σ -∗
+               wpi.wpi_mask M t (λ v : R, Φ v) -∗
+               wpi.wpi_mask M t' (λ x : heap V * R, let (σ', v) := x in state_interp σ' ∗ Φ v)
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@threadpoolEH_adequate
+     : ∀ (Σ : gFunctors) (GE : Type → Type) (R : Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ),
+         eHandlerAdequate handler.threadpoolH threadpoolEH
+Closed under the global context
+@threadpool_adequacy
+     : ∀ (Σ : gFunctors) (R : Type) (E : Type → Type) (hlc : has_lc) (invGS_gen0 : invGS_gen hlc Σ) 
+         (H : handler.iHandler Σ E),
+         handler.Sequential H
+         → ∀ (concurrent : ITreeDefinition.itree (Sum.sum1 handler.threadpoolE E) R) (interleaving : 
+                                                                                      ITreeDefinition.itree E
+                                                                                        (R + last_thread_killed)) 
+             (Φ : R → iProp Σ),
+             threadpool_irel concurrent interleaving
+             → wpi.wpi_mask ⊤ concurrent (λ v : R, Φ v) -∗
+               wpi.wpi_mask ⊤ interleaving
+                 (λ r : R + last_thread_killed, match r with
+                                                | inl r0 => Φ r0
+                                                | inr _ => True
+                                                end)
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+@wp_adequacy_irel
+     : ∀ (Σ : gFunctors) (invGS0 : invGS Σ) (exampleHGS0 : program_logic.exampleHGS Σ) (R : Type) 
+         (t : ITreeDefinition.itree lang.exampleE R) (σ : heap lang.val) (te : Execution R) 
+         (Φ : R → iProp Σ) (n : option nat),
+         examplelang_irel σ n t te
+         → state_interp σ -∗
+           wpi.wpi_mask ⊤ t (λ v : R, Φ v) ={⊤,∅}=∗
+           ∃ x : Outcome R, ⌜Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}⌝ ∗
+             (let (σ0, s) := x in
+              match s with
+              | inl (inl v) => |={∅,⊤}=> state_interp σ0 ∗ Φ v
+              | inl (inr LastThreadKilled) => |={∅,⊤}=> state_interp σ0
+              | inr ub.UbCrash => |={∅,⊤}=> False
+              end)
+Axioms:
+Ax.eq_rect_eq : ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+bisimulation_is_eq
+  : ∀ (E : Type → Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 → t1 = t2
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=8 start_bytes=6997579 peak_bytes=6997635 final_bytes=7045297

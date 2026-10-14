@@ -1,0 +1,39 @@
+{
+  "E08": {
+    "classification": "completed_bounded_experiment",
+    "acceptance": "Run a big-endian target and relevant integer, FP, DST, niche, vtable and mask cases; bind compiler/layout/target identities and distinguish emulation, compilation and native execution.",
+    "sections": [
+      "F1. Compiler, target, source and executable binding",
+      "F2. Defined integer operations distinguish value and native byte order",
+      "F3. Floating-point bit preservation and permitted NaN choices are separate",
+      "F4. Layout and dynamic behavior agree for these instances despite distinct target layouts",
+      "F5. Readiness ranges are checked metadata, not physical permission evidence",
+      "F6. Valid wide-union copying and normal-source Drop do not require invalid reads",
+      "F7. The recorded outcome is agreement, not suppression of operational errors"
+    ],
+    "scope": "Same exact Rust1.89 commit and five source files; native AArch64 Linux little-endian vs qemu-s390x big-endian; 78 finite passing checks each; target datalayout headers and ELF/config identities bound.",
+    "remaining_requested_experiment": [],
+    "future_or_stronger_obligations": [
+      "Any further target/version/optimization/physical-host configuration is a new observation subject.",
+      "No stable generic vtable ABI or mask-to-Rust-resource semantic arrow is established."
+    ],
+    "report_body_sha256": "c5b82f359e5ebbcd348b983b8158abb4fabd228f326b3c361913d6bad495d745"
+  },
+  "E49": {
+    "classification": "not_discharged_by_this_experiment",
+    "sections": [
+      "F2. Defined integer operations distinguish value and native byte order",
+      "F3. Floating-point bit preservation and permitted NaN choices are separate",
+      "Boundaries"
+    ],
+    "answered_scope": "Finite discriminating observations and explicit permitted-choice boundaries only.",
+    "remaining_requested_proof": [
+      "Target-parametric integer/shift/cast/overflow mechanization",
+      "Required full MiniRust floating-point extension and IEEE choices",
+      "Declared all-target semantic laws",
+      "Importer correspondence"
+    ],
+    "reason": "The original goal explicitly requests mechanized laws/correspondence; executions and layout classifications cannot discharge it. This is a genuine separate proof obligation, not an unperformed component of E08.",
+    "report_body_sha256": "c5b82f359e5ebbcd348b983b8158abb4fabd228f326b3c361913d6bad495d745"
+  }
+}

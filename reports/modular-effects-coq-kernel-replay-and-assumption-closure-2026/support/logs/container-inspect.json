@@ -1,0 +1,15 @@
+{
+  "label": "container-inspect",
+  "argv": [
+    "docker",
+    "inspect",
+    "anneal-formal-experiments-20261014"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.043,
+  "stdout_bytes": 7936,
+  "stderr_bytes": 0,
+  "stdout_sha256": "26796added66df5b5512af911dc7f667157183111613d9299ad5f76fefd799bf",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "@DOCKER@",
+    "exec",
+    "anneal-big-endian-20261014",
+    "sh",
+    "-c",
+    "set -eu; sha256sum /usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/lib/rustlib/aarch64-unknown-linux-gnu/lib/* /usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/lib/rustlib/s390x-unknown-linux-gnu/lib/*"
+  ],
+  "exit_code": 0,
+  "seconds": 1.1931770840000002,
+  "timestamp_utc": "2026-10-14T23:16:06.865261+00:00"
+}
