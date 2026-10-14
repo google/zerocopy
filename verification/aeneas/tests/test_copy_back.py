@@ -197,6 +197,41 @@ class CopyBackTests(unittest.TestCase):
         self.edit('Models', 'decode self =>\n  self', 'decode self => self')
         self.fails_without_writes(TYPE, message='body on separate lines indented by two spaces')
 
+    def test_trait_projection_edits_are_never_silently_discarded(self):
+        self.generate()
+        (self.work / 'TraitLaws.lean').write_text('module\n-- edited trait law\n')
+        self.fails_without_writes(message='TraitLaws.lean copy-back is unsupported')
+        with self.assertRaisesRegex(ValueError, 'TraitLaws.lean copy-back is unsupported'):
+            workspace.protect_projections(self.work)
+
+    def test_compiler_trait_projection_is_protected_without_reverse_edit_authority(self):
+        annotations = self.generate()
+        annotations['zerocopy::Marker'] = {'kind': 'trait'}
+        projection = self.work / 'TraitLaws.lean'
+        projection.write_text('module\n-- compiler-bound trait projection\n')
+        copy_back.record(self.work, annotations)
+        state_path = self.work / copy_back.STATE
+        state = json.loads(state_path.read_text())
+        self.assertNotIn('zerocopy::Marker', state['owners'])
+        workspace.protect_projections(self.work)
+        before = state_path.read_bytes(), state_path.stat().st_mtime_ns
+        copy_back.record(self.work, annotations)
+        self.assertEqual(before, (state_path.read_bytes(), state_path.stat().st_mtime_ns))
+        original = projection.read_bytes()
+        projection.write_bytes(original + b'-- user edit\n')
+        snapshot = self.files()
+        with self.assertRaisesRegex(ValueError, 'edit the Rust invariant directly'):
+            workspace.protect_projections(self.work)
+        self.assertEqual(snapshot, self.files())
+        projection.write_text(copy_back.golden.EMPTY_TRAIT_LAWS)
+        with self.assertRaisesRegex(ValueError, 'edit the Rust invariant directly'):
+            workspace.protect_projections(self.work)
+        projection.write_bytes(original)
+        del state['trait_projection']
+        state_path.write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, 'copy-back is unsupported'):
+            workspace.protect_projections(self.work)
+
     def test_original_rust_spec_trailing_blanks_remain_readable_and_noop_preserved(self):
         source = BLOCK.replace('/// ```\n', '/// \n/// \n/// ```\n') + 'fn f(x: usize) {}\n'
         self.generate(source)

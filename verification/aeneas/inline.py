@@ -29,6 +29,7 @@ from pathlib import Path
 import golden
 import source_inventory
 import workspace
+import trait_invariants
 from output import write_text
 
 MARKER = re.compile(r'`{2,}\s*([^\s`]+)')
@@ -53,6 +54,10 @@ class Annotations(dict):
         self.external_type_parameters = None
         self.source_snapshots = {}
         self.source_body_digests = {}
+        self.trait_proofs = []
+        self.function_dictionaries = {}
+        self.extracted_traits = None
+        self.annotation_origins = None
 
 
 class GeneratedLines(list):
@@ -325,6 +330,17 @@ def parse_model(text, generics):
             'model_text': text}
 
 
+def parse_invariant(text):
+    checked_payload(text)
+    match = re.fullmatch(r'invariant (' + IDENTIFIER + r') for self\s*=>\s*(.+?)\s*', text, re.S)
+    if not match:
+        raise ValueError('Trait fence requires invariant name for self => proposition')
+    reject_commands(match[2])
+    if any(line and not line.startswith('  ') for line in text.splitlines()[1:]):
+        raise ValueError('Invariant continuations must be indented by two spaces')
+    return match[1], {'predicate': match[2], 'invariant_text': text}
+
+
 def parse_file(source, syntax):
     """Read literal owner docs, then account for every reserved source fence.
 
@@ -339,14 +355,18 @@ def parse_file(source, syntax):
         return len(source.encode('utf-8')[:byte].decode('utf-8'))
 
     found, owned = [], set()
-    owners = [*syntax['functions'], *syntax.get('types', [])]
+    owners = [*syntax['functions'], *syntax.get('types', []),
+              *syntax.get('traits', []), *syntax.get('trait_impls', []),
+              *syntax.get('macro_docs', [])]
     for owner in owners:
-        if owner.get('include_str_docs'):
-            raise ValueError('Direct include_str! in owner doc expressions is unsupported; use literal outer docs')
         docs = owner.get('docs', [])
-        if owner.get('computed_docs') and any(suspicious(doc['text']) for doc in docs):
+        if (owner.get('include_str_docs') and (not owner.get('macro_input')
+                or any(suspicious(doc['text']) for doc in docs))):
+            raise ValueError('Direct include_str! in owner doc expressions is unsupported; use literal outer docs')
+        if (owner.get('kind') != 'trait' and owner.get('computed_docs')
+                and any(suspicious(doc['text']) for doc in docs)):
             raise ValueError('Computed doc strings on function or nominal type owners are unsupported; use literal outer docs')
-        content, lines = [], []
+        content, lines, fragments = [], [], []
         for doc in docs:
             owned.add((doc['start'], doc['end']))
             # /// desugars to a string beginning with one conventional space.
@@ -361,6 +381,7 @@ def parse_file(source, syntax):
                 elif (raw_doc.startswith('///') or (raw_doc.startswith('/**') and index == 0)) and line.startswith(' '):
                     line = line[1:]
                 content.append(line)
+                fragments.append(doc)
                 lines.append(doc['line'] + index if source[char_offset(doc['start']):].startswith(('///', '/**')) else doc['line'])
         index, count = 0, 0
         while index < len(content):
@@ -375,6 +396,7 @@ def parse_file(source, syntax):
             count += 1
             if count != 1:
                 raise ValueError('Duplicate Aeneas declarations on one Rust owner')
+            fence_start = index
             start = index + 1
             index = start
             while index < len(content) and content[index].rstrip() != '```':
@@ -384,11 +406,30 @@ def parse_file(source, syntax):
             if index == len(content):
                 raise ValueError('Unterminated aeneas fence')
             payload = '\n'.join(content[start:index]) + '\n'
-            kind = 'function' if owner.get('kind', 'function') == 'function' else 'type'
+            owner_kind = owner.get('kind', 'function')
+            kind = owner_kind if owner_kind in {'function', 'trait', 'trait-impl'} else 'type'
             if kind == 'function':
                 name, clause_line = parse_spec(payload, owner['generics'], owner['inputs'])
                 extra = {'spec_text': payload, 'clause_line': clause_line,
                          'ghosts': binder_header(payload, re.match(r'^(?:partial )?spec\s+' + IDENTIFIER, payload).end())[0]}
+            elif kind == 'trait':
+                name, extra = parse_invariant(payload)
+            elif kind == 'trait-impl':
+                checked_payload(payload)
+                proof = re.fullmatch(r'invariant_proof\s*', payload)
+                if not proof:
+                    raise ValueError('Implementation fence requires nameless invariant_proof')
+                # Charon reports display columns, while our syntax parser owns byte
+                # spans. Restrict endpoint prefixes to ordinary ASCII until we
+                # also expose byte spans in native binding metadata. This fails
+                # closed instead of guessing Unicode or tab display widths.
+                for byte in (() if owner.get('macro_input') else (owner['start'], owner['close'])):
+                    prefix = source[:char_offset(byte)].rsplit('\n', 1)[-1]
+                    if not prefix.isascii() or '\t' in prefix:
+                        raise ValueError('Implementation marker span endpoints require ASCII without tabs')
+                name, extra = None, {'proof_text': payload, 'const_generics': owner['const_generics'],
+                                      'byte_start': owner['start'], 'byte_end': owner['close'],
+                                      'macro_input': bool(owner.get('macro_input'))}
             else:
                 extra = parse_model(payload, owner['generics'])
                 name = extra['model_name']
@@ -411,12 +452,24 @@ def parse_file(source, syntax):
                 finish = begin + len(''.join(selected).encode('utf-8'))
                 copy_span = {'start': begin, 'end': finish, 'prefix': prefixes[0][1],
                              'newline': '\r\n' if selected[0].endswith('\r\n') else '\n'}
+            fence_docs = []
+            for fragment in fragments[fence_start:index + 1]:
+                if not fence_docs or fragment != fence_docs[-1]:
+                    fence_docs.append(fragment)
             found.append({'syntax': owner['path'], 'kind': kind, 'theorem': name,
                           'copy_span': copy_span,
+                          'method': bool(owner.get('method')),
+                          'declaration_begin': owner.get('declaration_start', owner['start']),
+                          'declaration_end': owner['close'],
+                          'doc_fragments': [{'begin': d.get('origin_start', d['start']),
+                                             'end': d.get('origin_end', d['end']),
+                                             'text': d['text']} for d in fence_docs],
                           'generics': owner['generics'], 'inputs': owner['inputs'],
+                          'trait_bounds': owner.get('trait_bounds', []),
                           'source_lines': lines[start:index],
                           'newline': '\r\n' if '\r\n' in source else '\n',
                           'open_line': source[:declaration].count('\n') + 1,
+                          'open_col': declaration - source.rfind('\n', 0, declaration) - 1,
                           'end_line': source[:close].count('\n') + 1,
                           'end_col': close - source.rfind('\n', 0, close) - 1,
                           **extra})
@@ -436,15 +489,119 @@ def parse_file(source, syntax):
     return found
 
 
+def reconcile_origins(annotations, evidence, before=None):
+    """Join authored fences to the full compiler attribute census exactly once.
+
+    Only fragments belonging to annotations require unique ownership. Common
+    prose can legitimately be forwarded to several declarations.
+    """
+    if evidence.get('version') != 1 or not isinstance(evidence.get('nodes'), list):
+        raise ValueError('Missing supported native annotation origin census')
+    if not isinstance(evidence.get('sources'), list):
+        raise ValueError('Native annotation census lacks compiler source snapshots')
+    seen_sources = set()
+    for source in evidence['sources']:
+        path = 'zerocopy/' + source['file']
+        if path in seen_sources or path not in annotations.source_snapshots:
+            raise ValueError('Native annotation census has an uninspected or duplicate source')
+        seen_sources.add(path)
+        captured = annotations.source_snapshots[path].decode('utf-8').removeprefix('\ufeff').replace('\r\n', '\n')
+        if source['text'] != captured:
+            raise ValueError('Native annotation census describes changed source contents')
+    authored = [*annotations.values(), *annotations.trait_proofs]
+    origins, occurrences = {}, {}
+    for index, annotation in enumerate(authored):
+        for fragment in annotation['doc_fragments']:
+            key = (annotation['file'].removeprefix('zerocopy/'), fragment['begin'], fragment['end'])
+            if key in origins:
+                raise ValueError('Overlapping authored annotation fragments')
+            origins[key] = (index, fragment['text'])
+            occurrences[key] = []
+    for index, node in enumerate(evidence['nodes']):
+        for position, fragment in enumerate(node['docs']):
+            key = (fragment['file'], fragment['begin'], fragment['end'])
+            entry = origins.get(key)
+            if entry is not None and 'zerocopy/' + fragment['file'] not in seen_sources:
+                raise ValueError('Native annotation fragment lacks its compiler source snapshot')
+            if entry is None:
+                if suspicious(fragment['text']):
+                    raise ValueError('Compiler reserved annotation lacks an authored source fragment')
+                continue
+            if (node['node_kind'] == 'unsupported' or fragment['outer'] is not True
+                    or fragment['text'] != entry[1]):
+                raise ValueError(f'Compiler annotation has unsupported ownership or changed cooked payload: {node["owner"]} at {key}')
+            occurrences[key].append((index, position))
+    owner_groups, bindings = set(), []
+    for index, annotation in enumerate(authored):
+        matches = []
+        for fragment in annotation['doc_fragments']:
+            key = (annotation['file'].removeprefix('zerocopy/'), fragment['begin'], fragment['end'])
+            if len(occurrences[key]) != 1:
+                raise ValueError('Annotation fragment must decorate exactly one compiler owner')
+            matches.append(occurrences[key][0])
+        owner = matches[0][0]
+        if (any(match[0] != owner for match in matches)
+                or [p for _, p in matches] != list(range(matches[0][1], matches[0][1] + len(matches)))):
+            raise ValueError('Compiler changed annotation fragment order or completeness')
+        node = evidence['nodes'][owner]
+        if owner in owner_groups:
+            raise ValueError('Compiler owner carries multiple authored annotation fences')
+        owner_groups.add(owner)
+        if node['node_kind'] != annotation['kind']:
+            raise ValueError('Compiler annotation declaration kind differs from source owner')
+        if annotation.get('macro_input'):
+            if node.get('positive') is not True or not isinstance(node.get('trait_impl_id'), int):
+                raise ValueError('Macro marker requires its exact extracted positive trait impl')
+            if before is not None:
+                original = trait_invariants.declarations(before, 'trait_impls').get(node['trait_impl_id'])
+                if original is None or node.get('trait_impl') != original:
+                    raise ValueError('Native macro owner differs from the original extracted dictionary')
+            annotation['native_trait_impl_id'] = node['trait_impl_id']
+        else:
+            span = node['span']
+            begin, end = annotation['declaration_begin'], annotation['declaration_end']
+            if (span['file'] != annotation['file'].removeprefix('zerocopy/')
+                    or span['end'] != end
+                    or span['begin'] != begin):
+                raise ValueError(f'Compiler moved annotation from its direct source declaration: {annotation["rust"]}, native {span}, source {begin}:{end}')
+            if (annotation['kind'] != 'trait-impl' and not annotation.get('method')
+                    and ('zerocopy::' + node['owner'].removeprefix('zerocopy::')) != annotation['rust']):
+                raise ValueError('Compiler moved annotation to a different source identity or scope')
+        bindings.append({'file': annotation['file'], 'syntax': annotation['syntax'],
+                         'owner': node['owner'], 'span': node['span'],
+                         'trait_impl_id': node.get('trait_impl_id'),
+                         'fragments': annotation['doc_fragments']})
+    annotations.annotation_origins = bindings
+
+
+def impl_root(marker):
+    if marker.get('macro_input'):
+        first = marker['doc_fragments'][0]
+        return ('@doc-origin:' + marker['file'].removeprefix('zerocopy/')
+                + f":{first['begin']}:{first['end']}")
+    return ('@span:' + marker['file'].removeprefix('zerocopy/')
+            + f":{marker['byte_start']}:{marker['byte_end']}")
+
+
 def write_scan(annotations, work):
-    """Select exactly the Rust owners of the present annotations as roots.
+    """Select function/model roots and retain required trait annotations.
 
     CI checks every present specification so an owned fence cannot escape
     extraction, canonical proof checking, or either model's compiled audit.
     """
     write_text(work / 'annotations.json', json.dumps(annotations, indent=2) + '\n')
     write_text(work / 'source-types.json', json.dumps(getattr(annotations, 'types', []), indent=2) + '\n')
-    write_text(work / 'roots.txt', ','.join(annotations) + '\n')
+    write_text(work / 'trait-proofs.json', json.dumps(getattr(annotations, 'trait_proofs', []), indent=2) + '\n')
+    # Starting from a trait name also selects its default method bodies. A
+    # law describes the dictionaries used by our function roots; it does not
+    # claim that every method is supported. bind_laws separately requires each
+    # annotated trait to be present and every extracted local impl to be proved.
+    roots = [rust for rust, a in annotations.items() if a.get('kind') != 'trait']
+    write_text(work / 'roots.txt', ','.join(roots) + '\n')
+    # Names cannot uniquely select array impls. Root the exact Rust-owned UTF-8
+    # byte span without synthesizing a caller or selecting unrelated impls.
+    write_text(work / 'impl-roots.txt', ''.join(
+        impl_root(marker) + '\n' for marker in annotations.trait_proofs))
 
 
 def discover(root, tool):
@@ -498,12 +655,17 @@ def discover(root, tool):
             if not valid_file(file):
                 raise ValueError(f'Unsupported annotated source location: {file}')
             rust = rust_identity(file, annotation['syntax'])
+            if annotation['kind'] == 'trait-impl':
+                annotations.trait_proofs.append({**annotation, 'rust': rust, 'file': file})
+                continue
             if rust in annotations:
                 raise ValueError(f'Duplicate annotation: {rust}')
             if annotation['kind'] == 'function' and annotation['theorem'] in {a['theorem'] for a in annotations.values() if a['kind'] == 'function'}:
                 raise ValueError(f'Duplicate specification name: {annotation["theorem"]}')
+            if annotation['kind'] == 'trait' and annotation['theorem'] in {a['theorem'] for a in annotations.values() if a['kind'] == 'trait'}:
+                raise ValueError(f'Duplicate trait invariant name: {annotation["theorem"]}')
             annotations[rust] = {**annotation, 'rust': rust, 'file': file}
-    if not annotations:
+    if not annotations and not annotations.trait_proofs:
         raise ValueError('No Aeneas specifications discovered')
     return annotations
 
@@ -634,9 +796,13 @@ def generated_bindings(source, annotations, types_source=None):
         if rust in models:
             raise ValueError(f'Duplicate generated Lean root identity: {rust}')
         names, _ = binder_header(declaration, header.end())
-        expected = annotations[rust]['generics'] + annotations[rust]['inputs']
-        if names != expected:
+        a = annotations[rust]
+        count = len(getattr(annotations, 'function_dictionaries', {}).get(rust, []))
+        prefix = len(a['generics'])
+        expected = a['generics'] + a['inputs']
+        if names[:prefix] + names[prefix + count:] != expected:
             raise ValueError(f'Generated model parameters disagree with Rust parameters for {rust}: {names} != {expected}')
+        a['dictionary_names'] = names[prefix:prefix + count]
         models[rust] = header[1]
     type_annotations = {rust: a for rust, a in annotations.items() if a.get('kind') == 'type'}
     if type_annotations:
@@ -652,7 +818,8 @@ def generated_bindings(source, annotations, types_source=None):
             if declaration['generics'] != annotation['generics']:
                 raise ValueError(f'Generated model type parameters disagree with Rust parameters for {rust}')
             models[rust] = declaration['model']
-    if models.keys() != annotations.keys():
+    computational = {rust for rust, a in annotations.items() if a.get('kind') != 'trait'}
+    if models.keys() != computational:
         raise ValueError('Generated Lean root declarations do not match discovered specifications')
     return models
 
@@ -692,6 +859,92 @@ def model_digest(work):
     return hashlib.sha256(normalized.encode()).hexdigest()
 
 
+def unemitted_nominals(annotations, sources, omitted, final, before, native):
+    """Require a native producer omission of an unannotated zero-case enum."""
+    native_omissions = []
+    if not isinstance(native.get('types'), list):
+        raise ValueError('Native type omission lacks a complete emitted type inventory')
+    ids = trait_invariants.declarations(final, 'type_decls')
+    originals = trait_invariants.declarations(before, 'type_decls')
+    for rust in sorted(omitted):
+        declarations = [d for d in ids.values()
+                        if d['item_meta'].get('is_local') is True
+                        and all(set(e) == {'Ident'} and e['Ident'][1] == 0
+                                for e in d['item_meta']['name'])
+                        and trait_invariants.name(d['item_meta']) == rust]
+        if len(declarations) != 1:
+            raise ValueError(f'Aeneas omitted an ambiguous native nominal owner: {rust}')
+        declaration = declarations[0]
+        ident = declaration['def_id']
+        original = originals.get(ident)
+        if (rust in annotations or declaration['kind'] != {'Enum': []}
+                or original is None or original['kind'] != declaration['kind']
+                or original['item_meta']['name'] != declaration['item_meta']['name']
+                or original['item_meta']['span'] != declaration['item_meta']['span']
+                or original['item_meta'].get('is_local') is not True
+                or declaration['item_meta'].get('started_from') is not False
+                or any(original['generics'].get(key) for key in
+                       ('regions', 'types', 'const_generics', 'trait_clauses', 'trait_type_constraints'))
+                or any(declaration['generics'].get(key) for key in
+                       ('regions', 'types', 'const_generics', 'trait_clauses', 'trait_type_constraints'))
+                or any(entry.get('def_id') == ident or entry.get('rust_name') == rust
+                       for entry in native['types'])):
+            raise ValueError(f'Generated nominal type omission lacks exact uninhabited native evidence: {rust}')
+        source = sources[rust]
+        native_omissions.append({'rust': rust, 'raw': None,
+            'category': 'unemitted-uninhabited', 'parameters': 0,
+            'def_id': ident, 'expected_raw': 'Zerocopy.' + rust.removeprefix('zerocopy::').replace('::', '.'),
+            'file': source['file'], 'syntax': source['syntax'],
+            'open_line': source['open_line'], 'end_line': source['end_line'],
+            'end_col': source['end_col'], 'native': declaration,
+            'original': original})
+    return native_omissions
+
+
+def development_bindings(root, annotations, work, extracted):
+    """Reuse fresh compiler bindings without claiming that proofs were checked.
+
+    Golden definitions must match the extracted model's meaning. Preserve the
+    native evidence used by trait and physical bindings; only the manifest's
+    development mode differs from the freshly extracted project.
+    """
+    import admission
+    from output import write_bytes
+
+    workspace.protect_projections(work)
+    manifest = json.loads((extracted / 'bindings.json').read_text())
+    sources = source_digest(root, annotations)
+    if (manifest.get('version') != 3 or manifest.get('mode') != 'verified-live'
+            or manifest.get('sources') != sources
+            or manifest.get('model') != model_digest(extracted)):
+        raise ValueError('Development preparation requires fresh verified compiler bindings; run dev.sh again')
+    if (manifest['model'] != model_digest(work) or any(
+            golden.normalize((extracted / 'Zerocopy' / name).read_text()) !=
+            golden.normalize((work / 'Zerocopy' / name).read_text()) for name in golden.FILES)):
+        raise ValueError('Golden model differs from current Rust extraction; use dev.sh --live')
+    evidence = manifest.get('admission') or {}
+    if (evidence.get('version') != 1 or evidence.get('sources') != sources
+            or evidence.get('inputs') != json.loads((extracted / 'extraction-inputs.json').read_text())
+            or evidence.get('registry') != admission.digest(root / 'verification/aeneas/external.json')
+            or set(evidence.get('stages', {})) != {'before', 'llbc'}):
+        raise ValueError('Development compiler binding admission is missing or stale; run dev.sh again')
+    filenames = ('zerocopy.llbc', 'zerocopy.before.ullbc',
+                 'annotation-origins.json', 'extraction-inputs.json', 'Zerocopy/translation.json')
+    contents = {name: (extracted / name).read_bytes() for name in filenames}
+    for stage, name in (('before', 'zerocopy.before.ullbc'), ('llbc', 'zerocopy.llbc')):
+        if evidence['stages'][stage].get('sha256') != hashlib.sha256(contents[name]).hexdigest():
+            raise ValueError('Development native evidence differs from admitted extraction')
+    if manifest.get('native_bindings_sha256') != hashlib.sha256(contents['Zerocopy/translation.json']).hexdigest():
+        raise ValueError('Development native bindings differ from admitted extraction')
+    check_bindings(root, annotations, extracted / 'zerocopy.llbc')
+    generated_bindings((work / 'Zerocopy/Funs.lean').read_text(), annotations,
+                       (work / 'Zerocopy/Types.lean').read_text())
+    for name, content in contents.items():
+        write_bytes(work / name, content)
+    manifest['mode'] = 'development'
+    write_text(work / 'bindings.json', json.dumps(manifest, indent=2) + '\n')
+
+
 def save_bindings(root, annotations, work, development=False):
     """Persist a checked name correspondence for both projection builds.
 
@@ -707,6 +960,19 @@ def save_bindings(root, annotations, work, development=False):
     nominal = generated_nominal_types(types.read_text()) if types.exists() else []
     extracted_types = getattr(annotations, 'extracted_types', None)
     source_candidates = {}
+    native_omissions = []
+    if extracted_types is not None:
+        emitted = {declaration['rust'] for declaration in nominal}
+        omitted = set(extracted_types) - emitted
+        if omitted:
+            if not ((work / 'zerocopy.llbc').is_file()
+                    and (work / 'zerocopy.before.ullbc').is_file()):
+                raise ValueError('Generated nominal type declarations do not match extracted Rust nominal types; missing native omission evidence')
+            final = json.loads((work / 'zerocopy.llbc').read_text())['translated']
+            before = json.loads((work / 'zerocopy.before.ullbc').read_text())['translated']
+            native = trait_invariants.read_translation(work, final)
+            native_omissions = unemitted_nominals(annotations, extracted_types, omitted, final, before, native)
+            extracted_types = {rust: source for rust, source in extracted_types.items() if rust not in omitted}
     if extracted_types is None:
         for source in getattr(annotations, 'types', []):
             source_candidates.setdefault(source['rust'], []).append(source)
@@ -732,6 +998,18 @@ def save_bindings(root, annotations, work, development=False):
                               'generics': a['generics'], 'inputs': a['inputs'],
                               'file': a['file'], 'syntax': a['syntax'], 'spec': a['theorem'],
                               'open_line': a['open_line'], 'end_line': a['end_line'], 'end_col': a['end_col']}
+            bindings[rust]['dictionary_count'] = len(getattr(annotations, 'function_dictionaries', {}).get(rust, []))
+            bindings[rust]['dictionary_names'] = a.get('dictionary_names', [])
+            bindings[rust]['trait_clauses'] = getattr(annotations, 'function_dictionaries', {}).get(rust, [])
+    trait_laws, trait_impl_laws, trait_dictionaries = [], [], []
+    if (any(a.get('kind') == 'trait' for a in annotations.values())
+            or getattr(annotations, 'trait_proofs', [])
+            or any(getattr(annotations, 'function_dictionaries', {}).values())):
+        if development:
+            raise ValueError('Trait laws require verified compiler bindings; development discovery is insufficient')
+        final = json.loads((work / 'zerocopy.llbc').read_text())['translated']
+        before = json.loads((work / 'zerocopy.before.ullbc').read_text())['translated']
+        trait_laws, trait_impl_laws, trait_dictionaries = trait_invariants.bind_laws(annotations, work, final, before)
     for declaration in nominal:
         rust = declaration['rust']
         source = source_types[rust]
@@ -746,7 +1024,8 @@ def save_bindings(root, annotations, work, development=False):
                           'macro_expanded': bool(source.get('macro_expanded')),
                           'file': source['file'], 'syntax': source['syntax'],
                           'open_line': source['open_line'], 'end_line': source['end_line'], 'end_col': source['end_col']}
-    type_image = []
+    physical_plans = {}
+    type_image = list(native_omissions)
     classes = getattr(annotations, 'type_classes', None) if not development else None
     if not development and types.exists() and classes is None:
         raise ValueError('Verified live type image requires checked LLBC classification')
@@ -777,19 +1056,32 @@ def save_bindings(root, annotations, work, development=False):
         else:
             raise ValueError(f'Unsupported raw type classification: {category}')
         type_image.append({'rust': rust, 'raw': declaration['raw'],
-                           'category': category, 'parameters': declaration['parameters']})
+                           'category': category, 'parameters': declaration['parameters'],
+                           **({'physical_model': physical_plans[rust]} if rust in physical_plans else {})})
     if {row['rust'] for row in type_image if row['category'] == 'local-nominal'} != set(source_types):
         raise ValueError('Generated raw type image omits a source-bound nominal type')
+    image = {row['rust']: row for row in type_image}
+    for dictionary in trait_dictionaries:
+        row = image.get(dictionary['rust'])
+        if row is None or row['category'] != 'trait-dictionary' or row['raw'] != dictionary['raw']:
+            raise ValueError('Native trait dictionary identity disagrees with generated type classification')
     import admission
     admitted = None if development else admission.inspect(root, work,
         [name for name, entry in bindings.items() if entry['kind'] == 'function'],
-        source_digest(root, annotations), annotations.source_body_digests)
+        source_digest(root, annotations), annotations.source_body_digests,
+        [rust for rust, a in annotations.items() if a.get('kind') == 'trait'])
     if admitted is not None:
         admission.check_translation(work, admitted)
     manifest = {'version': 3, 'bindings': bindings, 'admission': admitted,
+                'trait_laws': trait_laws, 'trait_impl_laws': trait_impl_laws,
+                'trait_dictionaries': trait_dictionaries,
+                'annotation_origins': annotations.annotation_origins,
                 'type_image': type_image,
                 'mode': 'development' if development else 'verified-live',
                 'sources': source_digest(root, annotations), 'model': model_digest(work)}
+    native_metadata = work / 'Zerocopy/translation.json'
+    if native_metadata.is_file():
+        manifest['native_bindings_sha256'] = hashlib.sha256(native_metadata.read_bytes()).hexdigest()
     write_text(work / 'bindings.json', json.dumps(manifest, indent=2) + '\n')
 
 
@@ -816,9 +1108,38 @@ def assemble(root, annotations, work, development=False):
         raise ValueError('Model bindings are stale; regenerate specs from the current sources and model')
     if development:
         workspace.protect_projections(work)
+    physical_entries = {rust: entry['physical_model']
+                        for rust, entry in manifest['bindings'].items()
+                        if entry.get('physical_model')}
+    physical_entries.update({entry['rust']: entry['physical_model']
+                             for entry in manifest.get('type_image', [])
+                             if entry.get('physical_model')})
+    has_omissions = any(entry.get('category') == 'unemitted-uninhabited'
+                        for entry in manifest.get('type_image', []))
+    if physical_entries or has_omissions:
+        if not ((work / 'zerocopy.llbc').is_file()
+                and (work / 'zerocopy.before.ullbc').is_file()):
+            raise ValueError('Physical model bindings require their native layout evidence')
+        stages = (manifest.get('admission') or {}).get('stages', {})
+        for stage, filename in (('before', 'zerocopy.before.ullbc'), ('llbc', 'zerocopy.llbc')):
+            current = hashlib.sha256((work / filename).read_bytes()).hexdigest()
+            if stages.get(stage, {}).get('sha256') != current:
+                raise ValueError('Physical model native evidence differs from admitted extraction')
+        if has_omissions:
+            native_path = work / 'Zerocopy/translation.json'
+            if (not native_path.is_file() or hashlib.sha256(native_path.read_bytes()).hexdigest()
+                    != manifest.get('native_bindings_sha256')):
+                raise ValueError('Unemitted native type evidence differs from admitted producer bindings')
+        import physical_models
+        plans = physical_models.validate_physical_wrapper_plans(
+            json.loads((work / 'zerocopy.llbc').read_text())['translated'],
+            json.loads((work / 'zerocopy.before.ullbc').read_text())['translated'])
+        if any(plans.get(rust) != plan for rust, plan in physical_entries.items()):
+            raise ValueError('Physical model bindings are stale; native representation changed')
     workspace.retire_generated(work)
     bindings = manifest['bindings']
     claimed = {rust for rust, entry in bindings.items() if entry['kind'] == 'function' or entry['authored']}
+    claimed.update(law['rust'] for law in manifest.get('trait_laws', []))
     if claimed != set(annotations):
         raise ValueError('Verified live bindings do not cover every specification')
     imports = ['module', 'public import Zerocopy.Funs', 'public import SpecPrelude', 'public import SpecsSyntax', 'public import Models']
@@ -826,6 +1147,28 @@ def assemble(root, annotations, work, development=False):
         imports.append('public import LayoutModel')
     elif (root / 'verification/aeneas/lean/Arithmetic.lean').exists():
         imports.append('public import Arithmetic')
+    if manifest.get('trait_dictionaries'):
+        imports.append('public import TraitLaws')
+        law_lines = GeneratedLines([*golden.HEADER.rstrip().splitlines(), '', 'module',
+            'public import Zerocopy.Funs', 'public import TraitLawsSupport',
+            *[line for line in imports if line in {'public import LayoutModel', 'public import Arithmetic'}],
+            '@[expose] public section', 'open Aeneas Aeneas.Std',
+            'namespace Zerocopy.TraitLaws', ''])
+        for dictionary in manifest['trait_dictionaries']:
+            law_lines.append('trait_dictionary @' + dictionary['raw'])
+        for law in manifest['trait_laws']:
+            law_lines.append(f'trait_invariant {law["theorem"]} for @{law["raw"]} '
+                             f'with {law["generic_count"]} type parameters where self =>')
+            for index, line in enumerate(law['predicate'].splitlines()):
+                law_lines.append('  ' + line, {'file': law['file'],
+                    'line': law['source_lines'][min(index, len(law['source_lines']) - 1)]})
+            law_lines.append('')
+        law_lines.extend(['end Zerocopy.TraitLaws', ''])
+        write_text(work / 'TraitLaws.lean', '\n'.join(law_lines))
+        write_text(work / 'TraitLaws.source-map.json', json.dumps(law_lines.locations, indent=2) + '\n')
+    else:
+        write_text(work / 'TraitLaws.lean', golden.EMPTY_TRAIT_LAWS)
+        write_text(work / 'TraitLaws.source-map.json', '{}\n')
     specs = GeneratedLines([*golden.HEADER.rstrip().splitlines(), '', *imports, '@[expose] public section', '',
              'open Aeneas Aeneas.Std', 'open Zerocopy.Proofs', 'namespace Zerocopy.Specs', ''])
     for a in annotations.values():
@@ -837,6 +1180,7 @@ def assemble(root, annotations, work, development=False):
         lines = a['spec_text'].rstrip('\n').split('\n')
         clause = a['clause_line']
         application = f'@{model} with {len(a["generics"])} type parameters'
+        dictionary_count = bindings[a['rust']].get('dictionary_count', 0)
         lines.insert(clause, '  for ' + application)
         specs.append(f'check_model_inputs {model} with {len(a["generics"])} type parameters',
                      {'file': a['file'], 'line': a['source_lines'][0]})
@@ -850,7 +1194,7 @@ def assemble(root, annotations, work, development=False):
             specs.append(f'-- aeneas-copy-end {a["rust"]} spec')
         specs.append('aeneas_spec_end', {'file': a['file'], 'line': a['source_lines'][-1]})
         specs.append(f'check_spec_binding Zerocopy.Specs.{a["theorem"]} '
-                     f'for {model} with {len(a["generics"]) + len(a["inputs"])}',
+                     f'for {model} with {len(a["generics"]) + dictionary_count + len(a["inputs"])}',
                      {'file': a['file'], 'line': a['source_lines'][0]})
         specs.append('')
     specs.extend(['end Zerocopy.Specs', ''])
@@ -870,6 +1214,10 @@ def assemble(root, annotations, work, development=False):
         if entry['kind'] != 'type':
             continue
         raw, count = entry['raw'], len(entry['generics'])
+        physical_suffix = ''
+        if entry.get('physical_model'):
+            import physical_models
+            physical_suffix = physical_models.physical_model_suffix(entry['physical_model'])
         a = annotations.get(rust)
         if entry['authored']:
             shapes.append(f'aeneas_model_shape {raw} with {count} type parameters begin',
@@ -883,11 +1231,11 @@ def assemble(root, annotations, work, development=False):
             location = {'file': a['file'], 'line': a['source_lines'][a['decoder_clause_line']]}
             shapes.append('end', location)
             if development:
-                decoders.append(f'derive_rust_model {raw} with {count} type parameters', location)
+                decoders.append(f'derive_rust_model {raw} with {count} type parameters{physical_suffix}', location)
                 decoders.append(f'-- aeneas-copy-begin {rust} decoder')
                 decoders.append(f'{a["decoder_mode"]} {a["value_binder"]} =>', location)
             else:
-                decoders.append(f'derive_rust_model {raw} with {count} type parameters '
+                decoders.append(f'derive_rust_model {raw} with {count} type parameters{physical_suffix} '
                                 f'{a["decoder_mode"]} {a["value_binder"]} =>', location)
             for index, line in enumerate(a['decoder_text'].splitlines()):
                 decoders.append('  ' + line, {'file': a['file'],
@@ -897,7 +1245,7 @@ def assemble(root, annotations, work, development=False):
         else:
             location = {'file': entry['file'], 'line': entry['open_line']}
             shapes.append(f'derive_model_shape {raw} with {count} type parameters', location)
-            decoders.append(f'derive_rust_model {raw} with {count} type parameters', location)
+            decoders.append(f'derive_rust_model {raw} with {count} type parameters{physical_suffix}', location)
         decoders.append(f'check_model_binding {raw} with {count} type parameters', location)
         shapes.append('')
         decoders.append('')
@@ -914,6 +1262,7 @@ def assemble(root, annotations, work, development=False):
                             *(str(path).removesuffix('.lean').replace('/', '.')
                               for path in workspace.handwritten(root)
                               if path != Path('Check.lean'))})
+    audit_modules.append('TraitLaws')
     required = ['import Lean', *('import ' + module for module in audit_modules)]
     required += ['open Lean', '']
     if (root / 'verification/aeneas/lean/Arithmetic.lean').exists():
@@ -924,6 +1273,9 @@ def assemble(root, annotations, work, development=False):
         name = a['theorem']
         required.append(f'example : Zerocopy.Specs.{name} := @Zerocopy.Proofs.{name}')
         required.append(f'check_contract Zerocopy.Obligations.{name} using @Zerocopy.Proofs.{name}')
+    for implementation in manifest.get('trait_impl_laws', []):
+        required.append(f'check_trait_law @{implementation["law"]} '
+                        f'for @{implementation["dictionary"]} using @{implementation["proof"]}')
     required.append('def proofModuleNames : Array Name := #[' + ', '.join('`' + module for module in modules) + ']')
     required.append('def auditModuleNames : Array Name := #[' + ', '.join('`' + module for module in audit_modules) + ']')
     write_text(work / 'Required.lean', '\n'.join(required) + '\n')
@@ -947,6 +1299,19 @@ def check_bindings(root, annotations, llbc):
         annotations.external_type_parameters = None
     source_digest(root, annotations)
     translated = json.loads(llbc.read_text())['translated']
+    if [root for root in translated.get('options', {}).get('start_from', [])
+            if root.startswith(('@span:', '@doc-origin:'))] != [
+                impl_root(marker) for marker in annotations.trait_proofs]:
+        raise ValueError('Compiler implementation roots disagree with discovered markers')
+    before_path = llbc.parent / 'zerocopy.before.ullbc'
+    before = json.loads(before_path.read_text())['translated'] if before_path.is_file() else None
+    evidence_path = llbc.parent / 'annotation-origins.json'
+    if before is not None:
+        if not evidence_path.is_file():
+            raise ValueError('Missing mandatory native annotation origin census')
+        reconcile_origins(annotations, json.loads(evidence_path.read_text()), before)
+    elif annotations.trait_proofs and any(p.get('macro_input') for p in annotations.trait_proofs):
+        raise ValueError('Macro markers require fresh native annotation origin census')
     files = {f['id']: f for f in translated['files']}
     if len(files) != len(translated['files']):
         raise ValueError('Duplicate extracted source file identity')
@@ -1063,6 +1428,14 @@ def check_bindings(root, annotations, llbc):
         if rust in roots:
             raise ValueError(f'Duplicate extracted type identity: {rust}')
         roots[rust] = declaration
+    for declaration in translated.get('trait_decls', []):
+        if not declaration or declaration['item_meta'].get('is_local') is not True:
+            continue
+        rust = identity(declaration['item_meta']['name'])
+        if rust in annotations and annotations[rust].get('kind') == 'trait':
+            if rust in roots:
+                raise ValueError(f'Duplicate extracted trait identity: {rust}')
+            roots[rust] = declaration
     if roots.keys() != annotations.keys():
         raise ValueError('Extracted type roots do not match the present annotations')
     def verify_source(rust, annotation, function):
@@ -1082,9 +1455,11 @@ def check_bindings(root, annotations, llbc):
                 or data['end'] != {'line': annotation['end_line'], 'col': annotation['end_col']}):
             raise ValueError(f'Charon extracted a different source body for {rust}')
         generics = function['generics']
-        if (generics['const_generics'] or generics['trait_clauses']
+        if (generics['const_generics'] or generics.get('trait_type_constraints')
                 or [parameter['name'] for parameter in generics['types']] != annotation['generics']):
             raise ValueError(f'Charon extracted different or unsupported generic parameters for {rust}')
+        if annotation.get('kind', 'function') != 'function' and generics['trait_clauses']:
+            raise ValueError(f'Trait bounds on nominal roots are unsupported: {rust}')
 
     # Charon's deduplicated indices are reused across value domains. Collect
     # definitions only by walking LLBC field-type positions, excluding array
@@ -1239,6 +1614,11 @@ def check_bindings(root, annotations, llbc):
             if not isinstance(function.get('kind'), dict) or set(function['kind']) != {expected}:
                 raise ValueError(f'Charon extracted a different or unsupported nominal type for {rust}')
             continue
+        if annotation.get('kind') == 'trait':
+            continue
+        clauses = trait_invariants.check_function_bounds(annotation, function, translated, before,
+            {r for r, a in annotations.items() if a.get('kind') == 'trait'})
+        annotations.function_dictionaries[rust] = clauses
         body = function.get('body') or {}
         locals_ = body.get('Structured', {}).get('locals', {})
         count = locals_.get('arg_count')
@@ -1329,24 +1709,31 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--tool', type=Path, required=True)
     parser.add_argument('--work', type=Path, required=True)
+    parser.add_argument('--bindings-work', type=Path,
+                        help='Fresh extraction project for development assembly')
     args = parser.parse_args()
+    if args.bindings_work is not None and args.command != 'dev-assemble':
+        parser.error('--bindings-work is available only for dev-assemble')
     annotations = discover(args.root, args.tool)
     if args.command == 'bindings':
         check_bindings(args.root, annotations, args.work / 'zerocopy.llbc')
         import admission
         admission.inspect(args.root, args.work,
             [name for name, entry in annotations.items() if entry.get('kind', 'function') == 'function'],
-            source_digest(args.root, annotations), annotations.source_body_digests)
+            source_digest(args.root, annotations), annotations.source_body_digests,
+            [rust for rust, a in annotations.items() if a.get('kind') == 'trait'])
     elif args.command == 'models':
         # The driver calls this only after bindings, on freshly generated live
         # output. Keep the verified mapping separate from mutable spec text.
         check_bindings(args.root, annotations, args.work / 'zerocopy.llbc')
         save_bindings(args.root, annotations, args.work)
     elif args.command == 'dev-assemble':
-        # Editor-only generation deliberately lacks the fresh extraction/body
-        # guarantee. CI uses models above and checks both independent builds.
+        # Editor generation consumes fresh compiler bindings but remains
+        # provisional. CI independently checks both golden and live builds.
         workspace.protect_projections(args.work)
-        save_bindings(args.root, annotations, args.work, development=True)
+        if args.bindings_work is None:
+            raise ValueError('Development assembly requires --bindings-work from run.sh --extract-only')
+        development_bindings(args.root, annotations, args.work, args.bindings_work)
         assemble(args.root, annotations, args.work, development=True)
     elif args.command == 'update':
         update(args.root, args.work)
