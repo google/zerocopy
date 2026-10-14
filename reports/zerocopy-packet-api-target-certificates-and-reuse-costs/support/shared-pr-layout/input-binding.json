@@ -1,0 +1,88 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "observations": {
+    "native": [
+      8,
+      4,
+      1,
+      2,
+      1
+    ],
+    "wasm": [
+      4,
+      4,
+      1,
+      2,
+      1
+    ]
+  },
+  "observation_origin": "Read retained parent actual output; no new Rust/native/Wasm execution in this followup.",
+  "inputs": {
+    "work/research/parent/packet-api-costs/lib.rs": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa",
+    "work/research/parent/packet-api-costs/results.json": "03e2c837136d9b535d1c9548182ebe8ecebee2119b214eb0e9aef5e2aba0c9a4",
+    "work/research/parent/packet-api-costs/native-check.stdout": "a5e7a6ab8311ac11dc4c1fcb20ab44934afa806bd1d753cfd2f02d2e047eb743",
+    "work/research/parent/packet-api-costs/wasm-check.stdout": "f6c548f80c047389ed037ff1b2272fcf218d1b574da9163a32fea334d72108a4",
+    "work/research/parent/packet-api-costs/rust-version.stdout": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+    "work/pr3846/anneal/lean/Rust/Layout.lean": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db"
+  },
+  "physical_mapping_premises": [
+    "Bool/array/header numerical representation and stride",
+    "usize alignment equals selected word size for the hypothetical aggregate",
+    "Selected Rust types/targets correspond to the model; no layout-only Bool versus u8 discrimination",
+    "Compiler/observation transport and emitted numerical facts are faithful"
+  ],
+  "new_actual_aggregate_observations": {
+    "native": [
+      16,
+      8,
+      8,
+      12,
+      1,
+      1,
+      4,
+      1,
+      2,
+      1,
+      8,
+      8
+    ],
+    "wasm": [
+      12,
+      4,
+      4,
+      8,
+      1,
+      1,
+      4,
+      1,
+      2,
+      1,
+      4,
+      4
+    ],
+    "meaning": [
+      "record size",
+      "record align",
+      "flags offset",
+      "header offset",
+      "Bool size",
+      "Bool align",
+      "flags4 size",
+      "flags4 align",
+      "header2 size",
+      "header2 align",
+      "usize size",
+      "usize align"
+    ],
+    "source": "Original aggregate.rs / repr(C), not the earlier byte-slice packet API type.",
+    "physical_mapping": "Actual compiler/engine output is manually faithfully imported; the shared PR model does not itself prove rustc representation."
+  },
+  "new_owned_inputs": {
+    "aggregate.rs": "085661e6a743f4f07b0b48078af99eb7b7159b419329133a20916888ec438e17",
+    "aggregate-wasm.mjs": "dd24bf7cfeb73b116abcdf9d2f0984416d3782c1d0106a25e9ce34ebd8d433d3",
+    "aggregate-native-check.stdout": "d761afcd308ca7353699aa6ee81e769a03fc0bb8f941af1d8af1d6f7bfdcfe9b",
+    "aggregate-wasm-check.stdout": "6d2803c977c97fc96552f76c822d46dcb82c9d0cc154237adb7ac1534f35f191",
+    "aggregate.wasm": "631ba07d973edfc3b225dfc46e2be3c6addee3518fdffae5e413db26214b85c3"
+  }
+}

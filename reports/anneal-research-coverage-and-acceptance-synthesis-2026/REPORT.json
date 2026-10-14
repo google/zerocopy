@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/research",
+    "verification/coverage",
+    "verification/acceptance",
+    "tcb/comparison",
+    "architecture/evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "Original Anneal364question agenda",
+      "identity": {
+        "artifact": "../anneal-research-agenda-2026-10-14/research-questions.json",
+        "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+      }
+    },
+    {
+      "name": "Published research corpus before final amendments",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "da662af90b31c20cd3c3098fbbc2a21ae6dc0a28",
+        "tree": "a96eee1a41b027cc54deac35b22897ffa9ee4f6a"
+      }
+    },
+    {
+      "name": "Integrated exact-question crosswalk",
+      "identity": {
+        "artifact": "question-crosswalk.json",
+        "sha256": "1d2df6ef7f295b93164f7020b0504704be23050fed77f76c7f829e6e6b6b185b",
+        "scope": "Substantive bounded assessments; current report and section identities"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

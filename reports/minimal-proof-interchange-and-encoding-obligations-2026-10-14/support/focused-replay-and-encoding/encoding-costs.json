@@ -1,0 +1,322 @@
+{
+  "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+  "method": "Byte/line counts and lexical declaration heads from pinned source. Regions extend to the next lexical declaration head; notation/comments may be included. No elaboration, binary proof generation, timing, transitive axiom closure or theorem verification.",
+  "separation_library": {
+    "path": "examples/separation_logic.mm1",
+    "bytes": 55623,
+    "lines": 1074,
+    "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37",
+    "lexical_declaration_heads": {
+      "theorem": 349,
+      "def": 17,
+      "axiom": 0,
+      "term": 0,
+      "sort": 0
+    },
+    "imports": [
+      "assembler-new.mm1"
+    ],
+    "source_sorry_uses": 0
+  },
+  "selected_regions": [
+    {
+      "symbol": "heap_join_ass",
+      "start_line": 119,
+      "end_line": 138,
+      "bytes_in_declaration_region": 1025,
+      "non_whitespace_tokens": 180,
+      "sha256": "b519506cca8c5365d306970b219e9a48b0162d1891d19c7ebee8010811238d9c"
+    },
+    {
+      "symbol": "s_sep",
+      "start_line": 498,
+      "end_line": 501,
+      "bytes_in_declaration_region": 137,
+      "non_whitespace_tokens": 36,
+      "sha256": "d1e5d0b07243d7fc01b9bf16f46bfd5bab92ae36df6645d78f995173c7a1c7c0"
+    },
+    {
+      "symbol": "s_sepcom",
+      "start_line": 522,
+      "end_line": 525,
+      "bytes_in_declaration_region": 163,
+      "non_whitespace_tokens": 33,
+      "sha256": "b9416927c8f474759092faf1cd5cef8e433f3db9eefee264a7c91d4abbb83cc0"
+    },
+    {
+      "symbol": "s_sepass",
+      "start_line": 526,
+      "end_line": 533,
+      "bytes_in_declaration_region": 396,
+      "non_whitespace_tokens": 66,
+      "sha256": "51896dc16e08cd4308764408ed009702a441494e03d4713142502ee9cddf4efa"
+    },
+    {
+      "symbol": "s_sepim1",
+      "start_line": 558,
+      "end_line": 559,
+      "bytes_in_declaration_region": 120,
+      "non_whitespace_tokens": 30,
+      "sha256": "684c70ed572e191076a5dbed64554c7d37a585e9f8d74362cc6299884b864d33"
+    },
+    {
+      "symbol": "s_wand",
+      "start_line": 692,
+      "end_line": 694,
+      "bytes_in_declaration_region": 150,
+      "non_whitespace_tokens": 39,
+      "sha256": "033c92c9fa490187cbe15ba625e49d511e96d0e2a64d420014fd2390ff41cf07"
+    },
+    {
+      "symbol": "s_wand_mp",
+      "start_line": 720,
+      "end_line": 720,
+      "bytes_in_declaration_region": 78,
+      "non_whitespace_tokens": 17,
+      "sha256": "0b3b81d37d54f18e51693f71e266570d6c2beaa6cf03f499185247fa9163e131"
+    },
+    {
+      "symbol": "s_Sep",
+      "start_line": 737,
+      "end_line": 740,
+      "bytes_in_declaration_region": 222,
+      "non_whitespace_tokens": 58,
+      "sha256": "7aae19d47d25a8399a4c22a63007496e4fb5b670183fce5f70dfa19496775318"
+    },
+    {
+      "symbol": "cbvs_Seps",
+      "start_line": 767,
+      "end_line": 768,
+      "bytes_in_declaration_region": 109,
+      "non_whitespace_tokens": 26,
+      "sha256": "aed254903e18709f7535ee6ce771ba1c5959dbb66718a14efba5301dd2b8e7a3"
+    },
+    {
+      "symbol": "s_Sep_un",
+      "start_line": 845,
+      "end_line": 893,
+      "bytes_in_declaration_region": 2632,
+      "non_whitespace_tokens": 480,
+      "sha256": "87f62f5268f0d1c302916a96720801e7245d382362c40c22b5e9bed176f718b7"
+    }
+  ],
+  "actual_mm1_import_closure": [
+    {
+      "path": "examples/separation_logic.mm1",
+      "bytes": 55623,
+      "lines": 1074,
+      "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37",
+      "lexical_declaration_heads": {
+        "theorem": 349,
+        "def": 17,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "assembler-new.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/assembler-new.mm1",
+      "bytes": 37672,
+      "lines": 908,
+      "sha256": "7b6b13e3e478d7c9c57432d6327e6cb23c55006d391faabcb8c75d71deede626",
+      "lexical_declaration_heads": {
+        "theorem": 134,
+        "def": 93,
+        "axiom": 1,
+        "term": 3,
+        "sort": 0
+      },
+      "imports": [
+        "assembler-old.mm1"
+      ],
+      "source_sorry_uses": 85
+    },
+    {
+      "path": "examples/assembler-old.mm1",
+      "bytes": 33426,
+      "lines": 762,
+      "sha256": "065e74ad5d8ee065cecbc66eaa0c745c52971212c81d6c48399ca720cf956379",
+      "lexical_declaration_heads": {
+        "theorem": 74,
+        "def": 52,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "x86_determ.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/x86_determ.mm1",
+      "bytes": 32676,
+      "lines": 731,
+      "sha256": "20f0309a7f4a7550fcf4e66318accf80624e95686d432cb1c6d2a31f08025782",
+      "lexical_declaration_heads": {
+        "theorem": 43,
+        "def": 0,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "x86.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/x86.mm1",
+      "bytes": 289071,
+      "lines": 5940,
+      "sha256": "d5faa8c19707698bf5fc77dee1d144a30e69429646580266e429cfb451faec8b",
+      "lexical_declaration_heads": {
+        "theorem": 1116,
+        "def": 272,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "peano_hex.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/peano_hex.mm1",
+      "bytes": 39061,
+      "lines": 807,
+      "sha256": "76fe94b569ecbf0aa051af20afe9c207bf8ec0b562c83c4f5d841118f2cc2d94",
+      "lexical_declaration_heads": {
+        "theorem": 141,
+        "def": 3,
+        "axiom": 7,
+        "term": 7,
+        "sort": 0
+      },
+      "imports": [
+        "peano.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/peano.mm1",
+      "bytes": 335771,
+      "lines": 6990,
+      "sha256": "13fd383aa02e434cba1350e9a8f12c440b5114d22f26506fece4aecdf1370079",
+      "lexical_declaration_heads": {
+        "theorem": 2049,
+        "def": 110,
+        "axiom": 26,
+        "term": 11,
+        "sort": 1
+      },
+      "imports": [],
+      "source_sorry_uses": 0
+    }
+  ],
+  "closure_source_bytes": 823300,
+  "other_specimens": [
+    {
+      "path": "examples/hol.mm0",
+      "bytes": 10327,
+      "lines": 255,
+      "sha256": "4f20167798f060a0d481adef8c1a2fad06147551b7e43104052d93d0a5e0fb35",
+      "lexical_declaration_heads": {
+        "theorem": 55,
+        "def": 20,
+        "axiom": 28,
+        "term": 14,
+        "sort": 1
+      },
+      "imports": [],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/hol.mm1",
+      "bytes": 23298,
+      "lines": 488,
+      "sha256": "9ee924d7b06e5db199fe93ed82c1d65df80a595a903def7daf742192b0e240ba",
+      "lexical_declaration_heads": {
+        "theorem": 99,
+        "def": 8,
+        "axiom": 28,
+        "term": 14,
+        "sort": 1
+      },
+      "imports": [],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/hello_mmc.mm0",
+      "bytes": 182,
+      "lines": 7,
+      "sha256": "66152cb595a91f0d034e04e4ce5effa68dffab592daac6c69678b0f3d3c5eb3d",
+      "lexical_declaration_heads": {
+        "theorem": 2,
+        "def": 1,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "compiler.mm0"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/hello_mmc.mm1",
+      "bytes": 1137,
+      "lines": 40,
+      "sha256": "92d4d0ad3909d1511199e85cdb5789ab47245c845fc4ef78629669cbfea5801f",
+      "lexical_declaration_heads": {
+        "theorem": 2,
+        "def": 0,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [
+        "compiler.mm1"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "examples/compiler.mm0",
+      "bytes": 512,
+      "lines": 13,
+      "sha256": "87b89d9c5cbc6c999f027289445135be87cc47e4688b41e4a93409a594d58034",
+      "lexical_declaration_heads": {
+        "theorem": 0,
+        "def": 0,
+        "axiom": 1,
+        "term": 3,
+        "sort": 0
+      },
+      "imports": [
+        "x86.mm0"
+      ],
+      "source_sorry_uses": 0
+    },
+    {
+      "path": "mm0-c/verifier.c",
+      "bytes": 31817,
+      "lines": 819,
+      "sha256": "71428a117c96a37b81e183ce57ef34b71e99efecba019e65a47ce27dd4faa4b5",
+      "lexical_declaration_heads": {
+        "theorem": 0,
+        "def": 0,
+        "axiom": 0,
+        "term": 0,
+        "sort": 0
+      },
+      "imports": [],
+      "source_sorry_uses": 0
+    }
+  ],
+  "scope": "Source-derived encoding/library burden. Compiler/separation import path exposes unrestricted sorry; this is not a completed admission-free compiler proof or an Iris port benchmark."
+}

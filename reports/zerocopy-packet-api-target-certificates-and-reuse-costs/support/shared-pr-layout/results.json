@@ -1,0 +1,153 @@
+{
+  "status": "pass",
+  "runs": [
+    {
+      "name": "final-bridge",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "-o",
+        "LayoutBridge.olean",
+        "LayoutBridge.lean"
+      ],
+      "expected": "accept",
+      "exit": 0,
+      "matched": true,
+      "elapsed_ns": 2222712125
+    },
+    {
+      "name": "aggregate-native-positive",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/aggregate-native-positive.lean"
+      ],
+      "expected": "accept",
+      "exit": 0,
+      "matched": true,
+      "elapsed_ns": 263293416
+    },
+    {
+      "name": "aggregate-wasm-positive",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/aggregate-wasm-positive.lean"
+      ],
+      "expected": "accept",
+      "exit": 0,
+      "matched": true,
+      "elapsed_ns": 242385291
+    },
+    {
+      "name": "aggregate-wrong-abi",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/aggregate-wrong-abi.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 238536208
+    },
+    {
+      "name": "aggregate-wrong-offset",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/aggregate-wrong-offset.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 238481916
+    },
+    {
+      "name": "aggregate-wrong-type",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/aggregate-wrong-type.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 251731416
+    },
+    {
+      "name": "extra-field",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/extra-field.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 257504625
+    },
+    {
+      "name": "missing-field",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/missing-field.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 246913208
+    },
+    {
+      "name": "native-positive",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/native-positive.lean"
+      ],
+      "expected": "accept",
+      "exit": 0,
+      "matched": true,
+      "elapsed_ns": 234014250
+    },
+    {
+      "name": "wasm-positive",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/wasm-positive.lean"
+      ],
+      "expected": "accept",
+      "exit": 0,
+      "matched": true,
+      "elapsed_ns": 233583791
+    },
+    {
+      "name": "wrong-abi",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/wrong-abi.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 234519250
+    },
+    {
+      "name": "wrong-array-length",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/wrong-array-length.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 239817291
+    },
+    {
+      "name": "wrong-header-type",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "controls/wrong-header-type.lean"
+      ],
+      "expected": "reject",
+      "exit": 1,
+      "matched": true,
+      "elapsed_ns": 251296750
+    }
+  ],
+  "source_sha256": "b1f971c118a2dfa061f1da82d34d919220f418eed61bc249600908f503366f8b",
+  "imported_pr_layout_sha256": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db",
+  "LEAN_PATH": "$TASK_ROOT/work/research/shared-pr-layout-instantiation:$TASK_ROOT/work/research/shared-pr-layout-instantiation/private-build"
+}

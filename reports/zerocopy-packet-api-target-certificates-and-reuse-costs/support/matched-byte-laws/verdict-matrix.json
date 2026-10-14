@@ -1,0 +1,142 @@
+{
+  "laws": {
+    "into_bytes": {
+      "Lean_direct": "checked generic and same concrete judgment",
+      "Lean_reflected": "checked same judgment via check_sound; concrete kernel decide; shared generic direct lemmas",
+      "initial_theory_rewrite": {
+        "exit": 0,
+        "verdict": "valid",
+        "accepted": true
+      },
+      "final_DSL_normal_form": {
+        "exits": [
+          0,
+          0,
+          0
+        ],
+        "verdicts": [
+          "valid",
+          "valid",
+          "valid"
+        ],
+        "accepted": true
+      },
+      "median_ms": {
+        "cvc5_generate": 9.685792,
+        "carcara_process": 3.324834
+      },
+      "proof_bytes": 834
+    },
+    "byte_write": {
+      "Lean_direct": "checked generic and same concrete judgment",
+      "Lean_reflected": "checked same judgment via check_sound; concrete kernel decide; shared generic direct lemmas",
+      "initial_theory_rewrite": {
+        "exit": 0,
+        "verdict": "holey",
+        "accepted": false
+      },
+      "final_DSL_normal_form": {
+        "exits": [
+          1,
+          1,
+          1
+        ],
+        "verdicts": [
+          "invalid",
+          "invalid",
+          "invalid"
+        ],
+        "accepted": false
+      },
+      "median_ms": {
+        "cvc5_generate": 10.491417,
+        "carcara_process": 3.414375
+      },
+      "proof_bytes": 4495
+    },
+    "bool_validate": {
+      "Lean_direct": "checked generic and same concrete judgment",
+      "Lean_reflected": "checked same judgment via check_sound; concrete kernel decide; shared generic direct lemmas",
+      "initial_theory_rewrite": {
+        "exit": 0,
+        "verdict": "holey",
+        "accepted": false
+      },
+      "final_DSL_normal_form": {
+        "exits": [
+          1,
+          1,
+          1
+        ],
+        "verdicts": [
+          "invalid",
+          "invalid",
+          "invalid"
+        ],
+        "accepted": false
+      },
+      "median_ms": {
+        "cvc5_generate": 10.853167,
+        "carcara_process": 3.441792
+      },
+      "proof_bytes": 10946
+    },
+    "array_validate": {
+      "Lean_direct": "checked generic and same concrete judgment",
+      "Lean_reflected": "checked same judgment via check_sound; concrete kernel decide; shared generic direct lemmas",
+      "initial_theory_rewrite": {
+        "exit": 0,
+        "verdict": "holey",
+        "accepted": false
+      },
+      "final_DSL_normal_form": {
+        "exits": [
+          1,
+          1,
+          1
+        ],
+        "verdicts": [
+          "invalid",
+          "invalid",
+          "invalid"
+        ],
+        "accepted": false
+      },
+      "median_ms": {
+        "cvc5_generate": 11.4655,
+        "carcara_process": 3.600834
+      },
+      "proof_bytes": 11275
+    }
+  },
+  "negative_controls": {
+    "missing_initialization": "SAT and checked guarded Lean refutation",
+    "alias_frame": "SAT and checked guarded Lean refutation",
+    "bool_two": "SAT byte2 and checked full-domain Lean refutation",
+    "wrong_full_u8_domain": "Checked narrowed Lean theorem plus full-domain byte2 refutation; narrowed SMT UNSAT export not accepted, and actual root mismatch rejects assume<source[0]2",
+    "array_index_omission": "SAT and checked guarded Lean refutation",
+    "missing_stability": "SAT and checked guarded Lean refutation"
+  },
+  "repair_attempts": [
+    {
+      "number": 1,
+      "encoding": "original Int<2",
+      "granularity": "theory-rewrite",
+      "scope": "same four whole laws; one valid,three holey exit0; initial phase log suffix collision disclosed"
+    },
+    {
+      "number": 2,
+      "encoding": "same original Int<2",
+      "granularity": "dsl-rewrite-strict",
+      "scope": "retained named rare_rewrite rule compatibility failures"
+    },
+    {
+      "number": 3,
+      "encoding": "equivalent not>=2 plus exact mandatory write conjunction decomposition",
+      "granularity": "dsl-rewrite-strict",
+      "scope": "IntoBytes and byte-frame projection valid; full other3not accepted; no bypass/premise weakening"
+    }
+  ],
+  "strict_policy": "exit0 AND exact valid newline; reject holey/invalid/unknown/nonzero/empty. No allowed-rules, ignore-unknown or custom-rule bypass flags.",
+  "boundary": "Completed architecture comparison; not all4SMTverified; no named Rust-verifier feature parity."
+}

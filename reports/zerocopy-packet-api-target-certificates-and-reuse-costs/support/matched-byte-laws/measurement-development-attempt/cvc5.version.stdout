@@ -1,0 +1,43 @@
+cvc5 1.4.2 [git 282d5e0 on branch HEAD]
+compiled as a unrestricted build with GCC version Apple LLVM 17.0.0 (clang-1700.0.13.5) on Oct  8 2026 01:56:09
+
+Copyright (c) 2009-2026 by the authors and their institutional
+affiliations listed at https://cvc5.github.io/people.html
+
+cvc5 is open-source and is covered by the BSD license (modified).
+
+THIS SOFTWARE IS PROVIDED AS-IS, WITHOUT ANY WARRANTIES.
+USE AT YOUR OWN RISK.
+
+This version of cvc5 is linked against the following non-(L)GPL'ed
+third party libraries.
+
+  CaDiCaL - Simplified Satisfiability Solver
+  See https://github.com/arminbiere/cadical for copyright information.
+
+  Editline Library
+  See https://thrysoee.dk/editline
+  for copyright information.
+
+  SymFPU - The Symbolic Floating Point Unit
+  See https://github.com/martin-cs/symfpu/tree/main for copyright information.
+
+This version of cvc5 is linked against the following third party
+libraries covered by the LGPLv3 license.
+See licenses/lgpl-3.0.txt for more information.
+
+  GMP - Gnu Multi Precision Arithmetic Library
+  See http://gmplib.org for copyright information.
+
+  LibPoly polynomial library
+  See https://github.com/SRI-CSL/libpoly for copyright and
+  licensing information.
+
+cvc5 is statically linked against these libraries. To recompile
+this version of cvc5 with different versions of these libraries
+follow the instructions on https://github.com/cvc5/cvc5/blob/main/INSTALL.md
+
+See the file COPYING (distributed with the source code, and with
+all binaries) for the full cvc5 copyright, licensing, and (lack of)
+warranty information.
+

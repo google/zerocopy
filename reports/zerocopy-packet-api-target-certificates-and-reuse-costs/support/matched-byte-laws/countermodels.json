@@ -1,0 +1,237 @@
+[
+  {
+    "case": "missing_initialization",
+    "source": {
+      "0": 0,
+      "1": 0
+    },
+    "current": {
+      "0": 0,
+      "1": 0
+    },
+    "valuation": {
+      "source": {
+        "0": 0,
+        "1": 0
+      },
+      "current": {
+        "0": 0,
+        "1": 0
+      },
+      "source_init": {
+        "0": false,
+        "1": true
+      },
+      "source_read": {
+        "0": true,
+        "1": true
+      },
+      "current_init": {
+        "0": false,
+        "1": false
+      },
+      "current_read": {
+        "0": false,
+        "1": false
+      },
+      "write_authority": {
+        "0": false,
+        "1": false
+      },
+      "changed": 1,
+      "framed": 1,
+      "replacement": 0
+    },
+    "assertions_evaluated": 11,
+    "all_original_smt_assertions_true": true,
+    "solver_output_sha256": "bc9423a8274783daffa99921d37dfdda6c69250b59029ee30db16fd2691cdd07"
+  },
+  {
+    "case": "alias_frame",
+    "source": {
+      "0": 0,
+      "1": 0
+    },
+    "current": {
+      "0": 0,
+      "1": 0
+    },
+    "valuation": {
+      "source": {
+        "0": 0,
+        "1": 0
+      },
+      "current": {
+        "0": 0,
+        "1": 0
+      },
+      "source_init": {
+        "0": false,
+        "1": true
+      },
+      "source_read": {
+        "0": false,
+        "1": false
+      },
+      "current_init": {
+        "0": false,
+        "1": false
+      },
+      "current_read": {
+        "0": false,
+        "1": false
+      },
+      "write_authority": {
+        "0": false,
+        "1": true
+      },
+      "changed": 1,
+      "framed": 1,
+      "replacement": 1
+    },
+    "assertions_evaluated": 9,
+    "all_original_smt_assertions_true": true,
+    "solver_output_sha256": "e8da92a6a97db2122cc4ae979d37ca3739c1c1ea48a7e57a6ea93b61f0e1886d"
+  },
+  {
+    "case": "bool_two",
+    "source": {
+      "0": 2,
+      "1": 0
+    },
+    "current": {
+      "0": 2,
+      "1": 0
+    },
+    "valuation": {
+      "source": {
+        "0": 2,
+        "1": 0
+      },
+      "current": {
+        "0": 2,
+        "1": 0
+      },
+      "source_init": {
+        "0": true,
+        "1": false
+      },
+      "source_read": {
+        "0": true,
+        "1": false
+      },
+      "current_init": {
+        "0": true,
+        "1": false
+      },
+      "current_read": {
+        "0": true,
+        "1": false
+      },
+      "write_authority": {
+        "0": false,
+        "1": false
+      },
+      "changed": 1,
+      "framed": 1,
+      "replacement": 0
+    },
+    "assertions_evaluated": 14,
+    "all_original_smt_assertions_true": true,
+    "solver_output_sha256": "f924f958321bbf21d38060332b9739fbffaa2f5fa97ce39479763f4e3bd81eab"
+  },
+  {
+    "case": "missing_stability",
+    "source": {
+      "0": 1,
+      "1": 0
+    },
+    "current": {
+      "0": 2,
+      "1": 0
+    },
+    "valuation": {
+      "source": {
+        "0": 1,
+        "1": 0
+      },
+      "current": {
+        "0": 2,
+        "1": 0
+      },
+      "source_init": {
+        "0": true,
+        "1": false
+      },
+      "source_read": {
+        "0": true,
+        "1": false
+      },
+      "current_init": {
+        "0": true,
+        "1": false
+      },
+      "current_read": {
+        "0": true,
+        "1": false
+      },
+      "write_authority": {
+        "0": false,
+        "1": false
+      },
+      "changed": 1,
+      "framed": 1,
+      "replacement": 0
+    },
+    "assertions_evaluated": 13,
+    "all_original_smt_assertions_true": true,
+    "solver_output_sha256": "ee9834d358f87c236a87f3fe79a07cc8f4efbeff7e6930e9d2e2ca5608795267"
+  },
+  {
+    "case": "array_index_omission",
+    "source": {
+      "0": 0,
+      "1": 2
+    },
+    "current": {
+      "0": 0,
+      "1": 2
+    },
+    "valuation": {
+      "source": {
+        "0": 0,
+        "1": 2
+      },
+      "current": {
+        "0": 0,
+        "1": 2
+      },
+      "source_init": {
+        "0": true,
+        "1": true
+      },
+      "source_read": {
+        "0": true,
+        "1": true
+      },
+      "current_init": {
+        "0": true,
+        "1": true
+      },
+      "current_read": {
+        "0": true,
+        "1": true
+      },
+      "write_authority": {
+        "0": false,
+        "1": false
+      },
+      "changed": 1,
+      "framed": 1,
+      "replacement": 0
+    },
+    "assertions_evaluated": 19,
+    "all_original_smt_assertions_true": true,
+    "solver_output_sha256": "8b9c7fb7a8dc517102401fcff8beda01e3f9e41b0bf707ddd34bf439bdb4c89c"
+  }
+]

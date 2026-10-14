@@ -1,0 +1,5 @@
+'SolverWitnesses.missing_initialization_countermodel' depends on axioms: [propext]
+'SolverWitnesses.alias_frame_countermodel' depends on axioms: [propext]
+'SolverWitnesses.bool_two_countermodel' depends on axioms: [propext]
+'SolverWitnesses.missing_stability_countermodel' depends on axioms: [propext]
+'SolverWitnesses.array_index_omission_countermodel' depends on axioms: [propext]

@@ -50,6 +50,62 @@
         "v8": "13.6.233.17-node.53",
         "host": "Darwin arm64"
       }
+    },
+    {
+      "name": "Shared PR layout theorem module",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "path": "anneal/lean/Rust/Layout.lean",
+        "sha256": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db"
+      }
+    },
+    {
+      "name": "Owned layout bridge",
+      "identity": {
+        "artifact": "support/shared-pr-layout/LayoutBridge.lean",
+        "sha256": "b1f971c118a2dfa061f1da82d34d919220f418eed61bc249600908f503366f8b"
+      }
+    },
+    {
+      "name": "Owned repr(C) aggregate",
+      "identity": {
+        "artifact": "support/shared-pr-layout/aggregate.rs",
+        "sha256": "085661e6a743f4f07b0b48078af99eb7b7159b419329133a20916888ec438e17"
+      }
+    },
+    {
+      "name": "Lean4.31 layout observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0",
+        "boundary": "Known omitted nested-parameter check; conditional own-term observation"
+      }
+    },
+    {
+      "name": "Matched finite byte laws",
+      "identity": {
+        "artifact": "support/matched-byte-laws/ByteLaws.lean",
+        "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc",
+        "scope": "Direct/reflected Lean plus strict Alethe architecture comparison, with material nonacceptance"
+      }
+    },
+    {
+      "name": "cvc5 byte-law comparison",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "Carcara byte-law comparison",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+        "version_observed": "1.1.0"
+      }
     }
   ],
   "observed_at": "2026-10-14"

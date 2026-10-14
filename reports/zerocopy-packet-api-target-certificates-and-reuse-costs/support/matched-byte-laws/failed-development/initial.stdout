@@ -1,0 +1,48 @@
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:67:8: warning: This simp argument is unused:
+  IntoLaw
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [observe, h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:138:65: error: failed to synthesize
+  Decidable ¬intoWithoutInit uninitialized
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:139:49: error: failed to synthesize
+  Decidable ¬aliasedFrame
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:140:50: error: failed to synthesize
+  Decidable ¬guardClaim 256 3 2
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:144:61: error: failed to synthesize
+  Decidable ¬guardClaim 256 3 2
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:145:77: error: failed to synthesize
+  Decidable ¬withoutStability base unstable false
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:146:73: error: failed to synthesize
+  Decidable ¬withoutArrayIndex omittedArray
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:156:73: error: unsolved goals
+b : Byte
+⊢ ↑b < 2 ↔ ↑↑b < 2
+'ByteLaws.into_direct' depends on axioms: [propext]
+'ByteLaws.write_direct' depends on axioms: [propext]
+'ByteLaws.bool_direct' does not depend on any axioms
+'ByteLaws.array_direct' does not depend on any axioms
+'ByteLaws.check_sound' does not depend on any axioms
+'ByteLaws.all_reflected' depends on axioms: [propext]
+'ByteLaws.narrow_domain_hides' does not depend on any axioms
+'ByteLaws.missing_init_bad' depends on axioms: [propext, sorryAx]
+'ByteLaws.aliased_frame_bad' depends on axioms: [propext, sorryAx]
+'ByteLaws.bool_two_bad' depends on axioms: [propext, sorryAx]
+'ByteLaws.missing_stability_bad' depends on axioms: [propext, sorryAx]
+'ByteLaws.missing_array_index_bad' depends on axioms: [propext, sorryAx]
+'ByteLaws.byte_domain' depends on axioms: [propext, Quot.sound]
+'ByteLaws.validity_integer_map' depends on axioms: [sorryAx]

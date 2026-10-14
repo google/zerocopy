@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "question": "P130",
+  "physical_scratch": "$TASK_ROOT/work/research/shared-pr-layout-instantiation",
+  "checks": [
+    "unchanged shared-source hash matches exact preserved PR identity",
+    "final13 Lean build/control statuses and false-proposition rejections",
+    "all final positive printed axioms exclude sorryAx",
+    "native and zero-import wasm aggregate observations match all12 selected fields",
+    "all71 pre-handoff artifact identities rehashed",
+    "explicit same-total-size wrong-length witness and same-layout-type limitation",
+    "private source/binary exclusion plan retained"
+  ],
+  "counts": {
+    "lean_positive_build_and_controls": 5,
+    "lean_expected_semantic_rejections": 8,
+    "actual_rust_target_builds": 2,
+    "actual_target_executions": 2,
+    "native_aggregate": [
+      16,
+      8,
+      8,
+      12,
+      1,
+      1,
+      4,
+      1,
+      2,
+      1,
+      8,
+      8
+    ],
+    "wasm_aggregate": [
+      12,
+      4,
+      4,
+      8,
+      1,
+      1,
+      4,
+      1,
+      2,
+      1,
+      4,
+      4
+    ],
+    "final_axioms": [
+      "propext",
+      "Quot.sound"
+    ]
+  },
+  "artifact_sha256": {
+    "APPENDIX.md": "19f3384132e1106344bc543d12d0017f0ebed729094ca417f8628ffbb97d6fe9",
+    "README.md": "f97d74b567a97b8842f1b69373224409e09ec2155aad5b58b28181f31af0c02d",
+    "HANDOFF.json": "f64743dbda8fe4819bef8ff8df374517caec8df7a95f8d6c14aa3006ecb76a0c",
+    "LayoutBridge.lean": "b1f971c118a2dfa061f1da82d34d919220f418eed61bc249600908f503366f8b",
+    "results.json": "b2ae8b5211678b97735b99692755e9ccca523a6ab90bcf5eb10d78de1022b83d",
+    "aggregate-results.json": "30e5ebeffdea4b872e4d415b8791870a400cd5651ed2c915c4a7aba4e1b1f705",
+    "input-binding.json": "91a4b98071e7c2c6bfc3074070bb46c9dcf8fbc1dc55c2a3cb8c1def1462aea5",
+    "artifact-identities.json": "19da8a98e584b760a3d17e6d8336d573f27acfdbbfc3655a7e84a719a6118063"
+  },
+  "limits": "Validation and owned proof observations do not establish arbitrary-producer kernel soundness or Rust compiler/engine operational correspondence."
+}

@@ -46,7 +46,7 @@ No Rocq or Lean proof source was present in the recursively inspected Rust repos
 
 The inspected engine source mutates resource states and accumulates pure constraints, with solver-dependent delayed branching. A trace of selected symbolic states can aid debugging/reproduction, but accepting it without trusting the engine needs a defined operational-step and entailment checker. The Rust memory/borrow/prophecy primitives, predicate unfolding, trusted lemmas and source-to-GIL compilation must also be justified. Basis: **source** + **derived** requirements.
 
-The selected prophecy serializer emits `Null` and its deserializer reports not implemented. This is evidence about that serializer, not proof that Gillian has no other tracing or certificate facilities. No independently replayable Rust verification derivation or checked certificate language was established by the inspected interfaces. The replay/certificate question therefore has a concrete remaining research gap: find or design a proof-bearing derivation interface and identify which primitive/resource rules its checker validates.
+The selected prophecy serializer emits `Null` and its deserializer reports not implemented. This is evidence about that serializer, not proof that Gillian has no other tracing or certificate facilities. No independently replayable Rust verification derivation or checked certificate language was established by the inspected interfaces. That original inspection left a concrete derivation-interface gap. The added source-specific replay appendix supplies the researched interface and a selected primitive adapter; implementing a full exporter/checker and proving its Rust/resource adequacy remain explicit obligations.
 
 ### A hybrid acceptance boundary should share meaning and record assumptions
 
@@ -54,19 +54,76 @@ For Anneal, this architecture answers a design question: a lightweight first-ord
 
 Implementing that boundary, checking it in Lean, or measuring annotation/runtime cost is future engineering/measurement. Research still required includes exact compatibility with current tools and the foundational gaps identified above. These are distinct from reconstructing the existing prototype's exchange mechanism, which this source investigation does establish.
 
+### A source-specific replay contract for Gillian-Rust
+
+Basis: **source**, **derived** conditional soundness interface, and an original small **execution** control. Rust subject: `GillianPlatform/gillian-rust@83d739e83034d71162fb66b569041cf301123df7`. Its [locked dependency](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian-rust.opam.locked#L114) selects Gillian engine `25c97535e513be63b4de3a0fc98e4ac096e75c0f`. These exact subjects replace a generic proposal to “log symbolic execution.”
+
+#### Existing reports and proof commands are useful inputs, not independent evidence
+
+The engine's [Matcher.mli](https://github.com/GillianPlatform/gillian/blob/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Matcher.mli) explicitly distinguishes postcondition, fold, call, invariant, logic-command and predicate-guard matching. It exposes assertion/matching/result records carrying substitutions, states, plans and remaining cases. It separately provides produce, consume, fold/unfold and wand-packaging interfaces. These are actual instrumentation seams.
+
+At this pin, [Verifier.ml](https://github.com/GillianPlatform/gillian/blob/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Verifier.ml#L516) checks the results returned by the symbolic interpreter and matches postconditions. An empty procedure result list is an operational error; successful matching is over those returned results. This is not an independently checked theorem that the interpreter covered every required execution. For a lemma with no proof, the branch rejects when `Config.lemma_proof` is enabled and otherwise returns true. The exact flag and allowed trusted lemmas must therefore be part of a replay policy; no default-configuration claim is inferred here.
+
+The Rust compiler's [lemma.rs](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/lib_rust_to_gil/src/logic/lemma.rs#L87) turns trusted lemmas into hypothesis/conclusion records with `proof: None`. Other lemma bodies become GIL proof commands, including lemma application, separating assertion and assumption commands. Replaying a command that adds a producer-chosen assumption is insufficient: the consumer must justify it from the initial domain, a checked path guard, or an explicit permitted assumption.
+
+#### What the primitive replay interface must actually check
+
+| Selected source seam | Required certificate meaning |
+| --- | --- |
+| [memory.ml: execute_load/store](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/memory.ml#L64) | Exact type/projection/location, copy-versus-move choice, entry resource/initialization/layout facts, resulting value/heap and preserved frame; primitive implementation/model adequacy is a separate proved interface. |
+| [lft_ctx.ml: cons/produce/kill](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/lft_ctx.ml) | Consuming live evidence removes it; dead evidence persists; producing duplicate live evidence fails; killing absent/dead evidence fails. Replaying only a numerical lifetime identifier loses linearity. |
+| [prophecies.ml: consume/produce/assign](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/prophecies.ml) | Track persistent future-value information separately from linear observer/controller authority. Assignment needs both. Producing a missing observer/controller may add equality constraints; allocation needs freshness. Substitution/merging must preserve the interpreted resources, not merely combine Boolean fields. |
+| [obs_ctx.ml: cons/prod_observation](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/obs_ctx.ml) | Consumption checks entailment; production checks satisfiability and adds observations. Replace solver decisions with checked formula evidence under the exact quoted context. An unchecked UNSAT answer cannot prune a required branch. A SAT witness establishes consistency only; authorizing a new observation additionally requires the selected ghost-update theorem and causal/dataflow premises. |
+| [Matcher.ml: fold/unfold/package_wand](https://github.com/GillianPlatform/gillian/blob/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Matcher.ml#L2257) | Bind predicate definitions and substitutions; consume the right resources and return the exact residual frame. Wand introduction needs a hypothetical disjoint extension and a derivation of its RHS, not a successful assertion that one convenient state matches. |
+
+The selected prophecy serializer emits `Null` and its inverse is unimplemented. Core JSON logging therefore does not, by itself, supply a complete replayable Rust resource witness. That is a narrow serialization fact, not a claim that Gillian has no useful logs or any possible exporter.
+
+#### A concrete certificate schema and conditional soundness argument
+
+The proposed consumer fixes the GIL program, predicate/primitive environment, permitted entries, outcome/property policy and original statement. Rust-to-GIL import remains a named premise unless separately certified. Candidate data contains typed expression/formula ASTs, exact rule IDs, source/target program counters, variable substitutions, resource splits and residuals, plus child references. It does not contain arbitrary executable tactics or a new trusted primitive definition.
+
+A suitable small judgment is `Γ;Σ ⊢ D : {P} code {Q}`, interpreted over the selected concrete GIL/resource semantics. Its rule contracts are:
+
+1. **Pure:** check a proof that the current constraints entail the proposed formula under the fixed expression interpretation. Fresh existential witnesses use checked sorts and capture-free substitution.
+2. **Resource entailment:** splits must satisfy the actual separation composition; unfolding uses a fixed predicate equation; folding proves its body; updates use an admitted rule with an adequacy proof. Residual resources remain explicit. Recursive predicates require a justified inductive/guarded interpretation.
+3. **Primitive:** apply a checked semantic rule for the exact typed action. Its premises establish access/resource conditions and all represented outcomes; the theorem must not assume the whole original program already safe.
+4. **Branch:** retain both guarded continuations, or a proof of infeasibility for an omitted branch. Their disjunction covers the input interpretation. One successful trace or all *returned* engine branches is insufficient.
+5. **Call/loop:** calls consume exact callee contracts with implementation/dependency evidence; loops supply initialization, preservation and exit entailments. These rules can establish partial safety/results without claiming termination. Termination additionally needs a rank/progress rule; recursive calls need a simultaneous or guarded composition rule.
+6. **Finish:** check the independently required postcondition/outcome and original-subject binding. Missing nodes, cycles without a justified rule, unsupported constructors and operational failures deny ordinary acceptance.
+
+More precisely, require each admitted rule to map every concrete configuration represented by its precondition through every relevant concrete step into a covered child interpretation, while excluding or explicitly classifying bad steps under the fixed policy. Entailment rules preserve the represented resource proposition. Initial interpretation covers the consumer's permitted domain. Induction on finite executions, using checked branch coverage and loop/call closure, then gives the required prefix/result property. This is a researched conditional soundness argument, not an implemented full Gillian checker theorem. It identifies exactly which primitive, logic and translation theorems a production proof must instantiate. Search scheduling, unfolding choice, solver heuristics and recovery tactics can then remain outside acceptance authority.
+
+#### Borrow extraction and prophecy metatheory are explicit rule obligations
+
+The [extended Gillian-Rust paper](https://arxiv.org/pdf/2403.15122v3), §4.4/Appendix C, gives borrow extraction with persistence, a lifetime token and a wand-restoration premise; the prophetic rule additionally needs an injective representation update and current/future equations. The macro [extract_lemmas.rs](https://github.com/GillianPlatform/gillian-rust/blob/83d739e83034d71162fb66b569041cf301123df7/gilogic_proc/src/extract_lemmas.rs#L266) produces the premise proof obligation and a trusted conclusion stub. A replay kernel should register the external rule theorem and check its exact instantiated premises, instead of accepting that stub by name. The paper's §8 explicitly leaves omitted-later and causal-loop/dataflow justification gaps. Rechecking local maps does not close them. An admissible fragment may exclude those features or use a justified deep assertion/dataflow interpretation; claiming arbitrary prophetic adequacy requires that additional theorem.
+
+#### An original checked adapter exercises one real boundary
+
+`support/focused-replay-and-encoding/ProphecyReplay.lean` implements a data-only plan for three selected existing-block operations: consume observer, restore observer, and assign. The independent `Primitive` relation requires the corresponding authority/equality premises. `apply_sound`, `run_sound` and `check_sound` connect executable checking to that relation and a separately defined trace. `trace_frame` preserves the persistent future-value field across every accepted step.
+
+The concrete-valuation model follows these selected source cases: consuming an observer removes its token; restoring it rejects duplication and, when a controller exists, requires equality with the controller's current value; assignment requires both tokens. It excludes missing-block creation, symbolic expression allocation, learned-constraint solving, lifetime/borrow extraction, global causal-loop reasoning and the Rust frontend. Thus it is a small derivation adapter for an actual primitive boundary, not a claim to replay an existing complete Gillian run.
+
+One positive and five negative controls check a consume/restore/assign sequence, assignment without authority, duplicate restoration, mismatched restoration, a wrong initial resource and changed persistent future data. Lean 4.34.1 `5045d0056413266e57c625dcd7c365b10e377c52` exits zero with empty stderr. Main soundness endpoints print only `propext`; the frame theorem prints no axioms. Initial ordinary elaboration errors are preserved and were not accepted proof evidence. This is a separate current-checker observation, not a rewrite of historical 4.31 runs or a universal checker-soundness claim.
+
+The answer to T037 is consequently conditional **yes**: engine-independent replay is feasible when these exact semantic judgments and coverage/policy obligations are checked. The inspected implementation currently uses engine matching, solver decisions and explicitly trusted lemma interfaces; its logs alone are not that independent replay contract. Implementing a complete exporter/checker and instantiating the listed adequacy premises is future engineering. The named causal-loop/later limitations remain explicit applicability boundaries rather than a vague demand to verify all Rust first.
+
+Revalidation: compare the selected engine/primitive/generator branches at the two exact pins; reconstruct the proposed replay judgment before extending its claim. With `LEAN_BINARY` selecting the recorded Lean4.34.1, run `"$LEAN_BINARY" ProphecyReplay.lean` in owned scratch and retain exit/stdout/stderr. Require every positive/negative endpoint and printed assumptions; use a separately identified observation for a changed checker or model.
+
 ## Boundaries
 
 - **Known constraints:** prototype language/resource omissions and metatheory simplifications stated above; no operational SB/TB alias model is claimed.
 - **Not examined:** every heap primitive/unsafe operation, full predicate-translation correctness, solver dependency closure, external foundational artifacts or exact current Creusot compatibility.
 - **Unknown:** a complete Rust source-safety reflection theorem or replayable certificate sufficient to remove the symbolic engine from trust.
-- **No execution evidence:** stored tests and expected outputs were read as source artifacts only; publication case-study timings were not reproduced.
+- **Execution scope:** Gillian stored tests/expected outputs remain source artifacts; its publication timings were not reproduced. The new owned Lean4.34 adapter is separately executed, not an actual Gillian frontend replay.
 - **Integration condition:** ordinary safe callers need the proved semantic/representation interface and linking assumptions. One verified client is not unrestricted unsafe-caller coverage.
 
 ## Evidence
 
-`source-evidence.json` binds selected source files to the full commit and Git blob identities. The inspected recursive tree had no `.v` or `.lean` members. Paper version and acquired digest pin its stated formal scope and limitations; its prototype claims are not assigned to a hypothetical future tool. Evidence consists of source/documentation and explicitly derived implications, with no fresh proof checking or execution.
+`source-evidence.json` binds selected source files to the full commit and Git blob identities. The inspected recursive tree had no `.v` or `.lean` members. Paper version and acquired digest pin its stated formal scope and limitations; its prototype claims are not assigned to a hypothetical future tool. Evidence consists of source/documentation and explicitly derived implications, without fresh Gillian proof checking/execution. The added selected adapter retains its separate Lean4.34 source/log/runtime observation.
 
 ## Revalidation
+
+Recheck ProphecyReplay.lean under the identified Lean4.34 pin and compare all six controls/assumptions. Inspect the exact locked engine lemma/matching and Rust observer/controller branches before extending the replay grammar; register primitive/rule interpretation proofs and retain all branch/initial-domain/prophecy metatheory premises.
 
 Pin the Rust compiler, Gillian engine, SMT layer and both specification frontends. Compare emitted client clauses and unsafe ownership/predicate obligations for one concrete API, including its mutable-reference final values and caller restrictions. Retain all trusted extraction/borrow lemmas. Before independent replay, require a complete checked derivation format covering symbolic steps and spatial entailments; before foundational acceptance, close the later/prophecy and source-to-model arguments rather than inferring them from ancestry.
 

@@ -1,0 +1,21 @@
+$TASK_ROOT/work/research/byte-laws-matched-candidates/ByteLaws.lean:158:2: error: omega could not prove the goal:
+a possible counterexample may satisfy the constraints
+  c ≥ 2
+  0 ≤ a ≤ 1
+where
+ a := ↑↑b
+ c := Int.ofNat ↑b
+'ByteLaws.into_direct' depends on axioms: [propext]
+'ByteLaws.write_direct' depends on axioms: [propext]
+'ByteLaws.bool_direct' does not depend on any axioms
+'ByteLaws.array_direct' does not depend on any axioms
+'ByteLaws.check_sound' does not depend on any axioms
+'ByteLaws.all_reflected' depends on axioms: [propext]
+'ByteLaws.narrow_domain_hides' does not depend on any axioms
+'ByteLaws.missing_init_bad' depends on axioms: [propext]
+'ByteLaws.aliased_frame_bad' depends on axioms: [propext]
+'ByteLaws.bool_two_bad' depends on axioms: [propext]
+'ByteLaws.missing_stability_bad' depends on axioms: [propext]
+'ByteLaws.missing_array_index_bad' depends on axioms: [propext]
+'ByteLaws.byte_domain' depends on axioms: [propext, Quot.sound]
+'ByteLaws.validity_integer_map' depends on axioms: [sorryAx]

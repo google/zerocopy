@@ -1,0 +1,17 @@
+{
+  "audits": [
+    {
+      "name": "rust-final-coverage-audit",
+      "sha256": "b7584eb34e24a95039889d4a67f68159377638eb7826c58f8af29d8ed96068b4"
+    },
+    {
+      "name": "tcb-final-coverage-audit",
+      "sha256": "483c42399585ea5b7a4e50fbbc4a55483237c3adb7c320f76f4663bb857d07aa"
+    },
+    {
+      "name": "compiler-final-coverage-audit",
+      "sha256": "ffc6d2b2da81d1d0777fece2adb75deae056ac8f556b0363d49408eeec4e3bdb"
+    }
+  ],
+  "note": "Audit snapshots were substantively read; parent rebuild binds their referenced sections to this integrated tree and explicitly adds closing amendments. No task-private file is needed to interpret the crosswalk."
+}

@@ -1,8 +1,8 @@
 {
-  "revision": 4,
+  "revision": 5,
   "published_reports_at_plan": 65,
   "published_reference_commit": "4802237a045e8dd642d26e190a1ffb5757bf30a8",
-  "interpretation": "All24 candidate followup reports are included in this tree. One final all364coverage/synthesis report and focused amendments remain; this is not a global semantic completion declaration.",
+  "interpretation": "All24candidatefollowupreports and finalall364coverage/synthesis are included in this tree. No standalone report remains unwritten; three stronger prototype outcomes remain explicitly unestablished, separate from research-report coverage.",
   "reports": [
     {
       "candidate_report": 1,

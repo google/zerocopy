@@ -11337,6 +11337,41 @@
         "compiler-verification"
       ]
     },
+    "anneal-research-coverage-and-acceptance-synthesis-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "../anneal-research-agenda-2026-10-14/research-questions.json",
+            "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+          },
+          "name": "Original Anneal364question agenda"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "da662af90b31c20cd3c3098fbbc2a21ae6dc0a28",
+            "tree": "a96eee1a41b027cc54deac35b22897ffa9ee4f6a"
+          },
+          "name": "Published research corpus before final amendments"
+        },
+        {
+          "identity": {
+            "artifact": "question-crosswalk.json",
+            "scope": "Substantive bounded assessments; current report and section identities",
+            "sha256": "1d2df6ef7f295b93164f7020b0504704be23050fed77f76c7f829e6e6b6b185b"
+          },
+          "name": "Integrated exact-question crosswalk"
+        }
+      ],
+      "topics": [
+        "anneal/research",
+        "verification/coverage",
+        "verification/acceptance",
+        "tcb/comparison",
+        "architecture/evaluation"
+      ]
+    },
     "anneal-source-safety-reflection-probes-2026-10-14": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -15561,6 +15596,30 @@
             "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
           },
           "name": "Gillian-Rust extended PLDI 2025 paper"
+        },
+        {
+          "identity": {
+            "paths": "GillianCore/engine/Abstraction/Matcher.ml;Matcher.mli;Verifier.ml;PState.ml",
+            "repository": "GillianPlatform/gillian",
+            "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f"
+          },
+          "name": "Gillian core locked engine"
+        },
+        {
+          "identity": {
+            "artifact": "support/focused-replay-and-encoding/ProphecyReplay.lean",
+            "scope": "selected concrete-valuation resource rules, not complete Gillian replay",
+            "sha256": "aa6201426e441dae131cdf38b878554ed4b9f5e02ee0eca38674d83a07a622ca"
+          },
+          "name": "Owned prophecy replay adapter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean4.34 adapter observation"
         }
       ],
       "topics": [
@@ -19415,6 +19474,24 @@
             "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e"
           },
           "name": "metamath/metamath-exe"
+        },
+        {
+          "identity": {
+            "path": "examples/separation_logic.mm1",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+            "scope": "source/library burden with admitted dependency, no compiled proof closure",
+            "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37"
+          },
+          "name": "MM0 resource encoding source specimen"
+        },
+        {
+          "identity": {
+            "scope": "sections1.2,1.6,2.2.7; encoding and original measurement context",
+            "sha256": "09dda6d4b199b102f28f8139ed44a5d288476f37028bf730b16d8a7b60d7882b",
+            "url": "https://digama0.github.io/mm0/thesis.pdf"
+          },
+          "name": "Metamath Zero thesis"
         }
       ],
       "topics": [
@@ -25879,6 +25956,62 @@
             "v8": "13.6.233.17-node.53"
           },
           "name": "Node/V8 wasm execution substrate"
+        },
+        {
+          "identity": {
+            "path": "anneal/lean/Rust/Layout.lean",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "sha256": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db"
+          },
+          "name": "Shared PR layout theorem module"
+        },
+        {
+          "identity": {
+            "artifact": "support/shared-pr-layout/LayoutBridge.lean",
+            "sha256": "b1f971c118a2dfa061f1da82d34d919220f418eed61bc249600908f503366f8b"
+          },
+          "name": "Owned layout bridge"
+        },
+        {
+          "identity": {
+            "artifact": "support/shared-pr-layout/aggregate.rs",
+            "sha256": "085661e6a743f4f07b0b48078af99eb7b7159b419329133a20916888ec438e17"
+          },
+          "name": "Owned repr(C) aggregate"
+        },
+        {
+          "identity": {
+            "boundary": "Known omitted nested-parameter check; conditional own-term observation",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0"
+          },
+          "name": "Lean4.31 layout observation"
+        },
+        {
+          "identity": {
+            "artifact": "support/matched-byte-laws/ByteLaws.lean",
+            "scope": "Direct/reflected Lean plus strict Alethe architecture comparison, with material nonacceptance",
+            "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc"
+          },
+          "name": "Matched finite byte laws"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+            "version": "1.4.2"
+          },
+          "name": "cvc5 byte-law comparison"
+        },
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+            "version_observed": "1.1.0"
+          },
+          "name": "Carcara byte-law comparison"
         }
       ],
       "topics": [

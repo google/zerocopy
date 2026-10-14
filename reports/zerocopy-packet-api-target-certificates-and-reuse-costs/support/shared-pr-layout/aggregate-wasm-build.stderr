@@ -1,0 +1,10 @@
+warning: function `main` is never used
+  --> aggregate.rs:29:4
+   |
+29 | fn main() {
+   |    ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

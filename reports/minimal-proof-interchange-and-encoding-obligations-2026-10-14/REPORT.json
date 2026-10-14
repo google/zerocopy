@@ -36,6 +36,24 @@
         "repository": "metamath/metamath-exe",
         "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e"
       }
+    },
+    {
+      "name": "MM0 resource encoding source specimen",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+        "path": "examples/separation_logic.mm1",
+        "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37",
+        "scope": "source/library burden with admitted dependency, no compiled proof closure"
+      }
+    },
+    {
+      "name": "Metamath Zero thesis",
+      "identity": {
+        "url": "https://digama0.github.io/mm0/thesis.pdf",
+        "sha256": "09dda6d4b199b102f28f8139ed44a5d288476f37028bf730b16d8a7b60d7882b",
+        "scope": "sections1.2,1.6,2.2.7; encoding and original measurement context"
+      }
     }
   ],
   "observed_at": "2026-10-14"

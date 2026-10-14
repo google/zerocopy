@@ -1,0 +1,27 @@
+{
+  "R095": {
+    "id": "R095",
+    "title": "Byte-view and validator case study",
+    "question": "Verify representative IntoBytes, byte-writing, boolean-validation, and array laws across candidates, including incorrect variants.",
+    "rationale": "These examples exercise zerocopy's defining representation obligations and test whether each candidate captures initializedness and validation semantics.",
+    "issue": 3865,
+    "scope_status": "investigated-boundary; requested architecture comparison performed",
+    "sections": [
+      "F1. One finite meaning fixes all four obligations",
+      "F2. Strict verdicts expose an export compatibility boundary",
+      "F3. Incorrect variants preserve their real logical distinction",
+      "F4. Observed costs distinguish stages without ranking systems",
+      "F5. Proof closure and operational failures remain visible"
+    ],
+    "answered_scope": "All four finite laws compared under identical per-law predicates, meaningful wrong variants, actual Lean proofs/reflection and solver/certificate outcomes, countermodel reification and separated3sample costs. Only one complete SMT law and a write projection strict-valid.",
+    "genuine_unperformed_experiment": [],
+    "known_not_accepted": [
+      "Complete byte-write certificate",
+      "Complete bool-validation certificate",
+      "Complete array-validation certificate"
+    ],
+    "future_engineering": [
+      "Named Rust-backend/physical source interpretation, parser/quotation and native checking closure remain explicit; completing a producer/checker rule adapter is separate from this performed comparison."
+    ]
+  }
+}

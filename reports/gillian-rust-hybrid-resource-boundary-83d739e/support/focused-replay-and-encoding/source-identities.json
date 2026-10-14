@@ -1,0 +1,162 @@
+[
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian_rust/lib/symbolic/lft_ctx.ml",
+    "git_blob": "4d6d7b573f760a8e33f2f1a05c21b41b9649a6f3",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/lft_ctx.ml",
+    "bytes": 1887,
+    "sha256": "4ed9a497a1fff99283043779c723c5a37a7de0ac2beea02574ef4979d384976d",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian_rust/lib/symbolic/prophecies.ml",
+    "git_blob": "6d66ba2aae180471a960ce41769b6ed93243592b",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/prophecies.ml",
+    "bytes": 9451,
+    "sha256": "bd42afeb35f7b408f1632e728a16c32652b78b10a469e8c4852462c6561a7b1b",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian_rust/lib/symbolic/memory.ml",
+    "git_blob": "bac4f651008381b439e2434f9765bb33edffcac1",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/memory.ml",
+    "bytes": 20364,
+    "sha256": "f1f50e71be0df689aceafa3e1c01b81a7369c482c9d5a44990b3c2d99e85f62c",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian_rust/lib/symbolic/heap.ml",
+    "git_blob": "22f90be0970ac4c72de57ac4b4be3ea320ca0245",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/heap.ml",
+    "bytes": 92561,
+    "sha256": "618adcdd618783c0e6e9aff3d9d0168c5f9cb9227f2643ed6e946b51ebfb38dd",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "lib_rust_to_gil/src/codegen/memory.rs",
+    "git_blob": "f23507cb93228ced4d5cb105d4fd7f19d22a08ff",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/lib_rust_to_gil/src/codegen/memory.rs",
+    "bytes": 4873,
+    "sha256": "8e5dbdf0bd5683e8fbe524aa01704cb6c2276641b5bd46c2e8c9a53abff0e8a9",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "lib_rust_to_gil/src/logic/lemma.rs",
+    "git_blob": "662d200cbf06b8d14b238ee4ad42630b695050fd",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/lib_rust_to_gil/src/logic/lemma.rs",
+    "bytes": 7716,
+    "sha256": "b64a9a08f383c9e47cd923c92d118396418c540b7fb79e7fbfffd09f629cc56f",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "gilogic_proc/src/borrows.rs",
+    "git_blob": "1ae4ae85f8c873cfe6a7d39422057d025bce0aa5",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/gilogic_proc/src/borrows.rs",
+    "bytes": 3645,
+    "sha256": "e3ec13c587067b241376a8b418c94a1fce90982115e3db6977a8e697871dddd9",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "README.md",
+    "git_blob": "63c5701236f33d7341b67b04034890ee674c15f4",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/README.md",
+    "bytes": 2567,
+    "sha256": "f13115e9b4d6af5e11b2f700ccbe21eb9f5d293a485ad5067fd430ac5b65a66a",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian-rust.opam.locked",
+    "git_blob": "c58ea45caaff2fb68eea8b72137017c675360cae",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian-rust.opam.locked",
+    "bytes": 3285,
+    "sha256": "b1a673d0edd25aedeee7f4be4379894bd19de86322d426ed6088d2e97955c77c",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/dune-project",
+    "git_blob": "e4c66ee18e9463965ef9a5e4ea2738037e1575e9",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/dune-project",
+    "bytes": 513,
+    "sha256": "44a42d7243bcd47a52bb5e9b3f8903a57261dc051d34b2528181b2147f6bfbd5",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "gilogic_proc/src/extract_lemmas.rs",
+    "git_blob": "c1d9388f87c9570e8aed2fcd651ea21bab99015b",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/gilogic_proc/src/extract_lemmas.rs",
+    "bytes": 18224,
+    "sha256": "25edddfa54adbc8e8fba459d2011a6164133e12c655f499c73b6a94b664cecfa",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian",
+    "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+    "path": "GillianCore/engine/Abstraction/Matcher.mli",
+    "git_blob": "c9f3e8bb1e8d9958f993305d7cf0eff9b41c1b96",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Matcher.mli",
+    "bytes": 4614,
+    "sha256": "82cd545939673ab684e8dc4be93b1cf76f12dcaf864f898e87bf1d5740ca0445",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian",
+    "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+    "path": "GillianCore/engine/Abstraction/Matcher.ml",
+    "git_blob": "f81379f4d1da1481422f2439f634189d96edba9a",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Matcher.ml",
+    "bytes": 88291,
+    "sha256": "1f610de6d1a894b0e53e2b171bc547ea83605b1d6b1df4d824cca809be35229c",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian",
+    "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+    "path": "GillianCore/engine/Abstraction/PState.ml",
+    "git_blob": "20b12538ca423d576a9c1000c6468f7ba3cf08cc",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/PState.ml",
+    "bytes": 47058,
+    "sha256": "fba468555bbae275d11364bd4ebb3734217d2d8b04497a55a6229bdf97c1a1e4",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian",
+    "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+    "path": "GillianCore/engine/Abstraction/Verifier.ml",
+    "git_blob": "667eb6a2b7eac62a5db4d60f982917617b3c6e80",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian/25c97535e513be63b4de3a0fc98e4ac096e75c0f/GillianCore/engine/Abstraction/Verifier.ml",
+    "bytes": 36002,
+    "sha256": "92bef0147b25425eee9ebef868d795b79c9a7830dd333cf5a1f48bdc7c122162",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "GillianPlatform/gillian-rust",
+    "revision": "83d739e83034d71162fb66b569041cf301123df7",
+    "path": "Gillian-Rust/gillian_rust/lib/symbolic/obs_ctx.ml",
+    "git_blob": "8c770981da1c551ecf3e0d4d6eccb70dc459433c",
+    "url": "https://raw.githubusercontent.com/GillianPlatform/gillian-rust/83d739e83034d71162fb66b569041cf301123df7/Gillian-Rust/gillian_rust/lib/symbolic/obs_ctx.ml",
+    "bytes": 1437,
+    "sha256": "c32fe17649a1ae2191075823f7959af632dde3e7b66c6dccdcd288610b4b8fc5",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  }
+]

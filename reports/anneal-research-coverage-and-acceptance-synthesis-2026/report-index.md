@@ -1,0 +1,96 @@
+# Anneal research report index
+
+Navigation for the original 364-question initiative. Every report retains its own subjects, evidence and scope; package inclusion is not a safety claim.
+
+- [Aeneas/Charon functionalization and spatial boundaries](../aeneas-charon-functionalization-and-spatial-boundaries/REPORT.md) — research
+- [Certifying an actual Aeneas returned pair update from alpha24](../aeneas-pair-returned-update-alpha24/REPORT.md) — research
+- [Anneal acceptance obligations and a replaceable trusted frontier](../anneal-acceptance-frontier-and-trust-reduction-2026-10-14/REPORT.md) — research
+- [Conditional adoption paths, primary bibliography, and distribution boundaries](../anneal-adoption-and-primary-bibliography-2026/REPORT.md) — research
+- [Consumer-owned statements, reusable receipts, and producer containment](../anneal-data-receipts-caches-and-producer-isolation/REPORT.md) — research
+- [Anneal research agenda, candidate grouping, and evidence interpretation](../anneal-research-agenda-2026-10-14/REPORT.md) — agenda
+- [Anneal research coverage, acceptance architecture, and decision experiments](../anneal-research-coverage-and-acceptance-synthesis-2026/REPORT.md) — research
+- [Source-safety reflection: kernel-checked counterexample and Rust optimization probe](../anneal-source-safety-reflection-probes-2026-10-14/REPORT.md) — research
+- [Arc, hazard pointers, and weak-memory RCU: whole protocol boundaries](../arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026/REPORT.md) — research
+- [Guarded abstraction certificates: AutoCorres and the Anneal source boundary](../autocorres-guarded-model-certificates-pldi-2014/REPORT.md) — research
+- [Failure-reflecting frontend and obligation certificates: Boogie, Viper, and Anneal](../boogie-viper-failure-reflection-certificates-2021-2024/REPORT.md) — research
+- [Charon and Aeneas pass seams and certificate inventory](../charon-aeneas-pass-seams-and-certificate-inventory/REPORT.md) — research
+- [An actual Charon fork and storage certificate in the legacy alpha24 bundle](../charon-fork-storage-certificate-alpha24/REPORT.md) — research
+- [Memory-to-value certificates and independent layout meaning: Cogent and Dargent](../cogent-dargent-memory-value-layout-certificates-2021-2023/REPORT.md) — research
+- [Controlled concurrent acceptance and publication failures](../concurrent-acceptance-publication-controls/REPORT.md) — research
+- [Configured capture, semantic reading and independent obligation completeness](../configured-capture-and-independent-obligation-completeness/REPORT.md) — research
+- [Constructive imperative refinement and memory bridges](../constructive-imperative-refinement-memory-bridges/REPORT.md) — research
+- [Consumer binding, assumption policy, and failure controls for certificates](../consumer-binding-and-failure-protocol-prototype-2026-10-14/REPORT.md) — research
+- [Instrumented optimization certificates: Crellvm, verified validators, and refinement direction](../crellvm-instrumented-refinement-rule-boundaries-2018-2021/REPORT.md) — research
+- [Creusot permissions, prophecy contracts and the Coma evidence chain](../creusot-permission-coma-trust-c4e9770/REPORT.md) — research
+- [DDC and proof-produced checker executables](../ddc-and-proof-produced-checker-executables/REPORT.md) — research
+- [Exact and rounded numerical proof witnesses](../exact-and-rounded-numerical-proof-witnesses-2026-10-14/REPORT.md) — research
+- [Two-field and length-two slice borrow, update, and frame certificates](../field-slice-borrow-frame-prototype-lean4-31-rust1-99/REPORT.md) — research
+- [A finite partial-heap certificate checker and matched frame judgments](../finite-heap-spatial-derivation-checker/REPORT.md) — research
+- [A finite pointer lease and reconstruction control](../finite-pointer-lease-and-reconstruction-control-2026/REPORT.md) — research
+- [Foundational VeriFast: checked replay and its remaining Rust semantic frontier](../foundational-verifast-hinted-mirroring-2026-10-14/REPORT.md) — research
+- [Functions, generics and environment certificate closure](../functions-generics-and-environment-certificate-closure/REPORT.md) — research
+- [Current Gappa, FloVer and Why3 checking paths](../gappa-flover-and-why3-checking-paths/REPORT.md) — research
+- [Gillian-Rust resource automation and the Creusot contract bridge](../gillian-rust-hybrid-resource-boundary-83d739e/REPORT.md) — research
+- [hax, Eurydice, and Rust-to-C extraction frontiers](../hax-eurydice-and-rust-c-extraction-frontiers/REPORT.md) — research
+- [HOL proof-producing synthesis and binary lifting](../hol-proof-producing-synthesis-and-binary-lifting/REPORT.md) — research
+- [Independent checking, model-checking witnesses, and a concrete kernel boundary](../independent-kernels-and-model-checking-certificates/REPORT.md) — research
+- [Inference, compositional specifications and verification result meaning](../inference-and-compositional-result-interfaces-2026/REPORT.md) — research
+- [Iris execution adequacy and the resources a Rust instance must supply](../iris-adequacy-resource-interface-8e49095/REPORT.md) — research
+- [JVM and eBPF admission, typed assembly, and execution preservation](../jvm-ebpf-and-typed-admission-frontiers/REPORT.md) — research
+- [Lean 4.34.1 admissions, native computation, and compiled imports](../lean-admissions-imports-and-native-checking-v4-34-1/REPORT.md) — research
+- [Lean-Iris constructions, adequacy premises and toolchain boundary](../lean-iris-constructions-and-toolchain-boundary-81bc350/REPORT.md) — research
+- [Minimal proof interchange and the obligations of richer encodings](../minimal-proof-interchange-and-encoding-obligations-2026-10-14/REPORT.md) — research
+- [MiniRust's memory interfaces and the limits of reusable Rust calculi](../minirust-core-semantics-d821c6e/REPORT.md) — research
+- [Modular foreign contracts and open execution](../modular-foreign-contracts-and-open-execution/REPORT.md) — research
+- [A native checker generated from a proved Lean 4.31 logical definition](../native-checker-from-lean-logical-source-4-31/REPORT.md) — research
+- [Open Rust library closure and source-bound certificate obligations](../open-rust-library-certificate-obligations-cce761ad/REPORT.md) — research
+- [Parser round trips, admission and byte meaning](../parser-roundtrips-admission-and-byte-meaning/REPORT.md) — research
+- [PCC, TAL, and foundational policy certificates](../pcc-tal-foundational-policy-certificates/REPORT.md) — research
+- [Pinning, async progress and foreign or hardware resource contracts](../pin-async-and-external-resource-contracts-2026/REPORT.md) — research
+- [Inductive pass relations, semantic consequences, and the inspected Plutus artifact](../plutus-inductive-pass-certificates-scp-2024/REPORT.md) — research
+- [PR-stack pure models: checked laws and their concrete Rust frontier](../pr-stack-pure-model-boundaries-2026-10-14/REPORT.md) — research
+- [Prefix safety, outcomes and property transfer](../prefix-safety-outcomes-and-property-transfer/REPORT.md) — research
+- [Proof-producing frontends and derived checker interfaces](../proof-producing-frontends-and-derived-checker-interfaces/REPORT.md) — research
+- [Property-proof translation and independently preserved specification meaning](../property-proof-translation-specification-meaning-2006-2024/REPORT.md) — research
+- [Recursive inference and verified-callee lifecycles: RustHorn, Stainless and SAW](../recursive-inference-and-verified-callee-lifecycles-2026/REPORT.md) — research
+- [RefinedC/Lithium and CN: ownership automation and result interfaces](../refinedc-lithium-and-cn-result-interfaces-2026/REPORT.md) — research
+- [RefinedRust's operational, extraction and proof acceptance boundaries](../refinedrust-radium-proof-boundary-2026-v2/REPORT.md) — research
+- [Refinement and permission inference, CHCs and Flux's concrete Lean VC route](../refinement-horn-and-lean-vc-boundaries-2026/REPORT.md) — research
+- [Refinement, policy, and safety direction across compiler families](../refinement-policy-and-safety-direction-comparison/REPORT.md) — research
+- [Reflection, rewriting, spatial rules, and checked extension gates](../reflection-rewriting-and-resource-extension-gates-2026-10-14/REPORT.md) — research
+- [Weak-memory visibility and reclamation premises for Rust resource proofs](../relaxed-memory-reclamation-premises-2026/REPORT.md) — research
+- [Resource transitions and proof-producing automation for Rust verification](../resource-algebra-lifetime-and-automation-2026/REPORT.md) — research
+- [Resource interpretation adapters and the limits of proof transport](../resource-interpretation-adapters-and-encoding-costs/REPORT.md) — research
+- [Resource logics, effects, and compilation interfaces](../resource-logics-effects-and-compilation-interfaces/REPORT.md) — research
+- [Rust admission diagnostics, specification adequacy and proof transport](../rust-admission-diagnostics-and-proof-transport-cce761ad/REPORT.md) — research
+- [Aliasing models, modular logics, and source-safety transfer](../rust-alias-model-compatibility-2026-10-14/REPORT.md) — research
+- [Rust authority and provenance obligations at the May 2026 source snapshot](../rust-authority-provenance-2026-05-31/REPORT.md) — research
+- [GAT families, coinductive markers, and selected implementation evidence](../rust-gat-laws-and-selected-implementation-evidence-2026/REPORT.md) — research
+- [One NEON addition and union-access correspondence control](../rust-neon-vector-and-union-representation-control-1d81eb4/REPORT.md) — research
+- [Rust resource primitives and their accepted source boundary](../rust-resource-primitive-matrix-2026/REPORT.md) — research
+- [Typed storage, conversion exits and destructor obligations](../rust-storage-transfer-and-drop-cce761ad/REPORT.md) — research
+- [Kani, Crux-MIR and Soteria: model coverage and completeness of symbolic results](../rust-symbolic-completeness-boundaries-2026/REPORT.md) — research
+- [Semantic Rust typing and the first-order contract bridge](../rustbelt-rusthornbelt-contract-bridge-2022/REPORT.md) — research
+- [Three checked correspondence routes for a captured safe-byte fragment](../safe-byte-correspondence-three-routes-lean4-31-rust1-99/REPORT.md) — research
+- [A complete small safe API over an unsafe Boolean representation operation](../safe-unsafe-bool-domain-certificate-2026-10-14/REPORT.md) — research
+- [SAT, pseudo-Boolean, and bitvector certificate endpoints](../sat-pb-and-bitvector-certificate-endpoints-2026-10-14/REPORT.md) — research
+- [Scalars, values, storage and access side conditions](../scalars-values-storage-and-access-side-conditions/REPORT.md) — research
+- [Security observations and relational compiler preservation](../security-observations-and-relational-compiler-preservation/REPORT.md) — research
+- [SMT certificates, reconstruction, and binding to the consumer's goal](../smt-certificates-reconstruction-and-root-binding-2026-10-14/REPORT.md) — research
+- [SMT frame diagnostics, elaboration and checking costs](../smt-frame-diagnostics-elaboration-and-checking-costs/REPORT.md) — research
+- [Staged code generation and exact CertiRocq endpoint linkage](../staged-code-generation-and-certirocq-endpoint-linkage/REPORT.md) — research
+- [Theorem construction, proof-object checking, and consumer-selected statements](../theorem-authority-and-consumer-statements-2026-10-14/REPORT.md) — research
+- [Transfinite Iris: existential witnesses, termination and refinement](../transfinite-iris-existential-and-liveness-boundary-dde9f19/REPORT.md) — research
+- [Trivet, current EquiVM and foreign-interface artifact admission boundaries](../trivet-equvm-and-foreign-artifact-admission-boundaries/REPORT.md) — research
+- [Verified checker theorem endpoints: Lean4Lean, MetaRocq, and Candle](../verified-checker-theorem-endpoints-2026-10-14/REPORT.md) — research
+- [Verified compilers, bootstrap, and executable endpoints](../verified-compilers-bootstrap-and-executable-endpoints/REPORT.md) — research
+- [Verus tracked permissions, compiled code and verification trust](../verus-tracked-memory-trust-0141ebc/REPORT.md) — research
+- [Zerocopy public byte APIs: exhaustive small domains and write preservation](../zerocopy-byte-domain-and-write-controls-2026-10-14/REPORT.md) — research
+- [Owned storage, unwind restoration and vector growth controls](../zerocopy-owned-storage-unwind-and-growth-controls/REPORT.md) — research
+- [A composed packet API: two-target controls and certificate reuse costs](../zerocopy-packet-api-target-certificates-and-reuse-costs/REPORT.md) — research
+- [Pointer projections, stable validation and layout boundaries in zerocopy](../zerocopy-projection-validation-and-layout-cce761ad/REPORT.md) — research
+- [Zerocopy byte validation and layout on arm64 and wasm32](../zerocopy-two-target-byte-and-layout-controls-2026-10-14/REPORT.md) — research
+- [A real zerocopy scalar predicate through captured Charon and Aeneas boundaries](../zerocopy-validity-real-pass-certificate-alpha24/REPORT.md) — research
+- [zkVM receipt binding and verification boundaries](../zkvm-receipt-binding-and-verification-boundaries/REPORT.md) — research
+
+*Authored by an AI agent acting on joshlf's behalf.*

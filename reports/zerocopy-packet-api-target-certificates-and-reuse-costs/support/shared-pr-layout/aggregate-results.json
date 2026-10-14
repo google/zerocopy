@@ -1,0 +1,54 @@
+{
+  "runs": [
+    {
+      "name": "aggregate-native-build",
+      "command": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "aggregate.rs",
+        "-o",
+        "aggregate-native"
+      ],
+      "exit": 0,
+      "elapsed_ns": 184945584
+    },
+    {
+      "name": "aggregate-native-check",
+      "command": [
+        "$TASK_ROOT/work/research/shared-pr-layout-instantiation/aggregate-native"
+      ],
+      "exit": 0,
+      "elapsed_ns": 87111333
+    },
+    {
+      "name": "aggregate-wasm-build",
+      "command": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=cdylib",
+        "--target=wasm32-unknown-unknown",
+        "--sysroot=$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown",
+        "-C",
+        "opt-level=2",
+        "aggregate.rs",
+        "-o",
+        "aggregate.wasm"
+      ],
+      "exit": 0,
+      "elapsed_ns": 152815375
+    },
+    {
+      "name": "aggregate-wasm-check",
+      "command": [
+        "node",
+        "aggregate-wasm.mjs",
+        "aggregate.wasm"
+      ],
+      "exit": 0,
+      "elapsed_ns": 206122375
+    }
+  ],
+  "sysroot": "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown"
+}

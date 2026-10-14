@@ -1,0 +1,11 @@
+{
+  "command": [
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+    "-o",
+    "LayoutBridge.olean",
+    "LayoutBridge.lean"
+  ],
+  "cwd": "$TASK_ROOT/work/research/shared-pr-layout-instantiation",
+  "exit": 0,
+  "elapsed_ns": 288166125
+}

@@ -1,0 +1,392 @@
+{
+  "cases": {
+    "into_bytes": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "source_creation_ns": 195209,
+      "observed": "strict-valid"
+    },
+    "byte_write": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "source_creation_ns": 101500,
+      "observed": "not-strict-valid"
+    },
+    "bool_validate": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(not (>= (select source 0) 2))"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "source_creation_ns": 76042,
+      "observed": "not-strict-valid"
+    },
+    "array_validate": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(not (>= (select source 0) 2))",
+        "(not (>= (select source 1) 2))"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (not (>= (select current 0) 2)) (not (>= (select current 1) 2)))",
+      "source_creation_ns": 89542,
+      "observed": "not-strict-valid"
+    },
+    "missing_initialization": {
+      "want": "sat",
+      "premises": [
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "source_creation_ns": 98875,
+      "observed": "countermodel"
+    },
+    "alias_frame": {
+      "want": "sat",
+      "premises": [
+        "(select write_authority changed)"
+      ],
+      "goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "source_creation_ns": 95541,
+      "observed": "countermodel"
+    },
+    "bool_two": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 3)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "source_creation_ns": 89000,
+      "observed": "countermodel"
+    },
+    "missing_stability": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(not (>= (select source 0) 2))"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "source_creation_ns": 90708,
+      "observed": "countermodel"
+    },
+    "array_index_omission": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(not (>= (select source 0) 2))"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (not (>= (select current 0) 2)) (not (>= (select current 1) 2)))",
+      "source_creation_ns": 94292,
+      "observed": "countermodel"
+    },
+    "wrong_narrow_domain": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 2)",
+        "(< (select source 0) 3)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "source_creation_ns": 87167,
+      "observed": "not-strict-valid"
+    },
+    "byte_write_component0": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(= (select (store source changed replacement) changed) replacement)",
+      "source_creation_ns": 95541,
+      "observed": "not-strict-valid"
+    },
+    "byte_write_component1": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(select (store source_init changed true) changed)",
+      "source_creation_ns": 80500,
+      "observed": "not-strict-valid"
+    },
+    "byte_write_component2": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(= (select (store source changed replacement) framed) (select source framed))",
+      "source_creation_ns": 76667,
+      "observed": "strict-valid"
+    },
+    "byte_write_component3": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(= (select (store source_init changed true) framed) (select source_init framed))",
+      "source_creation_ns": 117208,
+      "observed": "not-strict-valid"
+    }
+  },
+  "runs": [
+    {
+      "exit": 0,
+      "elapsed_ns": 9613292,
+      "stdout_bytes": 840,
+      "stderr_bytes": 0,
+      "case": "into_bytes",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3186125,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "into_bytes",
+      "phase": "check",
+      "accepted": true
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 10399292,
+      "stdout_bytes": 4501,
+      "stderr_bytes": 0,
+      "case": "byte_write",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3233875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 326,
+      "case": "byte_write",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 10747750,
+      "stdout_bytes": 10952,
+      "stderr_bytes": 0,
+      "case": "bool_validate",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3330750,
+      "stdout_bytes": 8,
+      "stderr_bytes": 328,
+      "case": "bool_validate",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 11236833,
+      "stdout_bytes": 11281,
+      "stderr_bytes": 0,
+      "case": "array_validate",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3358083,
+      "stdout_bytes": 8,
+      "stderr_bytes": 329,
+      "case": "array_validate",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5693958,
+      "stdout_bytes": 454,
+      "stderr_bytes": 0,
+      "case": "missing_initialization",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5775292,
+      "stdout_bytes": 455,
+      "stderr_bytes": 0,
+      "case": "alias_frame",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5509125,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0,
+      "case": "bool_two",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 6004500,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0,
+      "case": "missing_stability",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5622666,
+      "stdout_bytes": 449,
+      "stderr_bytes": 0,
+      "case": "array_index_omission",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 10688125,
+      "stdout_bytes": 3819,
+      "stderr_bytes": 0,
+      "case": "wrong_narrow_domain",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3113792,
+      "stdout_bytes": 8,
+      "stderr_bytes": 327,
+      "case": "wrong_narrow_domain",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 9244250,
+      "stdout_bytes": 1417,
+      "stderr_bytes": 0,
+      "case": "byte_write_component0",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3866875,
+      "stdout_bytes": 8,
+      "stderr_bytes": 337,
+      "case": "byte_write_component0",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 9490958,
+      "stdout_bytes": 1138,
+      "stderr_bytes": 0,
+      "case": "byte_write_component1",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3188000,
+      "stdout_bytes": 8,
+      "stderr_bytes": 337,
+      "case": "byte_write_component1",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 9462500,
+      "stdout_bytes": 773,
+      "stderr_bytes": 0,
+      "case": "byte_write_component2",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3142042,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "byte_write_component2",
+      "phase": "check",
+      "accepted": true
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 10314292,
+      "stdout_bytes": 3583,
+      "stderr_bytes": 0,
+      "case": "byte_write_component3",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 1,
+      "elapsed_ns": 3091958,
+      "stdout_bytes": 8,
+      "stderr_bytes": 323,
+      "case": "byte_write_component3",
+      "phase": "check",
+      "accepted": false
+    }
+  ],
+  "policy": "exit0 AND exact valid newline; holey exit0 rejected; no allowed-rule/custom-checker bypass flags",
+  "scope": "All source, formula, parser/quotation, arithmetic/array interpretation and native binary/runtime premises remain explicit."
+}

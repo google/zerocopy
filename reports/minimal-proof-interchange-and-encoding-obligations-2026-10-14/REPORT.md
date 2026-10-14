@@ -70,7 +70,7 @@ Basis: **derived**.
 
 A richer program logic contains connectives, state/resource models, recursive predicates, invariants, and adequacy theorems. Encoding it into a minimal checker introduces obligations to represent binding/substitution safely, preserve inference rules, reflect the intended theorem, and account for source definitions or conversions. The translation may expand high-level proof steps into many low-level applications; code simplicity can move work and proof volume into the encoding layer.
 
-No performance or proof-size number is claimed. The qualitative cost is an explicit proof/translation burden plus potentially larger witnesses; its magnitude requires a real representative encoding and measurement. A minimal checker cannot remove those semantic obligations merely by being easier to inspect.
+The original format comparison claims no performance or proof-size number; the added MM0 specimen below supplies source-derived encoding counts. The qualitative cost is an explicit proof/translation burden plus potentially larger witnesses; its magnitude requires a real representative encoding and measurement. A minimal checker cannot remove those semantic obligations merely by being easier to inspect.
 
 For comparison, the prior proof-kernel wave distinguishes LCF/HOL abstract theorem construction from Lean/Rocq proof objects. The companion SMT report inspects Isabelle's separate replay/oracle selection. Those are authority interfaces in existing assistants, while MM0/Metamath/Dedukti supply alternate proof representations whose correspondence still needs proof. This report does not add a fresh HOL4/PVS kernel audit.
 
@@ -82,11 +82,52 @@ The consumer should fix the theorem and theory specification before reading the 
 
 Extensions should register through proved target rule interpretations or host proof terms. Accepting a new rewrite equation, signature constant, or axiom merely because the checker can parse it changes the theory and is a separate authority decision. The simplest useful pilot is one small theorem with binders and an explicit substitution side condition, followed by a round-trip statement comparison; a whole Rust/Iris logic encoding is a later project.
 
+### Actual resource-logic encoding and its cost mechanism in MM0
+
+Basis: **source**, original byte/line measurement; primary thesis context. Exact subject: `digama0/mm0@0d414c0bfdaaeb7fea571895127abc1fa5a3d956`. No MM0 compiler or verifier was built or executed.
+
+The concrete specimen is [examples/separation_logic.mm1](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/separation_logic.mm1). It develops natural-number encoded finite heaps and class-abstraction assertions on top of the Peano library. `Heap_join`/`heap_join` express disjoint functional domains and union. `s_sep` uses existential heap splits; `s_wand` quantifies compatible extensions. The file also defines pure lifting, empty heap, pointwise conjunction/implication, existential/universal assertions and indexed separating conjunction. These are definitions and theorem applications in the object development, rather than new instructions in the verifier. This is an actual program-logic library, although it is not Iris's step-indexed higher-order resource model.
+
+Representative declaration/proof-script endpoints make the burden concrete: `heap_join_ass` supplies regrouping; `s_sepcom`/`s_sepass` lift commutativity/associativity to assertions; `s_sepim1` lifts entailment through a frame; `s_wand_mp` discharges a wand against its argument; and `s_Sep_un` handles disjoint indexed collections. Binder/substitution laws such as `cbvs_Seps` are explicit reusable derivations. The distinction between the local assertion model and any Rust interpretation remains essential.
+
+The foundation is visible in [peano.mm0](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/peano.mm0): `wff`, `nat`, class abstraction/membership, substitution and extensional class equality are represented explicitly. A different specimen, [hol.mm0](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hol.mm0), supplies an HOL-style object theory with type/term sorts, application, lambda binding and explicit typing premises; its companion proof library derives the named core lemmas. Adopting that theory changes the consumer's axioms and interpretation, rather than teaching the minimal checker a privileged HOL or resource rule.
+
+#### Specification, substitution and checking cost are different layers
+
+The [language specification](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0.md) separates the consumer-audited `.mm0` declarations/axioms/definitions/theorems from the proposed proof. MM1 tactics may generate both, so independently selecting the expected specification remains mandatory. Abstract output definitions can allow a producer to supply a program satisfying a specification; this does not identify it with an independently requested original source program.
+
+In [mm0-c/verifier.c](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0-c/verifier.c), `run_unify` separately handles definition unfolding, theorem application and theorem-header checking. Its commands check constructor structure, substituted expressions, hypotheses, sorts and dummy-variable dependency restrictions. Saved expression references support sharing. Resource algebra search, automatic framing and predicate discovery are outside that loop. Its simplicity transfers work to proof construction, foundational libraries and exact specification interpretation; it does not erase that work.
+
+The original `support/focused-replay-and-encoding/measure-encoding.py` records the following source specimen at that pin:
+
+| Scope | Observed source burden |
+| --- | --- |
+| Separation library alone | 55,623 bytes; 1,074 lines; 349 lexical theorem heads and 17 definition heads |
+| Its seven-file actual MM1 import closure | 823,300 bytes, including arithmetic, x86 decoding and assembler development |
+| Separation commutativity / associativity declaration regions | 163 / 396 bytes |
+| Heap-join associativity / indexed disjoint-union regions | 1,025 / 2,632 bytes |
+| HOL specification / proof source | 10,327 / 23,298 bytes |
+| `verifier.c` translation unit | 31,817 bytes; not the complete parser/runtime/binary TCB |
+
+These are reproducible source-size and lexical counts, not elaborated proof nodes, a minimal dependency slice, binary proof size, checking time or verified theorem count. The import closure is the actual development organization, not a lower bound on separation logic. Small client rules can reuse larger foundational lemmas; explicit binders, equality transport and model facts account for source/proof work that a richer kernel might perform internally. Sharing can avoid repeating subterms, while changing the object logic still requires interpreting its rules and assumptions.
+
+Carneiro's [thesis](https://digama0.github.io/mm0/thesis.pdf), §§1.2/1.6 and 2.2.7, explains substitution/sharing and identifies this separation development. Its older author measurement of ordinary `set.mm` checking is about 927±28 ms on a 3.9GHz i7, not a measurement of this resource library or a current cross-system ranking. No such timing was reproduced here.
+
+#### The specimen exposes an admission boundary
+
+The separation library imports `assembler-new.mm1`; that file declares an unrestricted `sorry` axiom and contains unfinished assembler proofs. The independent [compiler.mm0](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/compiler.mm0) likewise exposes `sorry`, explicitly describing the interim incomplete development. [build.sh](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/build.sh) lists the completed arithmetic/MM0/x86 build targets and omits the compiler/separation targets. Thus the absence of a direct `sorry` token in the separation file is not a transitive assumption audit. No admission-free compiled theorem closure was established.
+
+The [hello MMC specification](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hello_mmc.mm0) is only 182 bytes but imports that compiler foundation. Its [MM1 producer](https://github.com/digama0/mm0/blob/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hello_mmc.mm1) constructs the program and exports ELF/termination statements. A tiny public statement therefore does not measure the foundational cost or establish a completed proof-produced binary chain.
+
+This answers T006 with an actual richer-logic encoding and a precise cost mechanism. A whole Iris-to-MM0 port is unnecessary to establish those findings. Unperformed work is binary-proof generation/checking and closure audit for this pin, not uncertainty about whether a concrete resource encoding exists. For an Anneal adoption, choose the expected theory, expose all axioms, rebuild a clean selected dependency slice and justify its resource/source interpretation before accepting its results.
+
+Revalidation: retrieve the identified immutable units into owned scratch using their recorded `mm0-<basename>` filenames, then run `python3 -B measure-encoding.py --source-dir <owned-source-dir> --output <owned-result.json>`. Compare bytes, declaration regions and import edges. This script is lexical measurement; use an actual verifier and dependency/axiom audit for a stronger proof claim.
+
 ## Boundaries
 
 **Answered subquestions:** explicit substitutions and disjointness; MM0 public-specification alignment and checked local helpers; Dedukti typing/conversion/rewrite conditions; why semantic encoding is an additional proof obligation.
 
-**Research still open:** checker implementation correctness for these exact pins, complete loader/import assumptions, measured richer-logic encoding costs, cross-assistant exporters, and a concrete Rust resource-logic encoding. These gaps constrain implementation selection, not the stated source/grammar comparison.
+**Research still open:** checker implementation correctness for these exact pins, complete loader/import assumptions, binary proof/checking costs (the source-size specimen is now measured), cross-assistant exporters, and a concrete Rust resource-logic encoding. These gaps constrain implementation selection, not the stated source/grammar comparison.
 
 **Future implementation obligations:** consumer-selected specification packaging, source-to-target correspondence evidence, extension policy, and binary/runtime validation. No deployed Anneal checker is claimed.
 
@@ -95,6 +136,8 @@ Extensions should register through proved target rule interpretations or host pr
 support/evidence.json records the original primary units and retrieved-content hashes. The parent additionally inspected Lambdapi's pinned `doc/commands.rst:318–346` and `src/handle/command.ml:228–284,544–560` on 2026-10-14; immutable links accompany the findings. MMB is a normative upstream format document for this pin; the Dedukti tutorial and Lambdapi manual are descriptive upstream documentation; the OCaml/C mechanisms are direct source evidence. Source mirrors are excluded from the package. No fresh execution or complete implementation soundness theorem is claimed.
 
 ## Revalidation
+
+For the resource specimen, fetch the exact source paths in support/focused-replay-and-encoding/source-identities.json into caller-selected files named mm0-<basename>; run measure-encoding.py with --source-dir and --output in scratch. Inspect the full import/axiom closure before promoting lexical source counts to checked proof evidence.
 
 Reinspect the exact MMB version, public declaration matching, substitution/free-variable rules, and END checks. Follow Metamath's full caller/loader error handling before using an exit status as an acceptance contract. Reinspect Dedukti conversion and rule typing together with the configured confluence path; record all supplied rewrite rules. For interchange, compare the consumer's source theorem and the target specification under the proved translation before accepting any proof result.
 

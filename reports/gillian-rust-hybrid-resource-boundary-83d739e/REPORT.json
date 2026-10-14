@@ -21,6 +21,30 @@
         "doi": "10.1145/3729289",
         "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
       }
+    },
+    {
+      "name": "Gillian core locked engine",
+      "identity": {
+        "repository": "GillianPlatform/gillian",
+        "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+        "paths": "GillianCore/engine/Abstraction/Matcher.ml;Matcher.mli;Verifier.ml;PState.ml"
+      }
+    },
+    {
+      "name": "Owned prophecy replay adapter",
+      "identity": {
+        "artifact": "support/focused-replay-and-encoding/ProphecyReplay.lean",
+        "sha256": "aa6201426e441dae131cdf38b878554ed4b9f5e02ee0eca38674d83a07a622ca",
+        "scope": "selected concrete-valuation resource rules, not complete Gillian replay"
+      }
+    },
+    {
+      "name": "Lean4.34 adapter observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
     }
   ],
   "observed_at": "2026-10-14"

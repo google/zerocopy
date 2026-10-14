@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "source_hashes_match": true,
+  "Lean_check_processes": 6,
+  "SMT_generation_check_pairs": 12,
+  "SAT_witnesses_Lean_refuted": 5,
+  "wrong_domain_root_rejected": true,
+  "whole_SMT_laws_accepted": [
+    "into_bytes"
+  ],
+  "whole_SMT_laws_not_accepted": [
+    "byte_write",
+    "bool_validate",
+    "array_validate"
+  ],
+  "extra_strict_projection": "outside-byte frame",
+  "scope": "Separate independent parent run in fresh scratch using explicit caller-selected same tools; original timing observations remain separate."
+}

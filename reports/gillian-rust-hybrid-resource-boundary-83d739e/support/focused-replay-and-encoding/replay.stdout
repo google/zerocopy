@@ -1,0 +1,4 @@
+'Replay.apply_sound' depends on axioms: [propext]
+'Replay.run_sound' depends on axioms: [propext]
+'Replay.check_sound' depends on axioms: [propext]
+'Replay.trace_frame' does not depend on any axioms

@@ -1,0 +1,1 @@
+Controller expected holey from earlier theory-rewrite observation; final DSL normal form instead returns invalid/nonzero for named rare_rewrite rules. Actual phase logs are preserved. This is export-rule compatibility, not Rust unsafety. No failed phase was accepted.

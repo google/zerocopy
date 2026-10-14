@@ -1,0 +1,167 @@
+{
+  "status": "pass",
+  "runs": [
+    {
+      "name": "shared",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "-o",
+        "Rust/Layout.olean",
+        "Rust/Layout.lean"
+      ]
+    },
+    {
+      "name": "bridge",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "-o",
+        "LayoutBridge.olean",
+        "LayoutBridge.lean"
+      ]
+    },
+    {
+      "name": "aggregate-native-positive",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "aggregate-native-positive.lean"
+      ]
+    },
+    {
+      "name": "aggregate-wasm-positive",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "aggregate-wasm-positive.lean"
+      ]
+    },
+    {
+      "name": "aggregate-wrong-abi",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "aggregate-wrong-abi.lean"
+      ]
+    },
+    {
+      "name": "aggregate-wrong-offset",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "aggregate-wrong-offset.lean"
+      ]
+    },
+    {
+      "name": "aggregate-wrong-type",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "aggregate-wrong-type.lean"
+      ]
+    },
+    {
+      "name": "extra-field",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "extra-field.lean"
+      ]
+    },
+    {
+      "name": "missing-field",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "missing-field.lean"
+      ]
+    },
+    {
+      "name": "native-positive",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "native-positive.lean"
+      ]
+    },
+    {
+      "name": "wasm-positive",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "wasm-positive.lean"
+      ]
+    },
+    {
+      "name": "wrong-abi",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "wrong-abi.lean"
+      ]
+    },
+    {
+      "name": "wrong-array-length",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "wrong-array-length.lean"
+      ]
+    },
+    {
+      "name": "wrong-header-type",
+      "exit": 1,
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "wrong-header-type.lean"
+      ]
+    },
+    {
+      "name": "native-build",
+      "exit": 0,
+      "command": [
+        "$TOOL/rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "aggregate.rs",
+        "-o",
+        "aggregate-native"
+      ]
+    },
+    {
+      "name": "native",
+      "exit": 0,
+      "command": [
+        "$TASK_ROOT/work/research/parent/shared-layout-replay/aggregate-native"
+      ]
+    },
+    {
+      "name": "wasm-build",
+      "exit": 0,
+      "command": [
+        "$TOOL/rustc",
+        "--edition=2024",
+        "--crate-type=cdylib",
+        "--target=wasm32-unknown-unknown",
+        "--sysroot=$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown",
+        "-C",
+        "opt-level=2",
+        "aggregate.rs",
+        "-o",
+        "aggregate.wasm"
+      ]
+    },
+    {
+      "name": "wasm",
+      "exit": 0,
+      "command": [
+        "/opt/homebrew/bin/node",
+        "aggregate-wasm.mjs",
+        "aggregate.wasm"
+      ]
+    }
+  ],
+  "scope": "Independent exact-source theorem-instantiation and actual target replay; historical4.31 checker and physical import remain conditional."
+}

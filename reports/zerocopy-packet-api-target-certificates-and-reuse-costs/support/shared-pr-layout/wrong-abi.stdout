@@ -1,0 +1,3 @@
+controls/wrong-abi.lean:3:75: error: Tactic `decide` proved that the proposition
+  admit ABI.wasm32 4 nativeObserved = true
+is false

@@ -1,0 +1,28 @@
+{
+  "runs": [
+    {
+      "name": "rust-version",
+      "command": [
+        "rustc",
+        "-vV"
+      ],
+      "exit": 0,
+      "elapsed_ns": 145028792
+    },
+    {
+      "name": "aggregate-native-build",
+      "command": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "aggregate.rs",
+        "-o",
+        "aggregate-native"
+      ],
+      "exit": 1,
+      "elapsed_ns": 250899709
+    }
+  ],
+  "sysroot": "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown"
+}

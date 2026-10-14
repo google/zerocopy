@@ -1,0 +1,8 @@
+'universal_into' depends on axioms: [propext]
+'universal_write' depends on axioms: [propext]
+'universal_boolean' does not depend on any axioms
+'universal_array' does not depend on any axioms
+'concrete_into' depends on axioms: [propext]
+'concrete_write' depends on axioms: [propext]
+'concrete_boolean' depends on axioms: [propext]
+'concrete_array' depends on axioms: [propext]

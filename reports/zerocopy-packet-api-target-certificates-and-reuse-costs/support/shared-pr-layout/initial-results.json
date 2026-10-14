@@ -1,0 +1,28 @@
+[
+  {
+    "name": "shared-pr-layout",
+    "command": [
+      "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+      "-o",
+      "Rust/Layout.olean",
+      "Rust/Layout.lean"
+    ],
+    "cwd": "$TASK_ROOT/work/research/shared-pr-layout-instantiation/private-build",
+    "LEAN_PATH": "$TASK_ROOT/work/research/shared-pr-layout-instantiation/private-build",
+    "exit": 0,
+    "elapsed_ns": 1974055333
+  },
+  {
+    "name": "original-layout-bridge",
+    "command": [
+      "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+      "-o",
+      "$TASK_ROOT/work/research/shared-pr-layout-instantiation/LayoutBridge.olean",
+      "$TASK_ROOT/work/research/shared-pr-layout-instantiation/LayoutBridge.lean"
+    ],
+    "cwd": "$TASK_ROOT/work/research/shared-pr-layout-instantiation/private-build",
+    "LEAN_PATH": "$TASK_ROOT/work/research/shared-pr-layout-instantiation/private-build",
+    "exit": 1,
+    "elapsed_ns": 37136959
+  }
+]

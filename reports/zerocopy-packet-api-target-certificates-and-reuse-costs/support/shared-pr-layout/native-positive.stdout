@@ -1,0 +1,1 @@
+'consumed_observation' depends on axioms: [propext, Quot.sound]

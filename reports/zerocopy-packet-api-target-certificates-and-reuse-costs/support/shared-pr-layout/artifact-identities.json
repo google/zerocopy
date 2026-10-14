@@ -1,0 +1,353 @@
+{
+  "observed_at": "2026-10-14",
+  "lean": {
+    "version": "4.31.0",
+    "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+    "known_boundary": "This source pin lacks the documented nested-parameter validation fix; accepted owned terms are conditional checker observations, not arbitrary-producer soundness."
+  },
+  "rust": {
+    "version": "1.99.0",
+    "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "llvm": "23.1.1",
+    "host": "aarch64-apple-darwin"
+  },
+  "node": {
+    "version": "24.21.0",
+    "v8": "13.6.233.17-node.53"
+  },
+  "runtime_hashes": {
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean": {
+      "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "bytes": 49968,
+      "resolved": "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean"
+    },
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/libleanshared.dylib": {
+      "sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+      "bytes": 170794848,
+      "resolved": "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/libleanshared.dylib"
+    },
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/Init.olean": {
+      "sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8",
+      "bytes": 5888,
+      "resolved": "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/Init.olean"
+    },
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/Std/Tactic.olean": {
+      "sha256": "503933e722ab03add385a7353a497264f97918c1ded177b256a1150b458a0043",
+      "bytes": 1512,
+      "resolved": "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/Std/Tactic.olean"
+    },
+    "$TOOL/rustc": {
+      "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0",
+      "bytes": 413480,
+      "resolved": "$TOOL/rustc"
+    },
+    "/opt/homebrew/bin/node": {
+      "sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e",
+      "bytes": 50320,
+      "resolved": "/opt/homebrew/Cellar/node@24/24.21.0_2/bin/node"
+    },
+    "$TASK_ROOT/work/toolchains/rust-wasm199/rust-std-1.99.0-wasm32-unknown-unknown.tar.xz": {
+      "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22",
+      "bytes": 23152600,
+      "resolved": "$TASK_ROOT/work/toolchains/rust-wasm199/rust-std-1.99.0-wasm32-unknown-unknown.tar.xz"
+    },
+    "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown/lib/rustlib/wasm32-unknown-unknown/lib/libstd-52dc94f81b9196d2.rlib": {
+      "sha256": "cc1a3892876db3653a2d599d8c8372f9bc4a8ce692d942222f5ba81cc9f31d74",
+      "bytes": 2857396,
+      "resolved": "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown/lib/rustlib/wasm32-unknown-unknown/lib/libstd-52dc94f81b9196d2.rlib"
+    },
+    "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown/lib/rustlib/wasm32-unknown-unknown/lib/libcore-79bd1e8c3e3cb812.rlib": {
+      "sha256": "862ad70e9cc8d8f0bd03b4c1da056bb43ae3b123aadbc04c9b1e7f4d275634cc",
+      "bytes": 2599492,
+      "resolved": "$TASK_ROOT/work/toolchains/rust-wasm199/unpacked/rust-std-1.99.0-wasm32-unknown-unknown/rust-std-wasm32-unknown-unknown/lib/rustlib/wasm32-unknown-unknown/lib/libcore-79bd1e8c3e3cb812.rlib"
+    }
+  },
+  "artifacts": {
+    "LayoutBridge.lean": {
+      "sha256": "b1f971c118a2dfa061f1da82d34d919220f418eed61bc249600908f503366f8b",
+      "bytes": 6916
+    },
+    "LayoutBridge.olean": {
+      "sha256": "c3508fac38df54622825c5be0fcb24187fad2fcade7bf4dc65023564a67d341b",
+      "bytes": 221744
+    },
+    "aggregate-native": {
+      "sha256": "d0005d9f1894adb31a9bf9eee55bfbd84fd39a5e45eddfcc145bf5cbe25fb7fd",
+      "bytes": 471248
+    },
+    "aggregate-native-build.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-native-build.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-native-check.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-native-check.stdout": {
+      "sha256": "d761afcd308ca7353699aa6ee81e769a03fc0bb8f941af1d8af1d6f7bfdcfe9b",
+      "bytes": 49
+    },
+    "aggregate-native-positive.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-native-positive.stdout": {
+      "sha256": "754f30c55c2172150e9c41feb1716de533af8460f9c591a09f577e89fc699fe0",
+      "bytes": 62
+    },
+    "aggregate-results.json": {
+      "sha256": "30e5ebeffdea4b872e4d415b8791870a400cd5651ed2c915c4a7aba4e1b1f705",
+      "bytes": 1526
+    },
+    "aggregate-wasm-build.stderr": {
+      "sha256": "0b79aa317d70afeb2d7f294929c8d806a1c5eea62a0eb2c13b9a30beee11d7d2",
+      "bytes": 206
+    },
+    "aggregate-wasm-build.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wasm-check.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wasm-check.stdout": {
+      "sha256": "6d2803c977c97fc96552f76c822d46dcb82c9d0cc154237adb7ac1534f35f191",
+      "bytes": 99
+    },
+    "aggregate-wasm-positive.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wasm-positive.stdout": {
+      "sha256": "754f30c55c2172150e9c41feb1716de533af8460f9c591a09f577e89fc699fe0",
+      "bytes": 62
+    },
+    "aggregate-wasm.mjs": {
+      "sha256": "dd24bf7cfeb73b116abcdf9d2f0984416d3782c1d0106a25e9ce34ebd8d433d3",
+      "bytes": 493
+    },
+    "aggregate-wrong-abi.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wrong-abi.stdout": {
+      "sha256": "80113b11025157a55e7461f4aaca14fba0445bea2a27418b21aad5186abb05d7",
+      "bytes": 174
+    },
+    "aggregate-wrong-offset.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wrong-offset.stdout": {
+      "sha256": "010430d50c0473359cabbb31606810ce130eeee5919c8fa5ebea6ccb460e940c",
+      "bytes": 179
+    },
+    "aggregate-wrong-type.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "aggregate-wrong-type.stdout": {
+      "sha256": "1b75d4b61b5c4a79c96d77612c7775985e2717eb9b02230a85e7019013090e7e",
+      "bytes": 177
+    },
+    "aggregate.rs": {
+      "sha256": "085661e6a743f4f07b0b48078af99eb7b7159b419329133a20916888ec438e17",
+      "bytes": 914
+    },
+    "aggregate.wasm": {
+      "sha256": "631ba07d973edfc3b225dfc46e2be3c6addee3518fdffae5e413db26214b85c3",
+      "bytes": 1633183
+    },
+    "bridge-result.json": {
+      "sha256": "a3f59bf81478123183bda833fb219cb53d3b0137aad8dc88531eecc31c9f4473",
+      "bytes": 407
+    },
+    "bridge.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge.stdout": {
+      "sha256": "3ed09038de84837077a61dd1da4a77839629c53cc162382324182cbc748d9066",
+      "bytes": 1185
+    },
+    "controls/aggregate-native-positive.lean": {
+      "sha256": "5c378997c10ac2e534175d190a318b4edf887c83c4befeaa09453b530d0da581",
+      "bytes": 239
+    },
+    "controls/aggregate-wasm-positive.lean": {
+      "sha256": "d93e51699f14b7a68803083883fcfa06feccfb90933815e1f9b6b437223b79d3",
+      "bytes": 233
+    },
+    "controls/aggregate-wrong-abi.lean": {
+      "sha256": "f23c48e35d0b73edd5bc14b8af49805bd9c39cd9a307e86bfa9c60a5c4fc57ea",
+      "bytes": 140
+    },
+    "controls/aggregate-wrong-offset.lean": {
+      "sha256": "97fac002efc2e225a610b93c131b82650ec95d1d852573b4cb3f1058054341d9",
+      "bytes": 142
+    },
+    "controls/aggregate-wrong-type.lean": {
+      "sha256": "9477fec10126c51fed0496354ce9b9e392f3c48a2fb10e4a3ff59d3ab5ca525b",
+      "bytes": 142
+    },
+    "controls/extra-field.lean": {
+      "sha256": "26a3f0120c637ec4352211c0552b589a092b8fbb3fae07fe3de9b0e117ed30ad",
+      "bytes": 122
+    },
+    "controls/missing-field.lean": {
+      "sha256": "9b8be17dbf2ed572e33641fa2ee23743d502282ab05140f7f7e32ae2f16b4d16",
+      "bytes": 117
+    },
+    "controls/native-positive.lean": {
+      "sha256": "1ea763afbf99f72051b362cd6af1e73de62ac225294754b0c98bb5c2786474f4",
+      "bytes": 200
+    },
+    "controls/wasm-positive.lean": {
+      "sha256": "2badad4586c0eb60d38ba3b03925eed30ae05c2b62fe172d604f2b2a9f165d64",
+      "bytes": 196
+    },
+    "controls/wrong-abi.lean": {
+      "sha256": "f8b7215cb9df928ac8266036f651de2247f13e1a6f414124d997a2888098ad77",
+      "bytes": 120
+    },
+    "controls/wrong-array-length.lean": {
+      "sha256": "8031448ecc60996e5d242f5fa19961ccc38c50ce96f11213f4549ab9cc70fb16",
+      "bytes": 122
+    },
+    "controls/wrong-header-type.lean": {
+      "sha256": "e970ea3b05636d0f853d41650de3b6fb225706d9c1c728ac42b59e29755eaaf7",
+      "bytes": 119
+    },
+    "extra-field.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "extra-field.stdout": {
+      "sha256": "331fd350caaf83ca2d0f86d00cd544ac8bbf476937b870b3e9a7a344862fb1e0",
+      "bytes": 142
+    },
+    "final-bridge-result.json": {
+      "sha256": "67e28bf36b1a93abd7f9cff94b2c45ddca014b35754bfe54ada1bba23c9ac742",
+      "bytes": 407
+    },
+    "final-bridge.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "final-bridge.stdout": {
+      "sha256": "1785f6b1eb6d9ea4165317995d0b63e13d7c0af359eb18624fa6bbdee4e3de34",
+      "bytes": 728
+    },
+    "initial-native-build-rejection/aggregate-native-build.stderr": {
+      "sha256": "3f421eb9a8731220e2b5e174fb2717b1348dbbbd8de7010c94e5a1d4db8d78d1",
+      "bytes": 2072
+    },
+    "initial-native-build-rejection/aggregate-native-build.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "initial-native-build-rejection/aggregate-results.json": {
+      "sha256": "fe05141cf1d3c3c45be2d1e165ee8cd844252a8594766bddbdd85be3d99b7043",
+      "bytes": 646
+    },
+    "initial-results.json": {
+      "sha256": "8d69be8d05d3c1fed0aa0db1dd6ec57b532e6ca6714838cd430f2c5acf37744e",
+      "bytes": 1527
+    },
+    "input-binding.json": {
+      "sha256": "91a4b98071e7c2c6bfc3074070bb46c9dcf8fbc1dc55c2a3cb8c1def1462aea5",
+      "bytes": 2907
+    },
+    "missing-field.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "missing-field.stdout": {
+      "sha256": "75a6f1672b4bcba0d5e493e69827ce0c5ca46f057f039f1c887fdef31287b194",
+      "bytes": 137
+    },
+    "native-positive.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "native-positive.stdout": {
+      "sha256": "57b8c560cb1b055bcc6e97ad74f500252f274d67afb3c159125b1ae382664811",
+      "bytes": 64
+    },
+    "original-layout-bridge.stderr": {
+      "sha256": "ac59c10c821d2d5dc5621a1d027dbe7a8518fef12aaba6242976f78b6089f2d1",
+      "bytes": 334
+    },
+    "original-layout-bridge.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "private-build/Rust/Layout.lean": {
+      "sha256": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db",
+      "bytes": 4694
+    },
+    "private-build/Rust/Layout.olean": {
+      "sha256": "30b5a4a1f11b54e75f79a6b6098b726cb9d1faddda86dedecd86277c0c664877",
+      "bytes": 153344
+    },
+    "results.json": {
+      "sha256": "b2ae8b5211678b97735b99692755e9ccca523a6ab90bcf5eb10d78de1022b83d",
+      "bytes": 5306
+    },
+    "rust-version.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "rust-version.stdout": {
+      "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+      "bytes": 192
+    },
+    "shared-pr-layout.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "shared-pr-layout.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wasm-positive.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wasm-positive.stdout": {
+      "sha256": "57b8c560cb1b055bcc6e97ad74f500252f274d67afb3c159125b1ae382664811",
+      "bytes": 64
+    },
+    "wrong-abi.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wrong-abi.stdout": {
+      "sha256": "988dd9add90f51c86cc4caf8cc18f0e2718a83ed33870e4b0d61d6e6c782606e",
+      "bytes": 133
+    },
+    "wrong-array-length.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wrong-array-length.stdout": {
+      "sha256": "bc44b10c28a491111eb7bcbea1040a7a2579831398fa67951146fb5eda2cdfdb",
+      "bytes": 144
+    },
+    "wrong-header-type.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "wrong-header-type.stdout": {
+      "sha256": "bc3bfb0c3a7eae91e61a9769c05399dbff31cff8959d901ed672a28cb3baa2b5",
+      "bytes": 144
+    }
+  },
+  "source_binding": "Exact unchanged PR source cce761ad53785973ec2f4a6b13715b770b340c87 anneal/lean/Rust/Layout.lean hash matches preserved original parent source identities.",
+  "scope": "Original small theorem instantiation and two actual Rust layout observations. No Lean upgrade, exploit, dependency install, Rust source adequacy theorem or full shared-library build."
+}

@@ -1,0 +1,280 @@
+{
+  "cases": {
+    "into_bytes": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "source_creation_ns": 152167,
+      "observed": "strict-valid"
+    },
+    "byte_write": {
+      "want": "unsat",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "source_creation_ns": 146208,
+      "observed": "not-strict-valid"
+    },
+    "bool_validate": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 2)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (< (select current 0) 2))",
+      "source_creation_ns": 139125,
+      "observed": "not-strict-valid"
+    },
+    "array_validate": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(< (select source 0) 2)",
+        "(< (select source 1) 2)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (< (select current 0) 2) (< (select current 1) 2))",
+      "source_creation_ns": 113208,
+      "observed": "not-strict-valid"
+    },
+    "missing_initialization": {
+      "want": "sat",
+      "premises": [
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "source_creation_ns": 100125,
+      "observed": "countermodel"
+    },
+    "alias_frame": {
+      "want": "sat",
+      "premises": [
+        "(select write_authority changed)"
+      ],
+      "goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "source_creation_ns": 123708,
+      "observed": "countermodel"
+    },
+    "bool_two": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 3)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (< (select current 0) 2))",
+      "source_creation_ns": 95791,
+      "observed": "countermodel"
+    },
+    "missing_stability": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(< (select source 0) 2)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (< (select current 0) 2))",
+      "source_creation_ns": 109542,
+      "observed": "countermodel"
+    },
+    "array_index_omission": {
+      "want": "sat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(< (select source 0) 2)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (< (select current 0) 2) (< (select current 1) 2))",
+      "source_creation_ns": 101375,
+      "observed": "countermodel"
+    },
+    "wrong_narrow_domain": {
+      "want": "unsat",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 2)",
+        "(< (select source 0) 3)"
+      ],
+      "goal": "(and (select current_init 0) (select current_read 0) (< (select current 0) 2))",
+      "source_creation_ns": 166250,
+      "observed": "not-strict-valid"
+    }
+  },
+  "runs": [
+    {
+      "exit": 0,
+      "elapsed_ns": 36608250,
+      "stdout_bytes": 840,
+      "stderr_bytes": 0,
+      "case": "into_bytes",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 11444125,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "into_bytes",
+      "phase": "check",
+      "accepted": true
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 7410125,
+      "stdout_bytes": 4433,
+      "stderr_bytes": 0,
+      "case": "byte_write",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3197042,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "byte_write",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 7039792,
+      "stdout_bytes": 4390,
+      "stderr_bytes": 0,
+      "case": "bool_validate",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3357833,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "bool_validate",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 7287209,
+      "stdout_bytes": 11930,
+      "stderr_bytes": 0,
+      "case": "array_validate",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3416709,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "array_validate",
+      "phase": "check",
+      "accepted": false
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 6060833,
+      "stdout_bytes": 454,
+      "stderr_bytes": 0,
+      "case": "missing_initialization",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5901834,
+      "stdout_bytes": 455,
+      "stderr_bytes": 0,
+      "case": "alias_frame",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5735083,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0,
+      "case": "bool_two",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5837458,
+      "stdout_bytes": 453,
+      "stderr_bytes": 0,
+      "case": "missing_stability",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 5979083,
+      "stdout_bytes": 449,
+      "stderr_bytes": 0,
+      "case": "array_index_omission",
+      "phase": "generate",
+      "want": "sat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 6740083,
+      "stdout_bytes": 4414,
+      "stderr_bytes": 0,
+      "case": "wrong_narrow_domain",
+      "phase": "generate",
+      "want": "unsat"
+    },
+    {
+      "exit": 0,
+      "elapsed_ns": 3397917,
+      "stdout_bytes": 6,
+      "stderr_bytes": 0,
+      "case": "wrong_narrow_domain",
+      "phase": "check",
+      "accepted": false
+    }
+  ],
+  "policy": "exit0 AND exact valid newline; holey exit0 rejected; no allowed-rule/custom-checker bypass flags",
+  "scope": "All source, formula, parser/quotation, arithmetic/array interpretation and native binary/runtime premises remain explicit."
+}

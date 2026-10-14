@@ -1,0 +1,30 @@
+error[E0277]: expected an `FnMut({integer})` closure, found `extern "C" fn(u32) -> u32 {aggregate_layout}`
+  --> aggregate.rs:30:44
+   |
+30 |     println!("aggregate={:?}", (0..12).map(aggregate_layout).collect::<Vec<_>>());
+   |                                        --- ^^^^^^^^^^^^^^^^ expected an `FnMut({integer})` closure, found `extern "C" fn(u32) -> u32 {aggregate_layout}`
+   |                                        |
+   |                                        required by a bound introduced by this call
+   |
+   = help: the trait `FnMut({integer})` is not implemented for fn item `extern "C" fn(u32) -> u32 {aggregate_layout}`
+note: required by a bound in `map`
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/iter/traits/iterator.rs:831:4
+
+error[E0599]: the method `collect` exists for struct `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {aggregate_layout}>`, but its trait bounds were not satisfied
+  --> aggregate.rs:30:62
+   |
+30 |     println!("aggregate={:?}", (0..12).map(aggregate_layout).collect::<Vec<_>>());
+   |                                                              ^^^^^^^ method cannot be called due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<extern "C" fn(u32) -> u32 {aggregate_layout} as FnOnce<({integer},)>>::Output = _`
+           which is required by `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {aggregate_layout}>: Iterator`
+           `extern "C" fn(u32) -> u32 {aggregate_layout}: FnMut<({integer},)>`
+           which is required by `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {aggregate_layout}>: Iterator`
+           `Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {aggregate_layout}>: Iterator`
+           which is required by `&mut Map<std::ops::Range<{integer}>, extern "C" fn(u32) -> u32 {aggregate_layout}>: Iterator`
+
+error: aborting due to 2 previous errors
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.

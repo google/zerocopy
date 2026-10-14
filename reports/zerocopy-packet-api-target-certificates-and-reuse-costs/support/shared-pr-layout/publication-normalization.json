@@ -1,0 +1,50 @@
+{
+  "purpose": "Normalize observation locators. Preserve raw hashes; original logical/native sources unchanged. Source-size counts are not binary assurance.",
+  "changes": [
+    {
+      "path": "bridge-result.json",
+      "raw_sha256": "a3f59bf81478123183bda833fb219cb53d3b0137aad8dc88531eecc31c9f4473",
+      "published_sha256": "2ebfe21e72f45ece6dd06a4d9437ae849a74a0e854f545ae61ac45267961773d"
+    },
+    {
+      "path": "results.json",
+      "raw_sha256": "b2ae8b5211678b97735b99692755e9ccca523a6ab90bcf5eb10d78de1022b83d",
+      "published_sha256": "1fff365786add6041620227937fb342bb731bef0b29096ee45ca07043d677d56"
+    },
+    {
+      "path": "initial-results.json",
+      "raw_sha256": "8d69be8d05d3c1fed0aa0db1dd6ec57b532e6ca6714838cd430f2c5acf37744e",
+      "published_sha256": "2c0ff6846d1b4e19772255aa27f6c00150dcae7437002e4771a381581ec71b4a"
+    },
+    {
+      "path": "artifact-identities.json",
+      "raw_sha256": "19da8a98e584b760a3d17e6d8336d573f27acfdbbfc3655a7e84a719a6118063",
+      "published_sha256": "01bc87f5c5a091ba646b22f4940f81932c03355109266a8d32a409834ac6ded8"
+    },
+    {
+      "path": "validation.json",
+      "raw_sha256": "7eba34fe4ea5887147ca02f31646daa83461ba0891368540598aedaf0f7e1446",
+      "published_sha256": "b4495e7d447e473e65779e00132c85b300615218ca0608d1b0147440fe50170d"
+    },
+    {
+      "path": "final-bridge-result.json",
+      "raw_sha256": "67e28bf36b1a93abd7f9cff94b2c45ddca014b35754bfe54ada1bba23c9ac742",
+      "published_sha256": "4517853df008dde70331faf57ab8a0d150edb6a0888a72428a7140576a92f7ca"
+    },
+    {
+      "path": "aggregate-results.json",
+      "raw_sha256": "30e5ebeffdea4b872e4d415b8791870a400cd5651ed2c915c4a7aba4e1b1f705",
+      "published_sha256": "6b0095b1ae863ead8d4c0f2cc2640c8bcf657624d76bce1f082c3b6ebf1df5b3"
+    },
+    {
+      "path": "original-layout-bridge.stderr",
+      "raw_sha256": "ac59c10c821d2d5dc5621a1d027dbe7a8518fef12aaba6242976f78b6089f2d1",
+      "published_sha256": "cc52cebc8a89e6099541468802a8a1be24ced61031c27cb768641e948715c720"
+    },
+    {
+      "path": "initial-native-build-rejection/aggregate-results.json",
+      "raw_sha256": "fe05141cf1d3c3c45be2d1e165ee8cd844252a8594766bddbdd85be3d99b7043",
+      "published_sha256": "f5c0b4e6e6738470d154d89e0c11f2a360b30de83110c78d033fc0cda591504a"
+    }
+  ]
+}

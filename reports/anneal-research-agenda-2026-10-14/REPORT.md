@@ -2,6 +2,8 @@
 
 ## Summary
 
+Current deliverables: **89 research reports plus this agenda**, with every original question mapped in the [final coverage/synthesis report](../anneal-research-coverage-and-acceptance-synthesis-2026/REPORT.md). The map preserves361bounded assessments and3investigated prototype boundaries (R095/P127/P131); it does not claim production Anneal soundness. The58groups remain revisable. Earlier tranche descriptions below are publication provenance, not the current completion count.
+
 The retained agenda contains 364 stable questions: 100 on unsafe Rust formal-methods foundations, 120 on internal trusted computing base minimization, and 144 on proof-producing compilation. Every question preserves its rationale and tracking issue. A provisional, many-to-many grouping proposes 58 report families; it is a hypothesis about useful publication boundaries, adjustable as research exposes shared evidence or missing distinctions.
 
 The grouping does not certify research completion. The initial content audit identifies reusable portions of 15 existing report packages, with explicit limits; the other 643 baseline packages remain unassessed. New technical reports in this publication add primary-source investigations and bounded experiments while preserving their unproved Rust and toolchain obligations.
@@ -84,7 +86,7 @@ All24 followup candidate reports in remaining-report-plan.json are represented. 
 
 ## Boundaries
 
-- **Not established:** completion of all 364 questions, a final architecture recommendation, or a production implementation meeting all O01–O24 obligations.
+- **Not established:** every stronger prototype conclusion, final architecture adoption, or a production implementation meeting all O01–O24 obligations. All364questions have scoped research assessments; R095/P127/P131 retain investigated unestablished outcomes, and per-question unknowns remain explicit.
 - **Not examined:** a corpus-wide semantic audit of all 658 baseline packages. The bounded reuse audit covers 15 packages only.
 - **Unknown:** future optimal report boundaries and the engineering cost of each integration. Group scopes remain provisional.
 - **Known distinction:** whole-system external trust remains different from Anneal's internal division between search and checking. Minimizing internal trust does not claim to remove Anneal from an outside caller's TCB.

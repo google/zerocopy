@@ -1,0 +1,1 @@
+'consumed_aggregate' depends on axioms: [propext, Quot.sound]
