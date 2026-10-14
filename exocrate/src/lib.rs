@@ -198,13 +198,36 @@ impl Config {
         location: Location,
         source: Source,
     ) -> IoResult<(PathBuf, ResolvedOrInstalled)> {
+        self.resolve_installation_dir_or_install_with_validation(location, source, |_| Ok(()))
+    }
+
+    /// Resolves or installs a dependency directory after read-only validation.
+    ///
+    /// For a new installation, `validate` runs once on the fully extracted
+    /// staging tree (hash-verified when the source supplies an expected hash)
+    /// under the installation lock, before atomic
+    /// publication. Rejection leaves the final destination absent. For an
+    /// existing installation (including another process's concurrent winner),
+    /// it runs once on that final tree; rejection preserves the installation.
+    /// An installation found before source opening does not require `source`.
+    ///
+    /// Validation must not mutate the tree or retain staging paths after this
+    /// method returns. As with the underlying transaction, concurrent calls
+    /// from the same process are unsupported.
+    pub fn resolve_installation_dir_or_install_with_validation(
+        &self,
+        location: Location,
+        source: Source,
+        validate: impl FnOnce(&Path) -> IoResult<()>,
+    ) -> IoResult<(PathBuf, ResolvedOrInstalled)> {
         let dir_path = self.dir_path(location)?;
         if ManagedDirName::new(&dir_path).check_exists().is_ok() {
+            validate(&dir_path)?;
             return Ok((dir_path, ResolvedOrInstalled::ResolvedExisting));
         }
         let (reader, expected_sha) = self.open_source(source)?;
-        install(reader, &dir_path, expected_sha)?;
-        Ok((dir_path, ResolvedOrInstalled::NewlyInstalled))
+        let status = install_with_validation(reader, &dir_path, expected_sha, validate)?;
+        Ok((dir_path, status))
     }
 
     /// Opens the given source.
@@ -390,7 +413,17 @@ const fn validate_path(part: &str) {
 
 /// Extracts the `.tar.zst` from `reader` and installs it at `dst`, optionally
 /// validating its hash.
-fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
+#[cfg(test)]
+fn install(reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
+    install_with_validation(reader, dst, expected_sha256, |_| Ok(())).map(|_| ())
+}
+
+fn install_with_validation(
+    mut reader: impl Read,
+    dst: &Path,
+    expected_sha256: Option<[u8; 32]>,
+    validate: impl FnOnce(&Path) -> IoResult<()>,
+) -> IoResult<ResolvedOrInstalled> {
     struct HashingReader<R> {
         reader: R,
         hasher: sha2::Sha256,
@@ -404,39 +437,51 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
         }
     }
 
-    sync::ManagedDirName::new(dst)
-        .check_exists_or_create(|target_dir| {
-            if let Some(expected) = expected_sha256 {
-                let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
-                {
-                    let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
-                    let mut archive = tar::Archive::new(decoder);
-                    archive.unpack(target_dir)?;
-                }
-
-                // Ensure any remaining trailing bytes in the stream are read
-                // and hashed. Zstd may skip trailing data which isn't necessary
-                // to decompress, but we need to account for it in the hash, or
-                // else a valid archive could fail to hash properly if that
-                // archive contains trailing data which isn't required for
-                // decompression.
-                std::io::copy(&mut hash_reader, &mut std::io::sink())?;
-
-                let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
-                if hash != expected {
-                    return Err(std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        "SHA-256 hash mismatch",
-                    ));
-                }
-            } else {
-                let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
+    let mut validate = Some(validate);
+    let mut populated = false;
+    sync::ManagedDirName::new(dst).check_exists_or_create(|target_dir| {
+        if let Some(expected) = expected_sha256 {
+            let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
+            {
+                let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
                 let mut archive = tar::Archive::new(decoder);
                 archive.unpack(target_dir)?;
             }
-            Ok(())
-        })
-        .map(|_| ())
+
+            // Ensure any remaining trailing bytes in the stream are read
+            // and hashed. Zstd may skip trailing data which isn't necessary
+            // to decompress, but we need to account for it in the hash, or
+            // else a valid archive could fail to hash properly if that
+            // archive contains trailing data which isn't required for
+            // decompression.
+            std::io::copy(&mut hash_reader, &mut std::io::sink())?;
+
+            let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
+            if hash != expected {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    "SHA-256 hash mismatch",
+                ));
+            }
+        } else {
+            let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
+            let mut archive = tar::Archive::new(decoder);
+            archive.unpack(target_dir)?;
+        }
+        validate.take().expect("Installation validator is called once")(target_dir)?;
+        populated = true;
+        Ok(())
+    })?;
+    if let Some(validate) = validate {
+        // The populate closure was skipped because an installation already
+        // existed, possibly after waiting for another process's publication.
+        validate(dst)?;
+    }
+    Ok(if populated {
+        ResolvedOrInstalled::NewlyInstalled
+    } else {
+        ResolvedOrInstalled::ResolvedExisting
+    })
 }
 
 /// Parses a [`RemoteArchive`] from the `Cargo.toml` at `$cargo_toml_path`.
@@ -897,6 +942,300 @@ mod tests {
         assert_eq!(status2, ResolvedOrInstalled::ResolvedExisting);
 
         fs::remove_dir_all(&dev_path).unwrap();
+    }
+
+    fn validate_test_sdk(root: &Path) -> IoResult<()> {
+        if fs::read(root.join("lean-sdk/sdk.json"))? != b"supported-sdk" {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "unsupported test SDK",
+            ));
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn test_validated_archive_rejection_and_same_target_recovery() {
+        for invalid in [None, Some(b"malformed".as_slice()), Some(b"wrong-version".as_slice())] {
+            let temp = tempfile::tempdir().unwrap();
+            let config = Config::new(&["deps"], "slug");
+            let base = temp.path().join("cache");
+            let target = config.dir_path(Location::Custom(base.clone())).unwrap();
+            let archive = temp.path().join("archive.tar.zst");
+            let files = match invalid {
+                None => vec![("other.txt", b"missing SDK".as_slice())],
+                Some(bytes) => vec![("lean-sdk/sdk.json", bytes)],
+            };
+            fs::write(&archive, create_dummy_tar_zst(&files)).unwrap();
+            let calls = std::cell::Cell::new(0);
+            let result = config.resolve_installation_dir_or_install_with_validation(
+                Location::Custom(base.clone()),
+                Source::Local(archive.clone()),
+                |stage| {
+                    calls.set(calls.get() + 1);
+                    assert_eq!(stage, target.with_file_name("slug.staging"));
+                    assert!(!target.exists());
+                    validate_test_sdk(stage)
+                },
+            );
+            assert!(result.is_err());
+            assert_eq!(calls.get(), 1);
+            assert!(!target.exists());
+            assert!(!target.with_file_name("slug.staging").exists());
+            assert!(target.with_file_name("slug.lock").is_file());
+            fs::write(&archive, create_dummy_tar_zst(&[("lean-sdk/sdk.json", b"supported-sdk")]))
+                .unwrap();
+            let (installed, status) = config
+                .resolve_installation_dir_or_install_with_validation(
+                    Location::Custom(base),
+                    Source::Local(archive),
+                    |stage| {
+                        calls.set(calls.get() + 1);
+                        assert_eq!(stage, target.with_file_name("slug.staging"));
+                        assert!(!target.exists());
+                        validate_test_sdk(stage)
+                    },
+                )
+                .unwrap();
+            assert_eq!(calls.get(), 2);
+            assert_eq!(installed, target);
+            assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+            validate_test_sdk(&installed).unwrap();
+            assert!(!installed.with_file_name("slug.staging").exists());
+        }
+    }
+
+    #[test]
+    fn test_validated_existing_installation_preserves_bytes_and_skips_source() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = Config::new(&["deps"], "slug");
+        let base = temp.path().join("cache");
+        let target = config.dir_path(Location::Custom(base.clone())).unwrap();
+        fs::create_dir_all(target.join("lean-sdk")).unwrap();
+        fs::write(target.join("lean-sdk/sdk.json"), b"supported-sdk").unwrap();
+        fs::write(target.join("sentinel"), b"existing installation").unwrap();
+        let invalid_archive = temp.path().join("invalid.tar.zst");
+        fs::write(&invalid_archive, b"not an archive").unwrap();
+        for source in [invalid_archive.clone(), temp.path().join("unavailable.tar.zst")] {
+            let calls = std::cell::Cell::new(0);
+            let (resolved, status) = config
+                .resolve_installation_dir_or_install_with_validation(
+                    Location::Custom(base.clone()),
+                    Source::Local(source),
+                    |actual| {
+                        calls.set(calls.get() + 1);
+                        assert_eq!(actual, target);
+                        validate_test_sdk(actual)
+                    },
+                )
+                .unwrap();
+            assert_eq!(resolved, target);
+            assert_eq!(status, ResolvedOrInstalled::ResolvedExisting);
+            assert_eq!(calls.get(), 1);
+            assert_eq!(fs::read(target.join("sentinel")).unwrap(), b"existing installation");
+        }
+        assert_eq!(fs::read(invalid_archive).unwrap(), b"not an archive");
+        fs::write(target.join("lean-sdk/sdk.json"), b"invalid existing SDK").unwrap();
+        let result = config.resolve_installation_dir_or_install_with_validation(
+            Location::Custom(base),
+            Source::Local(temp.path().join("unavailable.tar.zst")),
+            validate_test_sdk,
+        );
+        assert_eq!(result.unwrap_err().kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(fs::read(target.join("lean-sdk/sdk.json")).unwrap(), b"invalid existing SDK");
+        assert_eq!(fs::read(target.join("sentinel")).unwrap(), b"existing installation");
+        assert!(!target.with_file_name("slug.staging").exists());
+        assert!(!target.with_file_name("slug.lock").exists());
+    }
+
+    #[test]
+    fn test_archive_hash_precedes_staging_validator() {
+        let temp = tempfile::tempdir().unwrap();
+        let target = temp.path().join("install");
+        let archive = create_dummy_tar_zst(&[("lean-sdk/sdk.json", b"supported-sdk")]);
+        let hash = compute_sha256(&archive);
+        let calls = std::cell::Cell::new(0);
+        let mut trailing = archive.clone();
+        trailing.extend_from_slice(b"trailing data must be hashed");
+        for bytes in [archive.as_slice(), trailing.as_slice()] {
+            let expected = if bytes.len() == archive.len() { [0; 32] } else { hash };
+            let result = install_with_validation(bytes, &target, Some(expected), |_| {
+                calls.set(calls.get() + 1);
+                Ok(())
+            });
+            assert!(result.is_err());
+            assert_eq!(calls.get(), 0);
+            assert!(!target.exists());
+            assert!(!target.with_file_name("install.staging").exists());
+        }
+        let status = install_with_validation(archive.as_slice(), &target, Some(hash), |stage| {
+            calls.set(calls.get() + 1);
+            assert!(!target.exists());
+            validate_test_sdk(stage)
+        })
+        .unwrap();
+        assert_eq!(calls.get(), 1);
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+        validate_test_sdk(&target).unwrap();
+    }
+
+    #[cfg(unix)]
+    fn validation_test_wait(mut ready: impl FnMut() -> bool) {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        while !ready() {
+            assert!(std::time::Instant::now() < deadline, "validation test handshake timed out");
+            // Poll a concrete handshake, not a delay used as evidence of ordering.
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+    }
+
+    #[cfg(unix)]
+    struct ValidationTestChild(Option<std::process::Child>);
+
+    #[cfg(unix)]
+    impl ValidationTestChild {
+        fn finish(mut self) -> std::process::Output {
+            validation_test_wait(|| self.0.as_mut().unwrap().try_wait().unwrap().is_some());
+            self.0.take().unwrap().wait_with_output().unwrap()
+        }
+    }
+
+    #[cfg(unix)]
+    impl Drop for ValidationTestChild {
+        fn drop(&mut self) {
+            if let Some(child) = self.0.as_mut() {
+                let _ = child.kill();
+                let _ = child.wait();
+            }
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_validated_install_concurrent_winner_status() {
+        use std::{
+            os::unix::{ffi::OsStrExt, io::FromRawFd},
+            process::{Command, Stdio},
+        };
+        const CHILD: &str = "EXOCRATE_VALIDATION_CONCURRENT_CHILD";
+        const ROOT: &str = "EXOCRATE_VALIDATION_CONCURRENT_ROOT";
+        if let Some(mode) = std::env::var_os(CHILD) {
+            let root = PathBuf::from(std::env::var_os(ROOT).unwrap());
+            let config = Config::new(&["deps"], "slug");
+            let base = root.join("cache");
+            let target = config.dir_path(Location::Custom(base.clone())).unwrap();
+            let winner = mode == "winner";
+            assert!(winner || mode == "loser");
+            let source = root.join(if winner { "winner.tar.zst" } else { "loser.fifo" });
+            let calls = std::cell::Cell::new(0);
+            let (installed, status) = config
+                .resolve_installation_dir_or_install_with_validation(
+                    Location::Custom(base),
+                    Source::Local(source),
+                    |actual| {
+                        calls.set(calls.get() + 1);
+                        assert_eq!(
+                            actual,
+                            if winner {
+                                target.with_file_name("slug.staging")
+                            } else {
+                                target.clone()
+                            }
+                        );
+                        validate_test_sdk(actual)?;
+                        if winner {
+                            assert!(!target.exists());
+                            fs::write(
+                                root.join("winner-validated"),
+                                b"staging admission under lock",
+                            )?;
+                            validation_test_wait(|| root.join("allow-publication").is_file());
+                        } else {
+                            assert_eq!(fs::read(actual.join("sentinel"))?, b"winner bytes");
+                        }
+                        Ok(())
+                    },
+                )
+                .unwrap();
+            assert_eq!(calls.get(), 1);
+            assert_eq!(installed, target);
+            assert_eq!(
+                status,
+                if winner {
+                    ResolvedOrInstalled::NewlyInstalled
+                } else {
+                    ResolvedOrInstalled::ResolvedExisting
+                }
+            );
+            fs::write(
+                root.join(if winner { "winner-status" } else { "loser-status" }),
+                format!("{status:?}"),
+            )
+            .unwrap();
+            return;
+        }
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        let archive = create_dummy_tar_zst(&[
+            ("lean-sdk/sdk.json", b"supported-sdk"),
+            ("sentinel", b"winner bytes"),
+        ]);
+        fs::write(root.join("winner.tar.zst"), archive).unwrap();
+        let fifo = std::ffi::CString::new(root.join("loser.fifo").as_os_str().as_bytes()).unwrap();
+        // This FIFO is a private test source. Its open handshake proves the
+        // loser passed Config's initial absence check before publication.
+        assert_eq!(unsafe { libc::mkfifo(fifo.as_ptr(), 0o600) }, 0);
+        let spawn = |mode| {
+            ValidationTestChild(Some(
+                Command::new(std::env::current_exe().unwrap())
+                    .arg("tests::test_validated_install_concurrent_winner_status")
+                    .arg("--exact")
+                    .arg("--test-threads=1")
+                    .env(CHILD, mode)
+                    .env(ROOT, root)
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .spawn()
+                    .unwrap(),
+            ))
+        };
+        let winner = spawn("winner");
+        validation_test_wait(|| root.join("winner-validated").is_file());
+        let target = root.join("cache/deps/slug");
+        assert!(!target.exists());
+        let loser = spawn("loser");
+        let mut writer_fd = -1;
+        validation_test_wait(|| {
+            // NONBLOCK makes the observation bounded: ENXIO means the loser
+            // has not yet reached its read-only source open.
+            writer_fd = unsafe { libc::open(fifo.as_ptr(), libc::O_WRONLY | libc::O_NONBLOCK) };
+            if writer_fd >= 0 {
+                true
+            } else {
+                assert_eq!(std::io::Error::last_os_error().raw_os_error(), Some(libc::ENXIO));
+                false
+            }
+        });
+        let fifo_writer = unsafe { fs::File::from_raw_fd(writer_fd) };
+        assert!(!target.exists());
+        fs::write(root.join("allow-publication"), b"release winner").unwrap();
+        for child in [winner, loser] {
+            let output = child.finish();
+            assert!(
+                output.status.success(),
+                "stdout={} stderr={}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert!(String::from_utf8_lossy(&output.stdout).contains("1 passed; 0 failed"));
+        }
+        drop(fifo_writer);
+        assert_eq!(fs::read_to_string(root.join("winner-status")).unwrap(), "NewlyInstalled");
+        assert_eq!(fs::read_to_string(root.join("loser-status")).unwrap(), "ResolvedExisting");
+        assert_eq!(fs::read(target.join("sentinel")).unwrap(), b"winner bytes");
+        validate_test_sdk(&target).unwrap();
+        assert!(!target.with_file_name("slug.staging").exists());
+        assert!(target.with_file_name("slug.lock").is_file());
     }
 
     #[test]
