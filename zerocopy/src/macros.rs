@@ -293,7 +293,6 @@ macro_rules! transmute {
 ///
 /// ```
 /// # use {zerocopy::*, zerocopy_derive::*};
-///
 /// #[derive(KnownLayout, FromBytes, IntoBytes, Immutable)]
 /// #[repr(C)]
 /// struct SliceDst<T, U> {
