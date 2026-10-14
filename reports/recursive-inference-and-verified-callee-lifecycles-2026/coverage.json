@@ -1,0 +1,58 @@
+{
+  "R046": {
+    "status": "answered-with-constraints",
+    "sections": [
+      "F1. RustHorn recursion and genericity have a concrete extraction boundary",
+      "F2. RustHorn's prophecy encoding and theorem do not justify unsafe libraries",
+      "F7. Shared result vocabulary and integration decision"
+    ],
+    "answered_subquestions": [
+      "Exact prophecy/recursive CHC mechanism, abstract theorem scope and current compiler/substitution/ADT generic interface.",
+      "Inference versus validated models, solver-output and custom-drop limits, unsafe-library semantic bridge."
+    ],
+    "remaining_research": [
+      "No conceptual mechanism gap is claimed for the inspected recursive/generic CHC interface; actual accepted configurations and solver-certificate behavior were not executed."
+    ],
+    "future_engineering": [
+      "Implement selected RustHorn extraction/model validation bridge and unsafe-library contract exchange.",
+      "Characterize the selected application's generic/dispatch/const-generic closure, replay extraction and validate inferred models/certificates; no Rust-wide supported-feature theorem is claimed."
+    ]
+  },
+  "R047": {
+    "status": "answered-stainless-comparison-scope",
+    "sections": [
+      "F3. Stainless separates semantic typing, inference and current SMT acceptance",
+      "F4. Stainless's optional Rocq route is not an admission-free acceptance path",
+      "F7. Shared result vocabulary and integration decision"
+    ],
+    "answered_subquestions": [
+      "Stainless added as a named comparison candidate: actual measure inference, mutation/effect/ghost checks, pure System FR foundation and SMT/Rocq result distinctions.",
+      "Potential Rust frontend obligations and trusted abstraction boundary."
+    ],
+    "remaining_research": [
+      "Stainless is a scoped extension; Flux/Thrust must be composed from their separate reports. No new quantitative comparison was run."
+    ],
+    "future_engineering": [
+      "Implement a faithful Rust effect/resource frontend if selected; audit backend closure and measure annotation/inference cost."
+    ]
+  },
+  "R053": {
+    "status": "answered-saw-lifecycle-scope",
+    "sections": [
+      "F5. SAW verifies implementations before reusable overrides, but also admits specs",
+      "F6. Equivalence against independent specifications has a concrete scope",
+      "F7. Shared result vocabulary and integration decision"
+    ],
+    "answered_subquestions": [
+      "Actual MIR verified-callee\u2192override lifecycle, SpecProved/SpecAdmitted dependency closure, safety-obligation option and Cryptol comparison interface.",
+      "Concrete tutorial admission chain and applicability obligations for zerocopy."
+    ],
+    "remaining_research": [
+      "The inspected SAW lifecycle and application design are answered with stated limits; full proof-script/solver closure was not replayed."
+    ],
+    "future_engineering": [
+      "Build selected zerocopy MIR contracts, prove independent spec/memory correspondence and validate transitive statuses/dependencies.",
+      "Capture and verify concrete zerocopy instantiations and measure acceptance/equivalence coverage if selected."
+    ]
+  }
+}

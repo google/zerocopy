@@ -31,6 +31,13 @@
         "artifact": "support/experiments/challenge.json",
         "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c"
       }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
     }
   ],
   "observed_at": "2026-10-14"

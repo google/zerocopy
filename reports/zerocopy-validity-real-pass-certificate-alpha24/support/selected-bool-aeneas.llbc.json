@@ -1,0 +1,405 @@
+{
+  "def_id": 3,
+  "item_meta": {
+    "name": [
+      {
+        "Ident": [
+          "zerocopy_probe",
+          0
+        ]
+      },
+      {
+        "Ident": [
+          "util",
+          0
+        ]
+      },
+      {
+        "Ident": [
+          "validity",
+          0
+        ]
+      },
+      {
+        "Ident": [
+          "bool_encoding",
+          0
+        ]
+      }
+    ],
+    "span": {
+      "data": {
+        "file_id": 1,
+        "beg": {
+          "line": 26,
+          "col": 0
+        },
+        "end": {
+          "line": 28,
+          "col": 1
+        }
+      },
+      "generated_from_span": null
+    },
+    "source_text": "pub(crate) fn bool_encoding(byte: u8) -> bool {\n    byte < 2\n}",
+    "attr_info": {
+      "attributes": [
+        {
+          "DocComment": " Accepts exactly the two boolean bit patterns."
+        },
+        {
+          "DocComment": ""
+        },
+        {
+          "DocComment": " ```aeneas"
+        },
+        {
+          "DocComment": " spec bool_encoding_spec"
+        },
+        {
+          "DocComment": "   ensures(raw) r => r = decide (byte.val = 0 \u2228 byte.val = 1)"
+        },
+        {
+          "DocComment": " ```"
+        }
+      ],
+      "inline": "Hint",
+      "rename": null,
+      "public": false
+    },
+    "is_local": true,
+    "opacity": "Transparent",
+    "lang_item": null
+  },
+  "generics": {
+    "regions": [],
+    "types": [],
+    "const_generics": [],
+    "trait_clauses": [],
+    "regions_outlive": [],
+    "types_outlive": [],
+    "trait_type_constraints": []
+  },
+  "signature": {
+    "is_unsafe": false,
+    "abi": "Rust",
+    "inputs": [
+      {
+        "Untagged": {
+          "Literal": {
+            "UInt": "U8"
+          }
+        }
+      }
+    ],
+    "output": {
+      "Untagged": {
+        "Literal": "Bool"
+      }
+    }
+  },
+  "src": "TopLevel",
+  "is_global_initializer": null,
+  "body": {
+    "Structured": {
+      "span": {
+        "data": {
+          "file_id": 1,
+          "beg": {
+            "line": 26,
+            "col": 0
+          },
+          "end": {
+            "line": 28,
+            "col": 1
+          }
+        },
+        "generated_from_span": null
+      },
+      "bound_body_regions": 0,
+      "locals": {
+        "arg_count": 1,
+        "locals": [
+          {
+            "index": 0,
+            "name": null,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 26,
+                  "col": 41
+                },
+                "end": {
+                  "line": 26,
+                  "col": 45
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Literal": "Bool"
+              }
+            }
+          },
+          {
+            "index": 1,
+            "name": "byte",
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 26,
+                  "col": 28
+                },
+                "end": {
+                  "line": 26,
+                  "col": 32
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Literal": {
+                  "UInt": "U8"
+                }
+              }
+            }
+          },
+          {
+            "index": 2,
+            "name": null,
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 27,
+                  "col": 4
+                },
+                "end": {
+                  "line": 27,
+                  "col": 8
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Literal": {
+                  "UInt": "U8"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "body": {
+        "span": {
+          "data": {
+            "file_id": 1,
+            "beg": {
+              "line": 27,
+              "col": 4
+            },
+            "end": {
+              "line": 28,
+              "col": 1
+            }
+          },
+          "generated_from_span": null
+        },
+        "statements": [
+          {
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 27,
+                  "col": 4
+                },
+                "end": {
+                  "line": 27,
+                  "col": 8
+                }
+              },
+              "generated_from_span": null
+            },
+            "id": 18,
+            "kind": {
+              "StorageLive": 2
+            },
+            "comments_before": []
+          },
+          {
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 27,
+                  "col": 4
+                },
+                "end": {
+                  "line": 27,
+                  "col": 8
+                }
+              },
+              "generated_from_span": null
+            },
+            "id": 19,
+            "kind": {
+              "Assign": [
+                {
+                  "kind": {
+                    "Local": 2
+                  },
+                  "ty": {
+                    "Untagged": {
+                      "Literal": {
+                        "UInt": "U8"
+                      }
+                    }
+                  }
+                },
+                {
+                  "Use": [
+                    {
+                      "Copy": {
+                        "kind": {
+                          "Local": 1
+                        },
+                        "ty": {
+                          "Untagged": {
+                            "Literal": {
+                              "UInt": "U8"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Yes"
+                  ]
+                }
+              ]
+            },
+            "comments_before": []
+          },
+          {
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 27,
+                  "col": 4
+                },
+                "end": {
+                  "line": 27,
+                  "col": 12
+                }
+              },
+              "generated_from_span": null
+            },
+            "id": 20,
+            "kind": {
+              "Assign": [
+                {
+                  "kind": {
+                    "Local": 0
+                  },
+                  "ty": {
+                    "Untagged": {
+                      "Literal": "Bool"
+                    }
+                  }
+                },
+                {
+                  "BinaryOp": [
+                    "Lt",
+                    {
+                      "Move": {
+                        "kind": {
+                          "Local": 2
+                        },
+                        "ty": {
+                          "Untagged": {
+                            "Literal": {
+                              "UInt": "U8"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Const": {
+                        "kind": {
+                          "Literal": {
+                            "Scalar": {
+                              "Unsigned": [
+                                "U8",
+                                "2"
+                              ]
+                            }
+                          }
+                        },
+                        "ty": {
+                          "Untagged": {
+                            "Literal": {
+                              "UInt": "U8"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "comments_before": []
+          },
+          {
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 27,
+                  "col": 11
+                },
+                "end": {
+                  "line": 27,
+                  "col": 12
+                }
+              },
+              "generated_from_span": null
+            },
+            "id": 21,
+            "kind": {
+              "StorageDead": 2
+            },
+            "comments_before": []
+          },
+          {
+            "span": {
+              "data": {
+                "file_id": 1,
+                "beg": {
+                  "line": 28,
+                  "col": 1
+                },
+                "end": {
+                  "line": 28,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "id": 22,
+            "kind": "Return",
+            "comments_before": []
+          }
+        ]
+      },
+      "comments": []
+    }
+  }
+}

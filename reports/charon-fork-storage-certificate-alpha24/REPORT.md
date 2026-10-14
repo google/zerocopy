@@ -42,6 +42,8 @@ Three concrete counterexamples are kernel checked. A changed true branch returns
 
 ## Boundaries
 
+**Known checker boundary (source reviewed 2026-10-14):** the recorded Lean 4.31 and legacy 4.30rc2 runs are observations conditional on checker soundness. Their pinned `src/kernel/inductive.cpp` lacks the final nested-parameter validation added by [fix a39eab69](https://github.com/leanprover/lean4/commit/a39eab69e1eee9ad38f4efe507907b1026a77808). The [official 4.32.2 notes](https://lean-lang.org/doc/reference/latest/releases/v4.32.2/) describe arbitrary false-theorem acceptance and a combined external-checker exploit. This source finding does not establish exact exploit portability or invalidate these owned terms, but successful exit and a clean axiom list do not establish sound acceptance of arbitrary producer proofs. No exploit was executed, toolchain upgraded, or recorded result rewritten. A deployment needs a separately justified checker/version and dependency policy; presence of the fix in 4.34.1 is not a universal soundness theorem.
+
 - **Not examined:** actual zerocopy input; each internal micro-pass separately; loops, recursion/divergence, exceptions, calls, closures, renaming/substitution, raw pointers, nested borrows, and imported Rust semantic adequacy.
 - **Unsupported by this decoder:** any function outside the exact call-free five-local four-block fork grammar. All exits inside that grammar are accounted for; this gives no theorem for omitted exceptional edges in a larger grammar.
 - **Known not to establish:** validity of rustc/Charon import, the printed phase labels, a generic certified parser, or Charon implementation correctness. The kernel proves the captured relation under this explicitly chosen semantics.

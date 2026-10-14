@@ -1,0 +1,23 @@
+[
+  {
+    "stage": "lean",
+    "exit_code": 0,
+    "seconds": 6.0539421669673175,
+    "stdout": "'UnsafeApiCertificate.all_inputs' depends on axioms: [propext, Quot.sound]\n'UnsafeApiCertificate.no_bad' depends on axioms: [propext, Quot.sound]\n'UnsafeApiCertificate.entry_covers_all' does not depend on any axioms\n'UnsafeApiCertificate.step_preserves' depends on axioms: [propext, Quot.sound]\n'UnsafeApiCertificate.wider_guard_bad' does not depend on any axioms\n'UnsafeApiCertificate.narrowed_model_hides' depends on axioms: [propext, Quot.sound]\n",
+    "stderr": ""
+  },
+  {
+    "stage": "compile",
+    "exit_code": 0,
+    "seconds": 0.5120114999590442,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "stage": "native",
+    "exit_code": 0,
+    "seconds": 0.04607695899903774,
+    "stdout": "all_native_u8_inputs=256; accepted=2; rejected=254\n",
+    "stderr": ""
+  }
+]

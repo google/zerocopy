@@ -1,0 +1,34 @@
+{
+  "capture-results.json": {
+    "original_sha256": "93f62d255ae9146314c802eb08c33792b592982c75daea27bd2461cf0f9b9ce1",
+    "normalization": "Only task-local command paths changed; statuses/output sizes/identities retained."
+  },
+  "aeneas-results.json": {
+    "original_sha256": "ab994d4eae2fc827c4eee4d9cb69b6e3e6b10237ce17309aac0dfdda960cbd5d",
+    "normalization": "Only task-local command paths changed; statuses/output sizes/identities retained."
+  },
+  "raw.ullbc": {
+    "original_sha256": "f03d408b60683e05bb70fd33fc55614b38e7493e3ebfe72c69952db495725a66",
+    "normalization": "Task-local option/file/driver path metadata changed; selected declaration is separately retained exactly."
+  },
+  "aeneas.llbc": {
+    "original_sha256": "83d3173c38f3ce7fda73b8648342a99ff7d69d5b1fa4a378736966bdf4ff6851",
+    "normalization": "Task-local option/file/driver path metadata changed; selected declaration is separately retained exactly."
+  },
+  "aeneas.stdout": {
+    "original_sha256": "ad635bbd21f903dcbb505e847fca9fdd775d7c63991173993e0349d15d4a6de1",
+    "normalization": "Only task-local text paths changed."
+  },
+  "aeneas.stderr": {
+    "original_sha256": "dfea8442b0d33eb6bc4d6533a38b6c8d591208b2128f232fffb8a048ae2fefdd",
+    "normalization": "Only task-local text paths changed."
+  },
+  "aeneas-run.stdout": {
+    "original_sha256": "f9a686dcd974a74107d1a1e47e3e0c5fb6e1746726cb7c9b7e52210b55f98bf8",
+    "normalization": "Only task-local text paths changed."
+  },
+  "aeneas-run.stderr": {
+    "original_sha256": "22b292a3aea70ffe8ce254e2543aa0628a7a36713462e5d67a3a58a73d2f9d58",
+    "normalization": "Only task-local text paths changed."
+  }
+}

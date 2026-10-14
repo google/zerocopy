@@ -1,0 +1,164 @@
+{
+  "interpretation": "Scoped source/literature answers with explicit unperformed builds and future engineering; controls independently replayed by parent. Known Lean kernel boundary is recorded in report prose.",
+  "reports": {
+    "lean-iris-constructions-and-toolchain-boundary-81bc350": {
+      "R029": {
+        "status": "answered-with-constraints",
+        "sections": [
+          "F1. Concrete model and reusable construction interfaces",
+          "F2. Partial adequacy returns results and non-stuckness in the chosen language",
+          "F3. Total adequacy is stronger than partial WP and does not assume fairness",
+          "F4. Proof-mode support and the limits of the source admission audit",
+          "F5. Toolchain controls and the feasible Rust layer"
+        ],
+        "answered_subquestions": [
+          "Exact source construction/adequacy interfaces, dependency pins, proof-mode support, concrete natural-index model and named missing rule/instances.",
+          "Source admission inventory and actual 4.31/4.34 original-control object compatibility boundary."
+        ],
+        "remaining_research": [
+          "Compiled Lean-Iris axiom closure and actual framework build on the pinned configuration remain unmeasured; 4.31 migration compatibility is unknown."
+        ],
+        "future_engineering": [
+          "Implement and measure a chosen migration/dependency configuration and Rust semantic typing layer."
+        ]
+      },
+      "R087": {
+        "status": "answered-design-with-constraints",
+        "sections": [
+          "F2. Partial adequacy returns results and non-stuckness in the chosen language",
+          "F5. Toolchain controls and the feasible Rust layer"
+        ],
+        "answered_subquestions": [
+          "Feasible Lean-native Rust model and semantic typing interfaces; exact adequacy and source-correspondence obligations."
+        ],
+        "remaining_research": [
+          "No evaluated Lean-Iris Rust instantiation or compiled framework closure in this bounded investigation."
+        ],
+        "future_engineering": [
+          "Implement language, resource interpretation, library typing and source correspondence; re-elaborate accepted proofs with an axiom policy."
+        ]
+      }
+    },
+    "refinedc-lithium-and-cn-result-interfaces-2026": {
+      "R055": {
+        "status": "answered-with-constraints",
+        "sections": [
+          "F1. RefinedC types expose ownership laws rather than just refinement formulas",
+          "F2. Lithium automation constructs logical evidence and exposes unresolved goals",
+          "F6. Transferable architecture and a precise acceptance record"
+        ],
+        "answered_subquestions": [
+          "Concrete refined ownership/function/adequacy definitions, Lithium proof-producing extension/automation and Caesium model/configuration boundary.",
+          "Transfer to Rust-specific resource interfaces with explicit semantic premises."
+        ],
+        "remaining_research": [
+          "The ownership/automation architecture comparison is answered with a C model boundary; compiled theorem assumption replay remains unperformed validation."
+        ],
+        "future_engineering": [
+          "Implement chosen Rust semantic type and memory-model interfaces and prove sound extension/correspondence; measure automation.",
+          "Audit operation/resource compatibility for the selected Rust implementation rather than treating every unexamined Rust operation as a gap in the architectural comparison."
+        ]
+      },
+      "R056": {
+        "status": "answered-with-constraints",
+        "sections": [
+          "F3. CN inference and diagnostics are a separate acceptance interface",
+          "F4. Testing specifications preserves a different evidence boundary",
+          "F5. Current proof-log and interactive-lemma exports are not whole-program certificates",
+          "F6. Transferable architecture and a precise acceptance record"
+        ],
+        "answered_subquestions": [
+          "Current verification/resource-inference/unknown diagnostic interface, testing/instrumentation/generator paths and paper mechanism theorem targets.",
+          "Actual proof-log admission, selected relation versus program safety, and interactive lemma export memory/unsupported boundaries."
+        ],
+        "remaining_research": [
+          "The static/test/export relationship and current admission are established by exact source and theorem analysis; proof-log replay/compiled closure was not performed."
+        ],
+        "future_engineering": [
+          "Design a Rust executable spec fragment; implement accepted log/proof certificate closure and source-memory correspondence; measure tests/annotation/runtime cost.",
+          "If a whole-checker certificate is desired, design and prove its coverage beyond the inspected selected resource-log relation."
+        ]
+      }
+    },
+    "recursive-inference-and-verified-callee-lifecycles-2026": {
+      "R046": {
+        "status": "answered-with-constraints",
+        "sections": [
+          "F1. RustHorn recursion and genericity have a concrete extraction boundary",
+          "F2. RustHorn's prophecy encoding and theorem do not justify unsafe libraries",
+          "F7. Shared result vocabulary and integration decision"
+        ],
+        "answered_subquestions": [
+          "Exact prophecy/recursive CHC mechanism, abstract theorem scope and current compiler/substitution/ADT generic interface.",
+          "Inference versus validated models, solver-output and custom-drop limits, unsafe-library semantic bridge."
+        ],
+        "remaining_research": [
+          "No conceptual mechanism gap is claimed for the inspected recursive/generic CHC interface; actual accepted configurations and solver-certificate behavior were not executed."
+        ],
+        "future_engineering": [
+          "Implement selected RustHorn extraction/model validation bridge and unsafe-library contract exchange.",
+          "Characterize the selected application's generic/dispatch/const-generic closure, replay extraction and validate inferred models/certificates; no Rust-wide supported-feature theorem is claimed."
+        ]
+      },
+      "R047": {
+        "status": "answered-stainless-comparison-scope",
+        "sections": [
+          "F3. Stainless separates semantic typing, inference and current SMT acceptance",
+          "F4. Stainless's optional Rocq route is not an admission-free acceptance path",
+          "F7. Shared result vocabulary and integration decision"
+        ],
+        "answered_subquestions": [
+          "Stainless added as a named comparison candidate: actual measure inference, mutation/effect/ghost checks, pure System FR foundation and SMT/Rocq result distinctions.",
+          "Potential Rust frontend obligations and trusted abstraction boundary."
+        ],
+        "remaining_research": [
+          "Stainless is a scoped extension; Flux/Thrust must be composed from their separate reports. No new quantitative comparison was run."
+        ],
+        "future_engineering": [
+          "Implement a faithful Rust effect/resource frontend if selected; audit backend closure and measure annotation/inference cost."
+        ]
+      },
+      "R053": {
+        "status": "answered-saw-lifecycle-scope",
+        "sections": [
+          "F5. SAW verifies implementations before reusable overrides, but also admits specs",
+          "F6. Equivalence against independent specifications has a concrete scope",
+          "F7. Shared result vocabulary and integration decision"
+        ],
+        "answered_subquestions": [
+          "Actual MIR verified-callee\u2192override lifecycle, SpecProved/SpecAdmitted dependency closure, safety-obligation option and Cryptol comparison interface.",
+          "Concrete tutorial admission chain and applicability obligations for zerocopy."
+        ],
+        "remaining_research": [
+          "The inspected SAW lifecycle and application design are answered with stated limits; full proof-script/solver closure was not replayed."
+        ],
+        "future_engineering": [
+          "Build selected zerocopy MIR contracts, prove independent spec/memory correspondence and validate transitive statuses/dependencies.",
+          "Capture and verify concrete zerocopy instantiations and measure acceptance/equivalence coverage if selected."
+        ]
+      }
+    },
+    "transfinite-iris-existential-and-liveness-boundary-dde9f19": {
+      "R028": {
+        "status": "answered-named-transfinite-scope",
+        "sections": [
+          "F1. LargeIndex states the required existential property",
+          "F2. The actual adequacy endpoint preserves strong normalization",
+          "F3. Ordinal credits and the concrete foundational assumptions",
+          "F4. What transfinite indices change and what they do not",
+          "F5. A reusable certificate interface for Anneal liveness"
+        ],
+        "answered_subquestions": [
+          "Transfinite existential mechanism, exact adequacy/normalization targets and classical/ordinal premises.",
+          "Comparison with finite credits and partial correctness; explicit separation from obligations/fair scheduling."
+        ],
+        "remaining_research": [
+          "Particular fairness and obligation frameworks are not compared here; formalization replay/actual Print Assumptions output and engineering cost unmeasured."
+        ],
+        "future_engineering": [
+          "Instantiate a Rust liveness relation, resource/state interpretations and appropriate scheduler/environment adequacy; optionally port to Lean."
+        ]
+      }
+    }
+  }
+}

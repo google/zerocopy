@@ -1,0 +1,63 @@
+{
+  "source_revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_path": "zerocopy/src/util/validity/mod.rs",
+  "source_sha256": "b13d798f9bd7fc10f72256f5467d14deeaccd7e3dcb9247ee3f13944804eca76",
+  "scope": "Exact original module under small owned wrapper crate; not the whole configured zerocopy crate",
+  "commands": [
+    {
+      "mode": "raw",
+      "argv": [
+        "<legacy-runtime>/aeneas/bin/charon",
+        "rustc",
+        "--mir",
+        "promoted",
+        "--no-dedup-serialized-ast",
+        "--dest-file",
+        "<capture-root>/raw.ullbc",
+        "--error-on-warnings",
+        "--preset=raw-mir",
+        "--ullbc",
+        "--",
+        "--crate-type=lib",
+        "--edition=2021",
+        "--crate-name",
+        "zerocopy_probe",
+        "<capture-root>/lib.rs",
+        "--sysroot",
+        "<legacy-runtime>/rust"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "mode": "aeneas",
+      "argv": [
+        "<legacy-runtime>/aeneas/bin/charon",
+        "rustc",
+        "--mir",
+        "promoted",
+        "--no-dedup-serialized-ast",
+        "--dest-file",
+        "<capture-root>/aeneas.llbc",
+        "--error-on-warnings",
+        "--preset=aeneas",
+        "--print-original-ullbc",
+        "--print-ullbc",
+        "--print-built-llbc",
+        "--print-llbc",
+        "--",
+        "--crate-type=lib",
+        "--edition=2021",
+        "--crate-name",
+        "zerocopy_probe",
+        "<capture-root>/lib.rs",
+        "--sysroot",
+        "<legacy-runtime>/rust"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 7753,
+      "stderr_bytes": 2137
+    }
+  ]
+}

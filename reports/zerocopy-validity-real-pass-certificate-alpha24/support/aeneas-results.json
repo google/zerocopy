@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "<legacy-runtime>/aeneas/bin/aeneas",
+    "<capture-root>/aeneas.llbc",
+    "-backend",
+    "lean",
+    "-dest",
+    "<capture-root>/generated"
+  ],
+  "exit_code": 0,
+  "stdout_bytes": 398,
+  "stderr_bytes": 1708,
+  "generated_files": [
+    {
+      "name": "Aeneas.lean",
+      "sha256": "2a0fea56b611f4723f6c9de611e35cafed905083fbb65ed368597d7ccf8e07b1",
+      "size": 2474
+    }
+  ]
+}

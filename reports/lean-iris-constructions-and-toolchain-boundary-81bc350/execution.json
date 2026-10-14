@@ -1,0 +1,127 @@
+{
+  "note": "Original control; no Iris build. Earlier section-close errors retained; fixed-section-close is the final source. Each call used version-specific bin/lean with LEAN_PATH pointing to the original probe directory.",
+  "source_sha256": {
+    "Credits.lean": "d63d1b04b58db30639aaa7432b860f6eb9a47afb2ca22dd67193173afd05b6f1",
+    "ImportCredits.lean": "29a30e17c6e2fe771b303c084b9c21e9d062e6ac620edd9ac07a41cd3c24a991",
+    "AdmissionControl.lean": "50d5a8f6b15acdb2e18cfb32983641c5520fc2a04d9c38e3dbc14d63417b9c2b"
+  },
+  "runs": [
+    {
+      "version": "4.31.0",
+      "args": [
+        "Credits.lean"
+      ],
+      "exit": 1,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\nCredits.lean:9:0: error: Unexpected name `GapProbe` after `end`: The current section is unnamed\n\nHint: Delete the name `GapProbe` to end the current unnamed scope; outer named scopes can then be closed using additional `end` command(s):\n  end \u0335G\u0335a\u0335p\u0335P\u0335r\u0335o\u0335b\u0335e\u0335\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.31.0",
+      "args": [
+        "AdmissionControl.lean"
+      ],
+      "exit": 0,
+      "stdout": "AdmissionControl.lean:1:8: warning: declaration uses `sorry`\n'admissionControl' depends on axioms: [sorryAx]\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.34.1",
+      "args": [
+        "Credits.lean"
+      ],
+      "exit": 1,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\nCredits.lean:9:0: error: Unexpected name `GapProbe` after `end`: The current section is unnamed\n\nHint: Delete the name `GapProbe` to end the current unnamed scope; outer named scopes can then be closed using additional `end` command(s):\n  end \u0335G\u0335a\u0335p\u0335P\u0335r\u0335o\u0335b\u0335e\u0335\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.34.1",
+      "args": [
+        "AdmissionControl.lean"
+      ],
+      "exit": 0,
+      "stdout": "AdmissionControl.lean:1:8: warning: declaration uses `sorry`\n'admissionControl' depends on axioms: [sorryAx]\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.34.1",
+      "args": [
+        "-o",
+        "Credits.olean",
+        "Credits.lean"
+      ],
+      "exit": 1,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\nCredits.lean:9:0: error: Unexpected name `GapProbe` after `end`: The current section is unnamed\n\nHint: Delete the name `GapProbe` to end the current unnamed scope; outer named scopes can then be closed using additional `end` command(s):\n  end \u0335G\u0335a\u0335p\u0335P\u0335r\u0335o\u0335b\u0335e\u0335\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.31.0",
+      "args": [
+        "ImportCredits.lean"
+      ],
+      "exit": 1,
+      "stdout": "ImportCredits.lean:1:0: error: unknown module prefix 'Credits'\n\nNo directory 'Credits' or file 'Credits.olean' in the search path entries:\n<local-path>\n<local-path>\n",
+      "stderr": ""
+    },
+    {
+      "version": "4.34.1",
+      "args": [
+        "ImportCredits.lean"
+      ],
+      "exit": 1,
+      "stdout": "ImportCredits.lean:1:0: error: unknown module prefix 'Credits'\n\nNo directory 'Credits' or file 'Credits.olean' in the search path entries:\n<local-path>\n<local-path>\n",
+      "stderr": ""
+    },
+    {
+      "phase": "fixed-section-close",
+      "version": "4.31.0",
+      "args": [
+        "Credits.lean"
+      ],
+      "exit": 0,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\n",
+      "stderr": ""
+    },
+    {
+      "phase": "fixed-section-close",
+      "version": "4.34.1",
+      "args": [
+        "Credits.lean"
+      ],
+      "exit": 0,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\n",
+      "stderr": ""
+    },
+    {
+      "phase": "fixed-section-close",
+      "version": "4.34.1",
+      "args": [
+        "-o",
+        "Credits.olean",
+        "Credits.lean"
+      ],
+      "exit": 0,
+      "stdout": "'GapProbe.join_comm' does not depend on any axioms\n",
+      "stderr": ""
+    },
+    {
+      "phase": "fixed-section-close",
+      "version": "4.31.0",
+      "args": [
+        "ImportCredits.lean"
+      ],
+      "exit": 1,
+      "stdout": "ImportCredits.lean:1:0: error: failed to read file '<local-path>', incompatible header\n",
+      "stderr": ""
+    },
+    {
+      "phase": "fixed-section-close",
+      "version": "4.34.1",
+      "args": [
+        "ImportCredits.lean"
+      ],
+      "exit": 0,
+      "stdout": "GapProbe.join_comm (a b : GapProbe.Credit) : GapProbe.join a b = GapProbe.join b a\n'GapProbe.join_comm' does not depend on any axioms\n",
+      "stderr": ""
+    }
+  ]
+}

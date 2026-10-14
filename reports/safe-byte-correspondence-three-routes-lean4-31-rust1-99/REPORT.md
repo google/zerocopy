@@ -81,6 +81,8 @@ Neither route verifies a source-language parser, Charon, Aeneas, the Rust compil
 
 ## Boundaries
 
+**Known checker boundary (source reviewed 2026-10-14):** the recorded Lean 4.31 and legacy 4.30rc2 runs are observations conditional on checker soundness. Their pinned `src/kernel/inductive.cpp` lacks the final nested-parameter validation added by [fix a39eab69](https://github.com/leanprover/lean4/commit/a39eab69e1eee9ad38f4efe507907b1026a77808). The [official 4.32.2 notes](https://lean-lang.org/doc/reference/latest/releases/v4.32.2/) describe arbitrary false-theorem acceptance and a combined external-checker exploit. This source finding does not establish exact exploit portability or invalidate these owned terms, but successful exit and a clean axiom list do not establish sound acceptance of arbitrary producer proofs. No exploit was executed, toolchain upgraded, or recorded result rewritten. A deployment needs a separately justified checker/version and dependency policy; presence of the fix in 4.34.1 is not a universal soundness theorem.
+
 **Answered:** an actual three-way comparison on one property and domain, concrete reusable soundness/translation endpoints, complete native controls for the fixed unary u8 fixture, and measured local proof-checking samples.
 
 **Research still open:** proof of Rust capture/primitive adequacy; correspondence for real Charon/Aeneas artifacts; a proved executable checker/verified compiler path; optimization, control flow, richer source constructs, and broader cost evaluation.

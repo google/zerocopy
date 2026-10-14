@@ -750,6 +750,13 @@
             "sha256": "2422d6f2bd769472a29ba52cf6e8b47fb45b0687466d0c61e2cb94704a07ea5f"
           },
           "name": "Report-owned logical certificate/checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -12826,6 +12833,13 @@
             "sha256": "03e313adf830206b0b8422a1f39962c4ee48d4e1c04456bf070f8ab5a4832afb"
           },
           "name": "Report-owned logical certificate/checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -13698,6 +13712,13 @@
             "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c"
           },
           "name": "Selected consumer challenge"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -14591,6 +14612,13 @@
             "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3"
           },
           "name": "Abstract borrow model and correspondence certificates"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -17226,6 +17254,51 @@
         "lean/server"
       ]
     },
+    "lean-iris-constructions-and-toolchain-boundary-81bc350": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816"
+          },
+          "name": "Lean-Iris"
+        },
+        {
+          "identity": {
+            "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+            "version": "4.31.0"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
+        }
+      ],
+      "topics": [
+        "lean/iris",
+        "separation-logic/adequacy",
+        "lean/toolchain-compatibility"
+      ]
+    },
     "lean-json-cli-protocol-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -18870,6 +18943,13 @@
             "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173"
           },
           "name": "Derived native checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -19616,6 +19696,13 @@
             "version": "4.34.1"
           },
           "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -19664,6 +19751,13 @@
             "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
           },
           "name": "Anneal consumer semantic/admission policy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -20074,6 +20168,73 @@
         "systems/reconciliation"
       ]
     },
+    "recursive-inference-and-verified-callee-lifecycles-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "hopv/Rust-horn",
+            "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+            "tree": "7786562e36fb0bb1fe67be806d3205f0c825ec26"
+          },
+          "name": "RustHorn"
+        },
+        {
+          "identity": {
+            "repository": "EPFL-LARA/stainless",
+            "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+            "tree": "6c6531ac0842267e18c78b5004a1a827c729a207"
+          },
+          "name": "Stainless"
+        },
+        {
+          "identity": {
+            "repository": "epfl-lara/SystemFR",
+            "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+            "tree": "3bfba314ad3b27e057b45fc55b31f54393c7f959"
+          },
+          "name": "System FR paper-linked formalization"
+        },
+        {
+          "identity": {
+            "repository": "epfl-lara/SystemFR",
+            "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+            "tree": "ea2e592e3c45992949f7c88f74789b7b64d49d5a"
+          },
+          "name": "System FR current formalization"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+            "tree": "8bafba9268567d91a635a819ea5e002bc32bf8ac"
+          },
+          "name": "SAW"
+        },
+        {
+          "identity": {
+            "arxiv": "1904.03482v2",
+            "sha256": "8499729820596e04495868975bf5da7aecee2e8d2c555f1eae2d8570538bf280"
+          },
+          "name": "System FR paper"
+        },
+        {
+          "identity": {
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9",
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf"
+          },
+          "name": "RustHorn ESOP full version"
+        }
+      ],
+      "topics": [
+        "rust/rusthorn",
+        "verification/stainless",
+        "verification/saw",
+        "verification/inference",
+        "verification/contracts",
+        "verification/trust"
+      ]
+    },
     "redleaf-linux-current-source-review": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -20199,6 +20360,71 @@
         "reference/evidence",
         "research/harness",
         "reproducibility"
+      ]
+    },
+    "refinedc-lithium-and-cn-result-interfaces-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/refinedc",
+            "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca"
+          },
+          "name": "RefinedC and Lithium"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d",
+            "tree": "ed4c238beed80859f5d02b35e2d1afbed9a0ff78"
+          },
+          "name": "CN"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cerberus",
+            "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1",
+            "tree": "49bbaa33463aec6786c31a084031e2abe521aecb"
+          },
+          "name": "Cerberus dependency named by CN"
+        },
+        {
+          "identity": {
+            "artifact": "paper.pdf",
+            "sha256": "80d43dea0e754222a6aa851c884b4d2aee59d288a0237409952e45941104c9e0",
+            "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+          },
+          "name": "RefinedC PLDI 2021 paper"
+        },
+        {
+          "identity": {
+            "artifact": "popl23.pdf",
+            "sha256": "c8704536456f4b6bb564ecd709c2f77e90d6fd659532e68f2e083a6c9a1140c8",
+            "soundness_sha256": "feb882a6e2cbde9e6cdb120319e06527e90e9399842a01d81b5450acd64e275d"
+          },
+          "name": "CN POPL 2023 kernel and soundness"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704879",
+            "sha256": "347d79ce5a1c2d4fdb12412446ff69a02bd41990e91cd1ca9e40976d746b7954"
+          },
+          "name": "Fulminate POPL 2025 paper"
+        },
+        {
+          "identity": {
+            "sha256": "d479fda5d808f07d6a3eb4193c0dacfe503c098dd4fedf15b7dc43f6d943a521",
+            "url": "https://zain-k-aamer.com/papers/bennet.pdf"
+          },
+          "name": "Bennet observed author paper"
+        }
+      ],
+      "topics": [
+        "c/refinedc",
+        "separation-logic/automation",
+        "c/cn",
+        "verification/certificates",
+        "verification/specification-testing"
       ]
     },
     "refinedrust-radium-proof-boundary-2026-v2": {
@@ -23088,6 +23314,13 @@
             "sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3"
           },
           "name": "Arithmetic proof model"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
         }
       ],
       "topics": [
@@ -23095,6 +23328,54 @@
         "prototype/correspondence",
         "rust/byte-arithmetic",
         "lean/kernel-checking"
+      ]
+    },
+    "safe-unsafe-bool-domain-certificate-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "api_sha256": "416eded2d8d38c4de7212091446c16ffca3bd49f7aa266d02ec718d07c1038fa",
+            "certificate_sha256": "64d5e8b8df69fe8a6874a32d6d19e6cab6253af1c186ba5238a6e428d652f914"
+          },
+          "name": "Original complete safe API and certificate specimen"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "target": "aarch64-apple-darwin"
+          },
+          "name": "Native Rust 1.99.0"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference contract snapshot"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
+        }
+      ],
+      "topics": [
+        "anneal/caller-domain",
+        "rust/unsafe",
+        "certificates/source-safety",
+        "lean/kernel"
       ]
     },
     "salsa-rustc-current-source-review": {
@@ -23902,6 +24183,39 @@
         "verification/equivalence"
       ]
     },
+    "transfinite-iris-existential-and-liveness-boundary-dde9f19": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/transfinite",
+            "revision": "dde9f193fb3d504be680480b2ca21052edae49df"
+          },
+          "name": "Transfinite Iris source"
+        },
+        {
+          "identity": {
+            "artifact": "2021-pldi-transfinite-iris-final.pdf",
+            "doi": "10.1145/3453483.3454031",
+            "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+          },
+          "name": "Transfinite Iris PLDI final paper"
+        },
+        {
+          "identity": {
+            "artifact": "2021-pldi-transfinite-iris-final-appendix.pdf",
+            "sha256": "d9cbc16acd64e3a2deea0afcba45a117bf137dc002066a10a33bd5d197f191b8",
+            "version": "May 14 2021"
+          },
+          "name": "Transfinite Iris technical documentation"
+        }
+      ],
+      "topics": [
+        "iris/transfinite",
+        "verification/termination",
+        "verification/refinement"
+      ]
+    },
     "translation-validation-techniques-1998-2021": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -24448,6 +24762,63 @@
         "rust/layout",
         "verification/cross-target",
         "verification/costs"
+      ]
+    },
+    "zerocopy-validity-real-pass-certificate-alpha24": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "path": "zerocopy/src/util/validity/mod.rs",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "sha256": "b13d798f9bd7fc10f72256f5467d14deeaccd7e3dcb9247ee3f13944804eca76"
+          },
+          "name": "Exact zerocopy scalar predicate module"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-toolchain-macos-aarch64.tar.zst",
+            "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+          },
+          "name": "Official legacy Anneal alpha24 bundle"
+        },
+        {
+          "identity": {
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "target": "aarch64-apple-darwin",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Bundled Rust compiler"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Bundled Lean"
+        },
+        {
+          "identity": {
+            "source_sha256": "eff8d9014c7e98ae6fd74120b076fcb7f43151000eb3d0bdd451630515c11470"
+          },
+          "name": "Original captured state certificate"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          },
+          "name": "Lean nested-inductive validation fix"
+        }
+      ],
+      "topics": [
+        "anneal/certificates",
+        "charon/ullbc-llbc",
+        "aeneas/lean",
+        "zerocopy/validity",
+        "rust/caller-domain"
       ]
     },
     "zkvm-receipt-binding-and-verification-boundaries": {

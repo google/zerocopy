@@ -86,6 +86,8 @@ The observed 38 protocol cases yield four acceptances (three routes plus current
 
 ## Boundaries
 
+**Known checker boundary (source reviewed 2026-10-14):** the recorded Lean 4.31 and legacy 4.30rc2 runs are observations conditional on checker soundness. Their pinned `src/kernel/inductive.cpp` lacks the final nested-parameter validation added by [fix a39eab69](https://github.com/leanprover/lean4/commit/a39eab69e1eee9ad38f4efe507907b1026a77808). The [official 4.32.2 notes](https://lean-lang.org/doc/reference/latest/releases/v4.32.2/) describe arbitrary false-theorem acceptance and a combined external-checker exploit. This source finding does not establish exact exploit portability or invalidate these owned terms, but successful exit and a clean axiom list do not establish sound acceptance of arbitrary producer proofs. No exploit was executed, toolchain upgraded, or recorded result rewritten. A deployment needs a separately justified checker/version and dependency policy; presence of the fix in 4.34.1 is not a universal soundness theorem.
+
 **Answered:** this schema's source/domain/property/config binding; parser/structural failures; model/goal substitution; actual direct/imported/native policy; missing/malformed proofs; crash/cancel; partial stages; stale data-cache rechecking.
 
 **Research still open:** full crate/trait/callee closure, unsafe guards/destructors/cleanup, imported-library identity, independent proof-object loading, wrapper correctness, real DAG/cache scheduling, concurrent publication, OS isolation, and authenticated final records.

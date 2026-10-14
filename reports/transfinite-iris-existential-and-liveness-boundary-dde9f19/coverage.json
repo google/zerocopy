@@ -1,0 +1,22 @@
+{
+  "R028": {
+    "status": "answered-named-transfinite-scope",
+    "sections": [
+      "F1. LargeIndex states the required existential property",
+      "F2. The actual adequacy endpoint preserves strong normalization",
+      "F3. Ordinal credits and the concrete foundational assumptions",
+      "F4. What transfinite indices change and what they do not",
+      "F5. A reusable certificate interface for Anneal liveness"
+    ],
+    "answered_subquestions": [
+      "Transfinite existential mechanism, exact adequacy/normalization targets and classical/ordinal premises.",
+      "Comparison with finite credits and partial correctness; explicit separation from obligations/fair scheduling."
+    ],
+    "remaining_research": [
+      "Particular fairness and obligation frameworks are not compared here; formalization replay/actual Print Assumptions output and engineering cost unmeasured."
+    ],
+    "future_engineering": [
+      "Instantiate a Rust liveness relation, resource/state interpretations and appropriate scheduler/environment adequacy; optionally port to Lean."
+    ]
+  }
+}

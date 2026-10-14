@@ -1,0 +1,6 @@
+{
+  "changed_guard_source_rejected": true,
+  "narrowed_subject_domain_rejected": true,
+  "consumer_source_api_sha256": "416eded2d8d38c4de7212091446c16ffca3bd49f7aa266d02ec718d07c1038fa",
+  "admission_scope": "exact selected source fingerprint and native domain, independent of producer-proposed proof; semantic relation remains manually reviewed"
+}

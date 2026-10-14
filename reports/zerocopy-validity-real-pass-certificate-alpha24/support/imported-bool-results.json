@@ -1,0 +1,6 @@
+{
+  "exit_code": 0,
+  "seconds": 1.9551351249683648,
+  "stdout": "'ImportedBool.captured_raw_final' depends on axioms: [propext, Classical.choice, Quot.sound]\n'ImportedBool.imported_emitted' depends on axioms: [propext, Classical.choice, Quot.sound]\n'ImportedBool.raw_domain' depends on axioms: [propext, Classical.choice, Quot.sound]\n'ImportedBool.frame_preserved' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+  "stderr": ""
+}

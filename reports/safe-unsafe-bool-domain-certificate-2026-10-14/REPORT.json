@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal/caller-domain",
+    "rust/unsafe",
+    "certificates/source-safety",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Original complete safe API and certificate specimen",
+      "identity": {
+        "api_sha256": "416eded2d8d38c4de7212091446c16ffca3bd49f7aa266d02ec718d07c1038fa",
+        "certificate_sha256": "64d5e8b8df69fe8a6874a32d6d19e6cab6253af1c186ba5238a6e428d652f914"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0"
+      }
+    },
+    {
+      "name": "Native Rust 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Rust Reference contract snapshot",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

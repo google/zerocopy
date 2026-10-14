@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "rust/rusthorn",
+    "verification/stainless",
+    "verification/saw",
+    "verification/inference",
+    "verification/contracts",
+    "verification/trust"
+  ],
+  "subjects": [
+    {
+      "name": "RustHorn",
+      "identity": {
+        "repository": "hopv/Rust-horn",
+        "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+        "tree": "7786562e36fb0bb1fe67be806d3205f0c825ec26"
+      }
+    },
+    {
+      "name": "Stainless",
+      "identity": {
+        "repository": "EPFL-LARA/stainless",
+        "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+        "tree": "6c6531ac0842267e18c78b5004a1a827c729a207"
+      }
+    },
+    {
+      "name": "System FR paper-linked formalization",
+      "identity": {
+        "repository": "epfl-lara/SystemFR",
+        "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+        "tree": "3bfba314ad3b27e057b45fc55b31f54393c7f959"
+      }
+    },
+    {
+      "name": "System FR current formalization",
+      "identity": {
+        "repository": "epfl-lara/SystemFR",
+        "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+        "tree": "ea2e592e3c45992949f7c88f74789b7b64d49d5a"
+      }
+    },
+    {
+      "name": "SAW",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+        "tree": "8bafba9268567d91a635a819ea5e002bc32bf8ac"
+      }
+    },
+    {
+      "name": "System FR paper",
+      "identity": {
+        "arxiv": "1904.03482v2",
+        "sha256": "8499729820596e04495868975bf5da7aecee2e8d2c555f1eae2d8570538bf280"
+      }
+    },
+    {
+      "name": "RustHorn ESOP full version",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

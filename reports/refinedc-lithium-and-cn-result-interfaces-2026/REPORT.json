@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "c/refinedc",
+    "separation-logic/automation",
+    "c/cn",
+    "verification/certificates",
+    "verification/specification-testing"
+  ],
+  "subjects": [
+    {
+      "name": "RefinedC and Lithium",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/refinedc",
+        "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca"
+      }
+    },
+    {
+      "name": "CN",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d",
+        "tree": "ed4c238beed80859f5d02b35e2d1afbed9a0ff78"
+      }
+    },
+    {
+      "name": "Cerberus dependency named by CN",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1",
+        "tree": "49bbaa33463aec6786c31a084031e2abe521aecb"
+      }
+    },
+    {
+      "name": "RefinedC PLDI 2021 paper",
+      "identity": {
+        "artifact": "paper.pdf",
+        "url": "https://plv.mpi-sws.org/refinedc/paper.pdf",
+        "sha256": "80d43dea0e754222a6aa851c884b4d2aee59d288a0237409952e45941104c9e0"
+      }
+    },
+    {
+      "name": "CN POPL 2023 kernel and soundness",
+      "identity": {
+        "artifact": "popl23.pdf",
+        "sha256": "c8704536456f4b6bb564ecd709c2f77e90d6fd659532e68f2e083a6c9a1140c8",
+        "soundness_sha256": "feb882a6e2cbde9e6cdb120319e06527e90e9399842a01d81b5450acd64e275d"
+      }
+    },
+    {
+      "name": "Fulminate POPL 2025 paper",
+      "identity": {
+        "doi": "10.1145/3704879",
+        "sha256": "347d79ce5a1c2d4fdb12412446ff69a02bd41990e91cd1ca9e40976d746b7954"
+      }
+    },
+    {
+      "name": "Bennet observed author paper",
+      "identity": {
+        "url": "https://zain-k-aamer.com/papers/bennet.pdf",
+        "sha256": "d479fda5d808f07d6a3eb4193c0dacfe503c098dd4fedf15b7dc43f6d943a521"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

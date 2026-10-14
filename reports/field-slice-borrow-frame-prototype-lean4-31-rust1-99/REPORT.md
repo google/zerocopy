@@ -66,6 +66,8 @@ A spatial extension needs a resource interpretation and adequacy bridge for sour
 
 ## Boundaries
 
+**Known checker boundary (source reviewed 2026-10-14):** the recorded Lean 4.31 and legacy 4.30rc2 runs are observations conditional on checker soundness. Their pinned `src/kernel/inductive.cpp` lacks the final nested-parameter validation added by [fix a39eab69](https://github.com/leanprover/lean4/commit/a39eab69e1eee9ad38f4efe507907b1026a77808). The [official 4.32.2 notes](https://lean-lang.org/doc/reference/latest/releases/v4.32.2/) describe arbitrary false-theorem acceptance and a combined external-checker exploit. This source finding does not establish exact exploit portability or invalidate these owned terms, but successful exit and a clean axiom list do not establish sound acceptance of arbitrary producer proofs. No exploit was executed, toolchain upgraded, or recorded result rewritten. A deployment needs a separately justified checker/version and dependency policy; presence of the fix in 4.34.1 is not a universal soundness theorem.
+
 **Answered:** representative modeled field/slice correspondence; explicit root entry/restoration; unchanged-state proofs; a wrong-field negative; actual safe native controls over the stated finite domains.
 
 **Research still open:** reference/usize capture adequacy, global aliasing/ownership, arbitrary slice lengths, overlapping/ZST footprints, escaping references, lifetime extension, casts, and correspondence with a real functionalizing frontend.

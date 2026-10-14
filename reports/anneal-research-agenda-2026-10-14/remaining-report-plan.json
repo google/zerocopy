@@ -1,0 +1,438 @@
+{
+  "revision": 2,
+  "published_reports_at_plan": 65,
+  "published_reference_commit": "4802237a045e8dd642d26e190a1ffb5757bf30a8",
+  "interpretation": "Candidate grouping after final 65-package semantic audits. Six reports are included in this candidate, fourteen are in research, and four remain planned. These dispositions are publication organization, not whole-question completion. Boundaries may change.",
+  "reports": [
+    {
+      "candidate_report": 1,
+      "title": "Real zerocopy validity pass certificate",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "P128",
+        "P127",
+        "P070",
+        "P077",
+        "P084",
+        "T069",
+        "T070",
+        "R095"
+      ]
+    },
+    {
+      "candidate_report": 2,
+      "title": "Safe API over unsafe Boolean representation",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "P135",
+        "P034",
+        "P104",
+        "P107",
+        "T061",
+        "T081",
+        "T082",
+        "T091",
+        "T111",
+        "T115",
+        "R082",
+        "R095"
+      ]
+    },
+    {
+      "candidate_report": 3,
+      "title": "Lean-native Iris feature and theorem closure",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "R029",
+        "R087"
+      ]
+    },
+    {
+      "candidate_report": 4,
+      "title": "Current RefinedC/Lithium and CN/Cerberus interfaces",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "R055",
+        "R056",
+        "T031",
+        "T037"
+      ]
+    },
+    {
+      "candidate_report": 5,
+      "title": "Stainless, RustHorn and SAW result lifecycles",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "R046",
+        "R047",
+        "R053",
+        "T037"
+      ]
+    },
+    {
+      "candidate_report": 6,
+      "title": "Transfinite liveness and obligations",
+      "disposition": "included-in-this-tree",
+      "questions": [
+        "R028",
+        "T075",
+        "P100"
+      ]
+    },
+    {
+      "candidate_report": 7,
+      "title": "Independent kernels and model-checking certificates",
+      "disposition": "active",
+      "questions": [
+        "T009",
+        "T011",
+        "T018",
+        "T020",
+        "P133"
+      ]
+    },
+    {
+      "candidate_report": 8,
+      "title": "JVM and eBPF admission boundaries",
+      "disposition": "active",
+      "questions": [
+        "T030",
+        "P029"
+      ]
+    },
+    {
+      "candidate_report": 9,
+      "title": "Spatial data checker and matched logic examples",
+      "disposition": "active",
+      "questions": [
+        "R059",
+        "T033",
+        "T037",
+        "T089",
+        "T114",
+        "P131",
+        "P133"
+      ]
+    },
+    {
+      "candidate_report": 10,
+      "title": "Cross-logic adapters and proof encoding costs",
+      "disposition": "active",
+      "questions": [
+        "R084",
+        "T006",
+        "T039",
+        "P114"
+      ]
+    },
+    {
+      "candidate_report": 11,
+      "title": "Current numerical and Why3 result paths",
+      "disposition": "active",
+      "questions": [
+        "T017",
+        "T036"
+      ]
+    },
+    {
+      "candidate_report": 12,
+      "title": "Concurrent failure and acceptance-publication experiment",
+      "disposition": "active",
+      "questions": [
+        "T102",
+        "T106",
+        "T108",
+        "T110",
+        "P122",
+        "P126",
+        "P134"
+      ]
+    },
+    {
+      "candidate_report": 13,
+      "title": "Initial Rust capture, CTFE/TLS and obligation completeness",
+      "disposition": "active",
+      "questions": [
+        "P056",
+        "P057",
+        "P058",
+        "P060",
+        "P061",
+        "P064",
+        "P065",
+        "P072",
+        "P096",
+        "P122",
+        "P127",
+        "T058",
+        "T061",
+        "T063",
+        "T065",
+        "T066",
+        "T067",
+        "T068",
+        "T072",
+        "T079",
+        "T080",
+        "T081",
+        "T091",
+        "T111",
+        "T115"
+      ]
+    },
+    {
+      "candidate_report": 14,
+      "title": "Staged code generation and current CertiRocq endpoints",
+      "disposition": "active",
+      "questions": [
+        "P003",
+        "P021",
+        "P136",
+        "T023",
+        "T043",
+        "T088"
+      ]
+    },
+    {
+      "candidate_report": 15,
+      "title": "Trivet and EquiVM artifact theorem closure",
+      "disposition": "active",
+      "questions": [
+        "P027",
+        "P028",
+        "T028"
+      ]
+    },
+    {
+      "candidate_report": 16,
+      "title": "Security and relational compiler preservation",
+      "disposition": "active",
+      "questions": [
+        "P102",
+        "P041"
+      ]
+    },
+    {
+      "candidate_report": 17,
+      "title": "GAT, coinductive traits and specialization laws",
+      "disposition": "active",
+      "questions": [
+        "R066",
+        "R074",
+        "T079",
+        "T080",
+        "P107",
+        "P108"
+      ]
+    },
+    {
+      "candidate_report": 18,
+      "title": "Vector and union primitive interpretations",
+      "disposition": "active",
+      "questions": [
+        "R018",
+        "R073",
+        "P075",
+        "P076",
+        "P091"
+      ]
+    },
+    {
+      "candidate_report": 19,
+      "title": "Arc, hazard-pointer and RCU proof protocols",
+      "disposition": "active",
+      "questions": [
+        "R019",
+        "R076",
+        "R099",
+        "T090",
+        "P098",
+        "P099"
+      ]
+    },
+    {
+      "candidate_report": 20,
+      "title": "Pointer capability, lifetime and alias cases",
+      "disposition": "active",
+      "questions": [
+        "R096",
+        "T076",
+        "T078",
+        "P080",
+        "P082",
+        "P088"
+      ]
+    },
+    {
+      "candidate_report": 21,
+      "title": "Owned storage, panic restoration and growth cases",
+      "disposition": "planned",
+      "questions": [
+        "P085",
+        "P086",
+        "P095",
+        "R070",
+        "R098",
+        "R099",
+        "T077",
+        "T084",
+        "T087"
+      ]
+    },
+    {
+      "candidate_report": 22,
+      "title": "Realistic source certificates across targets and reuse costs",
+      "disposition": "planned",
+      "questions": [
+        "P075",
+        "P076",
+        "P077",
+        "P084",
+        "P125",
+        "P130",
+        "P131",
+        "P133",
+        "P134",
+        "P138",
+        "R095",
+        "T085",
+        "T086"
+      ]
+    },
+    {
+      "candidate_report": 23,
+      "title": "Source diagnostics and matched SMT replay costs",
+      "disposition": "planned",
+      "questions": [
+        "R081",
+        "R084",
+        "T012",
+        "T014"
+      ]
+    },
+    {
+      "candidate_report": 24,
+      "title": "Bibliography, licensing and conditional architecture synthesis",
+      "disposition": "planned",
+      "questions": [
+        "P139",
+        "P140",
+        "P141",
+        "P142",
+        "P143",
+        "P144",
+        "R003",
+        "R094",
+        "R100",
+        "T092",
+        "T119",
+        "T120"
+      ]
+    }
+  ],
+  "audit_gap_ids": [
+    "P003",
+    "P021",
+    "P027",
+    "P028",
+    "P056",
+    "P057",
+    "P058",
+    "P060",
+    "P061",
+    "P064",
+    "P065",
+    "P070",
+    "P072",
+    "P075",
+    "P076",
+    "P077",
+    "P084",
+    "P091",
+    "P095",
+    "P096",
+    "P102",
+    "P107",
+    "P108",
+    "P114",
+    "P122",
+    "P125",
+    "P127",
+    "P128",
+    "P130",
+    "P131",
+    "P133",
+    "P134",
+    "P135",
+    "P136",
+    "P138",
+    "R003",
+    "R018",
+    "R019",
+    "R028",
+    "R029",
+    "R046",
+    "R047",
+    "R053",
+    "R055",
+    "R056",
+    "R059",
+    "R066",
+    "R073",
+    "R074",
+    "R076",
+    "R081",
+    "R084",
+    "R087",
+    "R094",
+    "R095",
+    "R096",
+    "R098",
+    "R099",
+    "R100",
+    "T006",
+    "T009",
+    "T017",
+    "T018",
+    "T023",
+    "T030",
+    "T033",
+    "T036",
+    "T037",
+    "T043",
+    "T058",
+    "T061",
+    "T063",
+    "T065",
+    "T066",
+    "T067",
+    "T068",
+    "T070",
+    "T072",
+    "T075",
+    "T076",
+    "T077",
+    "T078",
+    "T079",
+    "T080",
+    "T081",
+    "T084",
+    "T085",
+    "T086",
+    "T087",
+    "T088",
+    "T089",
+    "T090",
+    "T091",
+    "T092",
+    "T102",
+    "T108",
+    "T110",
+    "T111",
+    "T115",
+    "T119",
+    "T120"
+  ],
+  "remaining_unassigned_audit_ids": [],
+  "audit_gap_count_note": "The final T audit refined seven draft gaps to scoped answers, giving 94 gaps before these six new reports; audit_gap_ids below preserves the earlier 101-ID planning snapshot."
+}

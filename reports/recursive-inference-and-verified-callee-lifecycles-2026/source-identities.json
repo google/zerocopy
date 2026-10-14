@@ -1,0 +1,268 @@
+[
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "README.md",
+    "blob": "734344231c976c115baa38337c28f7582366e727",
+    "size": 595
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/README.md",
+    "blob": "3c9a92f48a59af9c5cf8c58190011be3b67d5e06",
+    "size": 668
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/rust-toolchain.toml",
+    "blob": "67a045f04ee13802710f7e30377eecba0ca052b7",
+    "size": 103
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/Makefile",
+    "blob": "5db9b1ab64077bf521a3d4cd39a32712055e6e18",
+    "size": 362
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/main.rs",
+    "blob": "b996b46d4ab30419a1890b16544bf6db6bd01519",
+    "size": 3588
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/analyze.rs",
+    "blob": "60abe78912e15687097fe34f70236fc47addcd5a",
+    "size": 21637
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/analyze/data.rs",
+    "blob": "cbe635fd82f81f7a3707b96b2c46943b0a73fe9e",
+    "size": 29813
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/represent.rs",
+    "blob": "45e8cdd4c047c275c15fca7bc3b9c3eb9d3ec08b",
+    "size": 20227
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/types.rs",
+    "blob": "1be040b2f167bf6a4b9ca02380c50032770007bb",
+    "size": 5208
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/src/util.rs",
+    "blob": "0ece53fd58315d9a48759ca3a576d8d82830a2ca",
+    "size": 1961
+  },
+  {
+    "repository": "hopv/Rust-horn",
+    "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+    "path": "rust-horn/sample/lists-3-inc-some-safe.rs",
+    "blob": "4a1b5e00697272ba1e100f1c9a242b6f78a7e6b8",
+    "size": 550
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "README.md",
+    "blob": "166d6cc465eb5aed1883ddb0feaf60be4f9a0e77",
+    "size": 7368
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": ".gitmodules",
+    "blob": "7e902b8c95b1a9f61e3b946bf334cafc2540e871",
+    "size": 92
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/verification/VerificationChecker.scala",
+    "blob": "40ecbace9cbcfad25089c75b4ad7f8db1c15fba2",
+    "size": 18574
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/verification/CoqVerificationChecher.scala",
+    "blob": "a4cfd1cf93d1f7105d8d7fd0dc0f9d5340c2d03d",
+    "size": 3178
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/verification/CoqEncoder.scala",
+    "blob": "17085e52fb4e04b26bd7686b8ef669a262ce9336",
+    "size": 31278
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/verification/CoqIO.scala",
+    "blob": "05c249e9c64616904cb86bd05ebf7731011639dc",
+    "size": 3385
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/extraction/imperative/EffectsChecker.scala",
+    "blob": "1b7b74eb60052a1024c6060f1affe1967bb965b8",
+    "size": 20349
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/extraction/imperative/GhostChecker.scala",
+    "blob": "eba8af62a1232fcef60cba8781f5e03024ab004b",
+    "size": 11081
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/termination/MeasureInference.scala",
+    "blob": "53a1b2ab477d7a01d879877778dea91d0df1287e",
+    "size": 10573
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "core/src/main/scala/stainless/termination/RecursionProcessor.scala",
+    "blob": "1cd961ce418b92d7b4e9c68127d18c2574418599",
+    "size": 3182
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "slc-lib/Lib.v",
+    "blob": "7923715b54d6cdc111c5b23490fd4739578ee4f0",
+    "size": 5503
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "frontends/benchmarks/full-imperative/valid/FirstClassHeap.scala",
+    "blob": "26e1694953e0062fadabadeb4da653d38c0a5fdf",
+    "size": 1529
+  },
+  {
+    "repository": "EPFL-LARA/stainless",
+    "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+    "path": "frontends/benchmarks/full-imperative/valid/OpaqueEffects.scala",
+    "blob": "d0042eb6b950b692fcefed0a46e11410b57fcad6",
+    "size": 1112
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "saw-central/src/SAWCentral/Crucible/MIR/Builtins.hs",
+    "blob": "f2cc6ef72243cd8743d632c5829e7ba6c626240e",
+    "size": 97606
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "saw-central/src/SAWCentral/Crucible/Common/MethodSpec.hs",
+    "blob": "66bbbb4ef7becbf8daeae359bc7a59dc9f65a4ab",
+    "size": 19655
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "doc/rust-verification-with-saw/overrides-and-compositional-verification.md",
+    "blob": "cd6af898663a9c0aa24fb61eaeafdf17c4789349",
+    "size": 16133
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "doc/rust-verification-with-saw/prerequisites.md",
+    "blob": "4704494eee0aad3d5fb23e41caee576e18e752a2",
+    "size": 593
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "doc/rust-verification-with-saw/code/overrides.saw",
+    "blob": "672b046ef1babd0ad45b6693ab4c221ba84c3cca",
+    "size": 945
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "doc/rust-verification-with-saw/code/overrides-unsafe.saw",
+    "blob": "559b1e43593fa9c349ec4e395ac347229edc5b50",
+    "size": 415
+  },
+  {
+    "repository": "GaloisInc/saw-script",
+    "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+    "path": "doc/rust-verification-with-saw/code/salsa20/salsa20-reference.saw",
+    "blob": "026de7efdcdff522ed4aa3e1a84c48633f8dea2a",
+    "size": 7703
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+    "path": "ErasedFix.v",
+    "blob": "0cec7e28563b87a6ee1f0ce869d553747a83d141",
+    "size": 6685
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+    "path": "ErasedPolymorphism.v",
+    "blob": "b5595cb9b096cdc84b0d37dfddb87905885be7f3",
+    "size": 3429
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+    "path": "ReducibilityLemmas.v",
+    "blob": "ce72eed095b6be5c65b219f56820576d11573786",
+    "size": 8642
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+    "path": "SmallStep.v",
+    "blob": "cfca72629c4dbab4ac64d5726d10da5093501152",
+    "size": 12195
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+    "path": "ReducibilityDefinition.v",
+    "blob": "0f694bafc2a7fe34d634caa0c027d6bf24e3ccbf",
+    "size": 7860
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+    "path": "Reducibility.v",
+    "blob": "4163710a579d3e520d512d5500fa21b3920ca15e",
+    "size": 17271
+  },
+  {
+    "repository": "epfl-lara/SystemFR",
+    "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+    "path": "Typing.v",
+    "blob": "89900b393792981f3ae68cc3dbed4132ade74428",
+    "size": 43173
+  }
+]

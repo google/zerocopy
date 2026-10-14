@@ -1,0 +1,38 @@
+{
+  "R029": {
+    "status": "answered-with-constraints",
+    "sections": [
+      "F1. Concrete model and reusable construction interfaces",
+      "F2. Partial adequacy returns results and non-stuckness in the chosen language",
+      "F3. Total adequacy is stronger than partial WP and does not assume fairness",
+      "F4. Proof-mode support and the limits of the source admission audit",
+      "F5. Toolchain controls and the feasible Rust layer"
+    ],
+    "answered_subquestions": [
+      "Exact source construction/adequacy interfaces, dependency pins, proof-mode support, concrete natural-index model and named missing rule/instances.",
+      "Source admission inventory and actual 4.31/4.34 original-control object compatibility boundary."
+    ],
+    "remaining_research": [
+      "Compiled Lean-Iris axiom closure and actual framework build on the pinned configuration remain unmeasured; 4.31 migration compatibility is unknown."
+    ],
+    "future_engineering": [
+      "Implement and measure a chosen migration/dependency configuration and Rust semantic typing layer."
+    ]
+  },
+  "R087": {
+    "status": "answered-design-with-constraints",
+    "sections": [
+      "F2. Partial adequacy returns results and non-stuckness in the chosen language",
+      "F5. Toolchain controls and the feasible Rust layer"
+    ],
+    "answered_subquestions": [
+      "Feasible Lean-native Rust model and semantic typing interfaces; exact adequacy and source-correspondence obligations."
+    ],
+    "remaining_research": [
+      "No evaluated Lean-Iris Rust instantiation or compiled framework closure in this bounded investigation."
+    ],
+    "future_engineering": [
+      "Implement language, resource interpretation, library typing and source correspondence; re-elaborate accepted proofs with an axiom policy."
+    ]
+  }
+}

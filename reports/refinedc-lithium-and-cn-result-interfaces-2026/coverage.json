@@ -1,0 +1,41 @@
+{
+  "R055": {
+    "status": "answered-with-constraints",
+    "sections": [
+      "F1. RefinedC types expose ownership laws rather than just refinement formulas",
+      "F2. Lithium automation constructs logical evidence and exposes unresolved goals",
+      "F6. Transferable architecture and a precise acceptance record"
+    ],
+    "answered_subquestions": [
+      "Concrete refined ownership/function/adequacy definitions, Lithium proof-producing extension/automation and Caesium model/configuration boundary.",
+      "Transfer to Rust-specific resource interfaces with explicit semantic premises."
+    ],
+    "remaining_research": [
+      "The ownership/automation architecture comparison is answered with a C model boundary; compiled theorem assumption replay remains unperformed validation."
+    ],
+    "future_engineering": [
+      "Implement chosen Rust semantic type and memory-model interfaces and prove sound extension/correspondence; measure automation.",
+      "Audit operation/resource compatibility for the selected Rust implementation rather than treating every unexamined Rust operation as a gap in the architectural comparison."
+    ]
+  },
+  "R056": {
+    "status": "answered-with-constraints",
+    "sections": [
+      "F3. CN inference and diagnostics are a separate acceptance interface",
+      "F4. Testing specifications preserves a different evidence boundary",
+      "F5. Current proof-log and interactive-lemma exports are not whole-program certificates",
+      "F6. Transferable architecture and a precise acceptance record"
+    ],
+    "answered_subquestions": [
+      "Current verification/resource-inference/unknown diagnostic interface, testing/instrumentation/generator paths and paper mechanism theorem targets.",
+      "Actual proof-log admission, selected relation versus program safety, and interactive lemma export memory/unsupported boundaries."
+    ],
+    "remaining_research": [
+      "The static/test/export relationship and current admission are established by exact source and theorem analysis; proof-log replay/compiled closure was not performed."
+    ],
+    "future_engineering": [
+      "Design a Rust executable spec fragment; implement accepted log/proof certificate closure and source-memory correspondence; measure tests/annotation/runtime cost.",
+      "If a whole-checker certificate is desired, design and prove its coverage beyond the inspected selected resource-log relation."
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+'ImportedBool.captured_raw_final' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ImportedBool.imported_emitted' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ImportedBool.raw_domain' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ImportedBool.frame_preserved' depends on axioms: [propext, Classical.choice, Quot.sound]

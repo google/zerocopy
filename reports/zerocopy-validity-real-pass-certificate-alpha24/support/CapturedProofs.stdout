@@ -1,0 +1,2 @@
+'ZerocopyCapture.bool_all' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ZerocopyCapture.nonzero_all' depends on axioms: [propext, Classical.choice, Quot.sound]

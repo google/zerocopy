@@ -36,6 +36,13 @@
         "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173",
         "bridge": "unverified Lean C and native compilation"
       }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
     }
   ],
   "observed_at": "2026-10-14"

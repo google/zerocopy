@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "iris/transfinite",
+    "verification/termination",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Transfinite Iris source",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/transfinite",
+        "revision": "dde9f193fb3d504be680480b2ca21052edae49df"
+      }
+    },
+    {
+      "name": "Transfinite Iris PLDI final paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454031",
+        "artifact": "2021-pldi-transfinite-iris-final.pdf",
+        "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+      }
+    },
+    {
+      "name": "Transfinite Iris technical documentation",
+      "identity": {
+        "artifact": "2021-pldi-transfinite-iris-final-appendix.pdf",
+        "version": "May 14 2021",
+        "sha256": "d9cbc16acd64e3a2deea0afcba45a117bf137dc002066a10a33bd5d197f191b8"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal/certificates",
+    "charon/ullbc-llbc",
+    "aeneas/lean",
+    "zerocopy/validity",
+    "rust/caller-domain"
+  ],
+  "subjects": [
+    {
+      "name": "Exact zerocopy scalar predicate module",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "path": "zerocopy/src/util/validity/mod.rs",
+        "sha256": "b13d798f9bd7fc10f72256f5467d14deeaccd7e3dcb9247ee3f13944804eca76"
+      }
+    },
+    {
+      "name": "Official legacy Anneal alpha24 bundle",
+      "identity": {
+        "artifact": "anneal-toolchain-macos-aarch64.tar.zst",
+        "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+      }
+    },
+    {
+      "name": "Bundled Rust compiler",
+      "identity": {
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Bundled Lean",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Original captured state certificate",
+      "identity": {
+        "source_sha256": "eff8d9014c7e98ae6fd74120b076fcb7f43151000eb3d0bdd451630515c11470"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

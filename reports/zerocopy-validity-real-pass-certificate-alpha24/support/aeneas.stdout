@@ -1,0 +1,365 @@
+# ULLBC after translation from MIR:
+
+pub fn zerocopy_probe::bool_api(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy byte_1;
+        _0 = zerocopy_probe::util::validity::bool_encoding(move _2) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_2);
+        return;
+    }
+}
+
+pub fn zerocopy_probe::nonzero_api(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy n_1;
+        _0 = zerocopy_probe::util::validity::nonzero_encoding(move _2) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_2);
+        return;
+    }
+}
+
+pub fn zerocopy_probe::byte_api<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: &'2 [u8]; // anonymous local
+    let _4: usize; // anonymous local
+
+    bb0: {
+        storage_live(_3);
+        _3 = &(*bytes_1);
+        storage_live(_4);
+        _4 = copy index_2;
+        _0 = zerocopy_probe::util::validity::read_byte<'4>(move _3, move _4) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_4);
+        storage_dead(_3);
+        return;
+    }
+}
+
+fn zerocopy_probe::util::validity::bool_encoding(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy byte_1;
+        _0 = move _2 < const 2u8;
+        storage_dead(_2);
+        return;
+    }
+}
+
+fn zerocopy_probe::util::validity::nonzero_encoding(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy n_1;
+        _0 = move _2 != const 0usize;
+        storage_dead(_2);
+        return;
+    }
+}
+
+fn zerocopy_probe::util::validity::read_byte<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: usize; // anonymous local
+    let _4: usize; // anonymous local
+    let _5: bool; // anonymous local
+
+    bb0: {
+        storage_live(_3);
+        _3 = copy index_2;
+        _4 = copy bytes_1.metadata;
+        _5 = copy _3 < copy _4;
+        assert assert(move _5 == true) (bounds_check) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        _0 = copy (*bytes_1)[copy _3];
+        storage_dead(_3);
+        return;
+    }
+}
+
+
+
+# Final ULLBC before control-flow reconstruction:
+
+// Full name: zerocopy_probe::bool_api
+pub fn bool_api(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy byte_1;
+        _0 = bool_encoding(move _2) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_2);
+        return;
+    }
+}
+
+// Full name: zerocopy_probe::nonzero_api
+pub fn nonzero_api(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy n_1;
+        _0 = nonzero_encoding(move _2) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_2);
+        return;
+    }
+}
+
+// Full name: zerocopy_probe::byte_api
+pub fn byte_api<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: &'2 [u8]; // anonymous local
+    let _4: usize; // anonymous local
+
+    bb0: {
+        storage_live(_3);
+        _3 = &(*bytes_1) with_metadata(copy bytes_1.metadata);
+        storage_live(_4);
+        _4 = copy index_2;
+        _0 = read_byte<'4>(move _3, move _4) -> bb2 (unwind: bb1);
+    }
+
+    bb1: {
+        unwind_continue;
+    }
+
+    bb2: {
+        storage_dead(_4);
+        storage_dead(_3);
+        return;
+    }
+}
+
+// Full name: zerocopy_probe::util::validity::bool_encoding
+fn bool_encoding(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy byte_1;
+        _0 = move _2 < const 2u8;
+        storage_dead(_2);
+        return;
+    }
+}
+
+// Full name: zerocopy_probe::util::validity::nonzero_encoding
+fn nonzero_encoding(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    bb0: {
+        storage_live(_2);
+        _2 = copy n_1;
+        _0 = move _2 != const 0usize;
+        storage_dead(_2);
+        return;
+    }
+}
+
+// Full name: zerocopy_probe::util::validity::read_byte
+fn read_byte<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: usize; // anonymous local
+
+    bb0: {
+        nop;
+        nop;
+        storage_live(_3);
+        _3 = copy index_2;
+        nop;
+        nop;
+        nop;
+        _0 = copy (*bytes_1)[copy _3];
+        storage_dead(_3);
+        return;
+    }
+}
+
+
+
+# Final LLBC before serialization:
+
+// Full name: zerocopy_probe::util::validity::bool_encoding
+fn bool_encoding(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    storage_live(_2)
+    _2 = copy byte_1
+    _0 = move _2 < const 2u8
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::bool_api
+pub fn bool_api(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    storage_live(_2)
+    _2 = copy byte_1
+    _0 = bool_encoding(move _2)
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::util::validity::nonzero_encoding
+fn nonzero_encoding(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    storage_live(_2)
+    _2 = copy n_1
+    _0 = move _2 != const 0usize
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::nonzero_api
+pub fn nonzero_api(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    storage_live(_2)
+    _2 = copy n_1
+    _0 = nonzero_encoding(move _2)
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::util::validity::read_byte
+fn read_byte<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: usize; // anonymous local
+    let _4: &'_ [u8]; // anonymous local
+    let _5: &'_ u8; // anonymous local
+
+    storage_live(_3)
+    _3 = copy index_2
+    storage_live(_4)
+    _4 = &(*bytes_1) with_metadata(copy bytes_1.metadata)
+    storage_live(_5)
+    _5 = @SliceIndexShared<'_, u8>(move _4, copy _3)
+    _0 = copy (*_5)
+    storage_dead(_3)
+    return
+}
+
+// Full name: zerocopy_probe::byte_api
+pub fn byte_api<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: &'2 [u8]; // anonymous local
+    let _4: usize; // anonymous local
+
+    storage_live(_3)
+    _3 = &(*bytes_1) with_metadata(copy bytes_1.metadata)
+    storage_live(_4)
+    _4 = copy index_2
+    _0 = read_byte<'4>(move _3, move _4)
+    storage_dead(_4)
+    storage_dead(_3)
+    return
+}
+
+
+

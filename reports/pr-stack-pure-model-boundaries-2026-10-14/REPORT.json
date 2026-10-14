@@ -35,6 +35,13 @@
         "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
         "version": "4.34.1"
       }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
     }
   ],
   "observed_at": "2026-10-14"

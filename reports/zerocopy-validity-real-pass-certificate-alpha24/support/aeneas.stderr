@@ -1,0 +1,99 @@
+# LLBC resulting from control-flow reconstruction:
+
+// Full name: zerocopy_probe::bool_api
+pub fn bool_api(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    storage_live(_2)
+    _2 = copy byte_1
+    _0 = bool_encoding(move _2)
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::nonzero_api
+pub fn nonzero_api(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    storage_live(_2)
+    _2 = copy n_1
+    _0 = nonzero_encoding(move _2)
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::byte_api
+pub fn byte_api<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: &'2 [u8]; // anonymous local
+    let _4: usize; // anonymous local
+
+    storage_live(_3)
+    _3 = &(*bytes_1) with_metadata(copy bytes_1.metadata)
+    storage_live(_4)
+    _4 = copy index_2
+    _0 = read_byte<'4>(move _3, move _4)
+    storage_dead(_4)
+    storage_dead(_3)
+    return
+}
+
+// Full name: zerocopy_probe::util::validity::bool_encoding
+fn bool_encoding(byte_1: u8) -> bool
+{
+    let _0: bool; // return
+    let byte_1: u8; // arg #1
+    let _2: u8; // anonymous local
+
+    storage_live(_2)
+    _2 = copy byte_1
+    _0 = move _2 < const 2u8
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::util::validity::nonzero_encoding
+fn nonzero_encoding(n_1: usize) -> bool
+{
+    let _0: bool; // return
+    let n_1: usize; // arg #1
+    let _2: usize; // anonymous local
+
+    storage_live(_2)
+    _2 = copy n_1
+    _0 = move _2 != const 0usize
+    storage_dead(_2)
+    return
+}
+
+// Full name: zerocopy_probe::util::validity::read_byte
+fn read_byte<'_0>(bytes_1: &'_0 [u8], index_2: usize) -> u8
+{
+    let _0: u8; // return
+    let bytes_1: &'1 [u8]; // arg #1
+    let index_2: usize; // arg #2
+    let _3: usize; // anonymous local
+
+    nop
+    nop
+    storage_live(_3)
+    _3 = copy index_2
+    nop
+    nop
+    nop
+    _0 = copy (*bytes_1)[copy _3]
+    storage_dead(_3)
+    return
+}
+
+
+

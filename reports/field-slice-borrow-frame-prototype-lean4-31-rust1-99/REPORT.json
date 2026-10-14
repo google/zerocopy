@@ -39,6 +39,13 @@
         "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3",
         "semantics": "two-byte-root-and-child-v1"
       }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
     }
   ],
   "observed_at": "2026-10-14"

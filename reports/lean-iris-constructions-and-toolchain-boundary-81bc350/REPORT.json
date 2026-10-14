@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "lean/iris",
+    "separation-logic/adequacy",
+    "lean/toolchain-compatibility"
+  ],
+  "subjects": [
+    {
+      "name": "Lean-Iris",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0",
+        "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+        "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+        "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

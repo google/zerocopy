@@ -1,0 +1,16 @@
+[
+  {
+    "module": "CapturedModule",
+    "exit_code": 0,
+    "seconds": 9.120711916009896,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "module": "CapturedProofs",
+    "exit_code": 0,
+    "seconds": 1.5748879170278087,
+    "stdout": "'ZerocopyCapture.bool_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n'ZerocopyCapture.nonzero_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+    "stderr": ""
+  }
+]

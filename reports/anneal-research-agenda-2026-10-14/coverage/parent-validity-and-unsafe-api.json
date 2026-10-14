@@ -1,0 +1,26 @@
+{
+  "observed_at": "2026-10-14",
+  "interpretation": "New bounded prototype scopes; no whole-source/compiler/native correspondence claim. Audit snapshot remains the prior65report corpus until its final revision.",
+  "entries": [
+    {
+      "id": "P128",
+      "package": "zerocopy-validity-real-pass-certificate-alpha24",
+      "section": "Fit with per-pass certification",
+      "status": "answered-bounded-prototype",
+      "remaining_research": [],
+      "future_engineering": [
+        "certified source import/capture and richer grammar; per-internal-pass witnesses; full open-crate closure"
+      ]
+    },
+    {
+      "id": "P135",
+      "package": "safe-unsafe-bool-domain-certificate-2026-10-14",
+      "section": "What this discharges for an Anneal design",
+      "status": "answered-bounded-prototype",
+      "remaining_research": [],
+      "future_engineering": [
+        "certified source import and richer byte/pointer/lifetime/typed-storage state domain"
+      ]
+    }
+  ]
+}

@@ -45,6 +45,13 @@
         "artifact": "support/ForkModel.lean",
         "sha256": "03e313adf830206b0b8422a1f39962c4ee48d4e1c04456bf070f8ab5a4832afb"
       }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
     }
   ],
   "observed_at": "2026-10-14"
