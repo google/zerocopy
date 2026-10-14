@@ -78,6 +78,12 @@ theorem initializedWrapperRepresentation {A B : Type} [ma : RustModel A]
   decode raw := ma.decode raw.value
   representation := wrapperRepresentation core.cell.UnsafeCell.mk
 
+@[reducible] instance modelWrapping (T : Type) [ma : RustModel T] :
+    RustModel (Zerocopy.core.num.wrapping.Wrapping T) where
+  Model := ma.Model
+  decode raw := ma.decode raw._0
+  representation := wrapperRepresentation Zerocopy.core.num.wrapping.Wrapping.mk
+
 theorem initializedManuallyDrop (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (core.mem.manually_drop.ManuallyDrop T) :=
@@ -92,6 +98,11 @@ theorem initializedUnsafeCell (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (core.cell.UnsafeCell T) :=
   initializedWrapperRepresentation core.cell.UnsafeCell.mk child
+
+theorem initializedWrapping (T : Type) [ma : RustModel T]
+    (child : RustModel.initializedRepresentation T) :
+    RustModel.initializedRepresentation (Zerocopy.core.num.wrapping.Wrapping T) :=
+  initializedWrapperRepresentation Zerocopy.core.num.wrapping.Wrapping.mk child
 
 -- The bounds are proofs stored beside the value. They contribute constraints
 -- to the mathematical type without another runtime field or admission test.

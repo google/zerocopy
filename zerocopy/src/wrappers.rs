@@ -155,7 +155,12 @@ const _: () = unsafe {
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
-    impl_or_verify!(T: IntoBytes => IntoBytes for Unalign<T>);
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        T: IntoBytes => IntoBytes for Unalign<T>
+    );
 };
 
 // Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be
@@ -684,7 +689,12 @@ const _: () = unsafe {
     );
     unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
-    unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
+    unsafe_impl!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>
+    );
 };
 
 // SAFETY: By invariant, `inner` is never mutated through a `&ReadOnly<T>`

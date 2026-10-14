@@ -112,7 +112,8 @@ meta partial def boundModelProvider (raw : Expr) (params dicts : Array Expr) : M
     return ← app ``modelPhantomData args
   for (carrier, provider) in #[
       (``core.mem.manually_drop.ManuallyDrop, ``modelManuallyDrop),
-      (``core.cell.Cell, ``modelCell), (``core.cell.UnsafeCell, ``modelUnsafeCell)] do
+      (``core.cell.Cell, ``modelCell), (``core.cell.UnsafeCell, ``modelUnsafeCell),
+      (``Zerocopy.core.num.wrapping.Wrapping, ``modelWrapping)] do
     if head.isConstOf carrier then
       let child ← boundModelProvider args[0]! params dicts
       return ← app provider (args ++ #[child])

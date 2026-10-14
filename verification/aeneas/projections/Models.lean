@@ -28,9 +28,45 @@ check_model_binding Zerocopy.byteorder.U16 with 1 type parameters
 derive_rust_model Zerocopy.byteorder.U32 with 1 type parameters with_physical 0
 check_model_binding Zerocopy.byteorder.U32 with 1 type parameters
 
+derive_rust_model Zerocopy.byteorder.U64 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.U64 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.U128 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.U128 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.Usize with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.Usize with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.I16 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.I16 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.I32 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.I32 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.I64 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.I64 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.I128 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.I128 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.Isize with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.Isize with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.F32 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.F32 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.F64 with 1 type parameters with_physical 0
+check_model_binding Zerocopy.byteorder.F64 with 1 type parameters
+
 derive_rust_model Zerocopy.trait_checks.XorCodec with 0 type parameters
 check_model_binding Zerocopy.trait_checks.XorCodec with 0 type parameters
 
 derive_rust_model Zerocopy.trait_checks.Forward with 1 type parameters
 check_model_binding Zerocopy.trait_checks.Forward with 1 type parameters
+
+derive_rust_model Zerocopy.wrappers.Unalign with 1 type parameters with_physical 0
+check_model_binding Zerocopy.wrappers.Unalign with 1 type parameters
+
+derive_rust_model Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters with_physical 0
+check_model_binding Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
 
