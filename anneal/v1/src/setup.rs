@@ -44,6 +44,7 @@ const BIN_DIR: &str = "bin";
 const LIB_DIR: &str = "lib";
 const LEAN_SYSROOT: &str = "lean";
 const RUST_SYSROOT: &str = "rust";
+const RUST_LEAN_DIR: &str = "rust-model";
 
 pub struct Toolchain {
     pub root: PathBuf,
@@ -75,6 +76,10 @@ impl Toolchain {
 
     pub fn aeneas_lean_dir(&self) -> PathBuf {
         self.aeneas_root().join(AENEAS_BACKENDS_DIR).join(AENEAS_LEAN_DIR)
+    }
+
+    pub fn rust_lean_dir(&self) -> PathBuf {
+        self.root.join(RUST_LEAN_DIR)
     }
 
     pub fn rust_sysroot(&self) -> PathBuf {
@@ -194,6 +199,7 @@ mod tests {
     fn tool_paths_use_omnibus_layout() {
         let toolchain = Toolchain { root: PathBuf::from("/tmp/toolchain") };
 
+        assert_eq!(toolchain.rust_lean_dir(), PathBuf::from("/tmp/toolchain/rust-model"));
         assert_eq!(toolchain.bin_dir(), PathBuf::from("/tmp/toolchain/aeneas/bin"));
         assert_eq!(
             toolchain.aeneas_lean_dir(),
