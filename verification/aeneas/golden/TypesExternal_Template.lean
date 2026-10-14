@@ -33,6 +33,83 @@ set_option maxRecDepth 2048
 @[rust_type "core::num::niche_types::NonZeroUsizeInner"]
 axiom core.num.niche_types.NonZeroUsizeInner : Type
 
+/-- [core::num::niche_types::NonZeroU8Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroU8Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroU8Inner"]
+axiom core.num.niche_types.NonZeroU8Inner : Type
+
+/-- [core::num::niche_types::NonZeroI8Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroI8Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroI8Inner"]
+axiom core.num.niche_types.NonZeroI8Inner : Type
+
+/-- [core::num::niche_types::NonZeroU16Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroU16Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroU16Inner"]
+axiom core.num.niche_types.NonZeroU16Inner : Type
+
+/-- [core::num::niche_types::NonZeroI16Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroI16Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroI16Inner"]
+axiom core.num.niche_types.NonZeroI16Inner : Type
+
+/-- [core::num::niche_types::NonZeroU32Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroU32Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroU32Inner"]
+axiom core.num.niche_types.NonZeroU32Inner : Type
+
+/-- [core::num::niche_types::NonZeroI32Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroI32Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroI32Inner"]
+axiom core.num.niche_types.NonZeroI32Inner : Type
+
+/-- [core::num::niche_types::NonZeroU64Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroU64Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroU64Inner"]
+axiom core.num.niche_types.NonZeroU64Inner : Type
+
+/-- [core::num::niche_types::NonZeroI64Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroI64Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroI64Inner"]
+axiom core.num.niche_types.NonZeroI64Inner : Type
+
+/-- [core::num::niche_types::NonZeroU128Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroU128Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroU128Inner"]
+axiom core.num.niche_types.NonZeroU128Inner : Type
+
+/-- [core::num::niche_types::NonZeroI128Inner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroI128Inner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroI128Inner"]
+axiom core.num.niche_types.NonZeroI128Inner : Type
+
+/-- [core::num::niche_types::NonZeroIsizeInner]
+    Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
+    Name pattern: [core::num::niche_types::NonZeroIsizeInner]
+    Visibility: public -/
+@[rust_type "core::num::niche_types::NonZeroIsizeInner"]
+axiom core.num.niche_types.NonZeroIsizeInner : Type
+
 /-- [core::num::nonzero::NonZero]
     Source: '/rustc/library/core/src/num/nonzero.rs', lines 112:0-112:40
     Name pattern: [core::num::nonzero::NonZero]
