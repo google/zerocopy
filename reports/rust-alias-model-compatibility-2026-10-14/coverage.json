@@ -1,0 +1,108 @@
+{
+  "coverage_kind": "bounded pilot, not agenda completion",
+  "sections_are_in": "REPORT.md",
+  "topics": {
+    "R015": {
+      "status": "partial",
+      "sections": [
+        "Stacked Borrows supplies dynamic permissions and optimization proofs",
+        "A small source discriminator separates the models"
+      ],
+      "established": [
+        "Operational access/retag structure and paper-reported transformation proof scope."
+      ],
+      "outstanding": [
+        "Pinned Coq artifact source/build; full modular unary logic audit; cross-model soundness."
+      ],
+      "issue": 3865
+    },
+    "R016": {
+      "status": "partial",
+      "sections": [
+        "Tree Borrows preserves deferred activation and changes compatibility",
+        "Modular aliasing logic now has concrete but different foundations"
+      ],
+      "established": [
+        "Concrete permission rules/settings plus precise comparison of mechanized thesis account and proposed axiomatic logic."
+      ],
+      "outstanding": [
+        "Thesis code endpoint unavailable; adequacy not independently replayed; byte/relaxed-memory extensions."
+      ],
+      "issue": 3865
+    },
+    "R020": {
+      "status": "partial",
+      "sections": [
+        "Tree Borrows preserves deferred activation and changes compatibility",
+        "Source traces and async progress introduce additional obligations",
+        "Compatibility requires a safety-reflecting relation with explicit scope"
+      ],
+      "established": [
+        "No inferred accepted-set inclusion; distinction between optimization refinement and source-safety reflection; trace/fairness obligations."
+      ],
+      "outstanding": [
+        "A proved relation across byte, provenance, aliasing, concurrency and async models; real extraction endpoints."
+      ],
+      "issue": 3865
+    },
+    "R019": {
+      "status": "partial extension",
+      "sections": [
+        "Modular aliasing logic now has concrete but different foundations",
+        "Source traces and async progress introduce additional obligations"
+      ],
+      "established": [
+        "Sequential-consistency limits and scheduler/fairness assumptions."
+      ],
+      "outstanding": [
+        "Rust relaxed atomics, fences, data race rules, and C/C++ model correspondence."
+      ],
+      "issue": 3865
+    },
+    "R028": {
+      "status": "partial extension",
+      "sections": [
+        "Source traces and async progress introduce additional obligations"
+      ],
+      "established": [
+        "Quiescent fairness, conditional bounded scheduler progress, and per-component waker obligations."
+      ],
+      "outstanding": [
+        "General termination credits, transfinite methods, and actual-runtime liveness correspondence."
+      ],
+      "issue": 3865
+    },
+    "R077": {
+      "status": "partial extension",
+      "sections": [
+        "Tree Borrows preserves deferred activation and changes compatibility",
+        "Source traces and async progress introduce additional obligations"
+      ],
+      "established": [
+        "Non-Unpin retag boundary and explicit absence of unsafe async pinning/cancellation proof."
+      ],
+      "outstanding": [
+        "Address-sensitive invariants, suspended borrow correspondence, self-reference, cancellation and destruction."
+      ],
+      "issue": 3865
+    },
+    "P100": {
+      "status": "partial extension",
+      "sections": [
+        "Source traces and async progress introduce additional obligations",
+        "Compatibility requires a safety-reflecting relation with explicit scope"
+      ],
+      "established": [
+        "Fairness and infinite-progress preservation are distinct from finite-result agreement."
+      ],
+      "outstanding": [
+        "Stuttering/progress certificate relation, blocking and divergence counterexamples in actual pipeline."
+      ],
+      "issue": 3867
+    }
+  },
+  "agenda_issues": [
+    3865,
+    3867
+  ]
+}

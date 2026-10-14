@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "anneal/correspondence",
+    "rust/undefined-behavior",
+    "compiler-verification/safety-reflection",
+    "lean/experiments"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Owned safety-reflection probe",
+      "identity": {
+        "artifact": "support/Reflection.lean",
+        "sha256": "523d637df89085b5006444331ea71d86bfd37843d69d9f3a5393be7ce0c50ce5"
+      }
+    },
+    {
+      "name": "Owned Rust erasure probe",
+      "identity": {
+        "artifact": "support/erased_ub.rs",
+        "sha256": "ee0a7c7b648dba6defeb2a58643ee48df6b8295aaef41b2ae2980ccf4880d4a4"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

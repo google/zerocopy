@@ -1,0 +1,27 @@
+{
+  "chosen_transfer_abstraction": {
+    "padding_readable_after": false,
+    "padding_readable_before": true,
+    "payload_decode_agrees": true
+  },
+  "expected_accessors": {
+    "cases": 128,
+    "distinct_field_frame": true,
+    "first_mismatch": null,
+    "independent_layout_agreement": true,
+    "roundtrip": true
+  },
+  "scope": "complete enumeration of the defined 4-bit/two-field example",
+  "swapped_accessors": {
+    "cases": 128,
+    "distinct_field_frame": true,
+    "first_mismatch": {
+      "actual": 0,
+      "expected": 1,
+      "field": 0,
+      "word": 1
+    },
+    "independent_layout_agreement": false,
+    "roundtrip": true
+  }
+}

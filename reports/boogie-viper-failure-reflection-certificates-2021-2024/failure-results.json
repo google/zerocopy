@@ -1,0 +1,50 @@
+{
+  "cases": {
+    "bad_nondeterministic_choice_removed": {
+      "all_represented_model_partial_true": true,
+      "bad_source_inputs": [
+        2
+      ],
+      "entry_coverage": true,
+      "failure_exposure_on_represented_entries": false,
+      "successful_result_inclusion": true
+    },
+    "bad_replaced_by_divergence": {
+      "all_represented_model_partial_true": true,
+      "bad_source_inputs": [
+        2
+      ],
+      "entry_coverage": true,
+      "failure_exposure_on_represented_entries": false,
+      "successful_result_inclusion": true
+    },
+    "entry_domain_narrowed": {
+      "all_represented_model_partial_true": true,
+      "bad_source_inputs": [
+        2
+      ],
+      "entry_coverage": false,
+      "failure_exposure_on_represented_entries": true,
+      "successful_result_inclusion": true
+    },
+    "guard_removed": {
+      "all_represented_model_partial_true": true,
+      "bad_source_inputs": [
+        2
+      ],
+      "entry_coverage": true,
+      "failure_exposure_on_represented_entries": false,
+      "successful_result_inclusion": true
+    },
+    "positive_control_retained_failure": {
+      "all_represented_model_partial_true": false,
+      "bad_source_inputs": [
+        2
+      ],
+      "entry_coverage": true,
+      "failure_exposure_on_represented_entries": true,
+      "successful_result_inclusion": true
+    }
+  },
+  "scope": "three entry states and finite explicit outcome sets"
+}

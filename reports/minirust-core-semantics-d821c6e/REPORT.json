@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "rust/core-calculi",
+    "minirust",
+    "minirust/memory-model",
+    "rust/unsafe-verification",
+    "semantics/correspondence"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust specification and minimize tooling",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 paper",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "PACMPL 2 POPL Article 66, January 2018",
+        "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf"
+      }
+    },
+    {
+      "name": "RustBelt technical appendix",
+      "identity": {
+        "version-date": "2017-11-09",
+        "sha256": "a49b24dbb220d539aa5c70c6e09ea6ed48c8adb01568857ffc456bae0f7dfc83",
+        "url": "https://plv.mpi-sws.org/rustbelt/popl18/appendix.pdf"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982v4",
+        "version-date": "2021-10-19",
+        "sha256": "23ccf574c9778c533c12125b8da96a033af72da3cd6bb75483b63745846b5555",
+        "url": "https://arxiv.org/pdf/1903.00982v4"
+      }
+    },
+    {
+      "name": "Featherweight Rust author-hosted preprint",
+      "identity": {
+        "bibliographic-doi": "10.1145/3443420",
+        "inspected-footer-date": "March 2020",
+        "sha256": "4968454d56869166ca39ef8a340e0758ebe13c35cb1bc9f18d25b6ee3e67c586",
+        "url": "https://whileydave.com/publications/Pea21_TOPLAS_preprint.pdf"
+      }
+    },
+    {
+      "name": "Rust Distilled",
+      "identity": {
+        "arxiv": "1806.02693v2",
+        "version-date": "2018-08-16",
+        "sha256": "5009345fe0de38928c2a7c58970d05ab171e2768de3abafad6f8586141155bd3",
+        "url": "https://arxiv.org/pdf/1806.02693v2"
+      }
+    },
+    {
+      "name": "KRust",
+      "identity": {
+        "arxiv": "1804.10806v1",
+        "version-date": "2018-04-28",
+        "sha256": "c101740fe8f8aa85537bc282ceef950de4d60bc3215fcd543bead8ba72e9dd24",
+        "url": "https://arxiv.org/pdf/1804.10806v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

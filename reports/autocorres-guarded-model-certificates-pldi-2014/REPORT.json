@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "autocorres",
+    "certificates/abstraction",
+    "anneal/source-safety",
+    "semantics/failure-reflection"
+  ],
+  "subjects": [
+    {
+      "name": "AutoCorres PLDI 2014 paper",
+      "identity": {
+        "doi": "10.1145/2594291.2594296",
+        "author-copy": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf",
+        "publication": "PLDI 2014",
+        "pdf-pages": "11"
+      }
+    },
+    {
+      "name": "AutoCorres upstream project description",
+      "identity": {
+        "url": "https://trustworthy.systems/projects/OLD/autocorres/",
+        "observed": "2026-10-14"
+      }
+    },
+    {
+      "name": "Anneal shared models and execution admission design",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "cogent",
+    "dargent",
+    "certificates/data-refinement",
+    "anneal/memory",
+    "semantics/layout"
+  ],
+  "subjects": [
+    {
+      "name": "Cogent uniqueness types and certifying compilation",
+      "identity": {
+        "doi": "10.1017/S095679682100023X",
+        "publication": "JFP 2021 e25",
+        "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+        "pdf-pages": "67"
+      }
+    },
+    {
+      "name": "Dargent data layout refinement",
+      "identity": {
+        "doi": "10.1145/3571240",
+        "publication": "PACMPL 7 POPL 2023 article 47",
+        "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+        "pdf-pages": "27"
+      }
+    },
+    {
+      "name": "Anneal shared models and execution admission design",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

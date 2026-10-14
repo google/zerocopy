@@ -10880,6 +10880,87 @@
         "zstd"
       ]
     },
+    "anneal-research-agenda-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+          },
+          "name": "Anneal main implementation"
+        },
+        {
+          "identity": {
+            "pull_request": "3846",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal PR 3846 stack"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188"
+          },
+          "name": "Reference corpus baseline"
+        },
+        {
+          "identity": {
+            "artifact": "research-questions.json",
+            "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+          },
+          "name": "Stable research questions"
+        }
+      ],
+      "topics": [
+        "anneal/research",
+        "rust/verification",
+        "tcb",
+        "compiler-verification"
+      ]
+    },
+    "anneal-source-safety-reflection-probes-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust 1.99.0 compiler"
+        },
+        {
+          "identity": {
+            "artifact": "support/Reflection.lean",
+            "sha256": "523d637df89085b5006444331ea71d86bfd37843d69d9f3a5393be7ce0c50ce5"
+          },
+          "name": "Owned safety-reflection probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/erased_ub.rs",
+            "sha256": "ee0a7c7b648dba6defeb2a58643ee48df6b8295aaef41b2ae2980ccf4880d4a4"
+          },
+          "name": "Owned Rust erasure probe"
+        }
+      ],
+      "topics": [
+        "anneal/correspondence",
+        "rust/undefined-behavior",
+        "compiler-verification/safety-reflection",
+        "lean/experiments"
+      ]
+    },
     "anneal-synthesized-scaffolding-diagnostic-provenance-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11689,6 +11770,85 @@
         "compcert",
         "sel4",
         "cakeml"
+      ]
+    },
+    "autocorres-guarded-model-certificates-pldi-2014": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf",
+            "doi": "10.1145/2594291.2594296",
+            "pdf-pages": "11",
+            "publication": "PLDI 2014"
+          },
+          "name": "AutoCorres PLDI 2014 paper"
+        },
+        {
+          "identity": {
+            "observed": "2026-10-14",
+            "url": "https://trustworthy.systems/projects/OLD/autocorres/"
+          },
+          "name": "AutoCorres upstream project description"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal shared models and execution admission design"
+        }
+      ],
+      "topics": [
+        "autocorres",
+        "certificates/abstraction",
+        "anneal/source-safety",
+        "semantics/failure-reflection"
+      ]
+    },
+    "boogie-viper-failure-reflection-certificates-2021-2024": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://gauravpartha.ch/papers/boogie_certificates_cav21.pdf",
+            "doi": "10.1007/978-3-030-81688-9_33",
+            "pdf-pages": "23",
+            "publication": "CAV 2021"
+          },
+          "name": "Formally validating a practical verification condition generator"
+        },
+        {
+          "identity": {
+            "author-copy": "https://gauravpartha.ch/papers/front_end_translation_certificates_pldi24.pdf",
+            "doi": "10.1145/3656438",
+            "pdf-pages": "25",
+            "publication": "PACMPL 8 PLDI 2024 article 208"
+          },
+          "name": "Formally validating translations into an IVL"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.10802176",
+            "url": "https://zenodo.org/records/10802176"
+          },
+          "name": "PLDI 2024 reproduction artifact record"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal shared models and execution admission design"
+        }
+      ],
+      "topics": [
+        "boogie",
+        "viper",
+        "certificates/vc-generation",
+        "certificates/frontend",
+        "anneal/source-safety",
+        "semantics/failure-reflection"
       ]
     },
     "buck-to-buck2-one-graph-rewrite-2013-2026": {
@@ -13000,6 +13160,43 @@
         "anneal/freshness"
       ]
     },
+    "cogent-dargent-memory-value-layout-certificates-2021-2023": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+            "doi": "10.1017/S095679682100023X",
+            "pdf-pages": "67",
+            "publication": "JFP 2021 e25"
+          },
+          "name": "Cogent uniqueness types and certifying compilation"
+        },
+        {
+          "identity": {
+            "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+            "doi": "10.1145/3571240",
+            "pdf-pages": "27",
+            "publication": "PACMPL 7 POPL 2023 article 47"
+          },
+          "name": "Dargent data layout refinement"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal shared models and execution admission design"
+        }
+      ],
+      "topics": [
+        "cogent",
+        "dargent",
+        "certificates/data-refinement",
+        "anneal/memory",
+        "semantics/layout"
+      ]
+    },
     "compatibility-constrained-rewrites-zcore-rel4-theseus-anneal": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -13797,6 +13994,39 @@
         "rust/ffi",
         "compcert",
         "cakeml"
+      ]
+    },
+    "foundational-verifast-hinted-mirroring-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2601.13727v1",
+            "publication": "2026-01-20"
+          },
+          "name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring"
+        },
+        {
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          },
+          "name": "VeriFast Rocq replay and axiomatic semantics"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal PR-stack admission design"
+        }
+      ],
+      "topics": [
+        "verifast",
+        "rust/verification",
+        "verification/certificates",
+        "tcb",
+        "iris"
       ]
     },
     "fstar-20260927-current-source-review": {
@@ -17452,6 +17682,77 @@
         "proof-assistants"
       ]
     },
+    "minirust-core-semantics-d821c6e": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust specification and minimize tooling"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "PACMPL 2 POPL Article 66, January 2018",
+            "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf"
+          },
+          "name": "RustBelt POPL 2018 paper"
+        },
+        {
+          "identity": {
+            "sha256": "a49b24dbb220d539aa5c70c6e09ea6ed48c8adb01568857ffc456bae0f7dfc83",
+            "url": "https://plv.mpi-sws.org/rustbelt/popl18/appendix.pdf",
+            "version-date": "2017-11-09"
+          },
+          "name": "RustBelt technical appendix"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.00982v4",
+            "sha256": "23ccf574c9778c533c12125b8da96a033af72da3cd6bb75483b63745846b5555",
+            "url": "https://arxiv.org/pdf/1903.00982v4",
+            "version-date": "2021-10-19"
+          },
+          "name": "Oxide: The Essence of Rust"
+        },
+        {
+          "identity": {
+            "bibliographic-doi": "10.1145/3443420",
+            "inspected-footer-date": "March 2020",
+            "sha256": "4968454d56869166ca39ef8a340e0758ebe13c35cb1bc9f18d25b6ee3e67c586",
+            "url": "https://whileydave.com/publications/Pea21_TOPLAS_preprint.pdf"
+          },
+          "name": "Featherweight Rust author-hosted preprint"
+        },
+        {
+          "identity": {
+            "arxiv": "1806.02693v2",
+            "sha256": "5009345fe0de38928c2a7c58970d05ab171e2768de3abafad6f8586141155bd3",
+            "url": "https://arxiv.org/pdf/1806.02693v2",
+            "version-date": "2018-08-16"
+          },
+          "name": "Rust Distilled"
+        },
+        {
+          "identity": {
+            "arxiv": "1804.10806v1",
+            "sha256": "c101740fe8f8aa85537bc282ceef950de4d60bc3215fcd543bead8ba72e9dd24",
+            "url": "https://arxiv.org/pdf/1804.10806v1",
+            "version-date": "2018-04-28"
+          },
+          "name": "KRust"
+        }
+      ],
+      "topics": [
+        "rust/core-calculi",
+        "minirust",
+        "minirust/memory-model",
+        "rust/unsafe-verification",
+        "semantics/correspondence"
+      ]
+    },
     "mvcc-snapshot-isolation-proof-work-consistency-1981-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -18724,6 +19025,87 @@
         "rust/unsafe"
       ]
     },
+    "rust-alias-model-compatibility-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "Pinned Miri aliasing implementation"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust Tree Borrows and source discriminator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "publication": "PACMPL 4 POPL Article 41, January 2020",
+            "sha256": "a342838a2c5c566e0374cad1f583837ed9c8abb68b62ec5ecc076c469c5d3439",
+            "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+          },
+          "name": "Stacked Borrows POPL 2020"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "publication": "PACMPL 9 PLDI Article 188, June 2025",
+            "sha256": "2b804f5cd0a7855d603e5b8e19627d601f29307976cee1a765f52d9610077d80",
+            "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+          },
+          "name": "Tree Borrows PLDI 2025"
+        },
+        {
+          "identity": {
+            "sha256": "e49b0d5bbd1c30f43671c08f4eecaa6b33556ae6c6871b16af5c19e7ede0b876",
+            "url": "https://rudynicolop.github.io/files/thesis.pdf",
+            "year": "2025"
+          },
+          "name": "A Program Logic for Tree Borrows, Peterson thesis"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.28326v1",
+            "sha256": "bdb7ec5b19542cd80e7f9c6eb031d4bf23f0517fef60221b624d3b45f0dc4b1c",
+            "url": "https://arxiv.org/pdf/2603.28326v1",
+            "version-date": "2026-03-30"
+          },
+          "name": "Towards verifying unsafe Rust pointer aliasing"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.06003v1",
+            "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d",
+            "url": "https://arxiv.org/pdf/2610.06003v1",
+            "version-date": "2026-10-05"
+          },
+          "name": "A Complete, Formal Semantics for Rust Source Code"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.09198v1",
+            "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30",
+            "url": "https://arxiv.org/pdf/2610.09198v1",
+            "version-date": "2026-10-06"
+          },
+          "name": "Modular Responsiveness Verification of Rust Async Runtimes"
+        }
+      ],
+      "topics": [
+        "rust/aliasing",
+        "stacked-borrows",
+        "tree-borrows",
+        "rust/program-logics",
+        "semantics/source-safety",
+        "rust/async",
+        "semantics/fairness"
+      ]
+    },
     "rust-allocation-deallocation-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -18771,6 +19153,47 @@
         "rust/data-races",
         "rust/memory-ordering",
         "rust/unsafe"
+      ]
+    },
+    "rust-authority-provenance-2026-05-31": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "Rust pointer contracts and implementation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines repository"
+        },
+        {
+          "identity": {
+            "document": "ISO/IEC JTC1/SC22/WG14 N2364",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2364.pdf",
+            "version-date": "2019-04-01"
+          },
+          "name": "C provenance semantics proposal N2364"
+        }
+      ],
+      "topics": [
+        "rust/semantics",
+        "rust/provenance",
+        "rust/strict-provenance",
+        "rust/unsafe-verification",
+        "certificates/provenance"
       ]
     },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {

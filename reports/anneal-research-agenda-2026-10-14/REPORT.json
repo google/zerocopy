@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "anneal/research",
+    "rust/verification",
+    "tcb",
+    "compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal main implementation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+      }
+    },
+    {
+      "name": "Anneal PR 3846 stack",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "pull_request": "3846"
+      }
+    },
+    {
+      "name": "Reference corpus baseline",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188"
+      }
+    },
+    {
+      "name": "Stable research questions",
+      "identity": {
+        "artifact": "research-questions.json",
+        "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

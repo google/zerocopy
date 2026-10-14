@@ -1,0 +1,5 @@
+'AnnealReflectionProbe.ordinary_preservation_does_not_reflect_safety' depends on axioms: [propext]
+'AnnealReflectionProbe.failure_reflection_transfers_safety' does not depend on any axioms
+'AnnealReflectionProbe.failure_reflection_composes' does not depend on any axioms
+'AnnealReflectionProbe.erased_failure_rejected' depends on axioms: [propext]
+'AnnealReflectionProbe.narrowed_domain_is_safe' depends on axioms: [propext]

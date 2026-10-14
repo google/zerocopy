@@ -1,0 +1,134 @@
+{
+  "commands": [
+    {
+      "name": "lean-version",
+      "argv": [
+        "lean",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout_file": "lean-version.stdout.txt",
+      "stderr_file": "lean-version.stderr.txt"
+    },
+    {
+      "name": "rust-version",
+      "argv": [
+        "rustc",
+        "-vV"
+      ],
+      "returncode": 0,
+      "stdout_file": "rust-version.stdout.txt",
+      "stderr_file": "rust-version.stderr.txt"
+    },
+    {
+      "name": "lean-check",
+      "argv": [
+        "lean",
+        "-DwarningAsError=true",
+        "Reflection.lean"
+      ],
+      "returncode": 0,
+      "stdout_file": "lean-check.stdout.txt",
+      "stderr_file": "lean-check.stderr.txt"
+    },
+    {
+      "name": "rust-o0-s",
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "erased_ub.rs",
+        "--emit=asm",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "debug-assertions=no",
+        "-o",
+        "erased-ub-o0.s"
+      ],
+      "returncode": 0,
+      "stdout_file": "rust-o0-s.stdout.txt",
+      "stderr_file": "rust-o0-s.stderr.txt"
+    },
+    {
+      "name": "rust-o0-ll",
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "erased_ub.rs",
+        "--emit=llvm-ir",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "debug-assertions=no",
+        "-o",
+        "erased-ub-o0.ll"
+      ],
+      "returncode": 0,
+      "stdout_file": "rust-o0-ll.stdout.txt",
+      "stderr_file": "rust-o0-ll.stderr.txt"
+    },
+    {
+      "name": "rust-o3-s",
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "erased_ub.rs",
+        "--emit=asm",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "debug-assertions=no",
+        "-o",
+        "erased-ub-o3.s"
+      ],
+      "returncode": 0,
+      "stdout_file": "rust-o3-s.stdout.txt",
+      "stderr_file": "rust-o3-s.stderr.txt"
+    },
+    {
+      "name": "rust-o3-ll",
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "erased_ub.rs",
+        "--emit=llvm-ir",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "debug-assertions=no",
+        "-o",
+        "erased-ub-o3.ll"
+      ],
+      "returncode": 0,
+      "stdout_file": "rust-o3-ll.stdout.txt",
+      "stderr_file": "rust-o3-ll.stderr.txt"
+    }
+  ],
+  "sha256": {
+    "Reflection.lean": "523d637df89085b5006444331ea71d86bfd37843d69d9f3a5393be7ce0c50ce5",
+    "erased-ub-o0.ll": "60ced6fbc370d2682c1ba62a9a6b97b1354180db84098ab7c15d986d8a9bb15e",
+    "erased-ub-o0.s": "472cd1e5969b9db183783fc978422a34be0b25e7915d1b275e91ade4a4b829e0",
+    "erased-ub-o3.ll": "94f32a97e55ef7269fb0bfea4c6d21671bf62a5a6289dcca6e4fff9cf37447f7",
+    "erased-ub-o3.s": "7493b48a5aa1a1476216279c2e4a2b68211697673663df8d4a3e84290bf1383b",
+    "erased_ub.rs": "ee0a7c7b648dba6defeb2a58643ee48df6b8295aaef41b2ae2980ccf4880d4a4",
+    "lean-check.stderr.txt": "6facb7a0614f0d7a3b1b4dddc4b4bc263590523b2ebbb3f065a0661306358383",
+    "lean-check.stdout.txt": "c9ec42ea5b2b10846323dd851899945345fc53b28ab606f7cc95e92ff1fd2b71",
+    "lean-version.stderr.txt": "6facb7a0614f0d7a3b1b4dddc4b4bc263590523b2ebbb3f065a0661306358383",
+    "lean-version.stdout.txt": "20f42f897511ec814f7616bd9a193ae7504aa2f52fb05299eb752936eb77ca6e",
+    "run_probes.py": "8cd26bd9a468d463f7fd79706d839a9a7000bc66da8631fa81fff4db1f94c535",
+    "rust-o0-ll.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o0-ll.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o0-s.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o0-s.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o3-ll.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o3-ll.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o3-s.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-o3-s.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-version.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rust-version.stdout.txt": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909"
+  }
+}

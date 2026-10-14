@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-10-14",
+  "artifact_access_attempts": [
+    {
+      "subject": "Peterson thesis code revision ccca9f325f909dceed4fd88008862f64296dbfd9",
+      "url": "https://gitlab.inf.ethz.ch/api/v4/projects/ou-plf%2Ftree-borrows-program-logic/repository/tree?ref=ccca9f325f909dceed4fd88008862f64296dbfd9&recursive=true&per_page=100",
+      "result": "HTTP 404",
+      "interpretation": "The request did not yield the code. This does not establish that the artifact is absent or unsupported."
+    },
+    {
+      "subject": "Tree Borrows PLDI 2025 artifact record",
+      "url": "https://zenodo.org/records/15002703",
+      "result": "Web tool returned Internal Error",
+      "interpretation": "No artifact metadata or archive was inspected through that request."
+    }
+  ],
+  "environment_observation": {
+    "miri_binary": "installed nightly-2026-09-30 aarch64-apple-darwin toolchain: bin/miri",
+    "version_output": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)",
+    "associated_rustc_commit": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+    "host": "aarch64-apple-darwin",
+    "cache_locations_checked": [
+      "standard macOS user cache directory",
+      "standard user .cache directory",
+      "task work directory, maximum search depth 5"
+    ],
+    "result": "No Miri cache/sysroot directory found in those searches; no setup or model execution attempted.",
+    "interpretation": "Tool availability observation only; no model acceptance or global sysroot-absence claim."
+  }
+}

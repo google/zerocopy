@@ -1,0 +1,9 @@
+{
+  "topics": ["verifast", "rust/verification", "verification/certificates", "tcb", "iris"],
+  "subjects": [
+    {"name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring", "identity": {"arxiv": "2601.13727v1", "publication": "2026-01-20"}},
+    {"name": "VeriFast Rocq replay and axiomatic semantics", "identity": {"repository": "verifast/verifast", "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"}},
+    {"name": "Anneal PR-stack admission design", "identity": {"repository": "google/zerocopy", "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"}}
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,78 @@
+{
+  "coverage_kind": "bounded pilot, not agenda completion",
+  "sections_are_in": "REPORT.md",
+  "topics": {
+    "R010": {
+      "status": "partial",
+      "sections": [
+        "Core calculi offer different reusable interfaces"
+      ],
+      "established": [
+        "Five model-specific definition/result interfaces and concrete omissions that block unqualified unsafe-Rust theorem reuse."
+      ],
+      "outstanding": [
+        "Executable artifact/repository audits and builds; mechanized cross-calculus or actual Rust correspondence."
+      ],
+      "issue": 3865
+    },
+    "R011": {
+      "status": "partial",
+      "sections": [
+        "The memory parameter is part of the model's identity",
+        "Representation and exposure take different routes through provenance",
+        "Existing tooling is a concrete connection, with an unproved boundary"
+      ],
+      "established": [
+        "Actual memory, provenance, representation, exposed-cast definitions, current tooling interface and documentation inconsistency."
+      ],
+      "outstanding": [
+        "Build/execution of exact interpreter and translator; full lowering audit; theorem-prover embedding and source-safety reflection proof."
+      ],
+      "issue": 3865
+    },
+    "R020": {
+      "status": "partial contribution",
+      "sections": [
+        "The memory parameter is part of the model's identity",
+        "Core calculi offer different reusable interfaces"
+      ],
+      "established": [
+        "Memory implementation and theorem subject must be explicit compatibility endpoints."
+      ],
+      "outstanding": [
+        "Actual inter-model relation and proof; companion alias-model package supplies additional obligations."
+      ],
+      "issue": 3865
+    },
+    "P079": {
+      "status": "partial contribution",
+      "sections": [
+        "Representation and exposure take different routes through provenance"
+      ],
+      "established": [
+        "MiniRust byte provenance fragment and pointer reconstruction definitions."
+      ],
+      "outstanding": [
+        "Certificate relation retaining all fragments and allocation identity."
+      ],
+      "issue": 3867
+    },
+    "P087": {
+      "status": "partial contribution",
+      "sections": [
+        "Representation and exposure take different routes through provenance"
+      ],
+      "established": [
+        "Distinct transmutation and exposed-cast treatment with angelic prediction."
+      ],
+      "outstanding": [
+        "Rust-level correspondence to those choices and mechanized embedding."
+      ],
+      "issue": 3867
+    }
+  },
+  "agenda_issues": [
+    3865,
+    3867
+  ]
+}

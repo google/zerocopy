@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "rust/semantics",
+    "rust/provenance",
+    "rust/strict-provenance",
+    "rust/unsafe-verification",
+    "certificates/provenance"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Rust pointer contracts and implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Unsafe Code Guidelines repository",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "C provenance semantics proposal N2364",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG14 N2364",
+        "version-date": "2019-04-01",
+        "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2364.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,52 @@
+{
+  "repository": "verifast/verifast",
+  "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+  "method": "lexical scan of selected files, not a transitive theorem dependency audit",
+  "files": [
+    {
+      "file": "VfMir.v",
+      "admitted_tokens": 0,
+      "axiom_declarations": 0,
+      "parameter_declarations": 0,
+      "storage_transition_lines": [
+        100,
+        101
+      ]
+    },
+    {
+      "file": "SymbolicExecution.v",
+      "admitted_tokens": 0,
+      "axiom_declarations": 0,
+      "parameter_declarations": 0,
+      "storage_transition_lines": [
+        488,
+        489
+      ]
+    },
+    {
+      "file": "AxSem.v",
+      "admitted_tokens": 32,
+      "axiom_declarations": 4,
+      "parameter_declarations": 2,
+      "storage_transition_lines": [
+        115,
+        116,
+        119,
+        120
+      ]
+    },
+    {
+      "file": "SymexSoundness.v",
+      "admitted_tokens": 0,
+      "axiom_declarations": 5,
+      "parameter_declarations": 1,
+      "storage_transition_lines": [
+        677,
+        695,
+        696,
+        698,
+        699
+      ]
+    }
+  ]
+}

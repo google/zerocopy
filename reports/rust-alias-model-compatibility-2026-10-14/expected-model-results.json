@@ -1,0 +1,11 @@
+{
+  "input": "discriminator.rs",
+  "evidence_role": "source/documentation; not execution",
+  "source_repository": "minirust/minirust",
+  "source_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "source_path": "tooling/minimize/tests/pass/tree_borrows/sb_fails.rs",
+  "source_symbol": "pass_invalid_mut",
+  "stacked_borrows": "upstream documentation says reference invalidated by raw read, later reborrow rejects",
+  "tree_borrows": "upstream documentation says reference remains Reserved and later reborrow is accepted",
+  "configuration_limit": "No local execution and no result for installed September 2026 Miri or an implicit-writes variant is asserted."
+}

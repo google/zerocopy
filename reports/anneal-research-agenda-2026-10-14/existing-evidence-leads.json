@@ -1,0 +1,2800 @@
+{
+  "schema_version": 1,
+  "audit_disposition": "bounded report-content reuse audit; not a corpus-wide coverage/completion verdict",
+  "reference": {
+    "revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+    "catalog_packages": 658
+  },
+  "method": {
+    "selection": "Purposive sample of foundational, extraction, memory, checking, and historical failure-mode packages. Titles/catalog selected candidates only; supported scopes come from inspected Applicability, Findings and Boundaries.",
+    "observation": "This audit reads existing reports and their declared evidence. It did not rerun upstream tools, revalidate primary sources, reproduce experiments, or establish current upstream status.",
+    "completion": "All mapped scopes remain partial evidence leads. No research question is marked complete.",
+    "uninspected": "Uninspected packages and absent mappings are unassessed, not evidence of no useful coverage."
+  },
+  "packages": [
+    {
+      "package": "rust-ub-and-operational-models-nightly-2026-05-31",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/rust-ub-and-operational-models-nightly-2026-05-31/REPORT.md",
+          "sha256": "dc522dc1feb0ee244426526c2d10851da4d75fba26e39853b1737d093f43b928",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Rust undefined behavior and experimental operational models at the 2026-05-31 toolchain"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 48,
+              "heading": "Applicability"
+            },
+            {
+              "line": 75,
+              "heading": "Findings"
+            },
+            {
+              "line": 77,
+              "heading": "The Rust Reference is primary language authority, but its UB account is intentionally incomplete"
+            },
+            {
+              "line": 99,
+              "heading": "The Reference's explicit UB inventory covers broad classes, not a complete operational semantics"
+            },
+            {
+              "line": 130,
+              "heading": "Aliasing is a known semantic gap rather than an unspecified implementation detail Anneal can ignore"
+            },
+            {
+              "line": 153,
+              "heading": "The Reference memory model contains some settled abstractions while explicitly remaining incomplete"
+            },
+            {
+              "line": 168,
+              "heading": "Pointer provenance is semantically relevant, but its exact model is not fully settled"
+            },
+            {
+              "line": 187,
+              "heading": "The current UCG repository points away from itself as normative authority"
+            },
+            {
+              "line": 210,
+              "heading": "Miri is an executable UB detector, not the definition of Rust semantics"
+            },
+            {
+              "line": 235,
+              "heading": "Miri distinguishes definite checks from experimental aliasing checks"
+            },
+            {
+              "line": 259,
+              "heading": "Stacked Borrows and Tree Borrows are candidate aliasing semantics with different purposes and permissiveness"
+            },
+            {
+              "line": 277,
+              "heading": "Miri success and Miri failure have asymmetric evidentiary value"
+            },
+            {
+              "line": 302,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 329,
+              "heading": "Evidence"
+            },
+            {
+              "line": 374,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "rust",
+          "rust/undefined-behavior",
+          "rust/memory-model",
+          "rust/provenance",
+          "miri",
+          "miri/aliasing"
+        ],
+        "subjects": [
+          {
+            "name": "Rust source toolchain",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "toolchain-date": "2026-05-31"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+            }
+          },
+          {
+            "name": "Miri source bundled in Rust",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "path": "src/tools/miri"
+            }
+          },
+          {
+            "name": "Unsafe Code Guidelines repository",
+            "identity": {
+              "repository": "rust-lang/unsafe-code-guidelines",
+              "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+            }
+          }
+        ],
+        "observed_at": "2026-09-25"
+      },
+      "reported_evidence_roles": [
+        "normative",
+        "documentation",
+        "source",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R009"
+          ],
+          "supported_scope": "At the pinned Reference/Rust/UCG revisions, language rules, incomplete semantics, Miri approximation, experimental borrowing models and UCG research authority are distinct.",
+          "remaining_question_scope": "Current Reference/t-opsem decisions and their exact applicability need a new primary-source audit; no closed UB enumeration is established.",
+          "evidence_headings": [
+            "The Rust Reference is primary language authority, but its UB account is intentionally incomplete",
+            "The current UCG repository points away from itself as normative authority",
+            "Miri is an executable UB detector, not the definition of Rust semantics"
+          ]
+        },
+        {
+          "question_ids": [
+            "R014",
+            "R017"
+          ],
+          "supported_scope": "The pinned abstract memory account includes initialized/uninitialized bytes and optional provenance; provenance is semantically relevant but the exact model is incomplete.",
+          "remaining_question_scope": "No complete provenance logic, pointer-operation semantics, niches, padding-transfer semantics or concrete verification bridge is supplied.",
+          "evidence_headings": [
+            "The Reference memory model contains some settled abstractions while explicitly remaining incomplete",
+            "Pointer provenance is semantically relevant, but its exact model is not fully settled"
+          ]
+        },
+        {
+          "question_ids": [
+            "R015",
+            "R016",
+            "R020"
+          ],
+          "supported_scope": "Stacked Borrows and Tree Borrows are executable experimental models with different roles/permissiveness; model rejection and Miri acceptance have qualified evidence meanings.",
+          "remaining_question_scope": "Full operational rules, mechanized properties, current modular aliasing logics, cross-model compatibility proofs, source traces and async semantics remain open.",
+          "evidence_headings": [
+            "Miri distinguishes definite checks from experimental aliasing checks",
+            "Stacked Borrows and Tree Borrows are candidate aliasing semantics with different purposes and permissiveness",
+            "Miri success and Miri failure have asymmetric evidentiary value"
+          ]
+        },
+        {
+          "question_ids": [
+            "R005",
+            "R004"
+          ],
+          "supported_scope": "Miri acceptance is bounded explored-execution evidence, not a proof of library soundness or UB freedom.",
+          "remaining_question_scope": "A full theorem taxonomy and common evaluation matrix still require separate evidence.",
+          "evidence_headings": [
+            "Miri success and Miri failure have asymmetric evidentiary value"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh Miri/compiler execution; no exhaustive t-opsem inventory; no complete concurrency or aliasing model."
+      ],
+      "revalidation_needed": "Resolve current exact Rust/Reference/Miri/UCG subjects; diff the narrow authority and model caveat sources; independently inspect any model theorem invoked.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "rustbelt-unsafe-abstraction-model-popl-2018",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/rustbelt-unsafe-abstraction-model-popl-2018/REPORT.md",
+          "sha256": "e4e1cdb51d2fc09f803e01534b46d258db75c3e71cff457193d383501796414f",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "RustBelt\u2019s unsafe-abstraction model and safe-client composition"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 13,
+              "heading": "Applicability"
+            },
+            {
+              "line": 28,
+              "heading": "Findings"
+            },
+            {
+              "line": 30,
+              "heading": "RustBelt turns an unsafe abstraction into a semantic extension obligation"
+            },
+            {
+              "line": 46,
+              "heading": "The public type/interface is the verified boundary"
+            },
+            {
+              "line": 56,
+              "heading": "Syntactically typed clients do not need library-internal proofs repeated at each call site"
+            },
+            {
+              "line": 66,
+              "heading": "The client guarantee depends on the semantic interface, not on a default \u201cshared means read-only\u201d rule"
+            },
+            {
+              "line": 76,
+              "heading": "RustBelt\u2019s verified examples are library proofs under one common model"
+            },
+            {
+              "line": 86,
+              "heading": "\u201cSafe\u201d in the theorem is operational safety, not unrestricted functional correctness"
+            },
+            {
+              "line": 96,
+              "heading": "The proof is open to new unsafe libraries without making unsafe code trusted by default"
+            },
+            {
+              "line": 109,
+              "heading": "The result is machine-checked, but its formal subject is \u03bbRust rather than full Rust"
+            },
+            {
+              "line": 119,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 133,
+              "heading": "Evidence"
+            },
+            {
+              "line": 175,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "rustbelt",
+          "rust/unsafe",
+          "rust/unsafe-abstractions",
+          "rust/library-soundness",
+          "semantics/logical-relations",
+          "separation-logic"
+        ],
+        "subjects": [
+          {
+            "name": "RustBelt POPL 2018 unsafe-abstraction soundness model",
+            "identity": {
+              "doi": "10.1145/3158154",
+              "publication": "Proc. ACM Program. Lang. 2, POPL, Article 66",
+              "year": "2018"
+            }
+          },
+          {
+            "name": "RustBelt POPL 2018 accompanying artifact record",
+            "identity": {
+              "doi": "10.5281/zenodo.1115560",
+              "version": "v1",
+              "published": "2017-12-13"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R008",
+            "R030",
+            "T080",
+            "P104"
+          ],
+          "supported_scope": "RustBelt composes syntactically typed \u03bbRust clients with unsafe components proved to satisfy semantic interface types, using its fundamental theorem and adequacy.",
+          "remaining_question_scope": "The safe-client guarantee is for \u03bbRust, not arbitrary present-day Rust; current frontend, generic, dispatch and separate compilation correspondence remain unproved here.",
+          "evidence_headings": [
+            "RustBelt turns an unsafe abstraction into a semantic extension obligation",
+            "Syntactically typed clients do not need library-internal proofs repeated at each call site"
+          ]
+        },
+        {
+          "question_ids": [
+            "R004",
+            "R021",
+            "P040"
+          ],
+          "supported_scope": "The \u03bbRust adequacy theorem excludes model executions that end stuck, including modeled invalid memory accesses and races; this differs from arbitrary functional correctness.",
+          "remaining_question_scope": "No complete taxonomy of soundness notions or concrete Rust operational adequacy theorem is established.",
+          "evidence_headings": [
+            "\u201cSafe\u201d in the theorem is operational safety, not unrestricted functional correctness",
+            "The result is machine-checked, but its formal subject is \u03bbRust rather than full Rust"
+          ]
+        },
+        {
+          "question_ids": [
+            "R026",
+            "R065",
+            "P104"
+          ],
+          "supported_scope": "Exported abstract-type ownership/sharing predicates and public-function semantic proofs form the abstraction boundary; shared references need not mean read-only for interior-mutability interfaces.",
+          "remaining_question_scope": "All present-day Rust access paths, current library implementations, callback/destructor behavior and invariants require concrete audits.",
+          "evidence_headings": [
+            "The public type/interface is the verified boundary",
+            "The client guarantee depends on the semantic interface, not on a default \u201cshared means read-only\u201d rule"
+          ]
+        },
+        {
+          "question_ids": [
+            "R006",
+            "R088",
+            "T040",
+            "T095"
+          ],
+          "supported_scope": "The reusable extension pattern adds an unsafe abstraction through a proof of the existing semantic interface rather than an unchecked new typing rule.",
+          "remaining_question_scope": "Portability, proof/certificate import, Lean interpretation, and engineering costs are not measured.",
+          "evidence_headings": [
+            "The proof is open to new unsafe libraries without making unsafe code trusted by default"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "\u03bbRust omits traits, trait objects, relaxed atomics, panic unwinding, automatic destruction, proper type-polymorphic functions and unsized types in the reported result.",
+        "No fresh Coq build; no current Rust standard-library audit; no comparison with current abstract-machine/aliasing semantics."
+      ],
+      "revalidation_needed": "Recover the exact original theorem and artifact; inspect later semantic features and bridge proofs; build the selected mechanization if relied upon.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "aeneas-formal-results-literature-2026-09-27",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/aeneas-formal-results-literature-2026-09-27/REPORT.md",
+          "sha256": "6164692bd905c3f95690612e0bb7ac032cd7caa39e5c83f820762098f342a35d",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Aeneas formal results: proved semantics versus trusted engineering"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 15,
+              "heading": "Applicability"
+            },
+            {
+              "line": 28,
+              "heading": "Findings"
+            },
+            {
+              "line": 30,
+              "heading": "The 2022 result is a formal semantic design and translation, not a verified compiler implementation"
+            },
+            {
+              "line": 44,
+              "heading": "The verified hash table is a program proof over the trusted translation"
+            },
+            {
+              "line": 54,
+              "heading": "The 2024 paper proves LLBC against a lower-level execution model"
+            },
+            {
+              "line": 70,
+              "heading": "The 2024 join result supports loops without changing the trust boundary above it"
+            },
+            {
+              "line": 82,
+              "heading": "A Rocq LLBC mechanization exists today"
+            },
+            {
+              "line": 100,
+              "heading": "The papers do not certify Charon's `rustc`-to-LLBC extraction"
+            },
+            {
+              "line": 110,
+              "heading": "The papers do not certify the production Aeneas translator as an implementation of the formal translation"
+            },
+            {
+              "line": 120,
+              "heading": "External models remain assumptions unless proved against their Rust definitions"
+            },
+            {
+              "line": 128,
+              "heading": "Lean kernel checking proves the generated theorem, not the omitted translation bridges"
+            },
+            {
+              "line": 147,
+              "heading": "The formal subset is narrower than arbitrary Rust"
+            },
+            {
+              "line": 155,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 167,
+              "heading": "Evidence"
+            },
+            {
+              "line": 198,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "aeneas",
+          "aeneas/correctness",
+          "aeneas/formal-results",
+          "aeneas/semantics",
+          "verification/literature"
+        ],
+        "subjects": [
+          {
+            "name": "Aeneas: Rust Verification by Functional Translation",
+            "identity": {
+              "doi": "10.1145/3547647",
+              "arxiv": "2206.07185v2",
+              "venue": "ICFP 2022"
+            }
+          },
+          {
+            "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+            "identity": {
+              "doi": "10.1145/3674640",
+              "arxiv": "2404.02680",
+              "venue": "ICFP 2024"
+            }
+          },
+          {
+            "name": "Mechanized LLBC development",
+            "identity": {
+              "repository": "AeneasVerif/mechanized-llbc",
+              "revision": "1268d802a59ddb0672528f24d873ed4b3b28ca0c"
+            }
+          },
+          {
+            "name": "Aeneas release selected by Anneal",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+              "release": "nightly-2026.06.03"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R013",
+            "R007",
+            "T069",
+            "T070",
+            "P073"
+          ],
+          "supported_scope": "The 2022 functional translation and 2024 LLBC/symbolic/lower-level theorem chain are separate from implemented rustc\u2013Charon extraction and production Aeneas compiler conformance.",
+          "remaining_question_scope": "Neither implemented translation leg is certified by this report; exact source schemas/pass relations and proof endpoints require direct investigation.",
+          "evidence_headings": [
+            "The 2022 result is a formal semantic design and translation, not a verified compiler implementation",
+            "The 2024 paper proves LLBC against a lower-level execution model",
+            "The papers do not certify Charon's `rustc`-to-LLBC extraction",
+            "The papers do not certify the production Aeneas translator as an implementation of the formal translation"
+          ]
+        },
+        {
+          "question_ids": [
+            "R004",
+            "P031",
+            "P040"
+          ],
+          "supported_scope": "LLBC abstraction/borrow-checking non-stuckness, join preservation and functional correctness of a trusted translated hash-table model have different conclusions.",
+          "remaining_question_scope": "These results are not strengthened to equivalence, total correctness, full Rust UB freedom or compiler correctness; theorem statements must be recovered for a comprehensive taxonomy.",
+          "evidence_headings": [
+            "The verified hash table is a program proof over the trusted translation",
+            "The 2024 join result supports loops without changing the trust boundary above it"
+          ]
+        },
+        {
+          "question_ids": [
+            "R003",
+            "R049",
+            "R088",
+            "P114"
+          ],
+          "supported_scope": "A Rocq mechanized-LLBC development at 1268d802a59ddb0672528f24d873ed4b3b28ca0c provides source for LLBC languages/simulations, with identity caveats relative to the 2024 artifact.",
+          "remaining_question_scope": "No fresh Rocq check, paper-artifact identity equivalence, interoperability theorem or current complete coverage is established.",
+          "evidence_headings": [
+            "A Rocq LLBC mechanization exists today"
+          ]
+        },
+        {
+          "question_ids": [
+            "R082",
+            "T084",
+            "P076"
+          ],
+          "supported_scope": "External operation models are separate assumptions unless faithful to actual Rust definitions; Lean checking does not supply omitted source/model bridges.",
+          "remaining_question_scope": "Primitive-by-primitive correspondence, actual assumption closure and independently bound source propositions remain required.",
+          "evidence_headings": [
+            "External models remain assumptions unless proved against their Rust definitions",
+            "Lean kernel checking proves the generated theorem, not the omitted translation bridges"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh prover, compiler or artifact execution.",
+        "The 2022/2024 modeled subset is narrower than arbitrary unsafe/concurrent Rust; current mechanization identity is not asserted to be the frozen 2024 artifact."
+      ],
+      "revalidation_needed": "Inspect exact primary theorem statements and mechanization commits; rerun checking; audit current rustc/Charon/Aeneas endpoints independently.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "aeneas-separation-logic-status-2026-09-26",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/aeneas-separation-logic-status-2026-09-26/REPORT.md",
+          "sha256": "2937915637181bcb26a23f59c7a0a31ed44b96d4bd1f8b906b06c5c643182e4e",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Aeneas separation-logic status: selected release, current main, and draft implementation"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 19,
+              "heading": "Applicability"
+            },
+            {
+              "line": 50,
+              "heading": "Findings"
+            },
+            {
+              "line": 52,
+              "heading": "Anneal's selected Aeneas release has no separation-logic backend"
+            },
+            {
+              "line": 64,
+              "heading": "Current Aeneas main contains merged prerequisites, not the full spatial logic"
+            },
+            {
+              "line": 83,
+              "heading": "Current main still rejects Rust raw-pointer dereference"
+            },
+            {
+              "line": 97,
+              "heading": "PR #1352 is the concrete first-order sequential separation-logic implementation"
+            },
+            {
+              "line": 107,
+              "heading": "The draft heap is typed and slot-granular"
+            },
+            {
+              "line": 119,
+              "heading": "Pointer values are addresses; permissions live in `IProp`"
+            },
+            {
+              "line": 139,
+              "heading": "The program logic is frame-preserving by construction"
+            },
+            {
+              "line": 156,
+              "heading": "The draft reuses `step` and adds a spatial proof mode"
+            },
+            {
+              "line": 171,
+              "heading": "The checked-in examples exercise the Lean memory model, not Rust raw-pointer translation"
+            },
+            {
+              "line": 183,
+              "heading": "The prototype contains a bridge between functional values and modeled raw storage"
+            },
+            {
+              "line": 195,
+              "heading": "The draft's own README is not authoritative for its exact-head contents"
+            },
+            {
+              "line": 207,
+              "heading": "The exact draft head was not green when observed"
+            },
+            {
+              "line": 215,
+              "heading": "Concurrency is not implemented by this reported prototype"
+            },
+            {
+              "line": 225,
+              "heading": "What Anneal can consume today is revision-dependent"
+            },
+            {
+              "line": 239,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 254,
+              "heading": "Evidence"
+            },
+            {
+              "line": 307,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "observed_at": "2026-09-26",
+        "subjects": [
+          {
+            "identity": {
+              "release": "nightly-2026.06.03",
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+            },
+            "name": "Aeneas release selected by Anneal"
+          },
+          {
+            "identity": {
+              "branch": "main",
+              "repository": "AeneasVerif/aeneas",
+              "revision": "b86120db3183b0107eb5f2637b11c424cd06ef1c"
+            },
+            "name": "Current Aeneas main separation-logic prerequisites"
+          },
+          {
+            "identity": {
+              "pull_request": "1352",
+              "repository": "AeneasVerif/aeneas",
+              "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+            },
+            "name": "Draft first-order sequential separation logic"
+          }
+        ],
+        "topics": [
+          "aeneas",
+          "aeneas/separation-logic",
+          "aeneas/unsafe-rust",
+          "aeneas/resources",
+          "aeneas/lean",
+          "aeneas/itree"
+        ]
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived",
+        "reported upstream execution/status"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R049",
+            "R089",
+            "R092"
+          ],
+          "supported_scope": "At exact September observations, the selected June release lacked spatial logic; main had effects/spec-registration prerequisites; PR #1352 head 75fb1479040d32d43d31b74510167ee3b873d28a had standalone affine first-order sequential spatial logic.",
+          "remaining_question_scope": "Current status requires reobservation; no proof of soundness, full theorem axiom audit or generalized Rust integration is supplied.",
+          "evidence_headings": [
+            "Anneal's selected Aeneas release has no separation-logic backend",
+            "Current Aeneas main contains merged prerequisites, not the full spatial logic",
+            "PR #1352 is the concrete first-order sequential separation-logic implementation"
+          ]
+        },
+        {
+          "question_ids": [
+            "R017",
+            "R022",
+            "R024",
+            "P080",
+            "P089"
+          ],
+          "supported_scope": "The prototype heap is allocation-ID/slot addressed, typed, disjointly composable; pointer values carry addresses while permission lies in points-to propositions.",
+          "remaining_question_scope": "Rust byte initializedness/padding/provenance/layout/validity and richer lifetime/aliasing correspondence are not represented by this observation alone.",
+          "evidence_headings": [
+            "The draft heap is typed and slot-granular",
+            "Pointer values are addresses; permissions live in `IProp`"
+          ]
+        },
+        {
+          "question_ids": [
+            "R021",
+            "R028",
+            "R085",
+            "P100"
+          ],
+          "supported_scope": "The prototype defines framed interaction-tree total/partial judgments; total versus partial semantics differ on divergence.",
+          "remaining_question_scope": "No Rust-level adequacy, concurrency, weak-memory, I/O or nondeterminism theorem is established.",
+          "evidence_headings": [
+            "The program logic is frame-preserving by construction",
+            "Concurrency is not implemented by this reported prototype"
+          ]
+        },
+        {
+          "question_ids": [
+            "R032",
+            "R079",
+            "R080",
+            "T031",
+            "T089"
+          ],
+          "supported_scope": "Registered specifications, generalized step and spatial proof-mode tactics provide concrete extension seams with checked-in examples.",
+          "remaining_question_scope": "No fresh Lean build, usability measurement, resource-certificate checker soundness or axiom-free proof inventory is established.",
+          "evidence_headings": [
+            "The draft reuses `step` and adds a spatial proof mode"
+          ]
+        },
+        {
+          "question_ids": [
+            "R013",
+            "T070",
+            "P073",
+            "P129"
+          ],
+          "supported_scope": "Functional array/slice to modeled-buffer examples exhibit an explicit ownership bridge, while the same exact translator still rejected raw-pointer dereference.",
+          "remaining_question_scope": "The examples do not certify arbitrary Rust raw-pointer translation; implementation and runtime correspondence remain required.",
+          "evidence_headings": [
+            "The checked-in examples exercise the Lean memory model, not Rust raw-pointer translation",
+            "The prototype contains a bridge between functional values and modeled raw storage"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh build; reported exact PR head had failed Lean/Nix checks without a diagnosed cause.",
+        "README/tree discrepancies and moving main/PR state are exact dated observations, not permanent claims."
+      ],
+      "revalidation_needed": "Read current upstream main/PR state and exact tree; resolve pins; check the library and theorem axioms; directly test translation and Rust memory correspondence before adoption.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "aeneas-semantic-omissions-unsafe-rust-nightly-2026-06-03",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/aeneas-semantic-omissions-unsafe-rust-nightly-2026-06-03/REPORT.md",
+          "sha256": "8f4d9f011686f9588ca01bf7ab8b4ee3147faffea4a067d3d2293c80b48613d4",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Aeneas semantic omissions relevant to unsafe Rust at nightly-2026.06.03"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 17,
+              "heading": "Applicability"
+            },
+            {
+              "line": 32,
+              "heading": "Findings"
+            },
+            {
+              "line": 34,
+              "heading": "The advertised semantic domain excludes general unsafe and concurrent Rust"
+            },
+            {
+              "line": 42,
+              "heading": "Allocation identity and ordinary reference identity are intentionally absent from the pure model"
+            },
+            {
+              "line": 50,
+              "heading": "Rust pointer provenance is not represented by Aeneas `mplace` provenance metadata"
+            },
+            {
+              "line": 60,
+              "heading": "Partial initialization is not a proof-facing heap property in the ordinary backend"
+            },
+            {
+              "line": 68,
+              "heading": "The final pure effect summary is not a general operational-effect algebra"
+            },
+            {
+              "line": 78,
+              "heading": "Destructor behavior is abstracted away by default"
+            },
+            {
+              "line": 86,
+              "heading": "The pinned model for standard output deliberately erases output"
+            },
+            {
+              "line": 101,
+              "heading": "Concurrency and atomic memory ordering are outside the ordinary functional semantics"
+            },
+            {
+              "line": 111,
+              "heading": "Raw-pointer library models expose the same missing-state boundary"
+            },
+            {
+              "line": 121,
+              "heading": "`GetTarget` is an explicit unknown environment value, not a generic nondeterminism semantics"
+            },
+            {
+              "line": 131,
+              "heading": "External models are semantic assumptions, not automatic preservation theorems"
+            },
+            {
+              "line": 139,
+              "heading": "The omission boundary is claim-specific rather than all-or-nothing"
+            },
+            {
+              "line": 155,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 169,
+              "heading": "Evidence"
+            },
+            {
+              "line": 197,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "aeneas",
+          "aeneas/concurrency",
+          "aeneas/effects",
+          "aeneas/io",
+          "aeneas/models",
+          "aeneas/nondeterminism",
+          "aeneas/semantics",
+          "aeneas/unsafe-rust",
+          "rust/provenance"
+        ],
+        "subjects": [
+          {
+            "name": "Aeneas ordinary functional semantics selected by Anneal",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+              "release": "nightly-2026.06.03"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R002",
+            "R049",
+            "R007"
+          ],
+          "supported_scope": "At selected Aeneas ac9f1bc5262a5e4ff1e24ca78617121382202727, ordinary functional output admits a safe subset with explicit rejection/erasure/abstraction boundaries.",
+          "remaining_question_scope": "Current Aeneas, current Anneal/PR stack and every reachable external model still require their own audited subjects.",
+          "evidence_headings": [
+            "The advertised semantic domain excludes general unsafe and concurrent Rust",
+            "The omission boundary is claim-specific rather than all-or-nothing"
+          ]
+        },
+        {
+          "question_ids": [
+            "R014",
+            "R017",
+            "R062",
+            "T077",
+            "T078",
+            "P079",
+            "P083",
+            "P089"
+          ],
+          "supported_scope": "Pure references/Box become values, allocation identity and general initialization state are absent, and mplace source-origin provenance is not Rust pointer provenance.",
+          "remaining_question_scope": "A semantic Ptr/storage/provenance/permission bridge and concrete runtime validity are not supplied.",
+          "evidence_headings": [
+            "Allocation identity and ordinary reference identity are intentionally absent from the pure model",
+            "Rust pointer provenance is not represented by Aeneas `mplace` provenance metadata",
+            "Partial initialization is not a proof-facing heap property in the ordinary backend"
+          ]
+        },
+        {
+          "question_ids": [
+            "R085",
+            "T074",
+            "T087",
+            "P092",
+            "P095",
+            "P096"
+          ],
+          "supported_scope": "Coarse pure failure/divergence/recursion metadata is not a full effect algebra; default Drop no-op and print-success/no-output models demonstrate erased behavior.",
+          "remaining_question_scope": "Exact outcome/cleanup/environment traces and alternate eval-drops behavior need separate correspondence evidence.",
+          "evidence_headings": [
+            "The final pure effect summary is not a general operational-effect algebra",
+            "Destructor behavior is abstracted away by default",
+            "The pinned model for standard output deliberately erases output"
+          ]
+        },
+        {
+          "question_ids": [
+            "R019",
+            "R042",
+            "R049",
+            "T090",
+            "P098",
+            "P099"
+          ],
+          "supported_scope": "Axiomatic atomic type registration and unknown GetTarget do not supply concurrency/memory-order or general nondeterminism semantics.",
+          "remaining_question_scope": "This is not an exhaustive atomic/model inventory; current concurrent architectures require direct audits.",
+          "evidence_headings": [
+            "Concurrency and atomic memory ordering are outside the ordinary functional semantics",
+            "`GetTarget` is an explicit unknown environment value, not a generic nondeterminism semantics"
+          ]
+        },
+        {
+          "question_ids": [
+            "T084",
+            "P076"
+          ],
+          "supported_scope": "External model name matching does not prove that the modeled operation preserves relevant Rust behavior.",
+          "remaining_question_scope": "Operation-specific correspondence, exact dependency closure and final claim binding remain required.",
+          "evidence_headings": [
+            "External models are semantic assumptions, not automatic preservation theorems"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh execution; no claim every unsafe-adjacent API is rejected.",
+        "Internal symbolic borrow state is richer than the emitted proof-facing pure model; unsupported and deliberately abstracted behavior are distinct."
+      ],
+      "revalidation_needed": "Diff each exact implementation/model region affecting the proposed claim; inventory reached model registrations; test and prove any required bridge.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "lean-trust-admissions-v4-30-0-rc2",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries",
+        "FINDINGS.md",
+        "BOUNDARIES.md"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/lean-trust-admissions-v4-30-0-rc2/REPORT.md",
+          "sha256": "41abea14a2f22b011c1b1285ff47aeb2d4dae944f3c94543a1c8ae547731a359",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Lean trust, admissions, and dependency auditing at v4.30.0-rc2"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 11,
+              "heading": "Applicability"
+            },
+            {
+              "line": 19,
+              "heading": "Findings"
+            },
+            {
+              "line": 23,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 27,
+              "heading": "Evidence"
+            },
+            {
+              "line": 31,
+              "heading": "Revalidation"
+            }
+          ]
+        },
+        {
+          "path": "reports/lean-trust-admissions-v4-30-0-rc2/FINDINGS.md",
+          "sha256": "4a010c4c0e3737e5138cf7e547d155ce5ea2918bd3443149d4e355b3fdcf75c6",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Findings"
+            },
+            {
+              "line": 3,
+              "heading": "Axioms are explicit logical assumptions"
+            },
+            {
+              "line": 11,
+              "heading": "Local hypotheses are not global axioms"
+            },
+            {
+              "line": 19,
+              "heading": "`sorry` is the axiom `sorryAx`"
+            },
+            {
+              "line": 27,
+              "heading": "`#print axioms` computes the transitive admission set"
+            },
+            {
+              "line": 37,
+              "heading": "Safe declarations cannot directly depend on unsafe declarations"
+            },
+            {
+              "line": 45,
+              "heading": "Compiled implementation substitution is a separate trust boundary"
+            },
+            {
+              "line": 55,
+              "heading": "Native evaluation introduces an assumption after compiled execution"
+            },
+            {
+              "line": 63,
+              "heading": "`unsafe t` is an executable escape hatch"
+            },
+            {
+              "line": 71,
+              "heading": "`debug.skipKernelTC` bypasses the ordinary proof check"
+            },
+            {
+              "line": 79,
+              "heading": "Opaque and noncomputable declarations are not automatically admissions"
+            },
+            {
+              "line": 87,
+              "heading": "Audit output still needs a policy"
+            }
+          ]
+        },
+        {
+          "path": "reports/lean-trust-admissions-v4-30-0-rc2/BOUNDARIES.md",
+          "sha256": "e01c4acc3c21e4f5562e0531d12262687c9060243c8638a7a06ecf1421fd2406",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Boundaries"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "lean",
+          "lean/trust",
+          "lean/axioms",
+          "lean/sorry",
+          "lean/unsafe",
+          "lean/native-evaluation"
+        ],
+        "subjects": [
+          {
+            "name": "Lean 4 trust and admission behavior selected by Anneal",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "version": "v4.30.0-rc2"
+            }
+          }
+        ],
+        "observed_at": "2026-09-25"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "T002",
+            "T008",
+            "R083",
+            "P119"
+          ],
+          "supported_scope": "At Lean 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, axioms have no proof body, local hypotheses are distinct, sorry depends on sorryAx, and safe logical declarations cannot directly reference unsafe declarations.",
+          "remaining_question_scope": "No kernel correctness proof, cross-prover admission comparison or exhaustive escape-hatch inventory is supplied.",
+          "evidence_headings": [
+            "Axioms are explicit logical assumptions",
+            "Local hypotheses are not global axioms",
+            "`sorry` is the axiom `sorryAx`",
+            "Safe declarations cannot directly depend on unsafe declarations"
+          ]
+        },
+        {
+          "question_ids": [
+            "T054",
+            "T093",
+            "P119"
+          ],
+          "supported_scope": "The built-in transitive axiom collector traverses logical declarations; audit output still needs consumer policy.",
+          "remaining_question_scope": "Name-based output does not establish exact proposition/declaration identity policy or independently validate imported metadata; full consumer policy remains undesigned.",
+          "evidence_headings": [
+            "`#print axioms` computes the transitive admission set",
+            "Audit output still needs a policy"
+          ]
+        },
+        {
+          "question_ids": [
+            "T020",
+            "T094",
+            "P051"
+          ],
+          "supported_scope": "Native evaluation adds a logical axiom after compiled execution; implemented_by checks type compatibility without equivalence; skipKernelTC bypasses ordinary kernel checking.",
+          "remaining_question_scope": "Eliminating native trust and validating executable checker/runtime correctness require further theorems/prototypes.",
+          "evidence_headings": [
+            "Compiled implementation substitution is a separate trust boundary",
+            "Native evaluation introduces an assumption after compiled execution",
+            "`debug.skipKernelTC` bypasses the ordinary proof check"
+          ]
+        },
+        {
+          "question_ids": [
+            "R007",
+            "T043",
+            "P121"
+          ],
+          "supported_scope": "A clean logical axiom set does not establish compiled executable behavior or Rust-source adequacy.",
+          "remaining_question_scope": "No runtime/OS/hardware assurance, source/model correspondence or deployed checker proof is supplied.",
+          "evidence_headings": [
+            "Compiled implementation substitution is a separate trust boundary"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh Lean elaboration/axiom query/native experiment; exact 4.30.0-rc2 source scope only.",
+        "Opaque/noncomputable declarations are not automatically axioms; unsafe Lean and unsafe Rust have different meanings."
+      ],
+      "revalidation_needed": "Inspect actual Anneal Lean pin and the same source mechanisms; run discriminating axiom, native and kernel-option controls for selected policy.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "lcf-abstract-theorem-values-trust-boundaries-1978-2026",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/lcf-abstract-theorem-values-trust-boundaries-1978-2026/REPORT.md",
+          "sha256": "4fa4ae692f211fea7870fd5475e84f18f5264965a5b4fdf826f7e4688c77a409",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "LCF abstract theorem values: what a small kernel does and does not buy Anneal"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 13,
+              "heading": "Applicability"
+            },
+            {
+              "line": 29,
+              "heading": "Findings"
+            },
+            {
+              "line": 31,
+              "heading": "LCF moved theorem authority into an abstract type"
+            },
+            {
+              "line": 43,
+              "heading": "Opaque checked handles can prevent accidental acceptance inside one live context"
+            },
+            {
+              "line": 55,
+              "heading": "Serialization turns an in-process construction invariant into a provenance problem"
+            },
+            {
+              "line": 74,
+              "heading": "Rechecking can remove producer trust without removing correspondence trust"
+            },
+            {
+              "line": 96,
+              "heading": "\"Small kernel\" can describe logical trust while hiding a large operational TCB"
+            },
+            {
+              "line": 108,
+              "heading": "Durable acceptance needs identity and compatibility in addition to proof validity"
+            },
+            {
+              "line": 126,
+              "heading": "The lowest-risk Anneal design is layered acceptance authority"
+            },
+            {
+              "line": 144,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 158,
+              "heading": "Evidence"
+            },
+            {
+              "line": 168,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "anneal/acceptance",
+          "anneal/provenance",
+          "anneal/trust",
+          "proof-assistants/lcf",
+          "proof-assistants/small-kernel",
+          "verification/artifact-identity"
+        ],
+        "subjects": [
+          {
+            "name": "A Metalanguage for Interactive Proof in LCF",
+            "identity": {
+              "doi": "10.1145/512760.512773",
+              "venue": "POPL 1978"
+            }
+          },
+          {
+            "name": "Edinburgh LCF: A Mechanised Logic of Computation",
+            "identity": {
+              "doi": "10.1007/3-540-09724-4",
+              "series": "Lecture Notes in Computer Science 78"
+            }
+          },
+          {
+            "name": "LCF: A Way of Doing Proofs with a Machine",
+            "identity": {
+              "doi": "10.1007/3-540-09526-8_11",
+              "venue": "MFCS 1979"
+            }
+          },
+          {
+            "name": "Logic and Computation: Interactive Proof with Cambridge LCF",
+            "identity": {
+              "chapter_doi": "10.1017/CBO9780511526602.008",
+              "year": "1987"
+            }
+          },
+          {
+            "name": "Anneal design contract and reference-corpus artifact evidence",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+            }
+          }
+        ],
+        "observed_at": "2026-09-30"
+      },
+      "reported_evidence_roles": [
+        "primary historical publications as reported",
+        "derived",
+        "reused corpus source/experiment evidence"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "T001",
+            "T097"
+          ],
+          "supported_scope": "LCF isolates theorem constructors behind an abstract type; opaque live acceptance handles can enforce construction boundaries but persistence requires fresh evidence or explicit storage trust.",
+          "remaining_question_scope": "Actual language/runtime/unsafe enforcement and a durable receipt implementation must be audited, not assumed from this pattern.",
+          "evidence_headings": [
+            "LCF moved theorem authority into an abstract type",
+            "Opaque checked handles can prevent accidental acceptance inside one live context",
+            "Serialization turns an in-process construction invariant into a provenance problem"
+          ]
+        },
+        {
+          "question_ids": [
+            "T051",
+            "T052",
+            "T057",
+            "T096",
+            "T099",
+            "P116",
+            "P124"
+          ],
+          "supported_scope": "Durable validity, exact claim/artifact identity, interpretation compatibility, assumptions and freshness are independent requirements.",
+          "remaining_question_scope": "No concrete certificate format, identity proof, cache applicability theorem or cost measurement is given.",
+          "evidence_headings": [
+            "Durable acceptance needs identity and compatibility in addition to proof validity"
+          ]
+        },
+        {
+          "question_ids": [
+            "R007",
+            "T043",
+            "T061",
+            "T062",
+            "P122"
+          ],
+          "supported_scope": "Logical proof validity, selected statement, Rust-model correspondence, currentness and generation-fenced publication are separate layers; proposal/search should not manufacture success.",
+          "remaining_question_scope": "These are derived Anneal recommendations rather than adopted policy or a proved aggregate acceptance theorem.",
+          "evidence_headings": [
+            "Rechecking can remove producer trust without removing correspondence trust",
+            "The lowest-risk Anneal design is layered acceptance authority"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh execution; no claim every LCF-style prover has identical enforcement.",
+        "Lean import/artifact discussions reuse other reports; persistence costs and operational containment are not measured."
+      ],
+      "revalidation_needed": "Inspect each concrete theorem API/runtime and serialized artifact path; prove or implement the acceptance interface for exact claimed subjects.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "anneal-3730-trust-evidence-boundary-2026-09-29",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/anneal-3730-trust-evidence-boundary-2026-09-29/REPORT.md",
+          "sha256": "4a33445ba0de5136cf3feea642defe25e3e08d2cf234210e5ab0faa8486acb40",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Local execution and evidence-boundary fixture for Rust and Lean"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 9,
+              "heading": "Applicability"
+            },
+            {
+              "line": 17,
+              "heading": "Findings"
+            },
+            {
+              "line": 19,
+              "heading": "Inspect-only and execute controls"
+            },
+            {
+              "line": 31,
+              "heading": "Raw versus shareable evidence"
+            },
+            {
+              "line": 37,
+              "heading": "Instruction-shaped text is not task authority"
+            },
+            {
+              "line": 41,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 48,
+              "heading": "Evidence"
+            },
+            {
+              "line": 52,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "anneal/trust-boundary",
+          "rust/build-scripts",
+          "rust/proc-macros",
+          "lean/elaboration",
+          "reference/evidence"
+        ],
+        "subjects": [
+          {
+            "name": "Rust compiler",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+              "version": "1.98.1",
+              "binary_sha256": "2814fb55fb9cfb3eef5848a8104d77e3de7fd95394661144a12ee90cd4405340"
+            }
+          },
+          {
+            "name": "Cargo executable",
+            "identity": {
+              "version": "1.98.1",
+              "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a"
+            }
+          },
+          {
+            "name": "Lean 4",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "version": "v4.30.0-rc2",
+              "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+            }
+          }
+        ],
+        "observed_at": "2026-09-29"
+      },
+      "reported_evidence_roles": [
+        "execution",
+        "derived",
+        "workflow/self-observation"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "T046",
+            "T049",
+            "T064",
+            "T065",
+            "P057"
+          ],
+          "supported_scope": "Owned synthetic Cargo build-script/proc-macro and Lean run_cmd fixtures observed filesystem, child-process and loopback effects during execution; the exact metadata inspect control produced no fixture effects.",
+          "remaining_question_scope": "No enforced production sandbox, hostile producer isolation, full generated-code coverage or universal metadata safety is established.",
+          "evidence_headings": [
+            "Inspect-only and execute controls"
+          ]
+        },
+        {
+          "question_ids": [
+            "T043",
+            "T047",
+            "T098",
+            "P121"
+          ],
+          "supported_scope": "Tool invocation/elaboration and raw evidence paths have operational effects beyond logical proof checking; bounded synthetic sanitization preserves a causal record.",
+          "remaining_question_scope": "Lake, tactics/macros/native extensions, parsers/I/O correctness and genuinely private workspace boundary audits remain untested.",
+          "evidence_headings": [
+            "Raw versus shareable evidence"
+          ]
+        },
+        {
+          "question_ids": [
+            "T106",
+            "T110"
+          ],
+          "supported_scope": "Preserved replayable side-effect sentinels and inspect/execute controls can seed producer-boundary experiments.",
+          "remaining_question_scope": "The report does not attempt challenge/policy/checker tampering, acceptance forgery, crash recovery or parallel generation tests.",
+          "evidence_headings": [
+            "Inspect-only and execute controls"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "Effects were voluntarily confined to owned paths; policy intent was not enforced.",
+        "Only owned local UDP and /usr/bin/true were used; no public network or dangerous effect experiment.",
+        "Instruction-shaped text trial is self-observation, not an independent/blinded adversarial evaluation."
+      ],
+      "revalidation_needed": "Reuse inert fixture mechanics only in explicitly owned scratch; design independent isolation/acceptance controls and enforced boundaries separately.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "proof-producing-versus-validating-translations-1997-2022",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/proof-producing-versus-validating-translations-1997-2022/REPORT.md",
+          "sha256": "e081d474e3779da30c01971fcfbb450fd06a2bb2c61577c2957743dff821b077",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Proof-producing and validating translations: evidence architecture and trust boundaries"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 22,
+              "heading": "Applicability"
+            },
+            {
+              "line": 37,
+              "heading": "Findings"
+            },
+            {
+              "line": 39,
+              "heading": "A proof artifact moves trust from the producer to the checker, but only for the proposition the artifact states"
+            },
+            {
+              "line": 51,
+              "heading": "Certifying compilation makes correctness evidence specific to one compiler run"
+            },
+            {
+              "line": 63,
+              "heading": "A verified validator can obtain the same pass-level assurance without exporting a proof object"
+            },
+            {
+              "line": 93,
+              "heading": "Translation certification shows that proof-producing and validating are compatible layers"
+            },
+            {
+              "line": 109,
+              "heading": "A translation-relation certificate and a semantic-preservation proof are separate layers"
+            },
+            {
+              "line": 134,
+              "heading": "Whole-pipeline certificates improve provenance only if they cover every relevant boundary"
+            },
+            {
+              "line": 156,
+              "heading": "Proof artifacts support independent later checking, but artifact identity becomes part of the security boundary"
+            },
+            {
+              "line": 168,
+              "heading": "Incompleteness is compatible with soundness when failure is fail-closed"
+            },
+            {
+              "line": 180,
+              "heading": "A proof-producing target prover does not automatically make the translator proof-producing"
+            },
+            {
+              "line": 195,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 209,
+              "heading": "Evidence"
+            },
+            {
+              "line": 211,
+              "heading": "George C. Necula \u2014 Proof-Carrying Code"
+            },
+            {
+              "line": 221,
+              "heading": "Jan Olaf Blech and Arnd Poetzsch-Heffter \u2014 A Certifying Code Generation Phase"
+            },
+            {
+              "line": 231,
+              "heading": "Jean-Baptiste Tristan and Xavier Leroy \u2014 verified translation validators"
+            },
+            {
+              "line": 241,
+              "heading": "Jacco O. G. Krijnen et al. \u2014 Translation Certification for Smart Contracts"
+            },
+            {
+              "line": 256,
+              "heading": "Derived synthesis"
+            },
+            {
+              "line": 262,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "compiler-verification/certification",
+          "proof-carrying-code",
+          "translation-validation/verified-validator",
+          "translation-certification",
+          "verification/proof-artifacts"
+        ],
+        "subjects": [
+          {
+            "name": "Proof-Carrying Code",
+            "identity": {
+              "doi": "10.1145/263699.263712",
+              "publication": "POPL 1997"
+            }
+          },
+          {
+            "name": "A Certifying Code Generation Phase",
+            "identity": {
+              "doi": "10.1016/j.entcs.2007.09.008",
+              "publication": "ENTCS 190(4), 2007"
+            }
+          },
+          {
+            "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+            "identity": {
+              "doi": "10.1145/1328438.1328444",
+              "publication": "POPL 2008"
+            }
+          },
+          {
+            "name": "Translation Certification for Smart Contracts",
+            "identity": {
+              "doi": "10.1007/978-3-030-99461-7_6",
+              "publication": "FLOPS 2022"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "published primary results as reported",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R004",
+            "T029",
+            "P001",
+            "P031"
+          ],
+          "supported_scope": "PCC target safety under consumer policy, per-run translation correctness and source safety/correspondence are different propositions.",
+          "remaining_question_scope": "Detailed foundational PCC, typed assembly, source-safety reflection and later systems remain unaudited by this report.",
+          "evidence_headings": [
+            "A proof artifact moves trust from the producer to the checker, but only for the proposition the artifact states"
+          ]
+        },
+        {
+          "question_ids": [
+            "R006",
+            "P004",
+            "P020",
+            "P043",
+            "P044",
+            "P045",
+            "P143"
+          ],
+          "supported_scope": "Per-run proof schemas, verified validator wrappers and separate certifiers can remove producer trust for a defined relation; proof-producing and validating are compatible axes.",
+          "remaining_question_scope": "Anneal feasibility, certificate size/checking costs, maintenance and actual executable validator assurance are not measured.",
+          "evidence_headings": [
+            "Certifying compilation makes correctness evidence specific to one compiler run",
+            "A verified validator can obtain the same pass-level assurance without exporting a proof object",
+            "Translation certification shows that proof-producing and validating are compatible layers"
+          ]
+        },
+        {
+          "question_ids": [
+            "P014",
+            "P038",
+            "P048",
+            "P115",
+            "P116"
+          ],
+          "supported_scope": "A concrete AST translation-relation certificate needs separate artifact identity and a semantic consequence theorem; intermediate chain completeness controls scope.",
+          "remaining_question_scope": "The report does not establish full semantic preservation for all examined Plutus relations or certify Anneal passes/serialization.",
+          "evidence_headings": [
+            "A translation-relation certificate and a semantic-preservation proof are separate layers",
+            "Whole-pipeline certificates improve provenance only if they cover every relevant boundary",
+            "Proof artifacts support independent later checking, but artifact identity becomes part of the security boundary"
+          ]
+        },
+        {
+          "question_ids": [
+            "T059",
+            "P035",
+            "P126"
+          ],
+          "supported_scope": "Validator/certifier incompleteness is compatible with soundness when ordinary acceptance fails closed.",
+          "remaining_question_scope": "No implemented Anneal verdict protocol, adversarial failure experiment or aggregate acceptance theorem is established.",
+          "evidence_headings": [
+            "Incompleteness is compatible with soundness when failure is fail-closed"
+          ]
+        },
+        {
+          "question_ids": [
+            "T070",
+            "P077",
+            "P112"
+          ],
+          "supported_scope": "Kernel-checked program-property proofs do not replace missing source-to-model translation relations.",
+          "remaining_question_scope": "Actual functionalization, independent specifications and source-bound proposition generation still require evidence.",
+          "evidence_headings": [
+            "A proof-producing target prover does not automatically make the translator proof-producing"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No Anneal correspondence proof or performance comparison; labels in literature are not exact synonyms.",
+        "No detailed SNARK/STARK, FPCC, typed assembly or modern proof-producing SMT survey."
+      ],
+      "revalidation_needed": "Return to exact primary theorem statements/artifacts; audit semantic relation strength and serialized endpoints before adapting a construction.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "verified-compiler-pass-composition-compcert-3-18-popl-2008",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/verified-compiler-pass-composition-compcert-3-18-popl-2008/REPORT.md",
+          "sha256": "accf7e3f3f1595d8e45465c4e1c4cdc1809d59644dc1ec58c140695eb2c7658f",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Verified compiler-pass composition: CompCert 3.18 and verified validators"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 15,
+              "heading": "Applicability"
+            },
+            {
+              "line": 30,
+              "heading": "Findings"
+            },
+            {
+              "line": 32,
+              "heading": "Pass proofs compose through a shared semantic interface, not through their implementation structure"
+            },
+            {
+              "line": 50,
+              "heading": "The whole CompCert proof is an explicit chain of pass-level simulations"
+            },
+            {
+              "line": 62,
+              "heading": "Simulation direction and semantic side conditions matter at the pipeline boundary"
+            },
+            {
+              "line": 91,
+              "heading": "Successful compilation is a premise, so pass failure composes by failing closed"
+            },
+            {
+              "line": 110,
+              "heading": "A verified validator replaces the pass proof only when it exports the same required relation"
+            },
+            {
+              "line": 124,
+              "heading": "Composition preserves the weakest established end-to-end contract"
+            },
+            {
+              "line": 146,
+              "heading": "Separate compilation shows that vertical pass composition is not the only composition boundary"
+            },
+            {
+              "line": 156,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 172,
+              "heading": "Evidence"
+            },
+            {
+              "line": 174,
+              "heading": "CompCert 3.18 source"
+            },
+            {
+              "line": 196,
+              "heading": "CompCert 3.18 documentation"
+            },
+            {
+              "line": 206,
+              "heading": "Verified-validator paper"
+            },
+            {
+              "line": 216,
+              "heading": "Derived synthesis"
+            },
+            {
+              "line": 222,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "compiler-verification/composition",
+          "compcert/semantic-preservation",
+          "compcert/simulation",
+          "translation-validation/verified-validator",
+          "verification/refinement"
+        ],
+        "subjects": [
+          {
+            "name": "CompCert 3.18 verified compiler",
+            "identity": {
+              "repository": "AbsInt/CompCert",
+              "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+              "version": "3.18"
+            }
+          },
+          {
+            "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+            "identity": {
+              "doi": "10.1145/1328438.1328444",
+              "publication": "POPL 2008"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "published primary result as reported",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "P037",
+            "P038",
+            "T075",
+            "P100"
+          ],
+          "supported_scope": "CompCert forward simulations compose through exported witnesses using well-founded measures to prevent infinite stuttering; changing direction needs explicit receptiveness/determinacy/event conditions.",
+          "remaining_question_scope": "The concrete CompCert relations are not proven suitable for Rust or source-UB reflection; heterogeneous Anneal bridges remain needed.",
+          "evidence_headings": [
+            "Pass proofs compose through a shared semantic interface, not through their implementation structure",
+            "Simulation direction and semantic side conditions matter at the pipeline boundary"
+          ]
+        },
+        {
+          "question_ids": [
+            "T069",
+            "T070",
+            "P067",
+            "P113",
+            "P140"
+          ],
+          "supported_scope": "The whole-compiler theorem visibly composes each pass relation, optional pass proof/identity cases, and source-semantic presentation bridges.",
+          "remaining_question_scope": "No current Charon/Aeneas/obligation-generator pass is proved correct here.",
+          "evidence_headings": [
+            "The whole CompCert proof is an explicit chain of pass-level simulations",
+            "Composition preserves the weakest established end-to-end contract"
+          ]
+        },
+        {
+          "question_ids": [
+            "T021",
+            "P020",
+            "P035",
+            "P126"
+          ],
+          "supported_scope": "A verified validator can wrap an unverified transform only when accepted outputs export the required semantic relation; successful compilation is an explicit theorem premise.",
+          "remaining_question_scope": "No validator feasibility or implementation/runtime assurance for Anneal is established.",
+          "evidence_headings": [
+            "Successful compilation is a premise, so pass failure composes by failing closed",
+            "A verified validator replaces the pass proof only when it exports the same required relation"
+          ]
+        },
+        {
+          "question_ids": [
+            "P039",
+            "P103",
+            "P110"
+          ],
+          "supported_scope": "Vertical pass composition and horizontal separate compilation/linking require different theorem premises.",
+          "remaining_question_scope": "The CompCert linking model is not deeply analyzed or transferred to Rust modules, generics or dispatch.",
+          "evidence_headings": [
+            "Separate compilation shows that vertical pass composition is not the only composition boundary"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh Rocq build; exact source and published proof structure only.",
+        "Compiler-core C-to-Asm preservation does not cover all external assembling/linking/source-text-to-hardware execution."
+      ],
+      "revalidation_needed": "Inspect exact selected compiler theorem/source; check relation and progress side conditions; build mechanization if importing proofs; formalize Rust-specific bridges.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "rust-initialization-padding-nightly-2026-05-31",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/rust-initialization-padding-nightly-2026-05-31/REPORT.md",
+          "sha256": "581967023f974efbc2a94097afb966a04e02c771843324ccd4421e3d39fdb048",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Rust initialization, padding, and typed-copy semantics at nightly-2026-05-31"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 15,
+              "heading": "Applicability"
+            },
+            {
+              "line": 35,
+              "heading": "Findings"
+            },
+            {
+              "line": 37,
+              "heading": "Rust memory distinguishes initialized bytes from uninitialized bytes"
+            },
+            {
+              "line": 47,
+              "heading": "A valid typed value does not require initialized padding"
+            },
+            {
+              "line": 57,
+              "heading": "Padding is storage in the layout, not stable value content"
+            },
+            {
+              "line": 67,
+              "heading": "Converting fully initialized fields into `T` can still produce uninitialized padding"
+            },
+            {
+              "line": 75,
+              "heading": "Typed copies preserve non-padding value bytes, not the complete object representation"
+            },
+            {
+              "line": 91,
+              "heading": "Typed copies can also alter reference provenance through implicit reborrowing"
+            },
+            {
+              "line": 101,
+              "heading": "A typed round trip through another layout can lose required initialized bytes"
+            },
+            {
+              "line": 111,
+              "heading": "\u201cZeroed value\u201d does not imply zero padding after the typed boundary"
+            },
+            {
+              "line": 126,
+              "heading": "Untyped raw copies preserve initialization state exactly"
+            },
+            {
+              "line": 136,
+              "heading": "The pinned library deliberately avoids typed `read`/`write` when padding must survive"
+            },
+            {
+              "line": 146,
+              "heading": "`ptr::read` and `ptr::write` are typed operations even when their implementations resemble copies"
+            },
+            {
+              "line": 154,
+              "heading": "Verification needs separate value and representation-state judgments"
+            },
+            {
+              "line": 180,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 200,
+              "heading": "Evidence"
+            },
+            {
+              "line": 222,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "rust",
+          "rust/initialization",
+          "rust/memory",
+          "rust/padding",
+          "rust/typed-copy",
+          "rust/validity"
+        ],
+        "subjects": [
+          {
+            "name": "Rust compiler and core library selected by Anneal",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "toolchain": "nightly-2026-05-31"
+            }
+          },
+          {
+            "name": "Rust Reference bundled by the selected compiler revision",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "normative",
+        "documentation",
+        "source",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R017",
+            "P083",
+            "P084"
+          ],
+          "supported_scope": "Pinned abstract bytes distinguish uninitialized state from an arbitrary fixed u8; valid aggregate values may have uninitialized padding, so valid T does not imply all storage bytes initialized.",
+          "remaining_question_scope": "No complete value-validity/niche/union/provenance model is supplied.",
+          "evidence_headings": [
+            "Rust memory distinguishes initialized bytes from uninitialized bytes",
+            "A valid typed value does not require initialized padding"
+          ]
+        },
+        {
+          "question_ids": [
+            "R061",
+            "T077",
+            "P085"
+          ],
+          "supported_scope": "Ordinary typed moves/copies preserve values without guaranteed all-byte padding preservation, can implicitly reborrow references, and differ from untyped raw-copy initialization preservation.",
+          "remaining_question_scope": "No complete aliasing/provenance transfer model or certified operational semantics for these events is supplied.",
+          "evidence_headings": [
+            "Typed copies preserve non-padding value bytes, not the complete object representation",
+            "Typed copies can also alter reference provenance through implicit reborrowing",
+            "Untyped raw copies preserve initialization state exactly",
+            "`ptr::read` and `ptr::write` are typed operations even when their implementations resemble copies"
+          ]
+        },
+        {
+          "question_ids": [
+            "R067",
+            "R068",
+            "P083",
+            "P085"
+          ],
+          "supported_scope": "Equal-size typed representation round trips can lose required initialized data at offsets the intermediate type treats as padding; zeroed typed results do not promise zero padding.",
+          "remaining_question_scope": "Directional transmutation validity, mutation compatibility, lifetime/ownership/destructor correctness and real zerocopy correspondence still need proofs.",
+          "evidence_headings": [
+            "A typed round trip through another layout can lose required initialized bytes",
+            "\u201cZeroed value\u201d does not imply zero padding after the typed boundary"
+          ]
+        },
+        {
+          "question_ids": [
+            "R095",
+            "P131"
+          ],
+          "supported_scope": "The value/layout/initialization/provenance/typed-validity/operation distinctions and ptr-swap implementation history can seed discriminating storage case studies.",
+          "remaining_question_scope": "No fresh Rust/Miri run or runtime bytes/storage correspondence prototype was performed.",
+          "evidence_headings": [
+            "The pinned library deliberately avoids typed `read`/`write` when padding must survive",
+            "Verification needs separate value and representation-state judgments"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh execution, complete arbitrary-type padding map, universal padding-erasure rule or ownership shortcut.",
+        "The Rust memory model is explicitly incomplete; representation attributes do not initialize padding."
+      ],
+      "revalidation_needed": "Resolve exact current Rust/Reference contracts; inspect typed/untyped implementation regions; run preserved discriminators; prove the runtime operation/encoding relation needed by the API.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "rust-layout-rustc-nightly-2026-05-31",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/rust-layout-rustc-nightly-2026-05-31/REPORT.md",
+          "sha256": "a3eacb87198884ffa11be030ec07771f1884ab97cd56053dda4c1c2368b41488",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Rust layout information available from rustc at nightly-2026-05-31"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 15,
+              "heading": "Applicability"
+            },
+            {
+              "line": 33,
+              "heading": "Findings"
+            },
+            {
+              "line": 35,
+              "heading": "Rust language guarantees are narrower than rustc's computed layout"
+            },
+            {
+              "line": 45,
+              "heading": "LayoutData records size, alignment, fields, variants, niches, and backend form"
+            },
+            {
+              "line": 62,
+              "heading": "Field placement includes offsets and memory order"
+            },
+            {
+              "line": 72,
+              "heading": "Enum layout exposes direct and niche tag encodings"
+            },
+            {
+              "line": 82,
+              "heading": "Scalar validity ranges and niches are part of the compiler layout model"
+            },
+            {
+              "line": 92,
+              "heading": "TyAndLayout supports recursive field and variant traversal"
+            },
+            {
+              "line": 102,
+              "heading": "Sizedness is represented separately from the static size field"
+            },
+            {
+              "line": 110,
+              "heading": "rustc computes the metadata type for potentially wide pointers"
+            },
+            {
+              "line": 120,
+              "heading": "Pointer-layout advisory information is not the same thing as DST metadata"
+            },
+            {
+              "line": 130,
+              "heading": "BackendRepr is not a complete function calling convention"
+            },
+            {
+              "line": 140,
+              "heading": "rustc_public exposes a deliberately smaller layout-shaped API, but it is still compiler-version data"
+            },
+            {
+              "line": 150,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 163,
+              "heading": "Evidence"
+            },
+            {
+              "line": 179,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "rust/layout",
+          "rust/abi",
+          "rust/dst",
+          "rustc/layout",
+          "rustc/abi"
+        ],
+        "subjects": [
+          {
+            "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+              "toolchain-date": "2026-05-31"
+            }
+          },
+          {
+            "name": "Rust Reference bundled by the compiler revision",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+            }
+          }
+        ],
+        "observed_at": "2026-09-26"
+      },
+      "reported_evidence_roles": [
+        "normative",
+        "source",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R018",
+            "P081"
+          ],
+          "supported_scope": "Normative repr guarantees are narrower than concrete rustc LayoutData observations; LayoutData carries fields/variants/niches/backend shape/size/alignment.",
+          "remaining_question_scope": "No compiler-realization theorem, exhaustive target rules or concrete layout query execution is supplied.",
+          "evidence_headings": [
+            "Rust language guarantees are narrower than rustc's computed layout",
+            "LayoutData records size, alignment, fields, variants, niches, and backend form"
+          ]
+        },
+        {
+          "question_ids": [
+            "R071",
+            "T086",
+            "P088"
+          ],
+          "supported_scope": "Recursive TyAndLayout views may describe synthetic variants/discriminants/wide pointers; unsized static size is not complete object size; pointer metadata type differs from advisory pointee information.",
+          "remaining_question_scope": "Runtime metadata values, packed access legality, ZST address behavior and DST layout correspondence remain unproved.",
+          "evidence_headings": [
+            "TyAndLayout supports recursive field and variant traversal",
+            "Sizedness is represented separately from the static size field",
+            "rustc computes the metadata type for potentially wide pointers",
+            "Pointer-layout advisory information is not the same thing as DST metadata"
+          ]
+        },
+        {
+          "question_ids": [
+            "R017",
+            "P075",
+            "P084"
+          ],
+          "supported_scope": "Direct/niche tag encodings and scalar validity ranges appear in compiler layout; gaps need not be disposable padding.",
+          "remaining_question_scope": "Compiler-internal ranges are not a complete Rust validity model; decoder success and typed value legality require separate proofs.",
+          "evidence_headings": [
+            "Field placement includes offsets and memory order",
+            "Enum layout exposes direct and niche tag encodings",
+            "Scalar validity ranges and niches are part of the compiler layout model"
+          ]
+        },
+        {
+          "question_ids": [
+            "R018",
+            "P066",
+            "P109"
+          ],
+          "supported_scope": "Backend representation and layout equality do not fix the full target calling convention; target-specific pass mode matters.",
+          "remaining_question_scope": "FnAbi/PassMode/FFI correspondence is not inventoried in detail and needs a separate bridge.",
+          "evidence_headings": [
+            "BackendRepr is not a complete function calling convention"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh cross-target build, offset/size probe or ABI dump.",
+        "No repr(Rust) stability, stable compiler API, complete calling-convention or library-invariant claim."
+      ],
+      "revalidation_needed": "Inspect actual toolchain layout/ABI implementation and configuration; gather independent target/instantiation observations and prove the intended model bridge.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "anneal-v1-issafe-semantic-gaps-41f5b37",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/anneal-v1-issafe-semantic-gaps-41f5b37/REPORT.md",
+          "sha256": "00389074b2c2e7d5f1b66edb19ee20306e00fc7445b0238642ff4539a8b6b6ed",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Anneal V1 `isSafe`: predicate generation without unsafe-impl enforcement"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 11,
+              "heading": "Applicability"
+            },
+            {
+              "line": 17,
+              "heading": "Findings"
+            },
+            {
+              "line": 19,
+              "heading": "`isSafe` creates a proposition indexed by the translated trait dictionary"
+            },
+            {
+              "line": 27,
+              "heading": "V1 has no generated unsafe-impl proof obligation"
+            },
+            {
+              "line": 37,
+              "heading": "A Rust trait bound contributes the trait dictionary, not `Safe` evidence"
+            },
+            {
+              "line": 47,
+              "heading": "The supported V1 pattern is an explicit specification precondition"
+            },
+            {
+              "line": 59,
+              "heading": "The gap is enforcement, not merely naming"
+            },
+            {
+              "line": 72,
+              "heading": "The checked-in documentation records two incompatible mental models"
+            },
+            {
+              "line": 80,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 88,
+              "heading": "Evidence"
+            },
+            {
+              "line": 101,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "anneal/v1",
+          "anneal/issafe",
+          "anneal/unsafe-traits",
+          "verification/safety-contracts",
+          "verification/trust-boundary"
+        ],
+        "subjects": [
+          {
+            "name": "Retained Anneal V1 isSafe implementation",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+              "path": "anneal/v1"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R002",
+            "R066",
+            "T079",
+            "P107"
+          ],
+          "supported_scope": "At historical V1 41f5b37afe7060fd9fe08c00b200672cd76d77b9, trait Safe propositions are dictionary-indexed, but unsafe-impl obligations are not generated and ordinary trait bounds do not supply Safe evidence.",
+          "remaining_question_scope": "Current V2/PR-stack behavior, actual unsafe-trait laws and production dictionary correspondence remain unexamined.",
+          "evidence_headings": [
+            "`isSafe` creates a proposition indexed by the translated trait dictionary",
+            "V1 has no generated unsafe-impl proof obligation",
+            "A Rust trait bound contributes the trait dictionary, not `Safe` evidence"
+          ]
+        },
+        {
+          "question_ids": [
+            "R008",
+            "R074",
+            "T080",
+            "P104"
+          ],
+          "supported_scope": "The supported V1 pattern adds explicit Safe logical preconditions; it does not establish every actual Rust unsafe implementation or derive Safe from every permitted generic caller.",
+          "remaining_question_scope": "Universal safe-client/generic/dispatch coverage is not established; manual Lean instances cannot repair the missing automatic Rust link alone.",
+          "evidence_headings": [
+            "The supported V1 pattern is an explicit specification precondition",
+            "The gap is enforcement, not merely naming"
+          ]
+        },
+        {
+          "question_ids": [
+            "R003",
+            "R082",
+            "P112"
+          ],
+          "supported_scope": "Source behavior and examples contradict stronger historical design prose, illustrating why authored documentation does not establish implementation coverage.",
+          "remaining_question_scope": "No current specification-attachment/adequacy theorem or whole-corpus audit is supplied.",
+          "evidence_headings": [
+            "The checked-in documentation records two incompatible mental models"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "Source-derived, no fresh execution; historical V1 scope only.",
+        "No claim about current V2, isValid, unsafe axioms, lifetime erasure or Aeneas dictionary soundness."
+      ],
+      "revalidation_needed": "Inspect current exact generator/trait obligations; add a real unsafe-impl/generic-client control only where authorized; verify dictionary/implementation binding.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "anneal-v1-isvalid-unsoundness",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/anneal-v1-isvalid-unsoundness/REPORT.md",
+          "sha256": "4710b986716bec73e5859dc211e87b9441b875912141043bd1074c75a4554fae",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Anneal V1 `isValid`: known-unsound boundary checks, not a global type invariant"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 13,
+              "heading": "Applicability"
+            },
+            {
+              "line": 23,
+              "heading": "Findings"
+            },
+            {
+              "line": 25,
+              "heading": "`isValid` is disabled by default because V1 knows it is unsound"
+            },
+            {
+              "line": 37,
+              "heading": "With the opt-in enabled, V1 enforces validity at annotated function boundaries"
+            },
+            {
+              "line": 51,
+              "heading": "Function-boundary checking does not make the invariant global"
+            },
+            {
+              "line": 76,
+              "heading": "The generic `True` fallback creates an independent compound-type hole"
+            },
+            {
+              "line": 98,
+              "heading": "User-defined type annotations do generate specific instances"
+            },
+            {
+              "line": 106,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 120,
+              "heading": "Evidence"
+            },
+            {
+              "line": 139,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "anneal/v1",
+          "anneal/isvalid",
+          "anneal/type-invariants",
+          "anneal/soundness",
+          "lean/typeclasses",
+          "rust/unsafe-fields"
+        ],
+        "subjects": [
+          {
+            "name": "Historical Anneal V1 implementation retained on current zerocopy main",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+              "path": "anneal/v1"
+            }
+          },
+          {
+            "name": "Unmerged draft product/Option IsValid repair",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c",
+              "pull-request": "3179"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "reported_evidence_roles": [
+        "source",
+        "documentation",
+        "derived",
+        "checked-in regression artifacts"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R002",
+            "R065"
+          ],
+          "supported_scope": "Historical V1 rejects explicit isValid by default; opt-in injects local argument/result/direct-mut-argument invariants without covering all safe unannotated field mutations.",
+          "remaining_question_scope": "Current V2 and proposed unsafe-fields sufficiency are outside scope; every actual invariant-sensitive path still needs audit.",
+          "evidence_headings": [
+            "`isValid` is disabled by default because V1 knows it is unsound",
+            "With the opt-in enabled, V1 enforces validity at annotated function boundaries",
+            "Function-boundary checking does not make the invariant global"
+          ]
+        },
+        {
+          "question_ids": [
+            "R082",
+            "T082",
+            "P034",
+            "P104"
+          ],
+          "supported_scope": "The low-priority True fallback for compound types can hide a nested invariant even when direct explicit-type obligations are real; this is independent from unannotated mutation holes.",
+          "remaining_question_scope": "No exhaustive compound-constructor inventory, fresh execution or general decoder/ghost adequacy theorem is established.",
+          "evidence_headings": [
+            "The generic `True` fallback creates an independent compound-type hole",
+            "User-defined type annotations do generate specific instances"
+          ]
+        },
+        {
+          "question_ids": [
+            "T101",
+            "T104",
+            "T107",
+            "P135",
+            "P137"
+          ],
+          "supported_scope": "Specific fallback/mutation failure modes can supply candidate type-invariant and vacuity negative controls.",
+          "remaining_question_scope": "The report did not execute these new adversarial acceptance experiments or establish their outcomes under current Anneal.",
+          "evidence_headings": [
+            "Function-boundary checking does not make the invariant global",
+            "The generic `True` fallback creates an independent compound-type hole"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "No fresh execution; checked-in expected stderr is regression intention, not a fresh run.",
+        "PR #3179 is an unmerged partial repair at its exact historical head; V1 is not current V2 authority."
+      ],
+      "revalidation_needed": "Audit current invariants and all containing types/access paths; run bounded compound/mutation specimens and inspect the exact generated proposition and assumptions.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    },
+    {
+      "package": "anneal-v1-contract-mutation-adequacy-2026-09-28",
+      "audit_disposition": "substantively inspected; bounded reusable evidence; no question completed",
+      "inspected_sections": [
+        "Applicability",
+        "Findings",
+        "Boundaries"
+      ],
+      "inspected_files": [
+        {
+          "path": "reports/anneal-v1-contract-mutation-adequacy-2026-09-28/REPORT.md",
+          "sha256": "83567fd75f750c12681419ac72e2eb2121ea5047a3358b588690fe4cc21afbe8",
+          "headings": [
+            {
+              "line": 1,
+              "heading": "Anneal V1 contract mutation and specification adequacy probe"
+            },
+            {
+              "line": 3,
+              "heading": "Summary"
+            },
+            {
+              "line": 9,
+              "heading": "Applicability"
+            },
+            {
+              "line": 15,
+              "heading": "Findings"
+            },
+            {
+              "line": 17,
+              "heading": "Mutation outcomes"
+            },
+            {
+              "line": 32,
+              "heading": "Attachment is represented in the generated theorem"
+            },
+            {
+              "line": 38,
+              "heading": "Boundaries"
+            },
+            {
+              "line": 46,
+              "heading": "Evidence"
+            },
+            {
+              "line": 54,
+              "heading": "Revalidation"
+            }
+          ]
+        }
+      ],
+      "report_metadata": {
+        "topics": [
+          "anneal",
+          "anneal/v1",
+          "lean/verification",
+          "verification/specification-adequacy",
+          "verification/mutation-testing"
+        ],
+        "subjects": [
+          {
+            "name": "Retained Anneal V1 implementation",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+              "path": "anneal/v1",
+              "binary_sha256": "9f8283296b0150fbfe1043bbe3633879c900067915bb46aa293e55711564aee8"
+            }
+          },
+          {
+            "name": "Charon",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+              "version": "0.1.210",
+              "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+            }
+          },
+          {
+            "name": "Aeneas",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+              "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+            }
+          },
+          {
+            "name": "Lean 4",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+              "version": "v4.30.0-rc2"
+            }
+          },
+          {
+            "name": "mathlib4",
+            "identity": {
+              "repository": "leanprover-community/mathlib4",
+              "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+            }
+          }
+        ],
+        "observed_at": "2026-09-28"
+      },
+      "reported_evidence_roles": [
+        "execution",
+        "derived"
+      ],
+      "scope_mappings": [
+        {
+          "question_ids": [
+            "R082",
+            "T107",
+            "P034"
+          ],
+          "supported_scope": "On one scalar abs fixture, False preconditions admitted an otherwise false postcondition vacuously; a satisfiable-precondition false-postcondition control was rejected.",
+          "remaining_question_scope": "No general domain coverage theorem, broad annotation prevalence or current V2 conclusion follows.",
+          "evidence_headings": [
+            "Mutation outcomes"
+          ]
+        },
+        {
+          "question_ids": [
+            "T101",
+            "T104",
+            "T107",
+            "P112"
+          ],
+          "supported_scope": "Omitting the negative equation or weakening the contract to nonnegativity permits weaker model properties; the constant-zero mutant was accepted under the weak property.",
+          "remaining_question_scope": "No independent original-specification binding or common-generator corruption test is established.",
+          "evidence_headings": [
+            "Mutation outcomes"
+          ]
+        },
+        {
+          "question_ids": [
+            "T066",
+            "T101",
+            "P112"
+          ],
+          "supported_scope": "A full abs contract attached to identity followed that function in the generated model/theorem and was rejected for false obligations.",
+          "remaining_question_scope": "A wrong item that satisfies a weak contract can still pass; this is not a general intended-item attachment check.",
+          "evidence_headings": [
+            "Attachment is represented in the generated theorem"
+          ]
+        },
+        {
+          "question_ids": [
+            "R005",
+            "R095",
+            "P137"
+          ],
+          "supported_scope": "The six-case accepted/rejected mutation corpus preserves source, generated specifications/models, exits and diagnostics for a concrete adequacy/control pattern.",
+          "remaining_question_scope": "No separate axiom query for all mutants, independent Rust-to-model validation, runtime-storage case or broad mutation search was performed.",
+          "evidence_headings": [
+            "Mutation outcomes"
+          ]
+        }
+      ],
+      "package_boundaries": [
+        "Exact source-built historical V1 stack and path-manifest adaptation; six scalar cases only.",
+        "Positive checker exits establish acceptance of generated statements, not independently validated Rust correspondence or human-intent adequacy."
+      ],
+      "revalidation_needed": "Reuse exact fixtures as controls; rerun current acceptance path; independently audit theorem identities, allowed domains, assumptions and source-model bridges.",
+      "primary_sources_or_execution_revalidated_by_this_audit": false
+    }
+  ],
+  "validation": {
+    "inspected_packages": 15,
+    "uninspected_packages": 643,
+    "unique_question_ids_with_partial_reuse": 148,
+    "scope_mapping_count": 59,
+    "question_scope_memberships": 217,
+    "unknown_question_ids": []
+  },
+  "grouping_review_notes": [
+    {
+      "question_id": "R088",
+      "disposition": "full question assigned",
+      "group_ids": [
+        "G014",
+        "G045"
+      ],
+      "note": "G014 is scoped component evidence; G045 owns the full direct-Rocq/certificate-import/independent-checking architecture comparison."
+    },
+    {
+      "question_id": "R084",
+      "disposition": "recommended explicit secondary membership at parent integration",
+      "current_group_ids": [
+        "G031"
+      ],
+      "recommended_group_id": "G030",
+      "note": "G031 handles SMT certificates. Full R084 also requires Lean/Rocq transport; G030 already defines cross-logic semantics via T039/P040. Source grouping files left stable at parent request."
+    },
+    {
+      "group_id": "G012",
+      "disposition": "possible future split",
+      "note": "Interior-mutability invariants and async/pinning/liveness may require distinct reports when actual proof interfaces/evidence methods differ. Existing package boundary already records this."
+    }
+  ]
+}

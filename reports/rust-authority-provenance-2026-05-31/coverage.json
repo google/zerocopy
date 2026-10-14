@@ -1,0 +1,64 @@
+{
+  "coverage_kind": "bounded pilot, not agenda completion",
+  "sections_are_in": "REPORT.md",
+  "topics": {
+    "R009": {
+      "status": "partial",
+      "sections": [
+        "Authority is specific to the claim"
+      ],
+      "established": [
+        "Claim-specific distinction between Reference requirements, API contracts, compiler evidence, and operational research."
+      ],
+      "outstanding": [
+        "Exhaustive accepted t-opsem decisions and current compiler/reference divergences; no concrete compiler-behavior experiment."
+      ],
+      "issue": 3865
+    },
+    "R014": {
+      "status": "partial",
+      "sections": [
+        "Strict APIs identify the information a representation change must preserve",
+        "C provenance work exposes a semantic choice rather than an interchangeable model"
+      ],
+      "established": [
+        "Provenance components, address reuse, strict/exposed reconstruction, and historical PVI/PNVI comparison."
+      ],
+      "outstanding": [
+        "Complete exposed-provenance semantics, modern C model evolution, byte-level FFI/linking relation, and targets such as CHERI/MMIO."
+      ],
+      "issue": 3865
+    },
+    "P079": {
+      "status": "partial",
+      "sections": [
+        "A certificate must relate authority, not just address arithmetic"
+      ],
+      "established": [
+        "Obligations to preserve allocation identity, lifetime and access authority across address/index lowering."
+      ],
+      "outstanding": [
+        "A concrete certificate representation and proved relation for a real extraction."
+      ],
+      "issue": 3867
+    },
+    "P087": {
+      "status": "partial",
+      "sections": [
+        "Strict APIs identify the information a representation change must preserve",
+        "A certificate must relate authority, not just address arithmetic"
+      ],
+      "established": [
+        "Operation-specific provenance obligations and sysroot transmute implementation boundary."
+      ],
+      "outstanding": [
+        "Full cast/arithmetic operation inventory, const rules, target cases, and executed or mechanized witnesses."
+      ],
+      "issue": 3867
+    }
+  },
+  "agenda_issues": [
+    3865,
+    3867
+  ]
+}

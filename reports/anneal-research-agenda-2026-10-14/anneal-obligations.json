@@ -1,0 +1,122 @@
+[
+  {
+    "id": "O01",
+    "title": "Exact claim meaning",
+    "obligation": "The checker must know the required guarantees, including mandatory UB freedom; producers cannot select their own success criterion."
+  },
+  {
+    "id": "O02",
+    "title": "Compilation-subject identity",
+    "obligation": "Evidence must bind to source, dependencies, target, features, effective configuration, and other relevant compilation inputs."
+  },
+  {
+    "id": "O03",
+    "title": "Faithful parsing and elaboration",
+    "obligation": "An accepted AST or IR must correspond to the selected source; checking a producer-supplied AST alone leaves that connection trusted."
+  },
+  {
+    "id": "O04",
+    "title": "Generated-code coverage",
+    "obligation": "Macro expansion, generated functions, and implicit operations must participate in the claim rather than disappear behind source-level annotation scanning."
+  },
+  {
+    "id": "O05",
+    "title": "Typing and entry-state validity",
+    "obligation": "Rust typing and valid incoming state must be justified or explicitly assumed without assuming the implementation\u2019s own safety."
+  },
+  {
+    "id": "O06",
+    "title": "Caller-domain adequacy",
+    "obligation": "A safe API cannot acquire hidden soundness preconditions. Restricted decoders and ghosts must not silently exclude permitted callers."
+  },
+  {
+    "id": "O07",
+    "title": "Executable-dependency coverage",
+    "obligation": "Calls, dispatch, callbacks, destructors, cleanup, and relevant external operations must be covered or explicitly bounded."
+  },
+  {
+    "id": "O08",
+    "title": "Faithful lowering",
+    "obligation": "Every transformation must preserve the observations and safety conditions required by the claim."
+  },
+  {
+    "id": "O09",
+    "title": "Exposure of source UB",
+    "obligation": "Correspondence must retain or reconstruct obligations preceding source UB, including when the result is discarded."
+  },
+  {
+    "id": "O10",
+    "title": "Execution-path coverage",
+    "obligation": "Proofs must cover the relevant nondeterministic choices and outcomes, not merely successful returns or explored traces."
+  },
+  {
+    "id": "O11",
+    "title": "Progress correspondence",
+    "obligation": "Erased steps must not hide divergence when a termination claim depends on them."
+  },
+  {
+    "id": "O12",
+    "title": "Scalar correctness",
+    "obligation": "Machine bounds, overflow modes, unchecked arithmetic, shifts, and conversions require adequate interpretations."
+  },
+  {
+    "id": "O13",
+    "title": "Layout and ABI correspondence",
+    "obligation": "Mathematical sizes and alignments must correspond to the actual Rust types and target; a supplied descriptor is not that evidence."
+  },
+  {
+    "id": "O14",
+    "title": "Representation validity",
+    "obligation": "Initializedness, padding, invalid values, niches, pointer-bearing bytes, and typed transfers must remain represented where relevant."
+  },
+  {
+    "id": "O15",
+    "title": "Memory-access authority",
+    "obligation": "Bounds must compose with allocation lifetime, provenance, alignment, permissions, borrowing, and aliasing."
+  },
+  {
+    "id": "O16",
+    "title": "Ownership transitions",
+    "obligation": "Projection, mutation, write-back, transmutation, and consumption must preserve surviving capabilities and destruction obligations."
+  },
+  {
+    "id": "O17",
+    "title": "Initialization and cleanup",
+    "obligation": "Partial initialization, dropping, unwinding, cancellation, and restoration require explicit semantics."
+  },
+  {
+    "id": "O18",
+    "title": "Type and trait invariants",
+    "obligation": "All relevant mutations and implementations must preserve the laws consumed by generic proofs."
+  },
+  {
+    "id": "O19",
+    "title": "Concurrent behavior",
+    "obligation": "Interference, weak memory, synchronization, spawned execution, and reclamation need corresponding semantics and coverage."
+  },
+  {
+    "id": "O20",
+    "title": "External behavior",
+    "obligation": "FFI, I/O, hardware access, and environmental effects need explicit contracts or interpretations."
+  },
+  {
+    "id": "O21",
+    "title": "Specification adequacy",
+    "obligation": "Accepted contracts must establish the required property; vacuous domains and weakened goals must not substitute for it."
+  },
+  {
+    "id": "O22",
+    "title": "Logical validity and assumptions",
+    "obligation": "Check proof terms, referenced definitions, imported dependencies, and the exact permitted assumptions."
+  },
+  {
+    "id": "O23",
+    "title": "Composition and artifact applicability",
+    "obligation": "The checked relationships must compose over the same subjects and definitions; cached evidence needs a justified reuse rule."
+  },
+  {
+    "id": "O24",
+    "title": "Acceptance and publication",
+    "obligation": "Missing stages, tool failures, development modes, stale inputs, or incomplete work cannot construct an ordinary successful result."
+  }
+]

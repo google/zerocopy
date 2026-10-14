@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "boogie",
+    "viper",
+    "certificates/vc-generation",
+    "certificates/frontend",
+    "anneal/source-safety",
+    "semantics/failure-reflection"
+  ],
+  "subjects": [
+    {
+      "name": "Formally validating a practical verification condition generator",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_33",
+        "publication": "CAV 2021",
+        "author-copy": "https://gauravpartha.ch/papers/boogie_certificates_cav21.pdf",
+        "pdf-pages": "23"
+      }
+    },
+    {
+      "name": "Formally validating translations into an IVL",
+      "identity": {
+        "doi": "10.1145/3656438",
+        "publication": "PACMPL 8 PLDI 2024 article 208",
+        "author-copy": "https://gauravpartha.ch/papers/front_end_translation_certificates_pldi24.pdf",
+        "pdf-pages": "25"
+      }
+    },
+    {
+      "name": "PLDI 2024 reproduction artifact record",
+      "identity": {
+        "doi": "10.5281/zenodo.10802176",
+        "url": "https://zenodo.org/records/10802176"
+      }
+    },
+    {
+      "name": "Anneal shared models and execution admission design",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

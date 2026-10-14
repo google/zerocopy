@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "rust/aliasing",
+    "stacked-borrows",
+    "tree-borrows",
+    "rust/program-logics",
+    "semantics/source-safety",
+    "rust/async",
+    "semantics/fairness"
+  ],
+  "subjects": [
+    {
+      "name": "Pinned Miri aliasing implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "MiniRust Tree Borrows and source discriminator",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Stacked Borrows POPL 2020",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "publication": "PACMPL 4 POPL Article 41, January 2020",
+        "sha256": "a342838a2c5c566e0374cad1f583837ed9c8abb68b62ec5ecc076c469c5d3439",
+        "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+      }
+    },
+    {
+      "name": "Tree Borrows PLDI 2025",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "publication": "PACMPL 9 PLDI Article 188, June 2025",
+        "sha256": "2b804f5cd0a7855d603e5b8e19627d601f29307976cee1a765f52d9610077d80",
+        "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+      }
+    },
+    {
+      "name": "A Program Logic for Tree Borrows, Peterson thesis",
+      "identity": {
+        "url": "https://rudynicolop.github.io/files/thesis.pdf",
+        "year": "2025",
+        "sha256": "e49b0d5bbd1c30f43671c08f4eecaa6b33556ae6c6871b16af5c19e7ede0b876"
+      }
+    },
+    {
+      "name": "Towards verifying unsafe Rust pointer aliasing",
+      "identity": {
+        "arxiv": "2603.28326v1",
+        "version-date": "2026-03-30",
+        "sha256": "bdb7ec5b19542cd80e7f9c6eb031d4bf23f0517fef60221b624d3b45f0dc4b1c",
+        "url": "https://arxiv.org/pdf/2603.28326v1"
+      }
+    },
+    {
+      "name": "A Complete, Formal Semantics for Rust Source Code",
+      "identity": {
+        "arxiv": "2610.06003v1",
+        "version-date": "2026-10-05",
+        "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d",
+        "url": "https://arxiv.org/pdf/2610.06003v1"
+      }
+    },
+    {
+      "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+      "identity": {
+        "arxiv": "2610.09198v1",
+        "version-date": "2026-10-06",
+        "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30",
+        "url": "https://arxiv.org/pdf/2610.09198v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}
