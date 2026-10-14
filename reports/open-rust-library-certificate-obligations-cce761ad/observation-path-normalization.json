@@ -1,0 +1,7 @@
+[
+  {
+    "artifact": "client-probe-results.json",
+    "raw_observation_sha256": "b77c1b4efb761805e47faf0fcbf75b664b83956bc05914afded73d88d26f858b",
+    "normalization": "task-local command paths replaced with package-relative paths or <pinned-checkout>; statuses, source identities and program output preserved"
+  }
+]

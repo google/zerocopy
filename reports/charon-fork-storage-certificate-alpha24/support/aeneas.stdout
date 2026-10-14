@@ -1,0 +1,146 @@
+# ULLBC after translation from MIR:
+
+pub fn certificate_probe::choose(b_1: bool, x_2: u8, y_3: u8) -> u8
+{
+    let _0: u8; // return
+    let b_1: bool; // arg #1
+    let x_2: u8; // arg #2
+    let y_3: u8; // arg #3
+    let _4: bool; // anonymous local
+
+    bb0: {
+        storage_live(_4);
+        _4 = copy b_1;
+        if move _4 -> bb1 else -> bb2;
+    }
+
+    bb1: {
+        _0 = copy x_2;
+        goto bb3;
+    }
+
+    bb2: {
+        _0 = copy y_3;
+        goto bb3;
+    }
+
+    bb3: {
+        storage_dead(_4);
+        return;
+    }
+}
+
+pub fn certificate_probe::update_second<'_0>(p_1: &'_0 mut (u8, u8), x_2: u8)
+{
+    let _0: (); // return
+    let p_1: &'1 mut (u8, u8); // arg #1
+    let x_2: u8; // arg #2
+    let _3: u8; // anonymous local
+
+    bb0: {
+        storage_live(_3);
+        _3 = copy x_2;
+        (*p_1).1 = move _3;
+        storage_dead(_3);
+        _0 = const ();
+        return;
+    }
+}
+
+
+
+# Final ULLBC before control-flow reconstruction:
+
+// Full name: certificate_probe::choose
+pub fn choose(b_1: bool, x_2: u8, y_3: u8) -> u8
+{
+    let _0: u8; // return
+    let b_1: bool; // arg #1
+    let x_2: u8; // arg #2
+    let y_3: u8; // arg #3
+    let _4: bool; // anonymous local
+
+    bb0: {
+        storage_live(_4);
+        _4 = copy b_1;
+        if move _4 -> bb1 else -> bb2;
+    }
+
+    bb1: {
+        _0 = copy x_2;
+        goto bb3;
+    }
+
+    bb2: {
+        _0 = copy y_3;
+        goto bb3;
+    }
+
+    bb3: {
+        storage_dead(_4);
+        return;
+    }
+}
+
+// Full name: certificate_probe::update_second
+pub fn update_second<'_0>(p_1: &'_0 mut (u8, u8), x_2: u8)
+{
+    let _0: (); // return
+    let p_1: &'1 mut (u8, u8); // arg #1
+    let x_2: u8; // arg #2
+    let _3: u8; // anonymous local
+
+    bb0: {
+        _0 = ();
+        storage_live(_3);
+        _3 = copy x_2;
+        (*p_1).1 = move _3;
+        storage_dead(_3);
+        _0 = ();
+        return;
+    }
+}
+
+
+
+# Final LLBC before serialization:
+
+// Full name: certificate_probe::choose
+pub fn choose(b_1: bool, x_2: u8, y_3: u8) -> u8
+{
+    let _0: u8; // return
+    let b_1: bool; // arg #1
+    let x_2: u8; // arg #2
+    let y_3: u8; // arg #3
+    let _4: bool; // anonymous local
+
+    storage_live(_4)
+    _4 = copy b_1
+    if move _4 {
+        _0 = copy x_2
+    } else {
+        _0 = copy y_3
+    }
+    storage_dead(_4)
+    return
+}
+
+// Full name: certificate_probe::update_second
+pub fn update_second<'_0>(p_1: &'_0 mut (u8, u8), x_2: u8)
+{
+    let _0: (); // return
+    let p_1: &'1 mut (u8, u8); // arg #1
+    let x_2: u8; // arg #2
+    let _3: u8; // anonymous local
+
+    _0 = ()
+    storage_live(_3)
+    _3 = copy x_2
+    (*p_1).1 = move _3
+    storage_dead(_3)
+    _0 = ()
+    return
+}
+
+
+

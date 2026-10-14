@@ -1,0 +1,502 @@
+{
+  "scope": "All fn declarations matched in the exact ptr.rs and inner.rs token text; includes tests and trait methods, does not expand macros/cfg or certify semantic reachability",
+  "declarations": [
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 92,
+      "declaration_first_line": "pub(crate) unsafe fn from_inner(ptr: PtrInner<'a, T>) -> Ptr<'a, T, I> {",
+      "visibility_syntax": "pub(crate)",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 105,
+      "declaration_first_line": "pub fn as_inner(&self) -> PtrInner<'a, T> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 149,
+      "declaration_first_line": "fn clone(&self) -> Self {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 160,
+      "declaration_first_line": "fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 178,
+      "declaration_first_line": "pub fn from_ref(ptr: &'a T) -> Self {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 204,
+      "declaration_first_line": "pub fn from_mut(ptr: &'a mut T) -> Self {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 237,
+      "declaration_first_line": "pub fn as_ref(self) -> &'a T {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 293,
+      "declaration_first_line": "pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 339,
+      "declaration_first_line": "pub fn reborrow_shared<'b>(&'b mut self) -> Ptr<'b, T, (Shared, I::Alignment, I::Validity)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 387,
+      "declaration_first_line": "pub fn as_mut(self) -> &'a mut T {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 439,
+      "declaration_first_line": "pub fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 457,
+      "declaration_first_line": "pub fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 485,
+      "declaration_first_line": "pub fn recall_validity<V, R>(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 522,
+      "declaration_first_line": "pub unsafe fn project_transmute_unchecked<U: ?Sized, V, P>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 572,
+      "declaration_first_line": "pub fn into_unalign(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 611,
+      "declaration_first_line": "pub fn read<R>(self) -> T",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 624,
+      "declaration_first_line": "pub fn unaligned_as_ref(self) -> &'a T",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 651,
+      "declaration_first_line": "unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 662,
+      "declaration_first_line": "pub fn unify_invariants<",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 675,
+      "declaration_first_line": "pub(super) fn into_shared(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>",
+      "visibility_syntax": "pub(super)",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 696,
+      "declaration_first_line": "pub(crate) unsafe fn assume_alignment<A: Alignment>(",
+      "visibility_syntax": "pub(crate)",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 707,
+      "declaration_first_line": "pub fn try_into_aligned(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 728,
+      "declaration_first_line": "pub fn bikeshed_recall_aligned(self) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 746,
+      "declaration_first_line": "pub unsafe fn assume_validity<V: Validity>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 762,
+      "declaration_first_line": "pub unsafe fn assume_initialized(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 778,
+      "declaration_first_line": "pub unsafe fn assume_safe(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Safe)> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 797,
+      "declaration_first_line": "pub fn try_into_safe<R, S>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 826,
+      "declaration_first_line": "pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Unaligned, I::Validity)> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 862,
+      "declaration_first_line": "pub unsafe fn cast_unchecked<U, C: Cast<T, U>>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 888,
+      "declaration_first_line": "pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 906,
+      "declaration_first_line": "pub fn project<Client, F, const VARIANT_ID: i128, const FIELD_ID: i128>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 942,
+      "declaration_first_line": "pub fn project_tag<Client>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 968,
+      "declaration_first_line": "pub(crate) unsafe fn try_with_unchecked<U, J, E, F>(",
+      "visibility_syntax": "pub(crate)",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1018,
+      "declaration_first_line": "pub fn try_with<U, J, E, F>(self, f: F) -> Result<Ptr<'a, U, J>, E::Mapped>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1042,
+      "declaration_first_line": "fn map<F: FnOnce(Self::Inner) -> MappedInner>(self, f: F) -> Self::Mapped;",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1054,
+      "declaration_first_line": "pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Safe)>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1071,
+      "declaration_first_line": "pub fn as_slice(self) -> Ptr<'a, [T], I> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1135,
+      "declaration_first_line": "pub fn try_cast_into<U, R>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1207,
+      "declaration_first_line": "pub fn try_cast_into_no_leftover<U, R>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1253,
+      "declaration_first_line": "pub fn get_mut(self) -> Ptr<'a, T, I> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1309,
+      "declaration_first_line": "pub fn iter(self) -> impl Iterator<Item = Ptr<'a, T, I>> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1350,
+      "declaration_first_line": "pub fn len(&self) -> usize {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1357,
+      "declaration_first_line": "pub fn is_empty(&self) -> bool {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1373,
+      "declaration_first_line": "fn test_project_tag_downgrades_aliasing() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1399,
+      "declaration_first_line": "fn test<T, I, const N: usize>(metas: I)",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1430,
+      "declaration_first_line": "unsafe fn validate_and_get_len<",
+      "visibility_syntax": "private",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1531,
+      "declaration_first_line": "fn $test_name() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1561,
+      "declaration_first_line": "fn test_try_cast_into_explicit_count() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1610,
+      "declaration_first_line": "fn test_try_cast_into_no_leftover_restores_original_slice() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "line": 1624,
+      "declaration_first_line": "fn test_iter_exclusive_yields_disjoint_ptrs() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 77,
+      "declaration_first_line": "fn clone(&self) -> PtrInner<'a, T> {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 98,
+      "declaration_first_line": "pub const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 111,
+      "declaration_first_line": "pub const fn as_non_null(&self) -> NonNull<T> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 122,
+      "declaration_first_line": "pub const fn as_ptr(&self) -> *mut T {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 131,
+      "declaration_first_line": "pub fn from_ref(ptr: &'a T) -> Self {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 157,
+      "declaration_first_line": "pub fn from_mut(ptr: &'a mut T) -> Self {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 187,
+      "declaration_first_line": "pub fn project<U: ?Sized, C: cast::Project<T, U>>(self) -> PtrInner<'a, U> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 225,
+      "declaration_first_line": "pub fn meta(self) -> MetadataOf<T> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 242,
+      "declaration_first_line": "pub unsafe fn with_meta(self, meta: T::PointerMetadata) -> Self",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 298,
+      "declaration_first_line": "pub unsafe fn split_at_unchecked(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 331,
+      "declaration_first_line": "pub fn trailing_slice(self) -> PtrInner<'a, [T::Elem]>",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 390,
+      "declaration_first_line": "pub unsafe fn slice_unchecked(self, range: Range<usize>) -> Self {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": true
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 435,
+      "declaration_first_line": "pub fn iter(&self) -> impl Iterator<Item = PtrInner<'a, T>> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 511,
+      "declaration_first_line": "pub fn as_slice(self) -> PtrInner<'a, [T]> {",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 559,
+      "declaration_first_line": "pub fn try_cast_into<U>(",
+      "visibility_syntax": "pub",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 632,
+      "declaration_first_line": "fn test_meta() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 645,
+      "declaration_first_line": "fn test_split_at() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 646,
+      "declaration_first_line": "fn test_split_at<const OFFSET: usize, const BUFFER_SIZE: usize>() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 697,
+      "declaration_first_line": "fn test_trailing_slice() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 698,
+      "declaration_first_line": "fn test_trailing_slice<const OFFSET: usize, const BUFFER_SIZE: usize>() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    },
+    {
+      "path": "zerocopy/src/pointer/inner.rs",
+      "line": 743,
+      "declaration_first_line": "fn test_ptr_inner_clone() {",
+      "visibility_syntax": "private",
+      "unsafe_syntax": false
+    }
+  ]
+}

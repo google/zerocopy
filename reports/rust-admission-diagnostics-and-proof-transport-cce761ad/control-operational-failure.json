@@ -1,0 +1,9 @@
+{
+  "phase": "before test imports",
+  "exit_code": 1,
+  "error": "ModuleNotFoundError: No module named test_admission",
+  "cause": "runner source path used evidence.parents[3] instead of evidence.parents[2]",
+  "test_execution_began": false,
+  "source_mutation_began": false,
+  "recovery": "correct runner path to physically verified work/pr3846, keep identical test selection"
+}

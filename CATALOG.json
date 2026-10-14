@@ -700,6 +700,65 @@
         "anneal/history"
       ]
     },
+    "aeneas-pair-returned-update-alpha24": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/aeneas",
+            "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e",
+            "version_observation": "aeneas unknown"
+          },
+          "name": "Aeneas from legacy Anneal alpha24 macOS aarch64"
+        },
+        {
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/charon",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 from legacy Anneal alpha24 macOS aarch64"
+        },
+        {
+          "identity": {
+            "artifact": "alpha24 rust/bin/rustc",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Bundled Rust 1.98.0-nightly"
+        },
+        {
+          "identity": {
+            "artifact": "alpha24 lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Lean 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.rs",
+            "sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0"
+          },
+          "name": "Actual safe certificate_probe source"
+        },
+        {
+          "identity": {
+            "artifact": "support/UpdateCertificate.lean",
+            "sha256": "2422d6f2bd769472a29ba52cf6e8b47fb45b0687466d0c61e2cb94704a07ea5f"
+          },
+          "name": "Report-owned logical certificate/checker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "aeneas/borrow-translation",
+        "prototype/returned-update",
+        "memory/frame"
+      ]
+    },
     "aeneas-panic-error-unwind-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -12459,6 +12518,53 @@
         "reference/cohort-audit"
       ]
     },
+    "charon-aeneas-pass-seams-and-certificate-inventory": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "path": "verification/aeneas/ADMISSION_DESIGN.md",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal admission design and semantic interfaces"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-alpha24/runtime/aeneas/bin/charon",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Legacy alpha24 Charon execution binary"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-alpha24/runtime/aeneas/bin/aeneas",
+            "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e"
+          },
+          "name": "Legacy alpha24 Aeneas execution binary"
+        }
+      ],
+      "topics": [
+        "anneal/correspondence",
+        "charon/passes",
+        "aeneas/translation",
+        "certificates/pass-inventory"
+      ]
+    },
     "charon-async-coroutines-0-1-210": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -12676,6 +12782,57 @@
         "charon/performance",
         "rustc",
         "cargo/scaling"
+      ]
+    },
+    "charon-fork-storage-certificate-alpha24": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/charon",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Charon 0.1.210 from legacy Anneal alpha24 macOS aarch64"
+        },
+        {
+          "identity": {
+            "artifact": "alpha24 rust/bin/rustc",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Bundled Rust 1.98.0-nightly"
+        },
+        {
+          "identity": {
+            "artifact": "lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.rs",
+            "sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0"
+          },
+          "name": "Actual safe certificate_probe source"
+        },
+        {
+          "identity": {
+            "artifact": "support/ForkModel.lean",
+            "sha256": "03e313adf830206b0b8422a1f39962c4ee48d4e1c04456bf070f8ab5a4832afb"
+          },
+          "name": "Report-owned logical certificate/checker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "charon/certificates",
+        "extraction/control-flow",
+        "extraction/storage"
       ]
     },
     "charon-incremental-capabilities-0-1-210": {
@@ -14695,6 +14852,55 @@
         "build/hermeticity"
       ]
     },
+    "functions-generics-and-environment-certificate-closure": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          },
+          "name": "Charon generic and dispatch transformations"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          },
+          "name": "Aeneas dependency/context/effect analysis"
+        },
+        {
+          "identity": {
+            "path": "src/destructors.md",
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust destructor requirements"
+        },
+        {
+          "identity": {
+            "paths": "verification/aeneas/ADMISSION_DESIGN.md;verification/aeneas/SEMANTICS.md",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal current consumer and admission contracts"
+        },
+        {
+          "identity": {
+            "artifact": "PrefixCertificate.lean",
+            "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+          },
+          "name": "Original checked generic prefix-composition specimen"
+        }
+      ],
+      "topics": [
+        "anneal/correspondence",
+        "certificates/composition",
+        "rust/generics",
+        "semantics/open-modules",
+        "certificates/dependency-closure"
+      ]
+    },
     "generated-rust-visibility-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -15085,6 +15291,83 @@
         "lake/workspace-setup",
         "lake/server",
         "lean/version-difference"
+      ]
+    },
+    "inference-and-compositional-result-interfaces-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "endorlabs/MIRAI",
+            "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b"
+          },
+          "name": "MIRAI"
+        },
+        {
+          "identity": {
+            "repository": "facebook/infer",
+            "revision": "5aac32c06952a2f3a6b7043e91457920f065833b"
+          },
+          "name": "Infer current Pulse/Rust source"
+        },
+        {
+          "identity": {
+            "repository": "facebook/infer",
+            "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4"
+          },
+          "name": "Infer historical bi-abduction source"
+        },
+        {
+          "identity": {
+            "repository": "seahorn/seahorn",
+            "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4"
+          },
+          "name": "SeaHorn"
+        },
+        {
+          "identity": {
+            "repository": "smackers/smack",
+            "revision": "0a64471206645c250164e8df6027f5a5193e5e85"
+          },
+          "name": "SMACK"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/silver",
+            "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f"
+          },
+          "name": "Viper Silver"
+        },
+        {
+          "identity": {
+            "repository": "prusti/prusti",
+            "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+          },
+          "name": "Prusti"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+          },
+          "name": "SAW compositional MIR source"
+        },
+        {
+          "identity": {
+            "published_version": "POPL 2009 author copy, 12 pages",
+            "sha256": "7d669d3bf3b446f88d050d8f7ca5c473ea26b0b89f106c3031b37604eca483c2",
+            "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf"
+          },
+          "name": "Compositional Shape Analysis by means of Bi-Abduction, POPL 2009"
+        }
+      ],
+      "topics": [
+        "rust/inference",
+        "verification/bi-abduction",
+        "verification/symbolic-memory",
+        "verification/permissions",
+        "verification/overrides",
+        "verification/certificates"
       ]
     },
     "information-hiding-versus-pipeline-decomposition-1972-2026": {
@@ -18554,6 +18837,48 @@
         "proof-workspaces/snapshots"
       ]
     },
+    "native-checker-from-lean-logical-source-4-31": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "lean executable",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "artifact": "Lean 4.31 leanc executable",
+            "sha256": "ed65823bba1ffbab1c386ec9b013091fe427a56b50a0beef1eab5bed1a3523a3"
+          },
+          "name": "Lean native compiler wrapper"
+        },
+        {
+          "identity": {
+            "artifact": "support/CheckerMain.lean",
+            "sha256": "e6d39dcf9aab8f921778ec8050f22b1b144ebd8b20fd8a8e677e3736d5c62a37"
+          },
+          "name": "Report-owned logical certificate/checker"
+        },
+        {
+          "identity": {
+            "artifact": "macOS arm64 executable generated from report source",
+            "bridge": "unverified Lean C and native compilation",
+            "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173"
+          },
+          "name": "Derived native checker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "checker/code-generation",
+        "lean/kernel-checking",
+        "prototype/native-checker"
+      ]
+    },
     "netstack3-architecture-evolution-2019-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -18846,6 +19171,59 @@
         "nix/derivations",
         "nix/garbage-collection",
         "nix/profiles"
+      ]
+    },
+    "open-rust-library-certificate-obligations-cce761ad": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "zerocopy PR stack source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          },
+          "name": "RustBelt LambdaRust popl18 source"
+        },
+        {
+          "identity": {
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1",
+            "zenodo": "21636474"
+          },
+          "name": "RefinedRust 2026 source artifact"
+        },
+        {
+          "identity": {
+            "host": "aarch64-apple-darwin",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "tool": "rustc",
+            "version": "1.99.0"
+          },
+          "name": "Native safe client control compiler"
+        }
+      ],
+      "topics": [
+        "rust/safe-abstraction",
+        "rust/type-invariants",
+        "rust/traits",
+        "rust/generics",
+        "verification/certificates",
+        "zerocopy/pointer"
       ]
     },
     "operational-semantics-versus-functional-translation-2026-09-27": {
@@ -19244,6 +19622,56 @@
         "anneal/experiments",
         "rust/representation",
         "verification/model-boundaries"
+      ]
+    },
+    "prefix-safety-outcomes-and-property-transfer": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "PrefixCertificate.lean",
+            "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+          },
+          "name": "Original generic prefix certificate specimen"
+        },
+        {
+          "identity": {
+            "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          },
+          "name": "Aeneas outcome and interpreter source"
+        },
+        {
+          "identity": {
+            "path": "src/behavior-considered-undefined.md",
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "path": "verification/aeneas/SEMANTICS.md",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal consumer semantic/admission policy"
+        }
+      ],
+      "topics": [
+        "anneal/correspondence",
+        "semantics/safety-reflection",
+        "semantics/prefixes",
+        "semantics/progress",
+        "lean/certificates"
       ]
     },
     "proof-maintenance-architectures-sel4-compcert-everest-2009-2026": {
@@ -20580,6 +21008,47 @@
         "cargo/incremental-compilation"
       ]
     },
+    "rust-admission-diagnostics-and-proof-transport-cce761ad": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "zerocopy PR stack source"
+        },
+        {
+          "identity": {
+            "repository": "smtcoq/smtcoq",
+            "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+          },
+          "name": "SMTCoq"
+        },
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+          },
+          "name": "Carcara"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/LFSC",
+            "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+          },
+          "name": "LFSC checker"
+        }
+      ],
+      "topics": [
+        "rust/admission",
+        "verification/diagnostics",
+        "verification/specification-adequacy",
+        "verification/proof-transport",
+        "verification/smt-certificates",
+        "verification/effects"
+      ]
+    },
     "rust-aggregate-layout-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -21797,6 +22266,48 @@
         "rust/maybe-uninit"
       ]
     },
+    "rust-resource-primitive-matrix-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          },
+          "name": "VeriFast source"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus source"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          },
+          "name": "Creusot source"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13727v1",
+            "sha256": "db6fafe5642384c302868138529796c28a4a90eb6c944ecead089a6b85060fc6",
+            "url": "https://arxiv.org/pdf/2601.13727v1"
+          },
+          "name": "VeriFast foundational preprint v1"
+        }
+      ],
+      "topics": [
+        "rust/verifast",
+        "rust/verus",
+        "rust/creusot",
+        "verification/permissions",
+        "rust/unsafe",
+        "verification/trust"
+      ]
+    },
     "rust-safety-boundary-completeness-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -22745,6 +23256,54 @@
         "lean/bitvectors",
         "proof/certificates",
         "proof/evaluation"
+      ]
+    },
+    "scalars-values-storage-and-access-side-conditions": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust core pointer, initialization and cell contracts"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          },
+          "name": "Charon value/type import"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          },
+          "name": "Aeneas scalar model and symbolic conversion"
+        },
+        {
+          "identity": {
+            "paths": "anneal/lean/Rust/Memory.lean;anneal/lean/Rust/Storage.lean;verification/aeneas/SEMANTICS.md",
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Rust mathematical memory/storage and consumer semantics"
+        }
+      ],
+      "topics": [
+        "rust/semantics",
+        "anneal/correspondence",
+        "certificates/values",
+        "certificates/memory",
+        "rust/provenance"
       ]
     },
     "sel4-compcert-everest-current-source-review": {

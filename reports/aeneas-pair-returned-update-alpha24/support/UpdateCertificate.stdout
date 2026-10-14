@@ -1,0 +1,7 @@
+'ActualBorrowCertificate.choose_emitted' does not depend on any axioms
+'ActualBorrowCertificate.update_emitted' does not depend on any axioms
+'ActualBorrowCertificate.update_state' depends on axioms: [propext, Quot.sound]
+'ActualBorrowCertificate.returned_update_correspondence' depends on axioms: [propext, Quot.sound]
+'ActualBorrowCertificate.source_place_heap' depends on axioms: [propext]
+'ActualBorrowCertificate.denied' depends on axioms: [propext]
+'ActualBorrowCertificate.missing_root' depends on axioms: [propext, Quot.sound]

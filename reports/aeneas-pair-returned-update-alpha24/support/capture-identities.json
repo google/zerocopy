@@ -1,0 +1,66 @@
+{
+  "generated_files": {
+    "CapturedTypes.lean": {
+      "original_name": "Types.lean",
+      "original_sha256": "b3352ebbf861ad4a9632309a0d5cfb5f681b8fa6445c2c9f269ff5938e9ec87c",
+      "preserved_sha256": "b3352ebbf861ad4a9632309a0d5cfb5f681b8fa6445c2c9f269ff5938e9ec87c",
+      "changes": []
+    },
+    "CapturedFuns.lean": {
+      "original_name": "Funs.lean",
+      "original_sha256": "49bf2942582fd8917e12d1b4d7a7e746c40002aff8657f57a2649036151a362b",
+      "preserved_sha256": "d3219ecce2054d262dab359e9746aad34e6702da7229afc5ac468fc3f575e333",
+      "changes": [
+        "source path comment replaced with probe.rs",
+        "import Aeneas.Types replaced with CapturedTypes; definitions byte-identical"
+      ]
+    }
+  },
+  "definition_bodies": {
+    "choose": {
+      "sha256": "a70befa78196f8a0aa9c580c3d685539c1e9fa476ae86eee31d48d7031b2846f",
+      "text": "def choose (b : Bool) (x : Std.U8) (y : Std.U8) : Result Std.U8 := do\n  if b\n  then ok x\n  else ok y"
+    },
+    "update_second": {
+      "sha256": "1f24c24377eacffcef3cebb1a9fccf3923542e1ab88f56673765669c91e7876b",
+      "text": "def update_second\n  (p : (Std.U8 \u00d7 Std.U8)) (x : Std.U8) : Result (Std.U8 \u00d7 Std.U8) := do\n  let (i, _) := p\n  ok (i, x)"
+    }
+  },
+  "selected_final_decl_sha256": "571238578c9aee918584c353576e335b348596fa0f4cbd72973fa1e511baadeb",
+  "selected_raw_decl_sha256": "24df7f0beb386d1c2c70cadd10ff3740c82ab52add1c6a98c243cbc0135d4e7d",
+  "original_final_export_sha256": "1337e82833904551d1762437233ad1d80edbb4579735790adcecb6ceda1d5764",
+  "original_raw_export_sha256": "6eaeff5984f14a4a081b9573f58e9f852bd41e2fb3c7c1e90954f8ff54476196",
+  "source_sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0",
+  "backend_primary_units": {
+    "Aeneas/Std/Scalar/Core.lean": {
+      "sha256": "a1c26c125a59bba635a2b2c170186ce07168c43308bcf386d508ebd77f01520e"
+    },
+    "Aeneas/Std/Primitives.lean": {
+      "sha256": "2cbadace8cbea9f8dc2da0baca4f03b80f6d35054a4b58622dd1675700ecbbb2"
+    },
+    "lake-manifest.json": {
+      "sha256": "5f967f3cf08a398378f1c7a6993ba6c86d8a4ab83efa57bbbf3dbc68a943482d"
+    }
+  },
+  "operational_run": {
+    "exit": 0,
+    "argv": [
+      "$ALPHA24_RUNTIME/aeneas/bin/aeneas",
+      "-backend",
+      "lean",
+      "-namespace",
+      "CertificateProbe",
+      "-dest",
+      "$CAPTURE/generated",
+      "-split-files",
+      "-no-progress-bar",
+      "$CAPTURE/aeneas.llbc"
+    ],
+    "stdout_bytes": 541,
+    "stderr_bytes": 0,
+    "aeneas_sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e",
+    "gmp_static_sha256": "a41cc2b25b6b7d261aa43b80f9d0674ccfd90a583d74d79fd28bcfa596a816cd",
+    "gmp_derived_dylib_sha256": "a3e3163b12a1e3b9544b8ad164096e2623c088aa35738067921185bb560bb62e",
+    "recovery": "Missing dylib repaired only in task-owned runtime by clang -dynamiclib -Wl,-all_load on the exact archive GMP static library; original downloaded archive unchanged. No program body or admission check was changed."
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "valid": true,
+  "raw_graph": [
+    {
+      "ops": [
+        [
+          "live",
+          4
+        ],
+        [
+          "copy",
+          4,
+          1
+        ]
+      ],
+      "term": [
+        "branch",
+        4,
+        1,
+        2
+      ]
+    },
+    {
+      "ops": [
+        [
+          "copy",
+          0,
+          2
+        ]
+      ],
+      "term": [
+        "jump",
+        3
+      ]
+    },
+    {
+      "ops": [
+        [
+          "copy",
+          0,
+          3
+        ]
+      ],
+      "term": [
+        "jump",
+        3
+      ]
+    },
+    {
+      "ops": [
+        [
+          "dead",
+          4
+        ]
+      ],
+      "term": [
+        "ret"
+      ]
+    }
+  ],
+  "final_fork": {
+    "pre": [
+      [
+        "live",
+        4
+      ],
+      [
+        "copy",
+        4,
+        1
+      ]
+    ],
+    "condition": 4,
+    "yes": [
+      [
+        "copy",
+        0,
+        2
+      ]
+    ],
+    "no": [
+      [
+        "copy",
+        0,
+        3
+      ]
+    ],
+    "post": [
+      [
+        "dead",
+        4
+      ]
+    ]
+  },
+  "all_selected_json_fields_validated": true,
+  "mutations": [
+    {
+      "case": "unknown-opcode",
+      "accepted": false
+    },
+    {
+      "case": "wrong-local-type",
+      "accepted": false
+    },
+    {
+      "case": "missing-storage-dead",
+      "accepted": false
+    },
+    {
+      "case": "unknown-semantic-field",
+      "accepted": false
+    },
+    {
+      "case": "missing-dependency-body",
+      "accepted": false
+    },
+    {
+      "case": "well-formed-wrong-branch",
+      "accepted": false,
+      "reason": "decoded term differs; kernel counterexample retained"
+    }
+  ],
+  "trust": "Python JSON/text capture is unverified; endpoint semantics and nop elimination are kernel checked; stage labels are not authenticated provenance"
+}

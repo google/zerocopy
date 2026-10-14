@@ -1,0 +1,7 @@
+[
+  {
+    "artifact": "admission-control-results.json",
+    "raw_observation_sha256": "f96ff0fab3fbb955905de8bfbf507aadbb9ece5719226a0342606a2a61cfe5d8",
+    "normalization": "task-local command paths replaced with package-relative paths or <pinned-checkout>; statuses, source identities and program output preserved"
+  }
+]

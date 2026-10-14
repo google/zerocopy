@@ -1,0 +1,96 @@
+{
+  "captured_files": {
+    "raw.sanitized.ullbc": {
+      "original_name": "raw.ullbc",
+      "original_sha256": "6eaeff5984f14a4a081b9573f58e9f852bd41e2fb3c7c1e90954f8ff54476196",
+      "preserved_sha256": "2d3407cff2196ef76037e9828861c1e3d8d78cda78e6df5b26d8abf3d721fc2b",
+      "path_sanitization": "task parent becomes $CAPTURE; workspace becomes $WORKSPACE; nonsemantic paths only"
+    },
+    "final.sanitized.llbc": {
+      "original_name": "aeneas.llbc",
+      "original_sha256": "1337e82833904551d1762437233ad1d80edbb4579735790adcecb6ceda1d5764",
+      "preserved_sha256": "6f88486a243e6fdbb28b39cf4653b43e8d14d3a022d16810178af9de4071cdc3",
+      "path_sanitization": "task parent becomes $CAPTURE; workspace becomes $WORKSPACE; nonsemantic paths only"
+    },
+    "probe.rs": {
+      "original_name": "probe.rs",
+      "original_sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0",
+      "preserved_sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0",
+      "path_sanitization": "none"
+    },
+    "aeneas.stdout": {
+      "original_name": "aeneas.stdout",
+      "original_sha256": "740e6570e35ac34832bd1c5a9d7638707d8e4965fd994d1bd630d28fb5321f47",
+      "preserved_sha256": "740e6570e35ac34832bd1c5a9d7638707d8e4965fd994d1bd630d28fb5321f47",
+      "path_sanitization": "none"
+    },
+    "aeneas.stderr": {
+      "original_name": "aeneas.stderr",
+      "original_sha256": "314c29961b9f67a02d838ef2e5464c047c621e188ee277b84775a93f00a559f5",
+      "preserved_sha256": "314c29961b9f67a02d838ef2e5464c047c621e188ee277b84775a93f00a559f5",
+      "path_sanitization": "none"
+    }
+  },
+  "operational_logs": {
+    "records": [
+      {
+        "mode": "raw",
+        "argv": [
+          "$WORKSPACE/work/toolchains/anneal-alpha24/runtime/aeneas/bin/charon",
+          "rustc",
+          "--mir",
+          "promoted",
+          "--no-dedup-serialized-ast",
+          "--dest-file",
+          "$CAPTURE/raw.ullbc",
+          "--error-on-warnings",
+          "--preset=raw-mir",
+          "--ullbc",
+          "--",
+          "--crate-type=lib",
+          "--edition=2021",
+          "--crate-name",
+          "certificate_probe",
+          "$CAPTURE/probe.rs",
+          "--sysroot",
+          "$WORKSPACE/work/toolchains/anneal-alpha24/runtime/rust"
+        ],
+        "exit": 0,
+        "stdout_bytes": 0,
+        "stderr_bytes": 0
+      },
+      {
+        "mode": "aeneas",
+        "argv": [
+          "$WORKSPACE/work/toolchains/anneal-alpha24/runtime/aeneas/bin/charon",
+          "rustc",
+          "--mir",
+          "promoted",
+          "--no-dedup-serialized-ast",
+          "--dest-file",
+          "$CAPTURE/aeneas.llbc",
+          "--error-on-warnings",
+          "--preset=aeneas",
+          "--print-original-ullbc",
+          "--print-ullbc",
+          "--print-built-llbc",
+          "--print-llbc",
+          "--",
+          "--crate-type=lib",
+          "--edition=2021",
+          "--crate-name",
+          "certificate_probe",
+          "$CAPTURE/probe.rs",
+          "--sysroot",
+          "$WORKSPACE/work/toolchains/anneal-alpha24/runtime/rust"
+        ],
+        "exit": 0,
+        "stdout_bytes": 2691,
+        "stderr_bytes": 829
+      }
+    ],
+    "source_sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0",
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "trusted_frontier": "published rustc/Charon import; no source correspondence certificate yet"
+  }
+}

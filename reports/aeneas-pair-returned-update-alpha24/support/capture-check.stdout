@@ -1,0 +1,1 @@
+{"accepted": true, "exact_specimens": true, "operation_order": ["unit:0", "live:3", "copy:2:3", "write:deref-1:field-1:move-3", "dead:3", "unit:0", "return:0"], "wrong_field_fingerprint_rejected": true, "trust": "Python exact-data/definition capture; Rust import and exclusive permission remain assumed"}

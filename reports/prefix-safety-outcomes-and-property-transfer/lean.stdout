@@ -1,0 +1,5 @@
+'PrefixCertificate.Certificate.reflectSafety' does not depend on any axioms
+'PrefixCertificate.Certificate.compose' does not depend on any axioms
+'PrefixCertificate.Certificate.coverAllInputs' does not depend on any axioms
+'PrefixCertificate.sourceHasInfiniteChain' does not depend on any axioms
+'PrefixCertificate.cannotHideInitialBad' does not depend on any axioms

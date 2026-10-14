@@ -1,0 +1,181 @@
+{
+  "role": "source/documentation",
+  "records": [
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "docs/rust-reference/src/intro.md",
+      "git_blob_sha": "14f711bb0aa3f2c394ea2608d56291fe1103720d",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/docs/rust-reference/src/intro.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "docs/rust-reference/src/non-unsafe-funcs.md",
+      "git_blob_sha": "4a0acb0960b74a38e781eec91b232a752c4a0f25",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/docs/rust-reference/src/non-unsafe-funcs.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "docs/rust-reference/src/lifetime-logic.md",
+      "git_blob_sha": "86f592b967a25eef42d0602f0422dd5632ada3c8",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/docs/rust-reference/src/lifetime-logic.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "docs/rust-reference/src/rusts-aliasing-rules.md",
+      "git_blob_sha": "fb150b93651722ea92744e22447619bf72bab7e8",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/docs/rust-reference/src/rusts-aliasing-rules.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/rust_belt/lifetime_logic.rsspec",
+      "git_blob_sha": "c7fa9baec0c8bf510800205f520980c769acb1cb",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/rust_belt/lifetime_logic.rsspec",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/rust_belt/aliasing.rsspec",
+      "git_blob_sha": "78192f1197a01b2e601a2cd302eece815898ffc3",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/rust_belt/aliasing.rsspec",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/aliasing.rsspec",
+      "git_blob_sha": "e9864ee0f618681a334d54c54a76b94fc438b912",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/aliasing.rsspec",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/rocq/AxSem.v",
+      "git_blob_sha": "ff8ad5dd7121fb424734af379ce6f5b390745aa5",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/rocq/AxSem.v",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/rocq/SymexSoundness.v",
+      "git_blob_sha": "e7cb1b91e16187aeee0d2c64d0c5fbcb865477ac",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/rocq/SymexSoundness.v",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "src/rust_frontend/vf_mir_translator/vf_mir_rocq.ml",
+      "git_blob_sha": "b381d8132c5fa0376b5b38a34947fd1a9c75e29f",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/src/rust_frontend/vf_mir_translator/vf_mir_rocq.ml",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "bin/rust/std/lib.rsspec",
+      "git_blob_sha": "a5d925d67c7934105a7a95c532c84edee8f3afd4",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/bin/rust/std/lib.rsspec",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verifast/verifast",
+      "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc",
+      "path": "tests/rust/safe_abstraction/mutex.rs",
+      "git_blob_sha": "85e03f11ccd30488924271962a880cdbf2a6fe56",
+      "url": "https://github.com/verifast/verifast/blob/0a83dba42db7ce0b445034ece5298afe980e57dc/tests/rust/safe_abstraction/mutex.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/rust_verify/src/rust_to_vir_expr.rs",
+      "git_blob_sha": "68e47782d31ae67bbf3af979ebb15b43088cbf97",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/rust_verify/src/rust_to_vir_expr.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/vstd/raw_ptr.rs",
+      "git_blob_sha": "b5fede9da14044826b20a22bbb932415b5e4727a",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/raw_ptr.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/vstd/atomic.rs",
+      "git_blob_sha": "ae8c4081b6559c9aec47aff480f1da8f8764e7ef",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/atomic.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "creusot-rs/creusot",
+      "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+      "path": "creusot/src/backend/program.rs",
+      "git_blob_sha": "bb21006283320b397a12e4350e1dca24e9470398",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot/src/backend/program.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "creusot-rs/creusot",
+      "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+      "path": "creusot-std/src/std/ptr.rs",
+      "git_blob_sha": "9b59bd0aee99d00d40ab785504c124452230852f",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/ptr.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "creusot-rs/creusot",
+      "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+      "path": "creusot-std/src/std/sync/atomic.rs",
+      "git_blob_sha": "b031a881b98df6e4a6006321cb329ac93c292ad4",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/sync/atomic.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/vstd/cell.rs",
+      "git_blob_sha": "4f7e1a0c1c3947b2e646cbb2ac81ca00ef7bbe70",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/cell.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/vstd/cell/pcell.rs",
+      "git_blob_sha": "bb361a00ee5114ed9f713b81846fae8de6471f0f",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/cell/pcell.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "verus-lang/verus",
+      "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+      "path": "source/vstd/cell/pcell_maybe_uninit.rs",
+      "git_blob_sha": "4a69dfbd3dffdd0e287eb33216d994634a867abc",
+      "url": "https://github.com/verus-lang/verus/blob/0141ebc6f14410dfc87fef1da57408578002eb7c/source/vstd/cell/pcell_maybe_uninit.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "creusot-rs/creusot",
+      "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+      "path": "creusot-std/src/std/cell.rs",
+      "git_blob_sha": "248a9d21ef41c9aaf9095cb6c8b0e0a3bfe68bf3",
+      "url": "https://github.com/creusot-rs/creusot/blob/c4e9770ac1371ac4274bfe02145266d315c2fb86/creusot-std/src/std/cell.rs",
+      "observed_at": "2026-10-14"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+theorem CharonFork.captured_claim : sourceIdentity =
+    "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0" ∧
+  originalExportIdentity = "6eaeff5984f14a4a081b9573f58e9f852bd41e2fb3c7c1e90954f8ff54476196" ∧
+    finalExportIdentity = "1337e82833904551d1762437233ad1d80edbb4579735790adcecb6ceda1d5764" ∧
+      ∀ (fuel : Nat) (state : State), runCFG selectedBefore (fuel + 3) 0 state = runStructured selectedAfter state :=
+⟨rfl, ⟨rfl, ⟨rfl, fun fuel state => graph_fork raw fuel state⟩⟩⟩
+'CharonFork.captured_claim' depends on axioms: [propext, Quot.sound]

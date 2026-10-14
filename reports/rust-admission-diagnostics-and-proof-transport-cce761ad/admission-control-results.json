@@ -1,0 +1,78 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-B",
+    "./run-admission-controls.py",
+    "<pinned-checkout>/verification/aeneas"
+  ],
+  "source_directory": "<pinned-checkout>/verification/aeneas",
+  "selection": {
+    "test_admission.AdmissionTests": [
+      "test_abstract_dispatch_is_an_exact_declared_generic_input",
+      "test_trait_impl_methods_remain_executable_admission_roots",
+      "test_missing_registration_is_not_an_opaque_success",
+      "test_drop_before_cleanup_and_on_unwind_is_rejected",
+      "test_new_operations_attributes_and_configuration_fail_closed",
+      "test_ub_abort_must_not_become_unwind_termination"
+    ],
+    "test_trait_invariants.TraitBindingsTests": [
+      "test_native_mapping_requires_complete_exact_dictionary_identity",
+      "test_every_local_impl_requires_binding_and_proof_selection",
+      "test_array_impl_retains_usize_const_and_original_application",
+      "test_const_expressions_and_non_usize_lengths_fail_closed"
+    ]
+  },
+  "python": "3.14.8 (main, Sep 30 2026, 17:55:09) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "tests_run": 10,
+  "successful": true,
+  "output": "test_abstract_dispatch_is_an_exact_declared_generic_input (test_admission.AdmissionTests.test_abstract_dispatch_is_an_exact_declared_generic_input) ... ok\ntest_trait_impl_methods_remain_executable_admission_roots (test_admission.AdmissionTests.test_trait_impl_methods_remain_executable_admission_roots) ... ok\ntest_missing_registration_is_not_an_opaque_success (test_admission.AdmissionTests.test_missing_registration_is_not_an_opaque_success) ... ok\ntest_drop_before_cleanup_and_on_unwind_is_rejected (test_admission.AdmissionTests.test_drop_before_cleanup_and_on_unwind_is_rejected) ... ok\ntest_new_operations_attributes_and_configuration_fail_closed (test_admission.AdmissionTests.test_new_operations_attributes_and_configuration_fail_closed) ... ok\ntest_ub_abort_must_not_become_unwind_termination (test_admission.AdmissionTests.test_ub_abort_must_not_become_unwind_termination) ... ok\ntest_native_mapping_requires_complete_exact_dictionary_identity (test_trait_invariants.TraitBindingsTests.test_native_mapping_requires_complete_exact_dictionary_identity) ... ok\ntest_every_local_impl_requires_binding_and_proof_selection (test_trait_invariants.TraitBindingsTests.test_every_local_impl_requires_binding_and_proof_selection) ... ok\ntest_array_impl_retains_usize_const_and_original_application (test_trait_invariants.TraitBindingsTests.test_array_impl_retains_usize_const_and_original_application) ... ok\ntest_const_expressions_and_non_usize_lengths_fail_closed (test_trait_invariants.TraitBindingsTests.test_const_expressions_and_non_usize_lengths_fail_closed) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.010s\n\nOK\n",
+  "source_files": [
+    {
+      "module": "source_inventory",
+      "path": "source_inventory.py",
+      "sha256": "630fc9c18d2d92b99db46548d05f2b36d756d944aeb8715e6ae00378de54d0f9"
+    },
+    {
+      "module": "admission",
+      "path": "admission.py",
+      "sha256": "1625e9af7c6ce3542a4e966a2584f4c2c3a5a88cc699513aed445fdc39cdbb9e"
+    },
+    {
+      "module": "test_admission",
+      "path": "tests/test_admission.py",
+      "sha256": "da6d1ecba544ab23196ae3b18fa39ae70dbbf73bfb14e21d2602d59e3a65bdd1"
+    },
+    {
+      "module": "golden",
+      "path": "golden.py",
+      "sha256": "29f1b38925c6d5de6a1093de443bd4a10f65ba6d09150b2488a3543d1da8024c"
+    },
+    {
+      "module": "copy_back",
+      "path": "copy_back.py",
+      "sha256": "06b562e6411e7226fffce343b9578800a8c4e0134f3bdd8b7017e736c279d9c9"
+    },
+    {
+      "module": "workspace",
+      "path": "workspace.py",
+      "sha256": "d18974fb785bd40f9abb45fe7ede73a451cc703a3fc5733632d5351f87781699"
+    },
+    {
+      "module": "trait_invariants",
+      "path": "trait_invariants.py",
+      "sha256": "055ffe9b4b8333fa6b8b80725d37323795037db444567c47f9c6340aa4b3e867"
+    },
+    {
+      "module": "inline",
+      "path": "inline.py",
+      "sha256": "7acaa8ab35d0e81091e5e9d83c7e1abed5a73fc46aff7d0bb0a632dd8396dc04"
+    },
+    {
+      "module": "test_trait_invariants",
+      "path": "tests/test_trait_invariants.py",
+      "sha256": "5705c29b808dbcdd1233b719f70bc216a4c4b34e34691a6fa01b27bdcb01e0b9"
+    }
+  ]
+}

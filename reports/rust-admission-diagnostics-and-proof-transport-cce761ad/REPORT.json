@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "rust/admission",
+    "verification/diagnostics",
+    "verification/specification-adequacy",
+    "verification/proof-transport",
+    "verification/smt-certificates",
+    "verification/effects"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy PR stack source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    },
+    {
+      "name": "SMTCoq",
+      "identity": {
+        "repository": "smtcoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "Carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "LFSC checker",
+      "identity": {
+        "repository": "cvc5/LFSC",
+        "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

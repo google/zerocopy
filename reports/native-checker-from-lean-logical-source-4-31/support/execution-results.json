@@ -1,0 +1,89 @@
+{
+  "fixtures": 10,
+  "fixture_exit": 0,
+  "fixture_seconds": 1.012907833,
+  "timing_samples": [
+    {
+      "route": "native-one-input",
+      "sample": 0,
+      "seconds": 0.022533833000000003
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 0,
+      "seconds": 2.429149208
+    },
+    {
+      "route": "native-one-input",
+      "sample": 1,
+      "seconds": 0.021771415999999988
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 1,
+      "seconds": 0.4784793749999996
+    },
+    {
+      "route": "native-one-input",
+      "sample": 2,
+      "seconds": 0.021762666999999958
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 2,
+      "seconds": 0.48507374999999975
+    },
+    {
+      "route": "native-one-input",
+      "sample": 3,
+      "seconds": 0.021043167000000196
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 3,
+      "seconds": 0.4309082909999997
+    },
+    {
+      "route": "native-one-input",
+      "sample": 4,
+      "seconds": 0.02099670899999939
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 4,
+      "seconds": 0.43743820800000055
+    },
+    {
+      "route": "native-one-input",
+      "sample": 5,
+      "seconds": 0.021403375000000224
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 5,
+      "seconds": 0.5133035829999999
+    },
+    {
+      "route": "native-one-input",
+      "sample": 6,
+      "seconds": 0.022031916999999623
+    },
+    {
+      "route": "lean-elaborate-kernel-one-input",
+      "sample": 6,
+      "seconds": 0.48093279199999994
+    }
+  ],
+  "batch": {
+    "inputs": 2000,
+    "accepted": 1000,
+    "rejected": 1000,
+    "seconds": 0.02535345800000055,
+    "exit": 0
+  },
+  "medians_seconds": {
+    "native-one-input": 0.021762666999999958,
+    "lean-elaborate-kernel-one-input": 0.48093279199999994
+  },
+  "limits": "fresh-process wall time on one host; warm filesystem/OS caches; Lean includes elaboration/import/kernel replay, native includes parser/IO/runtime startup; no proof of compiled binary equivalence"
+}

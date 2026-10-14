@@ -1,0 +1,88 @@
+{
+  "host": "macOS-27.0.1-arm64-arm-64bit",
+  "artifacts": {
+    "lean4-31": {
+      "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "artifact": "lean",
+      "version_stdout": "Lean (version 4.31.0, arm64-apple-darwin24.6.0, commit 68218e876d2a38b1985b8590fff244a83c321783, Release)\n",
+      "version_exit": 0
+    },
+    "leanc4-31": {
+      "sha256": "ed65823bba1ffbab1c386ec9b013091fe427a56b50a0beef1eab5bed1a3523a3",
+      "artifact": "leanc"
+    },
+    "clang4-31": {
+      "sha256": "8102961733340abb794cb5bfb9e12aae058b1a219a4c89667ca0eee0b19036e3",
+      "artifact": "clang"
+    },
+    "ld64-lld4-31": {
+      "sha256": "d09711605cd430843975f2960ee7d3234e205eeaaa99ed5906109ee85848fffd",
+      "artifact": "ld64.lld"
+    },
+    "lean4-30rc2": {
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "artifact": "lean",
+      "version_stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+      "version_exit": 0
+    },
+    "rustc1-98nightly": {
+      "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "artifact": "rustc",
+      "version_stdout": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n",
+      "version_exit": 0
+    },
+    "charon0-1-210": {
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "artifact": "charon"
+    },
+    "aeneas-alpha24": {
+      "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e",
+      "artifact": "aeneas"
+    },
+    "native-checker": {
+      "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173",
+      "artifact": "checker"
+    },
+    "legacy-native-control": {
+      "sha256": "473456d327d2f7905b9fcaab0cf5109f1157527af686249bc792291d2974a870",
+      "artifact": "legacy-native-control"
+    },
+    "lean4-31:lib/lean/libleanshared.dylib": {
+      "sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+      "artifact": "lib/lean/libleanshared.dylib"
+    },
+    "lean4-31:lib/lean/libleanrt.a": {
+      "sha256": "76b084b928de28d0857f779458fb02e3fed37752904465cecf366d58a5fa7878",
+      "artifact": "lib/lean/libleanrt.a"
+    },
+    "lean4-31:lib/lean/libInit.a": {
+      "sha256": "17c5e15bcc4309b45f1da0f1e4e19a5627ba3a391040f2eb1850b2a67df97cd8",
+      "artifact": "lib/lean/libInit.a"
+    },
+    "lean4-31:lib/lean/libLean.a": {
+      "sha256": "85ad31d2e65f5f94d83172b0205aa2463c44c8b39af6e7361d4887d855fa4826",
+      "artifact": "lib/lean/libLean.a"
+    },
+    "lean4-30rc2:lib/lean/libleanshared.dylib": {
+      "sha256": "1adcb76f033ea295822da60639002f91e2bd9e590e84acf432e997f388e19484",
+      "artifact": "lib/lean/libleanshared.dylib"
+    },
+    "lean4-30rc2:lib/lean/libleanrt.a": {
+      "sha256": "ec89097812894ff691b152a52ae7e21038327d53aad2369bf912bfdf91d69305",
+      "artifact": "lib/lean/libleanrt.a"
+    },
+    "lean4-30rc2:lib/lean/libInit.a": {
+      "sha256": "612eed2c01a8f75ddc7b85e03b15eac0e5d413617a16667c9f3d4b98a31f7c01",
+      "artifact": "lib/lean/libInit.a"
+    },
+    "lean4-30rc2:lib/lean/libLean.a": {
+      "sha256": "ad1c358b2751c442fbee83d36f140548a3482b418bab57e1d82bdf0d66124ae6",
+      "artifact": "lib/lean/libLean.a"
+    }
+  },
+  "native_dependency_inspection": {
+    "exit": 0,
+    "stdout": "$SCRATCH/intermediate/checker:\n\t/usr/lib/libc++.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+    "stderr": ""
+  }
+}

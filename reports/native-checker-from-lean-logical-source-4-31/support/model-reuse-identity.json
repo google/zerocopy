@@ -1,0 +1,6 @@
+{
+  "original_sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3",
+  "adapted_sha256": "905881b77b8f455ff400760f2c5d7796ffff450a574b7c36a62135f1ca6387c7",
+  "adaptation": "added module and public section headers only; logical bodies unchanged",
+  "original_model_subject": "earlier report-owned arithmetic prototype"
+}

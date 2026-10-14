@@ -1,0 +1,111 @@
+{
+  "agenda": "../anneal-research-agenda-2026-10-14/research-questions.json",
+  "observed_at": "2026-10-14",
+  "scope": "bounded primary-source gap wave; status is research scope, not future implementation completion",
+  "entries": [
+    {
+      "id": "R079",
+      "question": "Design and evaluate ways to express ownership, lifetimes, permissions, invariants, and protocols without requiring prover expertise.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Result categories and concrete diagnostic surface",
+        "F2. Executed admission and dictionary controls"
+      ],
+      "answered_subquestions": [
+        "Source-oriented existing diagnostic mapping and explicit obligation/failure/resource interface design constraints."
+      ],
+      "remaining_research": [
+        "Ordinary-user ergonomics/protocol-authoring design evaluation and user measurements are not performed."
+      ],
+      "future_engineering": [
+        "Prototype the suggested records/editor interaction and evaluate with ordinary Rust users."
+      ]
+    },
+    {
+      "id": "R081",
+      "question": "Trace failed obligations back to Rust operations; distinguish actual counterexamples, unsupported semantics, and incomplete automation.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Result categories and concrete diagnostic surface",
+        "F2. Executed admission and dictionary controls"
+      ],
+      "answered_subquestions": [
+        "Actual source-map implementation, status preservation, unsupported admission versus proof/counterexample versus operational distinction; executed rejection controls."
+      ],
+      "remaining_research": [
+        "End-to-end failed-Lean-to-native-Rust trace/counterexample validation is not executed or fully examined."
+      ],
+      "future_engineering": [
+        "Implement structured failure classifications and replay native counterexample witnesses."
+      ]
+    },
+    {
+      "id": "R082",
+      "question": "Test empty domains, impossible preconditions, missing execution roots, weakened postconditions, and independent negative controls.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Executed admission and dictionary controls",
+        "F3. Required contract strength and vacuity checks"
+      ],
+      "answered_subquestions": [
+        "Ten executed dictionary/root/effect/const controls; actual arbitrary-outcome required-strength check and source-only kernel/domain controls distinguished."
+      ],
+      "remaining_research": [
+        "Requested impossible/empty-domain and weakened-post kernel experiments are not executed; independent native entry-domain coverage remains open."
+      ],
+      "future_engineering": [
+        "Run valid baselines and independently selected negative controls on the full declared pipeline."
+      ]
+    },
+    {
+      "id": "R083",
+      "question": "Compare parameterized semantic models with global axioms; detect inconsistent contracts and distinguish data inputs from propositions.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F3. Required contract strength and vacuity checks",
+        "F4. Parameterized model data and logical assumptions"
+      ],
+      "answered_subquestions": [
+        "Retained provider/optional bit decoder; full physical initialization quantification; exact data-only ABI signatures and axiom audit versus assumed propositions; limits of consistency checking."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Establish model/source entry coverage and satisfiable constructor witnesses for the declared safe-client domain."
+      ]
+    },
+    {
+      "id": "R084",
+      "question": "Investigate Lean/Rocq transport, SMT certificates, SMTCoq, Alethe, and LFSC, including checking costs and remaining trust.",
+      "status": "partial",
+      "findings_sections": [
+        "F5. SMT certificate endpoints and transport premises"
+      ],
+      "answered_subquestions": [
+        "Direct SMTCoq theorem premises/conclusion; Carcara Valid/Holey/configuration bypass; LFSC signatures/assumptions/side-condition checker boundary; exact transport obligations."
+      ],
+      "remaining_research": [
+        "Complete Lean/Rocq transport theorem, Alethe supported-theory replay and checking-cost measurements are not established."
+      ],
+      "future_engineering": [
+        "Build a semantics-preserving VC/certificate import and benchmark exact supported examples."
+      ]
+    },
+    {
+      "id": "R085",
+      "question": "Separate UB, panic, abort, divergence, nondeterminism, I/O, spawning, and detached execution in compositional contracts.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Effects and unsafe-source adequacy boundary"
+      ],
+      "answered_subquestions": [
+        "Current fail/undef/panic-collapse and total/partial/divergence behavior; forbidden finite-prefix requirement; explicit unsupported recovery/spawn/raw/foreign effects."
+      ],
+      "remaining_research": [
+        "Full effect calculus for recovery/nondeterminism/IO/spawn/detach remains unexamined."
+      ],
+      "future_engineering": [
+        "Extend only with separate effects, child/environment resources and concrete operation correspondence."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "biabduction-popl2009",
+    "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf",
+    "resolved_url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf",
+    "bytes": 266199,
+    "sha256": "7d669d3bf3b446f88d050d8f7ca5c473ea26b0b89f106c3031b37604eca483c2",
+    "content_type": "application/pdf",
+    "observed_at": "2026-10-14",
+    "published_version": "POPL 2009 author copy, 12 pages",
+    "endpoints": [
+      "Theorem 4",
+      "Theorem 5",
+      "Theorem 9"
+    ]
+  }
+]

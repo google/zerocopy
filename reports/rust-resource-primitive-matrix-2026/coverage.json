@@ -1,0 +1,108 @@
+{
+  "agenda": "../anneal-research-agenda-2026-10-14/research-questions.json",
+  "observed_at": "2026-10-14",
+  "scope": "bounded primary-source gap wave; status is research scope, not future implementation completion",
+  "entries": [
+    {
+      "id": "R037",
+      "question": "Examine ownership predicates, lifetime handling, safe abstractions, concurrency, and correspondence to Rust's aliasing restrictions.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F2. VeriFast safe-function and alias contracts",
+        "F3. VeriFast foundational endpoint and admitted premises"
+      ],
+      "answered_subquestions": [
+        "Current own/share/lifetime and automatic safe-function contracts; conditional Send/Sync laws; documented shared-immutability coverage; actual foundational theorem target and admitted layer."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Run pinned examples and justify any native library specification used."
+      ]
+    },
+    {
+      "id": "R039",
+      "question": "Determine what can be verified in existing Rust, what requires rewritten code, and how executable output relates to verified input.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Common primitive matrix",
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F5. Creusot permissions and the ordering contrast"
+      ],
+      "answered_subquestions": [
+        "Accepted/rejected pointer-operation branches distinguish ordinary source reuse from wrappers; wrapper contracts and translation trust remain explicit."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Implement and verify a concrete zerocopy-to-wrapper transformation and executable relation."
+      ]
+    },
+    {
+      "id": "R040",
+      "question": "Examine permissions, provenance, initializedness, deallocation, aliasing, and unsupported operations at an exact revision.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning"
+      ],
+      "answered_subquestions": [
+        "Typed contents versus raw domain/provenance; init/unknown distinction; conversion/resource-transfer and explicitly rejected pointer operations."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Exercise byte/padding/layout allocation cases and establish a native memory relation."
+      ]
+    },
+    {
+      "id": "R041",
+      "question": "Study tracked values, ownership transfer, trusted primitives, and guarantees exposed to ordinary Rust clients.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F6. Interior mutability requires its own resource interface"
+      ],
+      "answered_subquestions": [
+        "Tracked noncopy transfer, external/axiomatic primitives, and ordinary safe-client precondition boundary; preferred PCell token and drop/SendSync meaning."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove open safe-wrapper entry/domain closure before ghost erasure."
+      ]
+    },
+    {
+      "id": "R042",
+      "question": "Examine state machines, invariants, atomic operations, supported memory ordering, and trusted concurrency interfaces.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Common primitive matrix",
+        "F5. Creusot permissions and the ordering contrast"
+      ],
+      "answered_subquestions": [
+        "Inspected fixed SeqCst wrapper versus ordering-parameterized Creusot protocol/feature choice; trusted operation and environment boundary."
+      ],
+      "remaining_research": [
+        "Exhaustive state-machine macro/invariant interfaces and all weak-memory operation variants remain unexamined."
+      ],
+      "future_engineering": [
+        "Verify chosen concurrent case against the exact ordering/environment contract."
+      ]
+    },
+    {
+      "id": "R044",
+      "question": "Audit current raw-pointer, interior-mutability, and atomic facilities separately from historically safe-Rust-focused descriptions.",
+      "status": "partial",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F5. Creusot permissions and the ordering contrast",
+        "F6. Interior mutability requires its own resource interface"
+      ],
+      "answered_subquestions": [
+        "Current raw-pointer, preferred Verus cell/token, Creusot ghost-only UnsafeCell specification and atomic interfaces are inspected separately from historical safe-Rust descriptions."
+      ],
+      "remaining_research": [
+        "Full executable Creusot interior-mutability wrapper and exhaustive raw byte-memory parity remain unexamined."
+      ],
+      "future_engineering": [
+        "Run minimally accepted current-tool cases; do not treat documentation as execution."
+      ]
+    }
+  ]
+}

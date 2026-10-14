@@ -1,0 +1,50 @@
+{
+  "pin": {
+    "repository": "facebook/infer",
+    "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+    "tree": "4f7e6c2b3f029825c7b06f415d61599e3c4be937",
+    "committed_at": "2019-08-05T17:34:58Z",
+    "tag": "v0.17.0"
+  },
+  "files": [
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Tabulation.mli",
+      "git_blob_sha": "e7b547fda05308292a35e1a0a989f4d67f4955a0",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Tabulation.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Prover.mli",
+      "git_blob_sha": "4f99b3404ebc7f119ee199231480f64749614e5f",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Prover.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Rearrange.mli",
+      "git_blob_sha": "409b9ec54967c9d84aaec5cbbc3a5240bbdd01ca",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Rearrange.mli",
+      "observed_at": "2026-10-14"
+    }
+  ],
+  "literature": {
+    "title": "Compositional Shape Analysis by means of Bi-Abduction",
+    "published_version": "POPL 2009, January 18–24, 2009; 12-page author copy",
+    "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf",
+    "endpoints": [
+      "Theorem 4: conditional abduction soundness",
+      "Theorem 5: successful missing/frame entailment",
+      "Theorem 9: inferred Hoare triples conditioned on atomic semantics"
+    ]
+  },
+  "current_path_failure": {
+    "path": "infer/src/biabduction",
+    "response": "404",
+    "classification": "directory inventory change; not proof of absence of all bi-abductive functionality"
+  }
+}

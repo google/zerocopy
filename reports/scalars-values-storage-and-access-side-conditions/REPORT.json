@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "rust/semantics",
+    "anneal/correspondence",
+    "certificates/values",
+    "certificates/memory",
+    "rust/provenance"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust core pointer, initialization and cell contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Charon value/type import",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas scalar model and symbolic conversion",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Rust mathematical memory/storage and consumer semantics",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "paths": "anneal/lean/Rust/Memory.lean;anneal/lean/Rust/Storage.lean;verification/aeneas/SEMANTICS.md"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

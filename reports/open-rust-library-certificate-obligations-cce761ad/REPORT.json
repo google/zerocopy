@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "rust/safe-abstraction",
+    "rust/type-invariants",
+    "rust/traits",
+    "rust/generics",
+    "verification/certificates",
+    "zerocopy/pointer"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy PR stack source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "RustBelt LambdaRust popl18 source",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+        "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+      }
+    },
+    {
+      "name": "Native safe client control compiler",
+      "identity": {
+        "tool": "rustc",
+        "version": "1.99.0",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "host": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

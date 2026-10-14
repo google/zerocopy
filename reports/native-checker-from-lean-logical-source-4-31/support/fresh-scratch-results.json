@@ -1,0 +1,33 @@
+[
+  {
+    "stage": "ArithmeticModel",
+    "exit": 0,
+    "seconds": 2.620742
+  },
+  {
+    "stage": "CheckerMain",
+    "exit": 0,
+    "seconds": 0.4917158330000002
+  },
+  {
+    "stage": "kernel",
+    "exit": 0,
+    "seconds": 0.4066934999999998
+  },
+  {
+    "stage": "one-kernel",
+    "exit": 0,
+    "seconds": 0.43635500000000027
+  },
+  {
+    "stage": "link",
+    "exit": 0,
+    "seconds": 1.912880167
+  },
+  {
+    "stage": "native-fixtures",
+    "exit": 0,
+    "seconds": 1.1603938749999996,
+    "cases": 10
+  }
+]

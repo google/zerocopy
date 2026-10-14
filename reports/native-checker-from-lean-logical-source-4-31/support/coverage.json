@@ -1,0 +1,58 @@
+{
+  "entries": [
+    {
+      "id": "T112",
+      "title": "A small verified Anneal certificate checker",
+      "question": "Compare a proved executable validator with replay through a general-purpose proof kernel.",
+      "assignment": "assigned",
+      "scope": "full",
+      "packages": [
+        "native-checker-from-lean-logical-source-4-31"
+      ],
+      "answered_research_scope": [
+        "Proved logical Boolean validator, actual derived native execution and exact kernel replay on the same selected arithmetic property/domain; assumptions, compiler/parser/IO frontier, mutation verdicts and sampled costs compared."
+      ],
+      "unanswered_research_scope": [],
+      "future_engineering_obligations": [
+        "Native acceptance needs an explicit trusted compiler/runtime/parser bridge policy or a verified bridge theorem."
+      ]
+    },
+    {
+      "id": "P120",
+      "title": "Proof-producing generation of checker implementations",
+      "question": "Explore deriving executable checkers from verified logical definitions; this connects compilation research directly to Anneal\u2019s internal TCB.",
+      "assignment": "assigned",
+      "scope": "full",
+      "packages": [
+        "native-checker-from-lean-logical-source-4-31"
+      ],
+      "answered_research_scope": [
+        "Actual executable derivation from a proved logical definition through Lean C plus native backend; theorem versus compiler/runtime/parser/IO trust endpoints and integration costs identified."
+      ],
+      "unanswered_research_scope": [],
+      "future_engineering_obligations": [
+        "Provide verified code generation if native verdicts are to replace kernel authority without new compiler trust."
+      ]
+    },
+    {
+      "id": "P136",
+      "title": "A generated checker implementation prototype",
+      "question": "Compare kernel checking with a proof-produced executable checker; measure actual trust reduction alongside performance and integration costs.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "native-checker-from-lean-logical-source-4-31"
+      ],
+      "answered_research_scope": [
+        "Actual native checker built from proved Lean logical source versus kernel replay; valid/invalid execution, generated C/tool/binary identities, observed timings and exact remaining compiler/runtime/parser frontier."
+      ],
+      "unanswered_research_scope": [
+        "A proof-produced executable/native-code theorem and its actual trust-reduction measurement."
+      ],
+      "future_engineering_obligations": [
+        "Use an independently verified code-generation route or explicitly retain compiler/runtime trust."
+      ]
+    }
+  ],
+  "scope_policy": "full identifies a completed bounded research answer with stated frontiers; partial preserves genuinely unanswered question scope. Integration/adequacy implementation obligations are recorded separately. No global tracker completion is authorized by this file."
+}

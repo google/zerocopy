@@ -1,0 +1,47 @@
+[
+  {
+    "stage": "capture",
+    "exit": 0,
+    "seconds": 0.030099292
+  },
+  {
+    "stage": "CapturedTypes",
+    "exit": 0,
+    "seconds": 9.919771
+  },
+  {
+    "stage": "CapturedFuns",
+    "exit": 0,
+    "seconds": 1.6510858750000015
+  },
+  {
+    "stage": "UpdateCertificate",
+    "exit": 0,
+    "seconds": 1.725533917
+  },
+  {
+    "stage": "ConcreteCounterexamples",
+    "exit": 0,
+    "seconds": 1.5766667919999993
+  },
+  {
+    "stage": "WrongChoose",
+    "exit": 1,
+    "seconds": 1.7644969160000006
+  },
+  {
+    "stage": "WrongUpdate",
+    "exit": 1,
+    "seconds": 1.716948875
+  },
+  {
+    "stage": "native-compile",
+    "exit": 0,
+    "seconds": 0.4941365839999996
+  },
+  {
+    "stage": "native-run",
+    "exit": 0,
+    "seconds": 0.07917716699999744
+  }
+]

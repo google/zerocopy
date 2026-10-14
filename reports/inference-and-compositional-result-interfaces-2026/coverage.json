@@ -1,0 +1,60 @@
+{
+  "agenda": "../anneal-research-agenda-2026-10-14/research-questions.json",
+  "observed_at": "2026-10-14",
+  "scope": "bounded primary-source gap wave; status is research scope, not future implementation completion",
+  "entries": [
+    {
+      "id": "R048",
+      "question": "Examine borrowing encodings, fractional permissions, backend semantics, trusted contracts, and suitability for extending unsafe support.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Fractional permissions and Prusti inference"
+      ],
+      "answered_subquestions": [
+        "Concrete fractional/wildcard/access permissions, inferred high-level permission classes, borrow/type-invariant encodings and backend result interface."
+      ],
+      "remaining_research": [
+        "Complete backend logical soundness endpoint and exhaustive current unsafe extension support remain unexamined."
+      ],
+      "future_engineering": [
+        "Give each unsafe primitive a native resource interpretation and check generated VCs."
+      ]
+    },
+    {
+      "id": "R053",
+      "question": "Examine symbolic memory, compositional verification, equivalence checking, overrides, and applicability to existing zerocopy code.",
+      "status": "partial",
+      "findings_sections": [
+        "F7. SAW and Crux compositional MIR specifications"
+      ],
+      "answered_subquestions": [
+        "Method-spec construction differs from proving a callee; override asserts pre/assumes post; mutation/alias/global frame restrictions inspected."
+      ],
+      "remaining_research": [
+        "Full SAW verified-callee/assumed-spec lifecycle, equivalence APIs and certificate replay routes remain unexamined."
+      ],
+      "future_engineering": [
+        "Run a selected zerocopy equivalence/compositional experiment with pinned frontend/model."
+      ]
+    },
+    {
+      "id": "R060",
+      "question": "Evaluate MIRAI, Infer, SeaHorn, SMACK, and related methods as inference engines, bug finders, or checked-proof producers.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Output roles and what a downstream checker needs",
+        "F2. MIRAI incompleteness and diagnostic policy",
+        "F3. Bi-abduction theory and historical implementation boundary",
+        "F4. Current Pulse and experimental Rust lowering",
+        "F5. SeaHorn and SMACK query boundaries"
+      ],
+      "answered_subquestions": [
+        "Exact inferred-summary, bug-path, CHC, bounded/modular and certificate-candidate roles; conditional bi-abduction endpoints and implementation missing/frame interface; explicit unknown/incomplete policies."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Use inferred contracts/invariants as candidates; independently check VCs, call coverage and source binding."
+      ]
+    }
+  ]
+}

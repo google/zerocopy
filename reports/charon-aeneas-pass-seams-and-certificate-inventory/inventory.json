@@ -1,0 +1,2148 @@
+{
+  "scope": "original source schedule/gate tabulation and proposed certificate obligations; not proof that passes are correct or run in a particular artifact",
+  "charon_schedule": [
+    {
+      "ordinal": 1,
+      "stage": "item",
+      "name": "add_missing_info::link_specs",
+      "path": "charon/src/transform/add_missing_info/link_specs.rs",
+      "blob": "655f81395881db92b58d6a20b93e165c720e734f",
+      "schedule_line": 105,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "info",
+      "required_relation": "metadata projection with exact executable declarations/binding preserved; specification meaning is a separate consumer obligation",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 2,
+      "stage": "item",
+      "name": "simplify_output::duplicate_defaulted_methods",
+      "path": "charon/src/transform/simplify_output/duplicate_defaulted_methods.rs",
+      "blob": "f06bd22f00bd7e735ce7df2f2099e9b7e1948bd1",
+      "schedule_line": 107,
+      "enable_gate": "options.duplicate_defaulted_methods",
+      "gate_line": 82,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 3,
+      "stage": "item",
+      "name": "add_missing_info::compute_short_names",
+      "path": "charon/src/transform/add_missing_info/compute_short_names.rs",
+      "blob": "ebd97527f164f320567801aeaacaea8539544965",
+      "schedule_line": 109,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "info",
+      "required_relation": "metadata projection with exact executable declarations/binding preserved; specification meaning is a separate consumer obligation",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 4,
+      "stage": "item",
+      "name": "typecheck_and_unify::PostTranslation",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "8e1cacf69ae3f304d3e44764298925228866a18a",
+      "schedule_line": 111,
+      "enable_gate": "!options.no_typecheck",
+      "gate_line": 646,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "typecheck",
+      "required_relation": "well-formedness plus justified lifetime unification; this implementation check is not a semantic certificate",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 5,
+      "stage": "item",
+      "name": "finish_translation::filter_invisible_trait_impls",
+      "path": "charon/src/transform/finish_translation/filter_invisible_trait_impls.rs",
+      "blob": "88fd4f0c647dcea2774e768208f41944a41398c9",
+      "schedule_line": 114,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 6,
+      "stage": "item",
+      "name": "simplify_output::lift_associated_item_clauses",
+      "path": "charon/src/transform/simplify_output/lift_associated_item_clauses.rs",
+      "blob": "3e5aa1c5ad8b2d5b03624debf340daec681459a3",
+      "schedule_line": 116,
+      "enable_gate": "!options.no_normalize",
+      "gate_line": 14,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 7,
+      "stage": "item",
+      "name": "add_missing_info::add_missing_alias_clauses",
+      "path": "charon/src/transform/add_missing_info/add_missing_alias_clauses.rs",
+      "blob": "c31618ddc79c85c5f6e15a9de947dd25887e7e4a",
+      "schedule_line": 119,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 8,
+      "stage": "item",
+      "name": "add_missing_info::add_implied_outlives",
+      "path": "charon/src/transform/add_missing_info/add_implied_outlives.rs",
+      "blob": "746e9c832eb2398336b9df4d2686e66c9d59453e",
+      "schedule_line": 121,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 9,
+      "stage": "ullbc",
+      "name": "add_missing_info::detect_drop_flags",
+      "path": "charon/src/transform/add_missing_info/detect_drop_flags.rs",
+      "blob": "f7a0192e245b243f32026771a82502d5e9f82eb4",
+      "schedule_line": 127,
+      "enable_gate": "options.detect_drop_flags || options.resugar_drops",
+      "gate_line": 414,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "drop",
+      "required_relation": "effect relation preserving destructor/drop-glue/cleanup execution and bad prefixes; a no-destructor premise must be justified",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 10,
+      "stage": "ullbc",
+      "name": "resugar::resugar_drops",
+      "path": "charon/src/transform/resugar/resugar_drops.rs",
+      "blob": "f7639eb8cf0d91b6775ce163033f6ae8914f3813",
+      "schedule_line": 130,
+      "enable_gate": "options.resugar_drops",
+      "gate_line": 23,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "drop",
+      "required_relation": "effect relation preserving destructor/drop-glue/cleanup execution and bad prefixes; a no-destructor premise must be justified",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 11,
+      "stage": "ullbc",
+      "name": "finish_translation::insert_ptr_metadata",
+      "path": "charon/src/transform/finish_translation/insert_ptr_metadata.rs",
+      "blob": "f4c4ef9437f16a50d574eff2391c31b4a78408be",
+      "schedule_line": 132,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "pointer",
+      "required_relation": "pointer/value relation preserving metadata, provenance, access authority and source failure; layout facts alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 12,
+      "stage": "ullbc",
+      "name": "finish_translation::insert_assign_return_unit",
+      "path": "charon/src/transform/finish_translation/insert_assign_return_unit.rs",
+      "blob": "08ec2558b2d31935cf2efce5aad7f7d2fc7c82b4",
+      "schedule_line": 138,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 13,
+      "stage": "ullbc",
+      "name": "finish_translation::insert_storage_statements",
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "51b89c118f2aca3adfcae0680b05ce1ebbfab7f7",
+      "schedule_line": 140,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "storage",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 14,
+      "stage": "ullbc",
+      "name": "normalize::desugar_drops",
+      "path": "charon/src/transform/normalize/desugar_drops.rs",
+      "blob": "37e4a4e48d122b9de96c3093e76ae86d113b1d31",
+      "schedule_line": 142,
+      "enable_gate": "options.desugar_drops",
+      "gate_line": 62,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "drop",
+      "required_relation": "effect relation preserving destructor/drop-glue/cleanup execution and bad prefixes; a no-destructor premise must be justified",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 15,
+      "stage": "ullbc",
+      "name": "normalize::skip_trait_refs_when_known",
+      "path": "charon/src/transform/normalize/skip_trait_refs_when_known.rs",
+      "blob": "29567b0f5ed9ef7c982fd0004f10adcf23c07200",
+      "schedule_line": 146,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 16,
+      "stage": "ullbc",
+      "name": "normalize::transform_dyn_trait_calls",
+      "path": "charon/src/transform/normalize/transform_dyn_trait_calls.rs",
+      "blob": "818e87a0ecce4b01ca9056f684dc2a203702bbf5",
+      "schedule_line": 149,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 17,
+      "stage": "ullbc",
+      "name": "simplify_output::anon_const_to_call",
+      "path": "charon/src/transform/simplify_output/anon_const_to_call.rs",
+      "blob": "2e945886ebc529d65ceedf41f4a75560bfeba8bd",
+      "schedule_line": 151,
+      "enable_gate": "!options.raw_consts && !self.anon_consts.is_empty()",
+      "gate_line": 25,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "constant",
+      "required_relation": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 18,
+      "stage": "ullbc",
+      "name": "simplify_output::inline_selected_functions",
+      "path": "charon/src/transform/simplify_output/inline_selected_functions.rs",
+      "blob": "15d981976cc3028c3b0df69c6f2ac640d17b354e",
+      "schedule_line": 153,
+      "enable_gate": "!self.to_inline.is_empty()",
+      "gate_line": 51,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "constant",
+      "required_relation": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 19,
+      "stage": "ullbc",
+      "name": "simplify_output::filter_trivial_drops",
+      "path": "charon/src/transform/simplify_output/filter_trivial_drops.rs",
+      "blob": "6269fa2ae9d420bc01d405db2de686d11544635c",
+      "schedule_line": 155,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "drop",
+      "required_relation": "effect relation preserving destructor/drop-glue/cleanup execution and bad prefixes; a no-destructor premise must be justified",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 20,
+      "stage": "ullbc",
+      "name": "resugar::move_asserts_to_statements",
+      "path": "charon/src/transform/resugar/move_asserts_to_statements.rs",
+      "blob": "2113f96b882eb75d2d2b4da2a0d9bf2d4c2b078a",
+      "schedule_line": 160,
+      "enable_gate": "options.reconstruct_fallible_operations",
+      "gate_line": 17,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "arith",
+      "required_relation": "outcome-sensitive scalar relation with exact width/mode/guard correspondence; failure cannot disappear",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 21,
+      "stage": "ullbc",
+      "name": "control_flow::merge_goto_chains",
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "e218a376466968ffe303fba778ff49346cf41997",
+      "schedule_line": 164,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 22,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_fallible_operations",
+      "path": "charon/src/transform/resugar/reconstruct_fallible_operations.rs",
+      "blob": "0c142d997250db6afd6c711b684a5d56ba13693b",
+      "schedule_line": 172,
+      "enable_gate": "options.reconstruct_fallible_operations",
+      "gate_line": 734,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "arith",
+      "required_relation": "outcome-sensitive scalar relation with exact width/mode/guard correspondence; failure cannot disappear",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 23,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_vec_boxes",
+      "path": "charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+      "blob": "9246cf621ebb7a40bd5fa2e4b5f5a17e4730793e",
+      "schedule_line": 177,
+      "enable_gate": "options.treat_box_as_builtin && !options.monomorphize_with_hax && self.box_new.is_some() && self.box_write.is_some()",
+      "gate_line": 291,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "effects",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 24,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_box_derefs",
+      "path": "charon/src/transform/resugar/reconstruct_box_derefs.rs",
+      "blob": "ba6a54bffacab0cc34292802f3c68fcee9ef4c3b",
+      "schedule_line": 179,
+      "enable_gate": "options.treat_box_as_builtin",
+      "gate_line": 147,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "pointer",
+      "required_relation": "pointer/value relation preserving metadata, provenance, access authority and source failure; layout facts alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 25,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_intrinsics",
+      "path": "charon/src/transform/resugar/reconstruct_intrinsics.rs",
+      "blob": "1269838e436f4c5387f793e1ad0e57c1e5993f9e",
+      "schedule_line": 182,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "constant",
+      "required_relation": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 26,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_asserts",
+      "path": "charon/src/transform/resugar/reconstruct_asserts.rs",
+      "blob": "1402250e59e615fe56f1d864b0afbe2b7647d62a",
+      "schedule_line": 184,
+      "enable_gate": "options.reconstruct_asserts",
+      "gate_line": 13,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "arith",
+      "required_relation": "outcome-sensitive scalar relation with exact width/mode/guard correspondence; failure cannot disappear",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 27,
+      "stage": "ullbc",
+      "name": "simplify_output::simplify_constants",
+      "path": "charon/src/transform/simplify_output/simplify_constants.rs",
+      "blob": "ea21ba3b113687f93899615fb0fdcb87e3bd0960",
+      "schedule_line": 186,
+      "enable_gate": "!options.raw_consts",
+      "gate_line": 164,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "constant",
+      "required_relation": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 28,
+      "stage": "ullbc",
+      "name": "simplify_output::index_intermediate_assigns",
+      "path": "charon/src/transform/simplify_output/index_intermediate_assigns.rs",
+      "blob": "8b79ae36729e1038caa2b097b411f23803db136d",
+      "schedule_line": 189,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 29,
+      "stage": "ullbc",
+      "name": "simplify_output::remove_unit_locals",
+      "path": "charon/src/transform/simplify_output/remove_unit_locals.rs",
+      "blob": "7bfce6153383c5857dfdb38c1272411bd8789b3f",
+      "schedule_line": 191,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 30,
+      "stage": "ullbc",
+      "name": "control_flow::duplicate_return",
+      "path": "charon/src/transform/control_flow/duplicate_return.rs",
+      "blob": "3464b3435cfd10a8d525d8262be6416d60b7cdff",
+      "schedule_line": 193,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 31,
+      "stage": "ullbc",
+      "name": "resugar::reconstruct_matches",
+      "path": "charon/src/transform/resugar/reconstruct_matches.rs",
+      "blob": "1a787e86663429d99757dbd9c77da21419bbadac",
+      "schedule_line": 195,
+      "enable_gate": "options.reconstruct_matches",
+      "gate_line": 152,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "constant",
+      "required_relation": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 32,
+      "stage": "ullbc",
+      "name": "simplify_output::remove_unused_locals",
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "schedule_line": 197,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 33,
+      "stage": "ullbc",
+      "name": "control_flow::merge_goto_chains",
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "e218a376466968ffe303fba778ff49346cf41997",
+      "schedule_line": 199,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 34,
+      "stage": "ullbc",
+      "name": "normalize::filter_unreachable_blocks",
+      "path": "charon/src/transform/normalize/filter_unreachable_blocks.rs",
+      "blob": "9ff328a5adc5fbd33db692e0e1e5ee2bb3a77429",
+      "schedule_line": 202,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 35,
+      "stage": "ullbc",
+      "name": "simplify_output::update_block_indices",
+      "path": "charon/src/transform/simplify_output/update_block_indices.rs",
+      "blob": "52bf95143fa89c99f1ca6a0d2411787a1640942f",
+      "schedule_line": 204,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 36,
+      "stage": "structured-if-not-ullbc",
+      "name": "control_flow::ullbc_to_llbc",
+      "path": "charon/src/transform/control_flow/ullbc_to_llbc.rs",
+      "blob": "b5665d18849336885a27e388991ad4b36328716f",
+      "schedule_line": 218,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 37,
+      "stage": "structured-if-not-ullbc",
+      "name": "control_flow::prettify_cfg",
+      "path": "charon/src/transform/control_flow/prettify_cfg.rs",
+      "blob": "bf3699fa5a7d322f34334c831ab18b4cb19870d1",
+      "schedule_line": 222,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 38,
+      "stage": "structured-if-not-ullbc",
+      "name": "simplify_output::builtins_to_function_calls",
+      "path": "charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+      "blob": "21e92d15735d51e2c60cd0b81526a1d05a4f1ad3",
+      "schedule_line": 225,
+      "enable_gate": "options.ops_to_function_calls || options.index_to_function_calls",
+      "gate_line": 637,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "effects",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 39,
+      "stage": "final-both",
+      "name": "finish_translation::insert_storage_statements",
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "51b89c118f2aca3adfcae0680b05ce1ebbfab7f7",
+      "schedule_line": 232,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "storage",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 40,
+      "stage": "final-both",
+      "name": "normalize::normalize_trait_refs",
+      "path": "charon/src/transform/normalize/normalize_trait_refs.rs",
+      "blob": "03d4af2c5107f8093517c3b94a0b3b8fae18f344",
+      "schedule_line": 234,
+      "enable_gate": "!options.no_normalize",
+      "gate_line": 67,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 41,
+      "stage": "final-both",
+      "name": "normalize::expand_associated_types",
+      "path": "charon/src/transform/normalize/expand_associated_types.rs",
+      "blob": "7f8c3f26f6e24176d22b341e546c73389a80f89d",
+      "schedule_line": 237,
+      "enable_gate": "!(options.lift_associated_types.is_empty() && options.no_normalize)",
+      "gate_line": 1420,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 42,
+      "stage": "final-both",
+      "name": "simplify_output::remove_unused_clauses",
+      "path": "charon/src/transform/simplify_output/remove_unused_clauses.rs",
+      "blob": "f3b4046a840590998df2b8dcb9040d731fb87163",
+      "schedule_line": 240,
+      "enable_gate": "options.remove_unused_clauses || options.remove_unused_self_clauses",
+      "gate_line": 148,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 43,
+      "stage": "final-both",
+      "name": "simplify_output::remove_adt_clauses",
+      "path": "charon/src/transform/simplify_output/remove_adt_clauses.rs",
+      "blob": "3cb85042107304e4513d41a550fd558e05f532ae",
+      "schedule_line": 242,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "body return when !options.remove_adt_clauses",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 44,
+      "stage": "final-both",
+      "name": "simplify_output::remove_unused_locals",
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "schedule_line": 244,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 45,
+      "stage": "final-both",
+      "name": "simplify_output::remove_nops",
+      "path": "charon/src/transform/simplify_output/remove_nops.rs",
+      "blob": "da8db8c252017f1489dec971ce4259be8e20033d",
+      "schedule_line": 246,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "value",
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 46,
+      "stage": "final-both",
+      "name": "add_missing_info::recover_body_comments",
+      "path": "charon/src/transform/add_missing_info/recover_body_comments.rs",
+      "blob": "100fd9031b211d48fbd5dc13eb052767966cc12f",
+      "schedule_line": 249,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "info",
+      "required_relation": "metadata projection with exact executable declarations/binding preserved; specification meaning is a separate consumer obligation",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 47,
+      "stage": "final-both",
+      "name": "simplify_output::hide_allocator_param",
+      "path": "charon/src/transform/simplify_output/hide_allocator_param.rs",
+      "blob": "fc7058b301f552b9b5ffd64805e6e0f8aa76152f",
+      "schedule_line": 251,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "body return when !options.hide_allocator",
+      "relation_family": "effects",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 48,
+      "stage": "final-both",
+      "name": "normalize::partial_monomorphization",
+      "path": "charon/src/transform/normalize/partial_monomorphization.rs",
+      "blob": "08e2c56382579af48ac2db33c808bc3885fc784b",
+      "schedule_line": 254,
+      "enable_gate": "inherited should_run=true",
+      "gate_line": null,
+      "body_gate": "body return when options.monomorphize_mut is None",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 49,
+      "stage": "final-both",
+      "name": "add_missing_info::compute_layout_guarantees",
+      "path": "charon/src/transform/add_missing_info/compute_layout_guarantees.rs",
+      "blob": "2548fcbcdb4a83a02a067fa73812cc918fea4ee5",
+      "schedule_line": 256,
+      "enable_gate": "!options.no_compute_layout_guarantees",
+      "gate_line": 219,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "pointer",
+      "required_relation": "pointer/value relation preserving metadata, provenance, access authority and source failure; layout facts alone insufficient",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 50,
+      "stage": "final-both",
+      "name": "add_missing_info::reorder_decls",
+      "path": "charon/src/transform/add_missing_info/reorder_decls.rs",
+      "blob": "3802cb1126d2031dc53bcfc6eff6985f0f2ae762",
+      "schedule_line": 262,
+      "enable_gate": "!options.no_reorder_decls",
+      "gate_line": 478,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "cfg",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 51,
+      "stage": "final-both",
+      "name": "typecheck_and_unify::PostTransformation",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "8e1cacf69ae3f304d3e44764298925228866a18a",
+      "schedule_line": 264,
+      "enable_gate": "!options.no_typecheck",
+      "gate_line": 646,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "typecheck",
+      "required_relation": "well-formedness plus justified lifetime unification; this implementation check is not a semantic certificate",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    },
+    {
+      "ordinal": 52,
+      "stage": "final-both",
+      "name": "simplify_output::unbind_item_vars",
+      "path": "charon/src/transform/simplify_output/unbind_item_vars.rs",
+      "blob": "82722cc0bd05900b7ddde70275cfea6b073555f6",
+      "schedule_line": 266,
+      "enable_gate": "options.unbind_item_vars",
+      "gate_line": 40,
+      "body_gate": "none recorded beyond per-item pattern checks",
+      "relation_family": "generic",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried source seam; no semantic certificate checked"
+    }
+  ],
+  "aeneas_prepasses": [
+    {
+      "ordinal": 1,
+      "name": "update_array_default",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 155,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 2,
+      "name": "fix_closure_lifetimes",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 2226,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 3,
+      "name": "fix_closure_signature_regions",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 2295,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 4,
+      "name": "erase_body_regions",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 44,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 5,
+      "name": "remove_unreachable",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 95,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 6,
+      "name": "update_loops",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 491,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 7,
+      "name": "remove_useless_joins",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 686,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 8,
+      "name": "remove_shallow_borrows_storage_live_dead",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 778,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 9,
+      "name": "decompose_str_borrows",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1244,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 10,
+      "name": "simplify_panics",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1423,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 11,
+      "name": "decompose_global_accesses",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1505,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 12,
+      "name": "refresh_statement_ids",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1391,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 13,
+      "name": "strip_unnecessary_target_suffixes",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 865,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 14,
+      "name": "filter_marker_traits",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 952,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 15,
+      "name": "filter_type_aliases",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1199,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 16,
+      "name": "replace_static",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1651,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "call/environment relation including allocation, custom allocator and external effects",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 17,
+      "name": "remove_vtables",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1749,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 18,
+      "name": "rename_type_vars",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1951,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    },
+    {
+      "ordinal": 19,
+      "name": "simplify_trait_calls",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "definition_line": 1992,
+      "enable_gate": "apply_passes invokes; internal pattern conditions vary",
+      "required_relation": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+      "certificate_status": "inventoried; no source-semantic certificate checked"
+    }
+  ],
+  "aeneas_pure_passes": [
+    {
+      "ordinal": 1,
+      "name": "compute_pretty_names",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 17,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 2,
+      "name": "remove_meta_def",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 22,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 3,
+      "name": "intro_target_feature_asserts",
+      "enable_gate": "Config.feature_gates",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 26,
+      "required_relation": "platform feature requirements must be bound to actual source call conditions",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 4,
+      "name": "unit_vars_to_unit",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 30,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 5,
+      "name": "intro_massert",
+      "enable_gate": "Config.intro_massert",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 33,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 6,
+      "name": "simplify_decompose_struct",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 37,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 7,
+      "name": "intro_struct_updates",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 39,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 8,
+      "name": "simplify_lambdas",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 41,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 9,
+      "name": "simplify_let_bindings",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 43,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 10,
+      "name": "inline_useless_var_assignments",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 46,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 11,
+      "name": "apply_beta_reduction",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 50,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 12,
+      "name": "eliminate_box_functions",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 53,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 13,
+      "name": "simplify_trait_calls",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 55,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 14,
+      "name": "simplify_duplicate_calls",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 57,
+      "required_relation": "denotational equality only under documented pure/replayable calls and sound failure/unused-result analysis; require stronger prefix/effect relation for Rust safety",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 15,
+      "name": "merge_let_app_then_decompose_tuple",
+      "enable_gate": "Config.merge_let_app_decompose_tuple",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 60,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 16,
+      "name": "filter_useless",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 63,
+      "required_relation": "denotational equality only under documented pure/replayable calls and sound failure/unused-result analysis; require stronger prefix/effect relation for Rust safety",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 17,
+      "name": "simplify_let_branching",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 79,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 18,
+      "name": "simplify_let_then_ok",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 92,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 19,
+      "name": "simplify_lambdas (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 95,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 20,
+      "name": "decompose_loop_outputs",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 103,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 21,
+      "name": "simplify_loop_output_conts",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 115,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 22,
+      "name": "apply_beta_reduction (pass 3)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 119,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 23,
+      "name": "inline_useless_var_assignments (pass 3)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 121,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 24,
+      "name": "filter_loop_useless_inputs_outputs",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 130,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 25,
+      "name": "apply_beta_reduction (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 141,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 26,
+      "name": "inline_useless_var_assignments (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 143,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 27,
+      "name": "reorder_loop_outputs",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 147,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 28,
+      "name": "loops_to_recursive",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 151,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 29,
+      "name": "reorder_loop_inputs",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 153,
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 30,
+      "name": "let_to_match",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 155,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 31,
+      "name": "flatten_struct_updates",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 156,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 32,
+      "name": "simplify_aggregates",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 168,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 33,
+      "name": "simplify_aggregates_unchanged_fields",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 171,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 34,
+      "name": "simplify_lambdas (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 95,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 35,
+      "name": "simplify_let_bindings (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 177,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 36,
+      "name": "inline_useless_var_assignments (pass 4)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 180,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 37,
+      "name": "filter_useless (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 185,
+      "required_relation": "denotational equality only under documented pure/replayable calls and sound failure/unused-result analysis; require stronger prefix/effect relation for Rust safety",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 38,
+      "name": "simplify_let_then_ok (pass 2)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 189,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 39,
+      "name": "simplify_binop_panic_then_wrapping",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 193,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 40,
+      "name": "recover_builtin_index_functions",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 197,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 41,
+      "name": "filter_useless (after index recovery)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 198,
+      "required_relation": "denotational equality only under documented pure/replayable calls and sound failure/unused-result analysis; require stronger prefix/effect relation for Rust safety",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 42,
+      "name": "simplify_lambdas (after index recovery)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 200,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 43,
+      "name": "inline_useless_var_assignments (after index recovery)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 202,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 44,
+      "name": "simplify_array_slice_update",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 208,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 45,
+      "name": "simplify_let_then_ok (pass 3)",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 212,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 46,
+      "name": "decompose_monadic_let_bindings",
+      "enable_gate": "Config.decompose_monadic_let_bindings",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 216,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 47,
+      "name": "decompose_nested_let_patterns",
+      "enable_gate": "Config.decompose_nested_let_patterns",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 220,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 48,
+      "name": "unfold_monadic_let_bindings",
+      "enable_gate": "Config.unfold_monadic_let_bindings",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 224,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 49,
+      "name": "lift_pure_function_calls",
+      "enable_gate": "Config.lift_pure_function_calls",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 229,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    },
+    {
+      "ordinal": 50,
+      "name": "update_match_over_isize_usize",
+      "enable_gate": "always scheduled",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 232,
+      "required_relation": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient",
+      "certificate_status": "inventoried; no rewrite theorem replayed"
+    }
+  ],
+  "aeneas_postpasses": [
+    {
+      "ordinal": 1,
+      "name": "decompose_loops",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 2,
+      "name": "filter_loop_useless_inputs",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 3,
+      "name": "decompose_loop_bodies",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 4,
+      "name": "loops_to_fixed_points",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 5,
+      "name": "simplify_let_then_ok (final pass)",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 6,
+      "name": "intro_massert (post-loop pass)",
+      "enable_gate": "Config.intro_massert",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 7,
+      "name": "add_fuel",
+      "enable_gate": "Config.use_fuel (Lean/HOL4 CLI disallow)",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    },
+    {
+      "ordinal": 8,
+      "name": "add_type_annotations",
+      "enable_gate": "invoked; annotation inference varies",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "line": 578,
+      "required_relation": "type annotations and elaboration preserve the exact pure AST denotation, binding and builtin/environment identities",
+      "certificate_status": "inventoried; no semantic theorem checked"
+    },
+    {
+      "ordinal": 9,
+      "name": "compute_reducible",
+      "enable_gate": "invoked; internal criteria/backend vary",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "required_relation": "backend unfolding attribute preserves denotation",
+      "certificate_status": "inventoried; no semantic certificate checked"
+    }
+  ],
+  "relation_families": {
+    "info": "metadata projection with exact executable declarations/binding preserved; specification meaning is a separate consumer obligation",
+    "typecheck": "well-formedness plus justified lifetime unification; this implementation check is not a semantic certificate",
+    "generic": "environment/dictionary/substitution relation preserving all call targets, trait laws and effect dependencies",
+    "storage": "state relation preserving local liveness, initialization, moves and borrow permissions, or a proved erasure condition",
+    "drop": "effect relation preserving destructor/drop-glue/cleanup execution and bad prefixes; a no-destructor premise must be justified",
+    "cfg": "finite-prefix control-flow simulation preserving branch guards, exits, bad steps and evaluation order; progress additionally for liveness",
+    "constant": "value and initializer relation preserving failure, initialization, target width and compile-time origin",
+    "pointer": "pointer/value relation preserving metadata, provenance, access authority and source failure; layout facts alone insufficient",
+    "arith": "outcome-sensitive scalar relation with exact width/mode/guard correspondence; failure cannot disappear",
+    "effects": "call/environment relation including allocation, custom allocator and external effects",
+    "value": "value relation plus erased-state/frame obligations; successful-value equality alone insufficient"
+  },
+  "sources": [
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/mod.rs",
+      "blob": "6fc5af78e919be7c23f882d0a250a9735326117f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/mod.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/options.rs",
+      "blob": "1af0d713aa5fa3676d23f11da53e57b1001518a0",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/options.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/link_specs.rs",
+      "blob": "655f81395881db92b58d6a20b93e165c720e734f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/link_specs.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/duplicate_defaulted_methods.rs",
+      "blob": "f06bd22f00bd7e735ce7df2f2099e9b7e1948bd1",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/duplicate_defaulted_methods.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/compute_short_names.rs",
+      "blob": "ebd97527f164f320567801aeaacaea8539544965",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/compute_short_names.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/finish_translation/filter_invisible_trait_impls.rs",
+      "blob": "88fd4f0c647dcea2774e768208f41944a41398c9",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/finish_translation/filter_invisible_trait_impls.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/lift_associated_item_clauses.rs",
+      "blob": "3e5aa1c5ad8b2d5b03624debf340daec681459a3",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/lift_associated_item_clauses.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/add_missing_alias_clauses.rs",
+      "blob": "c31618ddc79c85c5f6e15a9de947dd25887e7e4a",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/add_missing_alias_clauses.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/add_implied_outlives.rs",
+      "blob": "746e9c832eb2398336b9df4d2686e66c9d59453e",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/add_implied_outlives.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/detect_drop_flags.rs",
+      "blob": "f7a0192e245b243f32026771a82502d5e9f82eb4",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/detect_drop_flags.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/resugar_drops.rs",
+      "blob": "f7639eb8cf0d91b6775ce163033f6ae8914f3813",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/resugar_drops.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/finish_translation/insert_ptr_metadata.rs",
+      "blob": "f4c4ef9437f16a50d574eff2391c31b4a78408be",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/finish_translation/insert_ptr_metadata.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/finish_translation/insert_assign_return_unit.rs",
+      "blob": "08ec2558b2d31935cf2efce5aad7f7d2fc7c82b4",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/finish_translation/insert_assign_return_unit.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "51b89c118f2aca3adfcae0680b05ce1ebbfab7f7",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/finish_translation/insert_storage_statements.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/desugar_drops.rs",
+      "blob": "37e4a4e48d122b9de96c3093e76ae86d113b1d31",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/desugar_drops.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/skip_trait_refs_when_known.rs",
+      "blob": "29567b0f5ed9ef7c982fd0004f10adcf23c07200",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/skip_trait_refs_when_known.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/transform_dyn_trait_calls.rs",
+      "blob": "818e87a0ecce4b01ca9056f684dc2a203702bbf5",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/transform_dyn_trait_calls.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/anon_const_to_call.rs",
+      "blob": "2e945886ebc529d65ceedf41f4a75560bfeba8bd",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/anon_const_to_call.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/inline_selected_functions.rs",
+      "blob": "15d981976cc3028c3b0df69c6f2ac640d17b354e",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/inline_selected_functions.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/filter_trivial_drops.rs",
+      "blob": "6269fa2ae9d420bc01d405db2de686d11544635c",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/filter_trivial_drops.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/move_asserts_to_statements.rs",
+      "blob": "2113f96b882eb75d2d2b4da2a0d9bf2d4c2b078a",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/move_asserts_to_statements.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "e218a376466968ffe303fba778ff49346cf41997",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/control_flow/merge_goto_chains.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_fallible_operations.rs",
+      "blob": "0c142d997250db6afd6c711b684a5d56ba13693b",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_fallible_operations.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+      "blob": "9246cf621ebb7a40bd5fa2e4b5f5a17e4730793e",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_vec_boxes.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_box_derefs.rs",
+      "blob": "ba6a54bffacab0cc34292802f3c68fcee9ef4c3b",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_box_derefs.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_intrinsics.rs",
+      "blob": "1269838e436f4c5387f793e1ad0e57c1e5993f9e",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_intrinsics.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_asserts.rs",
+      "blob": "1402250e59e615fe56f1d864b0afbe2b7647d62a",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_asserts.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/simplify_constants.rs",
+      "blob": "ea21ba3b113687f93899615fb0fdcb87e3bd0960",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/simplify_constants.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/index_intermediate_assigns.rs",
+      "blob": "8b79ae36729e1038caa2b097b411f23803db136d",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/index_intermediate_assigns.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/remove_unit_locals.rs",
+      "blob": "7bfce6153383c5857dfdb38c1272411bd8789b3f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/remove_unit_locals.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/control_flow/duplicate_return.rs",
+      "blob": "3464b3435cfd10a8d525d8262be6416d60b7cdff",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/control_flow/duplicate_return.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/resugar/reconstruct_matches.rs",
+      "blob": "1a787e86663429d99757dbd9c77da21419bbadac",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/resugar/reconstruct_matches.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/remove_unused_locals.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/filter_unreachable_blocks.rs",
+      "blob": "9ff328a5adc5fbd33db692e0e1e5ee2bb3a77429",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/filter_unreachable_blocks.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/update_block_indices.rs",
+      "blob": "52bf95143fa89c99f1ca6a0d2411787a1640942f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/update_block_indices.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/control_flow/ullbc_to_llbc.rs",
+      "blob": "b5665d18849336885a27e388991ad4b36328716f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/control_flow/ullbc_to_llbc.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/control_flow/prettify_cfg.rs",
+      "blob": "bf3699fa5a7d322f34334c831ab18b4cb19870d1",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/control_flow/prettify_cfg.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+      "blob": "21e92d15735d51e2c60cd0b81526a1d05a4f1ad3",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/builtins_to_function_calls.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/normalize_trait_refs.rs",
+      "blob": "03d4af2c5107f8093517c3b94a0b3b8fae18f344",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/normalize_trait_refs.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/expand_associated_types.rs",
+      "blob": "7f8c3f26f6e24176d22b341e546c73389a80f89d",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/expand_associated_types.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/remove_unused_clauses.rs",
+      "blob": "f3b4046a840590998df2b8dcb9040d731fb87163",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/remove_unused_clauses.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/remove_adt_clauses.rs",
+      "blob": "3cb85042107304e4513d41a550fd558e05f532ae",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/remove_adt_clauses.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/remove_nops.rs",
+      "blob": "da8db8c252017f1489dec971ce4259be8e20033d",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/remove_nops.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/recover_body_comments.rs",
+      "blob": "100fd9031b211d48fbd5dc13eb052767966cc12f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/recover_body_comments.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/hide_allocator_param.rs",
+      "blob": "fc7058b301f552b9b5ffd64805e6e0f8aa76152f",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/hide_allocator_param.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/normalize/partial_monomorphization.rs",
+      "blob": "08e2c56382579af48ac2db33c808bc3885fc784b",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/normalize/partial_monomorphization.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/compute_layout_guarantees.rs",
+      "blob": "2548fcbcdb4a83a02a067fa73812cc918fea4ee5",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/compute_layout_guarantees.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/add_missing_info/reorder_decls.rs",
+      "blob": "3802cb1126d2031dc53bcfc6eff6985f0f2ae762",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/add_missing_info/reorder_decls.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/simplify_output/unbind_item_vars.rs",
+      "blob": "82722cc0bd05900b7ddde70275cfea6b073555f6",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/simplify_output/unbind_item_vars.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/ctx.rs",
+      "blob": "f6d2c8b0f6c2cb035d30a19c849caaa630eee014",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/ctx.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "8e1cacf69ae3f304d3e44764298925228866a18a",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/transform/typecheck_and_unify.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/bin/charon-driver/translate/get_mir.rs",
+      "blob": "84cdc67bbd56e4c51b4434cff57e0ebd1cf6e679",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/bin/charon-driver/translate/get_mir.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+      "blob": "5993d8748e92f72e7f45f52365f8f0f6ff4440bc",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/bin/charon-driver/translate/translate_bodies.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/bin/charon-driver/translate/translate_items.rs",
+      "blob": "2825ece8b5f93545becf41e47d60cdc8b637fc4d",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/bin/charon-driver/translate/translate_items.rs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+      "path": "charon/src/bin/charon-driver/driver.rs",
+      "blob": "e8ad902cd513eb5308a422772c1b3fed6bb1eab1",
+      "url": "https://github.com/AeneasVerif/charon/blob/cf02e3f228f97ee7be3a415be56989053063326d/charon/src/bin/charon-driver/driver.rs"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/Translate.ml",
+      "blob": "2b9c4b5f8db404d2250b0ba2fe7e9b3ea1914c46",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/Translate.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/Main.ml",
+      "blob": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/Main.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/Config.ml",
+      "blob": "6ac7f87ac268041a0c92cdcf47b3540c919a8da5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/Config.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/PrePasses.ml",
+      "blob": "55e8bc208029e6194b038b77d407244447c97557",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/PrePasses.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "5b4c81b149c7675ad85e79a1100a86babc5aa394",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPasses.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPassesBase.ml",
+      "blob": "437911bac253564ade5c402150bcb31e0e63d5ac",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesBase.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPassesGeneral.ml",
+      "blob": "6dcf0f5887c8b4079bce1a1f55e0d1f9380bca16",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesGeneral.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPassesLoops.ml",
+      "blob": "c4f20ed85a47b328f2a54a86bc8f4df74679c886",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesLoops.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPassesAnnots.ml",
+      "blob": "d85cc0fc5750f9c0f98030ee31dd9af0f2169845",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesAnnots.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/pure/PureMicroPassesPrettyNames.ml",
+      "blob": "00628d5c49bb63d2791c889219a3189498ea3c77",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesPrettyNames.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/LlbcOfJson.ml",
+      "blob": "4007be2f7e77c20babd765802e6742307d6128a3",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/LlbcOfJson.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/interp/Interp.ml",
+      "blob": "6b6f110c9d38f892fe77685bb2c2fb4c9ab60e3d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/interp/Interp.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/interp/InterpStatements.ml",
+      "blob": "e921d3e1411ead14784c1136d104f9aadab18d25",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/interp/InterpStatements.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/interp/InterpPaths.ml",
+      "blob": "3197a7b0367f2037611f20456d781b2ebb0739e0",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/interp/InterpPaths.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/interp/InterpJoin.mli",
+      "blob": "45ff4fdbaa2efeccd4fc9d44e0f65e0571fa28c7",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/interp/InterpJoin.mli"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/interp/InterpLoops.mli",
+      "blob": "274e9a6cea4277a31fb86b12c7192cc163c974f6",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/interp/InterpLoops.mli"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/symbolic/SymbolicToPure.ml",
+      "blob": "c96eaf865c89abe655ad53acc012a115f7eca319",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/symbolic/SymbolicToPure.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/symbolic/SymbolicToPureExpressions.ml",
+      "blob": "5d575dfd639cfb243c32a467759c5482c165a1cf",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/symbolic/SymbolicToPureExpressions.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob": "4d6ae7f34e43913c570128052e30a18a1c5cd6e5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/symbolic/SymbolicToPureTypes.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/extract/Extract.ml",
+      "blob": "de0a81f6433881ba6b0a1d53e6a9677b8d555124",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/extract/Extract.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/TranslateCore.ml",
+      "blob": "55e2abe89a5a519013347635bfb96669e2d73d38",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/TranslateCore.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/RegionsHierarchy.ml",
+      "blob": "fa85151c72e2d26c8411340d1b1581030872d789",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/RegionsHierarchy.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/TypesAnalysis.ml",
+      "blob": "9faf36883ba9088d0f080828aed87eae4c4e782d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/TypesAnalysis.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/extract/ExtractBuiltinLean.ml",
+      "blob": "f8cf6b5312550c4b78fa203c38857726ad5a249d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/extract/ExtractBuiltinLean.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/Contexts.ml",
+      "blob": "aa3f20e9f0386cd5508403c5240dbe244e8b626f",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/Contexts.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/ContextsBase.ml",
+      "blob": "2b222e3d11dccc2f9d8fc4e101d9fb930014c4c4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/ContextsBase.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+      "path": "src/llbc/FunsAnalysis.ml",
+      "blob": "7bf693caa8eb8c4dd58cf37b678f792a79dfe3e2",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/llbc/FunsAnalysis.ml"
+    }
+  ],
+  "aeneas_analysis_seams": [
+    {
+      "name": "crate/declaration dependency and extraction contexts",
+      "path": "src/interp/Interp.ml",
+      "blob": "6b6f110c9d38f892fe77685bb2c2fb4c9ab60e3d",
+      "lines": "52–167",
+      "required_relation": "independently complete executable closure; type/function analyses respect exact declarations and source effects",
+      "certificate_status": "inventoried; no completeness theorem checked"
+    },
+    {
+      "name": "type analysis and region hierarchy",
+      "path": "src/llbc/TypesAnalysis.ml",
+      "blob": "9faf36883ba9088d0f080828aed87eae4c4e782d",
+      "required_relation": "type/region interpretation preserves admissible state relation and every borrow reconstruction premise",
+      "certificate_status": "entry points inspected; no theorem replayed"
+    },
+    {
+      "name": "region hierarchy for function signature",
+      "path": "src/llbc/RegionsHierarchy.ml",
+      "blob": "fa85151c72e2d26c8411340d1b1581030872d789",
+      "caller": "src/interp/Interp.ml:526",
+      "required_relation": "well-founded/sound lifetime groups and backward signature correspondence",
+      "certificate_status": "inventoried; not a Rust borrow-safety proof"
+    },
+    {
+      "name": "function effect/failure/divergence analysis",
+      "path": "src/llbc/FunsAnalysis.ml",
+      "blob": "7bf693caa8eb8c4dd58cf37b678f792a79dfe3e2",
+      "lines": "58–73;177–202",
+      "required_relation": "effect flags sound for every callable instantiation; stateless/nondivergent defaults are model assumptions unless separately justified",
+      "certificate_status": "inspected model analysis; no source adequacy proof"
+    },
+    {
+      "name": "types/globals/signatures/trait declarations and implementations to pure",
+      "path": "src/Translate.ml",
+      "blob": "2b9c4b5f8db404d2250b0ba2fe7e9b3ea1914c46",
+      "lines": "315–596",
+      "required_relation": "substitution, declarations, init functions, dictionaries, state and complete body/environment mapping",
+      "certificate_status": "driver seams inspected; not all helper implementations"
+    },
+    {
+      "name": "backend builtin selection and extraction",
+      "path": "src/extract/ExtractBuiltinLean.ml",
+      "blob": "f8cf6b5312550c4b78fa203c38857726ad5a249d",
+      "required_relation": "exact source primitive/instantiation bound to the selected model declaration and actual Lean denotation",
+      "certificate_status": "source endpoint inspected; whole builtin roster not certified"
+    }
+  ]
+}

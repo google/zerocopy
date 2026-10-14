@@ -1,0 +1,11 @@
+{
+  "tests": "ten named existing Python controls only",
+  "new_native_probe": "separate open-library package",
+  "not_executed": [
+    "Lean kernel negative-controls.sh",
+    "full native frontend extraction",
+    "SMTCoq/Carcara/LFSC builds/replay",
+    "SAW or other tool installs/builds"
+  ],
+  "source_revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+}

@@ -1,0 +1,16 @@
+'CharonFork.graph_fork' depends on axioms: [propext, Quot.sound]
+'CharonFork.built_final' depends on axioms: [propext, Quot.sound]
+'CharonFork.actual_before_after' depends on axioms: [propext, Quot.sound]
+some (some (CharonFork.Value.byte 1),
+ false,
+ none,
+ ["live:4", "copy:1:4", "move-bool:4:true", "copy:2:0", "dead:4", "return:0"])
+some (some (CharonFork.Value.byte 1), true, none, ["live:4", "copy:1:4", "move-bool:4:true", "copy:2:0", "return:0"])
+some (some (CharonFork.Value.byte 2),
+ false,
+ none,
+ ["live:4", "copy:1:4", "move-bool:4:true", "copy:3:0", "dead:4", "return:0"])
+some (some (CharonFork.Value.byte 1),
+ false,
+ none,
+ ["live:4", "copy:1:4", "move-bool:1:true", "copy:2:0", "dead:4", "return:0"])

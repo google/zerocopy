@@ -1,0 +1,19 @@
+{
+  "exit_code": 0,
+  "command": [
+    "<lean-4.31-root>/bin/lean",
+    "PrefixCertificate.lean"
+  ],
+  "cwd": "report package",
+  "stdout": "'PrefixCertificate.Certificate.reflectSafety' does not depend on any axioms\n'PrefixCertificate.Certificate.compose' does not depend on any axioms\n'PrefixCertificate.Certificate.coverAllInputs' does not depend on any axioms\n'PrefixCertificate.sourceHasInfiniteChain' does not depend on any axioms\n'PrefixCertificate.cannotHideInitialBad' does not depend on any axioms\n",
+  "stderr": "",
+  "scope": "original generic finite-prefix theorem only; no Rust/Charon/Aeneas adequacy",
+  "lean_revision": "68218e876d2a38b1985b8590fff244a83c321783",
+  "lean_version": "Lean (version 4.31.0, arm64-apple-darwin24.6.0, commit 68218e876d2a38b1985b8590fff244a83c321783, Release)",
+  "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "source_sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c",
+  "lib/lean/Init.olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8",
+  "lib/lean/libleanshared.dylib_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+  "path_normalization": "Task-local executable path replaced with its declared toolchain root; all observations otherwise retained.",
+  "raw_observation_sha256": "28b72acba23eec146c4680f024e4e299dde3cdf54b1f5226837277f8741afafe"
+}

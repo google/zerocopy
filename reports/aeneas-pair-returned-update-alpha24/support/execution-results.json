@@ -1,0 +1,34 @@
+[
+  {
+    "stage": "UpdateCertificate",
+    "argv": [
+      "$ALPHA24_RUNTIME/lean/bin/lean",
+      "UpdateCertificate.lean"
+    ],
+    "exit": 0,
+    "seconds": 9.321383625
+  },
+  {
+    "stage": "native-compile",
+    "argv": [
+      "$ALPHA24_RUNTIME/rust/bin/rustc",
+      "--sysroot",
+      "$ALPHA24_RUNTIME/rust",
+      "--edition=2021",
+      "-O",
+      "native_control.rs",
+      "-o",
+      "$SCRATCH/intermediate/legacy-native-control"
+    ],
+    "exit": 0,
+    "seconds": 0.43518954099999974
+  },
+  {
+    "stage": "native-run",
+    "argv": [
+      "$SCRATCH/intermediate/legacy-native-control"
+    ],
+    "exit": 0,
+    "seconds": 0.11460504099999902
+  }
+]

@@ -1,0 +1,284 @@
+{
+  "role": "source/documentation",
+  "records": [
+    {
+      "repository": "smtcoq/smtcoq",
+      "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3",
+      "path": "README.md",
+      "git_blob_sha": "c52d43dc077eae29fbfe943cb226127b99b04a23",
+      "url": "https://github.com/smtcoq/smtcoq/blob/7b870140f2ff7e4547a7db614a305d8b2945afa3/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smtcoq/smtcoq",
+      "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3",
+      "path": "theories/SMTCoq.v",
+      "git_blob_sha": "1179104e99b2a80b5692f9a70e3a7d0093fe9b72",
+      "url": "https://github.com/smtcoq/smtcoq/blob/7b870140f2ff7e4547a7db614a305d8b2945afa3/theories/SMTCoq.v",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smtcoq/smtcoq",
+      "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3",
+      "path": "theories/checker/MainChecker.v",
+      "git_blob_sha": "3e332b263a408bb4d385a3838d0085a18dbe2a0c",
+      "url": "https://github.com/smtcoq/smtcoq/blob/7b870140f2ff7e4547a7db614a305d8b2945afa3/theories/checker/MainChecker.v",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "README.md",
+      "git_blob_sha": "282a5e354a67b4aac2d6d96705b0818cd50eae0f",
+      "url": "https://github.com/ufmg-smite/carcara/blob/20bf49c5ce31089ac83118574c888669355aaae1/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/checker/mod.rs",
+      "git_blob_sha": "f6f58ed1b15b614f6bd405efbf027402ce42be83",
+      "url": "https://github.com/ufmg-smite/carcara/blob/20bf49c5ce31089ac83118574c888669355aaae1/src/checker/mod.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/checker/error.rs",
+      "git_blob_sha": "8010b952ff54041205ba6f371b9af281c4c7b97f",
+      "url": "https://github.com/ufmg-smite/carcara/blob/20bf49c5ce31089ac83118574c888669355aaae1/src/checker/error.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/checker/rules/mod.rs",
+      "git_blob_sha": "9c031cce6fb494ce6bf092328a3ecfe05d36d8ca",
+      "url": "https://github.com/ufmg-smite/carcara/blob/20bf49c5ce31089ac83118574c888669355aaae1/src/checker/rules/mod.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "cvc5/LFSC",
+      "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5",
+      "path": "README.md",
+      "git_blob_sha": "51599a92e43b94346843b86301302c04cc9e82ea",
+      "url": "https://github.com/cvc5/LFSC/blob/5a127dbbcf9a0f822768e783dbf892ee90c435d5/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "cvc5/LFSC",
+      "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5",
+      "path": "src/check.cpp",
+      "git_blob_sha": "d580cce4fe316efc8262144eeac68e74d6b6893c",
+      "url": "https://github.com/cvc5/LFSC/blob/5a127dbbcf9a0f822768e783dbf892ee90c435d5/src/check.cpp",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "cvc5/LFSC",
+      "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5",
+      "path": "src/main.cpp",
+      "git_blob_sha": "6ec0847f5b21d3d939c8e17b52c211268dc559b2",
+      "url": "https://github.com/cvc5/LFSC/blob/5a127dbbcf9a0f822768e783dbf892ee90c435d5/src/main.cpp",
+      "observed_at": "2026-10-14"
+    }
+  ],
+  "local_source": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/ptr.rs",
+      "git_blob_sha": "2a492171d6e87394667acca510a9a551138827f1",
+      "sha256": "eca76e67328cd86b6dd2eba35b5f4b3a83a6c7751c8c295852cf83c468e4205a"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/inner.rs",
+      "git_blob_sha": "eeef49f948544cd83952195e9b3afff378ac65f1",
+      "sha256": "452495e5e44aa811cd7ae723cc7b9892fd205c387ee746d5b8e37df3f9d58096"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/invariant.rs",
+      "git_blob_sha": "e798feb4f1f0c90d9f048afc75791f4614fe59a5",
+      "sha256": "a5ed83dad776e25101d4a7af3f041a9583444658b0f8cc21810dfc672069525e"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/transmute.rs",
+      "git_blob_sha": "7aabb149def839a3775cf939355061dad1b2c839",
+      "sha256": "98c0839a2b9a8ff264f540578dd39bf21c1d07d5666b6d2d501ee6c9c80a69bf"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/pointer/mod.rs",
+      "git_blob_sha": "910a91c19bb42a2a7c4970c4fd9b6c362b8b7695",
+      "sha256": "53d6e1468205ebc8ac9f7438f7aefccb8c156bb21ea752c9307f0f2cd473ede4"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/lib.rs",
+      "git_blob_sha": "afb28dd238800ed5fbc66e3c59d0cad94a93af88",
+      "sha256": "1f8d9ba4528687aa4ddcb3e9c4fff4bc70268633999a570c3ed33b2dfe11d0fb"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs",
+      "git_blob_sha": "5be26ba9fccb4d52cc1dffa850b840f241b7994c",
+      "sha256": "c5ef4996afd692800ba99a5d544ac554f5b80282b0aa532eceb55b4febce038a"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/zerocopy-derive/src/derive/project.rs",
+      "git_blob_sha": "c4bfcc9c26894cff9cca073df791d3453c757657",
+      "sha256": "9d116f84ab6a998790a32d621e27ab4ba1c169f1be8bcee9330b3536fbf78a29"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/lean/RustModel.lean",
+      "git_blob_sha": "b9d592609fadc2cb7f700a3e1d03739fca830365",
+      "sha256": "51224b006f3f0ba24c76489238731f22d7374487ffb7166d101da9342e529c0b"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/lean/Zerocopy/FunsExternal.lean",
+      "git_blob_sha": "39c92d4337dd5adbea32f8693b77a00e5ce3cf7a",
+      "sha256": "f389c236aaffee4972b0b5406821113e8faac2bcf36c30b151a1817ee2649a18"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "zerocopy/src/error.rs",
+      "git_blob_sha": "4b3c8f3e6fb053583be0237e83fc5c7f3845cc97",
+      "sha256": "d327bba55f092763a2e64454c0db39f898b4890908eb41558cc25a4cd1a64f5f"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/admission.py",
+      "git_blob_sha": "c178175f43da7385575e1309ddeaa26481ddc280",
+      "sha256": "1625e9af7c6ce3542a4e966a2584f4c2c3a5a88cc699513aed445fdc39cdbb9e"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/trait_invariants.py",
+      "git_blob_sha": "433a48467fbc7dbde320b4b0f93edd798056484f",
+      "sha256": "055ffe9b4b8333fa6b8b80725d37323795037db444567c47f9c6340aa4b3e867"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/source_inventory.py",
+      "git_blob_sha": "93ed4b615cec54a19f0dae3cd0c421eaf767303e",
+      "sha256": "630fc9c18d2d92b99db46548d05f2b36d756d944aeb8715e6ae00378de54d0f9"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/ADMISSION_DESIGN.md",
+      "git_blob_sha": "bb01b1d5df63f53dd427f9f3dbde84cfa8dd5cdf",
+      "sha256": "c538eceabfb44c1202a2a17033993c54f67540b8ee7e02ef78cf1f129b4d7c0d"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/README.md",
+      "git_blob_sha": "b5bd7757c613f5c9da88e91a5ffd96539bea168f",
+      "sha256": "74d655a722de27a5229f30ad6e3b8401cf190cfdfc0d9cf9ff389d2a34f05fe4"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/lean/Check.lean",
+      "git_blob_sha": "cfe9a2df976219808285836c7bf6f87848f74a35",
+      "sha256": "26194c903d188965e371e07b58ad1f6e2473a23d681df46e7cd60fc5107c0487"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/tests/test_admission.py",
+      "git_blob_sha": "55274882a11a71a181f37995ad9e709d7165eb77",
+      "sha256": "da6d1ecba544ab23196ae3b18fa39ae70dbbf73bfb14e21d2602d59e3a65bdd1"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/tests/test_trait_invariants.py",
+      "git_blob_sha": "a978fa436a51c768d8bdedd917b1a253333a1ae1",
+      "sha256": "5705c29b808dbcdd1233b719f70bc216a4c4b34e34691a6fa01b27bdcb01e0b9"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/tests/admission/boolean.before.ullbc",
+      "git_blob_sha": "f0256d1f10d83326ea0b772509c16bb1ebaed8f0",
+      "sha256": "6f69cdffeba7607de06295d64f874285d9716436bde6e1ea4bd80da2a5110f24"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/external.json",
+      "git_blob_sha": "516b18c0136da7e6b6bb17f3000b65c62a691958",
+      "sha256": "0d73753b2755848d412bd4ef0dc5899f8a2cefd2cc1bf7bac5118ef64d434b40"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/inline.py",
+      "git_blob_sha": "afc5c2b8c227aabd6344ff49c6a85e157ffc9333",
+      "sha256": "7acaa8ab35d0e81091e5e9d83c7e1abed5a73fc46aff7d0bb0a632dd8396dc04"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/workspace.py",
+      "git_blob_sha": "697f990646fd05de0c0911eee82f63a7af6bc614",
+      "sha256": "d18974fb785bd40f9abb45fe7ede73a451cc703a3fc5733632d5351f87781699"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/negative-controls.sh",
+      "git_blob_sha": "79491f6e788848c7c7a015dbd2f7e379126c6ddf",
+      "sha256": "e86590151d536feee00c7215b43a783a355c01702b803ec428cae3e0e812dddd"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/prepare.py",
+      "git_blob_sha": "ced94042a54cc051ca4218736d89696d1d085ed3",
+      "sha256": "807db58f5720042b4b8b457c418d829e876bb922f949d94f830f97fce847ae41"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/golden.py",
+      "git_blob_sha": "4b054162a08c807a4d1bb06419be71a086df2cff",
+      "sha256": "29f1b38925c6d5de6a1093de443bd4a10f65ba6d09150b2488a3543d1da8024c"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/copy_back.py",
+      "git_blob_sha": "8cd53c6cce5a3ccfd9a9d40c722f0b10712d3279",
+      "sha256": "06b562e6411e7226fffce343b9578800a8c4e0134f3bdd8b7017e736c279d9c9"
+    }
+  ],
+  "endpoints": [
+    "workspace.py:160–193 run_checked/source mapping",
+    "lean/Check.lean:540–580 required theorem strength",
+    "lean/Check.lean:615–633 axiom audit",
+    "lean/RustModel.lean RustModel/isValid/decodeResult/initializedRepresentation",
+    "lean/Zerocopy/FunsExternal.lean forbiddenExecution/layout inputs",
+    "ADMISSION_DESIGN.md:172–204 forbidden-prefix and progress correspondence"
+  ]
+}

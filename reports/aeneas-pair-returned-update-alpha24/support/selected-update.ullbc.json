@@ -1,0 +1,672 @@
+{
+  "def_id": 1,
+  "item_meta": {
+    "name": [
+      {
+        "Ident": [
+          "certificate_probe",
+          0
+        ]
+      },
+      {
+        "Ident": [
+          "update_second",
+          0
+        ]
+      }
+    ],
+    "span": {
+      "data": {
+        "file_id": 0,
+        "beg": {
+          "line": 2,
+          "col": 0
+        },
+        "end": {
+          "line": 2,
+          "col": 58
+        }
+      },
+      "generated_from_span": null
+    },
+    "source_text": "pub fn update_second(p: &mut (u8, u8), x: u8) { p.1 = x; }",
+    "attr_info": {
+      "attributes": [],
+      "inline": null,
+      "rename": null,
+      "public": true
+    },
+    "is_local": true,
+    "opacity": "Transparent",
+    "lang_item": null
+  },
+  "generics": {
+    "regions": [
+      {
+        "index": 0,
+        "name": null,
+        "mutability": "Unknown"
+      }
+    ],
+    "types": [],
+    "const_generics": [],
+    "trait_clauses": [],
+    "regions_outlive": [],
+    "types_outlive": [],
+    "trait_type_constraints": []
+  },
+  "signature": {
+    "is_unsafe": false,
+    "abi": "Rust",
+    "inputs": [
+      {
+        "Untagged": {
+          "Ref": [
+            {
+              "Var": {
+                "Bound": [
+                  0,
+                  0
+                ]
+              }
+            },
+            {
+              "Untagged": {
+                "Adt": {
+                  "id": "Tuple",
+                  "generics": {
+                    "regions": [],
+                    "types": [
+                      {
+                        "Untagged": {
+                          "Literal": {
+                            "UInt": "U8"
+                          }
+                        }
+                      },
+                      {
+                        "Untagged": {
+                          "Literal": {
+                            "UInt": "U8"
+                          }
+                        }
+                      }
+                    ],
+                    "const_generics": [],
+                    "trait_refs": []
+                  }
+                }
+              }
+            },
+            "Mut"
+          ]
+        }
+      },
+      {
+        "Untagged": {
+          "Literal": {
+            "UInt": "U8"
+          }
+        }
+      }
+    ],
+    "output": {
+      "Untagged": {
+        "Adt": {
+          "id": "Tuple",
+          "generics": {
+            "regions": [],
+            "types": [],
+            "const_generics": [],
+            "trait_refs": []
+          }
+        }
+      }
+    }
+  },
+  "src": "TopLevel",
+  "is_global_initializer": null,
+  "body": {
+    "Unstructured": {
+      "span": {
+        "data": {
+          "file_id": 0,
+          "beg": {
+            "line": 2,
+            "col": 0
+          },
+          "end": {
+            "line": 2,
+            "col": 58
+          }
+        },
+        "generated_from_span": null
+      },
+      "bound_body_regions": 2,
+      "locals": {
+        "arg_count": 2,
+        "locals": [
+          {
+            "index": 0,
+            "name": null,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 2,
+                  "col": 45
+                },
+                "end": {
+                  "line": 2,
+                  "col": 45
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Adt": {
+                  "id": "Tuple",
+                  "generics": {
+                    "regions": [],
+                    "types": [],
+                    "const_generics": [],
+                    "trait_refs": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "index": 1,
+            "name": "p",
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 2,
+                  "col": 21
+                },
+                "end": {
+                  "line": 2,
+                  "col": 22
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Ref": [
+                  {
+                    "Body": 1
+                  },
+                  {
+                    "Untagged": {
+                      "Adt": {
+                        "id": "Tuple",
+                        "generics": {
+                          "regions": [],
+                          "types": [
+                            {
+                              "Untagged": {
+                                "Literal": {
+                                  "UInt": "U8"
+                                }
+                              }
+                            },
+                            {
+                              "Untagged": {
+                                "Literal": {
+                                  "UInt": "U8"
+                                }
+                              }
+                            }
+                          ],
+                          "const_generics": [],
+                          "trait_refs": []
+                        }
+                      }
+                    }
+                  },
+                  "Mut"
+                ]
+              }
+            }
+          },
+          {
+            "index": 2,
+            "name": "x",
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 2,
+                  "col": 39
+                },
+                "end": {
+                  "line": 2,
+                  "col": 40
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Literal": {
+                  "UInt": "U8"
+                }
+              }
+            }
+          },
+          {
+            "index": 3,
+            "name": null,
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 2,
+                  "col": 54
+                },
+                "end": {
+                  "line": 2,
+                  "col": 55
+                }
+              },
+              "generated_from_span": null
+            },
+            "ty": {
+              "Untagged": {
+                "Literal": {
+                  "UInt": "U8"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "body": [
+        {
+          "statements": [
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 0,
+                    "col": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "col": 0
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "Assign": [
+                  {
+                    "kind": {
+                      "Local": 0
+                    },
+                    "ty": {
+                      "Untagged": {
+                        "Adt": {
+                          "id": "Tuple",
+                          "generics": {
+                            "regions": [],
+                            "types": [],
+                            "const_generics": [],
+                            "trait_refs": []
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "Aggregate": [
+                      {
+                        "Adt": [
+                          {
+                            "id": "Tuple",
+                            "generics": {
+                              "regions": [],
+                              "types": [],
+                              "const_generics": [],
+                              "trait_refs": []
+                            }
+                          },
+                          null,
+                          null
+                        ]
+                      },
+                      []
+                    ]
+                  }
+                ]
+              },
+              "comments_before": []
+            },
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 2,
+                    "col": 54
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 55
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "StorageLive": 3
+              },
+              "comments_before": []
+            },
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 2,
+                    "col": 54
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 55
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "Assign": [
+                  {
+                    "kind": {
+                      "Local": 3
+                    },
+                    "ty": {
+                      "Untagged": {
+                        "Literal": {
+                          "UInt": "U8"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "Use": [
+                      {
+                        "Copy": {
+                          "kind": {
+                            "Local": 2
+                          },
+                          "ty": {
+                            "Untagged": {
+                              "Literal": {
+                                "UInt": "U8"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Yes"
+                    ]
+                  }
+                ]
+              },
+              "comments_before": []
+            },
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 2,
+                    "col": 48
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 55
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "Assign": [
+                  {
+                    "kind": {
+                      "Projection": [
+                        {
+                          "kind": {
+                            "Projection": [
+                              {
+                                "kind": {
+                                  "Local": 1
+                                },
+                                "ty": {
+                                  "Untagged": {
+                                    "Ref": [
+                                      {
+                                        "Body": 1
+                                      },
+                                      {
+                                        "Untagged": {
+                                          "Adt": {
+                                            "id": "Tuple",
+                                            "generics": {
+                                              "regions": [],
+                                              "types": [
+                                                {
+                                                  "Untagged": {
+                                                    "Literal": {
+                                                      "UInt": "U8"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "Untagged": {
+                                                    "Literal": {
+                                                      "UInt": "U8"
+                                                    }
+                                                  }
+                                                }
+                                              ],
+                                              "const_generics": [],
+                                              "trait_refs": []
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Mut"
+                                    ]
+                                  }
+                                }
+                              },
+                              "Deref"
+                            ]
+                          },
+                          "ty": {
+                            "Untagged": {
+                              "Adt": {
+                                "id": "Tuple",
+                                "generics": {
+                                  "regions": [],
+                                  "types": [
+                                    {
+                                      "Untagged": {
+                                        "Literal": {
+                                          "UInt": "U8"
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "Untagged": {
+                                        "Literal": {
+                                          "UInt": "U8"
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "const_generics": [],
+                                  "trait_refs": []
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "Field": [
+                            {
+                              "Tuple": 2
+                            },
+                            1
+                          ]
+                        }
+                      ]
+                    },
+                    "ty": {
+                      "Untagged": {
+                        "Literal": {
+                          "UInt": "U8"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "Use": [
+                      {
+                        "Move": {
+                          "kind": {
+                            "Local": 3
+                          },
+                          "ty": {
+                            "Untagged": {
+                              "Literal": {
+                                "UInt": "U8"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Yes"
+                    ]
+                  }
+                ]
+              },
+              "comments_before": []
+            },
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 2,
+                    "col": 54
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 55
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "StorageDead": 3
+              },
+              "comments_before": []
+            },
+            {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 2,
+                    "col": 46
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 58
+                  }
+                },
+                "generated_from_span": null
+              },
+              "kind": {
+                "Assign": [
+                  {
+                    "kind": {
+                      "Local": 0
+                    },
+                    "ty": {
+                      "Untagged": {
+                        "Adt": {
+                          "id": "Tuple",
+                          "generics": {
+                            "regions": [],
+                            "types": [],
+                            "const_generics": [],
+                            "trait_refs": []
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "Use": [
+                      {
+                        "Const": {
+                          "kind": {
+                            "Adt": [
+                              null,
+                              []
+                            ]
+                          },
+                          "ty": {
+                            "Untagged": {
+                              "Adt": {
+                                "id": "Tuple",
+                                "generics": {
+                                  "regions": [],
+                                  "types": [],
+                                  "const_generics": [],
+                                  "trait_refs": []
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Yes"
+                    ]
+                  }
+                ]
+              },
+              "comments_before": []
+            }
+          ],
+          "terminator": {
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 2,
+                  "col": 58
+                },
+                "end": {
+                  "line": 2,
+                  "col": 58
+                }
+              },
+              "generated_from_span": null
+            },
+            "kind": "Return",
+            "comments_before": []
+          }
+        }
+      ],
+      "comments": []
+    }
+  }
+}

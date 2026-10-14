@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal",
+    "checker/code-generation",
+    "lean/kernel-checking",
+    "prototype/native-checker"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Lean native compiler wrapper",
+      "identity": {
+        "artifact": "Lean 4.31 leanc executable",
+        "sha256": "ed65823bba1ffbab1c386ec9b013091fe427a56b50a0beef1eab5bed1a3523a3"
+      }
+    },
+    {
+      "name": "Report-owned logical certificate/checker",
+      "identity": {
+        "artifact": "support/CheckerMain.lean",
+        "sha256": "e6d39dcf9aab8f921778ec8050f22b1b144ebd8b20fd8a8e677e3736d5c62a37"
+      }
+    },
+    {
+      "name": "Derived native checker",
+      "identity": {
+        "artifact": "macOS arm64 executable generated from report source",
+        "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173",
+        "bridge": "unverified Lean C and native compilation"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,10 @@
+["add", ["mul", ["add", ["param"], ["imm", 3]], ["imm", 5]], ["imm", 7]]
+["mul", ["mul", ["add", ["param"], ["imm", 3]], ["imm", 5]], ["imm", 7]]
+["add", ["mul", ["add", ["param"], ["imm", 4]], ["imm", 5]], ["imm", 7]]
+["imm", 256]
+["imm", -1]
+["add", ["param"]]
+["call", "helper"]
+{"subject": "other", "ir": ["add", ["mul", ["add", ["param"], ["imm", 3]], ["imm", 5]], ["imm", 7]]}
+["add",
+["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["add", ["param"], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]], ["imm", 0]]

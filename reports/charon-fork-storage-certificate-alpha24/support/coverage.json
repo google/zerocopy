@@ -1,0 +1,180 @@
+{
+  "entries": [
+    {
+      "id": "T069",
+      "title": "Certifying Charon transformations",
+      "question": "Design pass-level relations and evidence connecting the original imported representation to final LLBC.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual captured original/postmicro/built/final selected fork descriptors, generic all-state CFG-to-structured relation and actual nop elimination."
+      ],
+      "unanswered_research_scope": [
+        "Individual internal micro-pass boundaries; larger imported grammar and semantic capture adequacy."
+      ],
+      "future_engineering_obligations": [
+        "Emit and compose per-pass witnesses in the actual producer."
+      ]
+    },
+    {
+      "id": "T070",
+      "title": "Certifying Aeneas functionalization",
+      "question": "Investigate correspondence evidence for symbolic execution, borrow reconstruction, control-flow joins, and pure-program transformations.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual simple branch-join correspondence plus emitted choose/pair-update endpoint and returned-state/frame relation."
+      ],
+      "unanswered_research_scope": [
+        "General symbolic execution, nested borrow reconstruction, join abstraction and other pure-program passes."
+      ],
+      "future_engineering_obligations": [
+        "Integrate selected relation into Aeneas producer/checker interfaces."
+      ]
+    },
+    {
+      "id": "P067",
+      "title": "A certificate inventory for every extraction pass",
+      "question": "Map actual input/output boundaries and required semantic lemmas; this identifies where incremental certification can begin and where gaps remain.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Exact observed raw-preset/original-print/postmicro/built/final/serialized/emitted boundaries; distinct configurations and pair entry/unit representation differences retained."
+      ],
+      "unanswered_research_scope": [
+        "Inventory and semantic lemmas for every internal pass and larger input families."
+      ],
+      "future_engineering_obligations": [
+        "Expose missing intermediate snapshots and pass-specific witness interfaces."
+      ]
+    },
+    {
+      "id": "P068",
+      "title": "Renaming, substitution, and binding",
+      "question": "Certify variable identities and capture avoidance; apparently administrative transformations can silently alter program meaning.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "answered_research_scope": [
+        "Exact typed local identities, copy/move source/destination modes and stronger state/trace counterexample for moving the wrong same-valued local."
+      ],
+      "unanswered_research_scope": [
+        "Renaming/substitution/capture-avoidance transformations, generics and closures."
+      ],
+      "future_engineering_obligations": [
+        "Extend binder and semantic relation for identity-changing passes."
+      ]
+    },
+    {
+      "id": "P069",
+      "title": "Control-flow reconstruction",
+      "question": "Connect MIR blocks and jumps to structured conditionals and loops; correctness must account for every exit and exceptional edge.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual four-block diamond to structured conditional certificate; every edge/return in admitted grammar checked, storage preserved and nop identity proved."
+      ],
+      "unanswered_research_scope": [
+        "Loops, exceptional edges, multi-exit joins and general CFG reconstruction."
+      ],
+      "future_engineering_obligations": [
+        "Add explicitly modeled edges and nontrivial join witnesses."
+      ]
+    },
+    {
+      "id": "P070",
+      "title": "Local-state elimination and SSA-like transformations",
+      "question": "Certify tuple-passing, fresh variables, and state updates; generated pure functions must retain dependencies between imperative operations.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Imperative selected pair update preserves first-field/input dependencies and temporary state; exact emitted tuple result agrees under entry premises."
+      ],
+      "unanswered_research_scope": [
+        "General SSA/fresh-variable/local-state elimination passes and multiple dependent updates."
+      ],
+      "future_engineering_obligations": [
+        "Connect actual pass witnesses to a reusable state-elimination relation."
+      ]
+    },
+    {
+      "id": "P071",
+      "title": "Loop-to-recursion translation",
+      "question": "Compare invariants, recursive equations, fuel, and divergence semantics; bounded execution or accidental termination cannot substitute for the original loop.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "answered_research_scope": [
+        "Acyclic grammar rejects loops and proves all fuel budgets >=3; no bounded-run/source-termination conflation."
+      ],
+      "unanswered_research_scope": [
+        "Actual loop-to-recursion certificate, invariant/recursive equation and divergence comparison."
+      ],
+      "future_engineering_obligations": [
+        "Implement a distinct loop relation; do not extend this acyclic theorem by labels."
+      ]
+    },
+    {
+      "id": "P072",
+      "title": "Function extraction, closures, and captured environments",
+      "question": "Certify extracted helpers and closure representations; code movement must preserve captured state, call behavior, and identity where observable.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Closed call-free selected-body gates make the current missing-dependency boundary explicit."
+      ],
+      "unanswered_research_scope": [
+        "Extracted helpers, closures, captured environments, call behavior and observable identity."
+      ],
+      "future_engineering_obligations": [
+        "Add concrete call/capture/dependency closure grammar and certificates."
+      ]
+    },
+    {
+      "id": "P128",
+      "title": "Certificates for a real Charon pass sequence",
+      "question": "Use actual intermediate artifacts from one zerocopy example; this tests whether per-pass certification fits the existing pipeline.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual legacy Charon intermediates and captured pass-sequence certificate on two synthetic safe functions, with precise initial-boundary differences and restrictions."
+      ],
+      "unanswered_research_scope": [
+        "Required actual zerocopy example; broader existing-pipeline pass certification."
+      ],
+      "future_engineering_obligations": [
+        "Apply the specimen method to an actual supported zerocopy extraction with its dependency/configuration closure."
+      ]
+    }
+  ],
+  "scope_policy": "full identifies a completed bounded research answer with stated frontiers; partial preserves genuinely unanswered question scope. Integration/adequacy implementation obligations are recorded separately. No global tracker completion is authorized by this file."
+}

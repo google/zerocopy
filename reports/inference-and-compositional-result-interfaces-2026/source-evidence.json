@@ -1,0 +1,253 @@
+{
+  "role": "source/documentation",
+  "records": [
+    {
+      "repository": "endorlabs/MIRAI",
+      "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b",
+      "path": "documentation/Overview.md",
+      "git_blob_sha": "e8828932ab164361460a38deac61b126a5a8997f",
+      "url": "https://github.com/endorlabs/MIRAI/blob/aae0a56f91d9a0a62073bb86e7b2c9793cefc24b/documentation/Overview.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "endorlabs/MIRAI",
+      "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b",
+      "path": "checker/src/summaries.rs",
+      "git_blob_sha": "cbb2fcaefa68c500574b73e78edbae7b80608ef4",
+      "url": "https://github.com/endorlabs/MIRAI/blob/aae0a56f91d9a0a62073bb86e7b2c9793cefc24b/checker/src/summaries.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "endorlabs/MIRAI",
+      "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b",
+      "path": "checker/src/call_visitor.rs",
+      "git_blob_sha": "a9ba433f95b85643f810385d2a0db07ddc9fd4b8",
+      "url": "https://github.com/endorlabs/MIRAI/blob/aae0a56f91d9a0a62073bb86e7b2c9793cefc24b/checker/src/call_visitor.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "5aac32c06952a2f3a6b7043e91457920f065833b",
+      "path": "infer/src/pulse/PulseSummary.mli",
+      "git_blob_sha": "2c64711b62ed7640743ea4a266085c474a0a1910",
+      "url": "https://github.com/facebook/infer/blob/5aac32c06952a2f3a6b7043e91457920f065833b/infer/src/pulse/PulseSummary.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "5aac32c06952a2f3a6b7043e91457920f065833b",
+      "path": "infer/src/pulse/PulseExecutionDomain.mli",
+      "git_blob_sha": "ad58a049818fb8f6a5d2a699d03047e891e68baf",
+      "url": "https://github.com/facebook/infer/blob/5aac32c06952a2f3a6b7043e91457920f065833b/infer/src/pulse/PulseExecutionDomain.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "5aac32c06952a2f3a6b7043e91457920f065833b",
+      "path": "infer/src/rust/RustMir2Textual.ml",
+      "git_blob_sha": "fb7fea9325273646dcc049825f05ea89912e4998",
+      "url": "https://github.com/facebook/infer/blob/5aac32c06952a2f3a6b7043e91457920f065833b/infer/src/rust/RustMir2Textual.ml",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "seahorn/seahorn",
+      "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4",
+      "path": "README.md",
+      "git_blob_sha": "ee11f3dc8c57c771f555b1e5acae6e963f2f4060",
+      "url": "https://github.com/seahorn/seahorn/blob/892780176731ec8e97bbb9f6b172fcacd77a8ff4/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "seahorn/seahorn",
+      "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4",
+      "path": "lib/seahorn/HornSolver.cc",
+      "git_blob_sha": "87d3b5d623b3b8fe0243ee6f0404cf132aac5411",
+      "url": "https://github.com/seahorn/seahorn/blob/892780176731ec8e97bbb9f6b172fcacd77a8ff4/lib/seahorn/HornSolver.cc",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "seahorn/seahorn",
+      "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4",
+      "path": "py/sea/commands.py",
+      "git_blob_sha": "aca8952d93b1952734441f5880f2340f58a6a93d",
+      "url": "https://github.com/seahorn/seahorn/blob/892780176731ec8e97bbb9f6b172fcacd77a8ff4/py/sea/commands.py",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smackers/smack",
+      "revision": "0a64471206645c250164e8df6027f5a5193e5e85",
+      "path": "README.md",
+      "git_blob_sha": "040360f49b22c0814e3335895a9044179985355f",
+      "url": "https://github.com/smackers/smack/blob/0a64471206645c250164e8df6027f5a5193e5e85/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smackers/smack",
+      "revision": "0a64471206645c250164e8df6027f5a5193e5e85",
+      "path": "bin/smack",
+      "git_blob_sha": "e8efa74dbccc95116eda5e8e6cdb5ed383a6265d",
+      "url": "https://github.com/smackers/smack/blob/0a64471206645c250164e8df6027f5a5193e5e85/bin/smack",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smackers/smack",
+      "revision": "0a64471206645c250164e8df6027f5a5193e5e85",
+      "path": "share/smack/top.py",
+      "git_blob_sha": "333e95dee24b37a537491f5a877234159bb196ff",
+      "url": "https://github.com/smackers/smack/blob/0a64471206645c250164e8df6027f5a5193e5e85/share/smack/top.py",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smackers/smack",
+      "revision": "0a64471206645c250164e8df6027f5a5193e5e85",
+      "path": "share/smack/frontend.py",
+      "git_blob_sha": "b8d79803a108d24bedd05148a980d86f5037aa37",
+      "url": "https://github.com/smackers/smack/blob/0a64471206645c250164e8df6027f5a5193e5e85/share/smack/frontend.py",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "smackers/smack",
+      "revision": "0a64471206645c250164e8df6027f5a5193e5e85",
+      "path": "docs/usage-notes.md",
+      "git_blob_sha": "246c697c56e16ddb53fc8102889c2c852acdd62a",
+      "url": "https://github.com/smackers/smack/blob/0a64471206645c250164e8df6027f5a5193e5e85/docs/usage-notes.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "viperproject/silver",
+      "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f",
+      "path": "src/main/scala/viper/silver/ast/utility/Permissions.scala",
+      "git_blob_sha": "bf4caee5a56a2747573a0334321e40c10aba0e62",
+      "url": "https://github.com/viperproject/silver/blob/b4094c37a08f91ac41b3952194b73405c1221c5f/src/main/scala/viper/silver/ast/utility/Permissions.scala",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "viperproject/silver",
+      "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f",
+      "path": "src/main/scala/viper/silver/ast/Expression.scala",
+      "git_blob_sha": "ca5f6204e9811fe2c4eff9b940aaf0e36480dd08",
+      "url": "https://github.com/viperproject/silver/blob/b4094c37a08f91ac41b3952194b73405c1221c5f/src/main/scala/viper/silver/ast/Expression.scala",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "viperproject/silver",
+      "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f",
+      "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala",
+      "git_blob_sha": "95980f6c5d21d2bf264ec388ddd6a885f5b494f0",
+      "url": "https://github.com/viperproject/silver/blob/b4094c37a08f91ac41b3952194b73405c1221c5f/src/main/scala/viper/silver/verifier/VerificationResult.scala",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "prusti/prusti",
+      "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+      "path": "prusti-viper/src/encoder/high/procedures/inference/permission.rs",
+      "git_blob_sha": "31c88f8379f244e3d091661fe00b5785e5a18663",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/high/procedures/inference/permission.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "prusti/prusti",
+      "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+      "path": "docs/dev-guide/src/encoding/summary.md",
+      "git_blob_sha": "d87cf34a92465a40f751fcd8b4257e1f2d042e8f",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/docs/dev-guide/src/encoding/summary.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "prusti/prusti",
+      "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+      "path": "prusti-viper/src/encoder/mir/type_invariants/encoder.rs",
+      "git_blob_sha": "6048b07e55f01760f2fdd44919be60c6cd6bfca1",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/mir/type_invariants/encoder.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "prusti/prusti",
+      "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+      "path": "prusti-viper/src/encoder/mir/contracts/borrows.rs",
+      "git_blob_sha": "8bea77c393c5562f32129597ec3c3b5adeaeecd0",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/mir/contracts/borrows.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "prusti/prusti",
+      "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+      "path": "prusti-viper/src/encoder/foldunfold/perm.rs",
+      "git_blob_sha": "86a04e3b03be9e053e5feaa0a07a41a59a6a17fb",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/foldunfold/perm.rs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "crux-mir-comp/README.md",
+      "git_blob_sha": "18054522f0e66dd80dca9d7343a43ebac6c0c9b1",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/crux-mir-comp/README.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "crux-mir-comp/DESIGN.md",
+      "git_blob_sha": "86b86cb8d0e8359b5ecf9bbf4f8fd0088f7f8ee1",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/crux-mir-comp/DESIGN.md",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "crux-mir-comp/src/Mir/Compositional.hs",
+      "git_blob_sha": "e5a800587728da41bb7c5a563579a422aa946201",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/crux-mir-comp/src/Mir/Compositional.hs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "crucible-mir-comp/src/Mir/Compositional/Builder.hs",
+      "git_blob_sha": "4ec05b1ccb70634fb781c564ea9dfe498da2c675",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/crucible-mir-comp/src/Mir/Compositional/Builder.hs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "crucible-mir-comp/src/Mir/Compositional/Override.hs",
+      "git_blob_sha": "6256e112943aa13e18e5d4655ba826203f9f56e5",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/crucible-mir-comp/src/Mir/Compositional/Override.hs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "GaloisInc/saw-script",
+      "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "path": "saw-central/src/SAWCentral/Crucible/MIR/MethodSpecIR.hs",
+      "git_blob_sha": "3ac13c0d56b304cc63d907b5d9f1a72a0a509f14",
+      "url": "https://github.com/GaloisInc/saw-script/blob/27a7ae98256544b55a7a3ce4ce620c1a7889713b/saw-central/src/SAWCentral/Crucible/MIR/MethodSpecIR.hs",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Tabulation.mli",
+      "git_blob_sha": "e7b547fda05308292a35e1a0a989f4d67f4955a0",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Tabulation.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Prover.mli",
+      "git_blob_sha": "4f99b3404ebc7f119ee199231480f64749614e5f",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Prover.mli",
+      "observed_at": "2026-10-14"
+    },
+    {
+      "repository": "facebook/infer",
+      "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4",
+      "path": "infer/src/biabduction/Rearrange.mli",
+      "git_blob_sha": "409b9ec54967c9d84aaec5cbbc3a5240bbdd01ca",
+      "url": "https://github.com/facebook/infer/blob/99464c01da5809e7159ed1a75ef10f60d34506a4/infer/src/biabduction/Rearrange.mli",
+      "observed_at": "2026-10-14"
+    }
+  ]
+}

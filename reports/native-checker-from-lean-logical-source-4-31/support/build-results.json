@@ -1,0 +1,17 @@
+[
+  {
+    "module": "ArithmeticModel",
+    "exit": 0,
+    "seconds": 0.723428791
+  },
+  {
+    "module": "CheckerMain",
+    "exit": 0,
+    "seconds": 0.43430170900000004
+  },
+  {
+    "module": "KernelReplay",
+    "exit": 0,
+    "seconds": 0.36755287499999995
+  }
+]

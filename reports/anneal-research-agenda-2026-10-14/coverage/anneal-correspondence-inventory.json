@@ -1,0 +1,1510 @@
+{
+  "scope": "Bounded current-pin pass/source inventory and derived certificate interfaces with an original generic Lean theorem. Answered means this scoped research mechanism/comparison is answered, not concrete Rust adequacy or implementation completion. Partial names genuine unexamined theorem/artifact questions.",
+  "observed_at": "2026-10-14",
+  "question_coverage": [
+    {
+      "id": "P032",
+      "title": "Safety reflection from model to Rust",
+      "coverage_status": "answered",
+      "answer_scope": "Exact source-safety implication with no source-safety premise; checked generic Lean theorem.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P033",
+      "title": "Certificates for the first invalid source operation",
+      "coverage_status": "answered",
+      "answer_scope": "Every finite prefix and first bad boundary; checked generic theorem.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P034",
+      "title": "Initial-state and input-domain correspondence",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Input coverage, nondeterminism and composition"
+        }
+      ],
+      "remaining_gap": "The generic coverage proposition is checked; coverage of every advertised concrete Rust input/decoder domain is not instantiated.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P035",
+      "title": "Undefined behavior, unsupported constructs, and translation failure",
+      "coverage_status": "answered",
+      "answer_scope": "Distinct execution failure, semantic rejection and missing proof; actual error paths and derived acceptance policy.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P036",
+      "title": "Nondeterministic abstraction",
+      "coverage_status": "answered",
+      "answer_scope": "Universal source choice versus existential matching target prefix and universal model safety.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Input coverage, nondeterminism and composition"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P037",
+      "title": "Choosing semantic relations",
+      "coverage_status": "answered",
+      "answer_scope": "Five relation-direction/observation comparisons against the required safety inference.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P038",
+      "title": "Composition of heterogeneous pass certificates",
+      "coverage_status": "answered",
+      "answer_scope": "Heterogeneous existential intermediate-state relation and checked composition.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Input coverage, nondeterminism and composition"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Recursion and simultaneous certificate composition"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P039",
+      "title": "Correspondence for open modules",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "No safe-Rust client fundamental theorem or checked arbitrary open-context adequacy theorem is inspected in this wave.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P040",
+      "title": "Adequacy of the final proof language",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Anneal interfaces and proof-generation responsibilities"
+        }
+      ],
+      "remaining_gap": "No pure-AST-to-kernel-denotation adequacy theorem or complete source-to-MIR bridge is checked; syntactic extraction/error paths are inspected.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P041",
+      "title": "Property-specific correspondence",
+      "coverage_status": "answered",
+      "answer_scope": "Property-specific prefix/outcome/progress/resource/hyperproperty interface comparison.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P042",
+      "title": "Preventing circular semantic assumptions",
+      "coverage_status": "answered",
+      "answer_scope": "Explicit input/invariant/callee premise origins and noncircular checked safety implication.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Anneal interfaces and proof-generation responsibilities"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Exact callable-certificate interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P055",
+      "title": "Selecting the first certified Rust representation",
+      "coverage_status": "answered",
+      "answer_scope": "Source/early/later representation trust-frontier comparison and exact MIR acquisition paths.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P056",
+      "title": "Parsing, preprocessing, and conditional compilation",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        }
+      ],
+      "remaining_gap": "The exact configured-source correspondence theorem and complete effective-input transcript are not examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P057",
+      "title": "Macros, procedural macros, and generated source",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "Macro expansion implementation and semantic owner capture are not directly audited; only their required coverage interface is derived.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P058",
+      "title": "Resolution, typing, and implementation selection",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "No certified rustc resolution/elaboration theorem or all implicit substitution rules are inspected.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P059",
+      "title": "Borrow-checking and ownership-checking evidence",
+      "coverage_status": "answered",
+      "answer_scope": "Static acceptance versus independent theorem; actual borrow-bypass/type-checking gates.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P060",
+      "title": "Elaboration of implicit Rust behavior",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        }
+      ],
+      "remaining_gap": "The complete rustc coercion/autoref/autoderef and inserted-operation inventory is not acquired.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P061",
+      "title": "Importing versioned MIR into logic",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        }
+      ],
+      "remaining_gap": "The imported parser delegates to another module; full pinned serialized schema inversion/well-formedness/meaning theorem is not examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P062",
+      "title": "Certification before UB-sensitive optimization",
+      "coverage_status": "answered",
+      "answer_scope": "Requested early stage, fallback and dependency production origin under preservation configuration.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P063",
+      "title": "Compiler-inserted assertions, drops, and cleanup",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "Drop/assert/cleanup seams are inspected; all compiler-inserted source operations and their correspondence proofs are not audited.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P064",
+      "title": "Constant evaluation and promoted allocations",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        }
+      ],
+      "remaining_gap": "Const/promoted origins and rewrite seams are inspected; CTFE failure/byte/provenance correspondence is not established.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P065",
+      "title": "Complete executable dependency closure",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "Complete runtime dependency closure, every intrinsic/assembly/helper and source-target implementation is not validated.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P066",
+      "title": "Target configuration and ABI correspondence",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Concrete scalar and cast endpoints"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Representation and validity authorities"
+        }
+      ],
+      "remaining_gap": "Selected-width/model and target requirements are identified; complete endianness/ABI/feature binding is not checked for an actual build.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P067",
+      "title": "A certificate inventory for every extraction pass",
+      "coverage_status": "answered",
+      "answer_scope": "Exact top-level pass order/gates, analysis/backend seams and proposed certificate endpoints.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Legacy two-function execution and certifiability"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P068",
+      "title": "Renaming, substitution, and binding",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        }
+      ],
+      "remaining_gap": "No semantic alpha-renaming/binder-preservation theorem is replayed; current optional checks and seam obligations are inventoried.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P069",
+      "title": "Control-flow reconstruction",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "No concrete CFG-to-LLBC prefix/exception simulation theorem is checked; exact schedule and required relation are identified.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P070",
+      "title": "Local-state elimination and SSA-like transformations",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        }
+      ],
+      "remaining_gap": "No current-pin imperative-state-to-pure tuple/update certificate is replayed; fresh-variable and state-dependency conditions are identified.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P071",
+      "title": "Loop-to-recursion translation",
+      "coverage_status": "answered",
+      "answer_scope": "Invariant/fixed-point/recursive/fuel/progress distinctions and current backend limitations.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P072",
+      "title": "Function extraction, closures, and captured environments",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "No concrete closure/helper capture or observable-identity certificate is checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P073",
+      "title": "Borrow abstraction and backward functions",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        }
+      ],
+      "remaining_gap": "Current symbolic/backward/join seams are inspected; a full implementation correspondence theorem for borrow elimination is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P074",
+      "title": "Machine scalars to mathematical values",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Concrete scalar and cast endpoints"
+        }
+      ],
+      "remaining_gap": "Concrete scalar definitions and conditional model specifications are inspected; exact Rust operation/target/mode bridge is not proved here.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P075",
+      "title": "Algebraic data and pattern-match lowering",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Representation and validity authorities"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "No complete discriminant/niche physical-byte-to-ADT bridge is inspected beyond normative obligations.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P076",
+      "title": "Primitive replacement and external contracts",
+      "coverage_status": "answered",
+      "answer_scope": "Checked model/implementation correspondence versus registered residual assumptions; sufficient replacement rule.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Concrete scalar and cast endpoints"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P077",
+      "title": "Generated Lean definitions and their denotation",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        }
+      ],
+      "remaining_gap": "No emitted-term semantic certificate is checked; model outcomes, holes and backend gates are inspected.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P078",
+      "title": "Certified simplification and optimization rules",
+      "coverage_status": "answered",
+      "answer_scope": "Current rewrite side conditions and distinct required prefix/effect preservation obligations.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P079",
+      "title": "Pointer provenance across representation changes",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "No complete selected Rust provenance/alias authority or actual pointer abstraction theorem is checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P080",
+      "title": "Ownership, permissions, and separation",
+      "coverage_status": "answered",
+      "answer_scope": "Access authority versus geometry with an explicit state-relation interface.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Exact mathematical bridge and its limits"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P081",
+      "title": "Compiler realization of mathematical layouts",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Representation and validity authorities"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Exact mathematical bridge and its limits"
+        }
+      ],
+      "remaining_gap": "Pure geometry is directly inspected; exact actual instantiated Rust layout-to-geometry correspondence is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P082",
+      "title": "Packed fields and unaligned access",
+      "coverage_status": "answered",
+      "answer_scope": "Raw unaligned access versus intermediate reference formation, with primary operation contracts.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Typed transfer, byte copying and packed access"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P083",
+      "title": "Initialization, padding, and uninitialized bytes",
+      "coverage_status": "answered",
+      "answer_scope": "Typed transfer padding loss versus untyped copying initialization preservation.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Typed transfer, byte copying and packed access"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P084",
+      "title": "Value validity, niches, and discriminants",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Representation and validity authorities"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Exact mathematical bridge and its limits"
+        }
+      ],
+      "remaining_gap": "Concrete mathematical decoder laws are inspected; general physical Rust producer/type validity and domain adequacy are not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P085",
+      "title": "Typed moves, copies, reads, and writes",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Typed transfer, byte copying and packed access"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "Primitive typed/untyped contracts are compared; complete source runtime transfer/ownership simulation is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P086",
+      "title": "Allocation, deallocation, and reallocation",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "No heap allocation/reuse/failure operational theorem or concrete allocation certificate is inspected.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P087",
+      "title": "Pointer casts, arithmetic, and integer exposure",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Concrete scalar and cast endpoints"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "Named cast type-class distinction is investigated; general arithmetic/exposure/provenance adequacy remains unexamined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P088",
+      "title": "Slices, DST metadata, and zero-sized values",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Representation and validity authorities"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "DST/ZST normative constraints are identified; complete metadata/element permission operational bridge is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P089",
+      "title": "Heap abstraction and alias identity",
+      "coverage_status": "answered",
+      "answer_scope": "Byte/typed/pure heap comparison with validity, aliasing, transfer and access obligations.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P090",
+      "title": "Interior mutability and memory-state projections",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "UnsafeCell normative constraints are inspected; arbitrary shared mutation and projection abstraction theorem is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P091",
+      "title": "Partial arithmetic and floating-point operations",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Concrete scalar and cast endpoints"
+        }
+      ],
+      "remaining_gap": "Division/model/cast endpoints are inspected; complete shifts, all arithmetic modes and floating-point correspondence remain unexamined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P092",
+      "title": "Assertions, panics, and UB as distinct outcomes",
+      "coverage_status": "answered",
+      "answer_scope": "Outcome-sensitive prefix certificate and source/model outcome-collapse boundary.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P093",
+      "title": "Evaluation order and short-circuiting",
+      "coverage_status": "answered",
+      "answer_scope": "Evaluation/partial-effect ordering rule; current elimination requires failure side conditions.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P094",
+      "title": "Divergence and discarded unsafe computations",
+      "coverage_status": "answered",
+      "answer_scope": "First bad prefix survives unused results or later divergence in the checked generic interface.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P095",
+      "title": "Unwinding, cleanup, and destructor execution",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "Actual unwind rejection/drop abstraction is inspected; complete Rust cleanup and partially initialized-object correspondence is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P096",
+      "title": "Globals, statics, and thread-local state",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "Global/initializer closure conditions are derived; complete TLS/persistent state operational semantics is not examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P097",
+      "title": "Callbacks, reentrancy, and unknown code",
+      "coverage_status": "answered",
+      "answer_scope": "Universal environment/reentry/interference interface and invariant preservation rule.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P098",
+      "title": "Atomics and weak memory",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "No weak-memory atomic execution relation/certificate theorem is inspected; narrow Atomic.lean axiomatic-type boundary is observed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P099",
+      "title": "Data races and shared-memory ownership",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "No race-freedom/concurrent Rust adequacy theorem is checked; sequential-prefix insufficiency is established at interface level.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P100",
+      "title": "Progress and infinite executions",
+      "coverage_status": "answered",
+      "answer_scope": "Checked infinite-stuttering counterexample and separate rank/fairness requirements.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P101",
+      "title": "Resource failures and execution limits",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "State and heap obligation matrix"
+        }
+      ],
+      "remaining_gap": "No actual allocation/stack resource semantics, resource accounting theorem or measured bound is examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P102",
+      "title": "Preservation of security properties",
+      "coverage_status": "answered",
+      "answer_scope": "Why ordinary single-run correspondence is insufficient for security hyperproperties.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P103",
+      "title": "Reusable function correspondence certificates",
+      "coverage_status": "answered",
+      "answer_scope": "Callable certificate domain/state/prefix/outcome/frame/environment/specification interface.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Exact callable-certificate interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P104",
+      "title": "Safe APIs and universal caller coverage",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Input coverage, nondeterminism and composition"
+        }
+      ],
+      "remaining_gap": "Universal caller-domain interface is derived, but no safe-client fundamental theorem proving actual API coverage is checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P105",
+      "title": "Unsafe preconditions and caller discharge",
+      "coverage_status": "answered",
+      "answer_scope": "Caller-established unsafe preconditions versus circular implementation-safety premises.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Exact callable-certificate interface"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P106",
+      "title": "Generic and const-generic certificates",
+      "coverage_status": "answered",
+      "answer_scope": "Parametric versus per-instance certificate quantifiers and source-identity requirements.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P107",
+      "title": "Trait contracts and selected implementations",
+      "coverage_status": "answered",
+      "answer_scope": "Exact selected impl/dictionary/method law and source correspondence binding rule.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P108",
+      "title": "Dynamic dispatch and higher-order interfaces",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "Vtable lowering/filtering is inspected; complete dynamic/function-pointer/callback target and environment certificates are not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P109",
+      "title": "FFI and separately verified libraries",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "Exact FFI interface/residual-premise rule is derived; no concrete ABI/foreign memory implementation theorem is examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P110",
+      "title": "Separate compilation, linking, and specialization",
+      "coverage_status": "answered",
+      "answer_scope": "Link/specialization compatibility and callee precondition/instance preservation rule.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Recursion and simultaneous certificate composition"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P111",
+      "title": "Mutual recursion and certificate dependency cycles",
+      "coverage_status": "answered",
+      "answer_scope": "Simultaneous local transition/prefix induction or strictly smaller finite-derivation rule for cycles.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Recursion and simultaneous certificate composition"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P112",
+      "title": "Binding generated specifications to original specifications",
+      "coverage_status": "answered",
+      "answer_scope": "Independent specification meaning and consumer-property coverage rule.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P113",
+      "title": "Certified obligation and VC generation",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Anneal interfaces and proof-generation responsibilities"
+        }
+      ],
+      "remaining_gap": "The required obligation-generator soundness/completeness endpoint is specified but no current generator theorem is checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "P114",
+      "title": "Composition across proof systems and logics",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Recursion and simultaneous certificate composition"
+        }
+      ],
+      "remaining_gap": "The cross-logic semantic adapter rule is stated; actual Lean/Iris/Rocq/HOL/Verus/Creusot adapters are not examined.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "R085",
+      "title": "Outcome and effect specifications",
+      "coverage_status": "answered",
+      "answer_scope": "Distinct compositional outcome/interference/spawn/detached-execution interfaces and restrictions.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T063",
+      "title": "Compilation-input capture certificates",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        }
+      ],
+      "remaining_gap": "Current driver/body origin seams are inspected; full source/dependency/generated/configuration evidence capture is not validated.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T064",
+      "title": "Rust parsing and elaboration frontier",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        }
+      ],
+      "remaining_gap": "Trusted compiler/importer frontier is identified; certified elaboration or parser adequacy alternatives are not compared from primary artifacts here.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T065",
+      "title": "Macro and generated-code evidence",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "Generated-code closure requirements are derived; actual macro-generated unsafe owner/expansion evidence is not inspected.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T066",
+      "title": "Annotation-to-obligation attachment",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "Binding/specification identity rule is stated; actual hygiene/alias/expansion attachment correctness is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T067",
+      "title": "Rust typing and borrowing evidence",
+      "coverage_status": "answered",
+      "answer_scope": "Actual judgments consumed, optional type check and bypass; independent checking obligation remains explicit.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T068",
+      "title": "Checking MIR before semantic erasure",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Capture, compiler import and dependency origins"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        }
+      ],
+      "remaining_gap": "Earliest preserved representation and removal seams are identified; source-to-MIR and concrete removal certificate theorems are not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T069",
+      "title": "Certifying Charon transformations",
+      "coverage_status": "answered",
+      "answer_scope": "Original pass-level relation/gate design with exact source inventory and distinct prototype ownership.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Charon scheduled and enabled seams"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Legacy two-function execution and certifiability"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T070",
+      "title": "Certifying Aeneas functionalization",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Imported LLBC, symbolic states and backward functions"
+        },
+        {
+          "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+          "section": "Pure rewrite and backend denotation seams"
+        }
+      ],
+      "remaining_gap": "Symbolic/backward/join/pure mechanisms are inventoried; current full implementation correspondence is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T072",
+      "title": "Certified executable-dependency closure",
+      "coverage_status": "answered",
+      "answer_scope": "Independent grammar-driven fixed-point closure rule, not a producer roster.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Complete execution closure and source seams"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T073",
+      "title": "UB-exposing correspondence",
+      "coverage_status": "answered",
+      "answer_scope": "Original generic Lean first-bad-state reflection theorem with no source-safety premise.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Exact checked finite-prefix interface"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T074",
+      "title": "Complete outcome and nondeterminism coverage",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Outcomes and the first failing boundary"
+        },
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        }
+      ],
+      "remaining_gap": "Outcome/environment obligations are explicit; complete source unwind/interference/spawn/divergence correspondence is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T075",
+      "title": "Progress evidence for erased execution",
+      "coverage_status": "answered",
+      "answer_scope": "Checked silent-step/progress counterexample and stated termination/liveness requirements.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Progress, resources and security"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T079",
+      "title": "Unsafe-trait law evidence",
+      "coverage_status": "answered",
+      "answer_scope": "Exact instance/dictionary/law and simultaneous recursion closure rules.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Recursion and simultaneous certificate composition"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T080",
+      "title": "Safe-client and generic soundness",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Generics, dictionaries, substitution and specialization"
+        }
+      ],
+      "remaining_gap": "Per-instance/parametric and open-client rules are stated; actual permitted safe-client/dispatch coverage theorem is not checked.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T081",
+      "title": "A certified Anneal obligation generator",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Anneal interfaces and proof-generation responsibilities"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "Generic source-safety transfer is checked, but no actual obligation-generator completeness or Rust adequacy theorem is proved.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T082",
+      "title": "Decoder and ghost-domain adequacy",
+      "coverage_status": "partial",
+      "answer_scope": "Primary named source seams and explicit sufficient semantic obligations; partial for the gap below.",
+      "sections": [
+        {
+          "package": "prefix-safety-outcomes-and-property-transfer",
+          "section": "Input coverage, nondeterminism and composition"
+        },
+        {
+          "package": "scalars-values-storage-and-access-side-conditions",
+          "section": "Exact mathematical bridge and its limits"
+        }
+      ],
+      "remaining_gap": "Generic initial-state coverage and concrete decoder boundary are inspected; advertised Rust/ghost domain coverage is not proved.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T083",
+      "title": "Independent required propositions",
+      "coverage_status": "answered",
+      "answer_scope": "Independent required-property and specification-meaning endpoint.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    },
+    {
+      "id": "T084",
+      "title": "Primitive and external-model correspondence",
+      "coverage_status": "answered",
+      "answer_scope": "Checked body proof, certified summary and explicit primitive correspondence assumptions compared.",
+      "sections": [
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Functions, callers and open-world contexts"
+        },
+        {
+          "package": "functions-generics-and-environment-certificate-closure",
+          "section": "Specification meaning and independent obligation closure"
+        }
+      ],
+      "remaining_gap": "None for the scoped mechanism/source-inventory question. No instantiated Rust adequacy or actual pass correctness is claimed.",
+      "future_engineering": "Instantiate and implement the researched interface in future Anneal, preserving exact semantic objects, side conditions and independent checker acceptance. This engineering task is distinct from remaining research."
+    }
+  ],
+  "global_research_gaps": [
+    "Complete Rust-to-first-representation semantic adequacy; actual macro/hygiene/generated owner and effective-input capture.",
+    "Pinned parser/schema and resolution/elaboration correctness, complete builtin/source execution closure and all actual pass certificates.",
+    "Current symbolic borrow reconstruction, loops, pure AST-to-Lean denotation and actual obligation-generator completeness.",
+    "Complete typed storage, provenance/aliasing, allocation/reuse, float, unwind/TLS, weak memory/concurrency and resource/security semantics.",
+    "Concrete safe-client/open-world/generic fundamental theorem and cross-logic/FFI certificate adapters."
+  ],
+  "future_engineering_is_not_a_research_gap": "A future Anneal implementation or fresh full compiler build is not required to answer the scoped mechanism/inventory comparison; measurements and concrete unexamined theorem endpoints remain open."
+}

@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "anneal/correspondence",
+    "charon/passes",
+    "aeneas/translation",
+    "certificates/pass-inventory"
+  ],
+  "subjects": [
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Anneal admission design and semantic interfaces",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "path": "verification/aeneas/ADMISSION_DESIGN.md"
+      }
+    },
+    {
+      "name": "Legacy alpha24 Charon execution binary",
+      "identity": {
+        "artifact": "anneal-alpha24/runtime/aeneas/bin/charon",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Legacy alpha24 Aeneas execution binary",
+      "identity": {
+        "artifact": "anneal-alpha24/runtime/aeneas/bin/aeneas",
+        "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

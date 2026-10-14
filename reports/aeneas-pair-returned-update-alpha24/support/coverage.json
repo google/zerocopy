@@ -1,0 +1,158 @@
+{
+  "entries": [
+    {
+      "id": "R096",
+      "title": "Pointer-capability case study",
+      "question": "Verify construction, projection, splitting, casting, and reference reconstruction; include lifetime-extension and aliasing counterexamples.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual two-field projection/write, returned pair, abstract valid-root/exclusive-write premises and outside-root frame theorem."
+      ],
+      "unanswered_research_scope": [
+        "Reference construction/splitting/casting/reconstruction, concrete provenance/lifetimes and Rust alias/lifetime-extension counterexamples."
+      ],
+      "future_engineering_obligations": [
+        "Connect permission premises to a Rust resource/lifetime model."
+      ]
+    },
+    {
+      "id": "T070",
+      "title": "Certifying Aeneas functionalization",
+      "question": "Investigate correspondence evidence for symbolic execution, borrow reconstruction, control-flow joins, and pure-program transformations.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual simple branch-join correspondence plus emitted choose/pair-update endpoint and returned-state/frame relation."
+      ],
+      "unanswered_research_scope": [
+        "General symbolic execution, nested borrow reconstruction, join abstraction and other pure-program passes."
+      ],
+      "future_engineering_obligations": [
+        "Integrate selected relation into Aeneas producer/checker interfaces."
+      ]
+    },
+    {
+      "id": "P067",
+      "title": "A certificate inventory for every extraction pass",
+      "question": "Map actual input/output boundaries and required semantic lemmas; this identifies where incremental certification can begin and where gaps remain.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Exact observed raw-preset/original-print/postmicro/built/final/serialized/emitted boundaries; distinct configurations and pair entry/unit representation differences retained."
+      ],
+      "unanswered_research_scope": [
+        "Inventory and semantic lemmas for every internal pass and larger input families."
+      ],
+      "future_engineering_obligations": [
+        "Expose missing intermediate snapshots and pass-specific witness interfaces."
+      ]
+    },
+    {
+      "id": "P070",
+      "title": "Local-state elimination and SSA-like transformations",
+      "question": "Certify tuple-passing, fresh variables, and state updates; generated pure functions must retain dependencies between imperative operations.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Imperative selected pair update preserves first-field/input dependencies and temporary state; exact emitted tuple result agrees under entry premises."
+      ],
+      "unanswered_research_scope": [
+        "General SSA/fresh-variable/local-state elimination passes and multiple dependent updates."
+      ],
+      "future_engineering_obligations": [
+        "Connect actual pass witnesses to a reusable state-elimination relation."
+      ]
+    },
+    {
+      "id": "P072",
+      "title": "Function extraction, closures, and captured environments",
+      "question": "Certify extracted helpers and closure representations; code movement must preserve captured state, call behavior, and identity where observable.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "charon-fork-storage-certificate-alpha24",
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Closed call-free selected-body gates make the current missing-dependency boundary explicit."
+      ],
+      "unanswered_research_scope": [
+        "Extracted helpers, closures, captured environments, call behavior and observable identity."
+      ],
+      "future_engineering_obligations": [
+        "Add concrete call/capture/dependency closure grammar and certificates."
+      ]
+    },
+    {
+      "id": "P073",
+      "title": "Borrow abstraction and backward functions",
+      "question": "Establish correspondence for Aeneas-style borrow elimination and returned updates; this is a distinctive semantic obligation rather than ordinary value translation.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "Actual Aeneas returned pair update and explicit source-place/selected-LLBC/pure-result/heap-frame correspondence under external root/exclusive premises."
+      ],
+      "unanswered_research_scope": [
+        "Nested borrows, explicit backward functions, concrete Rust borrow/lifetime adequacy and alias reconstruction."
+      ],
+      "future_engineering_obligations": [
+        "Discharge the external permission/capture frontier and compose caller/callee borrow relations."
+      ]
+    },
+    {
+      "id": "P129",
+      "title": "An Aeneas borrow-translation prototype",
+      "question": "Certify one representative borrow/update transformation; this tests a central semantic feature before extending to raw memory.",
+      "assignment": "assigned",
+      "scope": "full",
+      "packages": [
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [
+        "One actual representative pair borrow/update transformation certified: exact emitted body, imported operation order, independent source-place model, preserved first field/outside heap and caller entry premises; native all-byte controls."
+      ],
+      "unanswered_research_scope": [],
+      "future_engineering_obligations": [
+        "Prove frontend/capture/resource adequacy and integrate the conditional certificate in the pipeline."
+      ]
+    },
+    {
+      "id": "P135",
+      "title": "A safe-wrapper domain-coverage experiment",
+      "question": "Use a safe API over unsafe representation operations; demonstrate that certification covers all permitted callers and rejects artificially narrowed models.",
+      "assignment": "assigned",
+      "scope": "partial",
+      "packages": [
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "answered_research_scope": [],
+      "unanswered_research_scope": [
+        "Required safe API over unsafe representation operations and all permitted Rust callers have not been examined. The safe-only pair probe and model gate are not a source guarantee for such an API."
+      ],
+      "future_engineering_obligations": [
+        "Acquire and model an actual unsafe-backed safe API before attempting its caller-domain certificate."
+      ],
+      "required_source_case": "not examined"
+    }
+  ],
+  "scope_policy": "full identifies a completed bounded research answer with stated frontiers; partial preserves genuinely unanswered question scope. Integration/adequacy implementation obligations are recorded separately. No global tracker completion is authorized by this file."
+}

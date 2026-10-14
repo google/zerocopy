@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "rust/verifast",
+    "rust/verus",
+    "rust/creusot",
+    "verification/permissions",
+    "rust/unsafe",
+    "verification/trust"
+  ],
+  "subjects": [
+    {
+      "name": "VeriFast source",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    },
+    {
+      "name": "Verus source",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Creusot source",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "VeriFast foundational preprint v1",
+      "identity": {
+        "arxiv": "2601.13727v1",
+        "sha256": "db6fafe5642384c302868138529796c28a4a90eb6c944ecead089a6b85060fc6",
+        "url": "https://arxiv.org/pdf/2601.13727v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

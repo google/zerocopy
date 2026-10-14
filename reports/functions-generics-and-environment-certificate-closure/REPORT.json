@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "anneal/correspondence",
+    "certificates/composition",
+    "rust/generics",
+    "semantics/open-modules",
+    "certificates/dependency-closure"
+  ],
+  "subjects": [
+    {
+      "name": "Charon generic and dispatch transformations",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas dependency/context/effect analysis",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Rust destructor requirements",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "path": "src/destructors.md"
+      }
+    },
+    {
+      "name": "Anneal current consumer and admission contracts",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+        "paths": "verification/aeneas/ADMISSION_DESIGN.md;verification/aeneas/SEMANTICS.md"
+      }
+    },
+    {
+      "name": "Original checked generic prefix-composition specimen",
+      "identity": {
+        "artifact": "PrefixCertificate.lean",
+        "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

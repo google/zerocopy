@@ -1,0 +1,16 @@
+WrongChoose.lean:4:104: error: Tactic `rfl` failed: The left-hand side
+  wrongChoose false x y
+is not definitionally equal to the right-hand side
+  CertificateProbe.choose false x y
+
+case false
+x y : U8
+⊢ wrongChoose false x y = CertificateProbe.choose false x y
+WrongChoose.lean:4:104: error: Tactic `rfl` failed: The left-hand side
+  wrongChoose true x y
+is not definitionally equal to the right-hand side
+  CertificateProbe.choose true x y
+
+case true
+x y : U8
+⊢ wrongChoose true x y = CertificateProbe.choose true x y

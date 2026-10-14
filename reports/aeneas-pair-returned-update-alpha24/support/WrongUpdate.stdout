@@ -1,0 +1,8 @@
+WrongUpdate.lean:4:113: error: Tactic `rfl` failed: The left-hand side
+  wrongUpdate (fst✝, snd✝) x
+is not definitionally equal to the right-hand side
+  CertificateProbe.update_second (fst✝, snd✝) x
+
+case mk
+x fst✝ snd✝ : U8
+⊢ wrongUpdate (fst✝, snd✝) x = CertificateProbe.update_second (fst✝, snd✝) x

@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "rust/inference",
+    "verification/bi-abduction",
+    "verification/symbolic-memory",
+    "verification/permissions",
+    "verification/overrides",
+    "verification/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "MIRAI",
+      "identity": {
+        "repository": "endorlabs/MIRAI",
+        "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b"
+      }
+    },
+    {
+      "name": "Infer current Pulse/Rust source",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "5aac32c06952a2f3a6b7043e91457920f065833b"
+      }
+    },
+    {
+      "name": "Infer historical bi-abduction source",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4"
+      }
+    },
+    {
+      "name": "SeaHorn",
+      "identity": {
+        "repository": "seahorn/seahorn",
+        "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4"
+      }
+    },
+    {
+      "name": "SMACK",
+      "identity": {
+        "repository": "smackers/smack",
+        "revision": "0a64471206645c250164e8df6027f5a5193e5e85"
+      }
+    },
+    {
+      "name": "Viper Silver",
+      "identity": {
+        "repository": "viperproject/silver",
+        "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f"
+      }
+    },
+    {
+      "name": "Prusti",
+      "identity": {
+        "repository": "prusti/prusti",
+        "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+      }
+    },
+    {
+      "name": "SAW compositional MIR source",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+      }
+    },
+    {
+      "name": "Compositional Shape Analysis by means of Bi-Abduction, POPL 2009",
+      "identity": {
+        "published_version": "POPL 2009 author copy, 12 pages",
+        "sha256": "7d669d3bf3b446f88d050d8f7ca5c473ea26b0b89f106c3031b37604eca483c2",
+        "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "case": "UpdateCertificate",
+    "exit": 0,
+    "accepted": true,
+    "seconds": 9.580736875
+  },
+  {
+    "case": "WrongChoose",
+    "exit": 1,
+    "accepted": false,
+    "seconds": 1.6142588329999992
+  },
+  {
+    "case": "WrongUpdate",
+    "exit": 1,
+    "accepted": false,
+    "seconds": 1.6715949170000002
+  }
+]

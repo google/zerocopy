@@ -1,0 +1,561 @@
+{
+  "packages": [
+    "rust-resource-primitive-matrix-2026",
+    "inference-and-compositional-result-interfaces-2026",
+    "open-rust-library-certificate-obligations-cce761ad",
+    "rust-admission-diagnostics-and-proof-transport-cce761ad"
+  ],
+  "entries": [
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R037",
+      "question": "Examine ownership predicates, lifetime handling, safe abstractions, concurrency, and correspondence to Rust's aliasing restrictions.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F2. VeriFast safe-function and alias contracts",
+        "F3. VeriFast foundational endpoint and admitted premises"
+      ],
+      "answered_subquestions": [
+        "Current own/share/lifetime and automatic safe-function contracts; conditional Send/Sync laws; documented shared-immutability coverage; actual foundational theorem target and admitted layer."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Run pinned examples and justify any native library specification used."
+      ]
+    },
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R039",
+      "question": "Determine what can be verified in existing Rust, what requires rewritten code, and how executable output relates to verified input.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Common primitive matrix",
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F5. Creusot permissions and the ordering contrast"
+      ],
+      "answered_subquestions": [
+        "Accepted/rejected pointer-operation branches distinguish ordinary source reuse from wrappers; wrapper contracts and translation trust remain explicit."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Implement and verify a concrete zerocopy-to-wrapper transformation and executable relation."
+      ]
+    },
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R040",
+      "question": "Examine permissions, provenance, initializedness, deallocation, aliasing, and unsupported operations at an exact revision.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning"
+      ],
+      "answered_subquestions": [
+        "Typed contents versus raw domain/provenance; init/unknown distinction; conversion/resource-transfer and explicitly rejected pointer operations."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Exercise byte/padding/layout allocation cases and establish a native memory relation."
+      ]
+    },
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R041",
+      "question": "Study tracked values, ownership transfer, trusted primitives, and guarantees exposed to ordinary Rust clients.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F6. Interior mutability requires its own resource interface"
+      ],
+      "answered_subquestions": [
+        "Tracked noncopy transfer, external/axiomatic primitives, and ordinary safe-client precondition boundary; preferred PCell token and drop/SendSync meaning."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove open safe-wrapper entry/domain closure before ghost erasure."
+      ]
+    },
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R042",
+      "question": "Examine state machines, invariants, atomic operations, supported memory ordering, and trusted concurrency interfaces.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Common primitive matrix",
+        "F5. Creusot permissions and the ordering contrast"
+      ],
+      "answered_subquestions": [
+        "Inspected fixed SeqCst wrapper versus ordering-parameterized Creusot protocol/feature choice; trusted operation and environment boundary."
+      ],
+      "remaining_research": [
+        "Exhaustive state-machine macro/invariant interfaces and all weak-memory operation variants remain unexamined."
+      ],
+      "future_engineering": [
+        "Verify chosen concurrent case against the exact ordering/environment contract."
+      ]
+    },
+    {
+      "package": "rust-resource-primitive-matrix-2026",
+      "id": "R044",
+      "question": "Audit current raw-pointer, interior-mutability, and atomic facilities separately from historically safe-Rust-focused descriptions.",
+      "status": "partial",
+      "findings_sections": [
+        "F4. Verus pointer rewriting and tracked memory meaning",
+        "F5. Creusot permissions and the ordering contrast",
+        "F6. Interior mutability requires its own resource interface"
+      ],
+      "answered_subquestions": [
+        "Current raw-pointer, preferred Verus cell/token, Creusot ghost-only UnsafeCell specification and atomic interfaces are inspected separately from historical safe-Rust descriptions."
+      ],
+      "remaining_research": [
+        "Full executable Creusot interior-mutability wrapper and exhaustive raw byte-memory parity remain unexamined."
+      ],
+      "future_engineering": [
+        "Run minimally accepted current-tool cases; do not treat documentation as execution."
+      ]
+    },
+    {
+      "package": "inference-and-compositional-result-interfaces-2026",
+      "id": "R048",
+      "question": "Examine borrowing encodings, fractional permissions, backend semantics, trusted contracts, and suitability for extending unsafe support.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Fractional permissions and Prusti inference"
+      ],
+      "answered_subquestions": [
+        "Concrete fractional/wildcard/access permissions, inferred high-level permission classes, borrow/type-invariant encodings and backend result interface."
+      ],
+      "remaining_research": [
+        "Complete backend logical soundness endpoint and exhaustive current unsafe extension support remain unexamined."
+      ],
+      "future_engineering": [
+        "Give each unsafe primitive a native resource interpretation and check generated VCs."
+      ]
+    },
+    {
+      "package": "inference-and-compositional-result-interfaces-2026",
+      "id": "R053",
+      "question": "Examine symbolic memory, compositional verification, equivalence checking, overrides, and applicability to existing zerocopy code.",
+      "status": "partial",
+      "findings_sections": [
+        "F7. SAW and Crux compositional MIR specifications"
+      ],
+      "answered_subquestions": [
+        "Method-spec construction differs from proving a callee; override asserts pre/assumes post; mutation/alias/global frame restrictions inspected."
+      ],
+      "remaining_research": [
+        "Full SAW verified-callee/assumed-spec lifecycle, equivalence APIs and certificate replay routes remain unexamined."
+      ],
+      "future_engineering": [
+        "Run a selected zerocopy equivalence/compositional experiment with pinned frontend/model."
+      ]
+    },
+    {
+      "package": "inference-and-compositional-result-interfaces-2026",
+      "id": "R060",
+      "question": "Evaluate MIRAI, Infer, SeaHorn, SMACK, and related methods as inference engines, bug finders, or checked-proof producers.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Output roles and what a downstream checker needs",
+        "F2. MIRAI incompleteness and diagnostic policy",
+        "F3. Bi-abduction theory and historical implementation boundary",
+        "F4. Current Pulse and experimental Rust lowering",
+        "F5. SeaHorn and SMACK query boundaries"
+      ],
+      "answered_subquestions": [
+        "Exact inferred-summary, bug-path, CHC, bounded/modular and certificate-candidate roles; conditional bi-abduction endpoints and implementation missing/frame interface; explicit unknown/incomplete policies."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Use inferred contracts/invariants as candidates; independently check VCs, call coverage and source binding."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "R008",
+      "question": "Determine what evidence supports a safe abstraction used by any permitted client, including generic and separately compiled clients.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Semantic entry/client typing and actual universal/layout premises; distinct native correspondence and separate-client certificate obligations."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove configured native entry coverage and source safety reflection; no present arbitrary-client result is asserted."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "R065",
+      "question": "Examine constructors, mutation, public fields, modules, callbacks, destructors, and unannotated code.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Bounded pointer access-path inventory",
+        "F3. Unsafe trait laws and callback restoration",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Bounded Ptr/PtrInner constructors, mutation/observations, reexports, callback/error and unsafe-law paths; native safe-field/callback/drop/forget controls."
+      ],
+      "remaining_research": [
+        "Complete expanded cfg-specific crate/downstream/unannotated access-path census is not examined."
+      ],
+      "future_engineering": [
+        "Establish all preservation lemmas for the chosen exported module domain."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "R066",
+      "question": "Cover dictionaries, associated items, blanket implementations, coinduction, specialization, and downstream implementations.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Exact local/native dictionary applications and implementation laws; selected unsafe associated projection interfaces; abstract versus concrete call obligations."
+      ],
+      "remaining_research": [
+        "GAT/associated-item completeness, blanket/coinductive selection, specialization and downstream implementation closure remain incomplete research."
+      ],
+      "future_engineering": [
+        "Extend binding certificates only with actual compiler selections and justified law proofs."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "R074",
+      "question": "Cover lifetimes, GATs, const generics, trait objects, associated types, and universal versus monomorphized evidence.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Universal lifetimes/semantic types constrained by layout; retained array usize const application; trait-object dispatch and native zero/three-length controls."
+      ],
+      "remaining_research": [
+        "GAT and exhaustive associated-type/const-expression/polymorphic dispatch correspondence are not examined."
+      ],
+      "future_engineering": [
+        "Either prove the retained universal domain or explicitly enumerate valid monomorphic instances/targets."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "T079",
+      "question": "Check exact dictionaries, implementations, recursive relationships, and the laws generic proofs consume.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Concrete selected-law/dictionary premises and tested owner/const identities; unsafe restoration law and derived recursive component boundary."
+      ],
+      "remaining_research": [
+        "Full recursive invariant/law dependency calculus and special trait-resolution cases are not investigated."
+      ],
+      "future_engineering": [
+        "Produce checked SCC/dependency records, avoiding circular assumptions."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "T080",
+      "question": "Establish coverage of permitted instantiations, dispatch choices, clients, and invariant-preserving module operations.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Bounded pointer access-path inventory",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Permitted entry/dispatch/module coverage obligation and bounded inventory/control mechanisms."
+      ],
+      "remaining_research": [
+        "Whole configured library/client/vtable closure remains unexamined beyond the selected interfaces."
+      ],
+      "future_engineering": [
+        "Implement source-bound certificate coverage for the declared domain."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P103",
+      "question": "Define interfaces supporting separate checking and reuse; whole-program certificates may be unnecessarily expensive and difficult to maintain.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Proposed separate source/type/dictionary/function/indirect/recursive/link records, with reuse premises."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Implement records and compositional checker; no whole future Anneal prototype exists."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P104",
+      "question": "Prove that contracts cover every permitted safe caller; narrowing model domains must not introduce hidden caller obligations.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F2. Bounded pointer access-path inventory",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Exact hidden-domain risk and necessary semantic entry/preservation evidence; ordinary safe countercontrols show why extra predicates need enforcement."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove every permitted native entry establishes the chosen model; current source checks alone do not establish this."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P105",
+      "question": "Separate legitimate unsafe requirements from assumptions that conceal implementation defects; certificates must show where each requirement is established.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F3. Unsafe trait laws and callback restoration"
+      ],
+      "answered_subquestions": [
+        "Legitimate unsafe implementer/callback/range/provenance obligations are stated at concrete source sites; these cannot be replaced by assumed function safety."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Discharge each guard and law at the actual native call/implementation."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P106",
+      "question": "Compare parametric proofs with per-instantiation certification; representation and arithmetic obligations may depend on types, constants, and targets.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Parametric versus finite-instance certificate distinction; layout, const and target premises retained; concrete const control evidence."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove target-specific representation/arithmetic or bind finite certified instances."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P107",
+      "question": "Connect abstract method specifications to actual implementations; a trait-level theorem is insufficient without justified implementation correspondence.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls"
+      ],
+      "answered_subquestions": [
+        "Actual source owner/body/dictionary and semantic law must accompany method specifications; selected TryWithError native bodies and function-table semantic interface inspected."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove each imported body satisfies its contract under the declared correspondence premises."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P108",
+      "question": "Study certificates for vtables, function pointers, closures, and quantified callback contracts; modularity must account for the actual callable environment.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Concrete function-table/layout/precondition rule and quantified callback/environment certificate shape; native dynamic-call control."
+      ],
+      "remaining_research": [
+        "Complete Rust vtable/closure capture/source-to-model bridge is not examined."
+      ],
+      "future_engineering": [
+        "Bind actual callable targets or prove every permitted target satisfies the required resource/effect relation."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P109",
+      "question": "Relate calling conventions, memory representations, and foreign contracts; cross-language composition needs semantic bridges at each boundary.",
+      "status": "partial",
+      "findings_sections": [
+        "F5. Safe native controls and cleanup domain",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Current foreign ABI exclusion and precise need for separate ABI/representation/resource/native implementation bridges."
+      ],
+      "remaining_research": [
+        "Concrete cross-language ABI certificate/language semantics comparison remains unexamined."
+      ],
+      "future_engineering": [
+        "Build and check a bridge for a selected actual foreign boundary before admitting it."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P110",
+      "question": "Preserve certificates as modules are linked or specialized; locally correct artifacts must remain correct in the assembled program.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Hash identity versus semantic preservation distinction and exact import/target/dictionary/layout obligations for reuse."
+      ],
+      "remaining_research": [
+        "Actual link/specialization transformation preservation theorems and object-binding implementations remain unexamined."
+      ],
+      "future_engineering": [
+        "Revalidate assembled artifacts and prove relevant preservation premises."
+      ]
+    },
+    {
+      "package": "open-rust-library-certificate-obligations-cce761ad",
+      "id": "P111",
+      "question": "Establish sound simultaneous reasoning and invariant dependencies; certificates must not justify each other through circular assumptions.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Recursive SCC/guarded or inductive simultaneous reasoning requirement; mutually assumed safety is insufficient."
+      ],
+      "remaining_research": [
+        "Full recursive unsafe invariant dependency calculus remains unexamined."
+      ],
+      "future_engineering": [
+        "Check one sound simultaneous component rule and all resource/invariant obligations."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R079",
+      "question": "Design and evaluate ways to express ownership, lifetimes, permissions, invariants, and protocols without requiring prover expertise.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Result categories and concrete diagnostic surface",
+        "F2. Executed admission and dictionary controls"
+      ],
+      "answered_subquestions": [
+        "Source-oriented existing diagnostic mapping and explicit obligation/failure/resource interface design constraints."
+      ],
+      "remaining_research": [
+        "Ordinary-user ergonomics/protocol-authoring design evaluation and user measurements are not performed."
+      ],
+      "future_engineering": [
+        "Prototype the suggested records/editor interaction and evaluate with ordinary Rust users."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R081",
+      "question": "Trace failed obligations back to Rust operations; distinguish actual counterexamples, unsupported semantics, and incomplete automation.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Result categories and concrete diagnostic surface",
+        "F2. Executed admission and dictionary controls"
+      ],
+      "answered_subquestions": [
+        "Actual source-map implementation, status preservation, unsupported admission versus proof/counterexample versus operational distinction; executed rejection controls."
+      ],
+      "remaining_research": [
+        "End-to-end failed-Lean-to-native-Rust trace/counterexample validation is not executed or fully examined."
+      ],
+      "future_engineering": [
+        "Implement structured failure classifications and replay native counterexample witnesses."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R082",
+      "question": "Test empty domains, impossible preconditions, missing execution roots, weakened postconditions, and independent negative controls.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Executed admission and dictionary controls",
+        "F3. Required contract strength and vacuity checks"
+      ],
+      "answered_subquestions": [
+        "Ten executed dictionary/root/effect/const controls; actual arbitrary-outcome required-strength check and source-only kernel/domain controls distinguished."
+      ],
+      "remaining_research": [
+        "Requested impossible/empty-domain and weakened-post kernel experiments are not executed; independent native entry-domain coverage remains open."
+      ],
+      "future_engineering": [
+        "Run valid baselines and independently selected negative controls on the full declared pipeline."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R083",
+      "question": "Compare parameterized semantic models with global axioms; detect inconsistent contracts and distinguish data inputs from propositions.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F3. Required contract strength and vacuity checks",
+        "F4. Parameterized model data and logical assumptions"
+      ],
+      "answered_subquestions": [
+        "Retained provider/optional bit decoder; full physical initialization quantification; exact data-only ABI signatures and axiom audit versus assumed propositions; limits of consistency checking."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Establish model/source entry coverage and satisfiable constructor witnesses for the declared safe-client domain."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R084",
+      "question": "Investigate Lean/Rocq transport, SMT certificates, SMTCoq, Alethe, and LFSC, including checking costs and remaining trust.",
+      "status": "partial",
+      "findings_sections": [
+        "F5. SMT certificate endpoints and transport premises"
+      ],
+      "answered_subquestions": [
+        "Direct SMTCoq theorem premises/conclusion; Carcara Valid/Holey/configuration bypass; LFSC signatures/assumptions/side-condition checker boundary; exact transport obligations."
+      ],
+      "remaining_research": [
+        "Complete Lean/Rocq transport theorem, Alethe supported-theory replay and checking-cost measurements are not established."
+      ],
+      "future_engineering": [
+        "Build a semantics-preserving VC/certificate import and benchmark exact supported examples."
+      ]
+    },
+    {
+      "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+      "id": "R085",
+      "question": "Separate UB, panic, abort, divergence, nondeterminism, I/O, spawning, and detached execution in compositional contracts.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Effects and unsafe-source adequacy boundary"
+      ],
+      "answered_subquestions": [
+        "Current fail/undef/panic-collapse and total/partial/divergence behavior; forbidden finite-prefix requirement; explicit unsupported recovery/spawn/raw/foreign effects."
+      ],
+      "remaining_research": [
+        "Full effect calculus for recovery/nondeterminism/IO/spawn/detach remains unexamined."
+      ],
+      "future_engineering": [
+        "Extend only with separate effects, child/environment resources and concrete operation correspondence."
+      ]
+    }
+  ]
+}
