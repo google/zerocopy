@@ -23,8 +23,12 @@ from pathlib import Path
 import re
 import stat
 import tempfile
+import golden
+from output import write_text
 
-MODULES = ('ModelShapes', 'Models', 'Specs')
+# Preserve version 2 reverse-edit authority. Trait laws are protected separately
+# because their compiler-generated projection cannot authorize reverse edits.
+MODULES = tuple(Path(name).stem for name in golden.PROJECTIONS if name != 'TraitLaws.lean')
 STATE = '.inline-projections.json'
 OWNER = r'zerocopy(?:::[A-Za-z_][A-Za-z_0-9]*)+'
 MARK = re.compile(r'^-- aeneas-copy-(begin|end) (' + OWNER + r') (spec|shape|decoder)\n', re.M)
@@ -34,6 +38,30 @@ PART_MODULE = {'spec': 'Specs', 'shape': 'ModelShapes', 'decoder': 'Models'}
 def digest(text):
     """Hash exact UTF-8 projection text, including its line endings and framing."""
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+
+def protect_trait_projection(root, work):
+    """Reject reverse edits without extending legacy saved editing authority."""
+    projection = work / 'TraitLaws.lean'
+    if projection.exists():
+        relative = projection.relative_to(root)
+        record = checked_file(root, relative)
+        state_path = work / STATE
+        contents = (checked_file(root, state_path.relative_to(root))['bytes']
+                    if state_path.exists() else b'{}')
+        try:
+            state = json.loads(contents)
+        except (ValueError, UnicodeError) as error:
+            raise ValueError(f'Malformed projection baseline: {state_path}') from error
+        if not isinstance(state, dict):
+            raise ValueError(f'Malformed projection baseline: {state_path}')
+        baseline = state.get('trait_projection')
+        if baseline is not None:
+            validate(state)
+            if record['bytes'] == baseline['text'].encode('utf-8'):
+                return
+        if baseline is not None or record['bytes'] != golden.EMPTY_TRAIT_LAWS.encode('utf-8'):
+            raise ValueError('TraitLaws.lean copy-back is unsupported: trait laws require verified compiler bindings; edit the Rust invariant directly')
 
 
 def regions(text):
@@ -120,6 +148,8 @@ def record(work, annotations):
         all_values.update(regions(text)[1])
     owners, sources = {}, {}
     for rust, annotation in annotations.items():
+        if annotation['kind'] not in ('function', 'type'):
+            continue
         entry = {key: annotation[key] for key in ('rust', 'file', 'kind', 'generics', 'inputs', 'copy_span')}
         entry['payload'] = annotation['spec_text'] if entry['kind'] == 'function' else annotation['model_text']
         if entry['kind'] == 'function':
@@ -131,8 +161,12 @@ def record(work, annotations):
         sources[entry['file']] = annotations.source_snapshots[entry['file']].decode('utf-8')
     state = {'version': 2, 'sha256': {name: digest(text) for name, text in projections.items()},
              'projections': projections, 'owners': owners, 'sources': sources}
+    trait_projection = work / 'TraitLaws.lean'
+    if trait_projection.is_file():
+        text = trait_projection.read_bytes().decode('utf-8')
+        state['trait_projection'] = {'text': text, 'sha256': digest(text)}
     validate(state)
-    (work / STATE).write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n')
+    write_text(work / STATE, json.dumps(state, ensure_ascii=False, indent=2) + '\n')
 
 
 def validate(state):
@@ -145,10 +179,16 @@ def validate(state):
     """
     import inline
     try:
-        if (not isinstance(state, dict) or set(state) != {'version', 'sha256', 'projections', 'owners', 'sources'}
+        keys = {'version', 'sha256', 'projections', 'owners', 'sources'}
+        if (not isinstance(state, dict) or set(state) not in (keys, keys | {'trait_projection'})
                 or state['version'] != 2 or set(state['sha256']) != set(MODULES)
                 or set(state['projections']) != set(MODULES) or not state['owners']):
             raise ValueError('Copy-back requires a complete version 2 baseline; regenerate clean projections to upgrade')
+        if 'trait_projection' in state:
+            trait = state['trait_projection']
+            if (not isinstance(trait, dict) or set(trait) != {'text', 'sha256'}
+                    or not isinstance(trait['text'], str) or trait['sha256'] != digest(trait['text'])):
+                raise ValueError('Trait projection baseline digest disagrees with saved text')
         values, projections = {}, {}
         for module in MODULES:
             text = state['projections'][module]
@@ -283,6 +323,7 @@ def copy_back(root, work, owner, apply=False, after_source_write=None):
         relative_work = work.relative_to(root)
     except ValueError as error:
         raise ValueError('Copy-back project must be inside the repository') from error
+    protect_trait_projection(root, work)
     if not re.fullmatch(OWNER, owner):
         raise ValueError('Copy-back requires the full Rust owner identity')
     control = checked_file(root, relative_work / STATE)

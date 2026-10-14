@@ -28,3 +28,9 @@ check_model_binding Zerocopy.byteorder.U16 with 1 type parameters
 derive_rust_model Zerocopy.byteorder.U32 with 1 type parameters
 check_model_binding Zerocopy.byteorder.U32 with 1 type parameters
 
+derive_rust_model Zerocopy.trait_checks.XorCodec with 0 type parameters
+check_model_binding Zerocopy.trait_checks.XorCodec with 0 type parameters
+
+derive_rust_model Zerocopy.trait_checks.Forward with 1 type parameters
+check_model_binding Zerocopy.trait_checks.Forward with 1 type parameters
+
