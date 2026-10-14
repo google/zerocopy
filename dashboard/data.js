@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791926215757,
+  "lastUpdate": 1792010916704,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23633,6 +23633,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1708,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "neonjavadev@gmail.com",
+            "name": "Hemanth",
+            "username": "neonjava"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "70fa3872c86f889267e35428a9f7a980dc4f186d",
+          "message": "[docs] Show the alignment requirement in the transmute_ref example (#3864)\n\n* [docs] Show alignment in transmute_ref example\n\nUse visible Unalign types in the unsized transmute_ref example so the byte\nslice requirements are clear.\n\nCloses #2970.\n\n* [docs] Remove extra blank line in transmute_ref example\n\n* [test] Update transmute_ref nightly UI output",
+          "timestamp": "2026-10-14T19:21:01Z",
+          "tree_id": "e60f0c70da8fbe7d63a6bb89508cd3949d0467b3",
+          "url": "https://github.com/google/zerocopy/commit/70fa3872c86f889267e35428a9f7a980dc4f186d"
+        },
+        "date": 1792010914442,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1487,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1626,
             "unit": "seconds"
           }
         ]
