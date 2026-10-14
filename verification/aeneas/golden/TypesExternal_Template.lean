@@ -26,6 +26,27 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
+/-- [core::cell::Cell]
+    Source: '/rustc/library/core/src/cell.rs', lines 315:0-315:26
+    Name pattern: [core::cell::Cell]
+    Visibility: public -/
+@[rust_type "core::cell::Cell"]
+axiom core.cell.Cell (T : Type) : Type
+
+/-- [core::cell::UnsafeCell]
+    Source: '/rustc/library/core/src/cell.rs', lines 2311:0-2311:32
+    Name pattern: [core::cell::UnsafeCell]
+    Visibility: public -/
+@[rust_type "core::cell::UnsafeCell"]
+axiom core.cell.UnsafeCell (T : Type) : Type
+
+/-- [core::mem::manually_drop::ManuallyDrop]
+    Source: '/rustc/library/core/src/mem/manually_drop.rs', lines 156:0-156:34
+    Name pattern: [core::mem::manually_drop::ManuallyDrop]
+    Visibility: public -/
+@[rust_type "core::mem::manually_drop::ManuallyDrop"]
+axiom core.mem.manually_drop.ManuallyDrop (T : Type) : Type
+
 /-- [core::num::niche_types::NonZeroUsizeInner]
     Source: '/rustc/library/core/src/num/niche_types.rs', lines 20:8-20:55
     Name pattern: [core::num::niche_types::NonZeroUsizeInner]

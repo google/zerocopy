@@ -411,14 +411,14 @@ def byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder :
 }
 
 /-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::from_bytes]:
-    Source: 'src/byteorder.rs', lines 570:12-572:13
+    Source: 'src/byteorder.rs', lines 569:12-571:13
     Visibility: public -/
 def byteorder.U16.from_bytes
   (O : Type) (bytes : Array Std.U8 2#usize) : Result (byteorder.U16 O) := do
   ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
 
 /-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::from_bytes]:
-    Source: 'src/byteorder.rs', lines 570:12-572:13
+    Source: 'src/byteorder.rs', lines 569:12-571:13
     Visibility: public -/
 def byteorder.U32.from_bytes
   (O : Type) (bytes : Array Std.U8 4#usize) : Result (byteorder.U32 O) := do
@@ -441,7 +441,7 @@ def byteorder.U16.new
     ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
 
 /-- [zerocopy::byteorder::{zerocopy::byteorder::U16<O>}::set]:
-    Source: 'src/byteorder.rs', lines 619:12-621:13
+    Source: 'src/byteorder.rs', lines 618:12-620:13
     Visibility: public -/
 def byteorder.U16.set
   {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U16 O)
@@ -467,7 +467,7 @@ def byteorder.U32.new
     ok { _0 := bytes, _1 := core.marker.PhantomData.mk }
 
 /-- [zerocopy::byteorder::{zerocopy::byteorder::U32<O>}::set]:
-    Source: 'src/byteorder.rs', lines 619:12-621:13
+    Source: 'src/byteorder.rs', lines 618:12-620:13
     Visibility: public -/
 def byteorder.U32.set
   {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (self : byteorder.U32 O)
@@ -477,7 +477,7 @@ def byteorder.U32.set
   byteorder.U32.new ByteOrderInst n
 
 /-- [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U16<O>> for [u8; 2usize]}::from]:
-    Source: 'src/byteorder.rs', lines 631:12-633:13
+    Source: 'src/byteorder.rs', lines 630:12-632:13
     Visibility: public -/
 def ArrayU82.Insts.CoreConvertFromU16.from
   {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (x : byteorder.U16 O) :
@@ -486,7 +486,7 @@ def ArrayU82.Insts.CoreConvertFromU16.from
   ok x._0
 
 /-- Trait implementation: [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U16<O>> for [u8; 2usize]}]
-    Source: 'src/byteorder.rs', lines 629:8-634:9 -/
+    Source: 'src/byteorder.rs', lines 628:8-633:9 -/
 @[reducible]
 def ArrayU82.Insts.CoreConvertFromU16 {O : Type} (ByteOrderInst :
   byteorder.ByteOrder O) : core.convert.From (Array Std.U8 2#usize)
@@ -495,7 +495,7 @@ def ArrayU82.Insts.CoreConvertFromU16 {O : Type} (ByteOrderInst :
 }
 
 /-- [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U32<O>> for [u8; 4usize]}::from]:
-    Source: 'src/byteorder.rs', lines 631:12-633:13
+    Source: 'src/byteorder.rs', lines 630:12-632:13
     Visibility: public -/
 def ArrayU84.Insts.CoreConvertFromU32.from
   {O : Type} (ByteOrderInst : byteorder.ByteOrder O) (x : byteorder.U32 O) :
@@ -504,7 +504,7 @@ def ArrayU84.Insts.CoreConvertFromU32.from
   ok x._0
 
 /-- Trait implementation: [zerocopy::byteorder::{impl core::convert::From<zerocopy::byteorder::U32<O>> for [u8; 4usize]}]
-    Source: 'src/byteorder.rs', lines 629:8-634:9 -/
+    Source: 'src/byteorder.rs', lines 628:8-633:9 -/
 @[reducible]
 def ArrayU84.Insts.CoreConvertFromU32 {O : Type} (ByteOrderInst :
   byteorder.ByteOrder O) : core.convert.From (Array Std.U8 4#usize)
@@ -525,14 +525,14 @@ def byteorder.U16.get
   | byteorder.Order.LittleEndian => ok (core.num.U16.from_le_bytes self._0)
 
 /-- [zerocopy::byteorder::verification::read_u16_le]:
-    Source: 'src/byteorder.rs', lines 1643:4-1645:5 -/
+    Source: 'src/byteorder.rs', lines 1724:4-1726:5 -/
 def byteorder.verification.read_u16_le
   (bytes : Array Std.U8 2#usize) : Result Std.U16 := do
   let u ← byteorder.U16.from_bytes byteorder.LittleEndian bytes
   byteorder.U16.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder u
 
 /-- [zerocopy::byteorder::verification::write_u16_le]:
-    Source: 'src/byteorder.rs', lines 1654:4-1656:5 -/
+    Source: 'src/byteorder.rs', lines 1735:4-1737:5 -/
 def byteorder.verification.write_u16_le
   (n : Std.U16) : Result (Array Std.U8 2#usize) := do
   let u ←
@@ -541,7 +541,7 @@ def byteorder.verification.write_u16_le
     byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder) u
 
 /-- [zerocopy::byteorder::verification::set_u16_le]:
-    Source: 'src/byteorder.rs', lines 1664:4-1668:5 -/
+    Source: 'src/byteorder.rs', lines 1745:4-1749:5 -/
 def byteorder.verification.set_u16_le
   (bytes : Array Std.U8 2#usize) (n : Std.U16) : Result Std.U16 := do
   let value ← byteorder.U16.from_bytes byteorder.LittleEndian bytes
@@ -552,14 +552,14 @@ def byteorder.verification.set_u16_le
     value1
 
 /-- [zerocopy::byteorder::verification::read_u16_be]:
-    Source: 'src/byteorder.rs', lines 1677:4-1679:5 -/
+    Source: 'src/byteorder.rs', lines 1758:4-1760:5 -/
 def byteorder.verification.read_u16_be
   (bytes : Array Std.U8 2#usize) : Result Std.U16 := do
   let u ← byteorder.U16.from_bytes byteorder.BigEndian bytes
   byteorder.U16.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder u
 
 /-- [zerocopy::byteorder::verification::write_u16_be]:
-    Source: 'src/byteorder.rs', lines 1688:4-1690:5 -/
+    Source: 'src/byteorder.rs', lines 1769:4-1771:5 -/
 def byteorder.verification.write_u16_be
   (n : Std.U16) : Result (Array Std.U8 2#usize) := do
   let u ←
@@ -568,7 +568,7 @@ def byteorder.verification.write_u16_be
     byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder) u
 
 /-- [zerocopy::byteorder::verification::set_u16_be]:
-    Source: 'src/byteorder.rs', lines 1698:4-1702:5 -/
+    Source: 'src/byteorder.rs', lines 1779:4-1783:5 -/
 def byteorder.verification.set_u16_be
   (bytes : Array Std.U8 2#usize) (n : Std.U16) : Result Std.U16 := do
   let value ← byteorder.U16.from_bytes byteorder.BigEndian bytes
@@ -590,14 +590,14 @@ def byteorder.U32.get
   | byteorder.Order.LittleEndian => ok (core.num.U32.from_le_bytes self._0)
 
 /-- [zerocopy::byteorder::verification::read_u32_le]:
-    Source: 'src/byteorder.rs', lines 1711:4-1713:5 -/
+    Source: 'src/byteorder.rs', lines 1792:4-1794:5 -/
 def byteorder.verification.read_u32_le
   (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
   let u ← byteorder.U32.from_bytes byteorder.LittleEndian bytes
   byteorder.U32.get byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder u
 
 /-- [zerocopy::byteorder::verification::write_u32_le]:
-    Source: 'src/byteorder.rs', lines 1722:4-1724:5 -/
+    Source: 'src/byteorder.rs', lines 1803:4-1805:5 -/
 def byteorder.verification.write_u32_le
   (n : Std.U32) : Result (Array Std.U8 4#usize) := do
   let u ←
@@ -606,7 +606,7 @@ def byteorder.verification.write_u32_le
     byteorder.LittleEndian.Insts.ZerocopyByteorderByteOrder) u
 
 /-- [zerocopy::byteorder::verification::set_u32_le]:
-    Source: 'src/byteorder.rs', lines 1732:4-1736:5 -/
+    Source: 'src/byteorder.rs', lines 1813:4-1817:5 -/
 def byteorder.verification.set_u32_le
   (bytes : Array Std.U8 4#usize) (n : Std.U32) : Result Std.U32 := do
   let value ← byteorder.U32.from_bytes byteorder.LittleEndian bytes
@@ -617,14 +617,14 @@ def byteorder.verification.set_u32_le
     value1
 
 /-- [zerocopy::byteorder::verification::read_u32_be]:
-    Source: 'src/byteorder.rs', lines 1745:4-1747:5 -/
+    Source: 'src/byteorder.rs', lines 1826:4-1828:5 -/
 def byteorder.verification.read_u32_be
   (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
   let u ← byteorder.U32.from_bytes byteorder.BigEndian bytes
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder u
 
 /-- [zerocopy::byteorder::verification::write_u32_be]:
-    Source: 'src/byteorder.rs', lines 1756:4-1758:5 -/
+    Source: 'src/byteorder.rs', lines 1837:4-1839:5 -/
 def byteorder.verification.write_u32_be
   (n : Std.U32) : Result (Array Std.U8 4#usize) := do
   let u ←
@@ -633,7 +633,7 @@ def byteorder.verification.write_u32_be
     byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder) u
 
 /-- [zerocopy::byteorder::verification::set_u32_be]:
-    Source: 'src/byteorder.rs', lines 1766:4-1770:5 -/
+    Source: 'src/byteorder.rs', lines 1847:4-1851:5 -/
 def byteorder.verification.set_u32_be
   (bytes : Array Std.U8 4#usize) (n : Std.U32) : Result Std.U32 := do
   let value ← byteorder.U32.from_bytes byteorder.BigEndian bytes
@@ -1405,6 +1405,222 @@ def core.option.OptionNonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes :
     core.option.OptionNonZeroIsizeNonZeroIsizeInner.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U16<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.U16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U16<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.U16.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.U16
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.U16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U32<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.U32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U32<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.U32.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.U32
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.U32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U64<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.U64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U64<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.U64.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.U64
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.U64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U128<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.U128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::U128<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.U128.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes
+  (byteorder.U128 O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.U128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::Usize<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.Usize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::Usize<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.Usize.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes
+  (byteorder.Usize O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.Usize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I16<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I16<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.I16.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.I16
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I32<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.I32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I32<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.I32.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.I32
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.I32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I64<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.I64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I64<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.I64.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.I64
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.I64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I128<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.I128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::I128<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.I128.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes
+  (byteorder.I128 O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.I128.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::Isize<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.Isize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::Isize<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.Isize.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes
+  (byteorder.Isize O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.Isize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::F32<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.F32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::F32<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.F32.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.F32
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.F32.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
+/-- [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::F64<O>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  byteorder.F64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  (O : Type) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::byteorder::_::{impl zerocopy::IntoBytes for zerocopy::byteorder::F64<O>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def byteorder.F64.Insts.ZerocopyIntoBytes (O : Type) : IntoBytes (byteorder.F64
+  O) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    byteorder.F64.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    O
+}
+
 /-- [zerocopy::impls::_#12::{impl zerocopy::IntoBytes for core::marker::PhantomData<T>}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
@@ -1421,6 +1637,116 @@ def core.marker.PhantomData.Insts.ZerocopyIntoBytes (T : Type) : IntoBytes
   only_derive_is_allowed_to_implement_this_trait :=
     core.marker.PhantomData.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
     T
+}
+
+/-- [zerocopy::wrappers::_::{impl zerocopy::IntoBytes for zerocopy::wrappers::Unalign<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  wrappers.Unalign.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::wrappers::_::{impl zerocopy::IntoBytes for zerocopy::wrappers::Unalign<T>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def wrappers.Unalign.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
+  IntoBytes T) : IntoBytes (wrappers.Unalign T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    wrappers.Unalign.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::wrappers::_#2::{impl zerocopy::IntoBytes for zerocopy::wrappers::read_only_def::ReadOnly<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  wrappers.read_only_def.ReadOnly.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::wrappers::_#2::{impl zerocopy::IntoBytes for zerocopy::wrappers::read_only_def::ReadOnly<T>}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def wrappers.read_only_def.ReadOnly.Insts.ZerocopyIntoBytes {T : Type}
+  (IntoBytesInst : IntoBytes T) : IntoBytes (wrappers.read_only_def.ReadOnly T)
+  := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    wrappers.read_only_def.ReadOnly.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::impls::_#31::{impl zerocopy::IntoBytes for core::num::wrapping::Wrapping<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 204:16-221:17
+    Visibility: public -/
+def
+  core.num.wrapping.Wrapping.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#31::{impl zerocopy::IntoBytes for core::num::wrapping::Wrapping<T>}]
+    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
+@[reducible]
+def core.num.wrapping.Wrapping.Insts.ZerocopyIntoBytes {T : Type}
+  (IntoBytesInst : IntoBytes T) : IntoBytes (core.num.wrapping.Wrapping T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.num.wrapping.Wrapping.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 204:16-221:17
+    Visibility: public -/
+def
+  core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}]
+    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
+@[reducible]
+def core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes {T : Type}
+  (IntoBytesInst : IntoBytes T) : IntoBytes
+  (core.mem.manually_drop.ManuallyDrop T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::impls::_#39::{impl zerocopy::IntoBytes for core::cell::Cell<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 204:16-221:17
+    Visibility: public -/
+def
+  core.cell.Cell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#39::{impl zerocopy::IntoBytes for core::cell::Cell<T>}]
+    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
+@[reducible]
+def core.cell.Cell.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
+  IntoBytes T) : IntoBytes (core.cell.Cell T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.cell.Cell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::impls::_#42::{impl zerocopy::IntoBytes for core::cell::UnsafeCell<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 204:16-221:17
+    Visibility: public -/
+def
+  core.cell.UnsafeCell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#42::{impl zerocopy::IntoBytes for core::cell::UnsafeCell<T>}]
+    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
+@[reducible]
+def core.cell.UnsafeCell.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
+  IntoBytes T) : IntoBytes (core.cell.UnsafeCell T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.cell.UnsafeCell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
 }
 
 /-- [zerocopy::util::padding_needed_for]:
