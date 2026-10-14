@@ -102,9 +102,9 @@ note: required by a bound in `DST_NOT_FROM_BYTES::AssertDstIsFromBytes`
  40 | const DST_NOT_FROM_BYTES: &DstA = transmute_ref!(&AU16(0));
     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsFromBytes`
     |
-   ::: src/macros.rs:360
+   ::: src/macros.rs:359
     |
-360 | ...   struct AssertDstIsFromBytes<'a, U: ?::core::marker::Sized + $crate::FromBytes>(&'a U);
+359 | ...   struct AssertDstIsFromBytes<'a, U: ?::core::marker::Sized + $crate::FromBytes>(&'a U);
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `DstB: Immutable` is not satisfied
@@ -131,9 +131,9 @@ note: required by a bound in `DST_NOT_IMMUTABLE::AssertDstIsImmutable`
  48 | const DST_NOT_IMMUTABLE: &DstB = transmute_ref!(&AU16(0));
     |                                  ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsImmutable`
     |
-   ::: src/macros.rs:361
+   ::: src/macros.rs:360
     |
-361 | ...   struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
+360 | ...   struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -234,9 +234,9 @@ note: required by a bound in `SRC_NOT_AS_BYTES::AssertSrcIsIntoBytes`
  70 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&SrcA(AU16(0)));
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsIntoBytes`
     |
-   ::: src/macros.rs:358
+   ::: src/macros.rs:357
     |
-358 | ...   struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
+357 | ...   struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `SrcA: IntoBytes` is not satisfied
@@ -260,9 +260,9 @@ note: required by a bound in `SRC_NOT_AS_BYTES::AssertSrcIsIntoBytes`
  70 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&SrcA(AU16(0)));
     |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsIntoBytes`
     |
-   ::: src/macros.rs:358
+   ::: src/macros.rs:357
     |
-358 | ...   struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
+357 | ...   struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `SrcB: Immutable` is not satisfied
@@ -289,9 +289,9 @@ note: required by a bound in `SRC_NOT_IMMUTABLE::AssertSrcIsImmutable`
  79 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&SrcB(AU16(0)));
     |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsImmutable`
     |
-   ::: src/macros.rs:359
+   ::: src/macros.rs:358
     |
-359 | ...   struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
+358 | ...   struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -317,9 +317,9 @@ note: required by a bound in `SRC_NOT_IMMUTABLE::AssertSrcIsImmutable`
  79 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&SrcB(AU16(0)));
     |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsImmutable`
     |
-   ::: src/macros.rs:359
+   ::: src/macros.rs:358
     |
-359 | ...   struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
+358 | ...   struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
