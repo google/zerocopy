@@ -119,47 +119,145 @@ numerical propositions are false. Conversely, they apply inside annotated
 functions too: finding every annotation does not establish that every relevant
 operation in its dependency closure was faithfully modeled.
 
-## Pure byte representations and the array law
+## Pure byte representations and `IntoBytes` laws
 
-[`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) now represents initialized
-and uninitialized bytes and fixed-width physical decoders as pure values.
+[`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) represents initialized and
+uninitialized bytes and fixed-width physical decoders as pure values.
 `BitDecoder.Initialized` says that every byte list accepted by a decoder is
-initialized. `RustModel.initializedRepresentation` requires this law when a
-physical decoder is available and is `False` otherwise. It does not use the
-library's mathematical decoder to restrict the byte lists under consideration.
+initialized. `RustModel.initializedRepresentation` requires an available
+physical decoder and this law; absence is `False`. The library's mathematical
+`decode` cannot restrict that quantification. A decoder rejecting every byte
+list satisfies initialization vacuously, so its law alone does not establish
+correspondence with Rust.
 
-The array theorem partitions an accepted representation into contiguous element
-chunks and proves initialization from the element law. Its proof consumes the
-whole byte list, including an empty final remainder, for every count. Counting
-elements rather than advancing by a positive byte width also covers empty
-arrays and zero-sized elements.
+The physical correspondence premise has three parts: decoder width equals the
+Rust representation width for the selected type and metadata; every
+language-valid representation is admitted with the corresponding raw value;
+and every admitted representation denotes a language-valid value. Neither
+`BitDecoder` nor a proof of initialization establishes those parts. The
+following laws are conditional on those representation premises and the
+translation premises already recorded in [SEMANTICS.md](SEMANTICS.md).
 
-The Rust interpretation remains an explicit correspondence premise: each
-physical decoder's width and admission domain must cover the language-valid
-representations of its Rust type. `BitDecoder` does not encode or prove that
-premise. A decoder which rejects everything satisfies the initialization law
-vacuously, so that law alone cannot justify its use as a Rust representation
-model. The current primitive decoders and their array composition must be
-reviewed against the [Rust Reference layout](https://doc.rust-lang.org/reference/type-layout.html#array-layout)
-and [validity rules](https://doc.rust-lang.org/reference/behavior-considered-undefined.html#invalid-values),
-as explained in [README.md](README.md#array-intobytes-initialization-law).
-Array size and element offsets exclude padding outside complete element chunks;
-padding inside a chunk is covered only by the element's law.
+### Exact authored implementation scope
 
-A nameless `invariant_proof` fence on the ordinary array impl selects that
-exact compiler owner, independently of any caller harness. Both AST stages must
-retain its original type, usize length, and element dictionary parameters.
-The checked ordinary Lean theorem covers that complete native dictionary
-application under the element's law and model correspondence premises; the
-kernel witness and independent telescope audit reject specialization or added
-assumptions. This still relies on the reviewed correspondence from the Rust
-impl header to its native dictionary, not merely on a proof name.
+The default-feature library extraction has 59 nameless `invariant_proof`
+markers, each attached through invocation arguments to one native positive
+`IntoBytes` impl. This count inventories authored claims; the native binding
+manifest and checked implementation-law witnesses establish which compiled
+owners fulfill them.
 
-These definitions do not make the existing lowering retain byte storage events,
-initialization changes, or pointer provenance. They prove the modeled array
-`IntoBytes` trait law under the representation premises, not the runtime
-`as_bytes` implementation or general Rust UB-freedom. The typed-transfer and
-value-production boundaries above still apply.
+| Family | Exact Rust carriers and bounds | Count |
+| --- | --- | --- |
+| Primitive | `()`, `bool`, `char` | 3 |
+| Integer | `u8`, `u16`, `u32`, `u64`, `u128`, `usize`, `i8`, `i16`, `i32`, `i64`, `i128`, `isize` | 12 |
+| Nonzero | `NonZeroU8`, `NonZeroU16`, `NonZeroU32`, `NonZeroU64`, `NonZeroU128`, `NonZeroUsize`, `NonZeroI8`, `NonZeroI16`, `NonZeroI32`, `NonZeroI64`, `NonZeroI128`, `NonZeroIsize` | 12 |
+| Niche option | `Option<N>` for each of the preceding 12 nonzero carriers | 12 |
+| Empty marker | `PhantomData<T>` for `T: ?Sized`, without `T: IntoBytes` | 1 |
+| Array | `[T; N]` for `T: IntoBytes`, every `const N: usize` | 1 |
+| Sized wrapper | `Wrapping<T>`, `Unalign<T>` for `T: IntoBytes` | 2 |
+| Possibly unsized wrapper | `ManuallyDrop<T>`, `Cell<T>`, `UnsafeCell<T>`, `ReadOnly<T>` for `T: ?Sized + IntoBytes` | 4 |
+| Byteorder | `U16<O>`, `U32<O>`, `U64<O>`, `U128<O>`, `Usize<O>`, `I16<O>`, `I32<O>`, `I64<O>`, `I128<O>`, `Isize<O>`, `F32<O>`, `F64<O>` for every `O`, without `O: ByteOrder` | 12 |
+
+The source locations are [`impls.rs`](../../zerocopy/src/impls.rs),
+[`wrappers.rs`](../../zerocopy/src/wrappers.rs), and
+[`byteorder.rs`](../../zerocopy/src/byteorder.rs). The `unsafe_impl!` grouped arm
+accepts attributes before each trait; shared proof attributes would duplicate a
+source fence and fail unique-owner binding. Single generic calls use leading
+attributes. `impl_for_transmute_from!` forwards attributes to its single impl.
+`impl_or_verify!` forwards them only to the handwritten implementation.
+
+`Unalign` and byteorder select that handwritten branch only with neither
+`feature = "derive"` nor `cfg(test)`. Their derive/test branches verify separate
+derive-generated implementations; these are outside this extraction claim.
+Byteorder markers are concrete invocation arguments, not a fence duplicated by
+`define_type!`. `F32` and `F64` store `[u8; 4]` and `[u8; 8]`; their laws depend
+on those byte arrays, not native floating-point bit semantics.
+
+Deferred implementations are `[T]`, `str`, native `f32`/`f64` and feature-gated
+`f16`/`f128`, atomics under their target/version cfgs, SIMD under its
+feature/target/version cfgs, procedural derives, and the generated struct/union
+impls of `cryptocorrosion_derive_traits!`. These remain ordinary Rust impls;
+this inventory makes no initialization-law certification for them. Neither
+core nor zerocopy `MaybeUninit`, non-unit tuples, raw pointers, references,
+`NonNull`, nor arbitrary `Option<T>` has an `IntoBytes` impl in this snapshot.
+Incoming downstream dictionaries still require their own conditional law
+premises; these 59 local markers do not certify future external implementations.
+
+### Decoder correspondence premises
+
+Admission currently requires one little-endian 64-bit target, as checked in
+[`admission.py`](admission.py). The word decoders use that byte order and an
+eight-byte `usize`/`isize`; this is an enforced extraction restriction, not a
+Rust guarantee for every target. Integer assembly preserves the full unsigned
+word and interprets signed values in two's complement. Every fixed-width word
+first requires exactly its width of initialized bytes.
+
+The following versioned references identify the concrete propositions consumed
+by decoder correspondence. Their applicability to the selected compiler and
+standard library is an explicit semantic compatibility premise, not a
+kernel-checked Rust theorem or an all-release soundness claim. These exact
+semantic compatibility propositions are admitted trust premises. Compiler or
+standard-library pin changes require review of these propositions and mappings.
+The current standard-library documentation reviewed for these mappings reports
+Rust 1.99.0 (`b940084d7`, 2026-09-28); archived 1.81/1.85 links also remain in the
+adjacent Rust safety comments. Versioned archive URLs were unavailable to the
+documentation checker during this update, so that archive verification is not
+claimed as new evidence.
+
+| Decoder | Required language/stdlib proposition and resulting interpretation |
+| --- | --- |
+| Integers | [Rust 1.81 numeric validity](https://doc.rust-lang.org/1.81.0/reference/types/numeric.html#bit-validity) equates a numeric type's bit validity with its same-size `u8` array; uninitialized `u8` is invalid. Its signed integer definition uses two's complement. The [primitive layout table](https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout) fixes 1/2/4/8/16-byte integer widths; the target premise fixes pointer-sized words. |
+| `bool` | [Rust 1.81 boolean rules](https://doc.rust-lang.org/1.81.0/reference/types/boolean.html) give one-byte layout and the encodings zero/one. The decoder rejects every other byte and every uninitialized byte. |
+| `char` | [Rust 1.81 textual rules](https://doc.rust-lang.org/1.81.0/reference/types/textual.html) describe a 32-bit unsigned word representing a Unicode scalar value. Four initialized bytes are decoded; values above `0x10ffff` or in `0xd800..=0xdfff` are rejected. |
+| Nonzero integers | [Rust 1.99 `NonZero` layout](https://doc.rust-lang.org/1.99.0/std/num/struct.NonZero.html#layout) preserves the underlying layout and validity except for the all-zero pattern. `filterMap` rejects zero as decoder failure; it never converts failure into an admitted optional payload. |
+| `Option<NonZero<_>>` | The same `NonZero` layout contract gives ABI compatibility with the underlying integer. [Rust 1.99 `Option` representation](https://doc.rust-lang.org/1.99.0/std/option/index.html#representation) additionally guarantees the all-zero `None` representation and preserves valid `Some` payloads. The niche mapping decodes the full integer domain: zero becomes the Rust payload `None`, nonzero becomes `Some`; uninitialized storage still fails outer decoding. No generic `Option<T>` layout is inferred. |
+| `()` and `PhantomData<T>` | [Rust 1.81 unit layout](https://doc.rust-lang.org/1.81.0/reference/type-layout.html#tuple-layout) has size zero. [Rust 1.99 `PhantomData` layout](https://doc.rust-lang.org/1.99.0/std/marker/struct.PhantomData.html#layout) guarantees size zero for every `T`; its public fieldless constructor stores no `T`. Each decoder supplies its explicit raw constructor, without fabricating a `T` or requiring `RustModel T`. |
+| `[T; N]` | [Rust 1.81 array layout](https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout) gives total size `N * size_of::<T>()` and element offset `k * size_of::<T>()`. [Validity rules](https://doc.rust-lang.org/1.81.0/reference/behavior-considered-undefined.html#invalid-values) require valid elements. Consecutive complete element chunks cover all storage; padding within each chunk remains the element law's obligation. |
+| Standard wrappers | [Rust 1.99 `Wrapping`](https://doc.rust-lang.org/1.99.0/std/num/struct.Wrapping.html#layout) preserves inner layout and ABI; its public single field stores `T`. [`ManuallyDrop`](https://doc.rust-lang.org/1.99.0/std/mem/struct.ManuallyDrop.html) preserves layout and bit validity. [`Cell`](https://doc.rust-lang.org/1.99.0/std/cell/struct.Cell.html#memory-layout) and [`UnsafeCell`](https://doc.rust-lang.org/1.99.0/std/cell/struct.UnsafeCell.html#memory-layout) preserve the inner in-memory representation. Map the actual inner decoder, including its failures; these premises do not certify interior mutation, aliasing, or destruction. |
+| Local wrappers | Source `repr(transparent)` on `ReadOnly`/byteorder and `repr(C, packed)` on `Unalign`, with the [Rust 1.81 representation rules](https://doc.rust-lang.org/1.81.0/reference/type-layout.html#representations), justify retaining their complete field storage. `Unalign` removes outer alignment padding; it cannot remove padding within `T`. Byteorder's array and empty marker occupy all its storage. |
+
+The generic wrapper laws retain the original `?Sized` bounds. A physical
+interpretation for a particular unsized value must retain the relevant metadata
+and representation width in its supplied provider. These conditional laws do
+not install a universal DST decoder or certify arbitrary slices, strings, or
+trait objects. A missing child representation remains unavailable through its
+wrapper; an available child decoder must carry its actual correspondence and
+initialization premise.
+
+### Empty construction and external invariants
+
+Size zero does not imply that a value exists, that a Rust constructor may be
+called, or that a library invariant holds. `emptyDecoder` requires an explicit
+raw value; there is no blanket physical model inferred from size, a fieldless
+extracted shape, or Lean `Inhabited`. A fieldless Rust token can carry a
+constructor obligation about external state even when its physical bytes are
+empty. That obligation needs an explicit state model or a retained caller
+premise. A bit-valid raw constructor does not discharge it.
+
+[`EmptyConstructionTests.lean`](lean/EmptyConstructionTests.lean) checks an
+uninhabited raw carrier with no representation model, an inhabited carrier
+without one, and an explicit empty physical decoder with an external-state
+condition in its library provider. Physical construction of the latter succeeds
+in both states; full `decodeBytesResult` rejects the absent-state case as
+`.fail .undef`. Both total and partial correctness reject that result even with
+postcondition `True`. `PhantomData<Empty>` succeeds using its actual empty
+constructor, with no value or model of `Empty`. These are tests of modeled
+admission, not executions of invalid Rust and not a proof of an external token's
+safe constructor.
+
+The array theorem partitions storage by element count, requires an empty final
+remainder, and derives initialization for every count from the element law.
+The same rule handles empty arrays, zero-byte elements, and nested arrays.
+Each marker requests its exact native impl independently of caller roots.
+Both retained AST stages and the implementation-law audit preserve the full
+trait, type/const parameters, carrier application, and dictionary bounds;
+checked ordinary Lean witnesses cannot specialize or add premises.
+
+These laws establish modeled initialization conditional on correspondence.
+They do not prove every `IntoBytes` method body, runtime storage transitions,
+`as_bytes` pointer formation, aliasing, provenance, synchronization, destruction,
+or general Rust UB-freedom. The typed-transfer and value-production boundaries
+above continue to apply.
 
 ## Complete LLBC operation inventory
 

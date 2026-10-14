@@ -542,7 +542,6 @@ example of how it can be used for parsing UDP packets.
             impl_or_verify!(O => TryFromBytes for $name<O>);
             impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
-            impl_or_verify!(O => IntoBytes for $name<O>);
             impl_or_verify!(O => Unaligned for $name<O>);
         };
 
@@ -970,6 +969,88 @@ define_type!(
     [],
     []
 );
+
+// These handwritten impls are selected by the default-feature library build.
+// With `derive` or `test`, `impl_or_verify!` checks the separately derived impls;
+// those generated declarations are outside the current invariant-proof scope.
+#[allow(unused_unsafe)]
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+// SAFETY: Each wrapper is `repr(transparent)` over a `u8` array and a
+// `PhantomData` field. Its entire storage is the initialized array storage.
+const _: () = unsafe {
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for U16<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for U32<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for U64<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for U128<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for Usize<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for I16<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for I32<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for I64<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for I128<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for Isize<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for F32<O>
+    );
+    impl_or_verify!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        O => IntoBytes for F64<O>
+    );
+};
 
 macro_rules! module {
     ($name:ident, $trait:ident, $endianness_str:expr) => {
