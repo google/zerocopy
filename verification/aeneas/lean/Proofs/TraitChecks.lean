@@ -19,6 +19,56 @@ proves a total codec, and forwarding preserves only the supplied codec's law.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Proofs
 
+-- These primitive byte interpretations follow Rust's validity and layout
+-- rules. The array law below uses those interpretations, not the optional
+-- library decoder's (possibly smaller) admission domain.
+@[instance] theorem Bool.Insts.ZerocopyIntoBytes_law :
+    TraitLaws.into_bytes_initialized Bool Zerocopy.Bool.Insts.ZerocopyIntoBytes :=
+  ⟨Rust.Storage.boolDecoder_initialized⟩
+
+@[instance] theorem U8.Insts.ZerocopyIntoBytes_law :
+    TraitLaws.into_bytes_initialized U8 Zerocopy.U8.Insts.ZerocopyIntoBytes :=
+  ⟨initializedUScalar .U8⟩
+
+@[instance] theorem Tuple.Insts.ZerocopyIntoBytes_law :
+    TraitLaws.into_bytes_initialized Unit Zerocopy.Tuple.Insts.ZerocopyIntoBytes :=
+  ⟨Rust.Storage.unitDecoder_initialized⟩
+
+-- The original type, const length, and computational dictionary remain the
+-- native implementation's prefix. Only the element's provider and law are
+-- added. There is no assumption of the array's own law.
+@[instance] theorem Array.Insts.ZerocopyIntoBytes_law
+    {T : Type} (N : Usize) (dictionary : IntoBytes T)
+    [meaning : RustModel T] [law : TraitLaws.into_bytes_initialized T dictionary] :
+    TraitLaws.into_bytes_initialized (Aeneas.Std.Array T N)
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes N dictionary) :=
+  ⟨RustModel.initialized_array T N (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law)⟩
+
+-- Calling the real Rust helper selects the existing unsafe impls in Charon.
+-- The generic impl law proves all lengths; these concrete cases additionally
+-- check that the actual extraction and canonical model bindings compose.
+theorem array_into_bytes_spec : Specs.array_into_bytes_spec := by
+  simp only [Specs.array_into_bytes_spec, Zerocopy.trait_checks.check_array_into_bytes,
+    Zerocopy.trait_checks.require_into_bytes, bind_ok, WP.spec_ok]
+  refine ⟨(), rfl, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes)
+      _ inferInstance)
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.U8.Insts.ZerocopyIntoBytes)
+      _ inferInstance)
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Tuple.Insts.ZerocopyIntoBytes)
+      _ inferInstance)
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes)
+      _ inferInstance)
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Array.Insts.ZerocopyIntoBytes _
+        (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes))
+      _ inferInstance)
+
+
 @[instance] theorem trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec_law :
     TraitLaws.byte_roundtrip Zerocopy.trait_checks.XorCodec
       Zerocopy.trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec := by
