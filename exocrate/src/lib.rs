@@ -134,6 +134,33 @@
 //! installations. All installed versions will be stored somewhere inside the directories designated
 //! by one of the [`Location`] variants, but there are no other guarantees about how these
 //! directory trees are managed at this time.
+//!
+//! Installation directories and their ancestors must not be namespace-mutable by untrusted code
+//! while an installation is in progress.
+//!
+//! The absolute installation path produced by any [`Location`] must not contain `@` or its Unicode
+//! compatibility forms U+FE6B and U+FF20. No location may resolve to `@@stage.tmp` or anything
+//! beneath it, including abandoned work and periods when no installation is active. Symlink,
+//! junction, mount, and other aliases which conceal such a path are unsupported.
+//!
+//! Calls which may install into directories with the same parent must be serialized within a
+//! process. Separate processes coordinate through lock files, but not every supported lock backend
+//! excludes another thread in the process which already holds the lock.
+//!
+//! Installers which share a parent directory must all use a compatible Exocrate staging protocol.
+//! In particular, an older Exocrate build must not manage `@@stage.tmp`, anything beneath it, or
+//! `@@stage.lck` as a target in a parent used by this version. At the parent's first use, each of
+//! those reserved entries must either be absent or already be a valid entry created by a compatible
+//! Exocrate process. Thereafter, only compatible Exocrate processes may create or mutate those
+//! entries; no other actor may forge, replace, alias, or mount over them. No entry inside the work
+//! tree may be a hard link to, bind mount of, or other non-symbolic alias for a path outside that
+//! tree. Ordinary symbolic links in an archive are permitted because cleanup does not follow them.
+//! The reservation is permanent, including while no installation is in progress.
+//!
+//! A process exit may leave at most one parent-wide work directory, which a later compatible
+//! installer reclaims. An interrupted or failed initial claim write, or power loss before that
+//! claim becomes durable, can leave an indeterminate claim. That case fails closed and may require
+//! manual cleanup rather than risking deletion of an unclaimed path.
 
 mod sync;
 
@@ -164,6 +191,14 @@ pub enum Location {
     /// otherwise in the current working directory.
     LocalDev,
     /// A caller-provided base directory.
+    ///
+    /// The resulting absolute installation path may not contain `@` or its
+    /// Unicode compatibility forms U+FE6B and U+FF20, which are reserved for
+    /// staging infrastructure. It must never resolve to `@@stage.tmp` or
+    /// anything beneath it. Once a parent has been used by this Exocrate
+    /// version, that exclusion is permanent. The path and its ancestors must
+    /// not be namespace-mutable by untrusted code while an installation is in
+    /// progress.
     Custom(PathBuf),
 }
 
@@ -193,6 +228,12 @@ impl Config {
     }
 
     /// Resolves the dependency directory, installing it if needed.
+    ///
+    /// # Concurrency
+    ///
+    /// Calls which may install into directories with the same parent must be
+    /// serialized within a process. Separate processes are synchronized by
+    /// lock files.
     pub fn resolve_installation_dir_or_install(
         &self,
         location: Location,
@@ -263,7 +304,8 @@ impl Config {
         };
 
         parts.extend(self.rel_dir_path);
-        Ok(parts.join(self.version_slug))
+        let path = parts.join(self.version_slug);
+        validate_installation_path(&path)
     }
 
     /// Creates a new `Config` after validating `rel_dir_path` and
@@ -271,7 +313,9 @@ impl Config {
     ///
     /// `rel_dir_path` is the relative path of the directory
     /// containing the dependencies, stored as a sequence of path
-    /// components for cross-platform compatibility.
+    /// components for cross-platform compatibility. Components must not
+    /// contain `@` or its Unicode compatibility forms U+FE6B and U+FF20,
+    /// which are reserved for staging directories.
     ///
     /// Dependencies are stored in `<rel_dir_path>`. In production
     /// use, this is relative to the user cache directory. In
@@ -280,7 +324,8 @@ impl Config {
     /// working directory.
     ///
     /// `version_slug` is a unique identifier for this version of
-    /// the dependencies.
+    /// the dependencies. Like `rel_dir_path` components, it must not contain a
+    /// reserved staging marker.
     pub const fn new(rel_dir_path: &'static [&'static str], version_slug: &'static str) -> Self {
         let mut i = 0;
         while i < rel_dir_path.len() {
@@ -293,6 +338,21 @@ impl Config {
 
         Self { rel_dir_path, version_slug }
     }
+}
+
+fn validate_installation_path(path: &Path) -> IoResult<PathBuf> {
+    // `absolute` resolves a relative base against the current directory
+    // without requiring the installation path to exist. This matters for all
+    // `Location` variants: environment-derived paths can themselves be inside
+    // an abandoned staging directory.
+    let absolute = std::path::absolute(path)?;
+    if sync::path_contains_reserved_staging_marker(&absolute) {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "Installation paths must not contain a reserved staging marker",
+        ));
+    }
+    Ok(absolute)
 }
 
 /// Validates a single path component.
@@ -311,9 +371,14 @@ impl Config {
 /// - contains a character reserved on Windows
 /// - is a Windows-reserved device name (matched by its stem)
 /// - contains a null byte
+/// - contains a marker reserved for staging directories
 const fn validate_path(part: &str) {
     let bytes = part.as_bytes();
 
+    assert!(
+        !sync::is_reserved_staging_name(part),
+        "Error: `Config` path components must not contain a reserved staging marker.",
+    );
     assert!(bytes.len() <= 255, "Error: each `rel_dir_path` component must not exceed 255 bytes.");
     assert!(!bytes.is_empty(), "rel_dir_path component must not be empty");
     assert!(
@@ -388,9 +453,13 @@ const fn validate_path(part: &str) {
     }
 }
 
-/// Extracts the `.tar.zst` from `reader` and installs it at `dst`, optionally
-/// validating its hash.
-fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
+/// Copies `reader` into an automatically removed temporary file in
+/// `spool_dir`, validates its hash, and rewinds it for reading.
+fn spool_authenticated_archive(
+    mut reader: impl Read,
+    spool_dir: &Path,
+    expected_sha256: [u8; 32],
+) -> IoResult<std::fs::File> {
     struct HashingReader<R> {
         reader: R,
         hasher: sha2::Sha256,
@@ -404,31 +473,38 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
         }
     }
 
+    let mut hash_reader = HashingReader { reader: &mut reader, hasher: sha2::Sha256::new() };
+    let mut archive_file = tempfile::tempfile_in(spool_dir)?;
+
+    // Read and authenticate the complete compressed stream before allowing its
+    // contents to affect the staging directory. The temporary file ensures
+    // that the bytes which are extracted are the same bytes which were
+    // authenticated.
+    std::io::copy(&mut hash_reader, &mut archive_file)?;
+
+    let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
+    if hash != expected_sha256 {
+        return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "SHA-256 hash mismatch"));
+    }
+
+    std::io::Seek::rewind(&mut archive_file)?;
+    Ok(archive_file)
+}
+
+/// Extracts the `.tar.zst` from `reader` and installs it at `dst`, validating
+/// its hash before extraction when an expected hash is provided.
+fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
     sync::ManagedDirName::new(dst)
         .check_exists_or_create(|target_dir| {
             if let Some(expected) = expected_sha256 {
-                let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
-                {
-                    let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
-                    let mut archive = tar::Archive::new(decoder);
-                    archive.unpack(target_dir)?;
-                }
-
-                // Ensure any remaining trailing bytes in the stream are read
-                // and hashed. Zstd may skip trailing data which isn't necessary
-                // to decompress, but we need to account for it in the hash, or
-                // else a valid archive could fail to hash properly if that
-                // archive contains trailing data which isn't required for
-                // decompression.
-                std::io::copy(&mut hash_reader, &mut std::io::sink())?;
-
-                let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
-                if hash != expected {
-                    return Err(std::io::Error::new(
-                        std::io::ErrorKind::InvalidData,
-                        "SHA-256 hash mismatch",
-                    ));
-                }
+                // Keep the complete compressed archive on the installation
+                // filesystem rather than consuming space in the system
+                // temporary directory. `tempfile_in` removes it when this
+                // branch ends, before the staging directory is promoted.
+                let archive_file = spool_authenticated_archive(&mut reader, target_dir, expected)?;
+                let decoder = zstd::stream::read::Decoder::new(archive_file)?;
+                let mut archive = tar::Archive::new(decoder);
+                archive.unpack(target_dir)?;
             } else {
                 let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
                 let mut archive = tar::Archive::new(decoder);
@@ -711,6 +787,21 @@ mod tests {
         assert!(dst.is_dir());
         assert_eq!(fs::read_to_string(dst.join("hello.txt")).unwrap(), "hello world");
         assert_eq!(fs::read(dst.join("nested/dir/data.bin")).unwrap(), b"\x01\x02\x03");
+        assert_eq!(fs::read_dir(&dst).unwrap().count(), 2);
+    }
+
+    #[test]
+    fn test_authenticated_archive_spool_uses_requested_directory() {
+        let temp = tempfile::tempdir().unwrap();
+        let not_a_directory = temp.path().join("not-a-directory");
+        fs::write(&not_a_directory, "file").unwrap();
+        let archive = b"archive bytes";
+
+        // A helper which ignored `not_a_directory` and used the system
+        // temporary directory would succeed here.
+        let result =
+            spool_authenticated_archive(&archive[..], &not_a_directory, compute_sha256(archive));
+        assert!(result.is_err());
     }
 
     #[test]
@@ -736,10 +827,12 @@ mod tests {
         assert!(result.is_err());
 
         assert!(!dst.exists());
+        let target_lock = dst.with_file_name("install_target.lock");
+        let (_, staging_lock) = sync::ManagedDirName::new(&dst).staging_paths();
         let entries: Vec<_> = fs::read_dir(temp.path())
             .unwrap()
-            .map(|e| e.unwrap().file_name())
-            .filter(|n| n != "install_target.lock")
+            .map(|entry| entry.unwrap().path())
+            .filter(|path| path != &target_lock && path != &staging_lock)
             .collect();
         assert!(entries.is_empty());
     }
@@ -774,12 +867,29 @@ mod tests {
         assert_eq!(result.unwrap_err().kind(), std::io::ErrorKind::InvalidData);
 
         assert!(!dst.exists());
+        let target_lock = dst.with_file_name("install_target.lock");
+        let (_, staging_lock) = sync::ManagedDirName::new(&dst).staging_paths();
         let entries: Vec<_> = fs::read_dir(temp.path())
             .unwrap()
-            .map(|e| e.unwrap().file_name())
-            .filter(|n| n != "install_target.lock")
+            .map(|entry| entry.unwrap().path())
+            .filter(|path| path != &target_lock && path != &staging_lock)
             .collect();
         assert!(entries.is_empty());
+    }
+
+    #[test]
+    fn test_install_hash_mismatch_precedes_archive_parsing() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        let invalid_data = b"definitely not a valid zstd or tar";
+        let mut incorrect_hash = compute_sha256(invalid_data);
+        incorrect_hash[0] ^= 1;
+
+        let error = install(&invalid_data[..], &dst, Some(incorrect_hash)).unwrap_err();
+
+        assert_eq!(error.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(error.to_string(), "SHA-256 hash mismatch");
+        assert!(!dst.exists());
     }
 
     #[test]
@@ -793,11 +903,12 @@ mod tests {
         let mut corrupted_archive = valid_tar_zst.clone();
         corrupted_archive.extend_from_slice(b"trailing garbage data");
 
-        // Even though the archive unpacks successfully, the trailing bytes should be
-        // read and hashed, causing a hash mismatch.
+        // The trailing bytes must be read and hashed before archive parsing,
+        // causing a hash mismatch without unpacking the archive.
         let result = install(corrupted_archive.as_slice(), &dst, Some(expected_hash));
         assert!(result.is_err());
         assert_eq!(result.unwrap_err().kind(), std::io::ErrorKind::InvalidData);
+        assert!(!dst.exists());
     }
 
     #[test]
@@ -925,6 +1036,68 @@ mod tests {
 
         assert_eq!(config.rel_dir_path, &["tool", "deps"]);
         assert_eq!(config.version_slug, "v1");
+    }
+
+    #[test]
+    fn test_config_new_rejects_reserved_staging_names() {
+        for version_slug in [
+            "@Ab12CdE.tmp",
+            "@aB12cDe.TMP",
+            "@Ab12CdE.tmp. ",
+            "@ABCDEF\u{212a}.tmp",
+            " @Ab12CdE.tmp",
+            "\u{200c}@Ab12CdE.tmp",
+            "\u{fe6b}Ab12CdE.tmp",
+            "\u{ff20}Ab12CdE.tmp",
+            "other\u{fe6b}reserved_name",
+            "other\u{ff20}reserved_name",
+            "other@reserved_name",
+        ] {
+            let result = std::panic::catch_unwind(|| Config::new(&["tool"], version_slug));
+            assert!(result.is_err(), "{version_slug:?}");
+        }
+
+        let config = Config::new(&["tool"], "_v_1");
+        assert_eq!(config.version_slug, "_v_1");
+    }
+
+    #[test]
+    fn test_config_new_rejects_staging_marker_in_rel_dir_path() {
+        for rel_dir_path in [
+            &["@Ab12CdE.tmp"][..],
+            &["tool", "@Ab12CdE.tmp"][..],
+            &["tool", "\u{200c}@Ab12CdE.tmp", "deps"][..],
+            &["tool", "\u{fe6b}Ab12CdE.tmp", "deps"][..],
+            &["tool", "\u{ff20}Ab12CdE.tmp", "deps"][..],
+            &["tool@cache", "deps"][..],
+        ] {
+            let result = std::panic::catch_unwind(|| Config::new(rel_dir_path, "v1"));
+            assert!(result.is_err(), "{rel_dir_path:?}");
+        }
+    }
+
+    #[test]
+    fn test_installation_path_rejects_staging_namespace_ancestors() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = Config::new(&["tool"], "v1");
+
+        for reserved in ["@@stage.tmp", "dir@stage", "dir\u{fe6b}stage", "dir\u{ff20}stage"] {
+            let error = validate_installation_path(Path::new(reserved).join("target").as_path())
+                .unwrap_err();
+            assert_eq!(error.kind(), std::io::ErrorKind::InvalidInput, "{reserved:?}");
+
+            let error = config.dir_path(Location::Custom(temp.path().join(reserved))).unwrap_err();
+            assert_eq!(error.kind(), std::io::ErrorKind::InvalidInput, "{reserved:?}");
+        }
+
+        assert_eq!(
+            config.dir_path(Location::Custom(temp.path().join("custom"))).unwrap(),
+            temp.path().join("custom/tool/v1"),
+        );
+        assert_eq!(
+            config.dir_path(Location::Custom(PathBuf::from("custom"))).unwrap(),
+            std::path::absolute("custom/tool/v1").unwrap(),
+        );
     }
 
     #[test]
