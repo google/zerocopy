@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Aeneas
+public import Rust.Storage
 public meta import Lean
 @[expose] public section
 
@@ -33,6 +34,10 @@ to the same raw value, so contracts retain the actual provider explicitly. -/
 class RustModel (Raw : Type u) where
   Model : Type u
   decode : Raw → Option Model
+  /-- Optional language-level byte interpretation. Absence means that this
+  provider cannot establish byte-validity laws.
+  This decoder operates independently of the optional library invariant. -/
+  representation : Option (Rust.Storage.BitDecoder Raw) := none
 
 -- The associated type is transparent so ordinary rewriting and coercions can
 -- identify a retained provider's Model with its named mathematical carrier.
@@ -49,6 +54,23 @@ def isValid {Raw : Type u} [m : RustModel Raw] (raw : Raw) : Prop :=
 def decoded {Raw : Type u} (m : RustModel Raw) (raw : Raw) (value : m.Model) : Prop :=
   m.decode raw = some value
 
+/-- IntoBytes needs an available physical decoder whose entire language-valid
+representation domain is initialized. A library decoder cannot shrink this
+quantification: even a provider which rejects every mathematical value must
+establish initialization for all bytes accepted by its physical decoder. -/
+def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.representation with
+  | none => False
+  | some decoder => decoder.Initialized
+
+/-- Constructing a typed value from bytes requires language-level decoding.
+The unsupported-model case also fails closed. No invalid Raw is produced. -/
+def RustModel.decodeBitsResult {Raw : Type u} (m : RustModel Raw)
+    (bytes : List Rust.Storage.AMByte) : Result Raw :=
+  match m.representation with
+  | none => .fail .undef
+  | some decoder => Result.ofOption (decoder.run bytes) .undef
+
 /-- Compose execution with the retained provider's mathematical decoder.
 An earlier execution failure or divergence is preserved. A rejected returned
 value becomes `undef`, marking an unadmitted value of this modeled computation;
@@ -58,6 +80,12 @@ def RustModel.decodeResult {Raw : Type u} (m : RustModel Raw)
     (run : Result Raw) : Result m.Model := do
   let raw ← run
   Result.ofOption (m.decode raw) .undef
+
+/-- Language-level decoding followed by the retained mathematical decoder.
+Failure at either stage is preserved, rather than supplying a default value. -/
+def RustModel.decodeBytesResult {Raw : Type u} (m : RustModel Raw)
+    (bytes : List Rust.Storage.AMByte) : Result m.Model :=
+  m.decodeResult (m.decodeBitsResult bytes)
 
 @[simp] theorem RustModel.decodeResult_ok {Raw : Type u} (m : RustModel Raw) (raw : Raw) :
     m.decodeResult (.ok raw) = Result.ofOption (m.decode raw) .undef := by
@@ -106,10 +134,16 @@ theorem RustModel.dspec_decodeResult_iff {Raw : Type u} (m : RustModel Raw)
     simp only [RustModel.decodeResult_div]
     constructor <;> intro _ <;> exact WP.dspec.div _
 
-@[reducible] instance modelBool : RustModel Bool := { Model := Bool, «decode» := some }
+@[reducible] instance modelBool : RustModel Bool where
+  Model := Bool
+  decode := some
+  representation := some Rust.Storage.boolDecoder
 @[reducible] instance modelNat : RustModel Nat := { Model := Nat, «decode» := some }
 @[reducible] instance modelInt : RustModel Int := { Model := Int, «decode» := some }
-@[reducible] instance modelUnit : RustModel Unit := { Model := Unit, «decode» := some }
+@[reducible] instance modelUnit : RustModel Unit where
+  Model := Unit
+  decode := some
+  representation := some Rust.Storage.unitDecoder
 
 @[reducible] instance modelProd {α : Type u} {β : Type v} [ma : RustModel α] [mb : RustModel β] :
     RustModel (α × β) where
@@ -167,6 +201,28 @@ abbrev ArrayValue (Element : Type u) (n : Usize) :=
   decode raw := match h : decodeList ma.decode raw.val with
     | none => none
     | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
+  representation := ma.representation.map (fun element =>
+    (Rust.Storage.arrayDecoder element n.val).map
+      (fun values => Aeneas.Std.Array.from values.val values.property))
+
+/-- The language-level array representation concatenates element storage.
+This theorem concerns every accepted representation, including padding bytes;
+it never asks whether the optional library decoder accepts the decoded value. -/
+theorem RustModel.initialized_array (α : Type u) [ma : RustModel α] (n : Usize)
+    (element : RustModel.initializedRepresentation α) :
+    @RustModel.initializedRepresentation (Aeneas.Std.Array α n) (@modelArray α n ma) := by
+  cases representation : ma.representation with
+  | none => simp [RustModel.initializedRepresentation, representation] at element
+  | some decoder =>
+    simp only [RustModel.initializedRepresentation, representation] at element
+    unfold RustModel.initializedRepresentation
+    rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
+      (Rust.Storage.arrayDecoder element n.val).map
+        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
+    rw [representation]
+    simp only [Option.map_some]
+    exact Rust.Storage.BitDecoder.map_initialized _ _
+      (Rust.Storage.arrayDecoder_initialized decoder element n.val)
 
 -- This is Rust's Ok/Err payload type. Either constructor is admitted exactly
 -- when its selected child decodes, independently of Aeneas execution Result.

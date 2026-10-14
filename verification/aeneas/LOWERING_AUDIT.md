@@ -8,7 +8,9 @@ the translation preserves the observations needed by that claim.
 
 The current integration proves conditional functional contracts under the
 correspondence premises in [SEMANTICS.md](SEMANTICS.md). It does not yet implement
-an abstract storage model or establish general Rust UB-freedom.
+a runtime storage semantics or establish general Rust UB-freedom.
+The pure byte representation model described below supplies initialization laws;
+it does not add storage events to extracted executions.
 [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) describes the implemented admission
 checks on the preserved pre-transformation snapshot and final LLBC, as well as
 the additional requirements for future storage and handler models. Those checks
@@ -116,6 +118,39 @@ These are limitations on stronger claims, not evidence that the current
 numerical propositions are false. Conversely, they apply inside annotated
 functions too: finding every annotation does not establish that every relevant
 operation in its dependency closure was faithfully modeled.
+
+## Pure byte representations and the array law
+
+[`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) now represents initialized
+and uninitialized bytes and fixed-width physical decoders as pure values.
+`BitDecoder.Initialized` says that every byte list accepted by a decoder is
+initialized. `RustModel.initializedRepresentation` requires this law when a
+physical decoder is available and is `False` otherwise. It does not use the
+library's mathematical decoder to restrict the byte lists under consideration.
+
+The array theorem partitions an accepted representation into contiguous element
+chunks and proves initialization from the element law. Its proof consumes the
+whole byte list, including an empty final remainder, for every count. Counting
+elements rather than advancing by a positive byte width also covers empty
+arrays and zero-sized elements.
+
+The Rust interpretation remains an explicit correspondence premise: each
+physical decoder's width and admission domain must cover the language-valid
+representations of its Rust type. `BitDecoder` does not encode or prove that
+premise. A decoder which rejects everything satisfies the initialization law
+vacuously, so that law alone cannot justify its use as a Rust representation
+model. The current primitive decoders and their array composition must be
+reviewed against the [Rust Reference layout](https://doc.rust-lang.org/reference/type-layout.html#array-layout)
+and [validity rules](https://doc.rust-lang.org/reference/behavior-considered-undefined.html#invalid-values),
+as explained in [README.md](README.md#array-intobytes-initialization-law).
+Array size and element offsets exclude padding outside complete element chunks;
+padding inside a chunk is covered only by the element's law.
+
+These definitions do not make the existing lowering retain byte storage events,
+initialization changes, or pointer provenance. They prove the modeled array
+`IntoBytes` trait law under the representation premises, not the runtime
+`as_bytes` implementation or general Rust UB-freedom. The typed-transfer and
+value-production boundaries above still apply.
 
 ## Complete LLBC operation inventory
 

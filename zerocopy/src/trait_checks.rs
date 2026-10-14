@@ -71,6 +71,29 @@ fn forwarded_byte_codec(byte: u8) -> u8 {
     byte_codec_roundtrip::<Forward<XorCodec>>(byte)
 }
 
+fn require_into_bytes<T: crate::IntoBytes>() {}
+
+/// Forces extraction of the existing array IntoBytes implementation and its
+/// primitive and nested dependencies. CI checks the generic implementation law
+/// for every count; these concrete uses also exercise Rust's trait selection.
+///
+/// ```aeneas
+/// spec array_into_bytes_spec
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Bool 3#usize)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array U8 3#usize)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Unit 4#usize)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Array Bool 0#usize)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation
+///     (Aeneas.Std.Array (Aeneas.Std.Array Bool 2#usize) 3#usize)
+/// ```
+fn check_array_into_bytes() {
+    require_into_bytes::<[bool; 3]>();
+    require_into_bytes::<[u8; 3]>();
+    require_into_bytes::<[(); 4]>();
+    require_into_bytes::<[bool; 0]>();
+    require_into_bytes::<[[bool; 2]; 3]>();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,5 +103,6 @@ mod tests {
         for byte in 0..=u8::MAX {
             assert_eq!(forwarded_byte_codec(byte), byte);
         }
+        check_array_into_bytes();
     }
 }

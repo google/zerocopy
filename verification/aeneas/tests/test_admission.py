@@ -48,6 +48,12 @@ class AdmissionTests(unittest.TestCase):
         self.assertIn('zerocopy::util::transmute_unchecked',
                       [row['rust'] for row in report['executions']])
 
+    def test_unreviewed_exclusions_fail_closed(self):
+        for exclusions in ([], [*admission.EXCLUDED_PROVIDED_METHODS, 'zerocopy::unsafe_helper']):
+            self.data['translated']['options']['exclude'] = exclusions
+            with self.assertRaisesRegex(ValueError, 'Unreviewed extraction option exclude'):
+                self.check()
+
     def abstract_trait_fixture(self):
         checked = admission.Admission(self.data, self.registry, ['zerocopy::Codec'])
         params = {'types': [], 'regions': [], 'const_generics': [], 'trait_clauses': []}
@@ -114,12 +120,6 @@ class AdmissionTests(unittest.TestCase):
         reference['kind']['ParentClause'][1] = 7
         with self.assertRaisesRegex(ValueError, 'declared parent clause'):
             checked.abstract_dictionary(reference)
-
-    def test_unreviewed_exclusions_fail_closed(self):
-        for exclusions in ([], [*admission.EXCLUDED_PROVIDED_METHODS, 'zerocopy::unsafe_helper']):
-            self.data['translated']['options']['exclude'] = exclusions
-            with self.assertRaisesRegex(ValueError, 'Unreviewed extraction option exclude'):
-                self.check()
 
     def test_missing_registration_is_not_an_opaque_success(self):
         self.registry = [r for r in self.registry if not r.get('opaque')]
