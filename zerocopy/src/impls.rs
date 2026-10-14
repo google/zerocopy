@@ -29,7 +29,13 @@ use crate::pointer::cast::{CastSizedExact, CastUnsized};
 // [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#tuple-layout
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!((): Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(
+        (): Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
     assert_unaligned!(());
 };
 
@@ -65,19 +71,91 @@ const _: () = unsafe {
 // bits or bytes, update this comment, especially the reference to [1].
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(u8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(i8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(
+        u8: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
+    unsafe_impl!(
+        i8: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(isize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(
+        u16: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        i16: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        u32: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        i32: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        u64: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        i64: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        u128: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        i128: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        usize: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        isize: Immutable, TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
     unsafe_impl!(f32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
     unsafe_impl!(f64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
     #[cfg(feature = "float-nightly")]
@@ -98,7 +176,15 @@ const _: () = unsafe {
 //
 // [1] https://doc.rust-lang.org/1.81.0/reference/types/boolean.html
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl!(bool: Immutable, FromZeros, IntoBytes, Unaligned) };
+const _: () = unsafe {
+    unsafe_impl!(
+        bool: Immutable, FromZeros,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
+};
 assert_unaligned!(bool);
 
 // SAFETY: The impl must only return `true` for its argument if the original
@@ -128,7 +214,15 @@ const _: () = unsafe {
 //
 // [1] https://doc.rust-lang.org/1.81.0/reference/types/textual.html
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
+const _: () = unsafe {
+    unsafe_impl!(
+        char: Immutable, FromZeros,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+};
 
 // SAFETY: The impl must only return `true` for its argument if the original
 // `Maybe<char>` refers to a valid `char`. `char::from_u32` guarantees that it
@@ -224,19 +318,91 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 //     the exception that 0 is not a valid instance.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(NonZeroU8: Immutable, IntoBytes, Unaligned);
-    unsafe_impl!(NonZeroI8: Immutable, IntoBytes, Unaligned);
+    unsafe_impl!(
+        NonZeroU8: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
+    unsafe_impl!(
+        NonZeroI8: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
     assert_unaligned!(NonZeroU8, NonZeroI8);
-    unsafe_impl!(NonZeroU16: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroI16: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroU32: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroI32: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroU64: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroI64: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroU128: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroI128: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroUsize: Immutable, IntoBytes);
-    unsafe_impl!(NonZeroIsize: Immutable, IntoBytes);
+    unsafe_impl!(
+        NonZeroU16: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroI16: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroU32: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroI32: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroU64: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroI64: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroU128: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroI128: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroUsize: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        NonZeroIsize: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
     unsafe_impl_try_from_bytes_for_nonzero!(
         NonZeroU8[u8],
         NonZeroI8[i8],
@@ -279,19 +445,91 @@ const _: () = unsafe {
 //     are guaranteed to have the same size and alignment:
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(
+        Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
+    unsafe_impl!(
+        Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes, Unaligned,
+    );
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(
+        Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
+    unsafe_impl!(
+        Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        IntoBytes,
+    );
 };
 
 // SAFETY: While it's not fully documented, the consensus is that `Box<T>` does
@@ -655,7 +893,12 @@ const _: () = unsafe {
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
-    unsafe_impl!(T: ?Sized => IntoBytes for PhantomData<T>);
+    unsafe_impl!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        T: ?Sized => IntoBytes for PhantomData<T>
+    );
     unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 };
