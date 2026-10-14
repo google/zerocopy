@@ -8,7 +8,8 @@
 
 //! Report source ownership without compiling or expanding Rust.
 //!
-//! `syn` associates literal outer documentation with functions and nominal types.
+//! `syn` associates literal outer documentation with ordinary declarations.
+//! Macro input docs retain only their physical origins; rustc binds their owners.
 //! The lexer independently reports every real comment, including comments that
 //! have no supported owner. Python compares these reports so an orphaned fence
 //! cannot disappear, while a fence inside a Rust string remains ordinary data.
@@ -36,8 +37,11 @@ struct Functions<'a> {
     functions: Vec<Value>,
     implementations: Vec<Value>,
     types: Vec<Value>,
+    traits: Vec<Value>,
+    trait_impls: Vec<Value>,
     macros: Vec<Value>,
     attributes: Vec<Value>,
+    macro_docs: Vec<Value>,
 }
 
 impl Functions<'_> {
@@ -49,7 +53,7 @@ impl Functions<'_> {
         start
             + self.source[start..]
                 .char_indices()
-                .nth(pos.column)
+                .nth(pos.column + usize::from(pos.line == 1 && self.source.starts_with('\u{feff}')))
                 .map_or(self.source[start..].len(), |(byte, _)| byte)
     }
 
@@ -60,7 +64,7 @@ impl Functions<'_> {
         attrs
             .iter()
             .filter_map(|attr| {
-                if !attr.path().is_ident("doc") || !matches!(attr.style, syn::AttrStyle::Outer) {
+                if !path_is(attr.path(), "doc") || !matches!(attr.style, syn::AttrStyle::Outer) {
                     return None;
                 }
                 let syn::Meta::NameValue(meta) = &attr.meta else {
@@ -72,11 +76,100 @@ impl Functions<'_> {
                 let syn::Lit::Str(text) = &expr.lit else {
                     return None;
                 };
-                Some(json!({"start": self.offset(attr.span().start()),
-                        "end": self.offset(attr.span().end()), "text": text.value(),
-                        "line": attr.span().start().line}))
+                let raw =
+                    &self.source[self.offset(attr.span().start())..self.offset(attr.span().end())];
+                let origin = if raw.starts_with("///") || raw.starts_with("/**") {
+                    attr.span()
+                } else {
+                    text.span()
+                };
+                // rustc normalizes physical CRLF before lexing, but an authored
+                // `\\r\\n` escape still denotes two cooked characters.
+                let cooked = if raw.starts_with("///") || raw.starts_with("/**") {
+                    text.value().replace("\r\n", "\n")
+                } else {
+                    syn::parse_str::<syn::LitStr>(&text.token().to_string().replace("\r\n", "\n"))
+                        .expect("literal doc string")
+                        .value()
+                };
+                let origin_end = self.offset(origin.end())
+                    - usize::from(raw.starts_with("///") && raw.ends_with('\r'));
+                Some(json!({"origin_start": self.offset(origin.start()), "origin_end": origin_end,
+                        "start": self.offset(attr.span().start()),
+                        "end": self.offset(attr.span().end()),
+                        "line": attr.span().start().line, "text": cooked}))
             })
             .collect()
+    }
+
+    // Inspect attribute tokens without parsing a macro's declaration DSL.
+    // Its unique compiled positive impl supplies the actual proof obligation.
+    fn macro_attributes(&mut self, tokens: proc_macro2::TokenStream, supported: bool) {
+        use proc_macro2::TokenTree;
+        use syn::parse::Parser as _;
+        let tokens: Vec<_> = tokens.into_iter().collect();
+        let mut index = 0;
+        while index < tokens.len() {
+            if index + 2 < tokens.len() {
+                if let [TokenTree::Punct(hash), TokenTree::Punct(bang), TokenTree::Group(group)] =
+                    &tokens[index..index + 3]
+                {
+                    if hash.as_char() == '#'
+                        && bang.as_char() == '!'
+                        && group.delimiter() == proc_macro2::Delimiter::Bracket
+                    {
+                        let stream = tokens[index..index + 3].iter().cloned().collect();
+                        if let Ok(attrs) = syn::Attribute::parse_inner.parse2(stream) {
+                            for attr in attrs {
+                                self.visit_attribute(&attr);
+                            }
+                        }
+                        index += 3;
+                        continue;
+                    }
+                }
+            }
+            let mut attrs = Vec::new();
+            while index + 1 < tokens.len() {
+                let [TokenTree::Punct(hash), TokenTree::Group(group)] = &tokens[index..index + 2]
+                else {
+                    break;
+                };
+                if hash.as_char() != '#' || group.delimiter() != proc_macro2::Delimiter::Bracket {
+                    break;
+                }
+                let stream = tokens[index..index + 2].iter().cloned().collect();
+                let Ok(parsed) = syn::Attribute::parse_outer.parse2(stream) else { break };
+                for attr in parsed {
+                    self.visit_attribute(&attr);
+                    attrs.push(attr);
+                }
+                index += 2;
+            }
+            if !attrs.is_empty() {
+                let docs = self.docs(&attrs);
+                if !docs.is_empty() {
+                    let start = self.offset(attrs[0].span().start());
+                    let close = self.offset(attrs.last().unwrap().span().end());
+                    let (computed_docs, include_str_docs) = doc_flags(&attrs);
+                    self.macro_docs.push(json!({"path": format!("__macro_docs_{start}"),
+                        "kind": "trait-impl", "macro_input": true,
+                        "start": start, "close": close, "docs": docs,
+                        "supported": supported, "generics": [], "const_generics": [],
+                        "inputs": [], "trait_bounds": [], "computed_docs": computed_docs,
+                        "include_str_docs": include_str_docs}));
+                }
+                continue;
+            }
+            if let TokenTree::Group(group) = &tokens[index] {
+                let template = index >= 3
+                    && matches!(&tokens[index - 3..index],
+                    [TokenTree::Ident(name), TokenTree::Punct(bang), TokenTree::Ident(_)]
+                        if ident_is(name, "macro_rules") && bang.as_char() == '!');
+                self.macro_attributes(group.stream(), supported && !template);
+            }
+            index += 1;
+        }
     }
 
     fn nominal(
@@ -87,6 +180,7 @@ impl Functions<'_> {
         span: proc_macro2::Span,
         kind: &str,
         fields: Value,
+        declaration_start: proc_macro2::Span,
     ) {
         // Preserve source parameter order, even for parameters unused by fields.
         // Field admission is structural: an authored decoder cannot make a
@@ -95,11 +189,12 @@ impl Functions<'_> {
         path.push(ident.to_string());
         let supported = self.unsupported == 0
             && generics.const_params().next().is_none()
-            && generics.type_params().all(|p| p.bounds.is_empty())
+            && generics.type_params().all(|p| p.bounds.iter().all(maybe_sized))
             && generics.where_clause.is_none()
             && !has_borrowed_fields(&fields);
         let (computed_docs, include_str_docs) = doc_flags(attrs);
         self.types.push(json!({"path": path.join("::"), "kind": kind,
+            "declaration_start": self.offset(declaration_start.start()),
             "start": self.offset(ident.span().start()), "close": self.offset(span.end()),
             "supported": supported, "generics": generics.type_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
             "inputs": [], "docs": self.docs(attrs), "computed_docs": computed_docs,
@@ -112,6 +207,7 @@ impl Functions<'_> {
         block: &syn::Block,
         attrs: &[syn::Attribute],
         method: bool,
+        visibility: &syn::Visibility,
     ) {
         // The report identifies the original function and original argument
         // names. Python later checks this order against extraction before Lean
@@ -145,13 +241,13 @@ impl Functions<'_> {
         if let syn::ReturnType::Type(_, ty) = &sig.output {
             supported &= !unsupported_borrow(ty, false);
         }
-        supported &= sig.generics.where_clause.is_none();
+        let (bounds, bounds_supported) = trait_bounds(&sig.generics);
+        supported &= bounds_supported;
         let mut generics = if method { self.impl_generics.clone() } else { Vec::new() };
         for parameter in &sig.generics.params {
             match parameter {
                 syn::GenericParam::Type(parameter) => {
                     generics.push(parameter.ident.to_string());
-                    supported &= parameter.bounds.is_empty();
                 }
                 syn::GenericParam::Lifetime(_) => {}
                 syn::GenericParam::Const(_) => supported = false,
@@ -160,13 +256,105 @@ impl Functions<'_> {
         let (computed_docs, include_str_docs) = doc_flags(attrs);
         self.functions.push(json!({
             "path": path.join("::"), "kind": "function", "open": open,
+            "declaration_start": self.offset(declaration_start(visibility, sig.span()).start()),
             "start": self.offset(sig.fn_token.span.start()), "docs": self.docs(attrs),
             "computed_docs": computed_docs, "include_str_docs": include_str_docs,
             "close": self.offset(block.brace_token.span.close().end()),
             "supported": supported, "inputs": inputs, "generics": generics,
             "method": method, "impl_type": self.impl_type, "inherent": self.inherent,
+            "trait_bounds": bounds,
         }));
     }
+}
+
+// Raw identifiers denote the same builtin attributes. Their spelling cannot
+// exempt an inactive or unused reserved doc fence from the source census.
+fn ident_is(ident: &syn::Ident, name: &str) -> bool {
+    let spelling = ident.to_string();
+    spelling.strip_prefix("r#").unwrap_or(&spelling) == name
+}
+
+fn path_is(path: &syn::Path, name: &str) -> bool {
+    path.leading_colon.is_none()
+        && path.segments.len() == 1
+        && path.segments.first().is_some_and(|segment| {
+            matches!(segment.arguments, syn::PathArguments::None) && ident_is(&segment.ident, name)
+        })
+}
+
+// `?Sized` relaxes Rust's implicit size restriction. It contributes no
+// dictionary argument or additional decoder state; other written bounds remain
+// unsupported for nominal carriers and are checked against native clauses.
+fn maybe_sized(bound: &syn::TypeParamBound) -> bool {
+    matches!(bound, syn::TypeParamBound::Trait(bound)
+        if matches!(bound.modifier, syn::TraitBoundModifier::Maybe(_))
+            && bound.lifetimes.is_none() && bound.path.is_ident("Sized"))
+}
+
+fn declaration_start(
+    visibility: &syn::Visibility,
+    keyword: proc_macro2::Span,
+) -> proc_macro2::Span {
+    match visibility {
+        syn::Visibility::Inherited => keyword,
+        _ => visibility.span(),
+    }
+}
+
+// These spellings propose source ownership only. The compiler's resolved
+// predicates, not names from syn, decide which trait dictionary is required.
+fn trait_bounds(generics: &syn::Generics) -> (Vec<Value>, bool) {
+    fn bound(subject: &str, bound: &syn::TypeParamBound) -> Option<Value> {
+        let syn::TypeParamBound::Trait(bound) = bound else { return None };
+        if bound.lifetimes.is_some()
+            || !matches!(bound.modifier, syn::TraitBoundModifier::None)
+            || bound.path.segments.iter().any(|s| !matches!(s.arguments, syn::PathArguments::None))
+        {
+            return None;
+        }
+        Some(json!({"subject": subject,
+            "trait": bound.path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::")}))
+    }
+    let mut bounds = Vec::new();
+    // Only usize const parameters have a supported native dictionary carrier.
+    // Function annotations reject const parameters separately; impl markers
+    // retain them so a generic proof cannot specialize an array length.
+    let mut supported = generics.const_params().all(|parameter| {
+        matches!(&parameter.ty, syn::Type::Path(ty) if ty.qself.is_none() && ty.path.is_ident("usize"))
+    });
+    for parameter in generics.type_params() {
+        for predicate in &parameter.bounds {
+            match bound(&parameter.ident.to_string(), predicate) {
+                Some(value) => bounds.push(value),
+                None => supported = false,
+            }
+        }
+    }
+    if let Some(clause) = &generics.where_clause {
+        for predicate in &clause.predicates {
+            let syn::WherePredicate::Type(predicate) = predicate else {
+                supported = false;
+                continue;
+            };
+            let syn::Type::Path(subject) = &predicate.bounded_ty else {
+                supported = false;
+                continue;
+            };
+            let Some(subject) = subject.path.get_ident().filter(|_| subject.qself.is_none()) else {
+                supported = false;
+                continue;
+            };
+            supported &= predicate.lifetimes.is_none()
+                && generics.type_params().any(|p| p.ident == *subject);
+            for predicate in &predicate.bounds {
+                match bound(&subject.to_string(), predicate) {
+                    Some(value) => bounds.push(value),
+                    None => supported = false,
+                }
+            }
+        }
+    }
+    (bounds, supported)
 }
 
 // Literal source docs own annotations. Other computed docs remain ordinary
@@ -175,13 +363,16 @@ impl Functions<'_> {
 fn doc_flags(attrs: &[syn::Attribute]) -> (bool, bool) {
     fn flags(meta: &syn::Meta) -> (bool, bool) {
         match meta {
-            syn::Meta::NameValue(value) if value.path.is_ident("doc") => {
+            syn::Meta::NameValue(value) if path_is(&value.path, "doc") => {
                 struct Includes(bool);
                 impl<'ast> Visit<'ast> for Includes {
                     fn visit_macro(&mut self, mac: &'ast syn::Macro) {
-                        self.0 |=
-                            mac.path.segments.last().is_some_and(|p| p.ident == "include_str")
-                                || tokens_include_str(mac.tokens.clone());
+                        self.0 |= mac
+                            .path
+                            .segments
+                            .last()
+                            .is_some_and(|p| ident_is(&p.ident, "include_str"))
+                            || tokens_include_str(mac.tokens.clone());
                     }
                 }
                 let mut includes = Includes(false);
@@ -191,7 +382,7 @@ fn doc_flags(attrs: &[syn::Attribute]) -> (bool, bool) {
                     includes.0,
                 )
             }
-            syn::Meta::List(list) if list.path.is_ident("cfg_attr") => {
+            syn::Meta::List(list) if path_is(&list.path, "cfg_attr") => {
                 use syn::parse::Parser as _;
                 let parser =
                     syn::punctuated::Punctuated::<syn::Meta, syn::Token![,]>::parse_terminated;
@@ -222,7 +413,7 @@ fn tokens_include_str(tokens: proc_macro2::TokenStream) -> bool {
     tokens.windows(3).any(|window| {
         matches!(window,
         [TokenTree::Ident(name), TokenTree::Punct(bang), TokenTree::Group(_)]
-            if name == "include_str" && bang.as_char() == '!')
+            if ident_is(name, "include_str") && bang.as_char() == '!')
     }) || tokens.iter().any(|token| match token {
         TokenTree::Group(group) => tokens_include_str(group.stream()),
         _ => false,
@@ -233,7 +424,7 @@ fn mentions_doc(tokens: proc_macro2::TokenStream) -> bool {
     // This conservative fallback handles conditional docs that cannot be parsed
     // as ordinary metadata. Python must still see their literal fragments.
     tokens.into_iter().any(|token| match token {
-        proc_macro2::TokenTree::Ident(ident) => ident == "doc",
+        proc_macro2::TokenTree::Ident(ident) => ident_is(&ident, "doc"),
         proc_macro2::TokenTree::Group(group) => mentions_doc(group.stream()),
         _ => false,
     })
@@ -351,21 +542,29 @@ impl<'ast> Visit<'ast> for Functions<'_> {
         visit::visit_item_macro(self, item);
     }
 
+    fn visit_macro(&mut self, mac: &'ast syn::Macro) {
+        self.macro_attributes(
+            mac.tokens.clone(),
+            self.unsupported == 0 && !path_is(&mac.path, "macro_rules"),
+        );
+        visit::visit_macro(self, mac);
+    }
+
     fn visit_attribute(&mut self, attr: &'ast syn::Attribute) {
         // Include every doc spelling, even forms that cannot be evaluated by syn.
         // Python rejects reserved fences in conditional/computed doc forms.
         let conditional_doc = match &attr.meta {
-            syn::Meta::List(list) if attr.path().is_ident("cfg_attr") => {
+            syn::Meta::List(list) if path_is(attr.path(), "cfg_attr") => {
                 mentions_doc(list.tokens.clone())
             }
             _ => false,
         };
-        if attr.path().is_ident("doc") || conditional_doc {
+        if path_is(attr.path(), "doc") || conditional_doc {
             let start = self.offset(attr.span().start());
             let end = self.offset(attr.span().end());
             self.attributes.push(json!({"start": start, "end": end,
                 "outer": matches!(attr.style, syn::AttrStyle::Outer),
-                "doc": attr.path().is_ident("doc"), "fragments": doc_fragments(&attr.meta)}));
+                "doc": path_is(attr.path(), "doc"), "fragments": doc_fragments(&attr.meta)}));
         }
         visit::visit_attribute(self, attr);
     }
@@ -378,6 +577,7 @@ impl<'ast> Visit<'ast> for Functions<'_> {
             item.span(),
             "struct",
             fields(&item.fields),
+            declaration_start(&item.vis, item.struct_token.span),
         );
         visit::visit_item_struct(self, item);
     }
@@ -393,6 +593,7 @@ impl<'ast> Visit<'ast> for Functions<'_> {
             item.span(),
             "enum",
             json!(variants),
+            declaration_start(&item.vis, item.enum_token.span),
         );
         visit::visit_item_enum(self, item);
     }
@@ -404,7 +605,7 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_fn(&mut self, item: &'ast syn::ItemFn) {
-        self.function(&item.sig, &item.block, &item.attrs, false);
+        self.function(&item.sig, &item.block, &item.attrs, false, &item.vis);
         // Never attribute nested functions to the enclosing function or method.
         self.unsupported += 1;
         visit::visit_item_fn(self, item);
@@ -412,6 +613,25 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_item_impl(&mut self, item: &'ast syn::ItemImpl) {
+        if let Some((negative, trait_path, _)) = &item.trait_ {
+            let (computed_docs, include_str_docs) = doc_flags(&item.attrs);
+            let (bounds, supported) = trait_bounds(&item.generics);
+            // rustc's owner span starts at `unsafe` when present, excluding
+            // attributes. Preserve that exact declaration span for impl roots.
+            let begin = item.unsafety.as_ref().map_or(item.impl_token.span, |token| token.span);
+            let start = self.offset(begin.start());
+            self.trait_impls.push(json!({
+                "path": format!("__trait_impl_{start}"), "kind": "trait-impl",
+                "start": start, "close": self.offset(item.span().end()),
+                "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
+                "include_str_docs": include_str_docs, "inputs": [],
+                "generics": item.generics.type_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
+                "supported": self.unsupported == 0 && supported && negative.is_none(),
+                "const_generics": item.generics.const_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
+                "trait_path": trait_path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::"),
+                "trait_bounds": bounds,
+            }));
+        }
         let previous_type = self.impl_type.clone();
         let previous_inherent = self.inherent;
         let previous_generics = self.impl_generics.clone();
@@ -487,13 +707,28 @@ impl<'ast> Visit<'ast> for Functions<'_> {
     }
 
     fn visit_impl_item_fn(&mut self, item: &'ast syn::ImplItemFn) {
-        self.function(&item.sig, &item.block, &item.attrs, true);
+        self.function(&item.sig, &item.block, &item.attrs, true, &item.vis);
         self.unsupported += 1;
         visit::visit_impl_item_fn(self, item);
         self.unsupported -= 1;
     }
 
     fn visit_item_trait(&mut self, item: &'ast syn::ItemTrait) {
+        let mut path = self.modules.clone();
+        path.push(item.ident.to_string());
+        let (computed_docs, include_str_docs) = doc_flags(&item.attrs);
+        self.traits.push(json!({
+            "path": path.join("::"), "kind": "trait",
+            "declaration_start": self.offset(declaration_start(&item.vis,
+                item.unsafety.as_ref().map_or(item.trait_token.span, |token| token.span)).start()),
+            "start": self.offset(item.trait_token.span.start()),
+            "close": self.offset(item.span().end()), "inputs": [],
+            "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
+            "include_str_docs": include_str_docs,
+            "generics": std::iter::once("Self".to_string()).chain(item.generics.type_params().map(|p| p.ident.to_string())).collect::<Vec<_>>(),
+            "supported": self.unsupported == 0 && item.generics.params.is_empty()
+                && item.generics.where_clause.is_none(),
+        }));
         self.unsupported += 1;
         visit::visit_item_trait(self, item);
         self.unsupported -= 1;
@@ -526,14 +761,18 @@ fn inspect(source: &str) -> Result<Value, syn::Error> {
         functions: Vec::new(),
         implementations: Vec::new(),
         types: Vec::new(),
+        traits: Vec::new(),
+        trait_impls: Vec::new(),
         macros: Vec::new(),
         attributes: Vec::new(),
+        macro_docs: Vec::new(),
     };
     visitor.visit_file(&syntax);
     Ok(json!({"source": source, "comments": comments, "functions": visitor.functions,
               "implementations": visitor.implementations, "types": visitor.types,
+              "traits": visitor.traits, "trait_impls": visitor.trait_impls,
               "macros": visitor.macros,
-              "attributes": visitor.attributes}))
+              "attributes": visitor.attributes, "macro_docs": visitor.macro_docs}))
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -551,6 +790,51 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn macro_doc_origins_preserve_physical_bytes_and_rust_cooked_text() {
+        let source = "\u{feff}forward!(\r\n/// ```aeneas\r\n/// invariant_proof\r\n/// ```\r\nu8);";
+        let value = inspect(source).unwrap();
+        let docs = value["macro_docs"][0]["docs"].as_array().unwrap();
+        for doc in docs {
+            let begin = doc["origin_start"].as_u64().unwrap() as usize;
+            let end = doc["origin_end"].as_u64().unwrap() as usize;
+            assert!(source[begin..end].starts_with("///"));
+            assert!(!source[begin..end].ends_with('\r'));
+        }
+        let literal = inspect("forward!(#[doc = r#\"a\r\nb\"#] u8);").unwrap();
+        assert_eq!(literal["macro_docs"][0]["docs"][0]["text"], "a\nb");
+        let escaped = inspect("forward!(#[doc = \"a\\r\\nb\"] u8);").unwrap();
+        assert_eq!(escaped["macro_docs"][0]["docs"][0]["text"], "a\r\nb");
+    }
+
+    #[test]
+    fn macro_inputs_have_no_invented_declaration_semantics() {
+        let source = "forward!(u8: Plain, /// ```aeneas\n/// invariant_proof\n/// ```\nMarked);";
+        let value = inspect(source).unwrap();
+        assert_eq!(value["macro_docs"][0]["supported"], true);
+        assert!(value["macro_docs"][0]["generics"].as_array().unwrap().is_empty());
+        let template = inspect(&format!("macro_rules! make {{ () => {{ {source} }}; }}")).unwrap();
+        assert_eq!(template["macro_docs"][0]["supported"], false);
+    }
+
+    #[test]
+    fn nominal_maybe_sized_bound_adds_no_dictionary_semantics() {
+        let source = "struct ReadOnly<T: ?Sized> { inner: T } struct Bounded<T: Bound>(T);";
+        let value = inspect(source).unwrap();
+        assert_eq!(value["types"][0]["supported"], true);
+        assert_eq!(value["types"][1]["supported"], false);
+        assert_eq!(value["types"][0]["generics"], json!(["T"]));
+    }
+
+    #[test]
+    fn direct_native_anchors_include_visibility_and_modifiers() {
+        let source = "pub(crate) const fn f() {} pub unsafe trait Marker {} pub struct S;";
+        let value = inspect(source).unwrap();
+        assert_eq!(value["functions"][0]["declaration_start"], 0);
+        assert_eq!(value["traits"][0]["declaration_start"], source.find("pub unsafe").unwrap());
+        assert_eq!(value["types"][0]["declaration_start"], source.find("pub struct").unwrap());
+    }
 
     #[test]
     fn preserves_real_comments_but_not_raw_string_contents() {

@@ -26,9 +26,55 @@ data signatures and explicit read interpretations, rather than as axioms about
 useful layout properties.
 -/
 
+private def checkUnemittedNativeType (env : Environment) (row : Json) : TermElabM Unit := do
+  let .ok rust := row.getObjValAs? String "rust"
+    | throwError "Unemitted native type must name its Rust owner"
+  let .ok ident := row.getObjValAs? Nat "def_id"
+    | throwError "Unemitted native type must name its compiler identity"
+  unless (row.getObjVal? "raw").toOption == some Json.null &&
+      row.getObjValAs? Nat "parameters" == .ok 0 do
+    throwError "Unemitted native type has a malformed disposition: {rust}"
+  let .ok expectedRaw := row.getObjValAs? String "expected_raw"
+    | throwError "Unemitted native type must record its derived raw name"
+  let derived := "Zerocopy." ++ String.intercalate "." ((rust.drop "zerocopy::".length).toString.splitOn "::")
+  unless rust.startsWith "zerocopy::" && expectedRaw == derived &&
+      !env.constants.toList.any (fun entry => expectedRaw.toName.isPrefixOf entry.1) do
+    throwError "Unemitted native type changed its Rust identity or has a compiled raw declaration: {rust}"
+  let nativeText ← IO.FS.readFile "Zerocopy/translation.json"
+  let .ok native := Json.parse nativeText | throwError "Invalid native type emission evidence"
+  let .ok emitted := native.getObjValAs? (Array Json) "types"
+    | throwError "Native type emission evidence must contain its complete type inventory"
+  if emitted.any (fun entry => entry.getObjValAs? Nat "def_id" == .ok ident ||
+      entry.getObjValAs? String "rust_name" == .ok rust) then
+    throwError "Unemitted native type still has a producer binding: {rust}"
+  let expectedName := toJson (rust.splitOn "::" |>.map fun part =>
+    Json.mkObj [("Ident", toJson #[toJson part, toJson (0 : Nat)])])
+  for (key, filename) in #[ ("native", "zerocopy.llbc"), ("original", "zerocopy.before.ullbc") ] do
+    let .ok evidence := row.getObjVal? key | throwError "Unemitted native type lacks its {key} declaration"
+    let contents ← IO.FS.readFile filename
+    let .ok parsed := Json.parse contents | throwError "Invalid native type extraction snapshot"
+    let .ok crate := parsed.getObjVal? "translated" | throwError "Missing native type extraction snapshot"
+    let .ok declarations := crate.getObjValAs? (Array Json) "type_decls"
+      | throwError "Missing native type declaration inventory"
+    let selected := declarations.filter (fun entry => entry.getObjValAs? Nat "def_id" == .ok ident)
+    unless selected.size == 1 && selected[0]! == evidence do
+      throwError "Unemitted native type differs from its {key} compiler declaration: {rust}"
+    unless (evidence.getObjVal? "kind").toOption == some (Json.mkObj [("Enum", Json.arr #[])]) do
+      throwError "Unemitted native type must be a zero-case enum: {rust}"
+    let .ok ownership := evidence.getObjVal? "item_meta" | throwError "Unemitted native type lacks compiler ownership"
+    unless (ownership.getObjVal? "name").toOption == some expectedName &&
+        ownership.getObjValAs? Bool "is_local" == .ok true &&
+        ownership.getObjValAs? Bool "started_from" == .ok false do
+      throwError "Unemitted native type changed its source ownership: {rust}"
+    let .ok generics := evidence.getObjVal? "generics" | throwError "Unemitted native type lacks original generics"
+    for field in #["regions", "types", "const_generics", "trait_clauses", "trait_type_constraints",
+        "regions_outlive", "types_outlive"] do
+      unless (generics.getObjValAs? (Array Json) field).toOption == some #[] do
+        throwError "Unemitted native type has unsupported generic obligations: {rust}"
+
 run_elab do
   let env ← getEnv
-  let layoutInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.align]
+  let layoutInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.alignInput]
   -- Generic alignment reads identify the ABI-capable model. Earlier models
   -- may have only the pointer-width size read and require no generic ABI inputs.
   let hasLayoutReads := env.contains `core.mem.align_of
@@ -54,6 +100,17 @@ run_elab do
     unless ← Meta.isDefEq info.type expected do
       throwError "External layout input {input} changed its data-only signature"
   if hasLayoutReads then
+    -- The concrete byte case is part of the external primitive interpretation.
+    -- Audit its whole definition independently, including the generic fallback;
+    -- a true concrete trait law must not bless unrelated type alignments.
+    let alignment ← Term.elabTerm (← `(
+      fun (T : Type) => by
+        classical
+        exact if T = Aeneas.Std.U8 then 1#usize
+          else Zerocopy.RustLayout.alignInput T)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `Zerocopy.RustLayout.align) (← instantiateMVars alignment) do
+      throwError "External alignment model changed its concrete or generic interpretation"
     -- Independently state each primitive interpretation. Keeping the data
     -- axioms while ignoring them must not silently shrink the modeled domain.
     let alignRead ← Term.elabTerm (← `(
@@ -99,6 +156,61 @@ run_elab do
     Term.synthesizeSyntheticMVarsNoPostponing
     unless ← Meta.isDefEq (mkConst `util.copy_unchecked) (← instantiateMVars expected) do
       throwError "External byte copy changed its complete interpretation"
+  if env.contains `util.copy_unchecked_at then
+    -- A write contract exercises only fitting calls. Check the complete leaf
+    -- too: an out-of-range start panics, and a too-long copy is forbidden.
+    let expected ← Term.elabTerm (← `(fun (src dst : Aeneas.Std.Slice Aeneas.Std.U8)
+        (start : Aeneas.Std.Usize) =>
+      if start.val ≤ dst.val.length then
+        if h : src.val.length ≤ dst.val.length - start.val then
+          Aeneas.Std.Result.ok (Aeneas.Std.Slice.from
+            (dst.val.take start.val ++ src.val ++ dst.val.drop (start.val + src.val.length)) (by
+              have := dst.property
+              simp only [List.length_append, List.length_take, List.length_drop]
+              omega))
+        else Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.panic)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.copy_unchecked_at) (← instantiateMVars expected) do
+      throwError "External offset copy changed its complete guarded interpretation"
+  if env.contains `util.validity.read_byte then
+    let expected ← Term.elabTerm (← `(fun (bytes : Aeneas.Std.Slice Aeneas.Std.U8)
+        (index : Aeneas.Std.Usize) =>
+      if index.val < bytes.val.length then Aeneas.Std.Result.ok bytes.val[index.val]!
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.panic)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `util.validity.read_byte) (← instantiateMVars expected) do
+      throwError "External candidate byte read changed its complete guarded interpretation"
+  if env.contains `core.num.Usize.unchecked_add || env.contains `core.num.Usize.unchecked_mul then
+    -- A proof on fitting inputs cannot distinguish UB from a recoverable
+    -- panic outside that domain. Independently check both complete primitive
+    -- interpretations, so changing only their failure tag still fails CI.
+    let add ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val + right.val ≤ Aeneas.Std.Usize.max then left + right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    let mul ← Term.elabTerm (← `(fun (left right : Aeneas.Std.Usize) =>
+      if left.val * right.val ≤ Aeneas.Std.Usize.max then left * right
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    for (primitive, expected) in #[(`core.num.Usize.unchecked_add, add),
+                              (`core.num.Usize.unchecked_mul, mul)] do
+      unless env.contains primitive && (← Meta.isDefEq (mkConst primitive) (← instantiateMVars expected)) do
+        throwError "External unchecked arithmetic changed its forbidden-execution interpretation: {primitive}"
+  if env.contains `core.num.nonzero.NonZero.new_unchecked then
+    -- A successful caller proves only its nonzero branch. Independently audit
+    -- the complete leaf, including zero and unsupported native carriers.
+    let expected ← Term.elabTerm (← `(fun {T Inner : Type}
+        (_inst : Zerocopy.core.num.nonzero.ZeroablePrimitive T Inner) (x : T) => by
+      classical
+      exact if h : T = Aeneas.Std.Usize then
+        if (cast h x : Aeneas.Std.Usize) = 0#usize then
+          Aeneas.Std.Result.fail Aeneas.Std.Error.undef
+        else Aeneas.Std.Result.ok (⟨x⟩ : core.num.nonzero.NonZero T Inner)
+      else Aeneas.Std.Result.fail Aeneas.Std.Error.undef)) none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    unless ← Meta.isDefEq (mkConst `core.num.nonzero.NonZero.new_unchecked)
+        (← instantiateMVars expected) do
+      throwError "External NonZero::new_unchecked changed its complete forbidden-execution interpretation"
   -- Module indices identify declarations by compiled ownership. A matching
   -- namespace is insufficient: a generated or unrelated module could otherwise
   -- install a theorem under a handwritten proof's expected name.
@@ -223,7 +335,10 @@ run_elab do
       let (boundModel, boundInputs) ← AeneasSpecs.specBinding specName
       -- This also rejects a same-arity call on replaced or reordered inputs:
       -- specBinding already checked each argument's original variable identity.
-      unless boundModel == rawName && boundInputs == generics.size + sourceInputs.size do
+      let .ok dictionaryCount := entry.getObjValAs? Nat "dictionary_count"
+        | throwError "Function binding for {rustName} must count its original trait dictionaries"
+      unless boundModel == rawName &&
+          boundInputs == generics.size + dictionaryCount + sourceInputs.size do
         throwError "Compiled specification {specName} changed its source model or original input prefix"
     else if kind == "type" then
       if expectedTypes.contains rawName then
@@ -275,12 +390,21 @@ run_elab do
   for row in image do
     let .ok rust := row.getObjValAs? String "rust"
       | throwError "Raw type image entry must name its Rust identity"
-    let .ok raw := row.getObjValAs? String "raw"
-      | throwError "Raw type image entry must name its generated carrier"
     let .ok category := row.getObjValAs? String "category"
       | throwError "Raw type image entry must name its extraction category"
     let .ok parameterCount := row.getObjValAs? Nat "parameters"
       | throwError "Raw type image entry must name its generated parameter count"
+    if category == "unemitted-uninhabited" then
+      unless mode == "verified-live" && parameterCount == 0 &&
+          (row.getObjVal? "raw").toOption == some Json.null && (entries.get? rust).isNone do
+        throwError "Unemitted native type has a model claim or malformed disposition: {rust}"
+      if imageRust.contains rust then
+        throwError "Raw type image repeats unemitted Rust owner {rust}"
+      imageRust := imageRust.push rust
+      checkUnemittedNativeType env row
+      continue
+    let .ok raw := row.getObjValAs? String "raw"
+      | throwError "Raw type image entry must name its generated carrier"
     unless category == "local-nominal" || category == "trait-dictionary" ||
         category == "external-nominal" do
       throwError "Unsupported raw type image category {category} for {rust}"
@@ -318,6 +442,147 @@ run_elab do
   let extraTypes := imageTypes.filter (!actualTypes.contains ·)
   unless missingTypes.isEmpty && extraTypes.isEmpty do
     throwError "Compiled raw types disagree with classified extraction image: missing {missingTypes}; unexpected {extraTypes}"
+  -- Trait registrations are a closed image, too. A missing registration must
+  -- not make a computational dictionary look like an ordinary runtime value,
+  -- and a law class must belong to the module generated from Rust annotations.
+  let .ok dictionaries := bindings.getObjValAs? (Array Json) "trait_dictionaries"
+    | throwError "Model bindings must contain their native trait dictionary image"
+  let .ok laws := bindings.getObjValAs? (Array Json) "trait_laws"
+    | throwError "Model bindings must contain their annotated trait laws"
+  let .ok implementations := bindings.getObjValAs? (Array Json) "trait_impl_laws"
+    | throwError "Model bindings must contain their required trait implementations"
+  let some lawsModule := env.getModuleIdx? `TraitLaws
+    | throwError "Trait laws must be imported from their generated module"
+  -- Test modules have their own miniature dictionaries. Only the compiled
+  -- extraction's carriers participate in the production binding comparison.
+  let registered := (← AeneasSpecs.traitLawBindings).filter
+    (fun entry => env.getModuleIdxFor? entry.raw == some typesModule)
+  let mut expectedDictionaries : Array Name := #[]
+  for row in dictionaries do
+    let .ok raw := row.getObjValAs? String "raw"
+      | throwError "Native trait dictionary must name its compiled carrier"
+    let rawName := raw.toName
+    if expectedDictionaries.contains rawName then
+      throwError "Native trait dictionary image repeats {rawName}"
+    expectedDictionaries := expectedDictionaries.push rawName
+    unless registered.any (·.raw == rawName) do
+      throwError "Native trait dictionary lacks its compiled registration: {rawName}"
+    let some (.inductInfo _) := env.find? rawName
+      | throwError "Native trait dictionary is not an inductive carrier: {rawName}"
+    -- Generated dictionaries must be classified as such, rather than merely
+    -- borrowing the name of a local data structure from the type image.
+    if env.getModuleIdxFor? rawName == some typesModule then
+      unless image.any (fun entry => entry.getObjValAs? String "raw" == .ok raw &&
+          entry.getObjValAs? String "category" == .ok "trait-dictionary") do
+        throwError "Native trait dictionary has the wrong raw image category: {rawName}"
+  unless registered.size == expectedDictionaries.size &&
+      registered.all (fun entry => expectedDictionaries.contains entry.raw) do
+    throwError "Compiled trait dictionary registrations disagree with native bindings"
+  let mut expectedLaws : Array Name := #[]
+  for row in laws do
+    let .ok raw := row.getObjValAs? String "raw"
+      | throwError "Annotated trait must name its exact dictionary"
+    let .ok law := row.getObjValAs? String "law"
+      | throwError "Annotated trait must name its generated law class"
+    let .ok count := row.getObjValAs? Nat "generic_count"
+      | throwError "Annotated trait must count its original type parameters"
+    let lawName := law.toName
+    if expectedLaws.contains lawName then throwError "Repeated trait law {lawName}"
+    expectedLaws := expectedLaws.push lawName
+    unless registered.any (fun entry => entry.raw == raw.toName && entry.law == some lawName) do
+      throwError "Compiled trait law disagrees with its exact Rust dictionary: {lawName}"
+    let some (.inductInfo info) := env.find? lawName
+      | throwError "Trait law is not a compiled class: {lawName}"
+    let some registration := registered.find? (·.raw == raw.toName)
+      | throwError "Missing exact trait law registration"
+    AeneasSpecs.checkTraitLawModelParameters registration count
+    unless env.getModuleIdxFor? lawName == some lawsModule &&
+        info.numParams == count + 1 + registration.modelParameters.size &&
+        (← Meta.forallTelescope info.type fun _ result => pure (result.consumeMData == mkSort .zero)) do
+      throwError "Trait law changed its generated ownership or original dictionary prefix: {lawName}"
+  let actualLaws := registered.filterMap (·.law)
+  unless actualLaws.size == expectedLaws.size && actualLaws.all expectedLaws.contains do
+    throwError "Compiled trait laws disagree with annotated Rust traits"
+  let some funsModule := env.getModuleIdx? `Zerocopy.Funs
+    | throwError "Extracted implementation dictionaries must be imported"
+  let mut requiredImplementations : Array Name := #[]
+  let mut requiredWitnesses : Array Name := #[]
+  for row in implementations do
+    let .ok dictionary := row.getObjValAs? String "dictionary"
+      | throwError "Required trait implementation must name its exact dictionary"
+    let .ok law := row.getObjValAs? String "law"
+      | throwError "Required trait implementation must name its law class"
+    let .ok proof := row.getObjValAs? String "proof"
+      | throwError "Required trait implementation must name its proof"
+    let dictionaryName := dictionary.toName
+    let proofName := proof.toName
+    if requiredImplementations.contains dictionaryName then
+      throwError "Repeated required trait implementation {dictionaryName}"
+    requiredImplementations := requiredImplementations.push dictionaryName
+    unless expectedLaws.contains law.toName &&
+        env.getModuleIdxFor? dictionaryName == some funsModule do
+      throwError "Trait implementation has an unexpected law or compiled owner: {dictionaryName}"
+    let some (.thmInfo proofInfo) := env.find? proofName
+      | throwError "Missing ordinary trait implementation theorem {proofName}"
+    unless (env.getModuleIdxFor? proofName).any proofModules.contains do
+      throwError "Trait implementation theorem must belong to a configured proof module: {proofName}"
+    let .ok typeCount := row.getObjValAs? Nat "generic_count"
+      | throwError "Trait implementation must count its original type parameters"
+    let .ok constCount := row.getObjValAs? Nat "const_count"
+      | throwError "Trait implementation must count its original const parameters"
+    let .ok dictionaryCount := row.getObjValAs? Nat "dictionary_count"
+      | throwError "Trait implementation must count its original dictionaries"
+    let .ok constParameters := row.getObjValAs? (Array Json) "const_parameters"
+      | throwError "Trait implementation must retain its original usize const identities"
+    unless constParameters.size == constCount do
+      throwError "Trait implementation changed its original const inventory"
+    AeneasSpecs.checkTraitImplementationNativeParameters dictionaryName
+      typeCount constCount dictionaryCount constParameters
+    let expected ← AeneasSpecs.traitImplementationObligation law.toName dictionaryName
+    unless ← Meta.isDefEq proofInfo.type expected do
+      throwError "Trait implementation theorem changed its exact dictionary or premises: {proofName}"
+    -- Inspect the authored telescope separately from obligation generation.
+    -- The deterministic witness is a normal kernel theorem owned by Required,
+    -- whose value must directly reuse this exact configured authored theorem.
+    AeneasSpecs.auditTraitImplementationProof law.toName dictionaryName proofName
+    let witnessName := AeneasSpecs.traitImplementationWitnessName dictionaryName
+    requiredWitnesses := requiredWitnesses.push witnessName
+    let some (.thmInfo witness) := env.find? witnessName
+      | throwError "Missing kernel-checked trait implementation witness {witnessName}"
+    let some requiredModule := env.getModuleIdx? `Required
+      | throwError "Missing required checks module"
+    unless env.getModuleIdxFor? witnessName == some requiredModule do
+      throwError "Trait implementation witness has the wrong compiled owner: {witnessName}"
+    unless witness.value.isConstOf proofName do
+      throwError "Trait implementation witness must directly use its authored theorem: {witnessName}"
+    unless ← Meta.isDefEq witness.type expected do
+      throwError "Trait implementation witness changed its native obligation: {witnessName}"
+    AeneasSpecs.auditTraitImplementationProof law.toName dictionaryName witnessName
+  -- Enumerate the compiled dictionaries independently of Aeneas's JSON names.
+  -- Even a swapped name or omitted row in that metadata cannot leave an actual
+  -- extracted implementation of an annotated trait without its checked law.
+  let mut actualImplementations : Array Name := #[]
+  for (declName, info) in env.constants.toList do
+    if env.getModuleIdxFor? declName != some funsModule then continue
+    let .defnInfo info := info | continue
+    let annotated ← Meta.forallTelescope info.type fun _ result => do
+      return ((← AeneasSpecs.traitDictionary? result).bind (·.law)).isSome
+    if annotated then actualImplementations := actualImplementations.push declName
+  unless actualImplementations.size == requiredImplementations.size &&
+      actualImplementations.all requiredImplementations.contains do
+    throwError "Compiled trait implementations disagree with required law coverage: actual {actualImplementations}; required {requiredImplementations}"
+  let some requiredModule := env.getModuleIdx? `Required
+    | throwError "Missing required checks module"
+  let actualWitnesses := env.constants.toList.filterMap fun (witnessName, info) =>
+    if env.getModuleIdxFor? witnessName == some requiredModule &&
+        witnessName.getString!.endsWith "_trait_law_checked" then
+      match info with
+      | .thmInfo _ => some witnessName
+      | _ => none
+    else none
+  unless actualWitnesses.length == requiredWitnesses.size &&
+      actualWitnesses.all requiredWitnesses.contains do
+    throwError "Compiled trait implementation witnesses disagree with required coverage"
   -- Compare registered providers too: a raw type can be present in extraction
   -- and the manifest while its full mathematical provider is absent or extra.
   let actualOwners := (← AeneasSpecs.modelOwnerNames).filter

@@ -76,16 +76,15 @@ if "$check" && ! "$refresh" && ! "$live" && [[ -f "$work/lakefile.lean" ]]; then
     exec python3 -B verification/aeneas/workspace.py "${develop_args[@]}"
 fi
 python3 -B verification/aeneas/workspace.py protect "$work" --root "$repo"
+# Trait dictionaries and native layout bindings need compiler evidence even
+# when the editor uses golden definitions. Extraction does not check proofs.
+bash verification/aeneas/run.sh --extract-only
+bindings_work="$repo/target/aeneas/verification"
 if "$live"; then
-    # Refresh the model even when changed Rust invalidates an existing proof.
-    bash verification/aeneas/run.sh --extract-only
-    model="$repo/target/aeneas/verification/Zerocopy"
+    model="$bindings_work/Zerocopy"
 else
     model="$repo/verification/aeneas/golden"
 fi
-CARGO_TARGET_DIR="$repo/target/aeneas/annotation-tool" \
-    cargo build --locked --jobs 2 \
-    --manifest-path tools/Cargo.toml -p aeneas-inline
 # The golden checker owns the generated-file roster. Validate the complete
 # producer output before copying those same modules into the editor project;
 # handwritten external implementations stay with the authored proof sources.
@@ -110,7 +109,8 @@ source, destination = map(Path, sys.argv[1:])
 write_bytes(destination, source.read_bytes())
 PY
 python3 -B verification/aeneas/inline.py dev-assemble --root "$repo" \
-    --tool "$repo/target/aeneas/annotation-tool/debug/aeneas-inline" --work "$work"
+    --tool "$repo/target/aeneas/annotation-tool/debug/aeneas-inline" --work "$work" \
+    --bindings-work "$bindings_work"
 python3 -B verification/aeneas/prepare.py workspace "$work" --backend "$backend"
 echo "Lean development project: $work"
 echo "Model: $model; specifications refreshed from current Rust comments."

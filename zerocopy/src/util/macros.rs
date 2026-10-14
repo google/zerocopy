@@ -50,16 +50,20 @@ macro_rules! unsafe_impl {
     // 1. Pack the attributes into a single token tree fragment we can match over.
     // 2. Expand the traits.
     // 3. Unpack and expand the attributes.
-    ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
-        unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty: $($traits),*)
+    // Shared attributes decorate every impl; attributes before a trait decorate
+    // only that impl. In particular, proof markers must be per-trait so that
+    // each authored marker has exactly one generated owner.
+    ($(#[$attrs:meta])* $ty:ty: $($(#[$trait_attrs:meta])* $traits:ident),* $(,)?) => {
+        unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty:
+            $($(#[$trait_attrs])* $traits),*)
     };
 
-    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {{
-        $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits); )*
+    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($(#[$trait_attrs:meta])* $traits:ident),*) => {{
+        $( unsafe_impl!(@unpack_attrs $attrs $ty: $(#[$trait_attrs])* $traits); )*
     }};
 
-    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
-        unsafe_impl!($(#[$attrs])* $ty: $traits);
+    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $(#[$trait_attrs:meta])* $traits:ident) => {
+        unsafe_impl!($(#[$attrs])* $(#[$trait_attrs])* $ty: $traits);
     };
 
     // This arm is identical to the following one, except it contains a
@@ -388,11 +392,13 @@ macro_rules! impl_or_verify {
     // counterparts in `unsafe_impl!`; see the documentation on those arms for
     // more details.
     (
+        $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
         => $trait:ident for $ty:ty
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
+            $(#[$attr])*
             const $constname: $constty, $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
         ); });
         impl_or_verify!(@verify $trait, {
@@ -400,10 +406,12 @@ macro_rules! impl_or_verify {
         });
     };
     (
+        $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_safe:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
+            $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
             $(; |$candidate| $is_safe)?
         ); });
@@ -1068,5 +1076,70 @@ macro_rules! codegen_section {
                 bench = $bench
             )
         )
+    }
+}
+
+#[cfg(test)]
+mod unsafe_impl_tests {
+    use core::marker::PhantomData;
+
+    // These test-only traits have no semantic implementer obligations. Their
+    // method matches the method emitted by `unsafe_impl!` for marker traits.
+    /// # Safety
+    ///
+    /// Implementations have no semantic obligations.
+    #[allow(dead_code)]
+    unsafe trait Present {
+        fn only_derive_is_allowed_to_implement_this_trait();
+    }
+    /// # Safety
+    ///
+    /// Implementations have no semantic obligations.
+    #[allow(dead_code)]
+    unsafe trait Absent {
+        fn only_derive_is_allowed_to_implement_this_trait();
+    }
+
+    struct PerTrait;
+    struct Shared;
+    struct Generic<T, U: ?Sized, const N: usize>(PhantomData<T>, PhantomData<U>);
+
+    // SAFETY: The test-only traits impose no semantic obligations.
+    const _: () = unsafe {
+        unsafe_impl!(
+            #[doc = "ordinary shared documentation"]
+            PerTrait:
+            #[cfg(any())]
+            Absent,
+            #[doc = "documentation belonging only to Present"]
+            Present,
+        );
+    };
+
+    // SAFETY: The test-only traits impose no semantic obligations.
+    const _: () = unsafe {
+        unsafe_impl!(#[cfg(any())] Shared: Present, Absent,);
+    };
+
+    // SAFETY: The test-only traits impose no semantic obligations. Exercise the
+    // single-impl arm's attribute forwarding, two distinct type bounds, and a
+    // const parameter without requiring the second type parameter to be Sized.
+    const _: () = unsafe {
+        unsafe_impl!(
+            #[doc = "generic implementation documentation"]
+            const N: usize, T: Copy, U: ?Sized
+            => Present for Generic<T, U, N>
+        );
+    };
+
+    #[test]
+    fn attributes_and_generic_parameters() {
+        fn present<T: Present>() {}
+        present::<PerTrait>();
+        present::<Generic<u8, [u16], 0>>();
+        present::<Generic<u16, str, 17>>();
+        static_assertions::assert_not_impl_any!(PerTrait: Absent);
+        static_assertions::assert_not_impl_any!(Shared: Present, Absent);
+        static_assertions::assert_not_impl_any!(Generic<core::cell::Cell<u8>, str, 17>: Present);
     }
 }

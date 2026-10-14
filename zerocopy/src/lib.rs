@@ -358,6 +358,8 @@ mod macros;
 pub mod pointer;
 mod r#ref;
 mod split_at;
+#[allow(dead_code)]
+mod trait_checks;
 // FIXME(#252): If we make this pub, come up with a better name.
 mod wrappers;
 
