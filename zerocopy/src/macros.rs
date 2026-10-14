@@ -293,8 +293,7 @@ macro_rules! transmute {
 ///
 /// ```
 /// # use {zerocopy::*, zerocopy_derive::*};
-/// # type u16 = zerocopy::byteorder::native_endian::U16;
-/// # type u32 = zerocopy::byteorder::native_endian::U32;
+///
 /// #[derive(KnownLayout, FromBytes, IntoBytes, Immutable)]
 /// #[repr(C)]
 /// struct SliceDst<T, U> {
@@ -302,8 +301,9 @@ macro_rules! transmute {
 ///     u: [U],
 /// }
 ///
-/// type Src = SliceDst<u32, u16>;
-/// type Dst = SliceDst<u16, u8>;
+/// // Unalign gives all fields alignment 1, so neither `Src` nor `Dst` contain padding.
+/// type Src = SliceDst<Unalign<u32>, Unalign<u16>>;
+/// type Dst = SliceDst<Unalign<u16>, u8>;
 ///
 /// let src = Src::ref_from_bytes(&[0, 1, 2, 3, 4, 5, 6, 7]).unwrap();
 /// let dst: &Dst = transmute_ref!(src);
