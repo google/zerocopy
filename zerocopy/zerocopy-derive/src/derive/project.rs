@@ -212,32 +212,47 @@ pub(crate) fn derive_projection_struct_union(
             } else {
                 quote! { #zerocopy_crate::invariant::Unaligned }
             };
+            // Overlapping union fields can disagree about interior mutability.
+            // Shared access is instead provided through `ReadOnly<Self>`.
+            let (aliasing, params) = if matches!(ctx.ast.data, Data::Union(_)) {
+                (
+                    quote! { #zerocopy_crate::invariant::Exclusive },
+                    vec![parse_quote!(___ZcAlignment: #zerocopy_crate::invariant::Alignment)],
+                )
+            } else {
+                (
+                    quote! { ___ZcAliasing },
+                    vec![
+                        parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing),
+                        parse_quote!(___ZcAlignment: #zerocopy_crate::invariant::Alignment),
+                    ],
+                )
+            };
             ImplBlockBuilder::new(
                 ctx,
                 data,
                 Trait::ProjectField {
                     client,
                     projection: projection.clone(),
-                    invariants: parse_quote!((___ZcAliasing, ___ZcAlignment, #input_validity)),
+                    invariants: parse_quote!((#aliasing, ___ZcAlignment, #input_validity)),
                 },
                 FieldBounds::None,
             )
-            .param_extras(vec![
-                parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing),
-                parse_quote!(___ZcAlignment: #zerocopy_crate::invariant::Alignment),
-            ])
+            .param_extras(params)
             .inner_extras(quote! {
                 // SAFETY: Struct and union projections do not depend on the value of
                 // the referent, and are therefore infallible.
                 type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
 
-                // SAFETY: Projection preserves aliasing. It also preserves
-                // alignment unless the containing type is packed. `Validity`
-                // determines whether a projection is emitted and, if so,
+                // SAFETY: Struct fields preserve aliasing; union projections
+                // require exclusive access to their overlapping fields.
+                // Projection also preserves alignment unless the containing
+                // type is packed. `Validity` determines whether a projection
+                // is emitted and, if so,
                 // computes its output validity: struct fields preserve validity;
                 // union fields preserve `Uninit` and `Initialized`, and no
                 // projection is emitted for `Safe` union input.
-                type Invariants = (___ZcAliasing, #output_alignment, #output_validity);
+                type Invariants = (#aliasing, #output_alignment, #output_validity);
             })
             .build()
         };
@@ -381,8 +396,6 @@ pub(crate) fn derive_enum(
         })
         .build();
 
-    let aliasing_param: &syn::GenericParam =
-        &parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing);
     let reference_param: &syn::GenericParam =
         &parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Reference);
     let alignment_param: &syn::GenericParam =
@@ -445,8 +458,12 @@ pub(crate) fn derive_enum(
             // projection preserves alignment. Each `ProjectField` impl preserves
             // the input validity. The `Uninit` and `Initialized` projections are
             // infallible because those validity invariants do not depend on the
-            // enum's tag. The `Safe` projection first checks that the tag
-            // selects `variant_ident`; its `Reference` aliasing bound prevents
+            // enum's tag. These projections require exclusive access: fields
+            // of different variants can overlap while disagreeing about which
+            // bytes permit interior mutation. Shared projections are available
+            // through `ReadOnly<Self>`, which also wraps the projected fields.
+            // The `Safe` projection first checks that the tag selects
+            // `variant_ident`; its `Reference` aliasing bound prevents
             // mutation of the tag between that check and field projection. The
             // corresponding `HasTag` impl projects to the raw representation's
             // tag using `CastSized`.
@@ -465,7 +482,7 @@ pub(crate) fn derive_enum(
             //   field. The first field of each struct in the union is [...] the
             //   tag and the remaining fields are the fields of that variant.
             let derive_enum_project_field = |validity| {
-                let (error, is_projectable, aliasing_bound) = if validity == Validity::Safe {
+                let (error, is_projectable, aliasing, params) = if validity == Validity::Safe {
                     assert!(!matches!(validity, Validity::Uninit | Validity::Initialized));
                     (
                         quote! { () },
@@ -490,15 +507,21 @@ pub(crate) fn derive_enum(
                                 }
                             }
                         },
-                        reference_param.clone(),
+                        quote! { ___ZcAliasing },
+                        vec![reference_param.clone(), alignment_param.clone()],
                     )
                 } else {
-                    (infallible.clone(), quote! {}, aliasing_param.clone())
+                    (
+                        infallible.clone(),
+                        quote! {},
+                        quote! { #zerocopy_crate::invariant::Exclusive },
+                        vec![alignment_param.clone()],
+                    )
                 };
 
                 let validity = validity.as_type(ctx);
                 let invariants: Box<Type> =
-                    parse_quote!((___ZcAliasing, ___ZcAlignment, #validity));
+                    parse_quote!((#aliasing, ___ZcAlignment, #validity));
                 let project_field_trait = Trait::ProjectField {
                     client,
                     projection: projection.clone(),
@@ -506,7 +529,7 @@ pub(crate) fn derive_enum(
                 };
 
                 ImplBlockBuilder::new(ctx, data, project_field_trait, FieldBounds::None)
-                    .param_extras(vec![aliasing_bound.clone(), alignment_param.clone()])
+                    .param_extras(params)
                     .inner_extras(quote! {
                         type Error = #error;
                         type Invariants = #invariants;
