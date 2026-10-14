@@ -82,8 +82,17 @@ def signedWord (x : IScalar ty) : SignedWord ty :=
   ⟨x.val, by simpa only [IScalar.min] using x.hmin,
     by have := x.hmax; simp only [IScalar.max]; omega⟩
 
-@[reducible] instance modelUScalar (ty : UScalarTy) : RustModel (UScalar ty) :=
-  ⟨UnsignedWord ty, fun x => some (unsignedWord x)⟩
+/-- The u8 physical decoder retains every initialized eight-bit pattern.
+Other word widths await an explicit endian-aware representation model. -/
+def u8BitDecoder : Rust.Storage.BitDecoder U8 :=
+  Rust.Storage.byteDecoder.map (fun byte => UScalar.ofNatCore byte.toNat byte.isLt)
+
+@[reducible] instance modelUScalar (ty : UScalarTy) : RustModel (UScalar ty) where
+  Model := UnsignedWord ty
+  decode x := some (unsignedWord x)
+  representation := match ty with
+    | .U8 => some u8BitDecoder
+    | _ => none
 @[reducible] instance modelIScalar (ty : IScalarTy) : RustModel (IScalar ty) :=
   { Model := SignedWord ty, «decode» := fun x => some (signedWord x) }
 

@@ -448,8 +448,10 @@ private meta def deriveProvider (raw : Name) (count : Nat)
     addDecl (.thmDecl {
       «name» := raw ++ `decode_decompose, levelParams := info.levelParams,
       «type» := (← inferType decomposition), value := decomposition }) (forceExpose := true)
+    let bitDecoderTy ← mkAppM ``Rust.Storage.BitDecoder #[rawTy]
+    let absentRepresentation ← mkAppOptM ``Option.none #[some bitDecoderTy]
     let provider ← mkAppOptM ``RustModel.mk #[some rawTy, some modelTy,
-      some (mkAppN (mkConst b.decoder levels) all)]
+      some (mkAppN (mkConst b.decoder levels) all), some absentRepresentation]
     addDefinition b.provider info.levelParams (← mkLambdaFVars all provider)
   setReducibilityStatus b.provider .reducible
   addInstance b.provider .global 1000

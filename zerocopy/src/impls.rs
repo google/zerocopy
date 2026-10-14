@@ -904,7 +904,22 @@ const _: () = unsafe {
     });
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
-    unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
+    /// ```aeneas
+    /// invariant_proof
+    /// ```
+    // SAFETY: As shown above, arrays concatenate their elements without extra
+    // padding. `T: IntoBytes` guarantees that each element's entire storage is
+    // initialized, so every byte of the array is initialized too, including for
+    // zero-length arrays and zero-sized elements. The invariant proof checks
+    // this implication for every `T` and `N`, under the Rust array-layout model.
+    unsafe impl<T: IntoBytes, const N: usize> IntoBytes for [T; N] {
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    }
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: Immutable => Immutable for [T]);

@@ -284,6 +284,23 @@ audit > "$backup/baseline-audit.log" 2>&1 || {
     cat "$backup/baseline-audit.log" >&2; exit 1;
 }
 
+# Original usize const identities must survive real compiler simplification.
+# This is selected by the annotated trait, not by a fixed implementation name.
+into_bytes=$(python3 - <<'PYCONTROL'
+import json
+from pathlib import Path
+manifest = json.loads(Path("bindings.json").read_text())
+print("yes" if any(law["rust"] == "zerocopy::IntoBytes"
+                   for law in manifest["trait_laws"]) else "no")
+PYCONTROL
+)
+if [[ $into_bytes == yes ]]; then
+    # The original/final Rust evidence belongs to the live extraction. The
+    # golden project separately checks its compiled dictionary and theorem.
+    python3 "$repo/verification/aeneas/tests/trait_const_binding_controls.py" \
+        "$repo/target/aeneas/verification"
+fi
+
 # An opaque helper must not conceal an adapter which discards forbidden
 # failures. This mutation leaves NonZero::get's returned value unchanged, so
 # ordinary functional proofs alone would not detect the unsupported dependency.
