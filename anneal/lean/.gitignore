@@ -1,0 +1,5 @@
+.lake/
+# Lake writes the companion's local dependency paths and inherits our Lean pin.
+# The archive builder regenerates both files for the installed package.
+aeneas/lake-manifest.json
+aeneas/lean-toolchain
