@@ -1,0 +1,108 @@
+{
+  "coverage_kind": "bounded source investigation",
+  "topics": {
+    "R021": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "The language and state interpretation determine the safety subject",
+        "Adequacy has a precise partial-correctness conclusion"
+      ],
+      "outstanding": [
+        "Full assumption closure/build and a concrete Rust source correspondence."
+      ]
+    },
+    "R022": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Cameras constrain legal splitting and updates"
+      ],
+      "outstanding": [
+        "A mechanized camera for byte ranges, initialization, provenance and Rust alias permissions."
+      ]
+    },
+    "R023": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Guarded recursion imposes real proof obligations"
+      ],
+      "outstanding": [
+        "Concrete recursive Rust invariants and their proof costs."
+      ]
+    },
+    "R024": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Lifetimes and ordinary prophecies expose different logical interfaces"
+      ],
+      "outstanding": [
+        "Full lifetime borrowing/recovery instantiation; historical and modern dependency compatibility."
+      ]
+    },
+    "R025": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Lifetimes and ordinary prophecies expose different logical interfaces"
+      ],
+      "outstanding": [
+        "Parametric-prophecy comparison and consistency evidence in companion report."
+      ]
+    },
+    "R032": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Proof automation supplies witnesses for logical judgments"
+      ],
+      "outstanding": [
+        "Lithium/Diaframe/Quiver source comparison and independent certificate interfaces."
+      ]
+    },
+    "T031": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Proof automation supplies witnesses for logical judgments"
+      ],
+      "outstanding": [
+        "End-to-end generated proof-term/assumption audit."
+      ]
+    },
+    "T033": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Cameras constrain legal splitting and updates",
+        "Proof automation supplies witnesses for logical judgments"
+      ],
+      "outstanding": [
+        "A serialized spatial-entailment/frame certificate and checker."
+      ]
+    },
+    "T040": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Proof automation supplies witnesses for logical judgments"
+      ],
+      "outstanding": [
+        "Concrete new property-domain conservative-extension proof."
+      ]
+    },
+    "P114": {
+      "status": "partial",
+      "issue": 3867,
+      "sections": [
+        "The language and state interpretation determine the safety subject",
+        "Adequacy has a precise partial-correctness conclusion"
+      ],
+      "outstanding": [
+        "Cross-prover theorem import and compatible operational semantics."
+      ]
+    }
+  }
+}

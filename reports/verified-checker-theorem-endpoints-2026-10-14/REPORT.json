@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "proof-checking/verified-checkers",
+    "lean/lean4lean",
+    "rocq/metarocq",
+    "hol/candle",
+    "compilation/checker-binaries"
+  ],
+  "subjects": [
+    {
+      "name": "Lean4Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "MetaRocq",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c"
+      }
+    },
+    {
+      "name": "CakeML Candle proof sources",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "Candle extended correctness paper",
+      "identity": {
+        "doi": "10.1007/s10817-025-09743-8",
+        "publication": "Journal of Automated Reasoning 69, article 32 (2025)"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

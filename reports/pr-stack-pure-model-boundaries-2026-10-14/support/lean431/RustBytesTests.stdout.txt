@@ -1,0 +1,8 @@
+'Rust.Bytes.radix_pow_eq_two_pow' depends on axioms: [propext]
+'Rust.Bytes.byte_lt_256' does not depend on any axioms
+'Rust.Bytes.decodeLE_lt' depends on axioms: [propext, Quot.sound]
+'Rust.Bytes.decodeBE_lt' depends on axioms: [propext, Quot.sound]
+'Rust.Bytes.decodeLE_encodeLE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Rust.Bytes.decodeBE_encodeBE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Rust.Bytes.encodeLE_decodeLE' depends on axioms: [propext]
+'Rust.Bytes.encodeBE_decodeBE' depends on axioms: [propext]

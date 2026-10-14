@@ -1,0 +1,279 @@
+{
+  "investigation_status": "bounded-wave-complete",
+  "question_status_policy": "partial: each entry records scoped evidence and remaining work; this wave does not close the broader question",
+  "observed_at": "2026-10-14",
+  "reference_baseline": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+  "source_revisions": {
+    "basetunnel/2022-scp-translation-relations": "72e619f3243498a612d8c6c5090b88117c404489",
+    "snu-sf/crellvm": "668249b88756233f96b3ef21f12993501a348afc",
+    "uwplse/potpie": "a57f960958901dee3b8075be0a312d6a194be456"
+  },
+  "question_coverage": [
+    {
+      "id": "P014",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "The paper's relation-checking architecture"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "What is actually present in the pinned artifact"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "A narrow counterexample to the admitted purity lemma"
+        }
+      ],
+      "remaining_gap": "Paper and exact artifact relation/checker inspected; full semantics theorem and fresh Coq checking not supplied."
+    },
+    {
+      "id": "P015",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Instrumentation and relational evidence"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "What the pinned Crellvm sources establish"
+        }
+      ],
+      "remaining_gap": "Exact main checker artifact inspected; unpinned external dependencies, admitted rules, and no executable/compiler run limit assurance."
+    },
+    {
+      "id": "P016",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Barthe's property-certificate translation contract"
+        },
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Analysis certificates, proof schemas, and maintenance costs"
+        }
+      ],
+      "remaining_gap": "Primary paper architecture inspected; historical prototype source was not located in bounded search."
+    },
+    {
+      "id": "P017",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "PotPie independently constrains specification meaning"
+        },
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "What the pinned PotPie source binds"
+        }
+      ],
+      "remaining_gap": "Publication artifact interfaces inspected; full assumption audit and generated kernel certificates not rerun."
+    },
+    {
+      "id": "P043",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Instrumentation and relational evidence"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Maintenance and the first useful instrumentation experiment"
+        }
+      ],
+      "remaining_gap": "No real Charon/Aeneas pass instrumentation experiment."
+    },
+    {
+      "id": "P044",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "An Anneal pass certificate interface"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Maintenance and the first useful instrumentation experiment"
+        }
+      ],
+      "remaining_gap": "Independent-certifier architecture analyzed; no cross-version post-hoc reconstruction benchmark."
+    },
+    {
+      "id": "P045",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "An Anneal pass certificate interface"
+        }
+      ],
+      "remaining_gap": "Constructive existential relation interface proposed; no constructive Anneal translator implemented."
+    },
+    {
+      "id": "P046",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Selected properties and source-safety direction"
+        },
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "The specification checker must fix meaning independently"
+        }
+      ],
+      "remaining_gap": "Finite property/meaning witnesses; no actual Anneal property-certificate translation."
+    },
+    {
+      "id": "P047",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "An Anneal pass certificate interface"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "Safety-specific admissibility and maintenance"
+        }
+      ],
+      "remaining_gap": "Conservative import plus checked abstraction discussed; no imported Rust semantics certified."
+    },
+    {
+      "id": "P048",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "The paper's relation-checking architecture"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "An Anneal pass certificate interface"
+        }
+      ],
+      "remaining_gap": "Concrete DCE relation inspected; other pass relations and their full semantic proofs not exhaustively audited."
+    },
+    {
+      "id": "P049",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Analysis certificates, proof schemas, and maintenance costs"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Which evidence is untrusted, and which premise remains"
+        }
+      ],
+      "remaining_gap": "Schema/side-condition obligations analyzed; no certificate size or checking benchmark."
+    },
+    {
+      "id": "P050",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "Safety-specific admissibility and maintenance"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "What is actually present in the pinned artifact"
+        }
+      ],
+      "remaining_gap": "Reflected checker inspected; automatic checker derivation and completeness remain unimplemented here."
+    },
+    {
+      "id": "P053",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Barthe's property-certificate translation contract"
+        },
+        {
+          "package": "property-proof-translation-specification-meaning-2006-2024",
+          "section": "Analysis certificates, proof schemas, and maintenance costs"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "A narrow counterexample to the admitted purity lemma"
+        }
+      ],
+      "remaining_gap": "Concrete purity counterexample and analysis-certificate obligations; no complete alias/range/liveness checker survey."
+    },
+    {
+      "id": "P054",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Which evidence is untrusted, and which premise remains"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "Safety-specific admissibility and maintenance"
+        }
+      ],
+      "remaining_gap": "Rule-extension trust interface analyzed; no extension mechanism for Anneal implemented."
+    },
+    {
+      "id": "P078",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "A narrow counterexample to the admitted purity lemma"
+        },
+        {
+          "package": "plutus-inductive-pass-certificates-scp-2024",
+          "section": "Safety-specific admissibility and maintenance"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "The direction mismatch for Anneal"
+        }
+      ],
+      "remaining_gap": "Concrete DCE issue and safety side conditions; no complete constant-fold/inlining/loop rule suite."
+    },
+    {
+      "id": "T021",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "The verified-validator contrast and its source-definedness premise"
+        }
+      ],
+      "remaining_gap": "Primary POPL2008 generic wrapper proposition inspected; no fresh current CompCert validator source/build audit."
+    },
+    {
+      "id": "T024",
+      "coverage_status": "partial",
+      "sections": [
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "Alive2's comparison permits more-defined targets"
+        },
+        {
+          "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+          "section": "The direction mismatch for Anneal"
+        }
+      ],
+      "remaining_gap": "Primary PLDI2021 refinement direction inspected; no current Alive2 code or bound-specific run."
+    }
+  ],
+  "global_remaining_gaps": [
+    "No fresh Coq/compiler/LLVM checking performed.",
+    "No source-to-model safety theorem for Rust established.",
+    "No semantic assurance inferred from syntactic relation checking.",
+    "No modern-production compiler verdict inferred from the research artifact findings.",
+    "PDF byte hashes unavailable; immutable source commits/blobs and publication coordinates used."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f",
+  "input_sha256": "7bd501bbdcad0eefde66fd4c58df0eaf658a2d342c4f2e7c17558c42bba4ed46",
+  "commands": [
+    {
+      "name": "rust-version",
+      "argv": [
+        "rustc",
+        "-vV"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "cargo-run",
+      "argv": [
+        "cargo",
+        "run",
+        "--offline",
+        "--quiet"
+      ],
+      "returncode": 0
+    }
+  ],
+  "source_selection": "git archive REV zerocopy",
+  "network": "Cargo offline",
+  "unsafe_operations_in_owned_probe": false
+}

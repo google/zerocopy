@@ -1,0 +1,585 @@
+{
+  "role": "source; no fresh generation/build/proof checking",
+  "archive_url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1",
+  "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+  "members": [
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/README.md",
+      "sha256": "b5cccb75b68f9b4d399648e185d36731cfa4fc0c3a58c38a8c65935b4bf7f983",
+      "symbols": [
+        "without proofs",
+        "persistent"
+      ],
+      "matching_lines": {
+        "without proofs": [
+          14
+        ],
+        "persistent": [
+          130
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/rust-toolchain.toml",
+      "sha256": "10c4126d0ff9f29a9e3bd725176e53ee1d7b6bf266174f9abacce120975c84d2",
+      "symbols": [
+        "nightly"
+      ],
+      "matching_lines": {
+        "nightly": [
+          2
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust.opam",
+      "sha256": "f0d3ddb4224709ccc2ae4aa96e869e1dfbbdd513e1dfb1ad7d9244c10f5242cc",
+      "symbols": [
+        "rocq-core",
+        "pin-depends"
+      ],
+      "matching_lines": {
+        "rocq-core": [
+          14
+        ],
+        "pin-depends": [
+          26
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/rust_typing/typing/adequacy.v",
+      "sha256": "766a0e8bd819669e85ba7d3f68123763ac76d8f303540faf83ef5b86db2d854c",
+      "symbols": [
+        "typePreG",
+        "main_type",
+        "refinedrust_adequacy"
+      ],
+      "matching_lines": {
+        "typePreG": [
+          12,
+          48,
+          93
+        ],
+        "main_type": [
+          85,
+          107,
+          190,
+          191,
+          204
+        ],
+        "refinedrust_adequacy": [
+          93,
+          264
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/loc.v",
+      "sha256": "c4be19ce56793ae8e3da7af90710708d0b635bac5d60bf62577ce830c237f1ae",
+      "symbols": [
+        "Inductive prov",
+        "Record loc"
+      ],
+      "matching_lines": {
+        "Inductive prov": [
+          20
+        ],
+        "Record loc": [
+          49
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/val.v",
+      "sha256": "9096e8873b0adfe3a768263ef1e2d2cb7fb6c53e5c36551755e3462a3f9c491b",
+      "symbols": [
+        "Inductive mbyte",
+        "val_of_loc_n",
+        "val_to_loc_n",
+        "val_to_loc"
+      ],
+      "matching_lines": {
+        "Inductive mbyte": [
+          82
+        ],
+        "val_of_loc_n": [
+          115,
+          119,
+          130,
+          153,
+          154,
+          156,
+          161,
+          164,
+          165,
+          185,
+          207,
+          229,
+          297,
+          330,
+          595,
+          596,
+          599,
+          601,
+          610
+        ],
+        "val_to_loc_n": [
+          128,
+          134,
+          140,
+          143,
+          161,
+          207,
+          209,
+          224,
+          225,
+          227,
+          237,
+          330
+        ],
+        "val_to_loc": [
+          128,
+          133,
+          134,
+          138,
+          139,
+          140,
+          142,
+          143,
+          161,
+          197,
+          201,
+          207,
+          209,
+          215,
+          217,
+          224,
+          225,
+          227,
+          232,
+          233,
+          236,
+          237,
+          263,
+          278,
+          280,
+          320,
+          322,
+          330,
+          332,
+          334,
+          336
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/ghost_state.v",
+      "sha256": "326def85cf567fc0be067aeb134cade6c8442a3500bd620945edf35afa6c6e8e",
+      "symbols": [
+        "lock_stateR",
+        "heap_cellR",
+        "heapUR",
+        "alloc_alive",
+        "freeable"
+      ],
+      "matching_lines": {
+        "lock_stateR": [
+          14,
+          18,
+          34,
+          38,
+          148,
+          1043,
+          1048
+        ],
+        "heap_cellR": [
+          17,
+          21,
+          37,
+          41,
+          278
+        ],
+        "heapUR": [
+          20,
+          24,
+          40,
+          229,
+          270,
+          273,
+          274,
+          275,
+          277,
+          278,
+          279,
+          281,
+          282,
+          283,
+          828,
+          829,
+          869,
+          888,
+          927,
+          929,
+          971,
+          973,
+          1043,
+          1050
+        ],
+        "alloc_alive": [
+          28,
+          29,
+          49,
+          93,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          102,
+          103,
+          104,
+          106,
+          108,
+          109,
+          115,
+          124,
+          167,
+          168,
+          170,
+          171,
+          172,
+          173,
+          179,
+          195,
+          234,
+          235,
+          244,
+          248,
+          249,
+          370,
+          374,
+          376,
+          377,
+          379,
+          384,
+          385,
+          387,
+          392,
+          393,
+          394,
+          395,
+          397,
+          399,
+          401,
+          841,
+          1165,
+          1168,
+          1170,
+          1171,
+          1174,
+          1176,
+          1182,
+          1190,
+          1192,
+          1197,
+          1198,
+          1200,
+          1203,
+          1213,
+          1214,
+          1219,
+          1221,
+          1233,
+          1265,
+          1270
+        ],
+        "freeable": [
+          177,
+          180,
+          181,
+          182,
+          183,
+          185,
+          186,
+          188,
+          190,
+          197,
+          198,
+          201,
+          202,
+          204,
+          207,
+          209,
+          212,
+          214,
+          215,
+          220,
+          221,
+          250,
+          845,
+          852,
+          1228,
+          1245,
+          1259,
+          1263,
+          1276,
+          1365,
+          1367,
+          1369,
+          1765,
+          1917,
+          1970,
+          2110
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/layout.v",
+      "sha256": "d81f0924c9eb505b861b2cf71b2b32d5908d5e0fa76665955e7e094d8935c92a",
+      "symbols": [
+        "Record layout",
+        "layout_wf"
+      ],
+      "matching_lines": {
+        "Record layout": [
+          5
+        ],
+        "layout_wf": [
+          59,
+          61,
+          62,
+          68,
+          70,
+          73,
+          85,
+          92,
+          94,
+          100,
+          101,
+          102,
+          104,
+          157,
+          158,
+          160,
+          177,
+          180,
+          182
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/radium/syntypes.v",
+      "sha256": "cbc39c779ffa36ab870378910cd774066d3a30e45b3c8cf0994be8748edac89d",
+      "symbols": [
+        "Class LayoutAlg",
+        "repr(transparent)",
+        "LayoutAlg_C"
+      ],
+      "matching_lines": {
+        "Class LayoutAlg": [
+          1174
+        ],
+        "repr(transparent)": [
+          108,
+          131,
+          1194
+        ],
+        "LayoutAlg_C": [
+          1219,
+          1257
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust/lithium/definitions.v",
+      "sha256": "2611e19aa233e1a090483f5e1902b0a4a42fd21fe1f37296a47b83d0f4df6886",
+      "symbols": [
+        "SimplifyHyp",
+        "Subsume"
+      ],
+      "matching_lines": {
+        "SimplifyHyp": [
+          71,
+          81
+        ],
+        "Subsume": [
+          87,
+          92,
+          95,
+          96
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/rrconfig/src/lib.rs",
+      "sha256": "be70557c3c4112b4708c1e35a5519ea03370f556810c0a20d19510142382c15b",
+      "symbols": [
+        "impl Default",
+        "run_check",
+        "verify_deps",
+        "admit_proofs",
+        "skip_unsupported_features"
+      ],
+      "matching_lines": {
+        "impl Default": [
+          91
+        ],
+        "run_check": [
+          70,
+          102,
+          262,
+          263
+        ],
+        "verify_deps": [
+          71,
+          103,
+          268,
+          269
+        ],
+        "admit_proofs": [
+          74,
+          106,
+          290,
+          291,
+          419,
+          420,
+          422,
+          423
+        ],
+        "skip_unsupported_features": [
+          67,
+          99,
+          244,
+          245,
+          428,
+          429
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/procedures.rs",
+      "sha256": "1caa74af693c40556bec578fbd45c734b4c309b3b0f9f47d91689aaa119514fd",
+      "symbols": [
+        "enum Mode",
+        "is_assumed",
+        "needs_proof",
+        "no_assumption()"
+      ],
+      "matching_lines": {
+        "enum Mode": [
+          20
+        ],
+        "is_assumed": [
+          66,
+          294,
+          312
+        ],
+        "needs_proof": [
+          70
+        ],
+        "no_assumption()": [
+          294,
+          312
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/environment/procedure.rs",
+      "sha256": "a2abc474eeccb9aaf5f008bb3269263ba83c361490bc3a7a1ee5ee61c5ed3c73",
+      "symbols": [
+        "retrieve_mir_body",
+        "mir_drops_elaborated_and_const_checked"
+      ],
+      "matching_lines": {
+        "retrieve_mir_body": [
+          59
+        ],
+        "mir_drops_elaborated_and_const_checked": [
+          60
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/radium/src/code.rs",
+      "sha256": "4ad5e72b103a91d0e4f91f043b572bab2ee151f5d270c4e02d5a328a1dab099d",
+      "symbols": [
+        "generate_proof",
+        "Admitted",
+        "Qed"
+      ],
+      "matching_lines": {
+        "generate_proof": [
+          1106,
+          1263
+        ],
+        "Admitted": [
+          1303
+        ],
+        "Qed": [
+          829,
+          1305
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/translation/src/lib.rs",
+      "sha256": "b8e0b44985d90fea04d7b9beeb58c51374954a56dde1cb3e7b0bbbe19c56b933",
+      "symbols": [
+        "generate_proof("
+      ],
+      "matching_lines": {
+        "generate_proof(": [
+          939,
+          1000
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/adequacy/src/main.rs",
+      "sha256": "4fa15c288ee51c9171d80336fceeb2083d76d8fa38552b2161aa27cd8a66fdec",
+      "symbols": [
+        "fn main"
+      ],
+      "matching_lines": {
+        "fn main": [
+          10
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/adequacy/output/adequacy/proofs/proof_adequacy.v",
+      "sha256": "8fa2c22c8bc442212f8a9884ee9b6c3b45ae1718176e4834cf46ce7b793c201c",
+      "symbols": [
+        "main_adequate",
+        "refinedrust_adequacy"
+      ],
+      "matching_lines": {
+        "main_adequate": [
+          75,
+          127
+        ],
+        "refinedrust_adequacy": [
+          91
+        ]
+      }
+    },
+    {
+      "path": "artifact/ACE-RISCV/verification/rust_proofs/pointers_utility/proofs/proof_ptr_byte_add_mut.v",
+      "sha256": "e73458363d0664faf71987e53cdf5137d504367c1d7b240cee5cd3edf8b9f3f1",
+      "symbols": [
+        "ptr_byte_add_mut_proof",
+        "Qed"
+      ],
+      "matching_lines": {
+        "ptr_byte_add_mut_proof": [
+          10
+        ],
+        "Qed": [
+          42
+        ]
+      }
+    }
+  ]
+}

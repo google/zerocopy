@@ -1,0 +1,91 @@
+{
+  "coverage_kind": "bounded source, artifact and theorem-premise investigation",
+  "topics": {
+    "R022": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Byte resources retain initialization, allocation identity and access state"
+      ],
+      "outstanding": [
+        "Full camera-to-load/store proof audit and compatibility with actual Rust provenance/alias models."
+      ]
+    },
+    "R032": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Automation and retained manual proofs still need a complete checked closure"
+      ],
+      "outstanding": [
+        "Full MoSeL/Lithium/Diaframe/Quiver comparison and portable certificates; Diaframe/Quiver not examined."
+      ]
+    },
+    "R033": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Adequacy quantifies concrete executions under typed entry-point premises",
+        "Layout correctness remains an explicit interface and correspondence obligation"
+      ],
+      "outstanding": [
+        "Fresh checking, all semantic rules/features, actual target-layout and Rust source correspondence."
+      ]
+    },
+    "R034": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "The frontend selects and encodes rustc MIR without a translation theorem here",
+        "Generation modes materially change the evidence that must be accepted",
+        "Automation and retained manual proofs still need a complete checked closure"
+      ],
+      "outstanding": [
+        "Real end-to-end extraction, effective configuration, full dependency closure and unsupported-feature behavior."
+      ]
+    },
+    "R088": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Automation and retained manual proofs still need a complete checked closure"
+      ],
+      "outstanding": [
+        "Concrete cross-prover integration/certificate/checker design and trust audit; full route comparison outside this package."
+      ]
+    },
+    "T032": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Adequacy quantifies concrete executions under typed entry-point premises",
+        "Generation modes materially change the evidence that must be accepted"
+      ],
+      "outstanding": [
+        "Complete generated-model/accepted-proof/adequacy instance for a substantive selected Rust function."
+      ]
+    },
+    "T033": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Byte resources retain initialization, allocation identity and access state",
+        "Automation and retained manual proofs still need a complete checked closure"
+      ],
+      "outstanding": [
+        "Portable spatial/frame certificate format and independently checked soundness."
+      ]
+    },
+    "P114": {
+      "status": "partial",
+      "issue": 3867,
+      "sections": [
+        "The frontend selects and encodes rustc MIR without a translation theorem here",
+        "Automation and retained manual proofs still need a complete checked closure"
+      ],
+      "outstanding": [
+        "Cross-prover compatible semantics, source-safety reflection and accepted assumption accounting."
+      ]
+    }
+  }
+}

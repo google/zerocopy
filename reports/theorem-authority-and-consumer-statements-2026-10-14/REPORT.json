@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "proof-checking/authority",
+    "hol/abstract-theorems",
+    "lean/statements",
+    "rocq/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "HOL Light kernel",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+      }
+    },
+    {
+      "name": "Lean kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rocq constant checking",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+      }
+    },
+    {
+      "name": "Lean comparator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

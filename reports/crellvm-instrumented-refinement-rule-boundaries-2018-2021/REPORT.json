@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "crellvm",
+    "certificates/optimization",
+    "translation-validation",
+    "semantics/refinement",
+    "anneal/translation"
+  ],
+  "subjects": [
+    {
+      "name": "Crellvm PLDI 2018 paper",
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "publication": "PLDI 2018",
+        "author-copy": "https://sf.snu.ac.kr/publications/crellvm.pdf"
+      }
+    },
+    {
+      "name": "Crellvm checker research snapshot",
+      "identity": {
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "Verified instruction scheduling validators",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008",
+        "author-copy": "https://xavierleroy.org/publi/validation-scheduling.pdf"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validation paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI 2021",
+        "author-copy": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

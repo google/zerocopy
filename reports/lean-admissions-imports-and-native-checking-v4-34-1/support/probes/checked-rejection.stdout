@@ -1,0 +1,4 @@
+checked-rejection.lean:2:0: error: (kernel) declaration type mismatch, 'forged' has type
+  True
+but it is expected to have type
+  False

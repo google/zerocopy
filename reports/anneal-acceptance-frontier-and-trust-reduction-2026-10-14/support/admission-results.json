@@ -1,0 +1,25 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "archive_sha256": "c3961283cd31ddbc30b8d1e3ede747c36fe0698e0bca449458bc34d009929f92",
+  "source_sha256": {
+    "admission.py": "1625e9af7c6ce3542a4e966a2584f4c2c3a5a88cc699513aed445fdc39cdbb9e",
+    "source_inventory.py": "630fc9c18d2d92b99db46548d05f2b36d756d944aeb8715e6ae00378de54d0f9",
+    "external.json": "0d73753b2755848d412bd4ef0dc5899f8a2cefd2cc1bf7bac5118ef64d434b40",
+    "tests/test_admission.py": "da6d1ecba544ab23196ae3b18fa39ae70dbbf73bfb14e21d2602d59e3a65bdd1",
+    "tests/admission/boolean.before.ullbc": "6f69cdffeba7607de06295d64f874285d9716436bde6e1ea4bd80da2a5110f24"
+  },
+  "python_version": "3.14.8 (main, Sep 30 2026, 17:55:09) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "argv": [
+    "selected-python",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "verification/aeneas/tests",
+    "-p",
+    "test_admission.py",
+    "-v"
+  ],
+  "returncode": 0
+}

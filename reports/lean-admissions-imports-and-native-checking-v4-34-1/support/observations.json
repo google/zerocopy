@@ -1,0 +1,108 @@
+{
+  "toolchain": {
+    "version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+  },
+  "environment": {
+    "platform": "Darwin",
+    "machine": "arm64",
+    "release": "27.0.0",
+    "lean_path": "support/probes",
+    "cwd": "support/probes",
+    "timeout_seconds": 30
+  },
+  "results": [
+    {
+      "label": "logical-and-assumed",
+      "args": [
+        "logical-and-assumed.lean"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 6.0411,
+      "stdout": "logical-and-assumed.lean:5:0: warning: Definition `concealedFalse` is a proposition; use `theorem` instead of `def`\n\nNote: This linter can be disabled with `set_option linter.defProp false`\n'ordinary' does not depend on any axioms\n'localHyp' does not depend on any axioms\n'viaHelper' depends on axioms: [assumedFalse]\n",
+      "stderr": ""
+    },
+    {
+      "label": "native-implementation",
+      "args": [
+        "native-implementation.lean"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.6226,
+      "stdout": "'logicalResult' does not depend on any axioms\n'nativeResult' depends on axioms: [nativeResult._native.native_decide.ax_1_1]\n",
+      "stderr": ""
+    },
+    {
+      "label": "checked-rejection",
+      "args": [
+        "checked-rejection.lean"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "seconds": 0.579,
+      "stdout": "checked-rejection.lean:2:0: error: (kernel) declaration type mismatch, 'forged' has type\n  True\nbut it is expected to have type\n  False\n",
+      "stderr": ""
+    },
+    {
+      "label": "kernel-bypass",
+      "args": [
+        "kernel-bypass.lean"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.5562,
+      "stdout": "'forged' does not depend on any axioms\ntheorem forged : False :=\nTrue.intro\n",
+      "stderr": ""
+    },
+    {
+      "label": "compile-producer",
+      "args": [
+        "-o",
+        "Producer.olean",
+        "Producer.lean"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.1705,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stale-source-import",
+      "args": [
+        "Consumer.lean"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "seconds": 0.1623,
+      "stdout": "'exportedFalse' depends on axioms: [oldAssumption]\n",
+      "stderr": ""
+    }
+  ],
+  "files": {
+    "stale-source-import.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compile-producer.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checked-rejection.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Producer-v1.lean": "bde4a8e36fc610fc977d4d50105b7219c218d9e7590296afbf13b7938dd3e68a",
+    "compile-producer.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logical-and-assumed.lean": "3062b7934ac210627a652f4dea3343dcf43026589eda28239f6dfe30619b4950",
+    "stale-source-import.stdout": "5703ffef1f6344225e701259f75f890689b9785262ae0e1e06238f63d9df7a00",
+    "checked-rejection.stdout": "bf91653be170bc733c45fb51971eed599c750e5786985afc9dffe327dbdc1b67",
+    "checked-rejection.lean": "b255cca2ff605b93406d8f10e7e9598bcbddef5a11cdfd5636ecf36e97b68393",
+    "kernel-bypass.stdout": "55acde4b1c96bba395a5a139972b07bc3ef5d787198b426a3647a593a76b0663",
+    "logical-and-assumed.stdout": "b723c2381bc7a6bf47cb721328b4954fac3a7b53c52046c4a798a5a55561ecbb",
+    "native-implementation.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Producer-v2.lean": "6cd8a757136f3aca53cae24dc62fea35bc5f23dc2d98fb158f455685214b905b",
+    "native-implementation.stdout": "08412e65b301a5c735ee5aaeb7163f2fe9b8bf9d85c37b64169355933ba90c8f",
+    "Producer.lean": "6cd8a757136f3aca53cae24dc62fea35bc5f23dc2d98fb158f455685214b905b",
+    "native-implementation.lean": "2e7c2fde893ea784c085d07d77e593dae85a10ecb8bfc84a0754d1b4d8918218",
+    "kernel-bypass.lean": "37ec9f2cbca156b3f8ab21e00981154d48c7fa06121c66a7931a734152506fe9",
+    "kernel-bypass.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Consumer.lean": "c44e5e12f52d854409fc237cc3a673ee5c3ae69921477afcd3bc77cce87f49d0",
+    "Producer.olean": "f311237a899a622a4adea2342d2500fd9060badb08917c1cdf2604b301d9a531",
+    "logical-and-assumed.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

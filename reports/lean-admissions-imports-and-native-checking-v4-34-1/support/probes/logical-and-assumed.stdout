@@ -1,0 +1,6 @@
+logical-and-assumed.lean:5:0: warning: Definition `concealedFalse` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+'ordinary' does not depend on any axioms
+'localHyp' does not depend on any axioms
+'viaHelper' depends on axioms: [assumedFalse]

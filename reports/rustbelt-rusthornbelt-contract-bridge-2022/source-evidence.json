@@ -1,0 +1,628 @@
+{
+  "role": "source; no fresh build or execution",
+  "archives": [
+    {
+      "archive_url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+      "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+      "members": [
+        {
+          "path": "lambda-rust-popl18/theories/typing/type.v",
+          "sha256": "044011bd867cb15e58b7cbf2a2e24876e198858d70010ede2f2e4b0b4f800110",
+          "symbols": [
+            "type"
+          ],
+          "matching_lines": {
+            "type": [
+              9,
+              10,
+              11,
+              12,
+              13,
+              22,
+              32,
+              39,
+              56,
+              60,
+              63,
+              77,
+              83,
+              90,
+              97,
+              104,
+              116,
+              123,
+              127,
+              145,
+              147,
+              148,
+              150,
+              152,
+              154,
+              159,
+              160,
+              161,
+              166,
+              167,
+              180,
+              182,
+              186,
+              188,
+              192,
+              210,
+              212,
+              224,
+              228,
+              229,
+              233,
+              235,
+              238,
+              244,
+              261,
+              262,
+              263,
+              269,
+              274,
+              276,
+              284,
+              285,
+              286,
+              288,
+              289,
+              290,
+              293,
+              294,
+              296,
+              301,
+              302,
+              303,
+              304,
+              305,
+              306,
+              308,
+              310,
+              311,
+              313,
+              314,
+              316,
+              327,
+              328,
+              330,
+              331,
+              333,
+              334,
+              339,
+              343,
+              345,
+              347,
+              352,
+              355,
+              358,
+              361,
+              364,
+              365,
+              366,
+              373,
+              376,
+              377,
+              381,
+              383,
+              392,
+              405,
+              407,
+              408,
+              411,
+              415,
+              417,
+              418,
+              421,
+              425,
+              427,
+              428,
+              431,
+              432,
+              434,
+              503,
+              521,
+              523,
+              527,
+              528,
+              530,
+              531,
+              532,
+              535,
+              536,
+              537,
+              540,
+              542,
+              545,
+              548,
+              550,
+              553,
+              554,
+              563,
+              564,
+              565,
+              567,
+              572,
+              575,
+              576,
+              578,
+              582,
+              590,
+              591,
+              593,
+              594,
+              624,
+              627,
+              628,
+              630,
+              631,
+              634,
+              642,
+              644,
+              652,
+              655,
+              658,
+              662,
+              664,
+              673,
+              674,
+              686,
+              689,
+              690
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/typing/programs.v",
+          "sha256": "e777ceb80a277cd31ffbba8d9a1b5044ae54405a08c9a8e7c99717cfda60702b",
+          "symbols": [
+            "typed_body",
+            "typed_instruction",
+            "typed_val"
+          ],
+          "matching_lines": {
+            "typed_body": [
+              11,
+              16,
+              18,
+              19,
+              21,
+              25,
+              26,
+              28,
+              32,
+              34,
+              43,
+              45,
+              46,
+              96,
+              102,
+              103,
+              114,
+              115,
+              134,
+              135,
+              145,
+              146,
+              151,
+              152,
+              166,
+              188,
+              189,
+              214,
+              215,
+              240,
+              241,
+              289,
+              290
+            ],
+            "typed_instruction": [
+              49,
+              55,
+              81,
+              83,
+              84,
+              87,
+              113,
+              125,
+              127,
+              132,
+              143,
+              178,
+              194,
+              220,
+              272
+            ],
+            "typed_val": [
+              86,
+              88
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/typing/soundness.v",
+          "sha256": "cb77d69baed0df2078d8a5cc00ede727c7f2109c4f4a0d09fbf26233ec471940",
+          "symbols": [
+            "type_soundness",
+            "type_soundness_closed"
+          ],
+          "matching_lines": {
+            "type_soundness": [
+              23,
+              28,
+              59,
+              63,
+              69
+            ],
+            "type_soundness_closed": [
+              63
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/lang/adequacy.v",
+          "sha256": "665bcc0016852d04d5ee75a4d34379af36dcbcd19aa13df107042ed247584cbc",
+          "symbols": [
+            "lrust_adequacy"
+          ],
+          "matching_lines": {
+            "lrust_adequacy": [
+              20
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/lifetime/lifetime_sig.v",
+          "sha256": "2e324d03e5b173516d61d0e17361a10368d703321de559656e689de6c35ae809",
+          "symbols": [
+            "lft_tok_dead",
+            "bor_create",
+            "bor_shorten"
+          ],
+          "matching_lines": {
+            "lft_tok_dead": [
+              91
+            ],
+            "bor_create": [
+              97
+            ],
+            "bor_shorten": [
+              103,
+              112
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/lifetime/lifetime.v",
+          "sha256": "7f814e0f4580ddd7ba164d9a54eaebba71a6d2537bf898d30fee88db71f2e0d7",
+          "symbols": [
+            "Module Export lifetime"
+          ],
+          "matching_lines": {
+            "Module Export lifetime": [
+              7
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/lifetime/model/borrow.v",
+          "sha256": "d4135b7c9a639900bc4961abe2ccb630eb22c0fb732000e2a3db939299779442",
+          "symbols": [
+            "bor_create"
+          ],
+          "matching_lines": {
+            "bor_create": [
+              13,
+              70,
+              74
+            ]
+          }
+        },
+        {
+          "path": "lambda-rust-popl18/theories/lifetime/model/primitive.v",
+          "sha256": "0d3ec2d22a8b7d9ecb5e68ee937bbfa813cbc04ef3cee46952e799b0785caabe",
+          "symbols": [
+            "lft_tok_dead",
+            "bor_shorten"
+          ],
+          "matching_lines": {
+            "lft_tok_dead": [
+              275
+            ],
+            "bor_shorten": [
+              415,
+              421
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "archive_url": "https://zenodo.org/records/6417462/files/the_artifact.tgz?download=1",
+      "archive_sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121",
+      "members": [
+        {
+          "path": "the_artifact/lambda-rust/README.md",
+          "sha256": "9ea8431dcbb0a1da3cb6e33e85262cc6f72fc2ce90f48a147cef53888cba02d4",
+          "symbols": [
+            "Coq",
+            "Iris"
+          ],
+          "matching_lines": {
+            "Coq": [
+              3,
+              9,
+              55,
+              59,
+              68,
+              142
+            ],
+            "Iris": [
+              10,
+              135,
+              137,
+              138,
+              141
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/typing/programs.v",
+          "sha256": "4a1e11d1feb8a7807d884cc519ee662d13d97d869e2f0d7f52a857f472a77156",
+          "symbols": [
+            "typed_body",
+            "typed_instr",
+            "typed_val"
+          ],
+          "matching_lines": {
+            "typed_body": [
+              13,
+              18,
+              20,
+              21,
+              22,
+              24,
+              27,
+              29,
+              33,
+              36,
+              88,
+              94,
+              106,
+              107,
+              119,
+              120,
+              123,
+              142,
+              143,
+              146,
+              147,
+              156,
+              157,
+              174,
+              175,
+              177,
+              183,
+              184,
+              195,
+              196,
+              199,
+              212,
+              216,
+              217,
+              230,
+              231,
+              266,
+              267,
+              285,
+              286,
+              324,
+              325,
+              352,
+              353,
+              397,
+              398,
+              409,
+              412,
+              418,
+              422
+            ],
+            "typed_instr": [
+              44,
+              50,
+              77,
+              79,
+              80,
+              83,
+              155,
+              172,
+              210,
+              253,
+              275,
+              295,
+              335,
+              365,
+              429
+            ],
+            "typed_val": [
+              82,
+              84,
+              182,
+              193
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/typing/soundness.v",
+          "sha256": "320c40d1ff1fc1083f3f42ffd71389708116dcf180defad77b058460904470f4",
+          "symbols": [
+            "main_type",
+            "main_transformer",
+            "type_soundness",
+            "type_soundness_closed"
+          ],
+          "matching_lines": {
+            "main_type": [
+              27,
+              32,
+              70
+            ],
+            "main_transformer": [
+              29,
+              32,
+              70
+            ],
+            "type_soundness": [
+              24,
+              31,
+              65,
+              69,
+              75
+            ],
+            "type_soundness_closed": [
+              69
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/lang/adequacy.v",
+          "sha256": "315c03efce3e31a6c9c5298ff648ca90afc6b2b2018ce56660879574c1ce2bc2",
+          "symbols": [
+            "lrust_adequacy"
+          ],
+          "matching_lines": {
+            "lrust_adequacy": [
+              22
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/typing/function.v",
+          "sha256": "f2bac233b8afbcbced4e21232d33e7466dc6a5eeb0c1b5534db110f46b1e6ce1",
+          "symbols": [
+            "fn"
+          ],
+          "matching_lines": {
+            "fn": [
+              28,
+              31,
+              34,
+              38,
+              42,
+              48,
+              60,
+              79,
+              80,
+              93,
+              95,
+              99,
+              100,
+              102,
+              103,
+              105,
+              106,
+              107,
+              109,
+              110,
+              111,
+              116,
+              119,
+              127,
+              128,
+              162,
+              165,
+              180,
+              181,
+              185,
+              200,
+              208,
+              226,
+              227,
+              255,
+              261,
+              292,
+              297,
+              311,
+              314,
+              335,
+              339,
+              373,
+              378,
+              381,
+              394,
+              401,
+              403,
+              413
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/typing/uniq_bor.v",
+          "sha256": "a13338491b1955ace6f1fdec60916008f6ad61010b6d449083f230383788b5da",
+          "symbols": [
+            "uniq_bor"
+          ],
+          "matching_lines": {
+            "uniq_bor": [
+              7,
+              10,
+              22,
+              44,
+              90,
+              91,
+              92,
+              94,
+              99
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/typing/lib/vec/vec_pushpop.v",
+          "sha256": "1ce2decfc2d9fe8e0f543fd66a7f5ad454743f723a199baab0fac09cae7209e2",
+          "symbols": [
+            "vec_push_type"
+          ],
+          "matching_lines": {
+            "vec_push_type": [
+              31
+            ]
+          }
+        },
+        {
+          "path": "the_artifact/lambda-rust/theories/prophecy/prophecy.v",
+          "sha256": "a6ce223d78e5de4768c6e09645e2600a7b957bd58ac8f8de447afba626cd1e90",
+          "symbols": [
+            "proph_log_ok",
+            "proph_ok_sat",
+            "proph_resolve",
+            "proph_obs_sat",
+            "proph_obs_false"
+          ],
+          "matching_lines": {
+            "proph_log_ok": [
+              129,
+              132,
+              134
+            ],
+            "proph_ok_sat": [
+              172,
+              397
+            ],
+            "proph_resolve": [
+              336,
+              440
+            ],
+            "proph_obs_sat": [
+              393,
+              419
+            ],
+            "proph_obs_false": [
+              415
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

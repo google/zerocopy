@@ -1,0 +1,20 @@
+{
+  "kind": "archive member-presence inspection, not proof execution",
+  "archive_sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+  "selected_source_specimens": {
+    "empty_main_adequacy": {
+      "source": "case_studies/adequacy/src/main.rs",
+      "proof": "case_studies/adequacy/output/adequacy/proofs/proof_adequacy.v",
+      "required_generated_code_found": false,
+      "required_generated_specs_found": false,
+      "required_proof_main_found_for_case": false
+    },
+    "pointer_byte_add_mut": {
+      "proof": "artifact/ACE-RISCV/verification/rust_proofs/pointers_utility/proofs/proof_ptr_byte_add_mut.v",
+      "required_generated_code_found": false,
+      "required_generated_specs_found": false,
+      "required_template_found": false
+    }
+  },
+  "result": "Selected stored proof closures are incomplete in this source archive; regeneration was not performed."
+}

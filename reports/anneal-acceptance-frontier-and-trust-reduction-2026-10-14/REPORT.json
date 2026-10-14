@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "tcb",
+    "verification/acceptance",
+    "rust/extraction"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal current redesign and historical V1",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+      }
+    },
+    {
+      "name": "PR 3846 stack admission and contracts",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

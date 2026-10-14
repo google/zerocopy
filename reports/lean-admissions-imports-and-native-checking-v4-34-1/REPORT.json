@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lean/trust",
+    "lean/native-evaluation",
+    "lean/imports",
+    "proof-checking/assumptions",
+    "proof-checking/reflection"
+  ],
+  "subjects": [
+    {
+      "name": "Lean source",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Executed Lean 4.34.1 binary",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+        "target": "arm64-apple-darwin24.6.0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

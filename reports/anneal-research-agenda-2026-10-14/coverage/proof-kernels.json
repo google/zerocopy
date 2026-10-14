@@ -1,0 +1,233 @@
+{
+  "disposition": "three bounded technical packages; precise partial coverage; no whole-question completion",
+  "source_topics_sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9",
+  "assigned_question_ids": [
+    "T001",
+    "T002",
+    "T003",
+    "T004",
+    "T005",
+    "T006",
+    "T007",
+    "T008",
+    "T009",
+    "T010",
+    "T020",
+    "T022",
+    "T023",
+    "T042",
+    "T043",
+    "T044",
+    "T094",
+    "P021",
+    "P051"
+  ],
+  "questions": [
+    {
+      "id": "T001",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14"
+      ],
+      "established_scope": "HOL Light abstract theorem sealing and exported inference/root operations; derived host-language/encapsulation assumptions.",
+      "remaining_scope": "No verification of OCaml runtime/unsafe enforcement or survey of all LCF implementations.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T002",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Lean core proof-body/type checking and Rocq definition/delayed opaque-body checking; ordinary wrong-body rejection.",
+      "remaining_scope": "Elaboration, unification and termination transformations are not independently audited or exhaustively classified.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T003",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14"
+      ],
+      "established_scope": "HOL Light primitive inference and constrained constant/type definitions, separate from unrestricted axiom introduction.",
+      "remaining_scope": "Independent conservativity proof and complete system extension inventory not established.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T004",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "Direct Lean4Lean checkType/checkTheorem/addDecl theorem endpoints and current admitted/axiomatic limits; MetaRocq encoded-program check, normalization and guard premises.",
+      "remaining_scope": "No fresh builds, complete metatheory/assumption closure, or verified deployed executable path; Lean4Lean inductive admission retained.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T005",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "Candle source event theorem, theorem/context encoding, and published machine/compiler endpoint with installation/resource premises.",
+      "remaining_scope": "No exact compiled proof object/binary, FFI implementation, or source-to-paper-artifact identity revalidation.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T006",
+      "whole_question_coverage": "not_examined",
+      "report_packages": [],
+      "established_scope": "",
+      "remaining_scope": "Metamath and MM0 checking languages not examined.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T007",
+      "whole_question_coverage": "not_examined",
+      "report_packages": [],
+      "established_scope": "",
+      "remaining_scope": "Dedukti/Lambdapi rewriting, conversion and encoding obligations not examined.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T008",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14",
+        "verified-checker-theorem-endpoints-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "HOL root authority, Lean global/local/native/bypass mechanisms and MetaRocq extraction guard assumptions.",
+      "remaining_scope": "Not a comprehensive cross-prover admission and escape-hatch comparison.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T009",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14",
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "Comparator fresh built-in replay and configured external checker stage; source-audited Lean4Lean implementation/theorem distinctions.",
+      "remaining_scope": "No independent-algorithm comparison, correlated-failure measurement, or external checker execution.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T010",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14"
+      ],
+      "established_scope": "Exact comparator target/dependency/primitive/allowed-axiom comparison and separately checked proof replay.",
+      "remaining_scope": "MM0 trusted challenges and verified comparator/export/parser correctness not examined.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T020",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Kernel-reduced and native proof discrimination; conditional checker soundness/erasure endpoints and quotation/input-identity requirements.",
+      "remaining_scope": "No full reflected-checker prototype, quotation proof, or performance comparison.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T022",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "Candle publication composes REPL/source soundness and CakeML compiler guarantee to a machine endpoint under conditions.",
+      "remaining_scope": "Full CakeML frontend/backend/bootstrapping and actual binary artifact chain not audited.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T023",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "MetaRocq formal Template-to-PCUIC typing preservation and PCUIC-to-erased evaluation theorem; extraction configuration assumptions.",
+      "remaining_scope": "CertiRocq/CertiCoq later compilation, printing, foreign interfaces and deployed executable theorem chain not examined.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T042",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "theorem-authority-and-consumer-statements-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Exact stale-source compiled-import control, Lean loading path, comparator data-only export/fresh replay comparison.",
+      "remaining_scope": "No verified export parser/serializer, malformed artifact experiment, or complete loader assurance.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T043",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Lean unsafe module-memory/loading/initialization paths and checker CLI/runtime boundary identified.",
+      "remaining_scope": "No complete memory management/concurrency/FFI/native-library/unsafe-runtime audit or proof.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T044",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "Published Candle compiler-to-machine theorem contrasted with conditional source checker/erasure results.",
+      "remaining_scope": "No binary translation validation, proof-producing synthesis implementation comparison, or actual checker binary verification.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "T094",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Native evaluation introduces a visible axiom; kernel path and explicit bypass controls; conditions for reflected/executable checking outlined.",
+      "remaining_scope": "No verified executable replacement or fully discharged native-trust elimination.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "P021",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "established_scope": "MetaRocq formal reification-adjacent AST typing bridge, erasure theorem and extracted checker configuration evidence.",
+      "remaining_scope": "Live reification, CertiRocq/CertiCoq compilation, printing and foreign interface assurance remain open.",
+      "research_completion": "not marked complete"
+    },
+    {
+      "id": "P051",
+      "whole_question_coverage": "partial",
+      "report_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14",
+        "lean-admissions-imports-and-native-checking-v4-34-1"
+      ],
+      "established_scope": "Exact kernel/native computation distinction and conditional verified-checker endpoint comparison.",
+      "remaining_scope": "No implemented reflected certificate check or reliable checking-performance comparison.",
+      "research_completion": "not marked complete"
+    }
+  ],
+  "counts": {
+    "assigned": 19,
+    "full": 0,
+    "partial": 17,
+    "not_examined": 2
+  },
+  "package_roles": {
+    "theorem-authority-and-consumer-statements-2026-10-14": "theorem authority, core proof checking and consumer-selected statement comparison",
+    "verified-checker-theorem-endpoints-2026-10-14": "conditional verified-checker theorem endpoints and compiled-path limitations",
+    "lean-admissions-imports-and-native-checking-v4-34-1": "Lean 4.34.1 admissions/import/native discrimination with six commands"
+  }
+}

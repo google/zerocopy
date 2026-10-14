@@ -40,6 +40,14 @@ Absence from this sample means unassessed. It does not establish that a question
 
 Basis: **source**, retained content-audit representation; **derived**, evidence interpretation.
 
+### Published technical scopes and remaining gaps
+
+`coverage/` preserves scoped question-to-report crosswalks for the certifying-model, proof-kernel, translation-pass and Iris/Rust verification investigations. Each records what the actual report establishes and the remaining research or implementation scope. These crosswalks include partial evidence and unexamined questions; they are not blanket completion attestations.
+
+The second tranche adds twelve packages: proof-construction/statement authority, verified checker endpoints, Lean admission/import/native controls, Iris adequacy, RustBelt/RustHornBelt contracts, RefinedRust operational/extraction boundaries, Plutus pass relations, Crellvm refinement, property-proof translation, Anneal acceptance/trust gates, exact-pin pure-model controls, and native zerocopy byte-domain controls. The latter enumerate 256 scalar and 65,536 pair encodings; the pure-library run audits 252 declarations under Lean 4.31. These results retain their exact scope and do not close the entire agenda.
+
+Basis: **source**, preserved crosswalks; **execution**, identified technical reports; **derived**, completion interpretation.
+
 ### Research completion is separate from implementation feasibility
 
 A report can resolve what a technique proves, expose a concrete limitation, and specify a discriminating future experiment without implementing an Anneal integration. A negative result can answer a research question when its evidence and scope are sufficient. Missing artifacts, failed access, and unavailable local dependencies must remain operational or epistemic limitations rather than system-level unsupported classifications.

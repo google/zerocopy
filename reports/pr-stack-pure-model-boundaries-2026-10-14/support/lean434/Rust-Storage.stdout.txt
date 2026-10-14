@@ -1,0 +1,27 @@
+Rust/Storage.lean:86:12: error: Tactic `rfl` failed: The left-hand side
+  if bytes.length = decoder.byteSize then Option.map f (decoder.decode bytes) else none
+is not definitionally equal to the right-hand side
+  Option.map f (decoder.decode bytes)
+
+case isTrue
+Raw : Type u_1
+Other : Type u_2
+decoder : BitDecoder Raw
+f : Raw → Other
+bytes : List AMByte
+h✝ : bytes.length = decoder.byteSize
+⊢ (if bytes.length = decoder.byteSize then Option.map f (decoder.decode bytes) else none) =
+    Option.map f (decoder.decode bytes)
+Rust/Storage.lean:86:12: error: Tactic `rfl` failed: The left-hand side
+  if bytes.length = decoder.byteSize then Option.map f (decoder.decode bytes) else none
+is not definitionally equal to the right-hand side
+  Option.map f none
+
+case isFalse
+Raw : Type u_1
+Other : Type u_2
+decoder : BitDecoder Raw
+f : Raw → Other
+bytes : List AMByte
+h✝ : ¬bytes.length = decoder.byteSize
+⊢ (if bytes.length = decoder.byteSize then Option.map f (decoder.decode bytes) else none) = Option.map f none

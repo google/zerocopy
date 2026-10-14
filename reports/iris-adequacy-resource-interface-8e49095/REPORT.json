@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "iris/adequacy",
+    "iris/cameras",
+    "iris/step-indexing",
+    "iris/guarded-recursion",
+    "iris/proofmode",
+    "rust/lifetime-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Iris source",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Historical RustBelt lifetime implementation",
+      "identity": {
+        "repository": "iris/lambda-rust",
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

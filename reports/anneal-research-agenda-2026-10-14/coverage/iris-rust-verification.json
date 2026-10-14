@@ -1,0 +1,330 @@
+{
+  "packages": {
+    "iris-adequacy-resource-interface-8e49095": {
+      "coverage_kind": "bounded source investigation",
+      "topics": {
+        "R021": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "The language and state interpretation determine the safety subject",
+            "Adequacy has a precise partial-correctness conclusion"
+          ],
+          "outstanding": [
+            "Full assumption closure/build and a concrete Rust source correspondence."
+          ]
+        },
+        "R022": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Cameras constrain legal splitting and updates"
+          ],
+          "outstanding": [
+            "A mechanized camera for byte ranges, initialization, provenance and Rust alias permissions."
+          ]
+        },
+        "R023": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Guarded recursion imposes real proof obligations"
+          ],
+          "outstanding": [
+            "Concrete recursive Rust invariants and their proof costs."
+          ]
+        },
+        "R024": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Lifetimes and ordinary prophecies expose different logical interfaces"
+          ],
+          "outstanding": [
+            "Full lifetime borrowing/recovery instantiation; historical and modern dependency compatibility."
+          ]
+        },
+        "R025": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Lifetimes and ordinary prophecies expose different logical interfaces"
+          ],
+          "outstanding": [
+            "Parametric-prophecy comparison and consistency evidence in companion report."
+          ]
+        },
+        "R032": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Proof automation supplies witnesses for logical judgments"
+          ],
+          "outstanding": [
+            "Lithium/Diaframe/Quiver source comparison and independent certificate interfaces."
+          ]
+        },
+        "T031": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Proof automation supplies witnesses for logical judgments"
+          ],
+          "outstanding": [
+            "End-to-end generated proof-term/assumption audit."
+          ]
+        },
+        "T033": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Cameras constrain legal splitting and updates",
+            "Proof automation supplies witnesses for logical judgments"
+          ],
+          "outstanding": [
+            "A serialized spatial-entailment/frame certificate and checker."
+          ]
+        },
+        "T040": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Proof automation supplies witnesses for logical judgments"
+          ],
+          "outstanding": [
+            "Concrete new property-domain conservative-extension proof."
+          ]
+        },
+        "P114": {
+          "status": "partial",
+          "issue": 3867,
+          "sections": [
+            "The language and state interpretation determine the safety subject",
+            "Adequacy has a precise partial-correctness conclusion"
+          ],
+          "outstanding": [
+            "Cross-prover theorem import and compatible operational semantics."
+          ]
+        }
+      }
+    },
+    "rustbelt-rusthornbelt-contract-bridge-2022": {
+      "coverage_kind": "bounded source and theorem investigation",
+      "topics": {
+        "R024": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Lifetime recovery is controlled by tokens, inclusion and continuations"
+          ],
+          "outstanding": [
+            "Every nested/reborrow proof, ownership recovery client cases and current dependency port."
+          ]
+        },
+        "R025": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Parametric prophecy consistency prevents arbitrary future assumptions"
+          ],
+          "outstanding": [
+            "Full ordinary/parametric comparison and proof dependency audit."
+          ]
+        },
+        "R030": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Semantic types contain ownership and sharing obligations"
+          ],
+          "outstanding": [
+            "Full RustBelt feature/caller linking audit and correspondence to actual Rust/rustc."
+          ]
+        },
+        "R031": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "RustHornBelt adds logical values and predicate transformers to semantic typing",
+            "Parametric prophecy consistency prevents arbitrary future assumptions",
+            "CHC correspondence and tool integration have distinct boundaries"
+          ],
+          "outstanding": [
+            "Mechanized bridge to current frontend contracts and full feature coverage."
+          ]
+        },
+        "R046": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "CHC correspondence and tool integration have distinct boundaries"
+          ],
+          "outstanding": [
+            "RustHorn implementation/backend pin, execution, invariant inference and genericity limitations."
+          ]
+        },
+        "T034": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "RustHornBelt adds logical values and predicate transformers to semantic typing",
+            "CHC correspondence and tool integration have distinct boundaries"
+          ],
+          "outstanding": [
+            "Accepted client certificate connecting frontend/FOL contract to exact semantic transformer."
+          ]
+        },
+        "T040": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Parametric prophecy consistency prevents arbitrary future assumptions"
+          ],
+          "outstanding": [
+            "Transitive assumptions and conservative-extension proof for a new prophecy/property domain."
+          ]
+        },
+        "P114": {
+          "status": "partial",
+          "issue": 3867,
+          "sections": [
+            "Semantic types contain ownership and sharing obligations",
+            "CHC correspondence and tool integration have distinct boundaries"
+          ],
+          "outstanding": [
+            "Cross-prover checking and compatible source/operational semantics with assumption accounting."
+          ]
+        }
+      }
+    },
+    "refinedrust-radium-proof-boundary-2026-v2": {
+      "coverage_kind": "bounded source, artifact and theorem-premise investigation",
+      "topics": {
+        "R022": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Byte resources retain initialization, allocation identity and access state"
+          ],
+          "outstanding": [
+            "Full camera-to-load/store proof audit and compatibility with actual Rust provenance/alias models."
+          ]
+        },
+        "R032": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Automation and retained manual proofs still need a complete checked closure"
+          ],
+          "outstanding": [
+            "Full MoSeL/Lithium/Diaframe/Quiver comparison and portable certificates; Diaframe/Quiver not examined."
+          ]
+        },
+        "R033": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Adequacy quantifies concrete executions under typed entry-point premises",
+            "Layout correctness remains an explicit interface and correspondence obligation"
+          ],
+          "outstanding": [
+            "Fresh checking, all semantic rules/features, actual target-layout and Rust source correspondence."
+          ]
+        },
+        "R034": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "The frontend selects and encodes rustc MIR without a translation theorem here",
+            "Generation modes materially change the evidence that must be accepted",
+            "Automation and retained manual proofs still need a complete checked closure"
+          ],
+          "outstanding": [
+            "Real end-to-end extraction, effective configuration, full dependency closure and unsupported-feature behavior."
+          ]
+        },
+        "R088": {
+          "status": "partial",
+          "issue": 3865,
+          "sections": [
+            "Automation and retained manual proofs still need a complete checked closure"
+          ],
+          "outstanding": [
+            "Concrete cross-prover integration/certificate/checker design and trust audit; full route comparison outside this package."
+          ]
+        },
+        "T032": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Adequacy quantifies concrete executions under typed entry-point premises",
+            "Generation modes materially change the evidence that must be accepted"
+          ],
+          "outstanding": [
+            "Complete generated-model/accepted-proof/adequacy instance for a substantive selected Rust function."
+          ]
+        },
+        "T033": {
+          "status": "partial",
+          "issue": 3866,
+          "sections": [
+            "Byte resources retain initialization, allocation identity and access state",
+            "Automation and retained manual proofs still need a complete checked closure"
+          ],
+          "outstanding": [
+            "Portable spatial/frame certificate format and independently checked soundness."
+          ]
+        },
+        "P114": {
+          "status": "partial",
+          "issue": 3867,
+          "sections": [
+            "The frontend selects and encodes rustc MIR without a translation theorem here",
+            "Automation and retained manual proofs still need a complete checked closure"
+          ],
+          "outstanding": [
+            "Cross-prover compatible semantics, source-safety reflection and accepted assumption accounting."
+          ]
+        }
+      }
+    }
+  },
+  "lead": {
+    "coverage_kind": "scoped lead; no feasibility result",
+    "file": "LEAN-IRIS-LEAD.md",
+    "topics": {
+      "R029": {
+        "status": "partial",
+        "issue": 3865,
+        "sections": [
+          "Inspected source establishes a lead, not parity",
+          "Anneal and library pins differ"
+        ],
+        "outstanding": [
+          "Complete dependency/assumption closure, feature inventory, proofmode coverage and actual compatible build."
+        ]
+      },
+      "R087": {
+        "status": "partial",
+        "issue": 3865,
+        "sections": [
+          "Anneal and library pins differ",
+          "The Rust instantiation and trust audit remain open"
+        ],
+        "outstanding": [
+          "Lean-native Rust semantics/resource/lifetime/prophecy instance, minimal checked proof and feasibility decision."
+        ]
+      },
+      "P114": {
+        "status": "partial",
+        "issue": 3867,
+        "sections": [
+          "The Rust instantiation and trust audit remain open"
+        ],
+        "outstanding": [
+          "Compatible cross-prover semantics and checked transport/assumption accounting."
+        ]
+      }
+    }
+  }
+}

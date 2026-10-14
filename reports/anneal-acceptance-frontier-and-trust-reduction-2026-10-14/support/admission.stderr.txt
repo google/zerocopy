@@ -1,0 +1,23 @@
+test_abstract_dispatch_is_an_exact_declared_generic_input (test_admission.AdmissionTests.test_abstract_dispatch_is_an_exact_declared_generic_input) ... ok
+test_bit_invalid_production_cannot_be_an_infallible_cast (test_admission.AdmissionTests.test_bit_invalid_production_cannot_be_an_infallible_cast) ... ok
+test_callee_annotations_never_exempt_unsupported_effects (test_admission.AdmissionTests.test_callee_annotations_never_exempt_unsupported_effects) ... ok
+test_compiler_override_is_rejected_before_compilation (test_admission.AdmissionTests.test_compiler_override_is_rejected_before_compilation) ... ok
+test_drop_before_cleanup_and_on_unwind_is_rejected (test_admission.AdmissionTests.test_drop_before_cleanup_and_on_unwind_is_rejected) ... ok
+test_guarded_translation_must_remain_failure_capable (test_admission.AdmissionTests.test_guarded_translation_must_remain_failure_capable) ... ok
+test_input_identity_covers_the_full_source_tree_and_shared_models (test_admission.AdmissionTests.test_input_identity_covers_the_full_source_tree_and_shared_models) ... ok
+test_missing_registration_is_not_an_opaque_success (test_admission.AdmissionTests.test_missing_registration_is_not_an_opaque_success) ... ok
+test_new_operations_attributes_and_configuration_fail_closed (test_admission.AdmissionTests.test_new_operations_attributes_and_configuration_fail_closed) ... ok
+test_nonzero_constructor_template_preserves_guarded_result_and_dictionary (test_admission.AdmissionTests.test_nonzero_constructor_template_preserves_guarded_result_and_dictionary) ... ok
+test_padding_and_raw_storage_cannot_be_logical_values (test_admission.AdmissionTests.test_padding_and_raw_storage_cannot_be_logical_values) ... ok
+test_snapshot_is_mandatory (test_admission.AdmissionTests.test_snapshot_is_mandatory) ... ok
+test_supertrait_dispatch_preserves_original_clause_and_parent_application (test_admission.AdmissionTests.test_supertrait_dispatch_preserves_original_clause_and_parent_application) ... ok
+test_trait_impl_methods_remain_executable_admission_roots (test_admission.AdmissionTests.test_trait_impl_methods_remain_executable_admission_roots) ... ok
+test_transitive_registered_boundary (test_admission.AdmissionTests.test_transitive_registered_boundary) ... ok
+test_ub_abort_must_not_become_unwind_termination (test_admission.AdmissionTests.test_ub_abort_must_not_become_unwind_termination) ... ok
+test_unreviewed_exclusions_fail_closed (test_admission.AdmissionTests.test_unreviewed_exclusions_fail_closed) ... ok
+test_unsupported_instantiation_even_with_same_named_boundary (test_admission.AdmissionTests.test_unsupported_instantiation_even_with_same_named_boundary) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.030s
+
+OK

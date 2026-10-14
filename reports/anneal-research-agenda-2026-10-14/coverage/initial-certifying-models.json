@@ -1,0 +1,280 @@
+{
+  "status": "bounded-pilot-complete",
+  "scope": "three candidate reports; publication-level propositions, pinned local source/documentation, and illustrative finite witnesses",
+  "observed_at": "2026-10-14",
+  "reference_baseline": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+  "anneal_subject": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "question_coverage": [
+    {
+      "id": "P008",
+      "depth": "published-proposition-and-design",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "The published certificate includes nonfailure reflection"
+        },
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "A certificate boundary for Anneal"
+        }
+      ],
+      "remaining_gap": "No AutoCorres implementation or generated proof artifact was executed."
+    },
+    {
+      "id": "P009",
+      "depth": "published-proposition-and-design",
+      "sections": [
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Cogent's propositions separate the semantic shift from concrete nonfailure"
+        },
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "The memory-to-pure bridge is not an encoder requirement for every model"
+        }
+      ],
+      "remaining_gap": "No Cogent certificate was generated or checked; Rust relation is proposed only."
+    },
+    {
+      "id": "P010",
+      "depth": "published-proposition-and-finite-witness",
+      "sections": [
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Dargent separates data refinement from physical-format agreement"
+        },
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "A small representation witness"
+        }
+      ],
+      "remaining_gap": "No Dargent artifact proof was checked; analogous setter layout-specification check is explicitly not supplied in examined paper \u00a74.4, PDF p.18."
+    },
+    {
+      "id": "P022",
+      "depth": "published-proposition-and-design",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Boogie certifies the implication from VC validity"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Certified obligation generation for Anneal"
+        }
+      ],
+      "remaining_gap": "No Boogie certificate checking; SMT validity remains outside the described VCG certificate."
+    },
+    {
+      "id": "P023",
+      "depth": "published-proposition-and-design",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Viper certifies source failure rather than only successful outputs"
+        }
+      ],
+      "remaining_gap": "No Viper implementation or Isabelle artifact checking; subset and adjusted translation only."
+    },
+    {
+      "id": "P032",
+      "depth": "derived-relation",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "A certificate boundary for Anneal"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "The direction needed for source safety"
+        }
+      ],
+      "remaining_gap": "No formal Rust-to-model theorem or selected foundational Rust semantics."
+    },
+    {
+      "id": "P033",
+      "depth": "derived-relation-and-finite-witness",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "What the implication transfers, and what it does not"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Witnesses and pinned Anneal evidence"
+        }
+      ],
+      "remaining_gap": "Finite witness is illustrative; no actual source/import first-bad-step certificate."
+    },
+    {
+      "id": "P034",
+      "depth": "derived-domain-obligation-and-finite-witness",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "A certificate boundary for Anneal"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Nondeterminism and initial-domain coverage"
+        }
+      ],
+      "remaining_gap": "All-safe-caller coverage remains unproved for a real API."
+    },
+    {
+      "id": "P035",
+      "depth": "design-taxonomy",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "Boundaries"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Certified obligation generation for Anneal"
+        }
+      ],
+      "remaining_gap": "Failure categories are conceptual; no deployed acceptance path was tested."
+    },
+    {
+      "id": "P036",
+      "depth": "derived-outcome-set-analysis",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "What the implication transfers, and what it does not"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Nondeterminism and initial-domain coverage"
+        }
+      ],
+      "remaining_gap": "No nondeterministic Rust or concurrency semantics implementation."
+    },
+    {
+      "id": "P037",
+      "depth": "directional-analysis",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "The direction needed for source safety"
+        },
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Cogent's propositions separate the semantic shift from concrete nonfailure"
+        }
+      ],
+      "remaining_gap": "Forward failure simulation and result refinement examined; exhaustive comparison of bisimulation, contextual and logical relations deferred."
+    },
+    {
+      "id": "P038",
+      "depth": "derived-composition-interface",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "Generation, checking, and the remaining trust ledger"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Certified obligation generation for Anneal"
+        }
+      ],
+      "remaining_gap": "No heterogeneous composition theorem checked; Viper/Boogie target interfaces must be reconciled before claiming an end-to-end certificate."
+    },
+    {
+      "id": "T025",
+      "depth": "published-proposition",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Boogie certifies the implication from VC validity"
+        }
+      ],
+      "remaining_gap": "Loop elimination/passification/VC proof algorithms read from paper; generated theorem artifacts not checked."
+    },
+    {
+      "id": "T026",
+      "depth": "published-proposition",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Viper certifies source failure rather than only successful outputs"
+        }
+      ],
+      "remaining_gap": "No source frontend besides publication-level Viper-to-Boogie; Rust source import unexamined."
+    },
+    {
+      "id": "T073",
+      "depth": "derived-first-bad-step-interface",
+      "sections": [
+        {
+          "package": "autocorres-guarded-model-certificates-pldi-2014",
+          "section": "A certificate boundary for Anneal"
+        },
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "The direction needed for source safety"
+        }
+      ],
+      "remaining_gap": "No foundational Rust operation rules or machine-checked prefix proof."
+    },
+    {
+      "id": "T081",
+      "depth": "derived-generator-interface",
+      "sections": [
+        {
+          "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+          "section": "Certified obligation generation for Anneal"
+        }
+      ],
+      "remaining_gap": "No Anneal generator prototype, formal completeness theorem, or executable wrapper verification."
+    },
+    {
+      "id": "R057",
+      "depth": "adjacent-boundary-only",
+      "sections": [
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Boundaries"
+        }
+      ],
+      "remaining_gap": "VST not investigated; CompCert composition read only from pinned reference report, not independently revalidated here. Rust-to-C route is not certified."
+    },
+    {
+      "id": "R061",
+      "depth": "derived-transfer-obligation-and-finite-witness",
+      "sections": [
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Runtime transfers require an operation theorem"
+        },
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "A small representation witness"
+        }
+      ],
+      "remaining_gap": "No actual typed-copy execution or Rust padding semantics proof; chosen transfer abstraction is illustrative."
+    },
+    {
+      "id": "R089",
+      "depth": "derived-spatial-interface",
+      "sections": [
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "The memory-to-pure bridge is not an encoder requirement for every model"
+        },
+        {
+          "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+          "section": "Bounded pilot and acceptance gates"
+        }
+      ],
+      "remaining_gap": "No Aeneas spatial extension, ownership logic, or memory-operation certificate implemented."
+    }
+  ],
+  "global_remaining_gaps": [
+    "No full end-to-end unsafe Rust support established.",
+    "No Isabelle/Lean certificate execution or generated upstream proof artifacts inspected.",
+    "No PDF byte identities acquired; DOI/author-copy/section/page identities used.",
+    "No formal or deployed source parser, artifact binding, proof-checker wrapper, or final aggregation correctness demonstrated."
+  ]
+}

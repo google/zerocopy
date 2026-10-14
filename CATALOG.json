@@ -10293,6 +10293,31 @@
         "charon"
       ]
     },
+    "anneal-acceptance-frontier-and-trust-reduction-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+          },
+          "name": "Anneal current redesign and historical V1"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "PR 3846 stack admission and contracts"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "tcb",
+        "verification/acceptance",
+        "rust/extraction"
+      ]
+    },
     "anneal-archive-read-only-behavior-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -13361,6 +13386,49 @@
         "anneal/architecture"
       ]
     },
+    "crellvm-instrumented-refinement-rule-boundaries-2018-2021": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://sf.snu.ac.kr/publications/crellvm.pdf",
+            "doi": "10.1145/3192366.3192377",
+            "publication": "PLDI 2018"
+          },
+          "name": "Crellvm PLDI 2018 paper"
+        },
+        {
+          "identity": {
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          },
+          "name": "Crellvm checker research snapshot"
+        },
+        {
+          "identity": {
+            "author-copy": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          },
+          "name": "Verified instruction scheduling validators"
+        },
+        {
+          "identity": {
+            "author-copy": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+            "doi": "10.1145/3453483.3454030",
+            "publication": "PLDI 2021"
+          },
+          "name": "Alive2 bounded translation validation paper"
+        }
+      ],
+      "topics": [
+        "crellvm",
+        "certificates/optimization",
+        "translation-validation",
+        "semantics/refinement",
+        "anneal/translation"
+      ]
+    },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -14535,6 +14603,35 @@
         "software-architecture/information-hiding",
         "software-architecture/modularity",
         "software-architecture/pipes-and-filters"
+      ]
+    },
+    "iris-adequacy-resource-interface-8e49095": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris source"
+        },
+        {
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "repository": "iris/lambda-rust",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          },
+          "name": "Historical RustBelt lifetime implementation"
+        }
+      ],
+      "topics": [
+        "iris/adequacy",
+        "iris/cameras",
+        "iris/step-indexing",
+        "iris/guarded-recursion",
+        "iris/proofmode",
+        "rust/lifetime-logic"
       ]
     },
     "iris-concepts-for-rust-aeneas-separation-logic-2026-09-27": {
@@ -15778,6 +15875,36 @@
         "lean/cross-architecture",
         "leantar",
         "reference/version-review"
+      ]
+    },
+    "lean-admissions-imports-and-native-checking-v4-34-1": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean source"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "target": "arm64-apple-darwin24.6.0",
+            "version": "v4.34.1"
+          },
+          "name": "Executed Lean 4.34.1 binary"
+        }
+      ],
+      "topics": [
+        "lean/trust",
+        "lean/native-evaluation",
+        "lean/imports",
+        "proof-checking/assumptions",
+        "proof-checking/reflection"
       ]
     },
     "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2": {
@@ -18258,6 +18385,80 @@
         "anneal/generation-reclamation"
       ]
     },
+    "plutus-inductive-pass-certificates-scp-2024": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://webspace.science.uu.nl/~swier004/publications/2024-scp.pdf",
+            "doi": "10.1016/j.scico.2023.103051",
+            "publication": "SCP 233 (2024) 103051"
+          },
+          "name": "Translation certification for smart contracts"
+        },
+        {
+          "identity": {
+            "repository": "basetunnel/2022-scp-translation-relations",
+            "revision": "72e619f3243498a612d8c6c5090b88117c404489"
+          },
+          "name": "Plutus translation relation research artifact"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal execution correspondence design"
+        }
+      ],
+      "topics": [
+        "plutus",
+        "certificates/translation-relations",
+        "certificates/reflection",
+        "anneal/translation"
+      ]
+    },
+    "pr-stack-pure-model-boundaries-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal PR-stack source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust native compiler"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0"
+          },
+          "name": "Lean 4.31.0"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        }
+      ],
+      "topics": [
+        "anneal/experiments",
+        "rust/representation",
+        "verification/model-boundaries"
+      ]
+    },
     "proof-maintenance-architectures-sel4-compcert-everest-2009-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -18361,6 +18562,41 @@
         "translation-validation/verified-validator",
         "translation-certification",
         "verification/proof-artifacts"
+      ]
+    },
+    "property-proof-translation-specification-meaning-2006-2024": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "author-copy": "https://software.imdea.org/~ckunz/publications/certtrans-SAS06.pdf",
+            "doi": "10.1007/11823230_20",
+            "publication": "SAS 2006 extended abstract, LNCS 4134 pp.301-317"
+          },
+          "name": "Certificate translation for optimizing compilers"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2024.33",
+            "publication": "ITP 2024 article 33",
+            "publisher-copy": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol309-itp2024/LIPIcs.ITP.2024.33/LIPIcs.ITP.2024.33.pdf"
+          },
+          "name": "PotPie ITP 2024 paper"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/potpie",
+            "revision": "a57f960958901dee3b8075be0a312d6a194be456",
+            "version": "v0.5"
+          },
+          "name": "PotPie publication artifact"
+        }
+      ],
+      "topics": [
+        "certificates/property-translation",
+        "potpie",
+        "semantics/specification-preservation",
+        "anneal/translation"
       ]
     },
     "r428-lake-invalidation-canary-resource-stop-2026-10-01": {
@@ -18679,6 +18915,43 @@
         "reference/evidence",
         "research/harness",
         "reproducibility"
+      ]
+    },
+    "refinedrust-radium-proof-boundary-2026-v2": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1",
+            "zenodo": "21636474"
+          },
+          "name": "RefinedRust 2026 source artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3839484",
+            "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+          },
+          "name": "RefinedRust 2026 paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+          },
+          "name": "RefinedRust 2024 paper"
+        }
+      ],
+      "topics": [
+        "refinedrust",
+        "radium/semantics",
+        "iris/byte-resources",
+        "rust/layout",
+        "verification/mir-extraction",
+        "verification/proof-acceptance",
+        "verification/cross-prover"
       ]
     },
     "rls-rust-analyzer-architecture-evolution-2015-2026": {
@@ -20587,6 +20860,58 @@
         "rust/trait-objects"
       ]
     },
+    "rustbelt-rusthornbelt-contract-bridge-2022": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          },
+          "name": "RustBelt LambdaRust source"
+        },
+        {
+          "identity": {
+            "archive": "the_artifact.tgz",
+            "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121",
+            "zenodo": "6417462"
+          },
+          "name": "RustHornBelt 2022 source artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+          },
+          "name": "RustHornBelt paper"
+        },
+        {
+          "identity": {
+            "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5",
+            "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt"
+          },
+          "name": "RustHornBelt author erratum"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_18",
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9",
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf"
+          },
+          "name": "RustHorn updated author full-version paper"
+        }
+      ],
+      "topics": [
+        "rust/semantic-typing",
+        "rustbelt",
+        "rusthornbelt",
+        "rusthorn/chc",
+        "iris/lifetimes",
+        "iris/parametric-prophecy",
+        "verification/contract-bridge"
+      ]
+    },
     "rustbelt-unsafe-abstraction-model-popl-2018": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -21136,6 +21461,46 @@
         "anneal/trust-model"
       ]
     },
+    "theorem-authority-and-consumer-statements-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+          },
+          "name": "HOL Light kernel"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean kernel"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+          },
+          "name": "Rocq constant checking"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Lean comparator"
+        }
+      ],
+      "topics": [
+        "proof-checking/authority",
+        "hol/abstract-theorems",
+        "lean/statements",
+        "rocq/kernel"
+      ]
+    },
     "theseus-ownership-global-invariants-2017-2024": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -21607,6 +21972,46 @@
         "choice-trees"
       ]
     },
+    "verified-checker-theorem-endpoints-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean"
+        },
+        {
+          "identity": {
+            "repository": "MetaRocq/metarocq",
+            "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c"
+          },
+          "name": "MetaRocq"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML Candle proof sources"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-025-09743-8",
+            "publication": "Journal of Automated Reasoning 69, article 32 (2025)"
+          },
+          "name": "Candle extended correctness paper"
+        }
+      ],
+      "topics": [
+        "proof-checking/verified-checkers",
+        "lean/lean4lean",
+        "rocq/metarocq",
+        "hol/candle",
+        "compilation/checker-binaries"
+      ]
+    },
     "verified-compiler-pass-composition-compcert-3-18-popl-2008": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -21672,6 +22077,31 @@
         "verification/replay",
         "verification/tool-upgrades",
         "anneal/durable-work"
+      ]
+    },
+    "zerocopy-byte-domain-and-write-controls-2026-10-14": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal PR-stack source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "Rust native compiler"
+        }
+      ],
+      "topics": [
+        "anneal/experiments",
+        "rust/representation",
+        "verification/model-boundaries"
       ]
     },
     "zerocopy-ffi-primitives-main-41f5b37": {

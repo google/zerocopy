@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/experiments",
+    "rust/representation",
+    "verification/model-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal PR-stack source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    },
+    {
+      "name": "Rust native compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

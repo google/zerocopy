@@ -1,0 +1,34 @@
+{
+  "cases": [
+    {
+      "checker_accepts_strict_binding": true,
+      "constructor": "Error",
+      "purity_relation_has_value_constructor": false
+    },
+    {
+      "checker_accepts_strict_binding": true,
+      "constructor": "Constant",
+      "purity_relation_has_value_constructor": true
+    },
+    {
+      "checker_accepts_strict_binding": true,
+      "constructor": "LamAbs",
+      "purity_relation_has_value_constructor": true
+    }
+  ],
+  "discrepancies": [
+    {
+      "checker_accepts_strict_binding": true,
+      "constructor": "Error",
+      "purity_relation_has_value_constructor": false
+    }
+  ],
+  "fresh_coq_check": false,
+  "illustrative_strict_let_deletion": {
+    "binding_checker_accepts": true,
+    "source_outcome": "error",
+    "target_outcome": "ok(1)"
+  },
+  "scope": "three-constructor reduced checker/predicate witness",
+  "source_revision": "72e619f3243498a612d8c6c5090b88117c404489"
+}

@@ -1,0 +1,15 @@
+u64:size=8,align=8
+bool:size=1,align=1
+bool_array_3:size=3,align=1
+unit_array_3:size=0,align=1
+repr_c_padded:size=8,align=4
+repr_c_nested:size=12,align=4
+repr_c_packed:size=5,align=1
+aligned_unit:size=0,align=16
+option_nonzero_u8:size=1,align=1
+usize:size=8,align=8
+padded_offsets=0,4
+nested_inner_offset=4
+packed_word_offset=1
+checked_add_overflow=None
+wrapping_add_overflow=0

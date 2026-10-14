@@ -1,0 +1,2 @@
+'logicalResult' does not depend on any axioms
+'nativeResult' depends on axioms: [nativeResult._native.native_decide.ax_1_1]

@@ -1,0 +1,4 @@
+'Rust.roundUpToAlign_ge' depends on axioms: [propext, Quot.sound]
+'Rust.Allocation.offset_lt_size' depends on axioms: [propext, Quot.sound]
+'Rust.FitsInAllocation.address_bounds_alloc' does not depend on any axioms
+Shared library axiom audit checked 252 declarations

@@ -1,0 +1,198 @@
+{
+  "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+  "source_sha256": {
+    "anneal/lean/Rust/Layout.lean": "be6a923a4c4a993a0d9cccf5c6b76978043abb8b52b4611246d5486e1fc0f5db",
+    "anneal/lean/Rust/Memory.lean": "f2616c9ce32b1ff339d84904fc543e8a2af1e80a812341383fc30fd2266302c9",
+    "anneal/lean/Rust/Bytes.lean": "df62bd3211f3bd723f2ef68c186ee78d1321ee96ad29f7eb28db2b0efe017c90",
+    "anneal/lean/Rust/Storage.lean": "1f7feb011e7bf0d7ab4b4dcfa103476104357452976f28aa739dcf9a6f22ebcf",
+    "anneal/lean/Rust/Arithmetic.lean": "4f947e86802646c89109573e24e0266d8fadbf4dfba0e5d973b171cfcc87ebe7",
+    "anneal/lean/Rust.lean": "8be652461546c2aa0e62129724f7f9e073e7161a11e21e23bc8bed64e119c538",
+    "anneal/lean/RustTests.lean": "5db91dd8fd3da58866078ecd575a73f749050beb08f294469853d4557f45bd63",
+    "anneal/lean/RustBytesTests.lean": "8fe6bfe17cd4ce4854faed614ae9ac68cedca6e15c24762498578327af85c1d2",
+    "anneal/lean/RustStorageTests.lean": "a03156bb5b21ae72cad11b350ac07ad8b5b0255a987d776b8b06181d954a6c28"
+  },
+  "commands": [
+    {
+      "name": "lean-version",
+      "argv": [
+        "selected-lean-binary",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "lean-version.stdout.txt",
+      "stderr": "lean-version.stderr.txt"
+    },
+    {
+      "name": "rust-version",
+      "argv": [
+        "rustc",
+        "-vV"
+      ],
+      "returncode": 0,
+      "stdout": "rust-version.stdout.txt",
+      "stderr": "rust-version.stderr.txt"
+    },
+    {
+      "name": "Rust-Layout",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust/Layout.olean",
+        "Rust/Layout.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust-Layout.stdout.txt",
+      "stderr": "Rust-Layout.stderr.txt"
+    },
+    {
+      "name": "Rust-Memory",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust/Memory.olean",
+        "Rust/Memory.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust-Memory.stdout.txt",
+      "stderr": "Rust-Memory.stderr.txt"
+    },
+    {
+      "name": "Rust-Bytes",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust/Bytes.olean",
+        "Rust/Bytes.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust-Bytes.stdout.txt",
+      "stderr": "Rust-Bytes.stderr.txt"
+    },
+    {
+      "name": "Rust-Storage",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust/Storage.olean",
+        "Rust/Storage.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust-Storage.stdout.txt",
+      "stderr": "Rust-Storage.stderr.txt"
+    },
+    {
+      "name": "Rust-Arithmetic",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust/Arithmetic.olean",
+        "Rust/Arithmetic.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust-Arithmetic.stdout.txt",
+      "stderr": "Rust-Arithmetic.stderr.txt"
+    },
+    {
+      "name": "Rust",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/Rust.olean",
+        "Rust.lean"
+      ],
+      "returncode": 0,
+      "stdout": "Rust.stdout.txt",
+      "stderr": "Rust.stderr.txt"
+    },
+    {
+      "name": "RustTests",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/RustTests.olean",
+        "RustTests.lean"
+      ],
+      "returncode": 0,
+      "stdout": "RustTests.stdout.txt",
+      "stderr": "RustTests.stderr.txt"
+    },
+    {
+      "name": "RustBytesTests",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/RustBytesTests.olean",
+        "RustBytesTests.lean"
+      ],
+      "returncode": 0,
+      "stdout": "RustBytesTests.stdout.txt",
+      "stderr": "RustBytesTests.stderr.txt"
+    },
+    {
+      "name": "RustStorageTests",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "-o",
+        "../build/RustStorageTests.olean",
+        "RustStorageTests.lean"
+      ],
+      "returncode": 0,
+      "stdout": "RustStorageTests.stdout.txt",
+      "stderr": "RustStorageTests.stderr.txt"
+    },
+    {
+      "name": "owned-boundary",
+      "argv": [
+        "selected-lean-binary",
+        "-j2",
+        "-DwarningAsError=true",
+        "BoundaryProbe.lean"
+      ],
+      "returncode": 0,
+      "stdout": "owned-boundary.stdout.txt",
+      "stderr": "owned-boundary.stderr.txt"
+    },
+    {
+      "name": "rust-build",
+      "argv": [
+        "rustc",
+        "--edition=2024",
+        "-C",
+        "opt-level=0",
+        "layout_probe.rs",
+        "-o",
+        "../build/layout-probe"
+      ],
+      "returncode": 0,
+      "stdout": "rust-build.stdout.txt",
+      "stderr": "rust-build.stderr.txt"
+    },
+    {
+      "name": "rust-layout",
+      "argv": [
+        "../build/layout-probe"
+      ],
+      "returncode": 0,
+      "stdout": "rust-layout.stdout.txt",
+      "stderr": "rust-layout.stderr.txt"
+    }
+  ]
+}

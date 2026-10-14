@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "plutus",
+    "certificates/translation-relations",
+    "certificates/reflection",
+    "anneal/translation"
+  ],
+  "subjects": [
+    {
+      "name": "Translation certification for smart contracts",
+      "identity": {
+        "doi": "10.1016/j.scico.2023.103051",
+        "publication": "SCP 233 (2024) 103051",
+        "author-copy": "https://webspace.science.uu.nl/~swier004/publications/2024-scp.pdf"
+      }
+    },
+    {
+      "name": "Plutus translation relation research artifact",
+      "identity": {
+        "repository": "basetunnel/2022-scp-translation-relations",
+        "revision": "72e619f3243498a612d8c6c5090b88117c404489"
+      }
+    },
+    {
+      "name": "Anneal execution correspondence design",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

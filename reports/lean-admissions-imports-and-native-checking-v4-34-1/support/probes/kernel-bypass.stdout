@@ -1,0 +1,3 @@
+'forged' does not depend on any axioms
+theorem forged : False :=
+True.intro

@@ -1,0 +1,6 @@
+bool_candidates=256;accepted=[0, 1]
+bool_array_candidates=65536;accepted=4;all_results_match
+width_and_zero_sized_controls=passed
+byte_order_controls=passed
+aligned_reference_candidates=8;all_results_match
+prefix_suffix_and_rejection_preservation=passed

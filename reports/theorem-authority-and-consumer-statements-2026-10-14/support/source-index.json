@@ -1,0 +1,136 @@
+{
+  "observed_at": "2026-10-14",
+  "files": [
+    {
+      "repository": "jrh13/hol-light",
+      "revision": "233b83c3202370e03c54de2bd090e4d34f677e91",
+      "path": "fusion.ml",
+      "url": "https://raw.githubusercontent.com/jrh13/hol-light/233b83c3202370e03c54de2bd090e4d34f677e91/fusion.ml",
+      "characters": 28539,
+      "retrieved_content_sha256": "29544be92d9cc1e6b3b59ba5b210604b9a748366a68b3bcdc2619717d68fd98a",
+      "local_snapshot_sha256": "8b78814f99e35939db2c37d9c17fd1645db73098710bc14998bc4dadcfe2f00a",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "path": "Comparator/Compare.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/comparator/865edc14486c3388e9225daa971da8e157488c3e/Comparator/Compare.lean",
+      "characters": 4070,
+      "retrieved_content_sha256": "9bc34cb7de5a069a6fef7f3b13b20fea22f1d52603f74320a93d519b735ad3dd",
+      "local_snapshot_sha256": "4f7b76e3c1a7c96d2f293edd04a969457ecab840df99d42f7449153bf43aac29",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "path": "Comparator/Axioms.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/comparator/865edc14486c3388e9225daa971da8e157488c3e/Comparator/Axioms.lean",
+      "characters": 2374,
+      "retrieved_content_sha256": "863c5e1329811be0427880e08c171de733343491c5a3619b5dbf2e12b34c6125",
+      "local_snapshot_sha256": "11c5c06f9824bf28ca83f6c01da9b192156030a3048835a7a16362e8b1f1da99",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "path": "Main.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/comparator/865edc14486c3388e9225daa971da8e157488c3e/Main.lean",
+      "characters": 12969,
+      "retrieved_content_sha256": "bb97e3e56d35431cfc7fbef9153935f85e82cde8cc0fc588ceb0119022646cec",
+      "local_snapshot_sha256": "9cfb1c41f179de028f3813e7c35c868fd030b8fba1fedbc6b82d11ac814dfb39",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "rocq-prover/rocq",
+      "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99",
+      "path": "kernel/safe_typing.ml",
+      "url": "https://raw.githubusercontent.com/rocq-prover/rocq/0b9568e12875891c1b9463fa3548f36384ea6f99/kernel/safe_typing.ml",
+      "characters": 72107,
+      "retrieved_content_sha256": "250f5a3c663440be70d9844ccd71fbac2ae416d6264dbe61b1993fba6ce43e9a",
+      "local_snapshot_sha256": "d534c3616d7e85cc058f8cf58bc7c4f260ac7427158f4f6fab9cf7b7c54ce615",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/kernel/type_checker.cpp",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/kernel/type_checker.cpp",
+      "characters": 53663,
+      "retrieved_content_sha256": "5312a8f02318d6e3fe7eca68bf3525d5f3558fa98f5737612b52cac2e588c447",
+      "local_snapshot_sha256": "12fabc1b5eeca04b05426c13ccfbc1d26f157aabd13774bdf5d81d814a092507",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/kernel/environment.cpp",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/kernel/environment.cpp",
+      "characters": 12458,
+      "retrieved_content_sha256": "6748cf9368a16b7e4fd8546accc78f98874fb69323934b21c796e722dad136b2",
+      "local_snapshot_sha256": "ae11c26c81f4220f769110d48f93457244a81e9d62cd88342175d8a6681b2c30",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "rocq-prover/rocq",
+      "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99",
+      "path": "kernel/constant_typing.ml",
+      "url": "https://raw.githubusercontent.com/rocq-prover/rocq/0b9568e12875891c1b9463fa3548f36384ea6f99/kernel/constant_typing.ml",
+      "characters": 11583,
+      "retrieved_content_sha256": "ef49b6319961126eb76f856741e0dbd83aa294573ae811d7e8eeddbb36c1ea2c",
+      "local_snapshot_sha256": "e5fcbddb39bf6ebf77393582bc880ce8a73855043e3c208148307e4500762e86",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Lean/Meta/Native.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Meta/Native.lean",
+      "characters": 3195,
+      "retrieved_content_sha256": "e1d0c6b5be42f492810a12281fc0d8ff4c981e421397c3ec00e165a255ed09c1",
+      "local_snapshot_sha256": "961c034a6d12d8b9edb90c4cecd0b243bb3501747875179eb67a075e23f60605",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Lean/Util/CollectAxioms.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Util/CollectAxioms.lean",
+      "characters": 6669,
+      "retrieved_content_sha256": "64f340d42f18c51ee83527f03fa69cc26415dd71dcf7fe71031b7760be90007d",
+      "local_snapshot_sha256": "78dae15dee720d01ef5d0d9e3c7a05e24d1fd76c5009bd19f21c3f2843799e87",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Lean/AddDecl.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/AddDecl.lean",
+      "characters": 10240,
+      "retrieved_content_sha256": "7e6e74107d8f0116dff7cde2de3e60ed556bbab3ca56309311ea90dfc931bd40",
+      "local_snapshot_sha256": "20436894f28da12bd77f5d3b7eb94bf01f192825f1accfad8be9601c5ff9c936",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Lean/Environment.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean",
+      "characters": 136896,
+      "retrieved_content_sha256": "ee364e4788ce0560c87f621eeb3c4c3dfec62e8db4e15e099fd80e6adc533b86",
+      "local_snapshot_sha256": "5be21887cf02213204f1df1430441a09b3cbfe3c7a95bc1bc301d97caaec03d4",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "path": "Comparator/Util.lean",
+      "url": "https://raw.githubusercontent.com/leanprover/comparator/865edc14486c3388e9225daa971da8e157488c3e/Comparator/Util.lean",
+      "characters": 785,
+      "retrieved_content_sha256": "693d845330dd7122565aeb19314a3e3de4b49f9a8a7ac6e1fadbc9ab374b9f88",
+      "local_snapshot_sha256": "7d6a00b2a29bf86f137281228c9fe8e0e99f9f3982ad90a64b90f8fdb57ff578",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    }
+  ],
+  "qualification": "These identify directly inspected primary-source files. Full source snapshots are research intermediates; published findings rely on immutable upstream paths and symbols, not a local mirror."
+}

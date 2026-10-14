@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "refinedrust",
+    "radium/semantics",
+    "iris/byte-resources",
+    "rust/layout",
+    "verification/mir-extraction",
+    "verification/proof-acceptance",
+    "verification/cross-prover"
+  ],
+  "subjects": [
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+        "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 paper",
+      "identity": {
+        "doi": "10.1145/3839484",
+        "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+      }
+    },
+    {
+      "name": "RefinedRust 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

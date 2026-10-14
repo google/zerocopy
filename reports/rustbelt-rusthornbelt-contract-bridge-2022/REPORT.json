@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "rust/semantic-typing",
+    "rustbelt",
+    "rusthornbelt",
+    "rusthorn/chc",
+    "iris/lifetimes",
+    "iris/parametric-prophecy",
+    "verification/contract-bridge"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt LambdaRust source",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RustHornBelt 2022 source artifact",
+      "identity": {
+        "zenodo": "6417462",
+        "archive": "the_artifact.tgz",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      }
+    },
+    {
+      "name": "RustHornBelt paper",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+      }
+    },
+    {
+      "name": "RustHornBelt author erratum",
+      "identity": {
+        "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt",
+        "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5"
+      }
+    },
+    {
+      "name": "RustHorn updated author full-version paper",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "doi": "10.1007/978-3-030-44914-8_18",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

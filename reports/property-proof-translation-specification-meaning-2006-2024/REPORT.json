@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "certificates/property-translation",
+    "potpie",
+    "semantics/specification-preservation",
+    "anneal/translation"
+  ],
+  "subjects": [
+    {
+      "name": "Certificate translation for optimizing compilers",
+      "identity": {
+        "doi": "10.1007/11823230_20",
+        "publication": "SAS 2006 extended abstract, LNCS 4134 pp.301-317",
+        "author-copy": "https://software.imdea.org/~ckunz/publications/certtrans-SAS06.pdf"
+      }
+    },
+    {
+      "name": "PotPie ITP 2024 paper",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2024.33",
+        "publication": "ITP 2024 article 33",
+        "publisher-copy": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol309-itp2024/LIPIcs.ITP.2024.33/LIPIcs.ITP.2024.33.pdf"
+      }
+    },
+    {
+      "name": "PotPie publication artifact",
+      "identity": {
+        "repository": "uwplse/potpie",
+        "revision": "a57f960958901dee3b8075be0a312d6a194be456",
+        "version": "v0.5"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}
