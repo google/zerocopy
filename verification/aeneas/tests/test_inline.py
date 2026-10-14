@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -66,6 +67,14 @@ def llbc(annotation, source):
 
 
 class InlineTests(unittest.TestCase):
+    def setUp(self):
+        patch = mock.patch('admission.inspect', return_value={'version': 1})
+        patch.start()
+        self.addCleanup(patch.stop)
+        translation = mock.patch('admission.check_translation')
+        translation.start()
+        self.addCleanup(translation.stop)
+
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
 

@@ -222,8 +222,27 @@ def develop(root, work, targets=()):
     print('Development feedback complete. Run run.sh for final golden/live verification.', flush=True)
 
 
-def check(root, work):
+def check(root, work, *, require_admission=False):
     """Rebuild local proofs, then audit their compiled declarations."""
+    manifest = json.loads((work / 'bindings.json').read_text())
+    # CI uses verify, not the editor's check command. A development manifest
+    # may support proof iteration, but cannot certify fresh Rust extraction.
+    if require_admission and manifest.get('mode') != 'verified-live':
+        raise ValueError('CI verification requires verified-live bindings and execution admission')
+    if require_admission:
+        check_source_copies(root, work)
+    if manifest.get('mode') == 'verified-live':
+        import admission
+        evidence = manifest.get('admission')
+        roots = sorted(name for name, binding in manifest['bindings'].items()
+                       if binding['kind'] == 'function')
+        if (not isinstance(evidence, dict) or evidence.get('version') != 1 or
+                evidence.get('sources') != manifest.get('sources') or
+                evidence.get('registry') != admission.digest(root / 'verification/aeneas/external.json') or
+                evidence.get('inputs') != admission.input_identity(root) or
+                set(evidence.get('stages', {})) != {'before', 'llbc'} or
+                any(stage.get('roots') != roots for stage in evidence['stages'].values())):
+            raise ValueError('Missing or stale mandatory admission evidence; run fresh extraction')
     # --old preserves the archive's read-only dependency caches, but ignores
     # changed imports. A persistent editor project could therefore reuse a proof
     # checked against an earlier model. Even the direct axiom audit would accept
@@ -250,16 +269,12 @@ def check(root, work):
     # sources again while reusing the immutable toolchain dependencies.
     # The audit also writes the proof graph; run it even when Lake caches imports.
     run_checked(['lake', 'env', 'lean', '-DwarningAsError=true', 'Check.lean'], root, work)
-
-
-def verify(root, work):
-    """Verify the pre-admission stage's live binding and exact proof sources."""
-    manifest = json.loads((work / 'bindings.json').read_text())
-    if manifest.get('mode') != 'verified-live':
-        raise ValueError('CI verification requires verified-live bindings')
-    check_source_copies(root, work)
-    check(root, work)
-    check_source_copies(root, work)
+    if require_admission:
+        check_source_copies(root, work)
+    # Checking takes long enough for an editor to change the source mid-run.
+    # Such a run may help development, but it cannot certify the new source.
+    if manifest.get('mode') == 'verified-live' and evidence['inputs'] != admission.input_identity(root):
+        raise ValueError('Inputs changed during proof checking; run fresh extraction')
 
 
 def inspect_spec(root, work, spec):
@@ -362,10 +377,8 @@ def main():
         inspect_spec(root, work, args.spec)
     elif args.command == 'develop':
         develop(root, work, args.target)
-    elif args.command == 'verify':
-        verify(root, work)
     else:
-        check(root, work)
+        check(root, work, require_admission=args.command == 'verify')
 
 
 if __name__ == '__main__':
