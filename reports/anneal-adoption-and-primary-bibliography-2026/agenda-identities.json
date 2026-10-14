@@ -1,0 +1,10 @@
+{
+  "file": "research-topics.json",
+  "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9",
+  "question_count": 364,
+  "inventory_counts": {
+    "R": 100,
+    "T": 120,
+    "P": 144
+  }
+}

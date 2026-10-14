@@ -1,0 +1,3 @@
+'observed' depends on axioms: [propext, Quot.sound]
+true
+'consumer_frame' depends on axioms: [propext, Quot.sound]

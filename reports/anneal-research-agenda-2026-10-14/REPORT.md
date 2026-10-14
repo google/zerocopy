@@ -76,6 +76,12 @@ For an experimental question, preserve the tested input, tool identity, complete
 
 Basis: **derived**, research and evidence policy.
 
+### Compiler, checker and adoption findings
+
+Eleven further packages cover configured capture and independent obligations; staged compilation/CertiRocq with a proved restricted compiler and physically executed Wasm module; Trivet/EquiVM/foreign endpoints; relational security; independent kernels/model checking; JVM/eBPF; Gappa/FloVer/Why3; a finite separation-heap checker; resource interpretation adapters; concurrent acceptance controls; and conditional adoption/license/bibliography synthesis. The corpus now contains89initiative packages including this agenda (88research reports). Parent independent replays include the owned obligation/security proofs, all restricted-Wasm controls, resource adapter and25process scenarios. Separate4.34heap replay preserves rather than rewrites the original4.31observation. Actual inlining, semantic modular-callee substitution and expanded/HIR/native annotation attachment controls augment the capture report.
+
+All24 followup candidate reports in remaining-report-plan.json are represented. Final all364question synthesis and focused amendments remain before global completion; original checkboxes have not been promoted by package counts. The adoption report provides a conditional comparison and exact new VerusBelt/Aeneas-SymCrypt/thesis endpoints, without treating completed model theorems as current Rust frontend soundness.
+
 ## Boundaries
 
 - **Not established:** completion of all 364 questions, a final architecture recommendation, or a production implementation meeting all O01–O24 obligations.

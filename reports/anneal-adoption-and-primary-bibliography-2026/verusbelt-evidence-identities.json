@@ -1,0 +1,111 @@
+{
+  "paper": {
+    "name": "verusbelt-paper.pdf",
+    "doi": "10.1145/3808325",
+    "publication": "PACMPL 10 PLDI article 247, June 2026",
+    "url": "https://iris-project.org/pdfs/2026-pldi-verusbelt.pdf",
+    "sha256": "6ca867d564fc26bb3983a98fc03f05d72d1b880e1007b18f98ac1b60071a70e7",
+    "size": 841536
+  },
+  "public_source": {
+    "repository": "verus-lang/verus-belt",
+    "revision": "b9b14b2cb47b6a6307611578782adc3481627aac",
+    "commit_date": "2026-08-07T12:50:38Z",
+    "tree_inspection": "nontruncated recursive tree; selected actual source endpoints/license/setup files retrieved",
+    "source_records": "source-identities.json",
+    "not_executed": [
+      "Rocq build",
+      "Print Assumptions",
+      "Verus execution",
+      "full transitive admission/axiom closure"
+    ]
+  },
+  "artifact_record": {
+    "id": "19613067",
+    "doi": "10.5281/zenodo.19613067",
+    "url": "https://zenodo.org/records/19613067",
+    "created": "2026-04-16T16:48:26.289999+00:00",
+    "metadata_sha256": "a320ba25205bb14bdedafc344f039cce02d1c326c447ffe7aaa8570e6fc01f61",
+    "file": {
+      "name": "verusbelt.tgz",
+      "size": 2348499171,
+      "published_checksum": "md5:da39c945d22fec43e8c3caea883e4e12",
+      "inspection": "record description and file metadata only; archive not downloaded or built"
+    },
+    "described_configuration": {
+      "Rocq/Coq": "8.20.0",
+      "OCaml": "4.14.2",
+      "Iris": "4.3.0",
+      "stdpp": "1.11.0",
+      "Verus": "0.2026.03.16.b1c2a95",
+      "Verus_revision": "b1c2a951686fbc3a71a617fc2889b86fe1b63d45"
+    }
+  },
+  "distinct_readme_artifact_link": {
+    "url": "https://zenodo.org/records/19080059",
+    "role": "GitHub README labels it evaluated artifact; this record not separately inspected, neither archive identity equated to public tree or record 19613067"
+  },
+  "source_endpoints": [
+    {
+      "path": "src/lambda_verus/typing/soundness.v",
+      "names": [
+        "main_type",
+        "typePreG",
+        "type\u03a3",
+        "type_soundness",
+        "type_soundness_closed"
+      ],
+      "claim": "Semantic typing in fresh typeG environments implies no races and value-or-reducible after any finite modeled execution from empty state; no termination or real Verus acceptance theorem."
+    },
+    {
+      "path": "src/lambda_verus/lang/adequacy.v",
+      "names": [
+        "lrust_adequacy"
+      ],
+      "claim": "WP under initialized model resources yields adequate NotStuck for empty modeled state."
+    },
+    {
+      "path": "src/lambda_verus/typing/pptr.v",
+      "names": [
+        "typed_pptr_borrow_mut"
+      ],
+      "claim": "Live lifetime, pointer and unique PointsTo permission plus location/current/future identity conditions yield modeled unique payload borrow."
+    },
+    {
+      "path": "src/lambda_verus/typing/ra.v",
+      "names": [
+        "typed_ra_join_shared_to_target"
+      ],
+      "claim": "Active join requires a target constrained by valid common upper bounds; older typed_ra_join_shared block is commented out."
+    },
+    {
+      "path": "src/lambda_verus/typing/protocol.v",
+      "names": [
+        "typed_sp_join_shared_to_target"
+      ],
+      "claim": "Active storage protocol join has corresponding target-side condition, not an unrestricted sharing join."
+    },
+    {
+      "path": "src/lambda_verus/typing/local_inv.v",
+      "names": [
+        "typed_local_inv_open",
+        "typed_local_inv_close"
+      ],
+      "claim": "InvCtx stack/closer/lifetime/mask resources track invariant opening and restoration."
+    },
+    {
+      "path": "src/lambda_verus/typing/ghost.v",
+      "names": [
+        "ghost_ty",
+        "ghost_compute"
+      ],
+      "claim": "Ghost type has zero modeled physical size and prophecy-independent function interface; not actual source erasure verification."
+    }
+  ],
+  "documentation_qualifications": [
+    "Current README reports historical InvCtx issue fixed in upstream PR2476/2501; current Verus defect not inferred.",
+    "Declared Rocq axioms and example assumption output are documentation observations, not executed whole-development closure.",
+    "Current README describes actual/model API differences, simplified initialized PPtr and SC atomic model, not full Rust or weak-memory correspondence.",
+    "Exact source Qed is not an executed compiler/kernel check."
+  ]
+}

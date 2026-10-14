@@ -1,0 +1,3970 @@
+[
+  {
+    "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+    "metadata": {
+      "topics": [
+        "rust/extraction",
+        "aeneas",
+        "charon",
+        "verification/separation-logic",
+        "translation/certificates"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas assigned implementation",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          }
+        },
+        {
+          "name": "Charon assigned implementation",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          }
+        },
+        {
+          "name": "Aeneas spatial PR1352 draft head",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "92552f503cd19ca023ae9897cf521db49ee8d887"
+          }
+        },
+        {
+          "name": "Aeneas 2022 paper",
+          "identity": {
+            "arxiv": "2206.07185v2",
+            "doi": "10.1145/3547647",
+            "url": "https://arxiv.org/pdf/2206.07185v2"
+          }
+        },
+        {
+          "name": "Aeneas 2024 LLBC/PL long paper",
+          "identity": {
+            "arxiv": "2404.02680v2",
+            "url": "https://arxiv.org/pdf/2404.02680v2"
+          }
+        },
+        {
+          "name": "Read-only Anneal proof/admission documents",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "d4b4d3d355b9b0869373bd1d14558bd4bf0c1a9148496dad509eda8063b80b5b",
+    "report_sha256": "4f25686f8a10b597dced494e9f0c0f0c2a77d581a620a347cd408e6abecf98bd",
+    "words": 1539
+  },
+  {
+    "package": "aeneas-pair-returned-update-alpha24",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "aeneas/borrow-translation",
+        "prototype/returned-update",
+        "memory/frame"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas from legacy Anneal alpha24 macOS aarch64",
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/aeneas",
+            "version_observation": "aeneas unknown",
+            "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e"
+          }
+        },
+        {
+          "name": "Charon 0.1.210 from legacy Anneal alpha24 macOS aarch64",
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/charon",
+            "version": "0.1.210",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          }
+        },
+        {
+          "name": "Bundled Rust 1.98.0-nightly",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "artifact": "alpha24 rust/bin/rustc",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          }
+        },
+        {
+          "name": "Lean 4.30.0-rc2",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "artifact": "alpha24 lean executable",
+            "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          }
+        },
+        {
+          "name": "Actual safe certificate_probe source",
+          "identity": {
+            "artifact": "support/probe.rs",
+            "sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0"
+          }
+        },
+        {
+          "name": "Report-owned logical certificate/checker",
+          "identity": {
+            "artifact": "support/UpdateCertificate.lean",
+            "sha256": "2422d6f2bd769472a29ba52cf6e8b47fb45b0687466d0c61e2cb94704a07ea5f"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "5ec866c27c3b9ce9cafd4ccfae9aa0d00c470f03ac4dac90098c948a9f88306a",
+    "report_sha256": "ae595de27c767ecd23571e22eafc9618f3cdb6081a8ed27986d55547b1005d34",
+    "words": 1362
+  },
+  {
+    "package": "anneal-acceptance-frontier-and-trust-reduction-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/architecture",
+        "tcb",
+        "verification/acceptance",
+        "rust/extraction"
+      ],
+      "subjects": [
+        {
+          "name": "Anneal current redesign and historical V1",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+          }
+        },
+        {
+          "name": "PR 3846 stack admission and contracts",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "47d12b683efac14a869023cf21a559033cd125f470f4e3d337cc2cfc60260a3f",
+    "report_sha256": "4b31fcbbf7ae8315b9d40bcd0b9f512bc8bceb6af2aad8b5009da3827e0f46d1",
+    "words": 2129
+  },
+  {
+    "package": "anneal-data-receipts-caches-and-producer-isolation",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "proof/statement-identity",
+        "proof/assumptions",
+        "certificate/receipts",
+        "certificate/applicability",
+        "certificate/dependency-closure",
+        "verification/producer-isolation"
+      ],
+      "subjects": [
+        {
+          "name": "Bounded macOS sandbox-exec fixture",
+          "identity": {
+            "host": "Darwin27-arm64",
+            "binary_sha256": "58839ef01b4eef8aac0d2aa8f9d1c074ae45aafe3533965b030672450064acc8",
+            "producer_subject_sha256": "dde625538af8a74923c91193c71bbfe91fd59a75636b9fe14f30408553767af8"
+          }
+        },
+        {
+          "name": "Python3.14.8 executable",
+          "identity": {
+            "binary_sha256": "7ebde552773a4045532637b114d645a313e045ac07b26f5e520bf039f1e34063"
+          }
+        },
+        {
+          "name": "Lean4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "Lean comparator",
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          }
+        },
+        {
+          "name": "Reviewed reference evidence",
+          "identity": {
+            "repository": "google/zerocopy",
+            "serialization_cache_revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188",
+            "kernel_comparison_revision": "fdd09d40aec6cf9466a56d67ce04cf52b00fda31"
+          }
+        },
+        {
+          "name": "Charon0.1.210 serialization",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "58647247258c9de49050f9e786640470f97f7abf668a68b89a23730b15d0e08e",
+    "report_sha256": "80d5e923928799a39fa51dbe42cc0526e18414750a5b6baf7da3ef703a9c65e8",
+    "words": 2171
+  },
+  {
+    "package": "anneal-research-agenda-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/research",
+        "rust/verification",
+        "tcb",
+        "compiler-verification"
+      ],
+      "subjects": [
+        {
+          "name": "Anneal main implementation",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+          }
+        },
+        {
+          "name": "Anneal PR 3846 stack",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "pull_request": "3846"
+          }
+        },
+        {
+          "name": "Reference corpus baseline",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a0ff759e7d2d9a953f0ac40b326dd23197bd9188"
+          }
+        },
+        {
+          "name": "Stable research questions",
+          "identity": {
+            "artifact": "research-questions.json",
+            "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "856a783f093c4da1d6ef85c4ee7a704b09bfb365674d58f87abf7b5af423d620",
+    "report_sha256": "a63592163941db618a7828ddc11dc055557d1a780d4c1d00943b192fec486bd7",
+    "words": 1714
+  },
+  {
+    "package": "anneal-source-safety-reflection-probes-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/correspondence",
+        "rust/undefined-behavior",
+        "compiler-verification/safety-reflection",
+        "lean/experiments"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        },
+        {
+          "name": "Rust 1.99.0 compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Owned safety-reflection probe",
+          "identity": {
+            "artifact": "support/Reflection.lean",
+            "sha256": "523d637df89085b5006444331ea71d86bfd37843d69d9f3a5393be7ce0c50ce5"
+          }
+        },
+        {
+          "name": "Owned Rust erasure probe",
+          "identity": {
+            "artifact": "support/erased_ub.rs",
+            "sha256": "ee0a7c7b648dba6defeb2a58643ee48df6b8295aaef41b2ae2980ccf4880d4a4"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "813b7521bc05cd8dc77d528df946a1ca09069ffb692b57b0c1fcff41f01d942f",
+    "report_sha256": "44c1ce526745c3b15b0a915ebb9517f2bdccc9fa3fd9a84d79e6afd55a568ad1",
+    "words": 1426
+  },
+  {
+    "package": "autocorres-guarded-model-certificates-pldi-2014",
+    "metadata": {
+      "topics": [
+        "autocorres",
+        "certificates/abstraction",
+        "anneal/source-safety",
+        "semantics/failure-reflection"
+      ],
+      "subjects": [
+        {
+          "name": "AutoCorres PLDI 2014 paper",
+          "identity": {
+            "doi": "10.1145/2594291.2594296",
+            "author-copy": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf",
+            "publication": "PLDI 2014",
+            "pdf-pages": "11"
+          }
+        },
+        {
+          "name": "AutoCorres upstream project description",
+          "identity": {
+            "url": "https://trustworthy.systems/projects/OLD/autocorres/",
+            "observed": "2026-10-14"
+          }
+        },
+        {
+          "name": "Anneal shared models and execution admission design",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "6215a11ede97b213e51b7fc8091f44dffcd701840c46f366d6071948d5d6c5a4",
+    "report_sha256": "773834661184d2b2941427d6f3a9d3146e9189827792d1a38aae0149c51b97a7",
+    "words": 1457
+  },
+  {
+    "package": "boogie-viper-failure-reflection-certificates-2021-2024",
+    "metadata": {
+      "topics": [
+        "boogie",
+        "viper",
+        "certificates/vc-generation",
+        "certificates/frontend",
+        "anneal/source-safety",
+        "semantics/failure-reflection"
+      ],
+      "subjects": [
+        {
+          "name": "Formally validating a practical verification condition generator",
+          "identity": {
+            "doi": "10.1007/978-3-030-81688-9_33",
+            "publication": "CAV 2021",
+            "author-copy": "https://gauravpartha.ch/papers/boogie_certificates_cav21.pdf",
+            "pdf-pages": "23"
+          }
+        },
+        {
+          "name": "Formally validating translations into an IVL",
+          "identity": {
+            "doi": "10.1145/3656438",
+            "publication": "PACMPL 8 PLDI 2024 article 208",
+            "author-copy": "https://gauravpartha.ch/papers/front_end_translation_certificates_pldi24.pdf",
+            "pdf-pages": "25"
+          }
+        },
+        {
+          "name": "PLDI 2024 reproduction artifact record",
+          "identity": {
+            "doi": "10.5281/zenodo.10802176",
+            "url": "https://zenodo.org/records/10802176"
+          }
+        },
+        {
+          "name": "Anneal shared models and execution admission design",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "193f944fb15b6007b200cefd08da460177895d20beeb279d57a0301b06afd1ff",
+    "report_sha256": "c15e2086f1f4f3b5e6b6ef155a42f4efdd855d9f5a3863ef80af69fe00e23543",
+    "words": 1728
+  },
+  {
+    "package": "charon-aeneas-pass-seams-and-certificate-inventory",
+    "metadata": {
+      "topics": [
+        "anneal/correspondence",
+        "charon/passes",
+        "aeneas/translation",
+        "certificates/pass-inventory"
+      ],
+      "subjects": [
+        {
+          "name": "Charon",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          }
+        },
+        {
+          "name": "Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          }
+        },
+        {
+          "name": "Anneal admission design and semantic interfaces",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "path": "verification/aeneas/ADMISSION_DESIGN.md"
+          }
+        },
+        {
+          "name": "Legacy alpha24 Charon execution binary",
+          "identity": {
+            "artifact": "anneal-alpha24/runtime/aeneas/bin/charon",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          }
+        },
+        {
+          "name": "Legacy alpha24 Aeneas execution binary",
+          "identity": {
+            "artifact": "anneal-alpha24/runtime/aeneas/bin/aeneas",
+            "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "126f74aeebbea34ac29a4a0fe1f890e6f583aa0a7f3288ff527a3d3a6da43c12",
+    "report_sha256": "7f77675188e1dc8f2468002ac4f555fb6d2b1a6ab719819d468e6b88815390c0",
+    "words": 1781
+  },
+  {
+    "package": "charon-fork-storage-certificate-alpha24",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "charon/certificates",
+        "extraction/control-flow",
+        "extraction/storage"
+      ],
+      "subjects": [
+        {
+          "name": "Charon 0.1.210 from legacy Anneal alpha24 macOS aarch64",
+          "identity": {
+            "artifact": "alpha24 aeneas/bin/charon",
+            "version": "0.1.210",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          }
+        },
+        {
+          "name": "Bundled Rust 1.98.0-nightly",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "artifact": "alpha24 rust/bin/rustc",
+            "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          }
+        },
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "artifact": "lean executable",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Actual safe certificate_probe source",
+          "identity": {
+            "artifact": "support/probe.rs",
+            "sha256": "cb328552754e6c54ac06e827dea6c52f12c23fa2d987b55e0c2644472faaf7d0"
+          }
+        },
+        {
+          "name": "Report-owned logical certificate/checker",
+          "identity": {
+            "artifact": "support/ForkModel.lean",
+            "sha256": "03e313adf830206b0b8422a1f39962c4ee48d4e1c04456bf070f8ab5a4832afb"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "530ea1ac211a788545d3a74956784b27fa8b98c0510a6c1fbd54bae272103058",
+    "report_sha256": "31991614c060ae68a1d467d36634e49ed896fe50193b7c58db401077af28e7a3",
+    "words": 1221
+  },
+  {
+    "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+    "metadata": {
+      "topics": [
+        "cogent",
+        "dargent",
+        "certificates/data-refinement",
+        "anneal/memory",
+        "semantics/layout"
+      ],
+      "subjects": [
+        {
+          "name": "Cogent uniqueness types and certifying compilation",
+          "identity": {
+            "doi": "10.1017/S095679682100023X",
+            "publication": "JFP 2021 e25",
+            "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+            "pdf-pages": "67"
+          }
+        },
+        {
+          "name": "Dargent data layout refinement",
+          "identity": {
+            "doi": "10.1145/3571240",
+            "publication": "PACMPL 7 POPL 2023 article 47",
+            "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+            "pdf-pages": "27"
+          }
+        },
+        {
+          "name": "Anneal shared models and execution admission design",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "da226d7efdd80c8c552e6adf6fbcc08cf1fe8113f771d0b92ffee41fd1e62640",
+    "report_sha256": "3eac032f83348291be2311e7c70cf6b6cba9d9e42127012679581019ae3d9e59",
+    "words": 1616
+  },
+  {
+    "package": "constructive-imperative-refinement-memory-bridges",
+    "metadata": {
+      "topics": [
+        "compilation/proof-producing",
+        "compilation/refinement",
+        "memory/representation",
+        "rupicola",
+        "isabelle/llvm"
+      ],
+      "subjects": [
+        {
+          "name": "Fiat-to-Facade extraction",
+          "identity": {
+            "primary_url": "https://adam.chlipala.net/papers/FiatIJCAR20/FiatIJCAR20.pdf",
+            "publication": "IJCAR2020",
+            "coordinates": "sections3-5;19-page author PDF"
+          }
+        },
+        {
+          "name": "Rupicola relational compilation",
+          "identity": {
+            "primary_url": "https://jamner.net/papers/rupicola-PLDI22.pdf",
+            "doi": "10.1145/3519939.3523706",
+            "publication": "PLDI2022",
+            "coordinates": "sections2-3;16-page author PDF"
+          }
+        },
+        {
+          "name": "Isabelle-LLVM refinement",
+          "identity": {
+            "primary_url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol141-itp2019/LIPIcs.ITP.2019.22/LIPIcs.ITP.2019.22.pdf",
+            "doi": "10.4230/LIPIcs.ITP.2019.22",
+            "publication": "ITP2019 article22",
+            "coordinates": "sections2.1,3.2,3.5,6;19-page publisher PDF"
+          }
+        },
+        {
+          "name": "mit-plv/fiat",
+          "identity": {
+            "repository": "mit-plv/fiat",
+            "revision": "b7757d28f68c39c3c58192a27f217064b0b35e3b",
+            "path": "src/CertifiedExtraction/Core.v"
+          }
+        },
+        {
+          "name": "mit-plv/rupicola",
+          "identity": {
+            "repository": "mit-plv/rupicola",
+            "revision": "d33f7024a7a03c9e0f05f746dff8434d450a4f6e",
+            "path": "src/Rupicola/Lib/Compiler.v"
+          }
+        },
+        {
+          "name": "lammich/isabelle_llvm",
+          "identity": {
+            "repository": "lammich/isabelle_llvm",
+            "revision": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+            "path": "README.md"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "7e512e24a4ab5258fb88cc67da19c51c31102a001bc3f071f5eeec908ec34356",
+    "report_sha256": "bbf5230ec1d6acdcb36e660a38049de1762c0ce12905cb98e2943db856dd7566",
+    "words": 1219
+  },
+  {
+    "package": "consumer-binding-and-failure-protocol-prototype-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "prototype/acceptance",
+        "proof/assumptions",
+        "artifact/binding",
+        "artifact/cache",
+        "protocol/failure"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "artifact": "lean executable",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Consumer-owned prototype checker",
+          "identity": {
+            "artifact": "support/checker.py",
+            "sha256": "4bf4f2111b72a2ac0c1caaa1754b5edde9f00d8edf1ab97727b6cb0c4bf397db",
+            "protocol": "arithmetic-consumer-protocol-v1"
+          }
+        },
+        {
+          "name": "Selected consumer challenge",
+          "identity": {
+            "artifact": "support/experiments/challenge.json",
+            "sha256": "a2d5d3b679bf594afbcdc7838243ebe60de6029e743b87e2d22585b28aff4c5c"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "0a42ad603c9bba3faf2dd7e64e122009638c7e6afa710a7d3f339b787a2f7255",
+    "report_sha256": "aae9e54096d977f2cf3ce744dfe04c85518d054f9b51acbf07ace13d4c8ce176",
+    "words": 1314
+  },
+  {
+    "package": "crellvm-instrumented-refinement-rule-boundaries-2018-2021",
+    "metadata": {
+      "topics": [
+        "crellvm",
+        "certificates/optimization",
+        "translation-validation",
+        "semantics/refinement",
+        "anneal/translation"
+      ],
+      "subjects": [
+        {
+          "name": "Crellvm PLDI 2018 paper",
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "publication": "PLDI 2018",
+            "author-copy": "https://sf.snu.ac.kr/publications/crellvm.pdf"
+          }
+        },
+        {
+          "name": "Crellvm checker research snapshot",
+          "identity": {
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          }
+        },
+        {
+          "name": "Verified instruction scheduling validators",
+          "identity": {
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008",
+            "author-copy": "https://xavierleroy.org/publi/validation-scheduling.pdf"
+          }
+        },
+        {
+          "name": "Alive2 bounded translation validation paper",
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "publication": "PLDI 2021",
+            "author-copy": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "f94fa81ea0b296afef83111421d24286d8be3d6b1ddbac97c5c75b0dd3fb0e19",
+    "report_sha256": "3f2f247706fc2ab6c12219853bf771cea0fd17574afa018fdb1f8ba9105a23ec",
+    "words": 1545
+  },
+  {
+    "package": "creusot-permission-coma-trust-c4e9770",
+    "metadata": {
+      "topics": [
+        "creusot",
+        "verification/pearlite",
+        "verification/coma",
+        "verification/permissions",
+        "rust/unsafe",
+        "verification/why3-trust"
+      ],
+      "subjects": [
+        {
+          "name": "Creusot source",
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          }
+        },
+        {
+          "name": "Coma ESOP 2025 author paper",
+          "identity": {
+            "url": "https://paulpatault.fr/pdfs/papers/esop2025.pdf",
+            "sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "71873bd4e91a7beb0b032282bb14cef970c2851b4d78d1209d121af07f4282da",
+    "report_sha256": "9009ff3d692ef67d2181de2a125fd986bea0116cfa0b5726a12d0030e9716571",
+    "words": 1464
+  },
+  {
+    "package": "ddc-and-proof-produced-checker-executables",
+    "metadata": {
+      "topics": [
+        "compilation/diverse-double-compilation",
+        "checking/proof-produced-executable",
+        "checking/io",
+        "cakeml"
+      ],
+      "subjects": [
+        {
+          "name": "CakeML selected LPR checker/executable theorem",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          }
+        },
+        {
+          "name": "Fully Countering Trusting Trust through Diverse Double-Compiling",
+          "identity": {
+            "publication": "Wheeler dissertation, Fall 2009",
+            "url": "https://dwheeler.com/trusting-trust/dissertation/html/wheeler-trusting-trust-ddc.html",
+            "errata": "https://dwheeler.com/trusting-trust/dissertation-errata.html",
+            "errata_date": "2019-07-25"
+          }
+        },
+        {
+          "name": "Wheeler primary Proof1 formal input",
+          "identity": {
+            "artifact": "ddc.in",
+            "url": "https://dwheeler.com/trusting-trust/dissertation/ddc.in"
+          }
+        },
+        {
+          "name": "A Verified Proof Checker for Higher-Order Logic",
+          "identity": {
+            "author": "Oskar Abrahamsson",
+            "version": "author preprint dated October 28, 2019; related JLAMP 2020 publication",
+            "url": "https://cakeml.org/jlamp20.pdf",
+            "pages": "31"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "d56386896c64ec9f894dd255ae7447004cb3df281bba7c1a535652b7904f40b1",
+    "report_sha256": "664fd973a0c9fcb22561f37c8413ea9622804e12a1a8720514ce07382f2349cc",
+    "words": 1615
+  },
+  {
+    "package": "exact-and-rounded-numerical-proof-witnesses-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "automation/numerical",
+        "proof/certificates",
+        "proof/floating-point"
+      ],
+      "subjects": [
+        {
+          "name": "leanprover-community/mathlib4",
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40"
+          }
+        },
+        {
+          "name": "jrh13/hol-light",
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+          }
+        },
+        {
+          "name": "ufmg-smite/carcara",
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+          }
+        },
+        {
+          "name": "SMTCoq/smtcoq",
+          "identity": {
+            "repository": "SMTCoq/smtcoq",
+            "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+          }
+        },
+        {
+          "name": "FloVer FMCAD 2018 paper",
+          "identity": {
+            "title": "A Verified Certificate Checker for Finite-Precision Error Bounds in Coq and HOL4",
+            "venue": "FMCAD 2018",
+            "url": "https://www.cs.utexas.edu/~hunt/FMCAD/FMCAD18/papers/paper2.pdf"
+          }
+        },
+        {
+          "name": "Gappa upstream integration documentation",
+          "identity": {
+            "url": "https://gappa.gitlabpages.inria.fr/gappa/tools.html",
+            "observed": "2026-10-14"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "819cea821a1d41bbf27eaf592d98ca18f98a9d7981cd5fbf3df14c63dab6c3b2",
+    "report_sha256": "7db1ac1130f0578cb87d106f8982d680ba4942ddf8cbd1f1d61bfdc640515987",
+    "words": 1188
+  },
+  {
+    "package": "field-slice-borrow-frame-prototype-lean4-31-rust1-99",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "prototype/borrows",
+        "rust/fields",
+        "rust/slices",
+        "logic/frame-rules"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "artifact": "lean executable",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Rust 1.99.0 compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "artifact": "rustc executable",
+            "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+          }
+        },
+        {
+          "name": "Safe native borrow controls",
+          "identity": {
+            "artifact": "support/experiments/borrow_native.rs",
+            "sha256": "996f70f543d0bad10d09464b2f4f8df566bc556c8a8f0fdcc8c4b9f796f7797b"
+          }
+        },
+        {
+          "name": "Abstract borrow model and correspondence certificates",
+          "identity": {
+            "artifact": "support/experiments/BorrowModel.lean",
+            "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3",
+            "semantics": "two-byte-root-and-child-v1"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "3298568fe462db0be64d105580ee4109410791db3ecc4d3c7efbed3fc87c3170",
+    "report_sha256": "0ca9a95eab65970db52b061ac12006c65c692d56e2cd78c4195d9aaf84d44374",
+    "words": 1051
+  },
+  {
+    "package": "foundational-verifast-hinted-mirroring-2026-10-14",
+    "metadata": {
+      "topics": [
+        "verifast",
+        "rust/verification",
+        "verification/certificates",
+        "tcb",
+        "iris"
+      ],
+      "subjects": [
+        {
+          "name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring",
+          "identity": {
+            "arxiv": "2601.13727v1",
+            "publication": "2026-01-20"
+          }
+        },
+        {
+          "name": "VeriFast Rocq replay and axiomatic semantics",
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          }
+        },
+        {
+          "name": "Anneal PR-stack admission design",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "08a26372d0494b80159cecc3a54b52741ec14422342a186f5ee508e15dcc794a",
+    "report_sha256": "6a87567b47d750fccdc8986954208aab97569c88236e8c5d5e3cf4330472ec7e",
+    "words": 1566
+  },
+  {
+    "package": "functions-generics-and-environment-certificate-closure",
+    "metadata": {
+      "topics": [
+        "anneal/correspondence",
+        "certificates/composition",
+        "rust/generics",
+        "semantics/open-modules",
+        "certificates/dependency-closure"
+      ],
+      "subjects": [
+        {
+          "name": "Charon generic and dispatch transformations",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          }
+        },
+        {
+          "name": "Aeneas dependency/context/effect analysis",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          }
+        },
+        {
+          "name": "Rust destructor requirements",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+            "path": "src/destructors.md"
+          }
+        },
+        {
+          "name": "Anneal current consumer and admission contracts",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "paths": "verification/aeneas/ADMISSION_DESIGN.md;verification/aeneas/SEMANTICS.md"
+          }
+        },
+        {
+          "name": "Original checked generic prefix-composition specimen",
+          "identity": {
+            "artifact": "PrefixCertificate.lean",
+            "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "d59a1797d4cf3eed50031bdcaf5825062dd89ab2926388cd7ace7a526505ee6d",
+    "report_sha256": "8eec0f7b0f650549377973bb01b6d928937252bb3a880fe9ce2d9da3a1a4cbd7",
+    "words": 1837
+  },
+  {
+    "package": "gillian-rust-hybrid-resource-boundary-83d739e",
+    "metadata": {
+      "topics": [
+        "gillian-rust",
+        "verification/symbolic-resources",
+        "verification/hybrid-contracts",
+        "iris/parametric-prophecy",
+        "verification/replay-trust"
+      ],
+      "subjects": [
+        {
+          "name": "Gillian-Rust source",
+          "identity": {
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          }
+        },
+        {
+          "name": "Gillian-Rust extended PLDI 2025 paper",
+          "identity": {
+            "arxiv": "2403.15122v3",
+            "doi": "10.1145/3729289",
+            "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "5e4e16d61b64b801f4388108a9866d58ef9323fe20a20f9786d8c7a26684e365",
+    "report_sha256": "eaaf684611fafb67af67252547eed86ccf90a20e91b59d52a6971bc4e6aab8ce",
+    "words": 1337
+  },
+  {
+    "package": "hax-eurydice-and-rust-c-extraction-frontiers",
+    "metadata": {
+      "topics": [
+        "rust/extraction",
+        "hax",
+        "eurydice",
+        "rustcompcert",
+        "translation/semantic-preservation"
+      ],
+      "subjects": [
+        {
+          "name": "hax implementation",
+          "identity": {
+            "repository": "cryspen/hax",
+            "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+          }
+        },
+        {
+          "name": "Eurydice implementation",
+          "identity": {
+            "repository": "AeneasVerif/eurydice",
+            "revision": "7332393a18a20baae808d8783266acd15121ddd2"
+          }
+        },
+        {
+          "name": "Charon assigned implementation",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          }
+        },
+        {
+          "name": "RustCompCert developing formal artifact",
+          "identity": {
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+          }
+        },
+        {
+          "name": "RustCompCert short preprint",
+          "identity": {
+            "arxiv": "2602.07455v1",
+            "url": "https://arxiv.org/html/2602.07455v1"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "8635d77f48fa232e86b0674e33bf477c1ac0adcf02a1a4232c3d1baca5aa5f2c",
+    "report_sha256": "93861e21edd9f62a58c7fc1cf33a8d3eb226d188c72b0e9268f09fc14e033b95",
+    "words": 1366
+  },
+  {
+    "package": "hol-proof-producing-synthesis-and-binary-lifting",
+    "metadata": {
+      "topics": [
+        "compilation/proof-producing",
+        "compilation/decompilation",
+        "hol4",
+        "cakeml/synthesis",
+        "holba/lifting"
+      ],
+      "subjects": [
+        {
+          "name": "Li/Owens/Slind ESOP2007 primary paper",
+          "identity": {
+            "primary_url": "https://link.springer.com/chapter/10.1007/978-3-540-71316-6_15",
+            "doi": "10.1007/978-3-540-71316-6_15",
+            "inspection": "full15-page primary PDF;sections2,4",
+            "sha256": "f077d7ef766635bf34c4ea3c46297b0fde5ec88135695034d2c0fd903752bd1c"
+          }
+        },
+        {
+          "name": "Blech/Poetzsch-Heffter code-generation paper",
+          "identity": {
+            "primary_url": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+            "doi": "10.1016/j.entcs.2007.09.008",
+            "publication": "ENTCS190(4),2007",
+            "coordinates": "sections2.3,3.2,4;17-page author PDF"
+          }
+        },
+        {
+          "name": "Myreen/Slind/Gordon extensible compilation",
+          "identity": {
+            "primary_url": "https://www.cl.cam.ac.uk/~mom22/extensible-compilation.pdf",
+            "doi": "10.1007/978-3-642-00722-4_2",
+            "publication": "CC2009",
+            "coordinates": "section2;15-page author PDF"
+          }
+        },
+        {
+          "name": "Myreen/Owens pure and stateful ML translation",
+          "identity": {
+            "primary_url": "https://www.cl.cam.ac.uk/~mom22/jfp14.pdf",
+            "doi": "10.1017/S0956796813000282",
+            "publication": "JFP24(2-3),2014",
+            "coordinates": "sections4.3-4.4;32-page author PDF"
+          }
+        },
+        {
+          "name": "Monadic CakeML synthesis",
+          "identity": {
+            "primary_url": "https://cakeml.org/jar20.pdf",
+            "publication": "JAR2020 author paper",
+            "coordinates": "sections3.3-3.5;20-page PDF"
+          }
+        },
+        {
+          "name": "HOL-Theorem-Prover/HOL",
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "166fd15df77be1f2e79dc8592a933b1a65540526",
+            "path": "examples/machine-code/compiler/codegenLib.sml"
+          }
+        },
+        {
+          "name": "CakeML/cakeml",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "path": "translator/ml_translatorScript.sml"
+          }
+        },
+        {
+          "name": "kth-step/HolBA",
+          "identity": {
+            "repository": "kth-step/HolBA",
+            "revision": "c20c5aeae7c4464c3a5032ee66d9e31324937fe1",
+            "path": "src/theory/tools/lifter/bir_inst_liftingScript.sml"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "1c2112992613ba212bc95b8a709168175618e508f0b3556677d128e9ac75acf5",
+    "report_sha256": "92a8ea55e79e4ee4b0084f78e649d7488fda4706a0b72b03ee9b5dadf4fd2620",
+    "words": 1400
+  },
+  {
+    "package": "inference-and-compositional-result-interfaces-2026",
+    "metadata": {
+      "topics": [
+        "rust/inference",
+        "verification/bi-abduction",
+        "verification/symbolic-memory",
+        "verification/permissions",
+        "verification/overrides",
+        "verification/certificates"
+      ],
+      "subjects": [
+        {
+          "name": "MIRAI",
+          "identity": {
+            "repository": "endorlabs/MIRAI",
+            "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b"
+          }
+        },
+        {
+          "name": "Infer current Pulse/Rust source",
+          "identity": {
+            "repository": "facebook/infer",
+            "revision": "5aac32c06952a2f3a6b7043e91457920f065833b"
+          }
+        },
+        {
+          "name": "Infer historical bi-abduction source",
+          "identity": {
+            "repository": "facebook/infer",
+            "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4"
+          }
+        },
+        {
+          "name": "SeaHorn",
+          "identity": {
+            "repository": "seahorn/seahorn",
+            "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4"
+          }
+        },
+        {
+          "name": "SMACK",
+          "identity": {
+            "repository": "smackers/smack",
+            "revision": "0a64471206645c250164e8df6027f5a5193e5e85"
+          }
+        },
+        {
+          "name": "Viper Silver",
+          "identity": {
+            "repository": "viperproject/silver",
+            "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f"
+          }
+        },
+        {
+          "name": "Prusti",
+          "identity": {
+            "repository": "prusti/prusti",
+            "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+          }
+        },
+        {
+          "name": "SAW compositional MIR source",
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+          }
+        },
+        {
+          "name": "Compositional Shape Analysis by means of Bi-Abduction, POPL 2009",
+          "identity": {
+            "published_version": "POPL 2009 author copy, 12 pages",
+            "sha256": "7d669d3bf3b446f88d050d8f7ca5c473ea26b0b89f106c3031b37604eca483c2",
+            "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "253b913f446da39758680ee642818cb65481d4b94f46e6940ccbc11838bd2858",
+    "report_sha256": "8237f00d79bdb15598f339218a5c27c2d40af826cd771637d7e57a02a2beba92",
+    "words": 1623
+  },
+  {
+    "package": "iris-adequacy-resource-interface-8e49095",
+    "metadata": {
+      "topics": [
+        "iris/adequacy",
+        "iris/cameras",
+        "iris/step-indexing",
+        "iris/guarded-recursion",
+        "iris/proofmode",
+        "rust/lifetime-logic"
+      ],
+      "subjects": [
+        {
+          "name": "Iris source",
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          }
+        },
+        {
+          "name": "Historical RustBelt lifetime implementation",
+          "identity": {
+            "repository": "iris/lambda-rust",
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "1b3be9cb4773cb0a4159d91a0203273322e11cc0b89cd81f55d49c6909b3ef50",
+    "report_sha256": "3cacb33fce36b4b994922f0b46bb1761574a891eee785e6127fbabe974a5782e",
+    "words": 1280
+  },
+  {
+    "package": "lean-admissions-imports-and-native-checking-v4-34-1",
+    "metadata": {
+      "topics": [
+        "lean/trust",
+        "lean/native-evaluation",
+        "lean/imports",
+        "proof-checking/assumptions",
+        "proof-checking/reflection"
+      ],
+      "subjects": [
+        {
+          "name": "Lean source",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          }
+        },
+        {
+          "name": "Executed Lean 4.34.1 binary",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+            "target": "arm64-apple-darwin24.6.0"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "2484b71b456c52d9fcedbb4da143365b7d5c2e7cebd588991d198ecc9ebfac90",
+    "report_sha256": "7de8950e8b0c9eaacaec20a203779bf94e26828b660e71fadc855885c78c1c43",
+    "words": 1575
+  },
+  {
+    "package": "lean-iris-constructions-and-toolchain-boundary-81bc350",
+    "metadata": {
+      "topics": [
+        "lean/iris",
+        "separation-logic/adequacy",
+        "lean/toolchain-compatibility"
+      ],
+      "subjects": [
+        {
+          "name": "Lean-Iris",
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816"
+          }
+        },
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0",
+            "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+            "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1",
+            "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+            "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "36ddf13c90d6e4f19644a282665d2b6d7e25800f703fd4bc593b2a997bc02048",
+    "report_sha256": "2cde3a0e6cf4e532e5b863b065e441d2cfdb6eb0c0d9f04d2613299cca80b77e",
+    "words": 1705
+  },
+  {
+    "package": "minimal-proof-interchange-and-encoding-obligations-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "proof/interchange",
+        "proof/metamath",
+        "proof/mm0",
+        "proof/dedukti",
+        "proof/lambdapi",
+        "proof/trust"
+      ],
+      "subjects": [
+        {
+          "name": "Deducteam/lambdapi",
+          "identity": {
+            "repository": "Deducteam/lambdapi",
+            "revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7"
+          }
+        },
+        {
+          "name": "Deducteam/Dedukti",
+          "identity": {
+            "repository": "Deducteam/Dedukti",
+            "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+          }
+        },
+        {
+          "name": "digama0/mm0",
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          }
+        },
+        {
+          "name": "metamath/metamath-exe",
+          "identity": {
+            "repository": "metamath/metamath-exe",
+            "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "631c0de104d34fec97e3f83e655d833c94a6c857b3f82b47a69c1660e738b862",
+    "report_sha256": "4809c21dfd7c2cdfcfe91e4f95d8b3d8492faae00d27f847882c1fc75fc9b56f",
+    "words": 1619
+  },
+  {
+    "package": "minirust-core-semantics-d821c6e",
+    "metadata": {
+      "topics": [
+        "rust/core-calculi",
+        "minirust",
+        "minirust/memory-model",
+        "rust/unsafe-verification",
+        "semantics/correspondence"
+      ],
+      "subjects": [
+        {
+          "name": "MiniRust specification and minimize tooling",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "RustBelt POPL 2018 paper",
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "PACMPL 2 POPL Article 66, January 2018",
+            "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf"
+          }
+        },
+        {
+          "name": "RustBelt technical appendix",
+          "identity": {
+            "version-date": "2017-11-09",
+            "sha256": "a49b24dbb220d539aa5c70c6e09ea6ed48c8adb01568857ffc456bae0f7dfc83",
+            "url": "https://plv.mpi-sws.org/rustbelt/popl18/appendix.pdf"
+          }
+        },
+        {
+          "name": "Oxide: The Essence of Rust",
+          "identity": {
+            "arxiv": "1903.00982v4",
+            "version-date": "2021-10-19",
+            "sha256": "23ccf574c9778c533c12125b8da96a033af72da3cd6bb75483b63745846b5555",
+            "url": "https://arxiv.org/pdf/1903.00982v4"
+          }
+        },
+        {
+          "name": "Featherweight Rust author-hosted preprint",
+          "identity": {
+            "bibliographic-doi": "10.1145/3443420",
+            "inspected-footer-date": "March 2020",
+            "sha256": "4968454d56869166ca39ef8a340e0758ebe13c35cb1bc9f18d25b6ee3e67c586",
+            "url": "https://whileydave.com/publications/Pea21_TOPLAS_preprint.pdf"
+          }
+        },
+        {
+          "name": "Rust Distilled",
+          "identity": {
+            "arxiv": "1806.02693v2",
+            "version-date": "2018-08-16",
+            "sha256": "5009345fe0de38928c2a7c58970d05ab171e2768de3abafad6f8586141155bd3",
+            "url": "https://arxiv.org/pdf/1806.02693v2"
+          }
+        },
+        {
+          "name": "KRust",
+          "identity": {
+            "arxiv": "1804.10806v1",
+            "version-date": "2018-04-28",
+            "sha256": "c101740fe8f8aa85537bc282ceef950de4d60bc3215fcd543bead8ba72e9dd24",
+            "url": "https://arxiv.org/pdf/1804.10806v1"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "35df2e7ce0c7c0d276e98ef2722fcc6ccd8bd255f2541e2eff0cb4c2c426077b",
+    "report_sha256": "bddfc4707329cf950780087f779eb60d287f898b55cd419feaff2002a263c51a",
+    "words": 1276
+  },
+  {
+    "package": "modular-foreign-contracts-and-open-execution",
+    "metadata": {
+      "topics": [
+        "verification/ffi",
+        "verification/open-modules",
+        "veriffi",
+        "translation/calling-conventions"
+      ],
+      "subjects": [
+        {
+          "name": "VeriFFI current selected source",
+          "identity": {
+            "repository": "CertiRocq/VeriFFI",
+            "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+          }
+        },
+        {
+          "name": "VeriFFI POPL 2025 publication interface",
+          "identity": {
+            "doi": "10.1145/3704860",
+            "publication": "POPL 2025 article 24",
+            "inspected_part": "primary publication abstract/interface description"
+          }
+        },
+        {
+          "name": "RustCompCert developing formal artifact",
+          "identity": {
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+          }
+        },
+        {
+          "name": "VST Verifiable C",
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "3352a9b3064630dbb89208505a69d35b213ef37801895fb7998efc716768f202",
+    "report_sha256": "eea7be2fa1429962976b2e27d80307e00df4b63c0a4583e15d6de3a7dcd25d5e",
+    "words": 1394
+  },
+  {
+    "package": "native-checker-from-lean-logical-source-4-31",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "checker/code-generation",
+        "lean/kernel-checking",
+        "prototype/native-checker"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "artifact": "lean executable",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Lean native compiler wrapper",
+          "identity": {
+            "artifact": "Lean 4.31 leanc executable",
+            "sha256": "ed65823bba1ffbab1c386ec9b013091fe427a56b50a0beef1eab5bed1a3523a3"
+          }
+        },
+        {
+          "name": "Report-owned logical certificate/checker",
+          "identity": {
+            "artifact": "support/CheckerMain.lean",
+            "sha256": "e6d39dcf9aab8f921778ec8050f22b1b144ebd8b20fd8a8e677e3736d5c62a37"
+          }
+        },
+        {
+          "name": "Derived native checker",
+          "identity": {
+            "artifact": "macOS arm64 executable generated from report source",
+            "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173",
+            "bridge": "unverified Lean C and native compilation"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "284a03c9bf702032db7d027b125988fb53a9e9962542d4b7a7ac50ca9969213e",
+    "report_sha256": "11c449e373fc1b1990cac4c2927fa3e42c1e41940253e5b176ae6f430ea5d9e3",
+    "words": 1351
+  },
+  {
+    "package": "open-rust-library-certificate-obligations-cce761ad",
+    "metadata": {
+      "topics": [
+        "rust/safe-abstraction",
+        "rust/type-invariants",
+        "rust/traits",
+        "rust/generics",
+        "verification/certificates",
+        "zerocopy/pointer"
+      ],
+      "subjects": [
+        {
+          "name": "zerocopy PR stack source",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "RustBelt LambdaRust popl18 source",
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          }
+        },
+        {
+          "name": "RefinedRust 2026 source artifact",
+          "identity": {
+            "zenodo": "21636474",
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+          }
+        },
+        {
+          "name": "Native safe client control compiler",
+          "identity": {
+            "tool": "rustc",
+            "version": "1.99.0",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "host": "aarch64-apple-darwin"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "e5bec74857381a42b5b4f1b44d1b14c2346282ee89028d5d8bd2b41f7eca75be",
+    "report_sha256": "3ed70112c1e720f45e855c00f5f0c6aafee72fdaff5972146bd76e3f371b04e1",
+    "words": 1949
+  },
+  {
+    "package": "parser-roundtrips-admission-and-byte-meaning",
+    "metadata": {
+      "topics": [
+        "serialization/verified",
+        "parsing/verified",
+        "checking/admission",
+        "everparse",
+        "narcissus",
+        "verdict"
+      ],
+      "subjects": [
+        {
+          "name": "Oeuf source and reflection/serialization interfaces",
+          "identity": {
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+          }
+        },
+        {
+          "name": "Narcissus current format/decoder proof interfaces",
+          "identity": {
+            "repository": "mit-plv/fiat",
+            "revision": "b7757d28f68c39c3c58192a27f217064b0b35e3b"
+          }
+        },
+        {
+          "name": "Verdict policy DSL and selected DER interface",
+          "identity": {
+            "repository": "secure-foundations/verdict",
+            "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+          }
+        },
+        {
+          "name": "EverParse current library/hash interfaces",
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "ad9414befa0241e8b3a9c84f9ee979445bad85d4"
+          }
+        },
+        {
+          "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats",
+          "identity": {
+            "doi": "10.1145/3341686",
+            "publication": "ICFP 2019 Article 82",
+            "url": "https://adam.chlipala.net/papers/NarcissusICFP19/NarcissusICFP19.pdf"
+          }
+        },
+        {
+          "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+          "identity": {
+            "publication": "USENIX Security 2025",
+            "url": "https://verified.how/papers/verdict.pdf",
+            "pages": "17"
+          }
+        },
+        {
+          "name": "EverParse 3d manual",
+          "identity": {
+            "version_scope": "releases v2025.05.20 or later; observed 2026-10-14",
+            "api": "https://project-everest.github.io/everparse/3d.html",
+            "language": "https://project-everest.github.io/everparse/3d-lang.html"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "ab145de57d521e9801bc10ffb890bd8eea37d2d1fe2d9616b4a5911d804c5691",
+    "report_sha256": "7e5083bf561fbdf03e96fc877c82e565426b84fdc83c9984e816269544cac21c",
+    "words": 1629
+  },
+  {
+    "package": "pcc-tal-foundational-policy-certificates",
+    "metadata": {
+      "topics": [
+        "certificates/pcc",
+        "certificates/foundational-pcc",
+        "certificates/typed-assembly",
+        "certificates/property-scope",
+        "twam"
+      ],
+      "subjects": [
+        {
+          "name": "Necula Compiling with Proofs",
+          "identity": {
+            "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+            "publication": "CMU-CS-98-154;1998-09-18",
+            "coordinates": "chapter2 Theorem2.1;277-page dissertation"
+          }
+        },
+        {
+          "name": "From System F to Typed Assembly Language",
+          "identity": {
+            "primary_url": "https://www.cs.cmu.edu/~dpw/papers/tal-toplas.pdf",
+            "doi": "10.1145/319301.319345",
+            "publication": "TOPLAS21(3),1999",
+            "coordinates": "section7.3;41-page author PDF"
+          }
+        },
+        {
+          "name": "Appel FPCC primary project account",
+          "identity": {
+            "primary_url": "https://www.cs.princeton.edu/~appel/fpcc.html",
+            "publication": "Princeton FPCC project1999-2005"
+          }
+        },
+        {
+          "name": "Appel Foundational Proof-Carrying Code",
+          "identity": {
+            "primary_url": "https://www.cs.princeton.edu/~appel/papers/fpcc.pdf",
+            "doi": "10.1109/LICS.2001.932501",
+            "publication": "LICS2001",
+            "inspection": "full10-page author PDF;sections2,5",
+            "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+          }
+        },
+        {
+          "name": "Bohrer/Crary TWAM",
+          "identity": {
+            "primary_url": "https://www.cs.cmu.edu/~crary/papers/2018/twam.pdf",
+            "publication": "2018 author paper",
+            "coordinates": "Theorem1 and section3.5;23-page PDF"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "679c930ac5a1bd3900c2eb8c73650a4898fbb479eb1fef53aa09bdee13203975",
+    "report_sha256": "3e66abd0db78b0de3e77174ee946f6e0dbd6301e15275e39b9ae22f189a85f2d",
+    "words": 1308
+  },
+  {
+    "package": "pin-async-and-external-resource-contracts-2026",
+    "metadata": {
+      "topics": [
+        "rust/pin",
+        "rust/async",
+        "rust/ffi",
+        "rust/volatile",
+        "rust/hardware",
+        "certificates/progress"
+      ],
+      "subjects": [
+        {
+          "name": "Rust standard-library contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+          "identity": {
+            "arxiv": "2610.09198v1",
+            "submitted": "2026-10-06",
+            "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30"
+          }
+        },
+        {
+          "name": "A Complete Formal Semantics for Rust Source Code",
+          "identity": {
+            "arxiv": "2610.06003v1",
+            "submitted": "2026-10-05",
+            "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d"
+          }
+        },
+        {
+          "name": "Native async drop probe compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0",
+            "host": "aarch64-apple-darwin"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "f98ba6c754646773cfe21ade8ebd93abbe4605a06bf9adb8440aa5bfcc95f465",
+    "report_sha256": "2eab0d0a03c2f10621b4a9e57307ea3161bf09f8394ef4d01ec9ca1be2320bfa",
+    "words": 1559
+  },
+  {
+    "package": "plutus-inductive-pass-certificates-scp-2024",
+    "metadata": {
+      "topics": [
+        "plutus",
+        "certificates/translation-relations",
+        "certificates/reflection",
+        "anneal/translation"
+      ],
+      "subjects": [
+        {
+          "name": "Translation certification for smart contracts",
+          "identity": {
+            "doi": "10.1016/j.scico.2023.103051",
+            "publication": "SCP 233 (2024) 103051",
+            "author-copy": "https://webspace.science.uu.nl/~swier004/publications/2024-scp.pdf"
+          }
+        },
+        {
+          "name": "Plutus translation relation research artifact",
+          "identity": {
+            "repository": "basetunnel/2022-scp-translation-relations",
+            "revision": "72e619f3243498a612d8c6c5090b88117c404489"
+          }
+        },
+        {
+          "name": "Anneal execution correspondence design",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "bb16f218e0df08152899cc2e414090e283b49a4c5630edfda336d48537a36fe2",
+    "report_sha256": "b5ca79caebd10efb9ed68a5712c590bdfe45a4027dc5bf7e1a3824b7c4364979",
+    "words": 1477
+  },
+  {
+    "package": "pr-stack-pure-model-boundaries-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/experiments",
+        "rust/representation",
+        "verification/model-boundaries"
+      ],
+      "subjects": [
+        {
+          "name": "Anneal PR-stack source",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        },
+        {
+          "name": "Rust native compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        },
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0"
+          }
+        },
+        {
+          "name": "Lean 4.34.1",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "19fab7a28d72f28632e7397448c9fd95e2bc5def4913b92189fa0d595320fc8c",
+    "report_sha256": "3199991347360c7ae0958a73acd89aa3d1857e75f5f6286ff60d3d79380f64f0",
+    "words": 1336
+  },
+  {
+    "package": "prefix-safety-outcomes-and-property-transfer",
+    "metadata": {
+      "topics": [
+        "anneal/correspondence",
+        "semantics/safety-reflection",
+        "semantics/prefixes",
+        "semantics/progress",
+        "lean/certificates"
+      ],
+      "subjects": [
+        {
+          "name": "Original generic prefix certificate specimen",
+          "identity": {
+            "artifact": "PrefixCertificate.lean",
+            "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+          }
+        },
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Aeneas outcome and interpreter source",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+            "path": "src/behavior-considered-undefined.md"
+          }
+        },
+        {
+          "name": "Anneal consumer semantic/admission policy",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "path": "verification/aeneas/SEMANTICS.md"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "a622c99274659e5ed1f29d93fdf01e85da320db88839b2061593b1ee640f44dc",
+    "report_sha256": "0208d0746223ae77429009b0ee4edbbc4cc8e02c5c54ac684ffdd8d6a915c8db",
+    "words": 1921
+  },
+  {
+    "package": "proof-producing-frontends-and-derived-checker-interfaces",
+    "metadata": {
+      "topics": [
+        "compilation/proof-producing",
+        "reflection/validated",
+        "rust/specification-dsl",
+        "checking/derived-relations"
+      ],
+      "subjects": [
+        {
+          "name": "CairoZero retained Lean3 proof-producing compiler",
+          "identity": {
+            "repository": "starkware-libs/formal-proofs",
+            "revision": "d0dd8279612a248cbc6bf6d286030bf0bb2a37ff"
+          }
+        },
+        {
+          "name": "Oeuf source and reflection/serialization interfaces",
+          "identity": {
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+          }
+        },
+        {
+          "name": "Verdict policy DSL and selected DER interface",
+          "identity": {
+            "repository": "secure-foundations/verdict",
+            "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+          }
+        },
+        {
+          "name": "QuickChick checker proof interfaces",
+          "identity": {
+            "repository": "QuickChick/QuickChick",
+            "revision": "e35dc8e917f0e36b4ab7cbc66b7d0f7131122588"
+          }
+        },
+        {
+          "name": "A Proof-Producing Compiler for Blockchain Applications",
+          "identity": {
+            "arxiv": "2501.15002v1",
+            "url": "https://arxiv.org/pdf/2501.15002v1"
+          }
+        },
+        {
+          "name": "Oeuf: Minimizing the Coq Extraction TCB",
+          "identity": {
+            "doi": "10.1145/3167089",
+            "url": "https://homes.cs.washington.edu/~djg/papers/oeuf2018.pdf"
+          }
+        },
+        {
+          "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+          "identity": {
+            "publication": "USENIX Security 2025",
+            "url": "https://verified.how/papers/verdict.pdf",
+            "pages": "17"
+          }
+        },
+        {
+          "name": "Computing Correctly with Inductive Relations",
+          "identity": {
+            "doi": "10.1145/3519939.3523707",
+            "publication": "PLDI 2022",
+            "url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "37d446641651b7f46c7da1ae1f6e7f1508c87be727bae50b3dfc2c3bce4eff74",
+    "report_sha256": "b4e4d9f70a4a070640b487964b6ebe29191528a343e0ed8a0816211d5dc0fb37",
+    "words": 1647
+  },
+  {
+    "package": "property-proof-translation-specification-meaning-2006-2024",
+    "metadata": {
+      "topics": [
+        "certificates/property-translation",
+        "potpie",
+        "semantics/specification-preservation",
+        "anneal/translation"
+      ],
+      "subjects": [
+        {
+          "name": "Certificate translation for optimizing compilers",
+          "identity": {
+            "doi": "10.1007/11823230_20",
+            "publication": "SAS 2006 extended abstract, LNCS 4134 pp.301-317",
+            "author-copy": "https://software.imdea.org/~ckunz/publications/certtrans-SAS06.pdf"
+          }
+        },
+        {
+          "name": "PotPie ITP 2024 paper",
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2024.33",
+            "publication": "ITP 2024 article 33",
+            "publisher-copy": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol309-itp2024/LIPIcs.ITP.2024.33/LIPIcs.ITP.2024.33.pdf"
+          }
+        },
+        {
+          "name": "PotPie publication artifact",
+          "identity": {
+            "repository": "uwplse/potpie",
+            "revision": "a57f960958901dee3b8075be0a312d6a194be456",
+            "version": "v0.5"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "55cc780e532ae191d020cdbc1989670f7b6eb283cb9877201afdde4c137d08cc",
+    "report_sha256": "00abbace50b3a9ed9713767432ee373aa22caa92a76bcc45cd1bb3ac3b037715",
+    "words": 1609
+  },
+  {
+    "package": "recursive-inference-and-verified-callee-lifecycles-2026",
+    "metadata": {
+      "topics": [
+        "rust/rusthorn",
+        "verification/stainless",
+        "verification/saw",
+        "verification/inference",
+        "verification/contracts",
+        "verification/trust"
+      ],
+      "subjects": [
+        {
+          "name": "RustHorn",
+          "identity": {
+            "repository": "hopv/Rust-horn",
+            "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+            "tree": "7786562e36fb0bb1fe67be806d3205f0c825ec26"
+          }
+        },
+        {
+          "name": "Stainless",
+          "identity": {
+            "repository": "EPFL-LARA/stainless",
+            "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+            "tree": "6c6531ac0842267e18c78b5004a1a827c729a207"
+          }
+        },
+        {
+          "name": "System FR paper-linked formalization",
+          "identity": {
+            "repository": "epfl-lara/SystemFR",
+            "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+            "tree": "3bfba314ad3b27e057b45fc55b31f54393c7f959"
+          }
+        },
+        {
+          "name": "System FR current formalization",
+          "identity": {
+            "repository": "epfl-lara/SystemFR",
+            "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+            "tree": "ea2e592e3c45992949f7c88f74789b7b64d49d5a"
+          }
+        },
+        {
+          "name": "SAW",
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+            "tree": "8bafba9268567d91a635a819ea5e002bc32bf8ac"
+          }
+        },
+        {
+          "name": "System FR paper",
+          "identity": {
+            "arxiv": "1904.03482v2",
+            "sha256": "8499729820596e04495868975bf5da7aecee2e8d2c555f1eae2d8570538bf280"
+          }
+        },
+        {
+          "name": "RustHorn ESOP full version",
+          "identity": {
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "cf675ba653610a09eacf7335028f1785b0e776934140a3812fb29075f254db21",
+    "report_sha256": "358c2fc70d654348e17b506a51fb42ae8636a4648b01ea091f063c61450433ad",
+    "words": 2280
+  },
+  {
+    "package": "refinedc-lithium-and-cn-result-interfaces-2026",
+    "metadata": {
+      "topics": [
+        "c/refinedc",
+        "separation-logic/automation",
+        "c/cn",
+        "verification/certificates",
+        "verification/specification-testing"
+      ],
+      "subjects": [
+        {
+          "name": "RefinedC and Lithium",
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/refinedc",
+            "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca"
+          }
+        },
+        {
+          "name": "CN",
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d",
+            "tree": "ed4c238beed80859f5d02b35e2d1afbed9a0ff78"
+          }
+        },
+        {
+          "name": "Cerberus dependency named by CN",
+          "identity": {
+            "repository": "rems-project/cerberus",
+            "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1",
+            "tree": "49bbaa33463aec6786c31a084031e2abe521aecb"
+          }
+        },
+        {
+          "name": "RefinedC PLDI 2021 paper",
+          "identity": {
+            "artifact": "paper.pdf",
+            "url": "https://plv.mpi-sws.org/refinedc/paper.pdf",
+            "sha256": "80d43dea0e754222a6aa851c884b4d2aee59d288a0237409952e45941104c9e0"
+          }
+        },
+        {
+          "name": "CN POPL 2023 kernel and soundness",
+          "identity": {
+            "artifact": "popl23.pdf",
+            "sha256": "c8704536456f4b6bb564ecd709c2f77e90d6fd659532e68f2e083a6c9a1140c8",
+            "soundness_sha256": "feb882a6e2cbde9e6cdb120319e06527e90e9399842a01d81b5450acd64e275d"
+          }
+        },
+        {
+          "name": "Fulminate POPL 2025 paper",
+          "identity": {
+            "doi": "10.1145/3704879",
+            "sha256": "347d79ce5a1c2d4fdb12412446ff69a02bd41990e91cd1ca9e40976d746b7954"
+          }
+        },
+        {
+          "name": "Bennet observed author paper",
+          "identity": {
+            "url": "https://zain-k-aamer.com/papers/bennet.pdf",
+            "sha256": "d479fda5d808f07d6a3eb4193c0dacfe503c098dd4fedf15b7dc43f6d943a521"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "8c8bda203364307f38997b328ebdd0ed1b53dcc0e4f0005d791f6433e0131a1b",
+    "report_sha256": "24abb54cf155368a8a2c832211bd039166c7e91ef7b4b043567dd06c782ec925",
+    "words": 1874
+  },
+  {
+    "package": "refinedrust-radium-proof-boundary-2026-v2",
+    "metadata": {
+      "topics": [
+        "refinedrust",
+        "radium/semantics",
+        "iris/byte-resources",
+        "rust/layout",
+        "verification/mir-extraction",
+        "verification/proof-acceptance",
+        "verification/cross-prover"
+      ],
+      "subjects": [
+        {
+          "name": "RefinedRust 2026 source artifact",
+          "identity": {
+            "zenodo": "21636474",
+            "archive": "artifact.tar.gz",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+          }
+        },
+        {
+          "name": "RefinedRust 2026 paper",
+          "identity": {
+            "doi": "10.1145/3839484",
+            "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+          }
+        },
+        {
+          "name": "RefinedRust 2024 paper",
+          "identity": {
+            "doi": "10.1145/3656422",
+            "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "82363938a794e6f25afa02685f75dfed1a4991e851e53f4d7183e0ba4a433b3b",
+    "report_sha256": "52a2b53d1e31bf80ecf051b1c7ae98548eb5683cdbb8f924474e3102b5e3a38a",
+    "words": 1679
+  },
+  {
+    "package": "refinement-horn-and-lean-vc-boundaries-2026",
+    "metadata": {
+      "topics": [
+        "flux",
+        "thrust",
+        "rusthorn",
+        "prusti",
+        "verification/refinement-inference",
+        "verification/horn-clauses",
+        "verification/lean-vc-checking"
+      ],
+      "subjects": [
+        {
+          "name": "Flux source",
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "6769bb9cbd1216380f542349494efafafd6104a3"
+          }
+        },
+        {
+          "name": "Thrust source",
+          "identity": {
+            "repository": "coord-e/thrust",
+            "revision": "187a1e975edece50b896f1ee478ab665d7a1204e"
+          }
+        },
+        {
+          "name": "RustHorn source",
+          "identity": {
+            "repository": "hopv/Rust-horn",
+            "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52"
+          }
+        },
+        {
+          "name": "Prusti source",
+          "identity": {
+            "repository": "prusti/prusti",
+            "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+          }
+        },
+        {
+          "name": "Flux PLDI 2023 author paper",
+          "identity": {
+            "doi": "10.1145/3591283",
+            "sha256": "69cae6293c84a7f42e90a883d6d4645449b7216e00c80219e262609528c52b51"
+          }
+        },
+        {
+          "name": "Thrust PLDI 2025 author paper",
+          "identity": {
+            "doi": "10.1145/3729333",
+            "sha256": "adc13d87e09a61e5ef42057c61c5602a38c5befa1416f0b76ba7edc919882695"
+          }
+        },
+        {
+          "name": "RustHorn updated author full-version paper",
+          "identity": {
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "a401f0130ad22f9d539b7beae7518dcf4f6121675db1e51d7e1b53055b30d878",
+    "report_sha256": "f652cb97b22dd2f787ac9938919195d420e3ca94f673557faebcb240df67f6f2",
+    "words": 1728
+  },
+  {
+    "package": "refinement-policy-and-safety-direction-comparison",
+    "metadata": {
+      "topics": [
+        "compilation/refinement",
+        "compilation/llvm",
+        "compilation/translation-validation",
+        "safety/reflection",
+        "certificates/conclusion-taxonomy"
+      ],
+      "subjects": [
+        {
+          "name": "Alive2 bounded translation validation",
+          "identity": {
+            "primary_url": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+            "doi": "10.1145/3453483.3454030",
+            "publication": "PLDI2021",
+            "coordinates": "sections5,7,8.1;15-page author PDF"
+          }
+        },
+        {
+          "name": "CryptOpt verified equivalence checking",
+          "identity": {
+            "primary_url": "https://arxiv.org/pdf/2211.10665v3",
+            "arxiv": "2211.10665v3",
+            "publication": "2023-05-22 full paper",
+            "coordinates": "sections6.1-6.4;32-page PDF"
+          }
+        },
+        {
+          "name": "Jitterbug BPF JIT verification",
+          "identity": {
+            "primary_url": "https://www.usenix.org/system/files/osdi20-nelson.pdf",
+            "publication": "OSDI2020",
+            "coordinates": "section4 Definitions1-5 Theorem1;sections6-7;22-page PDF"
+          }
+        },
+        {
+          "name": "Trivet LLVM Lean validation",
+          "identity": {
+            "primary_url": "https://arxiv.org/pdf/2609.19583v1",
+            "arxiv": "2609.19583v1",
+            "publication": "2026-09-17 preprint",
+            "coordinates": "Definition2.1 and section3;14-page PDF"
+          }
+        },
+        {
+          "name": "EquiVM foundational bytecode refinement",
+          "identity": {
+            "primary_url": "https://arxiv.org/pdf/2607.26306v1",
+            "arxiv": "2607.26306v1",
+            "publication": "2026-07-28 preprint",
+            "coordinates": "section5 Figure9;34-page PDF"
+          }
+        },
+        {
+          "name": "Owlang compositional open safety",
+          "identity": {
+            "primary_url": "https://arxiv.org/pdf/2510.10015v1",
+            "arxiv": "2510.10015v1",
+            "publication": "2025-10-11 preprint",
+            "coordinates": "section5 Theorems5.1-5.2;34-page PDF"
+          }
+        },
+        {
+          "name": "RustCompCert ongoing work",
+          "identity": {
+            "primary_url": "https://arxiv.org/pdf/2602.07455v1",
+            "arxiv": "2602.07455v1",
+            "publication": "2026-02-07 preprint",
+            "coordinates": "section2 and footnote2;3-page PDF"
+          }
+        },
+        {
+          "name": "Computing Correctly with Inductive Relations",
+          "identity": {
+            "primary_url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf",
+            "publication": "PLDI2022",
+            "coordinates": "section3 Figure1 and section6.3;15-page author PDF"
+          }
+        },
+        {
+          "name": "AliveToolkit/alive2",
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "5d0eb277235b73f71000501c3a4f5ab9b2586915",
+            "path": "README.md"
+          }
+        },
+        {
+          "name": "0xADE1A1DE/CryptOpt",
+          "identity": {
+            "repository": "0xADE1A1DE/CryptOpt",
+            "revision": "c089d8ce3cace748a0a22e25d7adfbf2cfc6a883",
+            "path": "Readme.md"
+          }
+        },
+        {
+          "name": "uw-unsat/jitterbug",
+          "identity": {
+            "repository": "uw-unsat/jitterbug",
+            "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+            "path": "README.md"
+          }
+        },
+        {
+          "name": "vellvm/vellvm",
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "4c6db50077cbc0df3fb3156c0570129201cc35f3",
+            "path": "README.md"
+          }
+        },
+        {
+          "name": "mit-plv/fiat-crypto",
+          "identity": {
+            "repository": "mit-plv/fiat-crypto",
+            "revision": "b4ad623c6a5bde0c71169493963a308c612fce3f"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "9a8640d1a20b75e07dd58bb8e6ee0bed47095d6b16dc3c4d6c28cd5642d06352",
+    "report_sha256": "4b7815870939ac4c4a3be977b27dd8cb5bf53c15728c78f5563b52a4df7082c4",
+    "words": 1615
+  },
+  {
+    "package": "reflection-rewriting-and-resource-extension-gates-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "automation/reflection",
+        "automation/rewriting",
+        "automation/egraphs",
+        "logic/separation",
+        "proof/extensions",
+        "verification/invariants"
+      ],
+      "subjects": [
+        {
+          "name": "mit-plv/rewriter",
+          "identity": {
+            "repository": "mit-plv/rewriter",
+            "revision": "902bd7bfd807f4511fa07b0b1f07ca640f9da4a8"
+          }
+        },
+        {
+          "name": "marcusrossel/lean-egg",
+          "identity": {
+            "repository": "marcusrossel/lean-egg",
+            "revision": "2605a63b6a78407114c692f5dc626531ff62df55"
+          }
+        },
+        {
+          "name": "AeneasVerif/aeneas",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+          }
+        },
+        {
+          "name": "leanprover/lean4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "Verified rewriting engine ITP2022 publication",
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.17",
+            "title": "Accelerating Verified-Compiler Development with a Verified Rewriting Engine"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "4e353b472a554f6f81dcf44796fad282916d32ae68fafea886a846e855b82fb8",
+    "report_sha256": "2da2bf28870f2e40447c15e0048004c0a376ea8ef321886384b48dbee33f758e",
+    "words": 1507
+  },
+  {
+    "package": "relaxed-memory-reclamation-premises-2026",
+    "metadata": {
+      "topics": [
+        "rust/concurrency",
+        "rust/weak-memory",
+        "iris/reclamation",
+        "rust/send-sync"
+      ],
+      "subjects": [
+        {
+          "name": "Rust standard-library contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "iRC11/ORC11 formalization",
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/gpfsl",
+            "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14"
+          }
+        },
+        {
+          "name": "Author-associated relaxed-memory artifact",
+          "identity": {
+            "repository": "kaist-cp/relaxed-memory-separation-logic",
+            "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+          }
+        },
+        {
+          "name": "RustBelt Meets Relaxed Memory POPL 2020 paper",
+          "identity": {
+            "doi": "10.1145/3371102",
+            "sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "fd71bce5af0f18eea3972854b307de16715d2ae490262635b80c4b7b5b8ba044",
+    "report_sha256": "bd4a966be2a96bbd0715593aacd336cb4492fb194d80fae33c2d035bbbad0854",
+    "words": 1270
+  },
+  {
+    "package": "resource-algebra-lifetime-and-automation-2026",
+    "metadata": {
+      "topics": [
+        "iris/resource-algebra",
+        "iris/lifetimes",
+        "iris/prophecy",
+        "iris/automation",
+        "rust/interior-mutability"
+      ],
+      "subjects": [
+        {
+          "name": "Iris resource and execution interfaces",
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          }
+        },
+        {
+          "name": "Rust standard-library contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          }
+        },
+        {
+          "name": "RustBelt lifetime archive",
+          "identity": {
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+          }
+        },
+        {
+          "name": "RustHornBelt 2022 prophecy artifact",
+          "identity": {
+            "doi": "10.5281/zenodo.6417462",
+            "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+          }
+        },
+        {
+          "name": "RefinedRust 2026-v2 resource/Lithium source",
+          "identity": {
+            "doi": "10.5281/zenodo.21636474",
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+          }
+        },
+        {
+          "name": "Diaframe 2022 source artifact",
+          "identity": {
+            "doi": "10.5281/zenodo.6414787",
+            "artifact": "diaframe-artifact-source.tgz",
+            "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+          }
+        },
+        {
+          "name": "Quiver",
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/quiver",
+            "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d"
+          }
+        },
+        {
+          "name": "Quiver PLDI 2024 paper",
+          "identity": {
+            "doi": "10.1145/3656413",
+            "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "abdf0b26ed908c51b93120f0eacbb074375f8fceb0649d46a71b9b8649a75388",
+    "report_sha256": "387b5483e5f093de0677388b86fa3b72aebdcd583cd2a6fb3e17f3354b238527",
+    "words": 1624
+  },
+  {
+    "package": "resource-logics-effects-and-compilation-interfaces",
+    "metadata": {
+      "topics": [
+        "verification/resource-logics",
+        "vst",
+        "bedrock2",
+        "refinedc",
+        "cn",
+        "fstar/pulse",
+        "lowstar"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert C compiler formal endpoint",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+          }
+        },
+        {
+          "name": "VST Verifiable C",
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          }
+        },
+        {
+          "name": "Bedrock2",
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          }
+        },
+        {
+          "name": "CN current documentation source",
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d"
+          }
+        },
+        {
+          "name": "FStar current migrated Pulse source",
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d"
+          }
+        },
+        {
+          "name": "Former Pulse repository migration notice",
+          "identity": {
+            "repository": "FStarLang/pulse",
+            "revision": "c35460e00483be17a38397b1594c29a9bf29df15"
+          }
+        },
+        {
+          "name": "RefinedC PLDI 2021 paper",
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+          }
+        },
+        {
+          "name": "CN POPL 2023 paper",
+          "identity": {
+            "publication": "POPL 2023",
+            "url": "https://www.cl.cam.ac.uk/~cp526/popl23.pdf"
+          }
+        },
+        {
+          "name": "CN kernel definitions supplement",
+          "identity": {
+            "publication": "CN POPL 2023 supplementary definitions",
+            "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_defns.pdf",
+            "pages": "107"
+          }
+        },
+        {
+          "name": "CN soundness supplement",
+          "identity": {
+            "publication": "CN POPL 2023 supplementary soundness proof",
+            "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_soundness.pdf",
+            "pages": "44"
+          }
+        },
+        {
+          "name": "Verified Low-Level Programming Embedded in FStar",
+          "identity": {
+            "arxiv": "1703.00053v6",
+            "doi": "10.1145/3110261",
+            "url": "https://arxiv.org/pdf/1703.00053v6"
+          }
+        },
+        {
+          "name": "A Dependently Typed Stratified Separation Logic",
+          "identity": {
+            "url": "https://fstar-lang.org/papers/pulsecore.pdf",
+            "pages": "27"
+          }
+        },
+        {
+          "name": "Steel primary author paper",
+          "identity": {
+            "url": "https://www.fstar-lang.org/papers/steel/steel.pdf"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "df410f48e3d60708efb0d79c671fbd3346331d34d34adba390caf37722c8681b",
+    "report_sha256": "7916dc99439cfa892e06bcd58dfbaca85ba22afdc9a420a65832686bc9ed55d6",
+    "words": 1733
+  },
+  {
+    "package": "rust-admission-diagnostics-and-proof-transport-cce761ad",
+    "metadata": {
+      "topics": [
+        "rust/admission",
+        "verification/diagnostics",
+        "verification/specification-adequacy",
+        "verification/proof-transport",
+        "verification/smt-certificates",
+        "verification/effects"
+      ],
+      "subjects": [
+        {
+          "name": "zerocopy PR stack source",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        },
+        {
+          "name": "SMTCoq",
+          "identity": {
+            "repository": "smtcoq/smtcoq",
+            "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+          }
+        },
+        {
+          "name": "Carcara",
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+          }
+        },
+        {
+          "name": "LFSC checker",
+          "identity": {
+            "repository": "cvc5/LFSC",
+            "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "3ef39bc8e36ccb606f4a4a683976da719a8fc42e535bad01e19a0bcbf61eddf6",
+    "report_sha256": "bb477105aceba5537bfd3b2b2a8d50fbf644253306ac1e8fcb2d87ee858146b8",
+    "words": 1754
+  },
+  {
+    "package": "rust-alias-model-compatibility-2026-10-14",
+    "metadata": {
+      "topics": [
+        "rust/aliasing",
+        "stacked-borrows",
+        "tree-borrows",
+        "rust/program-logics",
+        "semantics/source-safety",
+        "rust/async",
+        "semantics/fairness"
+      ],
+      "subjects": [
+        {
+          "name": "Pinned Miri aliasing implementation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "MiniRust Tree Borrows and source discriminator",
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          }
+        },
+        {
+          "name": "Stacked Borrows POPL 2020",
+          "identity": {
+            "doi": "10.1145/3371109",
+            "publication": "PACMPL 4 POPL Article 41, January 2020",
+            "sha256": "a342838a2c5c566e0374cad1f583837ed9c8abb68b62ec5ecc076c469c5d3439",
+            "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+          }
+        },
+        {
+          "name": "Tree Borrows PLDI 2025",
+          "identity": {
+            "doi": "10.1145/3735592",
+            "publication": "PACMPL 9 PLDI Article 188, June 2025",
+            "sha256": "2b804f5cd0a7855d603e5b8e19627d601f29307976cee1a765f52d9610077d80",
+            "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+          }
+        },
+        {
+          "name": "A Program Logic for Tree Borrows, Peterson thesis",
+          "identity": {
+            "url": "https://rudynicolop.github.io/files/thesis.pdf",
+            "year": "2025",
+            "sha256": "e49b0d5bbd1c30f43671c08f4eecaa6b33556ae6c6871b16af5c19e7ede0b876"
+          }
+        },
+        {
+          "name": "Towards verifying unsafe Rust pointer aliasing",
+          "identity": {
+            "arxiv": "2603.28326v1",
+            "version-date": "2026-03-30",
+            "sha256": "bdb7ec5b19542cd80e7f9c6eb031d4bf23f0517fef60221b624d3b45f0dc4b1c",
+            "url": "https://arxiv.org/pdf/2603.28326v1"
+          }
+        },
+        {
+          "name": "A Complete, Formal Semantics for Rust Source Code",
+          "identity": {
+            "arxiv": "2610.06003v1",
+            "version-date": "2026-10-05",
+            "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d",
+            "url": "https://arxiv.org/pdf/2610.06003v1"
+          }
+        },
+        {
+          "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+          "identity": {
+            "arxiv": "2610.09198v1",
+            "version-date": "2026-10-06",
+            "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30",
+            "url": "https://arxiv.org/pdf/2610.09198v1"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "53b825a38194591446ce81073850c2abff5415a77bed93a2b6542f3c5ca17e69",
+    "report_sha256": "d65cb2afeb4143aafaa6eaf66133485c26fc322741a9c9bdc434d8140a3caa70",
+    "words": 1494
+  },
+  {
+    "package": "rust-authority-provenance-2026-05-31",
+    "metadata": {
+      "topics": [
+        "rust/semantics",
+        "rust/provenance",
+        "rust/strict-provenance",
+        "rust/unsafe-verification",
+        "certificates/provenance"
+      ],
+      "subjects": [
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        },
+        {
+          "name": "Rust pointer contracts and implementation",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          }
+        },
+        {
+          "name": "Unsafe Code Guidelines repository",
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          }
+        },
+        {
+          "name": "C provenance semantics proposal N2364",
+          "identity": {
+            "document": "ISO/IEC JTC1/SC22/WG14 N2364",
+            "version-date": "2019-04-01",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2364.pdf"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "7b73790f0767593ac7ad5fa95d2866a7936ce907dcacb0038668f124a1ed6829",
+    "report_sha256": "c4e5b6854006f0014d0aad07b4415863eef38c8431b5ed4b3530769a89df5ee3",
+    "words": 1128
+  },
+  {
+    "package": "rust-resource-primitive-matrix-2026",
+    "metadata": {
+      "topics": [
+        "rust/verifast",
+        "rust/verus",
+        "rust/creusot",
+        "verification/permissions",
+        "rust/unsafe",
+        "verification/trust"
+      ],
+      "subjects": [
+        {
+          "name": "VeriFast source",
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          }
+        },
+        {
+          "name": "Verus source",
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          }
+        },
+        {
+          "name": "Creusot source",
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          }
+        },
+        {
+          "name": "VeriFast foundational preprint v1",
+          "identity": {
+            "arxiv": "2601.13727v1",
+            "sha256": "db6fafe5642384c302868138529796c28a4a90eb6c944ecead089a6b85060fc6",
+            "url": "https://arxiv.org/pdf/2601.13727v1"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "737354fe99aaa318392b888784ee0e47594ba5034110e63577b2cbb10b72208d",
+    "report_sha256": "d640c2970a70e2de1efa77ff105cc51177f829bea8f1f3a799d715e4c5020a02",
+    "words": 1787
+  },
+  {
+    "package": "rust-storage-transfer-and-drop-cce761ad",
+    "metadata": {
+      "topics": [
+        "rust/initializedness",
+        "rust/typed-transfers",
+        "rust/drop",
+        "rust/allocators",
+        "zerocopy/conversions"
+      ],
+      "subjects": [
+        {
+          "name": "zerocopy PR source and Lean interfaces",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+          }
+        },
+        {
+          "name": "Rust standard-library contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "907de1431d4de4067da788fb1a42ec47fdf780badb774a2f1aaa17d782508969",
+    "report_sha256": "a9407f34ea9854b32aa8583e7b5d6df6706ddc6a1ca0b0e43065c2ecde2ea1a6",
+    "words": 1464
+  },
+  {
+    "package": "rust-symbolic-completeness-boundaries-2026",
+    "metadata": {
+      "topics": [
+        "kani",
+        "crux-mir",
+        "soteria",
+        "verification/bounded-symbolic",
+        "verification/completeness",
+        "verification/model-checking-evidence"
+      ],
+      "subjects": [
+        {
+          "name": "Kani source",
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+          }
+        },
+        {
+          "name": "Crux-MIR and Crucible source",
+          "identity": {
+            "repository": "GaloisInc/crucible",
+            "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4"
+          }
+        },
+        {
+          "name": "Soteria PLDI 2026 source artifact",
+          "identity": {
+            "zenodo": "19080425",
+            "archive": "soteria-pldi26-artifact.zip",
+            "sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2"
+          }
+        },
+        {
+          "name": "Soteria extended paper",
+          "identity": {
+            "arxiv": "2511.08729v6",
+            "doi": "10.1145/3808306",
+            "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "415dd3032c5fc43a8da137ffef4270d57e346eaf3e3d592154f399eb1cc7163a",
+    "report_sha256": "5f0dcdd45d0d15ebaf3e41d9d0a63a0e206e50606599e0ee665b778fe440db70",
+    "words": 1641
+  },
+  {
+    "package": "rustbelt-rusthornbelt-contract-bridge-2022",
+    "metadata": {
+      "topics": [
+        "rust/semantic-typing",
+        "rustbelt",
+        "rusthornbelt",
+        "rusthorn/chc",
+        "iris/lifetimes",
+        "iris/parametric-prophecy",
+        "verification/contract-bridge"
+      ],
+      "subjects": [
+        {
+          "name": "RustBelt LambdaRust source",
+          "identity": {
+            "archive": "lambda-rust-popl18.tar.gz",
+            "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+          }
+        },
+        {
+          "name": "RustHornBelt 2022 source artifact",
+          "identity": {
+            "zenodo": "6417462",
+            "archive": "the_artifact.tgz",
+            "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+          }
+        },
+        {
+          "name": "RustHornBelt paper",
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+          }
+        },
+        {
+          "name": "RustHornBelt author erratum",
+          "identity": {
+            "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt",
+            "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5"
+          }
+        },
+        {
+          "name": "RustHorn updated author full-version paper",
+          "identity": {
+            "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+            "doi": "10.1007/978-3-030-44914-8_18",
+            "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "d642634984074b818a4bee353a1a81030c62b1fb250d37e4af63dc7c5513007f",
+    "report_sha256": "0688e10ab201a6bc493580ca2940557010f2c80c778d41f60e0ce89092fa2095",
+    "words": 1533
+  },
+  {
+    "package": "safe-byte-correspondence-three-routes-lean4-31-rust1-99",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "prototype/correspondence",
+        "rust/byte-arithmetic",
+        "lean/kernel-checking"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "artifact": "lean executable",
+            "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+          }
+        },
+        {
+          "name": "Rust 1.99.0 compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "artifact": "rustc executable",
+            "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+          }
+        },
+        {
+          "name": "Captured arithmetic prototype",
+          "identity": {
+            "artifact": "support/experiments/subject.rs",
+            "sha256": "e3a37308bc49b9ed0308dbcbc6e63890b74a22de29abdf7030673b7ad6c642e8",
+            "semantics": "wrapping-byte-tree-v1"
+          }
+        },
+        {
+          "name": "Arithmetic proof model",
+          "identity": {
+            "artifact": "support/experiments/ArithmeticModel.lean",
+            "sha256": "23f05b95266742c0064b749a533dea5363aef439a9f5081df1e400e5634c75e3"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "28b5ff8bf48e6ae46dad87402fbdc465941436cde453f22d3799a3647a8d6a2b",
+    "report_sha256": "56eb27eeee6bcf0af9e2a16d86ed7c1b1d00f409df65305ef4e47f492e917d1b",
+    "words": 1506
+  },
+  {
+    "package": "safe-unsafe-bool-domain-certificate-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/caller-domain",
+        "rust/unsafe",
+        "certificates/source-safety",
+        "lean/kernel"
+      ],
+      "subjects": [
+        {
+          "name": "Original complete safe API and certificate specimen",
+          "identity": {
+            "api_sha256": "416eded2d8d38c4de7212091446c16ffca3bd49f7aa266d02ec718d07c1038fa",
+            "certificate_sha256": "64d5e8b8df69fe8a6874a32d6d19e6cab6253af1c186ba5238a6e428d652f914"
+          }
+        },
+        {
+          "name": "Lean 4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "4.31.0"
+          }
+        },
+        {
+          "name": "Native Rust 1.99.0",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "target": "aarch64-apple-darwin"
+          }
+        },
+        {
+          "name": "Rust Reference contract snapshot",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "cfd92650e1da09d47605859b0c4cf305b26c56e22a6143480bec7e6aef1c44f1",
+    "report_sha256": "e131222e8b1ceb0dd9e2d3c8d64f63b59d25a7d626ab613ecd50155fea1ba3fe",
+    "words": 1108
+  },
+  {
+    "package": "sat-pb-and-bitvector-certificate-endpoints-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "automation/sat",
+        "automation/pseudo-boolean",
+        "lean/bitvectors",
+        "proof/certificates",
+        "proof/evaluation"
+      ],
+      "subjects": [
+        {
+          "name": "marijnheule/drat-trim",
+          "identity": {
+            "repository": "marijnheule/drat-trim",
+            "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+          }
+        },
+        {
+          "name": "digama0/frat",
+          "identity": {
+            "repository": "digama0/frat",
+            "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+          }
+        },
+        {
+          "name": "IsaFoL/IsaFoL",
+          "identity": {
+            "repository": "IsaFoL/IsaFoL",
+            "revision": "1475076cea603c64d3dfe70c91014a5264e0479b"
+          }
+        },
+        {
+          "name": "CakeML/cakeml",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          }
+        },
+        {
+          "name": "leanprover/lean4",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          }
+        },
+        {
+          "name": "StephanGocht/VeriPB",
+          "identity": {
+            "repository": "StephanGocht/VeriPB",
+            "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+          }
+        },
+        {
+          "name": "VeriPB current proof format overview",
+          "identity": {
+            "url": "https://veripb.org/overview.html",
+            "format": "version 3",
+            "observed": "2026-10-14"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "110aeefc6f6004627124914c25ab2d8d3ead2c9c1567350b850dc156b7a7e3b5",
+    "report_sha256": "9fcdfe1ac99d940ce87a2b0cc2247d6863fe8154e5eeafbee18648e7931029a0",
+    "words": 1478
+  },
+  {
+    "package": "scalars-values-storage-and-access-side-conditions",
+    "metadata": {
+      "topics": [
+        "rust/semantics",
+        "anneal/correspondence",
+        "certificates/values",
+        "certificates/memory",
+        "rust/provenance"
+      ],
+      "subjects": [
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Rust core pointer, initialization and cell contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          }
+        },
+        {
+          "name": "Charon value/type import",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+          }
+        },
+        {
+          "name": "Aeneas scalar model and symbolic conversion",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+          }
+        },
+        {
+          "name": "Rust mathematical memory/storage and consumer semantics",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "paths": "anneal/lean/Rust/Memory.lean;anneal/lean/Rust/Storage.lean;verification/aeneas/SEMANTICS.md"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "7ddef52644c152867a156607e390a948e3c09e0fdd2870e6b4ee632317f5e548",
+    "report_sha256": "940af000a3503a836001d1c0202d492f5af64ecf7134477c102120037498b940",
+    "words": 1744
+  },
+  {
+    "package": "smt-certificates-reconstruction-and-root-binding-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "automation/smt",
+        "proof/certificates",
+        "proof/reconstruction",
+        "proof/trust"
+      ],
+      "subjects": [
+        {
+          "name": "SMTCoq/smtcoq",
+          "identity": {
+            "repository": "SMTCoq/smtcoq",
+            "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+          }
+        },
+        {
+          "name": "ufmg-smite/carcara",
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+          }
+        },
+        {
+          "name": "cvc5/LFSC",
+          "identity": {
+            "repository": "cvc5/LFSC",
+            "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+          }
+        },
+        {
+          "name": "cvc5/cvc5",
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "f0bc3373ef032a3fc5006f22778aaae7b274f429"
+          }
+        },
+        {
+          "name": "ufmg-smite/lean-smt",
+          "identity": {
+            "repository": "ufmg-smite/lean-smt",
+            "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894"
+          }
+        },
+        {
+          "name": "isabelle-prover/mirror-isabelle",
+          "identity": {
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "e7b446c7de9580fb0580d1f916ca3f2104a7996d6b2c7eb4f788d16107c59af3",
+    "report_sha256": "b3a76a82e6eb4da95ec631d4acc0353ddd21fa7901cc7199412a284651918613",
+    "words": 1427
+  },
+  {
+    "package": "theorem-authority-and-consumer-statements-2026-10-14",
+    "metadata": {
+      "topics": [
+        "proof-checking/authority",
+        "hol/abstract-theorems",
+        "lean/statements",
+        "rocq/kernel"
+      ],
+      "subjects": [
+        {
+          "name": "HOL Light kernel",
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+          }
+        },
+        {
+          "name": "Lean kernel",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          }
+        },
+        {
+          "name": "Rocq constant checking",
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+          }
+        },
+        {
+          "name": "Lean comparator",
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "5b37213df254b092980988b9503ac3bcb1bf24b1dc3480737178f39555637098",
+    "report_sha256": "67396b4ae328efdeb33835fe5eb2d04bfc554f55b5e6183f8b4c45d1d89c0eba",
+    "words": 1455
+  },
+  {
+    "package": "transfinite-iris-existential-and-liveness-boundary-dde9f19",
+    "metadata": {
+      "topics": [
+        "iris/transfinite",
+        "verification/termination",
+        "verification/refinement"
+      ],
+      "subjects": [
+        {
+          "name": "Transfinite Iris source",
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/transfinite",
+            "revision": "dde9f193fb3d504be680480b2ca21052edae49df"
+          }
+        },
+        {
+          "name": "Transfinite Iris PLDI final paper",
+          "identity": {
+            "doi": "10.1145/3453483.3454031",
+            "artifact": "2021-pldi-transfinite-iris-final.pdf",
+            "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+          }
+        },
+        {
+          "name": "Transfinite Iris technical documentation",
+          "identity": {
+            "artifact": "2021-pldi-transfinite-iris-final-appendix.pdf",
+            "version": "May 14 2021",
+            "sha256": "d9cbc16acd64e3a2deea0afcba45a117bf137dc002066a10a33bd5d197f191b8"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "7c744865754d40e3230f37c67715a0264bc6868af178ea4780eaa71ebe013d25",
+    "report_sha256": "28ee1157a03150ba891d7670dab7cbaad69ff6148679b083b6d361c5134844be",
+    "words": 1485
+  },
+  {
+    "package": "verified-checker-theorem-endpoints-2026-10-14",
+    "metadata": {
+      "topics": [
+        "proof-checking/verified-checkers",
+        "lean/lean4lean",
+        "rocq/metarocq",
+        "hol/candle",
+        "compilation/checker-binaries"
+      ],
+      "subjects": [
+        {
+          "name": "Lean4Lean",
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          }
+        },
+        {
+          "name": "MetaRocq",
+          "identity": {
+            "repository": "MetaRocq/metarocq",
+            "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c"
+          }
+        },
+        {
+          "name": "CakeML Candle proof sources",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          }
+        },
+        {
+          "name": "Candle extended correctness paper",
+          "identity": {
+            "doi": "10.1007/s10817-025-09743-8",
+            "publication": "Journal of Automated Reasoning 69, article 32 (2025)"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "232804816863df7f8ef74149ff59968074eb851960a7c6d2ec49774a8c2dadbf",
+    "report_sha256": "bafce2fba567ab6eaa02dec7c3da40ba7a61c542112dcd9d5bfffc125c877f7d",
+    "words": 1753
+  },
+  {
+    "package": "verified-compilers-bootstrap-and-executable-endpoints",
+    "metadata": {
+      "topics": [
+        "compilation/verified",
+        "compilation/translation-validation",
+        "compilation/bootstrap",
+        "checking/executable-boundary",
+        "certirocq"
+      ],
+      "subjects": [
+        {
+          "name": "AbsInt/CompCert",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "path": "driver/Compiler.v"
+          }
+        },
+        {
+          "name": "CakeML/cakeml",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "path": "compiler/proofs/compilerProofScript.sml"
+          }
+        },
+        {
+          "name": "CertiRocq/certirocq",
+          "identity": {
+            "repository": "CertiRocq/certirocq",
+            "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+            "path": "theories/Compiler/correctness.v"
+          }
+        },
+        {
+          "name": "Tristan/Leroy verified validators",
+          "identity": {
+            "primary_url": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+            "doi": "10.1145/1328897.1328444",
+            "publication": "POPL2008",
+            "coordinates": "section2.1 Theorem1 and section2.2;11-page author PDF"
+          }
+        },
+        {
+          "name": "CakeML primary bootstrap description",
+          "identity": {
+            "primary_url": "https://cakeml.org/",
+            "inspection": "project documentation;no release binary inspected"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "8b6041128fdd8a41147aa28e594593eab652b417af8b27f456d5e3acaf08f388",
+    "report_sha256": "e8ce762c1913e8ce54808f2c5c7a8cc2b51b180e6b52c73ae9089b07730e46f4",
+    "words": 1267
+  },
+  {
+    "package": "verus-tracked-memory-trust-0141ebc",
+    "metadata": {
+      "topics": [
+        "verus",
+        "verification/linear-ghost",
+        "verification/erasure",
+        "rust/raw-pointer",
+        "verification/concurrency",
+        "verification/smt-trust"
+      ],
+      "subjects": [
+        {
+          "name": "Verus source",
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          }
+        },
+        {
+          "name": "Verus linear-ghost core paper",
+          "identity": {
+            "arxiv": "2303.05491v2",
+            "sha256": "05aa2097cf5740f2d1119426fbc1066277a010b7e8e1239095684c7931b14849"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "88253784acb1eb6fb8d2c815e0a90720bfb915c2d6d2472a433aee973d72331b",
+    "report_sha256": "22f411305bfbb0c921ca860e6430847be35e5fc279cb9c3b73f814a01d3015ec",
+    "words": 1367
+  },
+  {
+    "package": "zerocopy-byte-domain-and-write-controls-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal/experiments",
+        "rust/representation",
+        "verification/model-boundaries"
+      ],
+      "subjects": [
+        {
+          "name": "Anneal PR-stack source",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          }
+        },
+        {
+          "name": "Rust native compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "af87c58a3910be369f0f428bdf288f9100cbcc360cb84c716852f667e9f76a0e",
+    "report_sha256": "8b3214734a677e0c6670295dc85d64d35d6d4333a3f1339b573d4709e8cbe35e",
+    "words": 925
+  },
+  {
+    "package": "zerocopy-projection-validation-and-layout-cce761ad",
+    "metadata": {
+      "topics": [
+        "rust/pointer-resources",
+        "rust/validation",
+        "rust/layout",
+        "rust/unsafe-traits",
+        "zerocopy/projection"
+      ],
+      "subjects": [
+        {
+          "name": "zerocopy PR source and Lean interfaces",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+          }
+        },
+        {
+          "name": "Rust standard-library contracts",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          }
+        },
+        {
+          "name": "Rust Reference",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+          }
+        },
+        {
+          "name": "Native packed probe compiler",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0",
+            "host": "aarch64-apple-darwin"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "8b427f0f3d624e3320e4269ad49aabc1da7523e4b500fe02dc60e006d1147a8f",
+    "report_sha256": "fec29ed850650faf97d2bc7bd28d9ece8bf1456713703c16c4c5ae3ca6755b7f",
+    "words": 1604
+  },
+  {
+    "package": "zerocopy-two-target-byte-and-layout-controls-2026-10-14",
+    "metadata": {
+      "topics": [
+        "anneal",
+        "rust/unsafe",
+        "zerocopy/validity",
+        "zerocopy/bytes",
+        "rust/layout",
+        "verification/cross-target",
+        "verification/costs"
+      ],
+      "subjects": [
+        {
+          "name": "Zerocopy selected library",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+          }
+        },
+        {
+          "name": "Rust1.99.0",
+          "identity": {
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "host_target": "aarch64-apple-darwin",
+            "second_target": "wasm32-unknown-unknown"
+          }
+        },
+        {
+          "name": "Official Rust wasm32 standard library",
+          "identity": {
+            "version": "1.99.0",
+            "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+          }
+        },
+        {
+          "name": "Node/WebAssembly runtime",
+          "identity": {
+            "node": "24.21.0",
+            "v8": "13.6.233.17-node.53",
+            "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "b596f46c85598fb6a693d6529fc868355179d063b22e50b68a54e0c55f51bf14",
+    "report_sha256": "238e3b7e7ed764e18c6fb7039091610437eeca4f0f4cf1b8cb5625391923a6b1",
+    "words": 1265
+  },
+  {
+    "package": "zerocopy-validity-real-pass-certificate-alpha24",
+    "metadata": {
+      "topics": [
+        "anneal/certificates",
+        "charon/ullbc-llbc",
+        "aeneas/lean",
+        "zerocopy/validity",
+        "rust/caller-domain"
+      ],
+      "subjects": [
+        {
+          "name": "Exact zerocopy scalar predicate module",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+            "path": "zerocopy/src/util/validity/mod.rs",
+            "sha256": "b13d798f9bd7fc10f72256f5467d14deeaccd7e3dcb9247ee3f13944804eca76"
+          }
+        },
+        {
+          "name": "Official legacy Anneal alpha24 bundle",
+          "identity": {
+            "artifact": "anneal-toolchain-macos-aarch64.tar.zst",
+            "sha256": "b4e0a5b420eb441e37564c365f06c215f61a3b825fc3df37293da7c3010d2b81"
+          }
+        },
+        {
+          "name": "Bundled Rust compiler",
+          "identity": {
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly",
+            "target": "aarch64-apple-darwin"
+          }
+        },
+        {
+          "name": "Bundled Lean",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Original captured state certificate",
+          "identity": {
+            "source_sha256": "eff8d9014c7e98ae6fd74120b076fcb7f43151000eb3d0bdd451630515c11470"
+          }
+        },
+        {
+          "name": "Lean nested-inductive validation fix",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "a11cadd409729e515a36087ed3cbd21d25ae2202bee685a4c31124ea42ae7469",
+    "report_sha256": "1bbb78cc8de8423f67b8376da39feb1d5f0525243f700e6374bade55a3cc2680",
+    "words": 1215
+  },
+  {
+    "package": "zkvm-receipt-binding-and-verification-boundaries",
+    "metadata": {
+      "topics": [
+        "checking/cryptographic-execution",
+        "zkvm/risc-zero",
+        "zkvm/sp1",
+        "checking/artifact-binding",
+        "verification/development-modes"
+      ],
+      "subjects": [
+        {
+          "name": "RISC Zero receipt verification implementation",
+          "identity": {
+            "repository": "risc0/risc0",
+            "revision": "3bbcd44d6459b9ef6ac0df3846dc9215514934e8"
+          }
+        },
+        {
+          "name": "SP1 normal/mock verification implementation",
+          "identity": {
+            "repository": "succinctlabs/sp1",
+            "revision": "02fa30185ecd658174b211d56128b14867ab8e81"
+          }
+        },
+        {
+          "name": "RISC Zero zkVM: Scalable, Transparent Arguments of RISC-V Integrity",
+          "identity": {
+            "version": "DRAFT August 11, 2023",
+            "url": "https://dev.risczero.com/proof-system-in-detail.pdf",
+            "pages": "35"
+          }
+        },
+        {
+          "name": "RISC Zero documented security, development and setup interfaces",
+          "identity": {
+            "version": "API 3.0",
+            "security_model": "https://dev.risczero.com/api/security-model",
+            "development": "https://dev.risczero.com/api/generating-proofs/dev-mode",
+            "trusted_setup": "https://dev.risczero.com/api/trusted-setup-ceremony"
+          }
+        }
+      ],
+      "observed_at": "2026-10-14"
+    },
+    "metadata_sha256": "04bcfa711bd4d9c04c261f2b8098de5cb6582db7163371cc89cd4cae650bf554",
+    "report_sha256": "0cda6d555e232ac543f5e729b4861ddfdb273513ea769189f4b7d6c108c20985",
+    "words": 1687
+  }
+]

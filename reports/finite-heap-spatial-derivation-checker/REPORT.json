@@ -1,0 +1,31 @@
+{
+  "topics": [
+    "verification/separation-logic",
+    "lean/reflection",
+    "verification/resource-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Lean4.31",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+      }
+    },
+    {
+      "name": "Finite heap prototype",
+      "identity": {
+        "artifact": "Heap.lean",
+        "sha256": "3c319bbdf38f8146359e35531b3207180ebba2d0e4f01c30ec21c784a0bd3462"
+      }
+    },
+    {
+      "name": "SL/IDF semantic comparison",
+      "identity": {
+        "doi": "10.2168/LMCS-8(3:1)2012",
+        "url": "https://lmcs.episciences.org/802/pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

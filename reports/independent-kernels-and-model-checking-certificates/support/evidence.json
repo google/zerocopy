@@ -1,0 +1,86 @@
+{
+  "observed_at": "2026-10-14",
+  "inspection": "direct selected source/theorem endpoints and retained original prototype execution; not headline-only",
+  "primary_units": [
+    {
+      "repository": "ammkrn/nanoda_lib",
+      "revision": "e0d76f5ec30bba244023466875b4845a57fd3ea5",
+      "path": "src/tc.rs",
+      "raw_url": "https://raw.githubusercontent.com/ammkrn/nanoda_lib/e0d76f5ec30bba244023466875b4845a57fd3ea5/src/tc.rs",
+      "symbols": "check_declar; infer_proj; infer caches; def_eq; whnf",
+      "normalized_text_sha256": "c1f43135ed8c5d94bd94339f45470666ff6b3aaa4bb7cb7d389bce1014163b8d"
+    },
+    {
+      "repository": "ammkrn/nanoda_lib",
+      "revision": "e0d76f5ec30bba244023466875b4845a57fd3ea5",
+      "path": "src/inductive.rs",
+      "raw_url": "https://raw.githubusercontent.com/ammkrn/nanoda_lib/e0d76f5ec30bba244023466875b4845a57fd3ea5/src/inductive.rs",
+      "symbols": "check_inductive_declar; nested inductive handling",
+      "normalized_text_sha256": "e4be60335f8c0eda18eae074acbf1ea6a6a2b709b31d4d50dbb92dd3443263fc"
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/TypeChecker.lean",
+      "raw_url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/TypeChecker.lean",
+      "symbols": "isDefEqCore; whnfCoreCache; reduceProjCore C++ counterpart",
+      "normalized_text_sha256": "32a426fb2cd092d2cc973866ac91adb44b3b91c463891b78c21d95c864fbf808"
+    },
+    {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "path": "Main.lean",
+      "raw_url": "https://raw.githubusercontent.com/leanprover/comparator/865edc14486c3388e9225daa971da8e157488c3e/Main.lean",
+      "symbols": "runExternalKernel:152\u2013206; verifyMatch:288\u2013303",
+      "normalized_text_sha256": "bb97e3e56d35431cfc7fbef9153935f85e82cde8cc0fc588ceb0119022646cec"
+    },
+    {
+      "repository": "arbrad/IC3ref",
+      "revision": "07174c2c8e12109ed659318a3805e46a6479eabd",
+      "path": "IC3.cpp",
+      "raw_url": "https://raw.githubusercontent.com/arbrad/IC3ref/07174c2c8e12109ed659318a3805e46a6479eabd/IC3.cpp",
+      "symbols": "check:163\u2013171; propagate:726\u2013788",
+      "normalized_text_sha256": "8fe2390b40a534eb9a216afde6be92ef8011dca58d1bca84ac6ffeeb3247c460"
+    },
+    {
+      "repository": "Froleyks/certifaiger",
+      "revision": "29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4",
+      "path": "src/certifaiger.cpp",
+      "raw_url": "https://raw.githubusercontent.com/Froleyks/certifaiger/29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4/src/certifaiger.cpp",
+      "symbols": "simulation, inductive, ranked, outputs:440\u2013551",
+      "normalized_text_sha256": "e8306292c9ed8af64b9d5f87bff392a4e62ee7f78c34fb3895b441e9a6c858e6"
+    },
+    {
+      "repository": "Froleyks/certifaiger",
+      "revision": "29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4",
+      "path": "scripts/check_unsat.in",
+      "raw_url": "https://raw.githubusercontent.com/Froleyks/certifaiger/29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4/scripts/check_unsat.in",
+      "symbols": "sat proof mode; status aggregation and parallel wait",
+      "normalized_text_sha256": "7ec56931cef937dbb4aab45868f779ba1476ef177077402eeae4577e04e3aba0"
+    },
+    {
+      "repository": "isabelle-prover/mirror-isabelle",
+      "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8",
+      "path": "src/HOL/Tools/SMT/smt_solver.ML",
+      "raw_url": "https://raw.githubusercontent.com/isabelle-prover/mirror-isabelle/39c77411f67871f5a8f06140c588e196a9aa9ca8/src/HOL/Tools/SMT/smt_solver.ML",
+      "symbols": "replay/oracle:253\u2013285",
+      "normalized_text_sha256": "efc2a063e66bddba5729afecf53e096c19d19ef6473b5463b54603de4099f9cf"
+    },
+    {
+      "repository": "isabelle-prover/mirror-isabelle",
+      "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8",
+      "path": "src/HOL/Tools/Metis/metis_reconstruct.ML",
+      "raw_url": "https://raw.githubusercontent.com/isabelle-prover/mirror-isabelle/39c77411f67871f5a8f06140c588e196a9aa9ca8/src/HOL/Tools/Metis/metis_reconstruct.ML",
+      "symbols": "replay theorem reconstruction",
+      "normalized_text_sha256": "34f823ef6d74739e6a31343f653d64c1f2bb82c845bfb1f9b214b4589b0cfe1f"
+    }
+  ],
+  "original_owned_artifacts": [
+    {
+      "path": "support/kernel-boundary.json",
+      "sha256": "dc23aaf72a17b796fb282278ab2fb3d09ae6bc39910ed162c2741f685cf0adf5"
+    }
+  ],
+  "source_hash_convention": "UTF-8 normalized to one final newline; byte-exact generated artifacts use sha256",
+  "source_mirrors_in_package": false
+}

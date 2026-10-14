@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "security/constant-time",
+    "security/noninterference",
+    "compilation/security-preservation",
+    "jasmin",
+    "verification/relational"
+  ],
+  "subjects": [
+    {
+      "name": "Verifying Constant-Time Implementations",
+      "identity": {
+        "primary_url": "https://www.usenix.org/system/files/conference/usenixsecurity16/sec16_paper_almeida.pdf",
+        "publication": "USENIXSecurity2016",
+        "coordinates": "§§3-5,Definition1,Theorems1-2,19-pagePDF"
+      }
+    },
+    {
+      "name": "Secure Compilation of Side-Channel Countermeasures",
+      "identity": {
+        "primary_url": "https://members.loria.fr/VLaporte/files/CSF2018_ConstantTimePreservation.pdf",
+        "publication": "CSF2018",
+        "coordinates": "Theorems1,4,6;Definitions7-10;16-pagePDF"
+      }
+    },
+    {
+      "name": "Jasmin Compiler Preserves Cryptographic Security",
+      "identity": {
+        "primary_url": "https://arxiv.org/html/2511.11292v1",
+        "arxiv": "2511.11292v1",
+        "coordinates": "§§5.2,6.3;intro limitations",
+        "artifact_reference": "DOI10.5281/zenodo.17604303 referenced by paper; not acquired"
+      }
+    },
+    {
+      "name": "jasmin-lang/jasmin",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "paths": "it_compiler_proof.v;relational_logic.v;xrutt.v;it_sems_core_defs.v"
+      }
+    },
+    {
+      "name": "imdea-software/verifying-constant-time",
+      "identity": {
+        "repository": "imdea-software/verifying-constant-time",
+        "revision": "36e166781b0aa7398c12b335c7a4cd118b73568e",
+        "inspection": "README and dependency-submodule declarations; no build"
+      }
+    },
+    {
+      "name": "Original SecurityWitness.lean",
+      "identity": {
+        "artifact": "SecurityWitness.lean",
+        "sha256": "c8f8d1b7b35c44e38f22e645c31d611b44f6549270a1b59c48044593e0f6fe90",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Lean 4.31 observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0",
+        "runtime_identity": "Executable, Init.olean and libleanshared.dylib hashes in lean-check.json",
+        "boundary": "Parent-reviewed missing nested-inductive validation; no exploit executed"
+      }
+    },
+    {
+      "name": "Official Lean 4.32.2 soundness-fix note",
+      "identity": {
+        "primary_url": "https://lean-lang.org/doc/reference/latest/releases/v4.32.2/",
+        "version": "4.32.2",
+        "coordinates": "Soundness bug note, issue14576 and PR14577; release2026-07-28"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

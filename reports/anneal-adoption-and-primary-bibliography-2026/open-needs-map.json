@@ -1,0 +1,168 @@
+{
+  "inventory_sha256": "72626b309aad47d9ba245803cb151ca107780ec27805745380f34cb9f9b2d101",
+  "discussions_sha256": "dabc83d91f430ff2e543acff32b2fda5862ec0a2f8d97b38c94bbaf61f955bf9",
+  "entries": [
+    {
+      "number": 3719,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3719",
+      "body_sha256": "19ba69fb5ff57ceb9a9980a132aa0d5e513fd758ceced52a825d7645c337ce90",
+      "discussion_comments_sha256": "96644b98f223efb0dae9871c69e967c4444fd929feb996b63d5d6b53471c02d8",
+      "substantive_need": "Exact requested claim, complete auditable TCB and policy; source UB distinct from compiled-behavior preservation; unfinished proof is not ordinary success.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3702,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3702",
+      "body_sha256": "f57955887c1e5e83181ad8ddc2b1420d264645bf59885e0e3f19cca5fcaa5d57",
+      "discussion_comments_sha256": "c15f91fb687bacbc56ff7b198c0c96d1faa79b35b3d517580f69cd2ce504ad26",
+      "substantive_need": "Adequate reduction may use correspondence, validation or simulation; weak obligations and omitted behavior are both adequacy failures.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3701,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3701",
+      "body_sha256": "975a64354ca9352a347108fee1cfda7476ced8814b8c7bd523502919b0a9003d",
+      "discussion_comments_sha256": "35bd56d92436fd10455a6e9dfa10c4e4aa08aee8d0002c01a20d089468007d51",
+      "substantive_need": "Verification result records exact claim and claim-relative TCB; incomplete/unsupported/tool failure remain distinct.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3848,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3848",
+      "body_sha256": "ca95656744df40b260d259b7fd6ee716fcadc5a70c8505b278ed718612f7a17e",
+      "discussion_comments_sha256": "2ed487d487d3957bfa7741f33e491379805bf077e11c3bdbdf1a274fb57c6ae1",
+      "substantive_need": "Imported promoted MIR and final LLBC inspected over roots, callees and unwind paths; unknown effects, lost guards and requested-body fallback rejected; no formal importer proof claimed.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3861,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3861",
+      "body_sha256": "7feced0940d5baf1d3eb80cca1ead81bbb8eccb27d600ce1ad700fd2914fd115",
+      "discussion_comments_sha256": "94b3f4d5a812022155a4b38b05dc82f7b366dd0ebfe15bfb52344bb183cf4c90",
+      "substantive_need": "Laws bind native generic dictionaries, model providers and const lengths reached by selected roots; does not certify all external implementations.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3863,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3863",
+      "body_sha256": "db3d5ea70cc3a1066b279b7427cb774219c73a9fed5ed3a9d102905ebd941667",
+      "discussion_comments_sha256": "2f69f8a216080ef8b937745c1f4e8aec13f94c55d58f68d62986623fe04dfb39",
+      "substantive_need": "Array IntoBytes initialization law from element law; native empty/ZST/nested uses; physical Rust Reference bridge remains explicit.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3846,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3846",
+      "body_sha256": "c00f66fbc53186a72b416bc8110dea96e21b348babf39372ed163ca3ec520113",
+      "discussion_comments_sha256": "dcfcce5b1bd30c35304dfaef03c6dca6fbe957082cfd2f4ba9480b67e2dbfa97",
+      "substantive_need": "Independent field-placement references, packed witnesses and overflow/ZST-tail assertions; compiler-layout premise remains.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3826,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3826",
+      "body_sha256": "131671c3031987f7106a8093b26b73639b069a5f229a88869ffa10d7d9212400",
+      "discussion_comments_sha256": "8fa6e4059cc4d6768939a7a53634c224b8e6bd35949aba85c28d27481daf0ac2",
+      "substantive_need": "Mandatory contract binding and mathematical decoding; review comments show weak padding/minimal-alignment clauses can permit wrong implementations.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3697,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3697",
+      "body_sha256": "66c63c9cfb17f3b15e5b55298bafa4e0b0cc4881249ab6d56165aadf74426107",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Ordinary Rust authors must not need Lean; specialist/agent Lean remains optional.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3696,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3696",
+      "body_sha256": "3946bec7cbac76f6277fca8ef60d8fe7175fce59ce0eb995f371f9359e6b4c11",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Support all program behaviors is distinct from accepting every Rust encoding.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3735,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3735",
+      "body_sha256": "ce3c664b3ffd001d8ac9f688c03ea337bf2280713592782f4821f332ac81b862",
+      "discussion_comments_sha256": "246716d641e8ce4da91a8ba7cc5ec742e005435c99027d268afcf0c7f45e1200",
+      "substantive_need": "Proposed claim-centered service; effect-scoped operations and current applicability are separate from producing a candidate. Explicitly not adopted policy.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3668,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3668",
+      "body_sha256": "eec86a82eb58aa245c7c32ba5611713299958d6500b1d1ff70c5121cb5c8bcf3",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Immutable prepared prerequisites and separate writable per-job state; Lake build, setup and interactive contexts have distinct contracts.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3486,
+      "kind": "pull",
+      "url": "https://github.com/google/zerocopy/pull/3486",
+      "body_sha256": "0c41052407b08f216cde710bdc5c290274a5cc0bb10922280ee936aec2f8308f",
+      "discussion_comments_sha256": "95ffc02aacf7d8b228d895575ba76575cb5ce3673d77f3001ec3dbd1e9205775",
+      "substantive_need": "Cached versus clean archive/source/payload/InfoView comparisons; a review asks for full clean-archive integration coverage, beyond one reuse fixture.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3201,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3201",
+      "body_sha256": "333ec9327992a125b84635f48b1c6becfb24af858bf5fa019c4f8e6099b79a7c",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Inline Rust proof text and generated Lean interactive tooling need a faithful projection and diagnostic/edit map.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3256,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3256",
+      "body_sha256": "1f6b8d9e8b97dd32be30f69f2fd1a6d7c471e352d99ee7a16fdf2ac30a9f81cd",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Narrow imports and split modules sought to reduce observed import cost; not a comparative candidate benchmark.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3206,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3206",
+      "body_sha256": "cd4a7eba3b9fb663a43d8f46bafb7e1bc47e6a88ab44d5bb9ef4a6204bed02e1",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Axiom/admission policy must distinguish explicit unsafe-axiom annotations from ordinary proofs.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3017,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3017",
+      "body_sha256": "29f2e2935d371b7884a0b2fab092e084dbdea6941b4cad61544921d9051f9de9",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "Cfg-disabled annotation discovery can disagree with actual compilation; capture exact target/feature inputs.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    },
+    {
+      "number": 3110,
+      "kind": "issue",
+      "url": "https://github.com/google/zerocopy/issues/3110",
+      "body_sha256": "79ee657f1bd63e2dd0c814c866e43213b8bd1608256a678e788bfffcfe78297f",
+      "discussion_comments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "substantive_need": "All reserved annotation locations need an independent scan to reject ignored/misplaced claims.",
+      "scope": "Provided open-inventory/discussion snapshot; no live status or current-head resolution inferred"
+    }
+  ]
+}

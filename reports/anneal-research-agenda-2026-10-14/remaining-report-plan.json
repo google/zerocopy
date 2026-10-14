@@ -1,8 +1,8 @@
 {
-  "revision": 3,
+  "revision": 4,
   "published_reports_at_plan": 65,
   "published_reference_commit": "4802237a045e8dd642d26e190a1ffb5757bf30a8",
-  "interpretation": "Candidate grouping after nine tranches:13 of24 reports included,11 remain in final research/review. These report counts are separate from semantic question coverage and future engineering.",
+  "interpretation": "All24 candidate followup reports are included in this tree. One final all364coverage/synthesis report and focused amendments remain; this is not a global semantic completion declaration.",
   "reports": [
     {
       "candidate_report": 1,
@@ -82,7 +82,7 @@
     {
       "candidate_report": 7,
       "title": "Independent kernels and model-checking certificates",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "T009",
         "T011",
@@ -94,7 +94,7 @@
     {
       "candidate_report": 8,
       "title": "JVM and eBPF admission boundaries",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "T030",
         "P029"
@@ -103,7 +103,7 @@
     {
       "candidate_report": 9,
       "title": "Spatial data checker and matched logic examples",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R059",
         "T033",
@@ -117,7 +117,7 @@
     {
       "candidate_report": 10,
       "title": "Cross-logic adapters and proof encoding costs",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "R084",
         "T006",
@@ -128,7 +128,7 @@
     {
       "candidate_report": 11,
       "title": "Current numerical and Why3 result paths",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "T017",
         "T036"
@@ -137,7 +137,7 @@
     {
       "candidate_report": 12,
       "title": "Concurrent failure and acceptance-publication experiment",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "T102",
         "T106",
@@ -151,7 +151,7 @@
     {
       "candidate_report": 13,
       "title": "Initial Rust capture, CTFE/TLS and obligation completeness",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P056",
         "P057",
@@ -183,7 +183,7 @@
     {
       "candidate_report": 14,
       "title": "Staged code generation and current CertiRocq endpoints",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P003",
         "P021",
@@ -196,7 +196,7 @@
     {
       "candidate_report": 15,
       "title": "Trivet and EquiVM artifact theorem closure",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P027",
         "P028",
@@ -206,7 +206,7 @@
     {
       "candidate_report": 16,
       "title": "Security and relational compiler preservation",
-      "disposition": "active",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P102",
         "P041"
@@ -313,7 +313,7 @@
     {
       "candidate_report": 24,
       "title": "Bibliography, licensing and conditional architecture synthesis",
-      "disposition": "planned",
+      "disposition": "included-in-this-tree",
       "questions": [
         "P139",
         "P140",

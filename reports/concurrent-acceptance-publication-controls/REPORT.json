@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "verification/acceptance-protocol",
+    "verification/concurrency",
+    "verification/failure-behavior"
+  ],
+  "subjects": [
+    {
+      "name": "Controlled process protocol",
+      "identity": {
+        "artifact": "protocol.py",
+        "sha256": "9acc3831cfcdc1b6b6a49410a7fc3128fb945dd8c70966b2231be46a50ceb82c"
+      }
+    },
+    {
+      "name": "Python process/filesystem runtime",
+      "identity": {
+        "version": "3.9.6",
+        "architecture": "arm64",
+        "host": "macOS-27.0.1-arm64-arm-64bit"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

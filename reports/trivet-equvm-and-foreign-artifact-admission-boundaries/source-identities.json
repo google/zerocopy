@@ -1,0 +1,93 @@
+[
+  {
+    "key": "equi-readme",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "README.md",
+    "returned_utf8_sha256": "b0905ef40ed425bc1623d27b9a8cb8590cded8f86f1c9629762d5de04875fc9a"
+  },
+  {
+    "key": "equi-tree",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "lake-manifest.json",
+    "returned_utf8_sha256": "188ec195ecc052eac5638ed881d5d757bd1b8c456ccf7dcbf51902e41a49ed19"
+  },
+  {
+    "key": "equi-lake",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "lakefile.toml",
+    "returned_utf8_sha256": "a239177d866bb84b2df1595d05aee82e44e3f11d3b2a18f5fc4df9693f3f2a30"
+  },
+  {
+    "key": "equi-refine",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "Stele/Refine.lean",
+    "returned_utf8_sha256": "9f5f33012fecea2d893d81cbce6239fe51e59e6e09469ef7433a19fdedc3cf77"
+  },
+  {
+    "key": "equi-correct",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "Examples/ERC20/Correct.lean",
+    "returned_utf8_sha256": "0102dcd08289d20d0c772d0d8822d5268fb14bfed5cc73a44686f6a808399d7a"
+  },
+  {
+    "key": "equi-toolchain",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "lean-toolchain",
+    "returned_utf8_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2"
+  },
+  {
+    "key": "equi-prompt",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "Misc/prompt.md",
+    "returned_utf8_sha256": "5e1df9798d38ec515e036c105af353f3fabedfeb4d0b5e4f3cf611462349ada8"
+  },
+  {
+    "key": "equi-wfexample",
+    "repository": "argotorg/EquiVM",
+    "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+    "path": "Examples/ERC20/Spec.lean",
+    "returned_utf8_sha256": "205c14c25375c7dd37c66118c0cd9fd443f5c9974a9e4a15e5ea816cc0d38f6e"
+  },
+  {
+    "key": "veriffi-generator",
+    "repository": "CertiRocq/VeriFFI",
+    "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+    "path": "generator/FnDesc.v",
+    "returned_utf8_sha256": "eadc15fce73836117d0a72368817cd51dd0c29aff6fb6fc80ec98e7fdc07829f"
+  },
+  {
+    "key": "veriffi-project",
+    "repository": "CertiRocq/VeriFFI",
+    "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+    "path": "_CoqProject",
+    "returned_utf8_sha256": "44a72e782ae38f10a8c725e8c85ef0984d4b8a7a2627af0a32931d747030ee03"
+  },
+  {
+    "key": "veriffi-modules",
+    "repository": "CertiRocq/VeriFFI",
+    "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+    "path": ".gitmodules",
+    "returned_utf8_sha256": "33ab7ade39d4451267ad053cffefd5ecd1475609849ba2532f2e7603327b49da"
+  },
+  {
+    "key": "veriffi-body",
+    "repository": "CertiRocq/VeriFFI",
+    "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+    "path": "c/verif_int63.v",
+    "returned_utf8_sha256": "535b83f10cde358253be8ca18f469b6e8f0d7656f0011884c22e30cd837e3ac0"
+  },
+  {
+    "key": "veriffi-readme",
+    "repository": "CertiRocq/VeriFFI",
+    "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+    "path": "README.md",
+    "returned_utf8_sha256": "9ec036a9d84805228629ef24d421a00dfb7f9adda16161666d17453710b001dc"
+  }
+]

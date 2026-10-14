@@ -1,0 +1,1053 @@
+{
+  "search_cutoff": "2026-10-14",
+  "entries": [
+    {
+      "name": "Aeneas 2022 paper",
+      "identity": {
+        "arxiv": "2206.07185v2",
+        "doi": "10.1145/3547647",
+        "url": "https://arxiv.org/pdf/2206.07185v2"
+      },
+      "corpus_packages": [
+        "aeneas-charon-functionalization-and-spatial-boundaries"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Aeneas 2024 LLBC/PL long paper",
+      "identity": {
+        "arxiv": "2404.02680v2",
+        "url": "https://arxiv.org/pdf/2404.02680v2"
+      },
+      "corpus_packages": [
+        "aeneas-charon-functionalization-and-spatial-boundaries"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "AutoCorres PLDI 2014 paper",
+      "identity": {
+        "doi": "10.1145/2594291.2594296",
+        "author-copy": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf",
+        "publication": "PLDI 2014",
+        "pdf-pages": "11"
+      },
+      "corpus_packages": [
+        "autocorres-guarded-model-certificates-pldi-2014"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Formally validating a practical verification condition generator",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_33",
+        "publication": "CAV 2021",
+        "author-copy": "https://gauravpartha.ch/papers/boogie_certificates_cav21.pdf",
+        "pdf-pages": "23"
+      },
+      "corpus_packages": [
+        "boogie-viper-failure-reflection-certificates-2021-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Formally validating translations into an IVL",
+      "identity": {
+        "doi": "10.1145/3656438",
+        "publication": "PACMPL 8 PLDI 2024 article 208",
+        "author-copy": "https://gauravpartha.ch/papers/front_end_translation_certificates_pldi24.pdf",
+        "pdf-pages": "25"
+      },
+      "corpus_packages": [
+        "boogie-viper-failure-reflection-certificates-2021-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "PLDI 2024 reproduction artifact record",
+      "identity": {
+        "doi": "10.5281/zenodo.10802176",
+        "url": "https://zenodo.org/records/10802176"
+      },
+      "corpus_packages": [
+        "boogie-viper-failure-reflection-certificates-2021-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Cogent uniqueness types and certifying compilation",
+      "identity": {
+        "doi": "10.1017/S095679682100023X",
+        "publication": "JFP 2021 e25",
+        "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+        "pdf-pages": "67"
+      },
+      "corpus_packages": [
+        "cogent-dargent-memory-value-layout-certificates-2021-2023"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Dargent data layout refinement",
+      "identity": {
+        "doi": "10.1145/3571240",
+        "publication": "PACMPL 7 POPL 2023 article 47",
+        "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+        "pdf-pages": "27"
+      },
+      "corpus_packages": [
+        "cogent-dargent-memory-value-layout-certificates-2021-2023"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Fiat-to-Facade extraction",
+      "identity": {
+        "primary_url": "https://adam.chlipala.net/papers/FiatIJCAR20/FiatIJCAR20.pdf",
+        "publication": "IJCAR2020",
+        "coordinates": "sections3-5;19-page author PDF"
+      },
+      "corpus_packages": [
+        "constructive-imperative-refinement-memory-bridges"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Rupicola relational compilation",
+      "identity": {
+        "primary_url": "https://jamner.net/papers/rupicola-PLDI22.pdf",
+        "doi": "10.1145/3519939.3523706",
+        "publication": "PLDI2022",
+        "coordinates": "sections2-3;16-page author PDF"
+      },
+      "corpus_packages": [
+        "constructive-imperative-refinement-memory-bridges"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Isabelle-LLVM refinement",
+      "identity": {
+        "primary_url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol141-itp2019/LIPIcs.ITP.2019.22/LIPIcs.ITP.2019.22.pdf",
+        "doi": "10.4230/LIPIcs.ITP.2019.22",
+        "publication": "ITP2019 article22",
+        "coordinates": "sections2.1,3.2,3.5,6;19-page publisher PDF"
+      },
+      "corpus_packages": [
+        "constructive-imperative-refinement-memory-bridges"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Crellvm PLDI 2018 paper",
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "publication": "PLDI 2018",
+        "author-copy": "https://sf.snu.ac.kr/publications/crellvm.pdf"
+      },
+      "corpus_packages": [
+        "crellvm-instrumented-refinement-rule-boundaries-2018-2021"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Verified instruction scheduling validators",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008",
+        "author-copy": "https://xavierleroy.org/publi/validation-scheduling.pdf"
+      },
+      "corpus_packages": [
+        "crellvm-instrumented-refinement-rule-boundaries-2018-2021"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Alive2 bounded translation validation paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI 2021",
+        "author-copy": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf"
+      },
+      "corpus_packages": [
+        "crellvm-instrumented-refinement-rule-boundaries-2018-2021"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Fully Countering Trusting Trust through Diverse Double-Compiling",
+      "identity": {
+        "publication": "Wheeler dissertation, Fall 2009",
+        "url": "https://dwheeler.com/trusting-trust/dissertation/html/wheeler-trusting-trust-ddc.html",
+        "errata": "https://dwheeler.com/trusting-trust/dissertation-errata.html",
+        "errata_date": "2019-07-25"
+      },
+      "corpus_packages": [
+        "ddc-and-proof-produced-checker-executables"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring",
+      "identity": {
+        "arxiv": "2601.13727v1",
+        "publication": "2026-01-20"
+      },
+      "corpus_packages": [
+        "foundational-verifast-hinted-mirroring-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Gillian-Rust extended PLDI 2025 paper",
+      "identity": {
+        "arxiv": "2403.15122v3",
+        "doi": "10.1145/3729289",
+        "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
+      },
+      "corpus_packages": [
+        "gillian-rust-hybrid-resource-boundary-83d739e"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustCompCert short preprint",
+      "identity": {
+        "arxiv": "2602.07455v1",
+        "url": "https://arxiv.org/html/2602.07455v1"
+      },
+      "corpus_packages": [
+        "hax-eurydice-and-rust-c-extraction-frontiers"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Li/Owens/Slind ESOP2007 primary paper",
+      "identity": {
+        "primary_url": "https://link.springer.com/chapter/10.1007/978-3-540-71316-6_15",
+        "doi": "10.1007/978-3-540-71316-6_15",
+        "inspection": "full15-page primary PDF;sections2,4",
+        "sha256": "f077d7ef766635bf34c4ea3c46297b0fde5ec88135695034d2c0fd903752bd1c"
+      },
+      "corpus_packages": [
+        "hol-proof-producing-synthesis-and-binary-lifting"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Blech/Poetzsch-Heffter code-generation paper",
+      "identity": {
+        "primary_url": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+        "doi": "10.1016/j.entcs.2007.09.008",
+        "publication": "ENTCS190(4),2007",
+        "coordinates": "sections2.3,3.2,4;17-page author PDF"
+      },
+      "corpus_packages": [
+        "hol-proof-producing-synthesis-and-binary-lifting"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Myreen/Slind/Gordon extensible compilation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/extensible-compilation.pdf",
+        "doi": "10.1007/978-3-642-00722-4_2",
+        "publication": "CC2009",
+        "coordinates": "section2;15-page author PDF"
+      },
+      "corpus_packages": [
+        "hol-proof-producing-synthesis-and-binary-lifting"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Myreen/Owens pure and stateful ML translation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/jfp14.pdf",
+        "doi": "10.1017/S0956796813000282",
+        "publication": "JFP24(2-3),2014",
+        "coordinates": "sections4.3-4.4;32-page author PDF"
+      },
+      "corpus_packages": [
+        "hol-proof-producing-synthesis-and-binary-lifting"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Monadic CakeML synthesis",
+      "identity": {
+        "primary_url": "https://cakeml.org/jar20.pdf",
+        "publication": "JAR2020 author paper",
+        "coordinates": "sections3.3-3.5;20-page PDF"
+      },
+      "corpus_packages": [
+        "hol-proof-producing-synthesis-and-binary-lifting"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustBelt POPL 2018 paper",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "PACMPL 2 POPL Article 66, January 2018",
+        "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf"
+      },
+      "corpus_packages": [
+        "minirust-core-semantics-d821c6e"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982v4",
+        "version-date": "2021-10-19",
+        "sha256": "23ccf574c9778c533c12125b8da96a033af72da3cd6bb75483b63745846b5555",
+        "url": "https://arxiv.org/pdf/1903.00982v4"
+      },
+      "corpus_packages": [
+        "minirust-core-semantics-d821c6e"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Rust Distilled",
+      "identity": {
+        "arxiv": "1806.02693v2",
+        "version-date": "2018-08-16",
+        "sha256": "5009345fe0de38928c2a7c58970d05ab171e2768de3abafad6f8586141155bd3",
+        "url": "https://arxiv.org/pdf/1806.02693v2"
+      },
+      "corpus_packages": [
+        "minirust-core-semantics-d821c6e"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "KRust",
+      "identity": {
+        "arxiv": "1804.10806v1",
+        "version-date": "2018-04-28",
+        "sha256": "c101740fe8f8aa85537bc282ceef950de4d60bc3215fcd543bead8ba72e9dd24",
+        "url": "https://arxiv.org/pdf/1804.10806v1"
+      },
+      "corpus_packages": [
+        "minirust-core-semantics-d821c6e"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "VeriFFI POPL 2025 publication interface",
+      "identity": {
+        "doi": "10.1145/3704860",
+        "publication": "POPL 2025 article 24",
+        "inspected_part": "primary publication abstract/interface description"
+      },
+      "corpus_packages": [
+        "modular-foreign-contracts-and-open-execution"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats",
+      "identity": {
+        "doi": "10.1145/3341686",
+        "publication": "ICFP 2019 Article 82",
+        "url": "https://adam.chlipala.net/papers/NarcissusICFP19/NarcissusICFP19.pdf"
+      },
+      "corpus_packages": [
+        "parser-roundtrips-admission-and-byte-meaning"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+      "identity": {
+        "publication": "USENIX Security 2025",
+        "url": "https://verified.how/papers/verdict.pdf",
+        "pages": "17"
+      },
+      "corpus_packages": [
+        "parser-roundtrips-admission-and-byte-meaning",
+        "proof-producing-frontends-and-derived-checker-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Necula Compiling with Proofs",
+      "identity": {
+        "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+        "publication": "CMU-CS-98-154;1998-09-18",
+        "coordinates": "chapter2 Theorem2.1;277-page dissertation"
+      },
+      "corpus_packages": [
+        "pcc-tal-foundational-policy-certificates"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "From System F to Typed Assembly Language",
+      "identity": {
+        "primary_url": "https://www.cs.cmu.edu/~dpw/papers/tal-toplas.pdf",
+        "doi": "10.1145/319301.319345",
+        "publication": "TOPLAS21(3),1999",
+        "coordinates": "section7.3;41-page author PDF"
+      },
+      "corpus_packages": [
+        "pcc-tal-foundational-policy-certificates"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Appel FPCC primary project account",
+      "identity": {
+        "primary_url": "https://www.cs.princeton.edu/~appel/fpcc.html",
+        "publication": "Princeton FPCC project1999-2005"
+      },
+      "corpus_packages": [
+        "pcc-tal-foundational-policy-certificates"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Appel Foundational Proof-Carrying Code",
+      "identity": {
+        "primary_url": "https://www.cs.princeton.edu/~appel/papers/fpcc.pdf",
+        "doi": "10.1109/LICS.2001.932501",
+        "publication": "LICS2001",
+        "inspection": "full10-page author PDF;sections2,5",
+        "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+      },
+      "corpus_packages": [
+        "pcc-tal-foundational-policy-certificates"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Bohrer/Crary TWAM",
+      "identity": {
+        "primary_url": "https://www.cs.cmu.edu/~crary/papers/2018/twam.pdf",
+        "publication": "2018 author paper",
+        "coordinates": "Theorem1 and section3.5;23-page PDF"
+      },
+      "corpus_packages": [
+        "pcc-tal-foundational-policy-certificates"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+      "identity": {
+        "arxiv": "2610.09198v1",
+        "submitted": "2026-10-06",
+        "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30"
+      },
+      "corpus_packages": [
+        "pin-async-and-external-resource-contracts-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "A Complete Formal Semantics for Rust Source Code",
+      "identity": {
+        "arxiv": "2610.06003v1",
+        "submitted": "2026-10-05",
+        "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d"
+      },
+      "corpus_packages": [
+        "pin-async-and-external-resource-contracts-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Translation certification for smart contracts",
+      "identity": {
+        "doi": "10.1016/j.scico.2023.103051",
+        "publication": "SCP 233 (2024) 103051",
+        "author-copy": "https://webspace.science.uu.nl/~swier004/publications/2024-scp.pdf"
+      },
+      "corpus_packages": [
+        "plutus-inductive-pass-certificates-scp-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "A Proof-Producing Compiler for Blockchain Applications",
+      "identity": {
+        "arxiv": "2501.15002v1",
+        "url": "https://arxiv.org/pdf/2501.15002v1"
+      },
+      "corpus_packages": [
+        "proof-producing-frontends-and-derived-checker-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Oeuf: Minimizing the Coq Extraction TCB",
+      "identity": {
+        "doi": "10.1145/3167089",
+        "url": "https://homes.cs.washington.edu/~djg/papers/oeuf2018.pdf"
+      },
+      "corpus_packages": [
+        "proof-producing-frontends-and-derived-checker-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "doi": "10.1145/3519939.3523707",
+        "publication": "PLDI 2022",
+        "url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf"
+      },
+      "corpus_packages": [
+        "proof-producing-frontends-and-derived-checker-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Certificate translation for optimizing compilers",
+      "identity": {
+        "doi": "10.1007/11823230_20",
+        "publication": "SAS 2006 extended abstract, LNCS 4134 pp.301-317",
+        "author-copy": "https://software.imdea.org/~ckunz/publications/certtrans-SAS06.pdf"
+      },
+      "corpus_packages": [
+        "property-proof-translation-specification-meaning-2006-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "PotPie ITP 2024 paper",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2024.33",
+        "publication": "ITP 2024 article 33",
+        "publisher-copy": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol309-itp2024/LIPIcs.ITP.2024.33/LIPIcs.ITP.2024.33.pdf"
+      },
+      "corpus_packages": [
+        "property-proof-translation-specification-meaning-2006-2024"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "System FR paper",
+      "identity": {
+        "arxiv": "1904.03482v2",
+        "sha256": "8499729820596e04495868975bf5da7aecee2e8d2c555f1eae2d8570538bf280"
+      },
+      "corpus_packages": [
+        "recursive-inference-and-verified-callee-lifecycles-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Fulminate POPL 2025 paper",
+      "identity": {
+        "doi": "10.1145/3704879",
+        "sha256": "347d79ce5a1c2d4fdb12412446ff69a02bd41990e91cd1ca9e40976d746b7954"
+      },
+      "corpus_packages": [
+        "refinedc-lithium-and-cn-result-interfaces-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RefinedRust 2026 paper",
+      "identity": {
+        "doi": "10.1145/3839484",
+        "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+      },
+      "corpus_packages": [
+        "refinedrust-radium-proof-boundary-2026-v2"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RefinedRust 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+      },
+      "corpus_packages": [
+        "refinedrust-radium-proof-boundary-2026-v2"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Flux PLDI 2023 author paper",
+      "identity": {
+        "doi": "10.1145/3591283",
+        "sha256": "69cae6293c84a7f42e90a883d6d4645449b7216e00c80219e262609528c52b51"
+      },
+      "corpus_packages": [
+        "refinement-horn-and-lean-vc-boundaries-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Thrust PLDI 2025 author paper",
+      "identity": {
+        "doi": "10.1145/3729333",
+        "sha256": "adc13d87e09a61e5ef42057c61c5602a38c5befa1416f0b76ba7edc919882695"
+      },
+      "corpus_packages": [
+        "refinement-horn-and-lean-vc-boundaries-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Alive2 bounded translation validation",
+      "identity": {
+        "primary_url": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI2021",
+        "coordinates": "sections5,7,8.1;15-page author PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "CryptOpt verified equivalence checking",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2211.10665v3",
+        "arxiv": "2211.10665v3",
+        "publication": "2023-05-22 full paper",
+        "coordinates": "sections6.1-6.4;32-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Jitterbug BPF JIT verification",
+      "identity": {
+        "primary_url": "https://www.usenix.org/system/files/osdi20-nelson.pdf",
+        "publication": "OSDI2020",
+        "coordinates": "section4 Definitions1-5 Theorem1;sections6-7;22-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Trivet LLVM Lean validation",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2609.19583v1",
+        "arxiv": "2609.19583v1",
+        "publication": "2026-09-17 preprint",
+        "coordinates": "Definition2.1 and section3;14-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "EquiVM foundational bytecode refinement",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2607.26306v1",
+        "arxiv": "2607.26306v1",
+        "publication": "2026-07-28 preprint",
+        "coordinates": "section5 Figure9;34-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Owlang compositional open safety",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2510.10015v1",
+        "arxiv": "2510.10015v1",
+        "publication": "2025-10-11 preprint",
+        "coordinates": "section5 Theorems5.1-5.2;34-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustCompCert ongoing work",
+      "identity": {
+        "primary_url": "https://arxiv.org/pdf/2602.07455v1",
+        "arxiv": "2602.07455v1",
+        "publication": "2026-02-07 preprint",
+        "coordinates": "section2 and footnote2;3-page PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "primary_url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf",
+        "publication": "PLDI2022",
+        "coordinates": "section3 Figure1 and section6.3;15-page author PDF"
+      },
+      "corpus_packages": [
+        "refinement-policy-and-safety-direction-comparison"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Verified rewriting engine ITP2022 publication",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2022.17",
+        "title": "Accelerating Verified-Compiler Development with a Verified Rewriting Engine"
+      },
+      "corpus_packages": [
+        "reflection-rewriting-and-resource-extension-gates-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory POPL 2020 paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      },
+      "corpus_packages": [
+        "relaxed-memory-reclamation-premises-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustHornBelt 2022 prophecy artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6417462",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      },
+      "corpus_packages": [
+        "resource-algebra-lifetime-and-automation-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RefinedRust 2026-v2 resource/Lithium source",
+      "identity": {
+        "doi": "10.5281/zenodo.21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      },
+      "corpus_packages": [
+        "resource-algebra-lifetime-and-automation-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Diaframe 2022 source artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6414787",
+        "artifact": "diaframe-artifact-source.tgz",
+        "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+      },
+      "corpus_packages": [
+        "resource-algebra-lifetime-and-automation-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Quiver PLDI 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656413",
+        "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+      },
+      "corpus_packages": [
+        "resource-algebra-lifetime-and-automation-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RefinedC PLDI 2021 paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+      },
+      "corpus_packages": [
+        "resource-logics-effects-and-compilation-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "CN POPL 2023 paper",
+      "identity": {
+        "publication": "POPL 2023",
+        "url": "https://www.cl.cam.ac.uk/~cp526/popl23.pdf"
+      },
+      "corpus_packages": [
+        "resource-logics-effects-and-compilation-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "CN kernel definitions supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary definitions",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_defns.pdf",
+        "pages": "107"
+      },
+      "corpus_packages": [
+        "resource-logics-effects-and-compilation-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "CN soundness supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary soundness proof",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_soundness.pdf",
+        "pages": "44"
+      },
+      "corpus_packages": [
+        "resource-logics-effects-and-compilation-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Verified Low-Level Programming Embedded in FStar",
+      "identity": {
+        "arxiv": "1703.00053v6",
+        "doi": "10.1145/3110261",
+        "url": "https://arxiv.org/pdf/1703.00053v6"
+      },
+      "corpus_packages": [
+        "resource-logics-effects-and-compilation-interfaces"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Stacked Borrows POPL 2020",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "publication": "PACMPL 4 POPL Article 41, January 2020",
+        "sha256": "a342838a2c5c566e0374cad1f583837ed9c8abb68b62ec5ecc076c469c5d3439",
+        "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+      },
+      "corpus_packages": [
+        "rust-alias-model-compatibility-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Tree Borrows PLDI 2025",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "publication": "PACMPL 9 PLDI Article 188, June 2025",
+        "sha256": "2b804f5cd0a7855d603e5b8e19627d601f29307976cee1a765f52d9610077d80",
+        "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+      },
+      "corpus_packages": [
+        "rust-alias-model-compatibility-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Towards verifying unsafe Rust pointer aliasing",
+      "identity": {
+        "arxiv": "2603.28326v1",
+        "version-date": "2026-03-30",
+        "sha256": "bdb7ec5b19542cd80e7f9c6eb031d4bf23f0517fef60221b624d3b45f0dc4b1c",
+        "url": "https://arxiv.org/pdf/2603.28326v1"
+      },
+      "corpus_packages": [
+        "rust-alias-model-compatibility-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "A Complete, Formal Semantics for Rust Source Code",
+      "identity": {
+        "arxiv": "2610.06003v1",
+        "version-date": "2026-10-05",
+        "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d",
+        "url": "https://arxiv.org/pdf/2610.06003v1"
+      },
+      "corpus_packages": [
+        "rust-alias-model-compatibility-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+      "identity": {
+        "arxiv": "2610.09198v1",
+        "version-date": "2026-10-06",
+        "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30",
+        "url": "https://arxiv.org/pdf/2610.09198v1"
+      },
+      "corpus_packages": [
+        "rust-alias-model-compatibility-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "VeriFast foundational preprint v1",
+      "identity": {
+        "arxiv": "2601.13727v1",
+        "sha256": "db6fafe5642384c302868138529796c28a4a90eb6c944ecead089a6b85060fc6",
+        "url": "https://arxiv.org/pdf/2601.13727v1"
+      },
+      "corpus_packages": [
+        "rust-resource-primitive-matrix-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Soteria extended paper",
+      "identity": {
+        "arxiv": "2511.08729v6",
+        "doi": "10.1145/3808306",
+        "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+      },
+      "corpus_packages": [
+        "rust-symbolic-completeness-boundaries-2026"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustHornBelt paper",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+      },
+      "corpus_packages": [
+        "rustbelt-rusthornbelt-contract-bridge-2022"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustHorn updated author full-version paper",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "doi": "10.1007/978-3-030-44914-8_18",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      },
+      "corpus_packages": [
+        "rustbelt-rusthornbelt-contract-bridge-2022"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Transfinite Iris PLDI final paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454031",
+        "artifact": "2021-pldi-transfinite-iris-final.pdf",
+        "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+      },
+      "corpus_packages": [
+        "transfinite-iris-existential-and-liveness-boundary-dde9f19"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Candle extended correctness paper",
+      "identity": {
+        "doi": "10.1007/s10817-025-09743-8",
+        "publication": "Journal of Automated Reasoning 69, article 32 (2025)"
+      },
+      "corpus_packages": [
+        "verified-checker-theorem-endpoints-2026-10-14"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Tristan/Leroy verified validators",
+      "identity": {
+        "primary_url": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+        "doi": "10.1145/1328897.1328444",
+        "publication": "POPL2008",
+        "coordinates": "section2.1 Theorem1 and section2.2;11-page author PDF"
+      },
+      "corpus_packages": [
+        "verified-compilers-bootstrap-and-executable-endpoints"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "Verus linear-ghost core paper",
+      "identity": {
+        "arxiv": "2303.05491v2",
+        "sha256": "05aa2097cf5740f2d1119426fbc1066277a010b7e8e1239095684c7931b14849"
+      },
+      "corpus_packages": [
+        "verus-tracked-memory-trust-0141ebc"
+      ],
+      "inspection_role": "Inherited pinned primary coordinate; this synthesis does not independently replay every source."
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "pdf_sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      },
+      "corpus_packages": [
+        "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026"
+      ],
+      "inspection_role": "Ninth-publication scoped primary coordinate; source-theorem replay not performed by this synthesis"
+    },
+    {
+      "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic paper",
+      "identity": {
+        "doi": "10.1145/3729246",
+        "pdf_sha256": "8d93b9c8f475ce0ae033480ce2699f286632ce544c9995ac0047df2ba47906ab"
+      },
+      "corpus_packages": [
+        "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026"
+      ],
+      "inspection_role": "Ninth-publication scoped primary coordinate; source-theorem replay not performed by this synthesis"
+    },
+    {
+      "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals paper",
+      "identity": {
+        "doi": "10.1145/3729247",
+        "pdf_sha256": "3765c92355575e61755b21f70bb42e7363102d0c6ee6f8d7606938fc57f316ad"
+      },
+      "corpus_packages": [
+        "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026"
+      ],
+      "inspection_role": "Ninth-publication scoped primary coordinate; source-theorem replay not performed by this synthesis"
+    },
+    {
+      "name": "Aeneas SymCrypt draft technical report",
+      "identity": {
+        "arxiv": "2609.15648v1",
+        "pdf_sha256": "ea94d6702c2339dbb059c1c7e516e75ccd42c1d7808075024bac32e07ce79adc"
+      },
+      "corpus_packages": [],
+      "inspection_role": "Direct primary theorem/assumption/evaluation inspection in adoption synthesis; no artifact build"
+    },
+    {
+      "name": "Verifying Verus MS thesis",
+      "identity": {
+        "author": "Shuge Rong",
+        "publication": "Carnegie Mellon University, May 2026",
+        "url": "https://www.andrew.cmu.edu/user/avigad/Students/rong_ms_thesis.pdf",
+        "pdf_sha256": "8817a62d0c13036fef9554c38ea60c5290d1eacfefcf0cc6e0e99a3f92aae5c0"
+      },
+      "corpus_packages": [],
+      "inspection_role": "Direct primary theorem/assumption/evaluation inspection in adoption synthesis; no artifact build"
+    },
+    {
+      "name": "VerusBelt PLDI 2026 paper",
+      "identity": {
+        "doi": "10.1145/3808325",
+        "publication": "PACMPL 10 PLDI article 247, June 2026",
+        "url": "https://iris-project.org/pdfs/2026-pldi-verusbelt.pdf",
+        "pdf_sha256": "6ca867d564fc26bb3983a98fc03f05d72d1b880e1007b18f98ac1b60071a70e7"
+      },
+      "corpus_packages": [
+        "anneal-adoption-and-primary-bibliography-2026"
+      ],
+      "inspection_role": "Fresh substantive primary theorem/limitations and selected exact public source endpoint inspection, with artifact metadata only; no build/replay."
+    }
+  ],
+  "initial_coordinate_records": 81,
+  "ninth_publication_delta": "corpus-delta.json"
+}

@@ -1,0 +1,120 @@
+{
+  "topics": [
+    "rust/capture",
+    "rust/implicit-operations",
+    "rust/ctfe",
+    "rust/thread-local",
+    "translation/serialization",
+    "verification/obligation-generation",
+    "certificates/aggregation"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "paths": "conditional-compilation;type-coercions;method-call-expr;const_eval;static-items"
+      }
+    },
+    {
+      "name": "rust-lang/rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "paths": "library/std/src/thread/local.rs;compiler/rustc_middle/src/ty/adjustment.rs;compiler/rustc_ast_lowering/src/expr.rs;compiler/rustc_mir_build/src/thir/cx/expr.rs;compiler/rustc_mir_build/src/builder/expr/{as_rvalue,as_place}.rs;builder/scope.rs;compiler/rustc_const_eval/src/const_eval/eval_queries.rs;interpret/{intern,validity}.rs;compiler/rustc_middle/src/mir/interpret/allocation.rs"
+      }
+    },
+    {
+      "name": "AeneasVerif/charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+        "paths": "driver.rs;get_mir.rs;export.rs;charon-ml/src/OfJson.ml"
+      }
+    },
+    {
+      "name": "AeneasVerif/aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+        "path": "src/llbc/LlbcOfJson.ml"
+      }
+    },
+    {
+      "name": "Original ObligationPilot.lean",
+      "identity": {
+        "artifact": "ObligationPilot.lean",
+        "sha256": "17149fd58168fce0120c9814b6aedb14b74d107ce2390627889ceb9bb140c545",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original subject.rs",
+      "identity": {
+        "artifact": "subject.rs",
+        "sha256": "28f24a9ad2101629774e8bb53510a2467bef0fe85846e520e46e4d5fdb6c1200",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Lean 4.31 observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0",
+        "runtime_identity": "Executable, Init.olean and libleanshared.dylib hashes in lean-check.json",
+        "boundary": "Parent-reviewed missing nested-inductive validation; no exploit executed"
+      }
+    },
+    {
+      "name": "Official Lean 4.32.2 soundness-fix note",
+      "identity": {
+        "primary_url": "https://lean-lang.org/doc/reference/latest/releases/v4.32.2/",
+        "version": "4.32.2",
+        "coordinates": "Soundness bug note, issue14576 and PR14577; release2026-07-28"
+      }
+    },
+    {
+      "name": "Owned inline-control",
+      "identity": {
+        "artifact": "support/inline-control/Inline.lean",
+        "sha256": "fcd32005109d87f4b00f7748101c85a976f72d855de2f80d0f631043d31ff94a",
+        "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+      }
+    },
+    {
+      "name": "Owned modular-control",
+      "identity": {
+        "artifact": "support/modular-control/Modular.lean",
+        "sha256": "b4768930f94676ce96fdb2808e3e755552b7e85e6f80f723f1c762e2b570396f",
+        "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+      }
+    },
+    {
+      "name": "Owned attachment-control",
+      "identity": {
+        "artifact": "support/attachment-control/probe.rs",
+        "sha256": "3a48e47e5e080dc997532b4794d0ffe3f760cc03109146c9a815a5e6c8d8c4b0",
+        "scope": "Bounded observed control; source import and general artifact interpretation remain premises"
+      }
+    },
+    {
+      "name": "Lean4.34 parent controls",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Rust attachment compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "version": "1.101.0-nightly"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

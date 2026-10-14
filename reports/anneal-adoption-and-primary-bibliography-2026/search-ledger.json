@@ -1,0 +1,149 @@
+{
+  "observed_at": "2026-10-14",
+  "cutoff": "2026-10-14",
+  "role": "Transparent bounded search, not systematic saturation",
+  "queries": [
+    "site.arxiv.org RefinedRust 2026",
+    "site.arxiv.org Aeneas Rust 2026",
+    "site.arxiv.org Verus verification linear ghost 2026",
+    "site.creusot.rs Coma publications",
+    "site.arxiv.org/abs/ exact title Scaling Verification of Cryptographic Software with Aeneas, Rust, and Lean",
+    "site.verus-lang.github.io research 2026",
+    "site.iris-project.org publications 2026"
+  ],
+  "primary_discovery_indexes": [
+    "https://iris-project.org/",
+    "https://verus-lang.github.io/verus/publications-and-projects/"
+  ],
+  "followed_primary_results": [
+    {
+      "identity": "arxiv:2609.15648v1",
+      "sections": [
+        "3 Trust Assumptions",
+        "5 Extraction/automation/library models",
+        "6 Intrinsic shims",
+        "8 Evaluation",
+        "Appendix C API theorem"
+      ],
+      "byte_identity": "paper-identities.json"
+    },
+    {
+      "identity": "Shuge Rong, May 2026 MS thesis",
+      "sections": [
+        "4.4.4 Theorem 4.2",
+        "5.1 Limitations",
+        "5.2 Future Work",
+        "References"
+      ],
+      "source_revision": "e939579e65643456084cba9ca7c1dc3c81369118",
+      "byte_identity": "paper-identities.json"
+    },
+    {
+      "identity": "doi:10.1145/3808325",
+      "sections": [
+        "3 Type-spec interface",
+        "4 Invariants/resource types",
+        "5 Leaf lifetime logic",
+        "6 Theorem 6.1 and limitations"
+      ],
+      "source_revision": "b9b14b2cb47b6a6307611578782adc3481627aac",
+      "source_endpoints": [
+        "typing/soundness.v:type_soundness_closed",
+        "lang/adequacy.v:lrust_adequacy",
+        "typing/pptr.v:typed_pptr_borrow_mut",
+        "typing/ra.v:typed_ra_join_shared_to_target",
+        "typing/protocol.v:typed_sp_join_shared_to_target",
+        "typing/local_inv.v:open/close",
+        "README current correspondence qualifications"
+      ],
+      "byte_identity": "paper-identities.json",
+      "artifact_record": "verusbelt-evidence-identities.json"
+    }
+  ],
+  "backward_edges": [
+    {
+      "from": "arxiv:2609.15648v1",
+      "reference": 13,
+      "to": "hax VSTTE 2024"
+    },
+    {
+      "from": "arxiv:2609.15648v1",
+      "reference": 18,
+      "to": "Creusot ICFEM 2022"
+    },
+    {
+      "from": "Rong MS thesis",
+      "reference": 11,
+      "to": "Verus linear ghost types 2023"
+    },
+    {
+      "from": "Rong MS thesis",
+      "reference": 13,
+      "to": "CompCert ERTS 2016"
+    },
+    {
+      "from": "Rong MS thesis",
+      "reference": 19,
+      "to": "Autosubst ITP 2015"
+    },
+    {
+      "from": "Rong MS thesis",
+      "reference": 20,
+      "to": "Autosubst 2 CPP 2019"
+    },
+    {
+      "from": "Rong MS thesis",
+      "reference": 21,
+      "to": "Many-Sorted-Model-Theory 2026"
+    }
+  ],
+  "stopping_rule": "Stop after relevant new theorem/result/assumption mechanisms are inspected; do not expand into arbitrary descendants or claim all literature exhausted.",
+  "exclusions": [
+    "Unrelated Coma/Iris search results",
+    "Third-party AI summaries as technical evidence",
+    "Every citation descendant and unpublished result"
+  ],
+  "operational_limits": [
+    "No local PDF extraction package/executable installed; primary web text used alongside exact downloaded PDF hashes.",
+    "Guessed Aeneas root aeneas.opam GET returned 404; no dependency absence inferred.",
+    "docs.rs dependency source GETs failed; exact primary crates.io release metadata and pinned Cargo.lock resolved the license/checksum question.",
+    "VerusBelt 19613067 artifact is 2.35 GB including environments; metadata and exact public source inspected without downloading/building archive. Distinct README record 19080059 not equated."
+  ],
+  "remaining_primary_leads": [],
+  "forward_citation_search": {
+    "method": "Search official primary project publication indexes/title queries for later work, then confirm actual citations in each followed primary reference list; no claim of citation-index completeness.",
+    "confirmed_edges": [
+      {
+        "from": "Aeneas ICFP 2022",
+        "to": "arxiv:2609.15648v1",
+        "reference": 31
+      },
+      {
+        "from": "Sound Borrow-Checking for Rust via Symbolic Semantics ICFP 2024",
+        "to": "arxiv:2609.15648v1",
+        "reference": 30
+      },
+      {
+        "from": "RustBelt POPL 2018",
+        "to": "doi:10.1145/3808325",
+        "reference": 19
+      },
+      {
+        "from": "RustHornBelt PLDI 2022",
+        "to": "doi:10.1145/3808325",
+        "reference": 30
+      },
+      {
+        "from": "Leaf OOPSLA 2023",
+        "to": "doi:10.1145/3808325",
+        "reference": 14
+      },
+      {
+        "from": "Verus linear ghost types OOPSLA 2023",
+        "to": "doi:10.1145/3808325",
+        "reference": 24
+      }
+    ],
+    "limit": "Only relevant later publications discovered by the declared bounded primary searches; all citing descendants, theses and unpublished revisions not enumerated."
+  }
+}

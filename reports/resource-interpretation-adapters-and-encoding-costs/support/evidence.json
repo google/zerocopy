@@ -1,0 +1,90 @@
+{
+  "observed_at": "2026-10-14",
+  "inspection": "direct selected source/theorem endpoints and retained original prototype execution; not headline-only",
+  "primary_units": [
+    {
+      "repository": "Deducteam/holide",
+      "revision": "36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad",
+      "path": "src/article.ml",
+      "raw_url": "https://raw.githubusercontent.com/Deducteam/holide/36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad/src/article.ml",
+      "symbols": "OpenTheory command grammar",
+      "normalized_text_sha256": "20c9477692c38ae999faf9999ad65e0be99f61c507bfb5108e06c6ea46346ed5"
+    },
+    {
+      "repository": "Deducteam/holide",
+      "revision": "36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad",
+      "path": "src/thm.ml",
+      "raw_url": "https://raw.githubusercontent.com/Deducteam/holide/36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad/src/thm.ml",
+      "symbols": "translate_thm; axiom; define_const_list; define_type_op; thm",
+      "normalized_text_sha256": "7dd57960ac5a769fe08d4a8abbf20779063a6833aeaabd7d6a06d3e7f4f2f458"
+    },
+    {
+      "repository": "Deducteam/coqine",
+      "revision": "27e077ad59e23720cb6ed8bf959694d550bfac19",
+      "path": "src/translator.ml",
+      "raw_url": "https://raw.githubusercontent.com/Deducteam/coqine/27e077ad59e23720cb6ed8bf959694d550bfac19/src/translator.ml",
+      "symbols": "sort/universe/constraint/term encoding",
+      "normalized_text_sha256": "3333fcd38e35763b34d2f447ce9e20b457c07da9eb710cbb29945ddcf827dc8f"
+    },
+    {
+      "repository": "Deducteam/lean2dk",
+      "revision": "471208f18c29420e25750503648469fc95d2ac8f",
+      "path": "Dedukti/Trans.lean",
+      "raw_url": "https://raw.githubusercontent.com/Deducteam/lean2dk/471208f18c29420e25750503648469fc95d2ac8f/Dedukti/Trans.lean",
+      "symbols": "transConst:axiom/quotient/inductive; translateEnv",
+      "normalized_text_sha256": "2b9737063206b9ce6d78e420c39df03dd2502916916e9eddbd9350915d9fb700"
+    },
+    {
+      "repository": "theorem-labs/lf-lean",
+      "revision": "2c0d52ee93e808c9e09fb6852b43fe080adef8bb",
+      "path": "results/result-1/theories/Isomorphisms/U_nat__add__iso.v",
+      "raw_url": "https://raw.githubusercontent.com/theorem-labs/lf-lean/2c0d52ee93e808c9e09fb6852b43fe080adef8bb/results/result-1/theories/Isomorphisms/U_nat__add__iso.v",
+      "symbols": "nat_to_imported_add_compat; Nat_add_iso",
+      "normalized_text_sha256": "9b6a4f07dbff8346c3fe5a71c240eacb9ff8e56576fbabd9c5b58c906d0bacff"
+    },
+    {
+      "repository": "theorem-labs/lf-lean",
+      "revision": "2c0d52ee93e808c9e09fb6852b43fe080adef8bb",
+      "path": "results/result-1/theories/Isomorphisms/U_original__U2_lf_dot_U_basics__U2_lf__U_basics__factorial__iso.v",
+      "raw_url": "https://raw.githubusercontent.com/theorem-labs/lf-lean/2c0d52ee93e808c9e09fb6852b43fe080adef8bb/results/result-1/theories/Isomorphisms/U_original__U2_lf_dot_U_basics__U2_lf__U_basics__factorial__iso.v",
+      "symbols": "explicit Admitted factorial isomorphism",
+      "normalized_text_sha256": "9dd0329e910bb16b94405390d2d9619c25d9814f6afbd1c881f64198fb6f599c"
+    }
+  ],
+  "original_owned_artifacts": [
+    {
+      "path": "support/Adapter.lean",
+      "sha256": "6dc268556281ad13f4c17889eb2a56d8807225254f22ae9bb9182e180ea498b4"
+    },
+    {
+      "path": "support/HeapCore.lean",
+      "sha256": "a9ec6411da12baae1f131da893ab2b9ede00cc0fb352b79ed82a5653c4a9c4c2"
+    },
+    {
+      "path": "support/adapter-results.json",
+      "sha256": "b691c3ff5d6e47b28e9112f753bd7cbe0723903a4b30cdc19bd65c086000e36b"
+    },
+    {
+      "path": "support/adapter.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/adapter.stdout",
+      "sha256": "e1b239ee6a4e80f67c7728140aa1f9ae9ad8f181b8dfa6222eb07b12a399425e"
+    },
+    {
+      "path": "support/core.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/core.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/encoding-costs.json",
+      "sha256": "c2975ccc7184f82baf76fd42307ed71f48d172f87393f224a41f2057a37b0c19"
+    }
+  ],
+  "source_hash_convention": "UTF-8 normalized to one final newline; byte-exact generated artifacts use sha256",
+  "source_mirrors_in_package": false
+}

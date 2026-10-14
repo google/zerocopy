@@ -1,0 +1,49 @@
+{
+  "observed_at": "2026-10-14",
+  "inspection": "direct selected source/theorem endpoints and retained original prototype execution; not headline-only",
+  "primary_units": [
+    {
+      "repository": "isabelle-prover/mirror-afp-devel",
+      "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90",
+      "path": "thys/Jinja/BV/BVExec.thy",
+      "raw_url": "https://raw.githubusercontent.com/isabelle-prover/mirror-afp-devel/352a4e06c2e2c1dc358200e2a87bd930e458ca90/thys/Jinja/BV/BVExec.thy",
+      "symbols": "wt_kil_correct; wt_kil_complete; jvm_kildall_correct",
+      "normalized_text_sha256": "bb9be00f15a06d61830fa542b12197e4ac8744d4938b1cd8a02353acc6578700"
+    },
+    {
+      "repository": "isabelle-prover/mirror-afp-devel",
+      "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90",
+      "path": "thys/Jinja/BV/BVSpecTypeSafe.thy",
+      "raw_url": "https://raw.githubusercontent.com/isabelle-prover/mirror-afp-devel/352a4e06c2e2c1dc358200e2a87bd930e458ca90/thys/Jinja/BV/BVSpecTypeSafe.thy",
+      "symbols": "BV_correct_1; BV_correct; BV_correct_initial",
+      "normalized_text_sha256": "f9e260323dea6c55f0d68511b073d0a29d6bf99b4e99b4909adda1992e3ca2d3"
+    },
+    {
+      "repository": "isabelle-prover/mirror-afp-devel",
+      "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90",
+      "path": "thys/Jinja/BV/LBVJVM.thy",
+      "raw_url": "https://raw.githubusercontent.com/isabelle-prover/mirror-afp-devel/352a4e06c2e2c1dc358200e2a87bd930e458ca90/thys/Jinja/BV/LBVJVM.thy",
+      "symbols": "lightweight bytecode-verifier instantiation",
+      "normalized_text_sha256": "a46514568a2b9e8fc607c813601c29a46820651cd19aa7eff428e9ba57c125e9"
+    },
+    {
+      "repository": "torvalds/linux",
+      "revision": "0fcb05b72344f40806cbe810de8872f1698bf053",
+      "path": "kernel/bpf/verifier.c",
+      "raw_url": "https://raw.githubusercontent.com/torvalds/linux/0fcb05b72344f40806cbe810de8872f1698bf053/kernel/bpf/verifier.c",
+      "symbols": "bpf_check:21206 onward; analysis then rewrites:21400\u201321450",
+      "normalized_text_sha256": "fb7672f7b367c45e0d77640b3b2162a26e09475793ae521c3673d9f67d92032a"
+    },
+    {
+      "repository": "vbpf/prevail",
+      "revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+      "path": "src/crab/ebpf_checker.cpp",
+      "raw_url": "https://raw.githubusercontent.com/vbpf/prevail/cefe6a799f8b8f37aa2560e196f223802717c1e7/src/crab/ebpf_checker.cpp",
+      "symbols": "EbpfChecker; ebpf_domain_check:89\u2013153",
+      "normalized_text_sha256": "184d93de486ad24da9f9dbd81ae0fdfd09085741d504b0597f9a0843d63ce180"
+    }
+  ],
+  "original_owned_artifacts": [],
+  "source_hash_convention": "UTF-8 normalized to one final newline; byte-exact generated artifacts use sha256",
+  "source_mirrors_in_package": false
+}

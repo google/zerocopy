@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "compilation/llvm",
+    "trivet",
+    "compilation/refinement",
+    "equivm",
+    "verification/ffi",
+    "verification/artifact-admission"
+  ],
+  "subjects": [
+    {
+      "name": "Trivet exact primary paper",
+      "identity": {
+        "primary_url": "https://arxiv.org/html/2609.19583v1",
+        "arxiv": "2609.19583v1",
+        "coordinates": "Definition2.1;§§3.1-3.4",
+        "artifact_boundary": "Author implementation identity not acquired in bounded retrieval"
+      }
+    },
+    {
+      "name": "EquiVM exact primary paper",
+      "identity": {
+        "primary_url": "https://arxiv.org/html/2607.26306v1",
+        "arxiv": "2607.26306v1",
+        "relationship": "Paper Solminus subject distinct from current Stele source"
+      }
+    },
+    {
+      "name": "argotorg/EquiVM",
+      "identity": {
+        "repository": "argotorg/EquiVM",
+        "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+        "paths": "Stele/Refine.lean;Examples/ERC20/Correct.lean;manifest;toolchain",
+        "toolchain": "Lean4.29.0 source declaration; not executed"
+      }
+    },
+    {
+      "name": "lefterislazar/EVMLean",
+      "identity": {
+        "repository": "lefterislazar/EVMLean",
+        "revision": "fd4f5e6d6d6b4a18eb73f5a71ae2df909ac2b542",
+        "inspection": "Resolved manifest identity only; model not replayed"
+      }
+    },
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "8a178386ffc0f5fef0b77738bb5449d50efeea95",
+        "inspection": "Resolved manifest identity only; not replayed"
+      }
+    },
+    {
+      "name": "CertiRocq/VeriFFI",
+      "identity": {
+        "repository": "CertiRocq/VeriFFI",
+        "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+        "paths": "README;FnDesc.v;verif_int63.v;_CoqProject;gitlinks"
+      }
+    },
+    {
+      "name": "CertiCoq/certicoq",
+      "identity": {
+        "repository": "CertiCoq/certicoq",
+        "revision": "f0e1554d57fa683829c253570995e71b70e0083f",
+        "inspection": "VeriFFI gitlink only; submodule source not audited"
+      }
+    },
+    {
+      "name": "CertiGraph/CertiGraph",
+      "identity": {
+        "repository": "CertiGraph/CertiGraph",
+        "revision": "a2db4cf823730a104ddbde7f170627a47fc2f1b7",
+        "inspection": "VeriFFI gitlink only; submodule source not audited"
+      }
+    },
+    {
+      "name": "VeriFFI publication interface",
+      "identity": {
+        "primary_url": "https://doi.org/10.1145/3704860",
+        "doi": "10.1145/3704860",
+        "publication": "POPL2025,article24",
+        "inspection": "Primary publication interface text; author PDF retrieval failed"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

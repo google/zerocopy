@@ -1,0 +1,5 @@
+'SecurityWitness.values_agree' does not depend on any axioms
+'SecurityWitness.source_not_constant_time' depends on axioms: [propext]
+'SecurityWitness.value_equality_does_not_reflect_security' depends on axioms: [propext]
+'SecurityWitness.trace_equality_reflects_security' does not depend on any axioms
+'SecurityWitness.trace_equality_preserves_security' does not depend on any axioms

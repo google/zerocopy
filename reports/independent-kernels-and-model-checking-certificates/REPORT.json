@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "verification/kernel-diversity",
+    "verification/model-checking",
+    "lean/kernel",
+    "isabelle/reconstruction"
+  ],
+  "subjects": [
+    {
+      "name": "Lean4.30rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+      }
+    },
+    {
+      "name": "Lean4.31",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+      }
+    },
+    {
+      "name": "Lean4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Nanoda",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "e0d76f5ec30bba244023466875b4845a57fd3ea5"
+      }
+    },
+    {
+      "name": "Lean4Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Comparator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "IC3ref",
+      "identity": {
+        "repository": "arbrad/IC3ref",
+        "revision": "07174c2c8e12109ed659318a3805e46a6479eabd"
+      }
+    },
+    {
+      "name": "Certifaiger",
+      "identity": {
+        "repository": "Froleyks/certifaiger",
+        "revision": "29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4"
+      }
+    },
+    {
+      "name": "Isabelle",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

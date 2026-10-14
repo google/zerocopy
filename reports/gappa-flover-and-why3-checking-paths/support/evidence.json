@@ -1,0 +1,121 @@
+{
+  "observed_at": "2026-10-14",
+  "inspection": "direct selected source/theorem endpoints and retained original prototype execution; not headline-only",
+  "primary_units": [
+    {
+      "repository": "gappa/coq",
+      "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+      "path": "src/Gappa_tactic.v",
+      "raw_url": "https://gitlab.inria.fr/gappa/coq/-/raw/e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf/src/Gappa_tactic.v",
+      "symbols": "convert_tree; normalization/transformation correctness; gappa tactic",
+      "normalized_text_sha256": "d347c7e6bcc4dd91944d383e7598d5d49414e7b27c5c55f2829deb5e7d37f60b"
+    },
+    {
+      "repository": "gappa/coq",
+      "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+      "path": "src/gappatac.c",
+      "raw_url": "https://gitlab.inria.fr/gappa/coq/-/raw/e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf/src/gappatac.c",
+      "symbols": "call_gappa:793\u2013817; evars_to_vmcast:830\u2013843; gappa_internal:863\u2013878",
+      "normalized_text_sha256": "60e70c83d024fb1e65f729f50f582ef1aa9164f66792071419b3c3f6f8fb7f14"
+    },
+    {
+      "repository": "gappa/coq",
+      "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+      "path": "src/Gappa_float.v",
+      "raw_url": "https://gitlab.inria.fr/gappa/coq/-/raw/e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf/src/Gappa_float.v",
+      "symbols": "rounding_float; rounding_floatx and Flocq imports",
+      "normalized_text_sha256": "cb156af1a62e7d7b6629c461de7c2a751b22f3b148d999bd6cfde448b5017529"
+    },
+    {
+      "repository": "gappa/coq",
+      "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+      "path": "src/Gappa_pred_bnd.v",
+      "raw_url": "https://gitlab.inria.fr/gappa/coq/-/raw/e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf/src/Gappa_pred_bnd.v",
+      "symbols": "constant2; subset/intersect/interval proofs",
+      "normalized_text_sha256": "440a19b8f144381ca4a1ce1560e25b87bb83eafca8617610a13c5b964395ce4f"
+    },
+    {
+      "repository": "Cactus-proj/FloVer",
+      "revision": "2b846b7242db7435c97ba694393db47842b19860",
+      "path": "coq/CertificateChecker.v",
+      "raw_url": "https://raw.githubusercontent.com/Cactus-proj/FloVer/2b846b7242db7435c97ba694393db47842b19860/coq/CertificateChecker.v",
+      "symbols": "CertificateChecker; Certificate_checking_is_sound_general; Certificate_checking_is_sound",
+      "normalized_text_sha256": "411580e4225d4c4c522556d14ac1a27a17ecb435031889c12be033560797f179"
+    },
+    {
+      "repository": "Cactus-proj/FloVer",
+      "revision": "2b846b7242db7435c97ba694393db47842b19860",
+      "path": "coq/IEEE_connection.v",
+      "raw_url": "https://raw.githubusercontent.com/Cactus-proj/FloVer/2b846b7242db7435c97ba694393db47842b19860/coq/IEEE_connection.v",
+      "symbols": "eval_expr_float; eval_expr_valid; noDowncast; IEEE_connection_expr",
+      "normalized_text_sha256": "8783c13097db3ea8c89e9a6dda1eab95622f230ede4e086132e08cd1336a613f"
+    },
+    {
+      "repository": "Cactus-proj/FloVer",
+      "revision": "2b846b7242db7435c97ba694393db47842b19860",
+      "path": "coq/SMTValidation.v",
+      "raw_url": "https://raw.githubusercontent.com/Cactus-proj/FloVer/2b846b7242db7435c97ba694393db47842b19860/coq/SMTValidation.v",
+      "symbols": "validSMTIntervalbounds; validSMTIntervalbounds_sound",
+      "normalized_text_sha256": "4076bcbe0d80304aa34595252c6f325894183044ae32ff125b89b462a746285e"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "src/core/trans.ml",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/src/core/trans.ml",
+      "symbols": "trans type; register_transform; apply_transform",
+      "normalized_text_sha256": "accd8cbd92fa3ccd2fa7d87b00cfaeba5fe482a94f71b8ca1c09cb348f4640ca"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "src/driver/driver.ml",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/src/driver/driver.ml",
+      "symbols": "prepare_task; printer; prove_task",
+      "normalized_text_sha256": "92b144e4bda167ff41d680185ad2bd08432b50f26f8ee7b35839faa1ad184b28"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "src/driver/call_provers.ml",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/src/driver/call_provers.ml",
+      "symbols": "analyse_result; prover_answer; driver regex/exit interpretation",
+      "normalized_text_sha256": "2c090733b90b8112600ed4d8d0909c26861a4d754f4ae5e39a3f6f31b9c2ead3"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "src/transform/split_goal.ml",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/src/transform/split_goal.ml",
+      "symbols": "split_goal_full; split_goal_right registration",
+      "normalized_text_sha256": "d278adf9e9ad4a1e13cd773c4df4f960ae017bc64c219e7fd84a16c2434acb36"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "drivers/z3.drv",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/drivers/z3.drv",
+      "symbols": "SMT printer/transformation order",
+      "normalized_text_sha256": "059e7b77e7139c1e76cee2ed88d6a8c2b0eb0d8d4e95c32f9c6f30ca13a9f853"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "drivers/smt-libv2.gen",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/drivers/smt-libv2.gen",
+      "symbols": "valid unsat regex",
+      "normalized_text_sha256": "73687a2e3626e569f4a2bf5cb74dfd6c33c7019f8d816150538840cb4fca878a"
+    },
+    {
+      "repository": "why3/why3",
+      "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+      "path": "drivers/coq.drv",
+      "raw_url": "https://gitlab.inria.fr/why3/why3/-/raw/d0a8072e157935d0d80a7a2156ecf5a98a2aae3e/drivers/coq.drv",
+      "symbols": "Rocq printer and preliminary transformations",
+      "normalized_text_sha256": "ac28a83238736897d3711c81fc921001bd875d1e128f771c46d7e8edc692857f"
+    }
+  ],
+  "original_owned_artifacts": [],
+  "source_hash_convention": "UTF-8 normalized to one final newline; byte-exact generated artifacts use sha256",
+  "source_mirrors_in_package": false
+}

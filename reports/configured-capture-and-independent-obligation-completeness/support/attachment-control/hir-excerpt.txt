@@ -1,0 +1,74 @@
+837:                                 owner_id: DefId(0:11 ~ attachment[722a]::intended::validate),
+865:                 owner_id: DefId(0:11 ~ attachment[722a]::intended::validate),
+1282:                                 owner_id: DefId(0:14 ~ attachment[722a]::decoy::validate),
+1310:                 owner_id: DefId(0:14 ~ attachment[722a]::decoy::validate),
+1708:         },
+1709:     },
+1710:     opt_hash: None,
+1711: }
+1712: DefId(0:6 ~ attachment[722a]::{use#1}) => OwnerNodes {
+1713:     node: ParentedNode {
+1714:         parent: 4294967040,
+1715:         node: Item(
+1716:             Item {
+1717:                 owner_id: DefId(0:6 ~ attachment[722a]::{use#1}),
+1718:                 kind: Use(
+1719:                     UseTree {
+1720:                         prefix: Path {
+1721:                             span: probe.rs:13:9: 13:27 (#0),
+1722:                             res: PerNS {
+1723:                                 value_ns: Some(
+1724:                                     Def(
+1725:                                         Fn,
+1726:                                         DefId(0:11 ~ attachment[722a]::intended::validate),
+1727:                                     ),
+1728:                                 ),
+1729:                                 type_ns: None,
+1730:                                 macro_ns: None,
+1731:                             },
+1732:                             segments: [
+1733:                                 PathSegment {
+1734:                                     ident: intended#0,
+1735:                                     hir_id: HirId(DefId(0:6 ~ attachment[722a]::{use#1}).1),
+1736:                                     res: Def(
+1737:                                         Mod,
+1738:                                         DefId(0:4 ~ attachment[722a]::intended),
+1739:                                     ),
+1740:                                     args: None,
+1741:                                     infer_args: false,
+1742:                                     delegation_child_segment: false,
+1743:                                 },
+1744:                                 PathSegment {
+1745:                                     ident: validate#0,
+1746:                                     hir_id: HirId(DefId(0:6 ~ attachment[722a]::{use#1}).2),
+1747:                                     res: Err,
+1748:                                     args: None,
+1749:                                     infer_args: false,
+1750:                                     delegation_child_segment: false,
+1751:                                 },
+1752:                             ],
+1753:                         },
+1754:                         kind: Single(
+1755:                             exported_alias#0,
+1756:                         ),
+1757:                     },
+1758:                 ),
+1759:                 span: probe.rs:13:1: 13:46 (#0),
+1760:                 vis_span: probe.rs:13:1: 13:4 (#0),
+2304:                                         Path {
+2305:                                             span: probe.rs:18:33: 18:47 (#0),
+2306:                                             res: Def(
+2307:                                                 Fn,
+2308:                                                 DefId(0:11 ~ attachment[722a]::intended::validate),
+2309:                                             ),
+2310:                                             segments: [
+2311:                                                 PathSegment {
+2312:                                                     ident: exported_alias#0,
+2313:                                                     hir_id: HirId(DefId(0:7 ~ attachment[722a]::main).62),
+2314:                                                     res: Def(
+2315:                                                         Fn,
+2316:                                                         DefId(0:11 ~ attachment[722a]::intended::validate),
+2317:                                                     ),
+2318:                                                     args: None,
+2319:                                                     infer_args: true,
+2320:                                                     delegation_child_segment: false,

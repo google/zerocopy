@@ -1,0 +1,37 @@
+{
+  "source_comparisons": [
+    {
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/kernel/inductive.cpp",
+      "sha256": "483fd791504ada6cdf94e9eb63f13c62f5a3a0196367a83ce8cd896ad0408db5",
+      "first_line": 1116,
+      "last_line": 1183,
+      "final_nested_parameter_check_present": false,
+      "raw_url": "https://raw.githubusercontent.com/leanprover/lean4/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/kernel/inductive.cpp"
+    },
+    {
+      "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+      "path": "src/kernel/inductive.cpp",
+      "sha256": "5d75cd1b42a2a70182a2a5f99669170eae9ca3cc964a830b4b3e7577546d9a61",
+      "first_line": 1116,
+      "last_line": 1183,
+      "final_nested_parameter_check_present": false,
+      "raw_url": "https://raw.githubusercontent.com/leanprover/lean4/68218e876d2a38b1985b8590fff244a83c321783/src/kernel/inductive.cpp"
+    },
+    {
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/kernel/inductive.cpp",
+      "sha256": "ad549d9a85bf75ea0405cd84f2c6759651c193474f7865ffc823d1467a79c7d6",
+      "first_line": 1235,
+      "last_line": 1351,
+      "final_nested_parameter_check_present": true,
+      "raw_url": "https://raw.githubusercontent.com/leanprover/lean4/5045d0056413266e57c625dcd7c365b10e377c52/src/kernel/inductive.cpp"
+    }
+  ],
+  "fix_merge": "a39eab69e1eee9ad38f4efe507907b1026a77808",
+  "fix_head": "e12d2266cbbe27effbbb957a729e732bb368c139",
+  "issue": "https://github.com/leanprover/lean4/issues/14576",
+  "repro_execution": false,
+  "earliest_introducing_commit": "not established",
+  "conclusion": "The exact 4.30rc2 and 4.31 sources contain the omitted validation path fixed by PR14577; exact repro portability was not executed. The 4.34.1 source contains this fix; universal soundness is not inferred."
+}

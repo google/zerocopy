@@ -1,0 +1,66 @@
+{
+  "entries": [
+    {
+      "id": "R084",
+      "title": "Proof certificates and cross-prover interoperability",
+      "question": "Investigate Lean/Rocq transport, SMT certificates, SMTCoq, Alethe, and LFSC, including checking costs and remaining trust.",
+      "rationale": "Reusing external automation or proofs requires a justified acceptance path; interoperability choices determine both integration cost and the TCB.",
+      "issue": 3865,
+      "scope": "partial",
+      "answered_scope": "Concrete Lean/Rocq isomorphism, HOL/Dedukti and dependent-type transport assumptions, finite resource interpretation and cost scope.",
+      "genuine_unexamined_scope": [
+        "Selected transport definitions and finite adapter examined; external transport tools and matched SMT/Lean/Rocq costs not executed here."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "resource-interpretation-adapters-and-encoding-costs",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T006",
+      "title": "Metamath and MM0\u2019s minimal checking languages",
+      "question": "Examine explicit substitutions, specification/proof separation, checker simplicity, and costs of encoding richer program logics.",
+      "rationale": "Examine explicit substitutions, specification/proof separation, checker simplicity, and costs of encoding richer program logics.",
+      "issue": 3866,
+      "scope": "partial",
+      "answered_scope": "Explicit interpretation/ownership representation and bounded schema byte costs; richer minimal-prover port obligations.",
+      "genuine_unexamined_scope": [
+        "No measured richer resource-logic encoding in MM0/Metamath; only concrete finite-schema bytes and matched Lean statements measured."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "resource-interpretation-adapters-and-encoding-costs",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T039",
+      "title": "Cross-logic proof interoperability",
+      "question": "Determine what must be proved when evidence moves among Lean, Rocq, HOL, and SMT encodings.",
+      "rationale": "Determine what must be proved when evidence moves among Lean, Rocq, HOL, and SMT encodings.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Typing/conversion, assumptions, theorem statements and resource/solver meaning bridges for cross-logic evidence.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "resource-interpretation-adapters-and-encoding-costs",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "P114",
+      "title": "Composition across proof systems and logics",
+      "question": "Connect Lean certificates with Iris, Rocq, HOL, Verus, or Creusot results; imported theorems need compatible semantics and explicit assumption accounting.",
+      "rationale": "Connect Lean certificates with Iris, Rocq, HOL, Verus, or Creusot results; imported theorems need compatible semantics and explicit assumption accounting.",
+      "issue": 3867,
+      "scope": "partial",
+      "answered_scope": "Actual local resource interpretation adapter and source-reviewed foreign theorem meaning/assumption interfaces.",
+      "genuine_unexamined_scope": [
+        "No actual foreign resource-logic theorem imported and composed across kernels; the local interpretation adapter is checked in one Lean environment."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "resource-interpretation-adapters-and-encoding-costs",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

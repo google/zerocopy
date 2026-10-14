@@ -1,0 +1,11 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "anneal-adoption-and-primary-bibliography-2026",
+      "path": "REPORT.md",
+      "original_sha256": "5448ab48a8ad2a1e141491d2268949b663934992fe32a4de98e5c69b23ed904e",
+      "published_sha256": "379fe735ee48df6305330febbd8c818e425d16acb73725a6fbe58484e4467bed"
+    }
+  ]
+}

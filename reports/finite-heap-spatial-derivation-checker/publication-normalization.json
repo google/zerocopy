@@ -1,0 +1,29 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "finite-heap-spatial-derivation-checker",
+      "path": "support/check_fixtures.py",
+      "original_sha256": "68d31047a86e499d89043d1cae82e49492851ad14902da14a7133e4c86114361",
+      "published_sha256": "1f5ca567d2d4dcca128941ae74e53f3a3a575faa191c05756718e2a3a4889168"
+    },
+    {
+      "package": "finite-heap-spatial-derivation-checker",
+      "path": "support/measure.py",
+      "original_sha256": "e3a52f15197af44dda7f9afcf64739df1fee4e6670b3429673c34b69024f7a5a",
+      "published_sha256": "e13ab016cb602437fda7c18e70f03a7edef34f79379967281b692b01d06d7d64"
+    },
+    {
+      "package": "finite-heap-spatial-derivation-checker",
+      "path": "support/fixture-results.json",
+      "original_sha256": "2b858a95f9ee6c732dc7d7304d6924af1ba65cda8089f11f462bb79168a0c3fb",
+      "published_sha256": "544bf3cf7ab56b9a85d09ccfaef3ef4f44f3bfa84a51a4f700a309ce66bddee2"
+    },
+    {
+      "package": "finite-heap-spatial-derivation-checker",
+      "path": "support/evidence.json",
+      "original_sha256": "236902c7015e3c1177712d6b7b0f296dcff248bf8d4933c73d1d1fe600b097c4",
+      "published_sha256": "e97e55159e2ebd1b96d2032a11a7c7029bb811a6cfca05de569ca04b92c82c8f"
+    }
+  ]
+}

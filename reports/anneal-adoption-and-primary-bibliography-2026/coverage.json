@@ -1,0 +1,200 @@
+{
+  "R003": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F1. Bibliography coverage is a reproducible bounded search",
+      "F2. New primary work strengthens workflow evidence without closing extraction trust",
+      "F3. Open Anneal needs impose concrete acceptance and workflow constraints"
+    ],
+    "answered_subquestions": [
+      "All-364 exact-question navigation, initial 71-package metadata/prose snapshot plus explicit seven-package ninth-publication delta, 81 inherited primary coordinate records plus separately labeled additions, substantive open-needs map, bounded backward/forward primary search and three newly inspected works."
+    ],
+    "remaining_research": [
+      "Declared search does not cover every citation descendant, language or unpublished work; this is a bounded bibliography, not universal saturation."
+    ],
+    "future_engineering": [
+      "Maintain the bibliography and refresh changed source/discussion/corpus identities."
+    ]
+  },
+  "R094": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F5. Exact licensing and dependency facts do not establish distribution closure",
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Route-specific reuse/integration and ownership coupling, direct license and locked/ranged toolchain/dependency facts, interoperability and workflow gates.",
+      "VerusBelt actual model safety/resource-rule endpoint, configuration/license coupling and real-engine bridge limitations."
+    ],
+    "remaining_research": [
+      "No complete compiled dependency/license/native distribution inventory for an actually selected combined release; paired compatibility/cost experiments remain unmeasured."
+    ],
+    "future_engineering": [
+      "Select and audit the actual release closure, assign maintenance ownership, implement the chosen adapters and upgrade tests."
+    ]
+  },
+  "R100": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F2. New primary work strengthens workflow evidence without closing extraction trust",
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Conditional mixed-architecture judgment with semantic/trust boundaries, author-observed large-workload evidence, explicit costs not transferable to Anneal, staged reconsideration/reversibility.",
+      "Recent VerusBelt foundation changes reuse judgment without converting modeled safety to current verifier/runtime correctness."
+    ],
+    "remaining_research": [
+      "No representative cross-route Anneal benchmark or ordinary-Rust-author study was executed here."
+    ],
+    "future_engineering": [
+      "Run selected decision experiments and make the project-level architecture decision."
+    ]
+  },
+  "P139": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Conservative import with certified later abstraction, explicit fragment/exclusion and source-failure preservation frontier; correlated-model/expectation guard."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Implement selected importer interpretation and certifying abstraction layers with complete mandatory safety coverage."
+    ]
+  },
+  "P140": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Pass seams, actual bounded corpus specimens and incremental trust-removal milestones; incomplete chains retain explicit import premises."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Implement producers/checkers for the next chosen seams, compose exact relations and maintain schema/version binding."
+    ]
+  },
+  "P141": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Standalone versioned certifier benefits and reconstruction costs, canonical claim/data interface and root/definition binding."
+    ],
+    "remaining_research": [
+      "Measured portability and reconstruction cost across real producer/version pairs not acquired."
+    ],
+    "future_engineering": [
+      "Implement the standalone input/checking wrapper and selected reconstruction certificates."
+    ]
+  },
+  "P142": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Property-specific UB-prefix certificates versus reusable behavioral relations; separate entry/failure coverage from progress/cost/relational properties."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Implement selected safety relation and preserve extension interfaces for additional observations/properties."
+    ]
+  },
+  "P143": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Mixed verified algorithms, checked witnesses, interpretation libraries and untrusted search with distinct actual trust endpoints."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Implement component composition and prove semantic encodings/executable wrappers for acceptance roles actually selected."
+    ]
+  },
+  "P144": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Prerequisites, staged prototypes, exact trust-reduction gates and reversible acceptance/reconsideration criteria."
+    ],
+    "remaining_research": [
+      "Actual representative cost/maintenance results for the proposed selected stages remain unmeasured."
+    ],
+    "future_engineering": [
+      "Run and measure stages, count discharged propositions rather than moved code, and adopt only after the relevant gate passes."
+    ]
+  },
+  "T092": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Consumer-owned definitions/expected obligations, actual imported/compiled-term policy, correlated True-substitution and native/stale-object rejection workloads."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Enforce actual term/definition and executable artifact binding in a chosen acceptance service."
+    ]
+  },
+  "T119": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F4. Plausible routes solve different parts of the acceptance theorem",
+      "F5. Exact licensing and dependency facts do not establish distribution closure",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Six-dimensional trust accounting for concrete candidate routes; source/semantic/privilege/dependency/update/cost separation and gate for genuine reduction.",
+      "Distinguish completed modeled VerusBelt semantic theorem from admitted SST\u2192AIR thesis and unproved real-engine/certificate links."
+    ],
+    "remaining_research": [
+      "No quantitative production TCB or matched checking-cost comparison across these route configurations."
+    ],
+    "future_engineering": [
+      "Inventory and measure the chosen compiled release and retain each removed unchecked proposition/replacement theorem."
+    ]
+  },
+  "T120": {
+    "status": "bounded-research-design-answered-with-constraints",
+    "sections": [
+      "F6. A mixed design can retain a small, explicit initial frontier",
+      "F7. Compiled definitions and independent expectations control correlated mistakes",
+      "F8. Staged experiments have reversible decisions and explicit reconsideration triggers"
+    ],
+    "answered_subquestions": [
+      "Initial trust reductions, immediate exclusions, residual obligations, decision experiments and evidence-triggered reconsideration."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Parent/project chooses and implements the rollout; preserve reusable artifacts and rollback-compatible certificate versions."
+    ]
+  }
+}

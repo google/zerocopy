@@ -1,0 +1,27 @@
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:100:42: warning: This simp argument is unused:
+  next
+
+Hint: Omit it from the simp argument list.
+  simp [generate, Safe, run, step, guard, n̵e̵x̵t̵,̵ ̵uninitialized]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:105:8: warning: This simp argument is unused:
+  generate
+
+Hint: Omit it from the simp argument list.
+  simp [g̵e̵n̵e̵r̵a̵t̵e̵,̵ ̵Safe, run, step, guard, next, uninitialized]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:110:8: warning: This simp argument is unused:
+  generate
+
+Hint: Omit it from the simp argument list.
+  simp [g̵e̵n̵e̵r̵a̵t̵e̵,̵ ̵Safe, run, step, guard, next, uninitialized]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'ObligationPilot.generated_exact' depends on axioms: [propext]
+'ObligationPilot.aggregate' depends on axioms: [propext]
+'ObligationPilot.init_then_read' depends on axioms: [propext]
+'ObligationPilot.omitted_operation_is_material' depends on axioms: [propext]
+'ObligationPilot.ignored_storage_is_material' depends on axioms: [propext]
+'ObligationPilot.panic_is_not_ub' depends on axioms: [propext]

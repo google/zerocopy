@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "compilation/staged-generation",
+    "certirocq",
+    "metarocq",
+    "compilation/erasure",
+    "checking/executable-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Hornof/Jim PEPM1999 Cyclone",
+      "identity": {
+        "primary_url": "https://www.brics.dk/NS/99/1/BRICS-NS-99-1.pdf",
+        "publication": "BRICS NS-99-1,PEPM1999,printedpp60-74",
+        "coordinates": "AppendixA printedp73 Safety theorem;§3 printedp66 TAL/T"
+      }
+    },
+    {
+      "name": "Compiling for Runtime Code Generation",
+      "identity": {
+        "primary_url": "https://www.cs.cornell.edu/talc/papers/compile_rtcg-tr.pdf",
+        "publication": "Cornell TR2000-1824,October2000",
+        "coordinates": "§6.2 p13-14;AppendixA p21"
+      }
+    },
+    {
+      "name": "Primary TAL/T project description",
+      "identity": {
+        "primary_url": "https://www.cs.cornell.edu/info/people/fms/rtcg.html",
+        "inspection": "Static type-checking statement; no distribution build"
+      }
+    },
+    {
+      "name": "CertiRocq/certirocq",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+        "paths": "Compiler/correctness.v;LambdaBox_to_LambdaANF/anf_toplevel.v;Compiler/metarocq_pipeline.v;Compiler/pipeline.v"
+      }
+    },
+    {
+      "name": "WebAssembly/spec",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+        "paths": "document/core/binary/{modules,instructions,values}.rst;exec/numerics.rst",
+        "boundary": "Primary normative interpretation inspected; full external-spec connection assumed"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "identity_record": "wasm-lean-check.json; executable, Init.olean, shared library"
+      }
+    },
+    {
+      "name": "Original WasmValidator.lean",
+      "identity": {
+        "artifact": "WasmValidator.lean",
+        "sha256": "2f15898226c8ab57515804aebda32c9d60f2ec2f1445b7ac99360547f05cdfd3",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original WasmArtifact.lean",
+      "identity": {
+        "artifact": "WasmArtifact.lean",
+        "sha256": "552b51f20940bc1c1a97db07a6ff43a3e96580f1c396c28e81093175a130262a",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original boolean4.wasm",
+      "identity": {
+        "artifact": "boolean4.wasm",
+        "sha256": "fd0023c344d5d55bb4c7c8f4920764bf5c198777c3411bffea0d99b550cfe158",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original execute_wasm.mjs",
+      "identity": {
+        "artifact": "execute_wasm.mjs",
+        "sha256": "abd3694f62a3753ffd28f242950531947f8d3f7070987ec13d1d792cec45f458",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Observed Node engine",
+      "identity": {
+        "version": "24.21.0",
+        "v8": "13.6.233.17-node.53",
+        "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e",
+        "boundary": "Native execution observed; engine, JS harness and hardware not verified"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

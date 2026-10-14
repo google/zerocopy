@@ -1,0 +1,149 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/results.json",
+      "original_sha256": "0682211efad2a631186c75b74b5a8d34081ab9744191532e0dff7835beddb86b",
+      "published_sha256": "f568054740028bc2fbeabc930780f65bedd73a664e3bda0cfc6f590a5dd0b42b"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/results.json",
+      "original_sha256": "8fea465659d63a8a738d148ac43503cb82bea23b37467891c1defcd531ab5d6f",
+      "published_sha256": "1c17425a83e7f201ab0fc5164861c92053144cf5da4ac6aff50737694dfd94df"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/ac428f26316544f7a168164d5330b511/process.json",
+      "original_sha256": "c3f481f42160c6d70e1ccc7f4e449daa865fa71f012b1b62495d17f9ce316f52",
+      "published_sha256": "ae3a436dbcd16a9370fa01ae29910bef2e909340fab1636dee56bbdee5098864"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/d29cb377f6b0414aaad231d5b8d1da53/process.json",
+      "original_sha256": "ee37c8bb2051df3a7e4eac22c318f15925f02ea498f81bec5178f4d5833ff73f",
+      "published_sha256": "2a2a8d7315e7ccc88412d34d99fac3c09260e9504ee5ffc5f6a81c34220ea434"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/7ac90a062ee44ed7b7a835706d566224/process.json",
+      "original_sha256": "1a83e0b1271cde3ed89b976e83f05d18613c4c502960a01c00e9c64b3e766ee8",
+      "published_sha256": "2654f76dcd3fab3b7bcaf14b6b90592c0e8d8822895bd6b30b71514390ff9d5c"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/ee248c21e81f4b55bdbffe2c4e4c63fa/process.json",
+      "original_sha256": "c195d49269745980f7cdb35167f5795ae80103fc61cb5fd79e5b9f1a4f0e081b",
+      "published_sha256": "26bd549acdc9441134485161fee2cf0c051633795e17dc82b71f3b63ccda4c6b"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/c28feed63e9440e4892b5afa59a7b7c8/process.json",
+      "original_sha256": "2a5d2af0cd7afcb0f76b675e94d8a9a919224fa00d8ca73feda45359e4822244",
+      "published_sha256": "f131d6bf8c7fe9a440d51c8cc1d035b384ccbc8a6fa03cbb6864755d4f2983be"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/739e420d48274d31b761fddd51bdf49d/process.json",
+      "original_sha256": "3dd4071ad3cd69865ddf0b23bfdfcd51bdcb7766e62164dcfbd32b2526c56643",
+      "published_sha256": "bcfa98797c9cc461bf6be54dcde51a1d6f9be023333cba42de519ad67358b81b"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/0c7399a7a6a84d788b7cb8d14558a2de/process.json",
+      "original_sha256": "f11c7c28882f9e30192689c1978589216d0261f92416253ec39780580e218e3b",
+      "published_sha256": "04a96e12f38d58131489f1cd5ec2c1e7e411c97c984fa8774ed1e7dc335f133c"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/741365967e744605ac7694fcfa1b3f49/process.json",
+      "original_sha256": "c41dca9dbefb138df8154a8b5ecf9313c7e0c839bd1c059f5bc565af5a654c99",
+      "published_sha256": "c966940be190eaf9f6d1fa82f3abe5924d92b437cf6704879ed7a0c3ec1d2c2f"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/c0500d3e1c4d42babed3a9d1a71d7bfd/process.json",
+      "original_sha256": "180291f27d35c53bbc8e7d49d4e5d5470826aae9e04324165ea660defbd7d912",
+      "published_sha256": "8d189a2009ca9f5f38757f947a85735f2130a9edf85de74458958efeb50f4968"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/261f75bebc4a4cd0bf5be63c38514fe4/process.json",
+      "original_sha256": "2470c07c0a342a49dd524848e9930ada0750ea1fbd637a83e1f245fb17c243ff",
+      "published_sha256": "206dc182db34d280c5393b05fcf86d1db3e2868d3567fb5b36bdd5ba629aeb32"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/8cf0e71e8f92403c8f8806c6234bc7a0/process.json",
+      "original_sha256": "b530540ff9b14f07b52052a1127095d0f954d87b0bea8559835511dbabe21219",
+      "published_sha256": "e35088e689d373e128a8d7a03eafbf543d6cc2d0462670a09d9a5db6b879872d"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/3ebadc34816b431584beaad87e8b9162/process.json",
+      "original_sha256": "e1e59beec433b6ccc950450079bd707d2e460b7198cffbeb9dbc49ffb76f13dd",
+      "published_sha256": "17f0f382951fbe8514aaaa1a5c7424030a46b999a655e1e56c36bedc7789ab24"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/cb1a8bc1769a4be0bb30376914dfde50/process.json",
+      "original_sha256": "ab1e742617e4b0232d6412ed60414e3eafdf85647802bc9a3387706b3ed1204c",
+      "published_sha256": "b45f14a28f1957a17ba94ba6f7683de821087d8415aa4efd5ea3e5ae28f0cd94"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/4d39db118eb14665b8a9fb42a22ee5ea/process.json",
+      "original_sha256": "ce599899b0edde86f9c3d51fa61a711edcfd1794fb6381d8c645b01dcc8d2fac",
+      "published_sha256": "35c0bd9006ef43835cbb58e5b223f4e93ba9b3e31774d8d8d577dd864a829da1"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/d6417883bda546029b95d099441d4871/process.json",
+      "original_sha256": "f07189bc507d46274fe98f4bd115ba12ebc3fbe6b768a42b27514918dc89f7ac",
+      "published_sha256": "728f1b6c5f8da0e6e94993d703ba59b6cdf60a3b4db3bea2f2ef59610e2df8cc"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/12c5743436bb48d88346ef73b2b60e01/process.json",
+      "original_sha256": "38f69ad74f1628eaedf3207e7c4e997ec6300d3632519da319dedeb380a614eb",
+      "published_sha256": "a7ec8b58c2bc9e43a4587084ac8625d0120e4d05e457f08c76fb3f60fcac4950"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/4ec66549d5f64c118056e8c7a418b516/process.json",
+      "original_sha256": "d8ad9d7cff2a316342853f975d5dd244127c08c4b18e8d3d35de100cd198d05d",
+      "published_sha256": "53fe7ad4cdc3992de088a37717eb47fa4e434f37c678f6b8364414e7c474580e"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/c7e050fcb4b04a4d84157adf2d64a950/process.json",
+      "original_sha256": "cbf280a85c471e9e246cd9b5c5698d73c28212cf55e386fa66347dae1f597bee",
+      "published_sha256": "6545363a707e787e63879955a404d0a79e20f77bb3b29e48b5df3e623062654c"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/746600fa9cda40dcaf69a68b15155218/process.json",
+      "original_sha256": "5fe1c270e2c2b21d7d93050f731b04b9b8047b64d4d71242eea374463c83e982",
+      "published_sha256": "c8a34da880740544f4e9b1a9f6752a1822d2156658adffc4bb137da765052478"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/145791186fb44c6abab5944abbc2dcd5/process.json",
+      "original_sha256": "6bb892cbfecb8477bf14667ed4d9f037d7f4ce3066456d4119d8e1a8c41f9fc5",
+      "published_sha256": "616ebf77cd193ec5df9c5e7ef88de5cd133c32eb72e809561228f859b48f794d"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/runs/run-9168cea43413450ea0c7ffc8db8de38d/runs/634bfb97581a43adb9d51182c5f9421e/process.json",
+      "original_sha256": "fa4794b2891d6bd4872dc4aac903efcff22ffab3b698ef41eaff72fd0ac7cbe0",
+      "published_sha256": "aea4065b015aaff7e1c15c9464a775ca6d78b29ae641a2ff96f47bb936d09da3"
+    },
+    {
+      "package": "concurrent-acceptance-publication-controls",
+      "path": "support/evidence.json",
+      "original_sha256": "47af6651a2bdc2fc7e27f8bc35afd07296a12825f60927c7007f3bc1deefabd4",
+      "published_sha256": "a678f0cabf2786d200f4137411bc1e8f864040396cf2364480baada6f6f858f6"
+    }
+  ]
+}

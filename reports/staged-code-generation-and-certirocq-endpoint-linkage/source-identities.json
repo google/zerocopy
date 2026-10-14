@@ -1,0 +1,58 @@
+[
+  {
+    "key": "certirocq_correctness",
+    "repository": "CertiRocq/certirocq",
+    "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+    "path": "theories/Compiler/correctness.v",
+    "returned_utf8_sha256": "d181e2551abb57a65bbc106fffa3411eef819654a61e504d4d70be2aff26df72"
+  },
+  {
+    "key": "anf_toplevel",
+    "repository": "CertiRocq/certirocq",
+    "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+    "path": "theories/LambdaBox_to_LambdaANF/anf_toplevel.v",
+    "returned_utf8_sha256": "9b167b073a54e96765570fca02c56eb8245e0fe3f93cd0f4e9e5903bfc1b91c6"
+  },
+  {
+    "key": "certirocq-meta",
+    "repository": "CertiRocq/certirocq",
+    "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+    "path": "theories/Compiler/metarocq_pipeline.v",
+    "returned_utf8_sha256": "417de6a81b1475596f5747e4f571d6a527ef13fef92b3a75ed601f3043698857"
+  },
+  {
+    "key": "certirocq-pipeline",
+    "repository": "CertiRocq/certirocq",
+    "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+    "path": "theories/Compiler/pipeline.v",
+    "returned_utf8_sha256": "273d4ca555d3097a4ebcaacec093bf2c1d85e50ba4abc4dae771a0598cb18f94"
+  },
+  {
+    "key": "wasm-module",
+    "repository": "WebAssembly/spec",
+    "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+    "path": "document/core/binary/modules.rst",
+    "returned_utf8_sha256": "d0f17c145d460cc69ebba265204c8e1d0103fe9fb1108b6a18c66882ebe8c047"
+  },
+  {
+    "key": "wasm-instr",
+    "repository": "WebAssembly/spec",
+    "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+    "path": "document/core/binary/instructions.rst",
+    "returned_utf8_sha256": "95bc335c71a94bbb407de4abb31d073c8b8b9b838b308c35fbc1f19e8ae053d6"
+  },
+  {
+    "key": "wasm-numeric",
+    "repository": "WebAssembly/spec",
+    "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+    "path": "document/core/exec/numerics.rst",
+    "returned_utf8_sha256": "baba13652dfdeb6d2a3f21b4750b7907885b070c72ad363dd344379acf11b831"
+  },
+  {
+    "key": "wasm-values",
+    "repository": "WebAssembly/spec",
+    "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+    "path": "document/core/binary/values.rst",
+    "returned_utf8_sha256": "5b3836b519c021fccc52c80cb88f21ed315be326a53ef66545495704557332be"
+  }
+]

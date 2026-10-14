@@ -1,0 +1,59 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-lean.initial.stdout",
+      "original_sha256": "a200ef6216562c7237c321eb3a342aeda57c192aa377213456bc678ae53513a2",
+      "published_sha256": "803fb74ab09778c0815efc33faea5f952e770944f74ad76e883ae70f24fe0117"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-lean-check.json",
+      "original_sha256": "f9aecf26bf20a155de7aa4b2fa72278d4e6e7d11c8ea7d5766a50c18f06131fc",
+      "published_sha256": "5f87f054e7855d07e784862723d26d80e65d321ce4926f8b3df50d24243fa5a7"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "REPORT.md",
+      "original_sha256": "52de88d6b2e0b95d4f8f691526457886535edbfeb9b735c874bbcd46bea15240",
+      "published_sha256": "8e0f66e6a5c556389f08971fa5e8c9ee81c34708da29744ef48c52c72e6d70d0"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-lean-check.recursion-limit.json",
+      "original_sha256": "252502e0e11184fa6b7994c7636ecf1f982942ba7f0347fd511ccd0edeee0723",
+      "published_sha256": "32c9b7552eed2ccf71af98481c196bb96d53b97fe9fc0f6c59fd71f7b01626cf"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "replay_wasm.py",
+      "original_sha256": "574dc6c015d93a2b83d8ccd167e57a3f1c313b40326a5827df65a3429a864c28",
+      "published_sha256": "1002c0539701cb4b8b2177f71f3cdf59c3bbaa18e82c8e6935a98cf4ba76844f"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-lean.recursion-limit.stdout",
+      "original_sha256": "c6098185f6881bc7e9d464ae2bd5e7401acc6eb486ddd1e69e47d84b20b6b830",
+      "published_sha256": "ff806e964344dc251b7be6fa0b64889dd2317ae1f7f01df04ccca3b733a6fc0a"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-comparison.json",
+      "original_sha256": "45697f2d7cfa136dc79894102f12f6ce1934c002ec0ed3928153e14956a84b3e",
+      "published_sha256": "456b8d406f1a3ca9ee160364730ddcc0cf0b96ac0f635ce73c884437591fc72d"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-artifact-check.json",
+      "original_sha256": "e34ea36803774d9b8023742bf5810ef47863bdf89d66d44b3b64bf853de60c7f",
+      "published_sha256": "35a40f46717d54a0e9b9f5b14010feff7f38da6a2322a909d78dca78921cf540"
+    },
+    {
+      "package": "staged-code-generation-and-certirocq-endpoint-linkage",
+      "path": "wasm-lean-check.initial.json",
+      "original_sha256": "239fed894974f3ef96462efc2be81570ebca0c4f12d75bf7e04d8e34655c6d25",
+      "published_sha256": "cfe0f8f7213ed404036afb6d4e11bd06f25cb22d50c47e460ebdae3ebd712c36"
+    }
+  ]
+}

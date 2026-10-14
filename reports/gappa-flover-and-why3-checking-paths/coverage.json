@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "id": "T017",
+      "title": "Numerical certificate checking",
+      "question": "Examine Gappa, FloVer, interval witnesses, rounding models, and the arithmetic trusted by the checker.",
+      "rationale": "Examine Gappa, FloVer, interval witnesses, rounding models, and the arithmetic trusted by the checker.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Pinned current Gappa/FloVer theorem, arithmetic, SMT premises, VM term reconstruction and IEEE evaluator limits.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "gappa-flover-and-why3-checking-paths",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T036",
+      "title": "Creusot and Why3 transformation trust",
+      "question": "Trace transformations, prover drivers, solver evidence, and opportunities for independently checked results.",
+      "rationale": "Trace transformations, prover drivers, solver evidence, and opportunities for independently checked results.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Pinned official Why3 transformations, driver task preparation/printing and textual status versus interactive proof export.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "gappa-flover-and-why3-checking-paths",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

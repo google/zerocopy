@@ -1,0 +1,2 @@
+'observed' depends on axioms: [propext, Quot.sound]
+false

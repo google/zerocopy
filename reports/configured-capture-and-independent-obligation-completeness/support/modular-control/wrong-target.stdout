@@ -1,0 +1,3 @@
+wrong-target.lean:3:55: error: Tactic `decide` proved that the proposition
+  caller target16 255 = expected 255 + 3
+is false

@@ -1,0 +1,16 @@
+[
+  {
+    "optimization": 0,
+    "compile_exit": 0,
+    "compile_ns": 390268041,
+    "native_exit": 0,
+    "stdout": "inputs=256;callee_failure_preserved=1;successful_result=7;all_match=true\n"
+  },
+  {
+    "optimization": 3,
+    "compile_exit": 0,
+    "compile_ns": 106697875,
+    "native_exit": 0,
+    "stdout": "inputs=256;callee_failure_preserved=1;successful_result=7;all_match=true\n"
+  }
+]

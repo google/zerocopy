@@ -1,0 +1,9 @@
+{
+  "python_version": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "script_sha256": "898ff58bf76bee1e8c1c2dea87773d89aab50d1a40fb169e96b2ade2279baa74",
+  "cases": 25,
+  "effects": "only fresh owned scratch resources; no sandbox escalation/external publication"
+}

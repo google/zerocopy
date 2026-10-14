@@ -1,0 +1,10 @@
+{
+  "returncode": 0,
+  "command": [
+    "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+    "Adapter.lean"
+  ],
+  "stdout": "'ResourceAdapter.roundtrip' depends on axioms: [propext, Quot.sound]\n'ResourceAdapter.join_transport' depends on axioms: [propext, Classical.choice, Quot.sound]\n'ResourceAdapter.entailment_transport' depends on axioms: [propext, Quot.sound]\n'ResourceAdapter.encoded_update_transport' depends on axioms: [propext, Quot.sound]\n[true, false]\n",
+  "stderr": "",
+  "lean_revision": "68218e876d2a38b1985b8590fff244a83c321783"
+}

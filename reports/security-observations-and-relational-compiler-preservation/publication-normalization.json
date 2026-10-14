@@ -1,0 +1,29 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "security-observations-and-relational-compiler-preservation",
+      "path": "lean-check.initial.json",
+      "original_sha256": "b5e270a8341cfa6650079de1b6aa3f6cd0b36144adbb30143fb74b16c3409474",
+      "published_sha256": "54fdb44b897436f4fe9aaf879952e2b9b54fb5feeaaeb8db00756fe0dd707199"
+    },
+    {
+      "package": "security-observations-and-relational-compiler-preservation",
+      "path": "REPORT.md",
+      "original_sha256": "22e53f255cb3f58ac67885f8e5c8860f2adfc5f9aa0e2f688889344ce1b7868d",
+      "published_sha256": "f56d20855602ca4c48fe9b577d139a9bb5b715b48a5b760277f8597c543ce215"
+    },
+    {
+      "package": "security-observations-and-relational-compiler-preservation",
+      "path": "lean.stdout.initial",
+      "original_sha256": "4dd32ba19e8bdb73a5da2752fc2b59a470356818a277276b1292bdd832dd1287",
+      "published_sha256": "57e1226d48a63b9495eceb643883f6c60b4493f00d18a33154c7bee6d1086266"
+    },
+    {
+      "package": "security-observations-and-relational-compiler-preservation",
+      "path": "lean-check.json",
+      "original_sha256": "6de3ad8d139cda4b799376dbf6fca59dad02fe4c57999e1ea0cfd59fbc11322a",
+      "published_sha256": "1e4288f134701246ac4b2fc932df1604196409c08cc8d267d1f78a8da3e135f0"
+    }
+  ]
+}

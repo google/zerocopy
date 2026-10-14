@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "verification/bytecode",
+    "jvm/verifier",
+    "ebpf/verifier",
+    "verification/pcc"
+  ],
+  "subjects": [
+    {
+      "name": "JVMS Java SE25",
+      "identity": {
+        "version": "Java SE25",
+        "url": "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.10"
+      }
+    },
+    {
+      "name": "Jinja",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90"
+      }
+    },
+    {
+      "name": "Linux verifier",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+      }
+    },
+    {
+      "name": "PREVAIL",
+      "identity": {
+        "repository": "vbpf/prevail",
+        "revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7"
+      }
+    },
+    {
+      "name": "eBPF flow-sensitive refinement types",
+      "identity": {
+        "doi": "10.1145/3763799",
+        "publication": "PACMPL9 OOPSLA2 Article410 2025"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

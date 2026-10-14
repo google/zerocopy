@@ -1,0 +1,20 @@
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:100:2: error: failed to synthesize
+  Decidable (generate [] uninitialized ∧ ¬Safe (run [Op.load] uninitialized))
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:105:2: error: failed to synthesize
+  Decidable
+    (Safe (run [Op.store 7, Op.load] uninitialized) ∧ ¬Safe (run [Op.store 7, Op.storageDead, Op.load] uninitialized))
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/configured-capture-and-independent-obligation-completeness/ObligationPilot.lean:110:2: error: failed to synthesize
+  Decidable
+    (Safe (run [Op.assertion false, Op.load] uninitialized) ∧ ¬Safe (run [Op.load, Op.assertion false] uninitialized))
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+'ObligationPilot.generated_exact' depends on axioms: [propext]
+'ObligationPilot.aggregate' depends on axioms: [propext]
+'ObligationPilot.init_then_read' depends on axioms: [propext]
+'ObligationPilot.omitted_operation_is_material' depends on axioms: [propext, sorryAx]
+'ObligationPilot.ignored_storage_is_material' depends on axioms: [propext, sorryAx]
+'ObligationPilot.panic_is_not_ub' depends on axioms: [propext, sorryAx]

@@ -1,0 +1,4 @@
+'Inline.correct' depends on axioms: [propext]
+'Inline.erased_failure' depends on axioms: [propext]
+'Inline.error_not_result' does not depend on any axioms
+'Inline.divergence_not_error' does not depend on any axioms

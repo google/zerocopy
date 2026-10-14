@@ -1,0 +1,62 @@
+{
+  "entries": [
+    {
+      "id": "R059",
+      "title": "Alternative separation and permission logics",
+      "question": "Compare dynamic frames, implicit dynamic frames, first-order separation logic, and higher-order separation logic on Anneal examples.",
+      "rationale": "A full Iris foundation may be appropriate, but simpler logics could suffice for some domains. The choice should follow concrete semantic and automation needs.",
+      "issue": 3865,
+      "scope": "answered_bounded",
+      "answered_scope": "Matched update/frame judgment in dynamic, implicit dynamic, first-order and higher-order logic styles over one finite partial heap.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "finite-heap-spatial-derivation-checker",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T033",
+      "title": "Checking spatial entailments and frames",
+      "question": "Compare certificates for ownership splitting, framing, predicate unfolding, and resource updates.",
+      "rationale": "Compare certificates for ownership splitting, framing, predicate unfolding, and resource updates.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Proved finite ownership split, frame, named pair unfolding, update and sequence grammar/checker.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "finite-heap-spatial-derivation-checker",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T037",
+      "title": "Gillian\u2019s symbolic execution boundary",
+      "question": "Investigate whether execution and entailment derivations can be replayed without trusting the symbolic engine.",
+      "rationale": "Investigate whether execution and entailment derivations can be replayed without trusting the symbolic engine.",
+      "issue": 3866,
+      "scope": "partial",
+      "answered_scope": "Engine-independent finite derivation replay feasibility and exact residual Gillian interpretation interface.",
+      "genuine_unexamined_scope": [
+        "No actual Gillian symbolic/execution/entailment replay language is implemented or fully instantiated; this proves the finite checker judgment only."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "finite-heap-spatial-derivation-checker",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T089",
+      "title": "Resource-derivation certificates",
+      "question": "Compare small checkers for spatial judgments with direct Lean proofs of resource rules and their application.",
+      "rationale": "Compare small checkers for spatial judgments with direct Lean proofs of resource rules and their application.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Same-statement conditional Lean certificate checker versus direct proof, real rejection controls and scoped cost samples.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "finite-heap-spatial-derivation-checker",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

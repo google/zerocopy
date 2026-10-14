@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "verification/proof-interoperability",
+    "verification/resource-interpretation",
+    "verification/encoding-costs"
+  ],
+  "subjects": [
+    {
+      "name": "Lean4.31",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+      }
+    },
+    {
+      "name": "Resource adapter",
+      "identity": {
+        "artifact": "Adapter.lean",
+        "sha256": "6dc268556281ad13f4c17889eb2a56d8807225254f22ae9bb9182e180ea498b4"
+      }
+    },
+    {
+      "name": "HOLide",
+      "identity": {
+        "repository": "Deducteam/holide",
+        "revision": "36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad"
+      }
+    },
+    {
+      "name": "CoqInE",
+      "identity": {
+        "repository": "Deducteam/coqine",
+        "revision": "27e077ad59e23720cb6ed8bf959694d550bfac19"
+      }
+    },
+    {
+      "name": "Lean2dk",
+      "identity": {
+        "repository": "Deducteam/lean2dk",
+        "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+      }
+    },
+    {
+      "name": "lf-lean selected result1",
+      "identity": {
+        "repository": "theorem-labs/lf-lean",
+        "revision": "2c0d52ee93e808c9e09fb6852b43fe080adef8bb"
+      }
+    },
+    {
+      "name": "Lean type theory to Dedukti paper",
+      "identity": {
+        "arxiv": "2609.24604v1",
+        "url": "https://arxiv.org/pdf/2609.24604v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

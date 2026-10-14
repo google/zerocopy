@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "verification/numerical-certificates",
+    "gappa",
+    "flover",
+    "why3/trust"
+  ],
+  "subjects": [
+    {
+      "name": "Gappa Rocq library",
+      "identity": {
+        "repository": "https://gitlab.inria.fr/gappa/coq",
+        "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf"
+      }
+    },
+    {
+      "name": "FloVer current upstream",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/AVA/FloVer",
+        "revision": "2b846b7242db7435c97ba694393db47842b19860"
+      }
+    },
+    {
+      "name": "Why3 upstream",
+      "identity": {
+        "repository": "https://gitlab.inria.fr/why3/why3",
+        "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e"
+      }
+    },
+    {
+      "name": "Gappa1.11.0 release source",
+      "identity": {
+        "artifact": "gappalib-coq-1.11.0.tar.gz",
+        "sha512": "654d4787998ce085b8ce7e6f6c266e826e9581b34002c1c0995972a3927800e5732f8e6205ea63047aca84327413f4e2f774e2c5627fe7b98fba809250c0b857"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

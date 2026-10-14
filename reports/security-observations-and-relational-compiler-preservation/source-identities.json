@@ -1,0 +1,44 @@
+[
+  {
+    "key": "jasmin-it",
+    "repository": "jasmin-lang/jasmin",
+    "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+    "path": "proofs/compiler/it_compiler_proof.v",
+    "returned_utf8_sha256": "2262062fc8f317ab16075b6e98cb69e126b8ac0553dad39ad1e0f3a00630739d"
+  },
+  {
+    "key": "ctverif-readme",
+    "repository": "imdea-software/verifying-constant-time",
+    "revision": "36e166781b0aa7398c12b335c7a4cd118b73568e",
+    "path": "README.md",
+    "returned_utf8_sha256": "d32f89135b05bc18cae1197407856bf68f42bea8d322449d192ca23199f2e705"
+  },
+  {
+    "key": "ctverif-modules",
+    "repository": "imdea-software/verifying-constant-time",
+    "revision": "36e166781b0aa7398c12b335c7a4cd118b73568e",
+    "path": ".gitmodules",
+    "returned_utf8_sha256": "3d4ac1d7d738d75b8ae6028be65db69e9c44fc1be07a73016a7f7984de7f277c"
+  },
+  {
+    "key": "jasmin-rhl",
+    "repository": "jasmin-lang/jasmin",
+    "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+    "path": "proofs/lang/relational_logic.v",
+    "returned_utf8_sha256": "7919df254e4edf226c771b93b47d43ddd3ba1e801a82376448943e8890fe60c3"
+  },
+  {
+    "key": "jasmin-xrutt",
+    "repository": "jasmin-lang/jasmin",
+    "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+    "path": "proofs/itrees/xrutt.v",
+    "returned_utf8_sha256": "c93fafee81bc355a1236b39c29e247337fc5e41c73fb08a39bda8e3a2668986a"
+  },
+  {
+    "key": "jasmin-io",
+    "repository": "jasmin-lang/jasmin",
+    "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+    "path": "proofs/lang/it_sems_core_defs.v",
+    "returned_utf8_sha256": "2f9451b640d7c385dab4afb1e13342d79c778e748e7d86c109255f923f288112"
+  }
+]

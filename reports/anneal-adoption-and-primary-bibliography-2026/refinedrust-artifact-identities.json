@@ -1,0 +1,82 @@
+[
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/LICENSE",
+    "sha256": "6b31d4ca9991ee4b9fb67377c3a909ba197ccc9ddde41bd78ea9ecc8ddb0f58a",
+    "size": 295
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/LICENSE-frontend",
+    "sha256": "ea2ca43f45672774a7304b0c21bd392e872c94672142f5f584a85473bc195e08",
+    "size": 22541
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/refinedrust_frontend/tests/deps_build/dune-project",
+    "sha256": "986ab29f06bb4c3aa4c8334e4fd1cc1545e7b2b06ba3e4490464156b186a7bbb",
+    "size": 53
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/dune-project",
+    "sha256": "df39ec9e3a332d9def934eecc58806e252560ac8945af50230ba56cc41fca5d4",
+    "size": 61
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/rr_frontend/rust-toolchain.toml",
+    "sha256": "10c4126d0ff9f29a9e3bd725176e53ee1d7b6bf266174f9abacce120975c84d2",
+    "size": 130
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust-smtcoq.opam",
+    "sha256": "146c5c2127bbbd7824f56119e79cc690bb549b761a9d0e54bd93c8e6280b604e",
+    "size": 859
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/theories/dune-project",
+    "sha256": "ee13d1a00a185610ba1f8ad61c0097e92b25c5bcfbe31f8022a9696778dfa3e4",
+    "size": 119
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/theories/refinedrust.opam",
+    "sha256": "f0d3ddb4224709ccc2ae4aa96e869e1dfbbdd513e1dfb1ad7d9244c10f5242cc",
+    "size": 1398
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/dune-project",
+    "sha256": "35d7725b9c1fbec6e50a573cf6cf886884fcf8cb2ec668a9de7ece8da914fb75",
+    "size": 17
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/LICENSE-rocq",
+    "sha256": "f947cbafc29f3bda235bb487c98e0af2f1feec10d09f2c5feea0c11c7cba6d7a",
+    "size": 8981
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/stdlib/refinedrust-stdlib.opam",
+    "sha256": "88ca9223bb6a7147043b08ca027dbc6a0653e61a45b8834aec30a72c92f9e17a",
+    "size": 493
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/stdlib/dune-project",
+    "sha256": "ff939132274ce7549243e68468cdf4d3ecb1e638098e0c7912481bc9ac018a15",
+    "size": 97
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/dune-project",
+    "sha256": "5a2424a200ea2569de886cf3a97e0c0681b31ce7b7d9a72bffc530aaff31c016",
+    "size": 63
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/smtcoq/output/dune-project",
+    "sha256": "bcbc880ae08bcae26f41411077b3655f9ab891815c44a3840e9147f6b9248bda",
+    "size": 73
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/evenint/output/dune-project",
+    "sha256": "5d5f5064b9b0cea73948fd907d3992398b917c7ad15be9979b67d2fc99a20b7a",
+    "size": 75
+  },
+  {
+    "artifact_path": "artifact/ACE-RISCV/verification/refinedrust/case_studies/extra_proofs/dune-project",
+    "sha256": "d007c72d3c2e9ca878c018ba808245129a35f0915d2246fbf92bcab728729e18",
+    "size": 85
+  }
+]

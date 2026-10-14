@@ -1,0 +1,36 @@
+{
+  "same_statement": "Join (write (meaning owned) 1 12) (meaning framed) (meaning after) \u2227 Unchanged (meaning before) (meaning after) 1",
+  "repetitions_per_process": 100,
+  "fresh_process_samples": 5,
+  "included": "startup/import/elaboration/kernel checking of repeated declarations; warm filesystem; precompiled Heap import; no proof generation or Rust frontend cost",
+  "routes": {
+    "data": {
+      "source_bytes": 16540,
+      "source_sha256": "0f575b32cf95651c78dfce3518f8b7d2da68051be770b57826c27c15edae4338",
+      "samples_ms": [
+        1201.2238340000001,
+        810.353208,
+        2470.3284169999997,
+        1938.1316250000004,
+        1401.4341660000005
+      ],
+      "median_ms": 1401.4341660000005,
+      "stdout": "'probe99' depends on axioms: [propext, Quot.sound]\n",
+      "stderr": ""
+    },
+    "direct": {
+      "source_bytes": 16340,
+      "source_sha256": "b8016e8de45814dcc6c92c5aab81401f80a805d348435735cce7a0a645b8fd62",
+      "samples_ms": [
+        1678.1721669999997,
+        1690.0833750000004,
+        2007.4219590000002,
+        943.8790419999989,
+        984.783041
+      ],
+      "median_ms": 1678.1721669999997,
+      "stdout": "'probe99' depends on axioms: [propext, Quot.sound]\n",
+      "stderr": ""
+    }
+  }
+}

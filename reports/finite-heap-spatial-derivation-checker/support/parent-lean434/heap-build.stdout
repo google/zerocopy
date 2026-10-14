@@ -1,0 +1,8 @@
+'FiniteHeap.join_assoc' depends on axioms: [propext, Quot.sound]
+'FiniteHeap.certificate_sound' depends on axioms: [propext, Quot.sound]
+'FiniteHeap.certificate_frame' depends on axioms: [propext, Quot.sound]
+'FiniteHeap.higher_order_frame' depends on axioms: [propext, Quot.sound]
+'FiniteHeap.checked_same_statement' depends on axioms: [propext, Quot.sound]
+'FiniteHeap.direct_same_statement' depends on axioms: [propext, Quot.sound]
+[true, false, false, false, false]
+[true, false, true, false, true, false]

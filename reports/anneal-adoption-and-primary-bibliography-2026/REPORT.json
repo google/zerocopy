@@ -1,0 +1,214 @@
+{
+  "topics": [
+    "anneal/adoption",
+    "verification/bibliography",
+    "verification/trust-boundaries",
+    "verification/interoperability",
+    "verification/maintenance",
+    "software/license-identities",
+    "verification/staged-certification"
+  ],
+  "subjects": [
+    {
+      "name": "Lean-Iris",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c"
+      }
+    },
+    {
+      "name": "Rocq Iris",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Creusot",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "hax",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "Lean4Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Lean checker/license source",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Verus expression-translation thesis source",
+      "identity": {
+        "repository": "SSSPigeon/SST2AIR-in-Lean",
+        "revision": "e939579e65643456084cba9ca7c1dc3c81369118"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Aeneas SymCrypt draft technical report",
+      "identity": {
+        "arxiv": "2609.15648v1",
+        "pdf_sha256": "ea94d6702c2339dbb059c1c7e516e75ccd42c1d7808075024bac32e07ce79adc"
+      }
+    },
+    {
+      "name": "Verifying Verus MS thesis",
+      "identity": {
+        "author": "Shuge Rong",
+        "publication": "Carnegie Mellon University, May 2026",
+        "url": "https://www.andrew.cmu.edu/user/avigad/Students/rong_ms_thesis.pdf",
+        "pdf_sha256": "8817a62d0c13036fef9554c38ea60c5290d1eacfefcf0cc6e0e99a3f92aae5c0"
+      }
+    },
+    {
+      "name": "Anneal initiative corpus snapshot",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "4a82ff68dbbc8428d109c60a26b0b659fa14f06e",
+        "manifest": "corpus-snapshot.json",
+        "manifest_sha256": "84977064531f3b904cc04b771cd9528135824f727ab477c79a2a58cf9a900f8f"
+      }
+    },
+    {
+      "name": "Anneal exact question inventory",
+      "identity": {
+        "file": "research-topics.json",
+        "sha256": "3ff5156c298f11e3008d2dee8a80a272e83db5adcf611a83322f1d71077a60b9"
+      }
+    },
+    {
+      "name": "Anneal issue and discussion snapshot",
+      "identity": {
+        "repository": "google/zerocopy",
+        "open_inventory_sha256": "72626b309aad47d9ba245803cb151ca107780ec27805745380f34cb9f9b2d101",
+        "discussion_snapshot_sha256": "dabc83d91f430ff2e543acff32b2fda5862ec0a2f8d97b38c94bbaf61f955bf9"
+      }
+    },
+    {
+      "name": "Lean-Iris batteries dependency",
+      "identity": {
+        "repository": "leanprover-community/batteries",
+        "revision": "f2effa3d803fda822b1f97b806c47cf2adfbcbc2"
+      }
+    },
+    {
+      "name": "Lean-Iris quotation dependency",
+      "identity": {
+        "repository": "leanprover-community/quote4",
+        "revision": "6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259"
+      }
+    },
+    {
+      "name": "Aeneas mathematical library dependency",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f"
+      }
+    },
+    {
+      "name": "Carcara selected rug",
+      "identity": {
+        "crate": "rug",
+        "version": "1.30.0",
+        "crate_sha256": "07a8857882aec59d27254b02481c709327c13de6fad1da60bfc4f9783eaaa61e",
+        "repository": "https://gitlab.com/tspiteri/rug"
+      }
+    },
+    {
+      "name": "Carcara selected gmp-mpfr-sys",
+      "identity": {
+        "crate": "gmp-mpfr-sys",
+        "version": "1.7.1",
+        "crate_sha256": "7db155b537cb791b133341f99f68371d86ee7fa4c79aacfbc376d72d23c70531",
+        "repository": "https://gitlab.com/tspiteri/gmp-mpfr-sys"
+      }
+    },
+    {
+      "name": "Ninth-publication corpus delta",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "d06d905a7c94f463f54986abb327e0471045d678",
+        "manifest": "corpus-delta.json",
+        "manifest_sha256": "d9aee1afac0eaf7a24e1818a16c3ff4e2fb629fa814f34e21c1fdfb3761f0cb0"
+      }
+    },
+    {
+      "name": "VerusBelt semantic foundation paper",
+      "identity": {
+        "doi": "10.1145/3808325",
+        "publication": "PACMPL 10 PLDI article 247, June 2026",
+        "url": "https://iris-project.org/pdfs/2026-pldi-verusbelt.pdf",
+        "pdf_sha256": "6ca867d564fc26bb3983a98fc03f05d72d1b880e1007b18f98ac1b60071a70e7"
+      }
+    },
+    {
+      "name": "VerusBelt public source",
+      "identity": {
+        "repository": "verus-lang/verus-belt",
+        "revision": "b9b14b2cb47b6a6307611578782adc3481627aac"
+      }
+    },
+    {
+      "name": "VerusBelt primary artifact record",
+      "identity": {
+        "zenodo": "19613067",
+        "doi": "10.5281/zenodo.19613067",
+        "metadata_sha256": "a320ba25205bb14bdedafc344f039cce02d1c326c447ffe7aaa8570e6fc01f61",
+        "archive": "verusbelt.tgz",
+        "published_md5": "da39c945d22fec43e8c3caea883e4e12",
+        "archive_inspection": "Not downloaded; published checksum only"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

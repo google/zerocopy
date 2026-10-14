@@ -1,0 +1,11 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "trivet-equvm-and-foreign-artifact-admission-boundaries",
+      "path": "REPORT.md",
+      "original_sha256": "17083d2dabae5ef43b5de50af7dc15a30d43267ce8f07036bc5b494a390064b4",
+      "published_sha256": "14597b587b558f899bc4e95a965672815c87a7042b805f98c1dbc13a1e46f1e4"
+    }
+  ]
+}

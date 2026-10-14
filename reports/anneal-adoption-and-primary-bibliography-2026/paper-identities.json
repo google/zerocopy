@@ -1,0 +1,22 @@
+[
+  {
+    "name": "aeneas-symcrypt-2609.15648v1.pdf",
+    "url": "https://arxiv.org/pdf/2609.15648v1",
+    "sha256": "ea94d6702c2339dbb059c1c7e516e75ccd42c1d7808075024bac32e07ce79adc",
+    "size": 441870
+  },
+  {
+    "name": "rong-verifying-verus-2026.pdf",
+    "url": "https://www.andrew.cmu.edu/user/avigad/Students/rong_ms_thesis.pdf",
+    "sha256": "8817a62d0c13036fef9554c38ea60c5290d1eacfefcf0cc6e0e99a3f92aae5c0",
+    "size": 357532
+  },
+  {
+    "name": "verusbelt-paper.pdf",
+    "doi": "10.1145/3808325",
+    "publication": "PACMPL 10 PLDI article 247, June 2026",
+    "url": "https://iris-project.org/pdfs/2026-pldi-verusbelt.pdf",
+    "sha256": "6ca867d564fc26bb3983a98fc03f05d72d1b880e1007b18f98ac1b60071a70e7",
+    "size": 841536
+  }
+]

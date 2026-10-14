@@ -1,0 +1,3 @@
+wrong-vtable.lean:3:56: error: Tactic `decide` proved that the proposition
+  caller foreignVtable 0 = expected 0 + 3
+is false

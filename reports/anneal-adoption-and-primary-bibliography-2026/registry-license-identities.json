@@ -1,0 +1,78 @@
+[
+  {
+    "crate": "rug",
+    "num": "1.30.0",
+    "checksum": "07a8857882aec59d27254b02481c709327c13de6fad1da60bfc4f9783eaaa61e",
+    "license": "LGPL-3.0+",
+    "repository": "https://gitlab.com/tspiteri/rug",
+    "features": {
+      "borsh": [
+        "dep:borsh",
+        "std"
+      ],
+      "complex": [
+        "float",
+        "gmp-mpfr-sys/mpc"
+      ],
+      "default": [
+        "complex",
+        "float",
+        "integer",
+        "rand",
+        "rational",
+        "std"
+      ],
+      "fail-on-warnings": [],
+      "float": [
+        "gmp-mpfr-sys/mpfr"
+      ],
+      "gmp-mpfr-sys": [
+        "dep:gmp-mpfr-sys"
+      ],
+      "integer": [
+        "gmp-mpfr-sys"
+      ],
+      "nightly-float": [],
+      "num-complex": [
+        "dep:num-complex"
+      ],
+      "num-traits": [
+        "dep:num-traits",
+        "dep:num-integer"
+      ],
+      "rand": [
+        "integer"
+      ],
+      "rational": [
+        "integer"
+      ],
+      "serde": [
+        "dep:serde",
+        "std"
+      ],
+      "std": []
+    }
+  },
+  {
+    "crate": "gmp-mpfr-sys",
+    "num": "1.7.1",
+    "checksum": "7db155b537cb791b133341f99f68371d86ee7fa4c79aacfbc376d72d23c70531",
+    "license": "LGPL-3.0+",
+    "repository": "https://gitlab.com/tspiteri/gmp-mpfr-sys",
+    "features": {
+      "c-no-tests": [],
+      "cnodelete": [],
+      "default": [
+        "mpc",
+        "mpfr"
+      ],
+      "fail-on-warnings": [],
+      "force-cross": [],
+      "mpc": [
+        "mpfr"
+      ],
+      "mpfr": [],
+      "use-system-libs": []
+    }
+  }
+]

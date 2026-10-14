@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "id": "T030",
+      "title": "Typed assembly and bytecode verification",
+      "question": "Compare JVM, eBPF, and typed-assembly approaches; identify what verifier acceptance leaves to interpreters, JITs, or compilers.",
+      "rationale": "Compare JVM, eBPF, and typed-assembly approaches; identify what verifier acceptance leaves to interpreters, JITs, or compilers.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Normative JVM/Jinja verifier theorem chains, actual Linux/PREvail admission ordering, typed/refinement certificates versus JIT preservation.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "jvm-ebpf-and-typed-admission-frontiers",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

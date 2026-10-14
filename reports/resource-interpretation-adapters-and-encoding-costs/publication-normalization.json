@@ -1,0 +1,17 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "resource-interpretation-adapters-and-encoding-costs",
+      "path": "support/adapter-results.json",
+      "original_sha256": "eb328931360c87b2872eb4cf3371b142477d987f327d5e670cfa45796d335ecf",
+      "published_sha256": "b691c3ff5d6e47b28e9112f753bd7cbe0723903a4b30cdc19bd65c086000e36b"
+    },
+    {
+      "package": "resource-interpretation-adapters-and-encoding-costs",
+      "path": "support/evidence.json",
+      "original_sha256": "f57bb215846f5c21c6c015726e19ae1995514b01cb3e584dc80e131ba4080c3d",
+      "published_sha256": "4e9f85edeb46f1aeb3f1db9029ebfe30959897981b4d88514effad045a60ead6"
+    }
+  ]
+}

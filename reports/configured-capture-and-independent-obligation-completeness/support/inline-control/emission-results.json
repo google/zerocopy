@@ -1,0 +1,12 @@
+[
+  {
+    "optimization": 0,
+    "exit": 0,
+    "llvm_sha256": "930bb0bae0bedcdf621e7ab11873dd9a6636734af263520def60b7d479fb7884"
+  },
+  {
+    "optimization": 3,
+    "exit": 0,
+    "llvm_sha256": "32a1527052bfe182a0cefdf32d6e4a766f4a633b1584841a6f3eb7ee173bd79e"
+  }
+]

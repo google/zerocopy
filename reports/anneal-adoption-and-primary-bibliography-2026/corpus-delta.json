@@ -1,0 +1,415 @@
+{
+  "revision": "d06d905a7c94f463f54986abb327e0471045d678",
+  "initial_packages": 71,
+  "new_packages": [
+    {
+      "package": "smt-frame-diagnostics-elaboration-and-checking-costs",
+      "metadata": {
+        "topics": [
+          "anneal",
+          "automation/smt",
+          "proof/elaboration",
+          "proof/costs",
+          "verification/diagnostics"
+        ],
+        "subjects": [
+          {
+            "name": "Owned input bundle",
+            "identity": {
+              "source_sha256": "f6db0f454be824e8bd7a48a6a4434afd963d3dac9edac3ac447c4dbec77f6f09"
+            }
+          },
+          {
+            "name": "Carcara",
+            "identity": {
+              "repository": "ufmg-smite/carcara",
+              "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+            }
+          },
+          {
+            "name": "cvc5",
+            "identity": {
+              "repository": "cvc5/cvc5",
+              "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+              "release": "1.4.2",
+              "archive_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c"
+            }
+          },
+          {
+            "name": "Rust1.99",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "target": "aarch64-apple-darwin"
+            }
+          },
+          {
+            "name": "SMT-LIB ArraysEx",
+            "identity": {
+              "version": "2.7",
+              "release": "2024-07-21",
+              "definition_url": "https://smt-lib.org/theories-ArraysEx.shtml"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "metadata_sha256": "8f80a390234985a3ee32765b90bdd10250f404d0c0a2b634cfabdc9bc1e66a0e",
+      "report_sha256": "d72b25c5dd7482f286a59de41c9e4bfe7619abaf2cbba0ed05696a493c3cfad1"
+    },
+    {
+      "package": "zerocopy-owned-storage-unwind-and-growth-controls",
+      "metadata": {
+        "topics": [
+          "anneal",
+          "proof/certificates",
+          "rust/ownership"
+        ],
+        "subjects": [
+          {
+            "name": "Owned input bundle",
+            "identity": {
+              "source_sha256": "75a13d53c6848933548808660af50b58637387840f5aeec89a380ecb184b907e"
+            }
+          },
+          {
+            "name": "zerocopy PR3846 source",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+            }
+          },
+          {
+            "name": "Lean4.34.1",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+            }
+          },
+          {
+            "name": "Rust1.99",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "target": "aarch64-apple-darwin"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "metadata_sha256": "56d01de58d99114dfec89b499a2b67820a8e96bb44d0f7b8e307741b76693fab",
+      "report_sha256": "aa26703ca04a3578afa6b80938bb492661103b5ca4c12536d5e2f2346cbc6867"
+    },
+    {
+      "package": "rust-neon-vector-and-union-representation-control-1d81eb4",
+      "metadata": {
+        "observed_at": "2026-10-14",
+        "topics": [
+          "rust/simd",
+          "rust/union",
+          "rust/layout",
+          "rust/intrinsics",
+          "verification/primitive-correspondence",
+          "verification/failure-behavior"
+        ],
+        "subjects": [
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust nightly observed toolchain and matching library source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "release": "1.101.0-nightly",
+              "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+            }
+          },
+          {
+            "name": "Matching Arm-shared NEON generated source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "path": "library/stdarch/crates/core_arch/src/arm_shared/neon/generated.rs",
+              "sha256": "bcc351aa3331769468fc886aca610fc61af89ce10915a4f16493ad0f85517482"
+            }
+          }
+        ]
+      },
+      "metadata_sha256": "b64d9ca931049d5934581e19ac3422e9b3ca824f023d68cbc4487e800a4e5207",
+      "report_sha256": "f1443b18d0bda763b88b96db28a0f29a0e1114a906782c98b14efe89232743e2"
+    },
+    {
+      "package": "rust-gat-laws-and-selected-implementation-evidence-2026",
+      "metadata": {
+        "observed_at": "2026-10-14",
+        "topics": [
+          "rust/traits",
+          "rust/gat",
+          "rust/coinduction",
+          "rust/specialization",
+          "verification/trait-evidence",
+          "refinedrust/trait-extraction"
+        ],
+        "subjects": [
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust compiler source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+            }
+          },
+          {
+            "name": "Rust nightly observed toolchain and matching library source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "release": "1.101.0-nightly",
+              "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+            }
+          },
+          {
+            "name": "rustc development guide",
+            "identity": {
+              "repository": "rust-lang/rustc-dev-guide",
+              "revision": "bfbca953b5d4a3596081360a1c79ad88f31e7d60"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 artifact, selected trait frontend",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+            }
+          }
+        ]
+      },
+      "metadata_sha256": "8a8e23587092e12cd2d1a315b64b3d11f7e97bb1df2d903883dc8b374969995e",
+      "report_sha256": "c2ff99b2ade0ad5ed22784be4861f5e90e651c2b931533217ccecc93eae24d04"
+    },
+    {
+      "package": "zerocopy-packet-api-target-certificates-and-reuse-costs",
+      "metadata": {
+        "topics": [
+          "anneal",
+          "proof/certificates",
+          "proof/costs",
+          "rust/layout"
+        ],
+        "subjects": [
+          {
+            "name": "Owned input bundle",
+            "identity": {
+              "source_sha256": "073ba3f230343ad94a0a90d352949acee6f269b965e81253e73d9169f486dfaa"
+            }
+          },
+          {
+            "name": "zerocopy PR3846 source",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "archive_sha256": "5097beee2b15db9c83171f75feacd857a4529392f926531792c4655f8ac1c48f"
+            }
+          },
+          {
+            "name": "Lean4.34.1",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+            }
+          },
+          {
+            "name": "Rust1.99",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "targets": "aarch64-apple-darwin, wasm32-unknown-unknown"
+            }
+          },
+          {
+            "name": "Rust wasm32 std component",
+            "identity": {
+              "release": "1.99.0",
+              "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22",
+              "target": "wasm32-unknown-unknown"
+            }
+          },
+          {
+            "name": "Node/V8 wasm execution substrate",
+            "identity": {
+              "node": "24.21.0",
+              "v8": "13.6.233.17-node.53",
+              "host": "Darwin arm64"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "metadata_sha256": "21098648026e6eaa4ddb09a7cc20a4f341bf5d7865368f30a85d457645d8d08f",
+      "report_sha256": "cb7789d1dec63a93ceaca83ba9dea924532bffe5771bd786c58959f7f21d5974"
+    },
+    {
+      "package": "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026",
+      "metadata": {
+        "topics": [
+          "rust/concurrency",
+          "rust/arc",
+          "iris/reclamation",
+          "iris/weak-memory",
+          "verification/hazard-pointers",
+          "verification/rcu",
+          "verification/adequacy"
+        ],
+        "subjects": [
+          {
+            "name": "Rust current Arc and atomics source",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+            }
+          },
+          {
+            "name": "RustBelt relaxed-memory Arc model",
+            "identity": {
+              "repository": "https://gitlab.mpi-sws.org/iris/lambda-rust",
+              "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+              "archive_sha256": "679846f8108325af762fbb86dd090514465e7e99059a4322e4e69565087d7ba0"
+            }
+          },
+          {
+            "name": "RustBelt Meets Relaxed Memory paper",
+            "identity": {
+              "doi": "10.1145/3371102",
+              "pdf_sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+            }
+          },
+          {
+            "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic artifact",
+            "identity": {
+              "zenodo": "15167032",
+              "archive": "pldi25-3-artifact.zip",
+              "sha256": "e3c6379299ab1227479ed789822c450044ff15ac59b69b83761a680376297f08"
+            }
+          },
+          {
+            "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic paper",
+            "identity": {
+              "doi": "10.1145/3729246",
+              "pdf_sha256": "8d93b9c8f475ce0ae033480ce2699f286632ce544c9995ac0047df2ba47906ab"
+            }
+          },
+          {
+            "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals artifact",
+            "identity": {
+              "zenodo": "15183251",
+              "archive": "immut-artifact.zip",
+              "sha256": "485a24c8a9ab826729006861df2bb04405d61e1d27bd8da4de4316ec75eca7c4"
+            }
+          },
+          {
+            "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals paper",
+            "identity": {
+              "doi": "10.1145/3729247",
+              "pdf_sha256": "3765c92355575e61755b21f70bb42e7363102d0c6ee6f8d7606938fc57f316ad"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "metadata_sha256": "f3ad34e86fc3765905bc6abf870df952ac7cfb26d877c94c244e2dc1658406c5",
+      "report_sha256": "a240a77be67c0b0eedddd149ec10d718d3417b8753df37e8291146513d914a38"
+    },
+    {
+      "package": "finite-pointer-lease-and-reconstruction-control-2026",
+      "metadata": {
+        "topics": [
+          "rust/pointers",
+          "zerocopy/ptr",
+          "verification/pointer-capability",
+          "verification/lifetime",
+          "verification/aliasing",
+          "verification/packed-access",
+          "lean/proof-control",
+          "lean/kernel-trust"
+        ],
+        "subjects": [
+          {
+            "name": "zerocopy PR-stack pointer source",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+              "tree": "1292218b60e07c576be420f09c767d368c45ec27"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Rust nightly control compiler",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+              "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+            }
+          },
+          {
+            "name": "Lean 4.31 installed checker",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+              "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+              "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8"
+            }
+          },
+          {
+            "name": "Lean 4.34.1 installed checker",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+              "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+              "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+            }
+          },
+          {
+            "name": "Owned finite pointer lease probe",
+            "identity": {
+              "file": "PointerLease.lean",
+              "sha256": "9be4abb255fea836a0a2df97c2bf7088c0b681876fb759c30fb4ab95af328e00"
+            }
+          },
+          {
+            "name": "Lean nested-inductive kernel fix",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808",
+              "pull_request": "14577"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "metadata_sha256": "c776d65ce24e0f02be56654ca519c08db9d6b738c84e4107045b61ebd9f9dbf4",
+      "report_sha256": "aa86c590291c7d0f7ca26d3565ce69d46024bb836bf3962e3ae27212626eefcb"
+    }
+  ],
+  "aggregate_packages": 78,
+  "initial_agenda_report_sha256": "a63592163941db618a7828ddc11dc055557d1a780d4c1d00943b192fec486bd7",
+  "delta_agenda_report_sha256": "2ddfa361efc4aa80b0d551f7fed0d8e0239f49efc049b15205b03901fed0b1ba"
+}

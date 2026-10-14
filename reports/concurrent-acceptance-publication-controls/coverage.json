@@ -1,0 +1,94 @@
+{
+  "entries": [
+    {
+      "id": "T102",
+      "title": "Omitted-behavior experiments",
+      "question": "Remove an unsafe guard, destructor, cleanup action, generated operation, or dependency from the proposed evidence.",
+      "rationale": "Remove an unsafe guard, destructor, cleanup action, generated operation, or dependency from the proposed evidence.",
+      "issue": 3866,
+      "scope": "partial",
+      "answered_scope": "Actual protocol omitted-effect tag and producer/consumer failure controls with source guarantee excluded.",
+      "genuine_unexamined_scope": [
+        "Omitted cleanup is a protocol tag control, not a real unsafe Rust guard/destructor/implicit-effect correspondence experiment."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T106",
+      "title": "Producer-boundary experiments",
+      "question": "Test whether proof generation can alter the challenge, policy, checker inputs, or final accepted-result record.",
+      "rationale": "Test whether proof generation can alter the challenge, policy, checker inputs, or final accepted-result record.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Real same-user challenge/policy/input/final writes, functional detection and explicit lack of OS protection.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T108",
+      "title": "Generic and dispatch experiments",
+      "question": "Substitute trait dictionaries, associated types, monomorphizations, or dynamic implementations without matching evidence.",
+      "rationale": "Substitute trait dictionaries, associated types, monomorphizations, or dynamic implementations without matching evidence.",
+      "issue": 3866,
+      "scope": "partial",
+      "answered_scope": "Actual producer metadata substitutions of generic/associated/dispatch/callee identities and binding verdicts.",
+      "genuine_unexamined_scope": [
+        "Actual source trait/associated type/vtable substitution is not exercised; only selected subject metadata is changed."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T110",
+      "title": "Parallel and failure experiments",
+      "question": "Inject cancellation, crashes, partial publication, competing generations, and missing stages into the acceptance path.",
+      "rationale": "Inject cancellation, crashes, partial publication, competing generations, and missing stages into the acceptance path.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Real concurrent producers/consumers, epochs, cancellation, exit/crash, missing capture and partial publication controls.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "P126",
+      "title": "Failure behavior of certificate infrastructure",
+      "question": "Specify rejection on unsupported cases, malformed evidence, timeouts, and producer failure; incomplete proof production must preserve Anneal\u2019s fail-closed behavior.",
+      "rationale": "Specify rejection on unsupported cases, malformed evidence, timeouts, and producer failure; incomplete proof production must preserve Anneal\u2019s fail-closed behavior.",
+      "issue": 3867,
+      "scope": "answered_bounded",
+      "answered_scope": "Fail-closed finite protocol outcomes for wrong data/schema/binding, timeout, cancellation, process failure and incomplete stages.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "P134",
+      "title": "Modular certificate substitution experiments",
+      "question": "Replace implementations, contracts, targets, and generic instantiations; the checker should reject every semantically mismatched combination.",
+      "rationale": "Replace implementations, contracts, targets, and generic instantiations; the checker should reject every semantically mismatched combination.",
+      "issue": 3867,
+      "scope": "partial",
+      "answered_scope": "Finite data/property/subject substitution gates with exact modular-source frontier.",
+      "genuine_unexamined_scope": [
+        "No complete Rust modular implementation/contract/target/generic certificate family; finite arithmetic and exact metadata substitutions are the bounded controls."
+      ],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "concurrent-acceptance-publication-controls",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

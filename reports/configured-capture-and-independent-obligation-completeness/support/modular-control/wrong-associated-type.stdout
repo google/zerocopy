@@ -1,0 +1,3 @@
+wrong-associated-type.lean:3:61: error: Tactic `decide` proved that the proposition
+  caller associatedNibble 15 = expected 15 + 3
+is false

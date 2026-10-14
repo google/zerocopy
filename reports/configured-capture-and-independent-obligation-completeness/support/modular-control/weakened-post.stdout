@@ -1,0 +1,3 @@
+weakened-post.lean:3:56: error: Tactic `decide` proved that the proposition
+  post Contract.weakened 0 999 → 999 = expected 0
+is false

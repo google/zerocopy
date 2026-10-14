@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "case": "renamed-item",
+      "source_sha256": "76cfc7341f05e27abbfce8c1e857f81957a1da7a9a6713352092ff70a3e0f2fe",
+      "compile_exit": 0,
+      "native_exit": 0,
+      "hir_exit": 0,
+      "first_row": [
+        "attachment::moved::validate",
+        "anneal:bool-valid-v1",
+        "2",
+        "true"
+      ],
+      "original_selection_accepted": false
+    },
+    {
+      "case": "copied-annotation-changed-body",
+      "source_sha256": "c488ff658d6c49b4c2d44f9b52edd057f060d7e60be8cfd6953a2ec71eb8990c",
+      "compile_exit": 0,
+      "native_exit": 0,
+      "hir_exit": 0,
+      "first_row": [
+        "attachment::intended::validate",
+        "anneal:bool-valid-v1",
+        "3",
+        "true"
+      ],
+      "original_selection_accepted": false
+    }
+  ]
+}

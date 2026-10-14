@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "lean_path": "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage",
+  "results": [
+    {
+      "file": "WasmValidator.lean",
+      "command": [
+        "$TOOL/lean",
+        "-o",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmValidator.olean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmValidator.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.5083519170293584,
+      "stdout": "'RestrictedWasm.compiler_correct' depends on axioms: [propext]\n'RestrictedWasm.body_roundtrip' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.module_roundtrip' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.accepted_bytes' depends on axioms: [propext]\n'RestrictedWasm.bound_module_correct' depends on axioms: [propext]\n'RestrictedWasm.literal_accepted' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.admit_sound' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n[0, 97, 115, 109, 1, 0, 0, 0, 1, 9, 1, 96, 4, 127, 127, 127, 127, 1, 127, 3, 2, 1, 0, 7, 12, 1, 8, 118, 97, 108, 105,\n 100, 97, 116, 101, 0, 0, 10, 27, 1, 25, 0, 32, 0, 65, 2, 73, 32, 1, 65, 2, 73, 113, 32, 2, 65, 2, 73, 32, 3, 65, 2, 73,\n 113, 113, 11]\n'RestrictedWasm.literal_bytes_bounded' depends on axioms: [propext]\n",
+      "stderr": "",
+      "source_sha256": "2f15898226c8ab57515804aebda32c9d60f2ec2f1445b7ac99360547f05cdfd3"
+    },
+    {
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.23731412494089454,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": "",
+      "source_sha256": "552b51f20940bc1c1a97db07a6ff43a3e96580f1c396c28e81093175a130262a"
+    },
+    {
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.7071673750178888,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": "",
+      "source_sha256": "7c05460bc682db480d971499f8fd7dab7aa1444f59dc47a98c2cd0131bed9e8a"
+    }
+  ],
+  "module_sha256": "fd0023c344d5d55bb4c7c8f4920764bf5c198777c3411bffea0d99b550cfe158",
+  "module_size": 66
+}
