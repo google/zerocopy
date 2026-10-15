@@ -24,7 +24,7 @@ echo "Testing failure controls in $1"
 # suite starts and is removed on exit. Use the same roster for both decisions
 # so cleanup cannot delete a source that belonged to an earlier editor session.
 control_files=(
-    NegativeControl.lean WeakOutcome.lean
+    StdTransmuteAuditProbe.lean NegativeControl.lean WeakOutcome.lean
     RoundingConstructorControl.lean RoundingDomainControl.lean
     Zerocopy/ScopeControl.lean Zerocopy/ShapeControl.lean Zerocopy/ModelControl.lean
     Proofs/WitnessOwnerControl.lean Proofs/PaddingDependencyControl.lean
@@ -1572,6 +1572,15 @@ expect_failure "a min implementation with its comparison reversed" min-build.log
 restore_build
 audit
 fi # semantics
+if [[ $AENEAS_CONTROL_FAMILY == owned-std ]] && has_model util.owned_transmute.to_bytes; then
+    # This family has its own frozen project and preserves exact command logs.
+    # Standard-boundary controls inspect original endpoints in both compiler
+    # stages, then challenge whole definitions and canonical native providers.
+    python3 -B "$repo/verification/aeneas/control_runner.py" command \
+        "$AENEAS_CONTROL_LOG_DIR/commands" -- python3 -B \
+        "$repo/verification/aeneas/tests/std_transmute_controls.py" \
+        --work "$PWD" --runtime "$tools_dir" --evidence "$backup/owned-std-evidence"
+fi
 control_complete=yes
 )
 check_workspace "$AENEAS_CONTROL_MODEL"

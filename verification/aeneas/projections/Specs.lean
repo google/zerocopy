@@ -184,6 +184,42 @@ spec min_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.min_spec for Zerocopy.util.min with 2
 
+check_model_inputs Zerocopy.util.owned_transmute.to_bytes with 0 type parameters
+aeneas_spec_begin
+spec owned_transmute_to_bytes_spec
+  for @Zerocopy.util.owned_transmute.to_bytes with 0 type parameters
+  ensures bytes => bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)) =
+    Rust.Bytes.encodeLE 4 (value : Nat)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.owned_transmute_to_bytes_spec for Zerocopy.util.owned_transmute.to_bytes with 1
+
+check_model_inputs Zerocopy.util.owned_transmute.from_bytes with 0 type parameters
+aeneas_spec_begin
+spec owned_transmute_from_bytes_spec
+  for @Zerocopy.util.owned_transmute.from_bytes with 0 type parameters
+  ensures value => (value : Nat) = Rust.Bytes.decodeLE
+    (bytes.val.map (fun b => BitVec.ofNat 8 (b : Nat)))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.owned_transmute_from_bytes_spec for Zerocopy.util.owned_transmute.from_bytes with 1
+
+check_model_inputs Zerocopy.util.owned_transmute.checked_bool with 0 type parameters
+aeneas_spec_begin
+spec owned_transmute_bool_spec
+  for @Zerocopy.util.owned_transmute.checked_bool with 0 type parameters
+  ensures output => match output with
+    | none => 2 ≤ (byte : Nat)
+    | some value => (byte : Nat) < 2 ∧ value = decide ((byte : Nat) = 1)
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.owned_transmute_bool_spec for Zerocopy.util.owned_transmute.checked_bool with 1
+
+check_model_inputs Zerocopy.util.owned_transmute.round_trip_checks with 0 type parameters
+aeneas_spec_begin
+spec owned_transmute_round_trip_checks_spec
+  for @Zerocopy.util.owned_transmute.round_trip_checks with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.owned_transmute_round_trip_checks_spec for Zerocopy.util.owned_transmute.round_trip_checks with 1
+
 check_model_inputs Zerocopy.util.safety_checks.checked_bool with 0 type parameters
 aeneas_spec_begin
 spec checked_bool_spec

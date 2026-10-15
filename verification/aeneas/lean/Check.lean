@@ -72,6 +72,132 @@ private def checkUnemittedNativeType (env : Environment) (row : Json) : TermElab
       unless (generics.getObjValAs? (Array Json) field).toOption == some #[] do
         throwError "Unemitted native type has unsupported generic obligations: {rust}"
 
+-- This closed boundary adds an interpretation-only provider to the std
+-- primitive. Compare whole definitions independently of the functional proofs,
+-- then bind each reached native call (including unannotated helpers) to its
+-- original Rust endpoints and exact canonical provider.
+private partial def stdTransmuteCalls (expression : Expr) : Array Expr :=
+  if expression.getAppFn.isConstOf `core.intrinsics.transmute then
+    #[expression] ++ expression.getAppArgs.foldl
+      (fun found arg => found ++ stdTransmuteCalls arg) #[]
+  else
+    match expression with
+    | .app fn arg => stdTransmuteCalls fn ++ stdTransmuteCalls arg
+    | .lam _ ty body _ | .forallE _ ty body _ => stdTransmuteCalls ty ++ stdTransmuteCalls body
+    | .letE _ ty value body _ => stdTransmuteCalls ty ++ stdTransmuteCalls value ++ stdTransmuteCalls body
+    | .mdata _ body | .proj _ _ body => stdTransmuteCalls body
+    | _ => #[]
+
+private def auditStdTransmute (bindings : Json) : TermElabM Unit := do
+  let env ← getEnv
+  unless env.contains `core.intrinsics.transmute do return
+  let ctor ← Term.elabType (← `(∀ (Src Dst : Type),
+    (Src → Aeneas.Std.Result Dst) → Zerocopy.StdOwnedTransmute Src Dst))
+  let some (.ctorInfo classCtor) := env.find? `Zerocopy.StdOwnedTransmute.mk
+    | throwError "Standard transmute provider must retain its reviewed one-field carrier"
+  unless ← Meta.isDefEq classCtor.type ctor do
+    throwError "Standard transmute provider carrier changed"
+  let expectedType ← Term.elabType (← `(∀ {Src : Type} (Dst : Type)
+    [Zerocopy.StdOwnedTransmute Src Dst], Src → Aeneas.Std.Result Dst))
+  let expectedBody ← Term.elabTerm (← `(fun {Src : Type} (Dst : Type)
+    [provider : Zerocopy.StdOwnedTransmute Src Dst] (src : Src) => provider.run src)) none
+  Term.synthesizeSyntheticMVarsNoPostponing
+  let some (.defnInfo primitive) := env.find? `core.intrinsics.transmute
+    | throwError "Standard transmute interpretation must be a definition"
+  unless (← Meta.isDefEq primitive.type expectedType) &&
+      (← Meta.isDefEq primitive.value (← instantiateMVars expectedBody)) do
+    throwError "Standard transmute extended signature or whole interpretation changed"
+  let forward ← Term.elabTerm (← `(
+    ({ run := fun value => Aeneas.Std.Result.ok (Aeneas.Std.core.num.U32.to_le_bytes value) } :
+      Zerocopy.StdOwnedTransmute Aeneas.Std.U32 (Aeneas.Std.Array Aeneas.Std.U8 4#usize)))) none
+  let backward ← Term.elabTerm (← `(
+    ({ run := fun bytes => Aeneas.Std.Result.ok (Aeneas.Std.core.num.U32.from_le_bytes bytes) } :
+      Zerocopy.StdOwnedTransmute (Aeneas.Std.Array Aeneas.Std.U8 4#usize) Aeneas.Std.U32))) none
+  let boolean ← Term.elabTerm (← `(
+    ({ run := fun byte => if byte.val < 2 then Aeneas.Std.Result.ok (decide (byte.val = 1))
+        else Aeneas.Std.Result.fail Aeneas.Std.Error.undef } :
+      Zerocopy.StdOwnedTransmute Aeneas.Std.U8 Bool))) none
+  Term.synthesizeSyntheticMVarsNoPostponing
+  for (providerName, providerValue) in #[(`Zerocopy.stdTransmuteU32ToBytes, forward),
+      (`Zerocopy.stdTransmuteBytesToU32, backward), (`Zerocopy.stdTransmuteU8ToBool, boolean)] do
+    let some (.defnInfo provider) := env.find? providerName
+      | throwError "Standard transmute provider {providerName} must be a definition"
+    unless ← Meta.isDefEq provider.value (← instantiateMVars providerValue) do
+      throwError "Standard transmute provider {providerName} changed its whole interpretation"
+  let .ok admission := bindings.getObjVal? "admission"
+    | throwError "Standard transmute requires original compiler admission"
+  let .ok stages := admission.getObjVal? "stages"
+    | throwError "Standard transmute requires both compiler admission stages"
+  let .ok original := stages.getObjVal? "before"
+    | throwError "Standard transmute lacks original admission"
+  let .ok lowered := stages.getObjVal? "llbc"
+    | throwError "Standard transmute lacks lowered admission"
+  let .ok originalCalls := original.getObjValAs? (Array Json) "calls"
+    | throwError "Standard transmute lacks original call evidence"
+  let .ok loweredCalls := lowered.getObjValAs? (Array Json) "calls"
+    | throwError "Standard transmute lacks lowered call evidence"
+  let originalStd := originalCalls.filter fun row => row.getObjValAs? String "callee" == .ok "core::intrinsics::transmute"
+  let loweredStd := loweredCalls.filter fun row => row.getObjValAs? String "callee" == .ok "core::intrinsics::transmute"
+  -- Ordered type arguments identify source and destination independently;
+  -- preserve each call, its owner, and its multiplicity through lowering.
+  unless originalStd == loweredStd do
+    throwError "Standard transmute changed original ordered Rust endpoints or call ownership"
+  let .ok executions := lowered.getObjValAs? (Array Json) "executions"
+    | throwError "Standard transmute lacks the complete execution closure"
+  let nativeText ← IO.FS.readFile "Zerocopy/translation.json"
+  let .ok native := Json.parse nativeText | throwError "Invalid native primitive call map"
+  let .ok functions := native.getObjValAs? (Array Json) "functions"
+    | throwError "Missing native primitive function map"
+  for execution in executions do
+    if execution.getObjValAs? String "origin" != .ok "body" then continue
+    let .ok rust := execution.getObjValAs? String "rust" | throwError "Missing primitive call owner"
+    let expected := loweredStd.filter fun row => row.getObjValAs? String "caller" == .ok rust
+    let selected := functions.filter fun row => row.getObjValAs? String "rust_name" == .ok rust
+    -- General dictionary owners can have a different native spelling. Owners
+    -- with this boundary must have an exact producer identity from their call.
+    if expected.isEmpty && selected.isEmpty then continue
+    let candidates := if expected.isEmpty then selected else functions.filter fun row =>
+      expected.any (fun call => call.getObjValAs? Nat "caller_def_id" == row.getObjValAs? Nat "def_id")
+    unless !candidates.isEmpty do throwError "Missing compiled standard transmute owner {rust}"
+    -- Native loop splitting can emit several bodies for one Rust owner. Audit
+    -- their aggregate inventory rather than silently omitting the loop helper.
+    let mut actual : Array Expr := #[]
+    let mut names : Array Name := #[]
+    for candidate in candidates do
+      let .ok raw := candidate.getObjValAs? String "lean_name" | throwError "Missing native owner name"
+      unless !names.contains raw.toName do throwError "Repeated native primitive owner {raw}"
+      names := names.push raw.toName
+      let some (.defnInfo owner) := env.find? raw.toName
+        | throwError "Reached primitive owner {rust} must retain its compiled body"
+      actual := actual ++ stdTransmuteCalls owner.value
+    unless actual.size == expected.size do
+      throwError "Compiled standard transmute call inventory differs for {rust}"
+    -- Consume one original witness per compiled call. Repeated calls with the
+    -- same endpoints are legal, but neither omission nor duplication is legal.
+    let mut remaining := expected
+    for call in actual do
+      let args := call.getAppArgs
+      unless args.size == 4 do throwError "Standard transmute acquired unsupported compiled arguments"
+      let matching ← remaining.filterM fun row => do
+        let .ok types := row.getObjValAs? (Array String) "type_arguments" | throwError "Missing Rust endpoints"
+        let (source, target, canonical) ← match types.toList with
+          | ["u32", "[u8;4]"] => pure ((← Term.elabType (← `(Aeneas.Std.U32))),
+              (← Term.elabType (← `(Aeneas.Std.Array Aeneas.Std.U8 4#usize))), `Zerocopy.stdTransmuteU32ToBytes)
+          | ["[u8;4]", "u32"] => pure ((← Term.elabType (← `(Aeneas.Std.Array Aeneas.Std.U8 4#usize))),
+              (← Term.elabType (← `(Aeneas.Std.U32))), `Zerocopy.stdTransmuteBytesToU32)
+          | ["u8", "bool"] => pure ((← Term.elabType (← `(Aeneas.Std.U8))),
+              (← Term.elabType (← `(Bool))), `Zerocopy.stdTransmuteU8ToBool)
+          | _ => throwError "Unsupported original Rust standard transmute endpoints"
+        unless row.getObjValAs? String "provider" == .ok canonical.toString do
+          throwError "Original Rust endpoint provider binding changed"
+        return (← Meta.isDefEq args[0]! source) && (← Meta.isDefEq args[1]! target) &&
+          args[2]! == mkConst canonical
+      unless !matching.isEmpty do
+        throwError "Compiled standard transmute did not retain its canonical endpoint provider in {rust}"
+      let some selectedIndex := remaining.findIdx? (· == matching[0]!)
+        | throwError "Missing matched standard transmute call"
+      remaining := remaining.extract 0 selectedIndex ++ remaining.extract (selectedIndex + 1) remaining.size
+
 run_elab do
   let env ← getEnv
   let layoutInputs := #[`Zerocopy.RustLayout.size, `Zerocopy.RustLayout.alignInput]
@@ -301,6 +427,7 @@ run_elab do
         | throwError "Invalid {stage} execution admission roots"
       unless roots.size == rootNames.size && rootNames.all roots.contains do
         throwError "Execution admission roots disagree with the function binding table"
+  auditStdTransmute bindings
   let some typesModule := env.getModuleIdx? `Zerocopy.Types
     | throwError "Raw extracted types must be imported"
   let some shapesModule := env.getModuleIdx? `ModelShapes
