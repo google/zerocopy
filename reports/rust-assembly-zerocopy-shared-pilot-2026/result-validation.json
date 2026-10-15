@@ -1,0 +1,2602 @@
+{
+  "role": "Final host metadata/links/raw-identity validation only; no new compiler/container/target execution",
+  "checks_passed": 648,
+  "checks": [
+    {
+      "id": "REPORT.json-exact-three-fields",
+      "pass": true
+    },
+    {
+      "id": "unique-topics",
+      "pass": true
+    },
+    {
+      "id": "canonical-observation-date",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-0",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-1",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-2",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-3",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-4",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-5",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-6",
+      "pass": true
+    },
+    {
+      "id": "subject-schema-7",
+      "pass": true
+    },
+    {
+      "id": "one-H1",
+      "pass": true
+    },
+    {
+      "id": "six-required-sections",
+      "pass": true
+    },
+    {
+      "id": "single-REPORT-authorship-notice",
+      "pass": true
+    },
+    {
+      "id": "local-link:pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "local-link:aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "local-link:x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "local-link:CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-results.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "local-link:expected.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:source-call-counts.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-captures-v2/SEQUENCE.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-driver-v2/receipt.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:compile-static/function-bindings.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:compile-static/STATIC-HANDOFF.md",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-stop-v1-diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-v2.diff",
+      "pass": true
+    },
+    {
+      "id": "local-link:runtime-header-v2-regression.json",
+      "pass": true
+    },
+    {
+      "id": "local-link:primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "manifest-identity:COMPILE-STATIC-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:audit_static.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:bind_elf.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:capture_static.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:capture_static_v3.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/CURRENT-STATUS.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/E0716-proposed-fix.diff",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/STATIC-HANDOFF.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/STOP-E0716.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifact-copies.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O0/pilot",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O0/pilot.ll",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O0/pilot.o",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O0/pilot.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O3/pilot",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O3/pilot.ll",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O3/pilot.o",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/aarch64/O3/pilot.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O0/pilot",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O0/pilot.ll",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O0/pilot.o",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O0/pilot.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O3/pilot",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O3/pilot.ll",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O3/pilot.o",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/artifacts/build/x86_64/O3/pilot.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/byte-identity-controls.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/callers-aarch64-O0.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/callers-aarch64-O3.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/callers-x86_64-O0.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/callers-x86_64-O3.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures/aarch64-O0-zerocopy.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/aarch64-O3-zerocopy.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O0-zerocopy.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-after.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/captures-v3/x86_64-O3-zerocopy.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.ll.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.ll.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.o.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.o.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.s.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.s.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.ll.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.ll.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.o.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.o.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.s.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.s.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-aarch64-O3-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.ll.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.ll.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.o.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.o.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.s.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.s.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.ll.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.ll.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.o.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.o.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.s.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.s.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/copy-captures/build-x86_64-O3-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/function-bindings.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/handoff-validation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/image-and-function-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-dynamic.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-dynamic.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-dynamic.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-image-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O0-object-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-dynamic.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-dynamic.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-dynamic.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-image-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-O3-object-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libc-so-6.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libc-so-6.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libc-so-6.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libgcc_s-so-1.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libgcc_s-so-1.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/aarch64-library-libgcc_s-so-1.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/runtime-library-files-read-only.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/runtime-library-files-read-only.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/runtime-library-files-read-only.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-dynamic.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-dynamic.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-dynamic.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-image-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O0-object-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-dynamic.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-dynamic.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-dynamic.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-image-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-disassembly.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-disassembly.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-disassembly.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-frames.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-frames.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-frames.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-metadata.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-O3-object-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libc-so-6.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libc-so-6.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libc-so-6.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libgcc_s-so-1.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libgcc_s-so-1.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/inspection/x86_64-library-libgcc_s-so-1.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/handoff-writer-01/diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/preflight-sandbox-denial-01/capture_static.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/preflight-sandbox-denial-01/diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/static-caller-reader-01/audit_static.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/operational/static-caller-reader-01/diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/primary/qemu-release-tag.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/primary/qemu-v7.2.22-cpu.c",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/review-core-excerpts.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/revision3-validation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/runtime-proposal.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/selected-aarch64-O0.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/selected-aarch64-O3.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/selected-x86_64-O0.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/selected-x86_64-O3.txt",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/static-checks.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/static-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:compile-static/static-summary.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:copy_artifacts.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:expected.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/expected.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v1/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/expected.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/expected.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/history/v1/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/revision-validation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:history/v2/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:inspect_libraries.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:inspect_static.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:revision-validation.json",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "COMPILE-STATIC-FREEZE.json:zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "manifest-identity:RUNTIME-CAPTURE-PREPARATION.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:capture_runtime_v1.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-capture-policy.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:query_runtime_metadata_tools.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:RUNTIME-CAPTURE-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/ast-inspection-diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/metadata-tools.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/metadata-tools.stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/metadata-tools.stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/policy-before-reader-pins.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION.json:runtime-preparation/validation.json",
+      "pass": true
+    },
+    {
+      "id": "manifest-identity:RUNTIME-CAPTURE-PREPARATION-v2.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:RUNTIME-CAPTURE-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:RUNTIME-CAPTURE-PREPARATION.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:RUNTIME-CAPTURE-V2-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:capture_runtime_v1.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:capture_runtime_v2.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:query_runtime_metadata_tools.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:regress_runtime_header_v2.py",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-capture-policy.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/ATTEMPT.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/STOP-traceback.txt",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/STOP.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-files.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-resources.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-captures-v1/aarch64-O0-positive-before-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-driver-v1/receipt.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-driver-v1/stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-driver-v1/stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-header-v2-regression.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/ast-inspection-diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/metadata-tools.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/metadata-tools.stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/metadata-tools.stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/policy-before-reader-pins.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/regression-v2.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/regression-v2.stderr",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/regression-v2.stdout",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-preparation/validation.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-stop-v1-diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "RUNTIME-CAPTURE-PREPARATION-v2.json:runtime-v2.diff",
+      "pass": true
+    },
+    {
+      "id": "four-results",
+      "pass": true
+    },
+    {
+      "id": "reported-harness-check-total",
+      "pass": true
+    },
+    {
+      "id": "actual-run:aarch64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "unchanged-domains:aarch64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "original-ELF-data-copy:aarch64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "six-rejected-data-controls:aarch64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-summary.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-data-only-controls.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-before-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O0-positive-after-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "actual-run:aarch64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "unchanged-domains:aarch64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "original-ELF-data-copy:aarch64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "six-rejected-data-controls:aarch64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-summary.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-data-only-controls.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-before-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/aarch64-O3-positive-after-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "actual-run:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "unchanged-domains:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "original-ELF-data-copy:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "six-rejected-data-controls:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-summary.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-data-only-controls.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-before-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O0-positive-after-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "actual-run:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "unchanged-domains:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "original-ELF-data-copy:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "six-rejected-data-controls:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-summary.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-data-only-controls.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-files.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-files.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-files.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-before-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-resources.json",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-resources.stdout",
+      "pass": true
+    },
+    {
+      "id": "raw:runtime-captures-v2/x86_64-O3-positive-after-resources.stderr",
+      "pass": true
+    },
+    {
+      "id": "107-owned-companion-inputs",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/zerocopy-e46-source.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-staging-v3/staged-inputs.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/container.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/container.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/container.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-lock.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/cross-installed-versions.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-installed-versions.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/cross-installed-versions.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-package-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-package-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/cross-resolved-sha256.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/disk.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/disk.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/disk.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/install-boundary-inspect.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/linker.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/manifest-reader-setup-failure.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/qemu-release-tag.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/qemu-v722-cpu.c",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-a64-cfg.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-a64-cfg.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-a64-cfg.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cpuinfo.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cpuinfo.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cpuinfo.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cross-linker.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cross-linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-cross-linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-native-linker.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-native-linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-native-linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-platform.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-platform.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-platform.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu-cpus.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu-cpus.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu-cpus.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-qemu.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-rustc.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-rustc.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-rustc.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-tool-hashes.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-tool-hashes.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-tool-hashes.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-x64-cfg.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-x64-cfg.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/ready-x64-cfg.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/rust189-component-manifest.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/rust189-component-manifest.toml",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/rust189-inline-assembly.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/rust189-inline-assembly.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/rust189-reference-submodule.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/rust189-x64-component.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/rustc.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/rustc.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/rustc.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-head.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-head.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/sysv-psabi-low-level-pinned.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/sysv-psabi-low-level-pinned.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-low-level.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-low-level.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-root-tree.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-root-tree.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-tex-tree.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-tex-tree.response",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/targets.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/targets.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/targets.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.stdout",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.json",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.stderr",
+      "pass": true
+    },
+    {
+      "id": "owned-input:evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.stdout",
+      "pass": true
+    },
+    {
+      "id": "separate-source-invocation-counts",
+      "pass": true
+    },
+    {
+      "id": "no-v2-stop-record",
+      "pass": true
+    },
+    {
+      "id": "v1-before-target-stop",
+      "pass": true
+    },
+    {
+      "id": "28-header-data-regressions",
+      "pass": true
+    }
+  ],
+  "report_authored_relative_links": 16,
+  "metadata_schema": "FORMAT.md three-field report metadata",
+  "stronger_proof_claim": false,
+  "issue_or_canonical_mutated": false
+}

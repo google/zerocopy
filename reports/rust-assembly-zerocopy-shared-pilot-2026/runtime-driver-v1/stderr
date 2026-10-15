@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/path/to/anneal-workspace/work/execution/extended-pilot/capture_runtime_v1.py", line 350, in <module>
+    main()
+  File "/path/to/anneal-workspace/work/execution/extended-pilot/capture_runtime_v1.py", line 312, in main
+    before = snapshot(directory, ident + "-before-files", docker, policy)
+  File "/path/to/anneal-workspace/work/execution/extended-pilot/capture_runtime_v1.py", line 232, in snapshot
+    row = metadata_result(directory, name, argv)
+  File "/path/to/anneal-workspace/work/execution/extended-pilot/capture_runtime_v1.py", line 198, in metadata_result
+    need(receipt["exit"] == 0 and not receipt["host_timeout"] and
+  File "/path/to/anneal-workspace/work/execution/extended-pilot/capture_runtime_v1.py", line 116, in need
+    raise CaptureStop(reason)
+__main__.CaptureStop: Metadata capture failed: aarch64-O0-positive-before-files

@@ -1,0 +1,819 @@
+{
+  "status": "review-proposal-only",
+  "compiler_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "proposed_container_cwd": "/e46",
+  "no_commands_executed": true,
+  "preconditions": [
+    "Parent accepts immutable source/ABI/oracle plan before any compiler/container action.",
+    "Parent freshly attests exact compiler, selected std libraries, GNU linkers, QEMU and CPU/guest baseline features.",
+    "Parent stages exact regular selected source files and creates build directories; no symlink dereference.",
+    "Parent inspects linked PT_INTERP and actual matching loader/sysroot before any x86 run.",
+    "Parent authorizes runtime separately after object/final code and metadata review.",
+    "Capture argv, environment allowlist, cwd, stdout/stderr/status, source and artifact hashes; serialize all compiler/runs."
+  ],
+  "component_needs_unperformed": {
+    "rust_std": "exact Rust1.89 x86_64-unknown-linux-gnu std component; check existing installation first",
+    "linker_sysroot": "Debian x86_64 GNU cross-gcc/binutils and matching libc sysroot if missing; parent pins versions/hash/size",
+    "qemu": "qemu-x86_64 from already recorded qemu-user if present; no alternative emulator silently used"
+  },
+  "commands": [
+    {
+      "id": "rustc-identity",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "-Vv"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "native-architecture",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "uname",
+        "-m"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "native-cpu-features",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "cat",
+        "/proc/cpuinfo"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "native-linker-identity",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/cc",
+        "--version"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "cross-linker-identity",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/x86_64-linux-gnu-gcc",
+        "--version"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "qemu-identity",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "--version"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "qemu-cpu-catalog",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "help"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-cfg",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--print",
+        "cfg",
+        "--target",
+        "aarch64-unknown-linux-gnu"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-libdir",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--print",
+        "target-libdir",
+        "--target",
+        "aarch64-unknown-linux-gnu"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-zerocopy",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "zerocopy",
+        "--crate-type=rlib",
+        "upstream/zerocopy/src/lib.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-o",
+        "build/aarch64/O0/libzerocopy.rlib"
+      ],
+      "environment": {
+        "CARGO_PKG_VERSION": "0.8.63"
+      },
+      "timeout_seconds": 600
+    },
+    {
+      "id": "aarch64-O0-pilot",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "extended_pilot",
+        "pilot.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-C",
+        "linker=/usr/bin/cc",
+        "--extern",
+        "zerocopy=build/aarch64/O0/libzerocopy.rlib",
+        "--emit=link=build/aarch64/O0/pilot,obj=build/aarch64/O0/pilot.o,asm=build/aarch64/O0/pilot.s,llvm-ir=build/aarch64/O0/pilot.ll"
+      ],
+      "environment": {},
+      "timeout_seconds": 600
+    },
+    {
+      "id": "aarch64-O0-object-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/aarch64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-object-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/aarch64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-object-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/objdump",
+        "-d",
+        "-r",
+        "-C",
+        "build/aarch64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-image-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/aarch64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-image-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/aarch64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-image-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/objdump",
+        "-d",
+        "-r",
+        "-C",
+        "build/aarch64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O0-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "build/aarch64/O0/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "native-AArch64-container"
+    },
+    {
+      "id": "aarch64-O3-zerocopy",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "zerocopy",
+        "--crate-type=rlib",
+        "upstream/zerocopy/src/lib.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-o",
+        "build/aarch64/O3/libzerocopy.rlib"
+      ],
+      "environment": {
+        "CARGO_PKG_VERSION": "0.8.63"
+      },
+      "timeout_seconds": 600
+    },
+    {
+      "id": "aarch64-O3-pilot",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "extended_pilot",
+        "pilot.rs",
+        "--edition=2021",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-C",
+        "linker=/usr/bin/cc",
+        "--extern",
+        "zerocopy=build/aarch64/O3/libzerocopy.rlib",
+        "--emit=link=build/aarch64/O3/pilot,obj=build/aarch64/O3/pilot.o,asm=build/aarch64/O3/pilot.s,llvm-ir=build/aarch64/O3/pilot.ll"
+      ],
+      "environment": {},
+      "timeout_seconds": 600
+    },
+    {
+      "id": "aarch64-O3-object-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/aarch64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-object-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/aarch64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-object-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/objdump",
+        "-d",
+        "-r",
+        "-C",
+        "build/aarch64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-image-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/aarch64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-image-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/aarch64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-image-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/objdump",
+        "-d",
+        "-r",
+        "-C",
+        "build/aarch64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "aarch64-O3-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "build/aarch64/O3/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "native-AArch64-container"
+    },
+    {
+      "id": "x86_64-cfg",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--print",
+        "cfg",
+        "--target",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-libdir",
+      "stage": "preflight",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--print",
+        "target-libdir",
+        "--target",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-zerocopy",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "zerocopy",
+        "--crate-type=rlib",
+        "upstream/zerocopy/src/lib.rs",
+        "--edition=2021",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-o",
+        "build/x86_64/O0/libzerocopy.rlib"
+      ],
+      "environment": {
+        "CARGO_PKG_VERSION": "0.8.63"
+      },
+      "timeout_seconds": 600
+    },
+    {
+      "id": "x86_64-O0-pilot",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "extended_pilot",
+        "pilot.rs",
+        "--edition=2021",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "-C",
+        "opt-level=0",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-C",
+        "linker=/usr/bin/x86_64-linux-gnu-gcc",
+        "--extern",
+        "zerocopy=build/x86_64/O0/libzerocopy.rlib",
+        "--emit=link=build/x86_64/O0/pilot,obj=build/x86_64/O0/pilot.o,asm=build/x86_64/O0/pilot.s,llvm-ir=build/x86_64/O0/pilot.ll"
+      ],
+      "environment": {},
+      "timeout_seconds": 600
+    },
+    {
+      "id": "x86_64-O0-object-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/x86_64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-object-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/x86_64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-object-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/x86_64-linux-gnu-objdump",
+        "-d",
+        "-r",
+        "-C",
+        "-M",
+        "intel",
+        "build/x86_64/O0/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-image-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/x86_64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-image-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/x86_64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-image-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/x86_64-linux-gnu-objdump",
+        "-d",
+        "-r",
+        "-C",
+        "-M",
+        "intel",
+        "build/x86_64/O0/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O0-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O0/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "QEMU-user-x86_64-emulated"
+    },
+    {
+      "id": "x86_64-O3-zerocopy",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "zerocopy",
+        "--crate-type=rlib",
+        "upstream/zerocopy/src/lib.rs",
+        "--edition=2021",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-o",
+        "build/x86_64/O3/libzerocopy.rlib"
+      ],
+      "environment": {
+        "CARGO_PKG_VERSION": "0.8.63"
+      },
+      "timeout_seconds": 600
+    },
+    {
+      "id": "x86_64-O3-pilot",
+      "stage": "compile",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+        "--crate-name",
+        "extended_pilot",
+        "pilot.rs",
+        "--edition=2021",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "panic=abort",
+        "-C",
+        "overflow-checks=yes",
+        "-C",
+        "linker=/usr/bin/x86_64-linux-gnu-gcc",
+        "--extern",
+        "zerocopy=build/x86_64/O3/libzerocopy.rlib",
+        "--emit=link=build/x86_64/O3/pilot,obj=build/x86_64/O3/pilot.o,asm=build/x86_64/O3/pilot.s,llvm-ir=build/x86_64/O3/pilot.ll"
+      ],
+      "environment": {},
+      "timeout_seconds": 600
+    },
+    {
+      "id": "x86_64-O3-object-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/x86_64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-object-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/x86_64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-object-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/x86_64-linux-gnu-objdump",
+        "-d",
+        "-r",
+        "-C",
+        "-M",
+        "intel",
+        "build/x86_64/O3/pilot.o"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-image-metadata",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "-h",
+        "-l",
+        "-S",
+        "-sW",
+        "-rW",
+        "build/x86_64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-image-frames",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/readelf",
+        "--debug-dump=frames",
+        "build/x86_64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-image-disassembly",
+      "stage": "inspect",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/x86_64-linux-gnu-objdump",
+        "-d",
+        "-r",
+        "-C",
+        "-M",
+        "intel",
+        "build/x86_64/O3/pilot"
+      ],
+      "environment": {}
+    },
+    {
+      "id": "x86_64-O3-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O3/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "QEMU-user-x86_64-emulated"
+    }
+  ],
+  "inherit_environment": false,
+  "base_environment": {
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "excluded_environment": [
+    "RUSTC_BOOTSTRAP",
+    "LD_PRELOAD",
+    "LD_LIBRARY_PATH",
+    "RUSTFLAGS",
+    "CARGO_ENCODED_RUSTFLAGS",
+    "RUSTC_WRAPPER"
+  ]
+}

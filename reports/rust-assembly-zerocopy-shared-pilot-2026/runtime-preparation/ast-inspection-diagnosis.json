@@ -1,0 +1,8 @@
+{
+  "role": "Owned integration diagnosis transcribing actual host tool result, not original subprocess capture",
+  "actual_exit": 1,
+  "actual_error": "ValueError: malformed node or string: <ast.BinOp object at 0x10558bd60>",
+  "cause": "AST-only inspector attempted literal_eval on CAP=256*1024*1024, which is an arithmetic BinOp rather than a literal.",
+  "correction": "Extract only the needed literal strings/lists/maps; CAP need not be interpreted to inspect source syntax.",
+  "effects": "No validation/plan/manifest output had been written, runtime helper was not imported or invoked, no additional container operation or target call."
+}

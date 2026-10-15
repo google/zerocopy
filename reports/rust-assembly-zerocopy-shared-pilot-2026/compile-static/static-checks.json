@@ -1,0 +1,1909 @@
+{
+  "status": "static-only",
+  "checks_passed": 330,
+  "checks": [
+    {
+      "id": "aarch64-O0-BL-encoding-0x10254",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1029c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x102ac",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x102c4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x102dc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10334",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10364",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10380",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1038c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x103bc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x103d4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x103e4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10404",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10418",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10430",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10448",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x104cc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x104ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10500",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10518",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10530",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10594",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x105a4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x105d8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x105ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x105fc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10630",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10648",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10658",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10678",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1068c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x106a4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x106bc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x106e4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1070c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10714",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10738",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10754",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1075c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10784",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10798",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x107b8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x107cc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x107e4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x107f4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10854",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10864",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1088c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x108ac",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x108c0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x108d8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x108f4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10938",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1095c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10980",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x109a4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x109c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x109f8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10a18",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10a2c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10a44",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10a5c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10aac",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10acc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10aec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b00",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b18",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b30",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b74",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b80",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10b9c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10bc4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10be8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10c30",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10c40",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10c48",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10c64",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10c94",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10cec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d04",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d1c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d38",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d48",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d5c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d6c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10d94",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10da8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10ddc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10de4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10e10",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10e54",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10e70",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10e94",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10eac",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10eb8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10ed8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10eec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10f0c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10f3c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10f58",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10f84",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10fb0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x10fd4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11000",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x110e4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11110",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11130",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11144",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1116c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1119c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x111a8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x111c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x111dc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11220",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11240",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11288",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x112a4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x112c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11354",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11378",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11390",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x113a8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x113c0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x113d4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11400",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11420",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11440",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11470",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1147c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1149c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x114b0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x114c4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x114d8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x114f8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1152c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11558",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11578",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x115a0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x115b8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x115c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x115ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11624",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11664",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x116a0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x116d4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11714",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11748",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11760",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1178c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x117a4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x117bc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x117e8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11800",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11830",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1183c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11854",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1185c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x1186c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11894",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x118c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11920",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11964",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11990",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x119b4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x119d0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x119ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11a10",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11a74",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11ab0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11b08",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11b28",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11b54",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-BL-encoding-0x11b6c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_mul",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_add128",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_bswap",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_load",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_store",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_copy16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_ptr",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_call_helper",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_simd_copy16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-C-callsite-pilot_simd_add16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-ten-C-declarations",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-zc-internal-ABI-signature",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-object-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-object-CFI-A64",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-object-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-object-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-image-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-image-CFI-A64",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-image-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-image-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-PT_INTERP",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-loader-file-present",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-NEEDED-known-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-NEEDED-known-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-required-versions-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O0-required-versions-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x97d0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9834",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9894",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x98f0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9988",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x99ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9a50",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9ad8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9b1c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9b88",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9bb8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9bec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9c20",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9c38",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9d40",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9d4c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9dc0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9e30",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9ec4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9f14",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0x9f20",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa0c0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa0cc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa0d8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa0e4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa278",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa294",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa2ec",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa3b0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa3c0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa504",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa54c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa5d4",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa6b0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa6e0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa738",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa740",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa7c8",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa7d0",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa8cc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa8dc",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa944",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-BL-encoding-0xa94c",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_mul",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_add128",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_bswap",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_load",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_store",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_copy16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_ptr",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_call_helper",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_simd_copy16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-C-callsite-pilot_simd_add16",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-ten-C-declarations",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-zc-internal-ABI-signature",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-object-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-object-CFI-A64",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-object-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-object-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-image-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-image-CFI-A64",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-image-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-image-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-PT_INTERP",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-loader-file-present",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-NEEDED-known-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-NEEDED-known-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-required-versions-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "aarch64-O3-required-versions-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_mul",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_add128",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_bswap",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_load",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_store",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_copy16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_ptr",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_call_helper",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_simd_copy16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-C-callsite-pilot_simd_add16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-ten-C-declarations",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-zc-internal-ABI-signature",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-object-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-object-CFI-SysV",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-object-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-object-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-image-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-image-CFI-SysV",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-image-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-image-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-PT_INTERP",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-loader-file-present",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-NEEDED-known-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-NEEDED-known-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-NEEDED-known-ld-linux-x86-64.so.2",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-required-versions-ld-linux-x86-64.so.2",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-required-versions-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O0-required-versions-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-observed-R13-LEA-opcode",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-observed-R13-LEA-callee",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-observed-R13-CALL",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-no-duplicate-ptr-route",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-observed-route-text-0xc9ce",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-observed-route-text-0xcb93",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_mul",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_add128",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_bswap",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_load",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_store",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_copy16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_ptr",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_call_helper",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_simd_copy16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-C-callsite-pilot_simd_add16",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-ten-C-declarations",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-zc-internal-ABI-signature",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-object-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-object-CFI-SysV",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-object-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-object-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-image-one-exact-helper-FDE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-image-CFI-SysV",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-image-one-CIE",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-image-CIE-return-rule",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-PT_INTERP",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-loader-file-present",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-NEEDED-known-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-NEEDED-known-libc.so.6",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-NEEDED-known-ld-linux-x86-64.so.2",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-required-versions-ld-linux-x86-64.so.2",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-required-versions-libgcc_s.so.1",
+      "pass": true
+    },
+    {
+      "id": "x86_64-O3-required-versions-libc.so.6",
+      "pass": true
+    }
+  ],
+  "cases": [
+    {
+      "arch": "aarch64",
+      "opt": 0,
+      "callsites": {
+        "pilot_mul": [
+          {
+            "pc": 66356,
+            "kind": "direct-BL",
+            "target": 40148
+          }
+        ],
+        "pilot_add128": [
+          {
+            "pc": 72308,
+            "kind": "direct-BL",
+            "target": 40164
+          }
+        ],
+        "pilot_bswap": [
+          {
+            "pc": 67300,
+            "kind": "direct-BL",
+            "target": 40192
+          }
+        ],
+        "pilot_load": [
+          {
+            "pc": 67668,
+            "kind": "direct-BL",
+            "target": 40200
+          }
+        ],
+        "pilot_store": [
+          {
+            "pc": 71520,
+            "kind": "direct-BL",
+            "target": 40208
+          }
+        ],
+        "pilot_copy16": [
+          {
+            "pc": 70520,
+            "kind": "direct-BL",
+            "target": 40216
+          }
+        ],
+        "pilot_ptr": [
+          {
+            "pc": 71204,
+            "kind": "direct-BL",
+            "target": 40228
+          }
+        ],
+        "pilot_call_helper": [
+          {
+            "pc": 68480,
+            "kind": "direct-BL",
+            "target": 40236
+          }
+        ],
+        "pilot_simd_copy16": [
+          {
+            "pc": 70544,
+            "kind": "direct-BL",
+            "target": 40260
+          }
+        ],
+        "pilot_simd_add16": [
+          {
+            "pc": 69904,
+            "kind": "direct-BL",
+            "target": 40272
+          }
+        ]
+      },
+      "C_declarations": [
+        "declare i64 @pilot_call_helper(i64, i64) unnamed_addr #1",
+        "declare void @pilot_simd_add16(ptr, ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_copy16(ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_simd_copy16(ptr, ptr) unnamed_addr #1",
+        "declare ptr @pilot_ptr(ptr, i64) unnamed_addr #1",
+        "declare i64 @pilot_load(ptr) unnamed_addr #1",
+        "declare void @pilot_store(ptr, i64) unnamed_addr #1",
+        "declare i64 @pilot_bswap(i64) unnamed_addr #1",
+        "declare i64 @pilot_add128(ptr, ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_mul(i64, i64, ptr) unnamed_addr #1"
+      ],
+      "zc_decode_actual_IR_signature": "define internal i64 @_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E(ptr align 1 %bytes) unnamed_addr #2 {",
+      "helper_frames": [
+        {
+          "artifact": "object",
+          "fde": "00000014 0000000000000020 00000018 FDE cie=00000000 pc=0000000000000058..0000000000000070\n  DW_CFA_advance_loc: 4 to 000000000000005c\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_offset: r29 (x29) at cfa-16\n  DW_CFA_offset: r30 (x30) at cfa-8\n  DW_CFA_advance_loc: 4 to 0000000000000060\n  DW_CFA_def_cfa_register: r29 (x29)\n  DW_CFA_advance_loc: 12 to 000000000000006c\n  DW_CFA_def_cfa: r31 (sp) ofs 0\n  DW_CFA_restore: r29 (x29)\n  DW_CFA_restore: r30 (x30)\n  DW_CFA_nop\n  DW_CFA_nop\n  DW_CFA_nop",
+          "cie": "00000000 0000000000000010 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -4\n  Return address column: 30\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r31 (sp) ofs 0"
+        },
+        {
+          "artifact": "image",
+          "fde": "0000009c 0000000000000020 00000018 FDE cie=00000088 pc=0000000000009d2c..0000000000009d44\n  DW_CFA_advance_loc: 4 to 0000000000009d30\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_offset: r29 (x29) at cfa-16\n  DW_CFA_offset: r30 (x30) at cfa-8\n  DW_CFA_advance_loc: 4 to 0000000000009d34\n  DW_CFA_def_cfa_register: r29 (x29)\n  DW_CFA_advance_loc: 12 to 0000000000009d40\n  DW_CFA_def_cfa: r31 (sp) ofs 0\n  DW_CFA_restore: r29 (x29)\n  DW_CFA_restore: r30 (x30)\n  DW_CFA_nop\n  DW_CFA_nop\n  DW_CFA_nop",
+          "cie": "00000088 0000000000000010 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -4\n  Return address column: 30\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r31 (sp) ofs 0"
+        }
+      ],
+      "PT_INTERP": "/lib/ld-linux-aarch64.so.1",
+      "actual_loader_file": {
+        "path": "/lib/ld-linux-aarch64.so.1",
+        "exists": true,
+        "symlink": true,
+        "resolved": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+        "bytes": 202912,
+        "sha256": "add9309ee6f1252a4d018de9db5ed39100f8128037f45e387e07e279824d05a4",
+        "ELF_identity": "7f454c460201010000000000000000000300b700"
+      },
+      "NEEDED": [
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "needed_versions": {
+        "libgcc_s.so.1": [
+          "GCC_4.2.0",
+          "GCC_3.0",
+          "GCC_3.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.28",
+          "GLIBC_2.33",
+          "GLIBC_2.18",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.17"
+        ]
+      },
+      "target_executed": false
+    },
+    {
+      "arch": "aarch64",
+      "opt": 3,
+      "callsites": {
+        "pilot_mul": [
+          {
+            "pc": 38964,
+            "kind": "direct-BL",
+            "target": 38164
+          }
+        ],
+        "pilot_add128": [
+          {
+            "pc": 39304,
+            "kind": "direct-BL",
+            "target": 38180
+          }
+        ],
+        "pilot_bswap": [
+          {
+            "pc": 39864,
+            "kind": "direct-BL",
+            "target": 38208
+          }
+        ],
+        "pilot_load": [
+          {
+            "pc": 40256,
+            "kind": "direct-BL",
+            "target": 38216
+          }
+        ],
+        "pilot_store": [
+          {
+            "pc": 40384,
+            "kind": "direct-BL",
+            "target": 38224
+          }
+        ],
+        "pilot_copy16": [
+          {
+            "pc": 41152,
+            "kind": "direct-BL",
+            "target": 38232
+          }
+        ],
+        "pilot_ptr": [
+          {
+            "pc": 41592,
+            "kind": "direct-BL",
+            "target": 38244
+          }
+        ],
+        "pilot_call_helper": [
+          {
+            "pc": 42316,
+            "kind": "direct-BL",
+            "target": 38252
+          }
+        ],
+        "pilot_simd_copy16": [
+          {
+            "pc": 41164,
+            "kind": "direct-BL",
+            "target": 38276
+          }
+        ],
+        "pilot_simd_add16": [
+          {
+            "pc": 41904,
+            "kind": "direct-BL",
+            "target": 38288
+          }
+        ]
+      },
+      "C_declarations": [
+        "declare noundef i64 @pilot_call_helper(i64 noundef, i64 noundef) unnamed_addr #0",
+        "declare void @pilot_simd_add16(ptr noundef, ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_copy16(ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_simd_copy16(ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare noundef ptr @pilot_ptr(ptr noundef, i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_load(ptr noundef) unnamed_addr #0",
+        "declare void @pilot_store(ptr noundef, i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_bswap(i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_add128(ptr noundef, ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_mul(i64 noundef, i64 noundef, ptr noundef) unnamed_addr #0"
+      ],
+      "zc_decode_actual_IR_signature": "define internal fastcc noundef i64 @_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E(i64 %bytes.0.val) unnamed_addr #4 personality ptr @rust_eh_personality {",
+      "helper_frames": [
+        {
+          "artifact": "object",
+          "fde": "00000014 0000000000000020 00000018 FDE cie=00000000 pc=0000000000000058..0000000000000070\n  DW_CFA_advance_loc: 4 to 000000000000005c\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_offset: r29 (x29) at cfa-16\n  DW_CFA_offset: r30 (x30) at cfa-8\n  DW_CFA_advance_loc: 4 to 0000000000000060\n  DW_CFA_def_cfa_register: r29 (x29)\n  DW_CFA_advance_loc: 12 to 000000000000006c\n  DW_CFA_def_cfa: r31 (sp) ofs 0\n  DW_CFA_restore: r29 (x29)\n  DW_CFA_restore: r30 (x30)\n  DW_CFA_nop\n  DW_CFA_nop\n  DW_CFA_nop",
+          "cie": "00000000 0000000000000010 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -4\n  Return address column: 30\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r31 (sp) ofs 0"
+        },
+        {
+          "artifact": "image",
+          "fde": "0000009c 0000000000000020 00000018 FDE cie=00000088 pc=000000000000956c..0000000000009584\n  DW_CFA_advance_loc: 4 to 0000000000009570\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_offset: r29 (x29) at cfa-16\n  DW_CFA_offset: r30 (x30) at cfa-8\n  DW_CFA_advance_loc: 4 to 0000000000009574\n  DW_CFA_def_cfa_register: r29 (x29)\n  DW_CFA_advance_loc: 12 to 0000000000009580\n  DW_CFA_def_cfa: r31 (sp) ofs 0\n  DW_CFA_restore: r29 (x29)\n  DW_CFA_restore: r30 (x30)\n  DW_CFA_nop\n  DW_CFA_nop\n  DW_CFA_nop",
+          "cie": "00000088 0000000000000010 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -4\n  Return address column: 30\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r31 (sp) ofs 0"
+        }
+      ],
+      "PT_INTERP": "/lib/ld-linux-aarch64.so.1",
+      "actual_loader_file": {
+        "path": "/lib/ld-linux-aarch64.so.1",
+        "exists": true,
+        "symlink": true,
+        "resolved": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+        "bytes": 202912,
+        "sha256": "add9309ee6f1252a4d018de9db5ed39100f8128037f45e387e07e279824d05a4",
+        "ELF_identity": "7f454c460201010000000000000000000300b700"
+      },
+      "NEEDED": [
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "needed_versions": {
+        "libgcc_s.so.1": [
+          "GCC_4.2.0",
+          "GCC_3.0",
+          "GCC_3.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.28",
+          "GLIBC_2.33",
+          "GLIBC_2.18",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.17"
+        ]
+      },
+      "target_executed": false
+    },
+    {
+      "arch": "x86_64",
+      "opt": 0,
+      "callsites": {
+        "pilot_mul": [
+          {
+            "pc": 81185,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 462160,
+            "base_relative_function": 51936,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_add128": [
+          {
+            "pc": 87841,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 461744,
+            "base_relative_function": 51953,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_bswap": [
+          {
+            "pc": 82425,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 461440,
+            "base_relative_function": 51981,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_load": [
+          {
+            "pc": 82887,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 462736,
+            "base_relative_function": 51988,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_store": [
+          {
+            "pc": 86951,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 461152,
+            "base_relative_function": 51992,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_copy16": [
+          {
+            "pc": 85926,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 460664,
+            "base_relative_function": 51996,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_ptr": [
+          {
+            "pc": 86640,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 461072,
+            "base_relative_function": 52011,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_call_helper": [
+          {
+            "pc": 83793,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 462064,
+            "base_relative_function": 52016,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_simd_copy16": [
+          {
+            "pc": 85956,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 461936,
+            "base_relative_function": 52034,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_simd_add16": [
+          {
+            "pc": 85363,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 460880,
+            "base_relative_function": 52043,
+            "runtime_loader_not_executed": true
+          }
+        ]
+      },
+      "C_declarations": [
+        "declare i64 @pilot_call_helper(i64, i64) unnamed_addr #1",
+        "declare void @pilot_simd_add16(ptr, ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_copy16(ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_simd_copy16(ptr, ptr) unnamed_addr #1",
+        "declare ptr @pilot_ptr(ptr, i64) unnamed_addr #1",
+        "declare i64 @pilot_load(ptr) unnamed_addr #1",
+        "declare void @pilot_store(ptr, i64) unnamed_addr #1",
+        "declare i64 @pilot_bswap(i64) unnamed_addr #1",
+        "declare i64 @pilot_add128(ptr, ptr, ptr) unnamed_addr #1",
+        "declare void @pilot_mul(i64, i64, ptr) unnamed_addr #1"
+      ],
+      "zc_decode_actual_IR_signature": "define internal i64 @_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E(ptr align 1 %bytes) unnamed_addr #2 {",
+      "helper_frames": [
+        {
+          "artifact": "object",
+          "fde": "00000018 0000000000000014 0000001c FDE cie=00000000 pc=0000000000000050..0000000000000062\n  DW_CFA_advance_loc: 4 to 0000000000000054\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_advance_loc: 13 to 0000000000000061\n  DW_CFA_def_cfa_offset: 8\n  DW_CFA_nop",
+          "cie": "00000000 0000000000000014 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -8\n  Return address column: 16\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r7 (rsp) ofs 8\n  DW_CFA_offset: r16 (rip) at cfa-8\n  DW_CFA_nop\n  DW_CFA_nop"
+        },
+        {
+          "artifact": "image",
+          "fde": "00000088 0000000000000014 0000005c FDE cie=00000030 pc=000000000000cb30..000000000000cb42\n  DW_CFA_advance_loc: 4 to 000000000000cb34\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_advance_loc: 13 to 000000000000cb41\n  DW_CFA_def_cfa_offset: 8\n  DW_CFA_nop",
+          "cie": "00000030 0000000000000014 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -8\n  Return address column: 16\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r7 (rsp) ofs 8\n  DW_CFA_offset: r16 (rip) at cfa-8\n  DW_CFA_nop\n  DW_CFA_nop"
+        }
+      ],
+      "PT_INTERP": "/lib64/ld-linux-x86-64.so.2",
+      "actual_loader_file": {
+        "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+        "exists": true,
+        "symlink": true,
+        "resolved": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+        "bytes": 210968,
+        "sha256": "0eae8509658fdb9310562b8814c198bff579f0314b1dcd4500d1556bf4cc7d0e",
+        "ELF_identity": "7f454c4602010103000000000000000003003e00"
+      },
+      "NEEDED": [
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "needed_versions": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_4.2.0",
+          "GCC_3.0",
+          "GCC_3.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.28",
+          "GLIBC_2.16",
+          "GLIBC_2.14",
+          "GLIBC_2.3",
+          "GLIBC_2.33",
+          "GLIBC_2.3.4",
+          "GLIBC_2.18",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.2.5"
+        ]
+      },
+      "target_executed": false
+    },
+    {
+      "arch": "x86_64",
+      "opt": 3,
+      "callsites": {
+        "pilot_mul": [
+          {
+            "pc": 48520,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 425304,
+            "base_relative_function": 47632,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_add128": [
+          {
+            "pc": 49015,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 424896,
+            "base_relative_function": 47649,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_bswap": [
+          {
+            "pc": 49923,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 424608,
+            "base_relative_function": 47677,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_load": [
+          {
+            "pc": 50387,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 425872,
+            "base_relative_function": 47684,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_store": [
+          {
+            "pc": 50505,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 424320,
+            "base_relative_function": 47688,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_copy16": [
+          {
+            "pc": 51435,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 423880,
+            "base_relative_function": 47692,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_ptr": [
+          {
+            "pc": 52115,
+            "kind": "exact-observed-LEA-R13-then-CALL-R13",
+            "definition_pc": 51662,
+            "base_relative_target": 47707,
+            "preservation_premise": "Manual selected interval/CFG review plus R13 callee-save contract for intervening calls; no universal dataflow theorem."
+          }
+        ],
+        "pilot_call_helper": [
+          {
+            "pc": 53129,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 425208,
+            "base_relative_function": 47712,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_simd_copy16": [
+          {
+            "pc": 51447,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 425088,
+            "base_relative_function": 47730,
+            "runtime_loader_not_executed": true
+          }
+        ],
+        "pilot_simd_add16": [
+          {
+            "pc": 52505,
+            "kind": "RIP-GOT-call-with-R_X86_64_RELATIVE",
+            "slot": 424080,
+            "base_relative_function": 47739,
+            "runtime_loader_not_executed": true
+          }
+        ]
+      },
+      "C_declarations": [
+        "declare noundef i64 @pilot_call_helper(i64 noundef, i64 noundef) unnamed_addr #0",
+        "declare void @pilot_simd_add16(ptr noundef, ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_copy16(ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_simd_copy16(ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare noundef ptr @pilot_ptr(ptr noundef, i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_load(ptr noundef) unnamed_addr #0",
+        "declare void @pilot_store(ptr noundef, i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_bswap(i64 noundef) unnamed_addr #0",
+        "declare noundef i64 @pilot_add128(ptr noundef, ptr noundef, ptr noundef) unnamed_addr #0",
+        "declare void @pilot_mul(i64 noundef, i64 noundef, ptr noundef) unnamed_addr #0"
+      ],
+      "zc_decode_actual_IR_signature": "define internal fastcc noundef i64 @_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E(i64 %bytes.0.val) unnamed_addr #4 personality ptr @rust_eh_personality {",
+      "helper_frames": [
+        {
+          "artifact": "object",
+          "fde": "00000018 0000000000000014 0000001c FDE cie=00000000 pc=0000000000000050..0000000000000062\n  DW_CFA_advance_loc: 4 to 0000000000000054\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_advance_loc: 13 to 0000000000000061\n  DW_CFA_def_cfa_offset: 8\n  DW_CFA_nop",
+          "cie": "00000000 0000000000000014 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -8\n  Return address column: 16\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r7 (rsp) ofs 8\n  DW_CFA_offset: r16 (rip) at cfa-8\n  DW_CFA_nop\n  DW_CFA_nop"
+        },
+        {
+          "artifact": "image",
+          "fde": "00000088 0000000000000014 0000005c FDE cie=00000030 pc=000000000000ba60..000000000000ba72\n  DW_CFA_advance_loc: 4 to 000000000000ba64\n  DW_CFA_def_cfa_offset: 16\n  DW_CFA_advance_loc: 13 to 000000000000ba71\n  DW_CFA_def_cfa_offset: 8\n  DW_CFA_nop",
+          "cie": "00000030 0000000000000014 00000000 CIE\n  Version:               1\n  Augmentation:          \"zR\"\n  Code alignment factor: 1\n  Data alignment factor: -8\n  Return address column: 16\n  Augmentation data:     1b\n  DW_CFA_def_cfa: r7 (rsp) ofs 8\n  DW_CFA_offset: r16 (rip) at cfa-8\n  DW_CFA_nop\n  DW_CFA_nop"
+        }
+      ],
+      "PT_INTERP": "/lib64/ld-linux-x86-64.so.2",
+      "actual_loader_file": {
+        "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+        "exists": true,
+        "symlink": true,
+        "resolved": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+        "bytes": 210968,
+        "sha256": "0eae8509658fdb9310562b8814c198bff579f0314b1dcd4500d1556bf4cc7d0e",
+        "ELF_identity": "7f454c4602010103000000000000000003003e00"
+      },
+      "NEEDED": [
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "needed_versions": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_4.2.0",
+          "GCC_3.0",
+          "GCC_3.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.28",
+          "GLIBC_2.16",
+          "GLIBC_2.14",
+          "GLIBC_2.3",
+          "GLIBC_2.33",
+          "GLIBC_2.3.4",
+          "GLIBC_2.18",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.2.5"
+        ]
+      },
+      "target_executed": false
+    }
+  ],
+  "limits": "Owned unverified readers/text checks; selected relocation/CFI/version interpretation, not loader/unwinder/ISA/Rust proof. No target or guest execution."
+}

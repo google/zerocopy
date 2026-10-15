@@ -1,0 +1,154 @@
+{
+  "status": "preparation-revision-data-checks-only",
+  "checks_passed": 36,
+  "checks": [
+    {
+      "id": "original-freeze-identity",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-expected.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "historical-entry-zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "aarch64.s-exact-authorized-only-diff",
+      "pass": true
+    },
+    {
+      "id": "aarch64.s-balanced-section-stack",
+      "pass": true
+    },
+    {
+      "id": "x86_64.s-exact-authorized-only-diff",
+      "pass": true
+    },
+    {
+      "id": "x86_64.s-balanced-section-stack",
+      "pass": true
+    },
+    {
+      "id": "unchanged-pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "unchanged-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "unchanged-expected.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "unchanged-check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-expected.json",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-controls-proposed.json",
+      "pass": true
+    }
+  ],
+  "subject_compiled": false,
+  "subject_executed": false,
+  "no_instruction_controlflow_or_cfi_line_changed": true,
+  "limits": "Text identity/transformation and owned unverified Python data checks; not ISA/ABI/compiler correctness proofs."
+}

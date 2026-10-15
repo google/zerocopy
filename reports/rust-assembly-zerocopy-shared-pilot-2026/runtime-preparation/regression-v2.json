@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "regress_runtime_header_v2.py"
+  ],
+  "cwd": "/path/to/anneal-workspace/work/execution/extended-pilot",
+  "exit": 0,
+  "elapsed_seconds": 0.025183333,
+  "source_sha256": "f9142454f44d653dc5dfa3057a2be4d8adfde9ebf7085928ece261090bdc9825",
+  "stdout_sha256": "bf8d6861c881fd5ae1977977c6d6beab5e30aff5a5dca5b130d63dcdc4b9329d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Pure retained-header data only; no Docker or target invocation"
+}

@@ -1,0 +1,126 @@
+[
+  {
+    "id": "short-load-span",
+    "kind": "admission-data",
+    "width": 8,
+    "available": 7,
+    "expected": "reject"
+  },
+  {
+    "id": "short-simd-span",
+    "kind": "admission-data",
+    "width": 16,
+    "available": 15,
+    "expected": "reject"
+  },
+  {
+    "id": "misaligned-simd",
+    "kind": "admission-data",
+    "alignment": 16,
+    "address_mod_alignment": 1,
+    "expected": "reject"
+  },
+  {
+    "id": "overlapping-copy",
+    "kind": "admission-data",
+    "src": [
+      0,
+      16
+    ],
+    "dst": [
+      8,
+      24
+    ],
+    "policy": "disjoint",
+    "expected": "reject"
+  },
+  {
+    "id": "outside-pointer-result",
+    "kind": "admission-data",
+    "region_size": 16,
+    "offset": 17,
+    "expected": "reject"
+  },
+  {
+    "id": "bad-carry-input",
+    "kind": "admission-data",
+    "carry": 2,
+    "expected": "reject"
+  },
+  {
+    "id": "omit-upper-product",
+    "kind": "oracle-data",
+    "a": 18446744073709551615,
+    "b": 18446744073709551615,
+    "wrong_hi": 0,
+    "correct_hi": 18446744073709551614,
+    "expected": "distinguish"
+  },
+  {
+    "id": "omit-carry-propagation",
+    "kind": "oracle-data",
+    "a": [
+      18446744073709551615,
+      0
+    ],
+    "b": [
+      1,
+      0
+    ],
+    "wrong": [
+      0,
+      0,
+      0
+    ],
+    "correct": [
+      0,
+      1,
+      0
+    ],
+    "expected": "distinguish"
+  },
+  {
+    "id": "signed-saturating-byte-add",
+    "kind": "oracle-data",
+    "a": 127,
+    "b": 1,
+    "wrong": 127,
+    "correct": 128,
+    "expected": "distinguish"
+  },
+  {
+    "id": "unrecorded-hidden-read",
+    "kind": "footprint-data",
+    "declared_reads": [
+      [
+        0,
+        16
+      ]
+    ],
+    "changed_reads": [
+      [
+        0,
+        16
+      ],
+      [
+        16,
+        17
+      ]
+    ],
+    "expected": "reject"
+  },
+  {
+    "id": "changed-object-byte",
+    "kind": "future-artifact-data",
+    "action": "copy extracted function bytes, flip one bit, compare identity",
+    "expected": "reject",
+    "status": "no object exists yet"
+  },
+  {
+    "id": "wrong-return-or-guard",
+    "kind": "future-result-data",
+    "action": "copy observed record, change return or guard, rerun data checker",
+    "expected": "reject",
+    "status": "no observed record exists yet"
+  }
+]

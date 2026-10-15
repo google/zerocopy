@@ -1,0 +1,10 @@
+{
+  "id": "x86_64-O3-positive",
+  "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+  "execution_kind": "QEMU-user-x86_64-emulated",
+  "exit": 0,
+  "output_status_match": true,
+  "identities_resources_unchanged": true,
+  "expected_checks": 4617,
+  "no_mutant_executed": true
+}

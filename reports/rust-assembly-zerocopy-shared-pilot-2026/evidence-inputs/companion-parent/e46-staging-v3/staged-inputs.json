@@ -1,0 +1,147 @@
+{
+  "freeze_sha256": "42a976cc612912f2729197658b28910e61dd931cd45fb80052e63143f3076df5",
+  "compiler_effects": "none",
+  "files": [
+    {
+      "path": "pilot.rs",
+      "bytes": 18794,
+      "sha256": "1b9466576e315530e54eea9622d102e59ae219177473440c2ebade46fd9e4616"
+    },
+    {
+      "path": "vectors.rs",
+      "bytes": 140966,
+      "sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28"
+    },
+    {
+      "path": "aarch64.s",
+      "bytes": 2046,
+      "sha256": "ad1d035551286a22b0e189a3ba1aed427154258df6a4fac897a4e842e52aa895"
+    },
+    {
+      "path": "x86_64.s",
+      "bytes": 2036,
+      "sha256": "f8a609d98c11518606547a7436f76a23a5f06a4058b898cba75143985c7c5e50"
+    },
+    {
+      "path": "upstream/zerocopy/AGENTS.md",
+      "bytes": 3112,
+      "sha256": "e1e9dfe0cf55647f14c6b0ded5a79b43ca908c6de06401dc9e0d8b4e5ab00293"
+    },
+    {
+      "path": "upstream/zerocopy/Cargo.toml",
+      "bytes": 6016,
+      "sha256": "8d9b9ac863d11458b4e69ec017fcf840d637eacd45ea826744904604a09c6a39"
+    },
+    {
+      "path": "upstream/zerocopy/build.rs",
+      "bytes": 10647,
+      "sha256": "075d31f4f99cf4e42132e9c3652c846de832576e2f18be281b16405235644fcd"
+    },
+    {
+      "path": "upstream/zerocopy/cargo.sh",
+      "bytes": 965,
+      "sha256": "23b2eddb1e982dcc2228b573bb92a768e05e056e24f440d7efdf7fb1a747ac87"
+    },
+    {
+      "path": "upstream/zerocopy/src/byte_slice.rs",
+      "bytes": 17591,
+      "sha256": "d7192aa0c5845d7a1f01d36235ecee93ab05ea6fdc42f4666fefe3d1d12bd829"
+    },
+    {
+      "path": "upstream/zerocopy/src/byteorder.rs",
+      "bytes": 57301,
+      "sha256": "007bbc8ba5d76e8ce96f580faf732c200982dd372433026ac2625d28a5ee10f2"
+    },
+    {
+      "path": "upstream/zerocopy/src/deprecated.rs",
+      "bytes": 8164,
+      "sha256": "0762789a318b47fefd1d852160472d1ef91d994f2914304bd7c4544cc8368664"
+    },
+    {
+      "path": "upstream/zerocopy/src/doctests.rs",
+      "bytes": 5745,
+      "sha256": "dcbadd8d83a676ba003d00e9ce038cb7752224fd700be4547ae7f56b17ab718d"
+    },
+    {
+      "path": "upstream/zerocopy/src/error.rs",
+      "bytes": 46989,
+      "sha256": "d327bba55f092763a2e64454c0db39f898b4890908eb41558cc25a4cd1a64f5f"
+    },
+    {
+      "path": "upstream/zerocopy/src/impls.rs",
+      "bytes": 106201,
+      "sha256": "0ba67c0b85dc1bf820a33c6ffa0c161432aa6307984568af88e55aaece9a5504"
+    },
+    {
+      "path": "upstream/zerocopy/src/layout.rs",
+      "bytes": 238171,
+      "sha256": "a44688f32f836c456338f5bb0913b3bcc081decf6c377fa299506aac80778727"
+    },
+    {
+      "path": "upstream/zerocopy/src/lib.rs",
+      "bytes": 305419,
+      "sha256": "04fab08f8ef9482e4d62d0e64f1b8e9af32a8ecfe77b1a8875a7aca5accae0db"
+    },
+    {
+      "path": "upstream/zerocopy/src/macros.rs",
+      "bytes": 67867,
+      "sha256": "dedf47a0f29966794c12379dc147eae22ab5e76eda63ec3587ab79370731223e"
+    },
+    {
+      "path": "upstream/zerocopy/src/pointer/inner.rs",
+      "bytes": 33561,
+      "sha256": "8c39efc79382f4831dc8c76ce07d1e41c1267f79824a9eae9e061b88333a8e8a"
+    },
+    {
+      "path": "upstream/zerocopy/src/pointer/invariant.rs",
+      "bytes": 12358,
+      "sha256": "a5ed83dad776e25101d4a7af3f041a9583444658b0f8cc21810dfc672069525e"
+    },
+    {
+      "path": "upstream/zerocopy/src/pointer/mod.rs",
+      "bytes": 16638,
+      "sha256": "ad84046478b9e2d72257632572fa2a84ee768b0c797f373944d9f695fd46ac17"
+    },
+    {
+      "path": "upstream/zerocopy/src/pointer/ptr.rs",
+      "bytes": 71272,
+      "sha256": "eca76e67328cd86b6dd2eba35b5f4b3a83a6c7751c8c295852cf83c468e4205a"
+    },
+    {
+      "path": "upstream/zerocopy/src/pointer/transmute.rs",
+      "bytes": 21398,
+      "sha256": "98c0839a2b9a8ff264f540578dd39bf21c1d07d5666b6d2d501ee6c9c80a69bf"
+    },
+    {
+      "path": "upstream/zerocopy/src/ref.rs",
+      "bytes": 73419,
+      "sha256": "9a9cbe5838d223418e3a43a04982cf70f3992843f6331a2a218bfb946323c7aa"
+    },
+    {
+      "path": "upstream/zerocopy/src/split_at.rs",
+      "bytes": 53982,
+      "sha256": "9b76ed5025c84b57fcd5530b53abd6551a5eb19d017555fe2eb6cbd431048c61"
+    },
+    {
+      "path": "upstream/zerocopy/src/util/macro_util.rs",
+      "bytes": 58040,
+      "sha256": "eca22752ac26166fb92b20a69f44457e88625a9a665a3b054cdc46ec08131591"
+    },
+    {
+      "path": "upstream/zerocopy/src/util/macros.rs",
+      "bytes": 41126,
+      "sha256": "5048805fd420822092a9768bf2c12b57849d629792356d8849ca5493f75f078c"
+    },
+    {
+      "path": "upstream/zerocopy/src/util/mod.rs",
+      "bytes": 35311,
+      "sha256": "6b54e813afc498e4555e1d67a8deffe08f0d4b8d63dee064397362464497c509"
+    },
+    {
+      "path": "upstream/zerocopy/src/wrappers.rs",
+      "bytes": 46369,
+      "sha256": "24c52211740e0baefdb9363880b2985a26eac5751a749f76f72291461422e3f0"
+    }
+  ],
+  "source_correction": "Exact E0716 named wire binding; all other27input bytes unchanged"
+}

@@ -1,0 +1,38 @@
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Suggested packages:
+  binutils-doc gcc-12-locales cpp-12-doc cpp-doc
+  gcc-12-multilib-x86-64-linux-gnu gcc-12-doc manpages-dev flex bison
+  gdb-x86-64-linux-gnu gcc-doc
+The following NEW packages will be installed:
+  binutils-x86-64-linux-gnu cpp-12-x86-64-linux-gnu cpp-x86-64-linux-gnu
+  gcc-12-x86-64-linux-gnu gcc-12-x86-64-linux-gnu-base gcc-x86-64-linux-gnu
+  libasan8-amd64-cross libatomic1-amd64-cross libc6-amd64-cross
+  libc6-dev-amd64-cross libgcc-12-dev-amd64-cross libgcc-s1-amd64-cross
+  libgomp1-amd64-cross libitm1-amd64-cross liblsan0-amd64-cross
+  libquadmath0-amd64-cross libstdc++6-amd64-cross libtsan2-amd64-cross
+  libubsan1-amd64-cross linux-libc-dev-amd64-cross
+0 upgraded, 20 newly installed, 0 to remove and 130 not upgraded.
+Need to get 43.4 MB of archives.
+After this operation, 161 MB of additional disk space will be used.
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/gcc-12-x86-64-linux-gnu-base_12.2.0-14cross1_arm64.deb' gcc-12-x86-64-linux-gnu-base_12.2.0-14cross1_arm64.deb 37696 MD5Sum:f70b1ad2456d5fc793c61b2b0365cc12
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/cpp-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb' cpp-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb 8764116 MD5Sum:d86a88b6d8d0cee192c1faefb722149f
+'http://deb.debian.org/debian/pool/main/g/gcc-defaults/cpp-x86-64-linux-gnu_12.2.0-3_arm64.deb' cpp-x86-64-linux-gnu_4%3a12.2.0-3_arm64.deb 3980 MD5Sum:8e44bcee4fbe2edb72f523bd15db5e64
+'http://deb.debian.org/debian/pool/main/b/binutils/binutils-x86-64-linux-gnu_2.40-2_arm64.deb' binutils-x86-64-linux-gnu_2.40-2_arm64.deb 2368284 MD5Sum:8c6f2f719f96744ba343c2ed2d5e27f1
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libgcc-s1-amd64-cross_12.2.0-14cross1_all.deb' libgcc-s1-amd64-cross_12.2.0-14cross1_all.deb 49860 MD5Sum:23db57991c8c9ed8641441c77cbf72cb
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libgomp1-amd64-cross_12.2.0-14cross1_all.deb' libgomp1-amd64-cross_12.2.0-14cross1_all.deb 113568 MD5Sum:a133a0de786bd6919f180b6e1e9fd548
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libitm1-amd64-cross_12.2.0-14cross1_all.deb' libitm1-amd64-cross_12.2.0-14cross1_all.deb 25524 MD5Sum:faa983ae9e13486f6f65b2d4f9e39cd5
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libatomic1-amd64-cross_12.2.0-14cross1_all.deb' libatomic1-amd64-cross_12.2.0-14cross1_all.deb 9084 MD5Sum:fb5616c9c4402dabc4d8fbb4130e0900
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libasan8-amd64-cross_12.2.0-14cross1_all.deb' libasan8-amd64-cross_12.2.0-14cross1_all.deb 2193952 MD5Sum:f1dd28f8f93f80a4bc267980bf5893f4
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/liblsan0-amd64-cross_12.2.0-14cross1_all.deb' liblsan0-amd64-cross_12.2.0-14cross1_all.deb 968484 MD5Sum:de6baa1048d30a05c90e0d92ff75a0b4
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libtsan2-amd64-cross_12.2.0-14cross1_all.deb' libtsan2-amd64-cross_12.2.0-14cross1_all.deb 2196868 MD5Sum:8fb7b5eb5ab2c5c35dfda40499edf159
+'http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/libc6-amd64-cross_2.36-8cross1_all.deb' libc6-amd64-cross_2.36-8cross1_all.deb 1471600 MD5Sum:2c56aed68b932080e545a3054b97b2c8
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libstdc%2b%2b6-amd64-cross_12.2.0-14cross1_all.deb' libstdc++6-amd64-cross_12.2.0-14cross1_all.deb 570416 MD5Sum:57d9b8b3fd6e83f688645e059b457abd
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libubsan1-amd64-cross_12.2.0-14cross1_all.deb' libubsan1-amd64-cross_12.2.0-14cross1_all.deb 882456 MD5Sum:c512cab4040bddf930f7a918bb5b3df5
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libquadmath0-amd64-cross_12.2.0-14cross1_all.deb' libquadmath0-amd64-cross_12.2.0-14cross1_all.deb 144384 MD5Sum:08f66b81b132d9016d85c40783b8eefd
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/libgcc-12-dev-amd64-cross_12.2.0-14cross1_all.deb' libgcc-12-dev-amd64-cross_12.2.0-14cross1_all.deb 2436652 MD5Sum:31f0f665b63003765c0a9a22beb1e089
+'http://deb.debian.org/debian/pool/main/g/gcc-12-cross/gcc-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb' gcc-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb 17390664 MD5Sum:73c38665a3f02c473a1b2757365709d4
+'http://deb.debian.org/debian/pool/main/g/gcc-defaults/gcc-x86-64-linux-gnu_12.2.0-3_arm64.deb' gcc-x86-64-linux-gnu_4%3a12.2.0-3_arm64.deb 1472 MD5Sum:b9adbbdc1270bbf94226656add37ee43
+'http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/linux-libc-dev-amd64-cross_6.1.4-1cross1_all.deb' linux-libc-dev-amd64-cross_6.1.4-1cross1_all.deb 1838924 MD5Sum:5d4aef784ae08267621ed78872aedaa8
+'http://deb.debian.org/debian/pool/main/c/cross-toolchain-base/libc6-dev-amd64-cross_2.36-8cross1_all.deb' libc6-dev-amd64-cross_2.36-8cross1_all.deb 1893992 MD5Sum:b12e03f9517268d6ddb0d0c9536415f8

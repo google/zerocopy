@@ -1,0 +1,103 @@
+{
+  "role": "Exact selected agenda criteria snapshot for scope interpretation; statuses are that input snapshot, not a report decision",
+  "source_plan_sha256": "9f54a2f50b334e03f2b7860a4b6ab311019183d872cad473b48dc002d5031841",
+  "milestones": [
+    {
+      "id": "E29",
+      "kind": "proof",
+      "title": "Connect selected Kraken instructions to a reference ISA",
+      "acceptance": "Prove the required universal instruction-state relation, including flags, access/fault outcomes and widths; finite native agreement does not meet this proof goal.",
+      "source_questions": [
+        "AS01",
+        "AS04",
+        "AS18",
+        "AS19"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E30",
+      "kind": "proof",
+      "title": "Prove complete access production and permissions",
+      "acceptance": "Connect every actual memory operation to full trace/permission spans and frames; repair or reject vector-width mismatches and relate modeled authority to the chosen Rust/page resources.",
+      "source_questions": [
+        "AS05",
+        "AS07",
+        "AS09",
+        "AS24"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E34",
+      "kind": "proof",
+      "title": "Prove inline operand/options/continuation contracts",
+      "acceptance": "Cover universal legal register allocations and overlap, subregisters, implicit state, effects, stack, flags, labels, nonreturn, duplication/motion and unwind restrictions for the supported domain.",
+      "source_questions": [
+        "AS08",
+        "AS09",
+        "AS10",
+        "AS12"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E35",
+      "kind": "proof",
+      "title": "Construct the actual MiniRust/machine ABI-resource relation",
+      "acceptance": "Relate values, live allocations, provenance, initialization, borrows and stack/return resources at entry, every execution prefix and each permitted exit, including pointer returns.",
+      "source_questions": [
+        "MR23",
+        "AS06",
+        "AS07",
+        "AS11",
+        "AS12",
+        "AS13",
+        "AS15"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E36",
+      "kind": "proof",
+      "title": "Prove behavioral/contextual Rust-assembly replacement",
+      "acceptance": "Establish the declared refinement/equivalence directions and observations for pure Rust versus assembly, including overflow, safety, failure, divergence and permitted contexts/callbacks.",
+      "source_questions": [
+        "MR23",
+        "AS10",
+        "AS13",
+        "AS14",
+        "AS15"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E37",
+      "kind": "proof",
+      "title": "Bind final deployed bytes, relocations and dispatch paths",
+      "acceptance": "Verify the adopted decoder/loader or explicit checked boundary, relocations, symbol ranges and selected dispatch branches; prove fixed-fragment and required host/loop/escape composition with stale/changed-code rejection.",
+      "source_questions": [
+        "AS03",
+        "AS16",
+        "AS17",
+        "AS24"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "E46",
+      "kind": "experiment",
+      "title": "Extend the complete shared pilot corpus",
+      "acceptance": "Perform multiply/carry/byte-swap/load/store/copy/pointer-return/inline-label/C-ABI/helper and justified SIMD cases on both architectures, with real zerocopy operations and negative controls.",
+      "source_questions": [
+        "MR23",
+        "MR24",
+        "AS04",
+        "AS11",
+        "AS14",
+        "AS28"
+      ],
+      "status": "open"
+    }
+  ]
+}

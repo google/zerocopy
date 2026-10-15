@@ -1,0 +1,1651 @@
+
+build/aarch64/O3/pilot.o:     file format elf64-littleaarch64
+
+
+Disassembly of section .text:
+
+0000000000000000 <pilot_mul>:
+   0:	9b017c03 	mul	x3, x0, x1
+   4:	9bc17c04 	umulh	x4, x0, x1
+   8:	a9001043 	stp	x3, x4, [x2]
+   c:	d65f03c0 	ret
+
+0000000000000010 <pilot_add128>:
+  10:	a9401003 	ldp	x3, x4, [x0]
+  14:	a9401825 	ldp	x5, x6, [x1]
+  18:	ab050063 	adds	x3, x3, x5
+  1c:	ba060084 	adcs	x4, x4, x6
+  20:	9a9f37e0 	cset	x0, cs	// cs = hs, nlast
+  24:	a9001043 	stp	x3, x4, [x2]
+  28:	d65f03c0 	ret
+
+000000000000002c <pilot_bswap>:
+  2c:	dac00c00 	rev	x0, x0
+  30:	d65f03c0 	ret
+
+0000000000000034 <pilot_load>:
+  34:	f9400000 	ldr	x0, [x0]
+  38:	d65f03c0 	ret
+
+000000000000003c <pilot_store>:
+  3c:	f9000001 	str	x1, [x0]
+  40:	d65f03c0 	ret
+
+0000000000000044 <pilot_copy16>:
+  44:	a9400c22 	ldp	x2, x3, [x1]
+  48:	a9000c02 	stp	x2, x3, [x0]
+  4c:	d65f03c0 	ret
+
+0000000000000050 <pilot_ptr>:
+  50:	8b010000 	add	x0, x0, x1
+  54:	d65f03c0 	ret
+
+0000000000000058 <pilot_call_helper>:
+  58:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+  5c:	910003fd 	mov	x29, sp
+  60:	94000000 	bl	0 <pilot_mul>
+			60: R_AARCH64_CALL26	pilot_helper
+  64:	91000400 	add	x0, x0, #0x1
+  68:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  6c:	d65f03c0 	ret
+
+0000000000000070 <pilot_simd_copy16>:
+  70:	3dc00020 	ldr	q0, [x1]
+  74:	3d800000 	str	q0, [x0]
+  78:	d65f03c0 	ret
+
+000000000000007c <pilot_simd_add16>:
+  7c:	3dc00020 	ldr	q0, [x1]
+  80:	3dc00041 	ldr	q1, [x2]
+  84:	4e218400 	add	v0.16b, v0.16b, v1.16b
+  88:	3d800000 	str	q0, [x0]
+  8c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN3std2rt10lang_start17h6cd21e994dea3d23E:
+
+0000000000000000 <std::rt::lang_start>:
+   0:	d10083ff 	sub	sp, sp, #0x20
+   4:	2a0303e4 	mov	w4, w3
+   8:	aa0203e3 	mov	x3, x2
+   c:	aa0103e2 	mov	x2, x1
+  10:	f90007e0 	str	x0, [sp, #8]
+  14:	90000001 	adrp	x1, 0 <std::rt::lang_start>
+			14: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lvtable.0
+  18:	91000021 	add	x1, x1, #0x0
+			18: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lvtable.0
+  1c:	910023e0 	add	x0, sp, #0x8
+  20:	a9017bfd 	stp	x29, x30, [sp, #16]
+  24:	910043fd 	add	x29, sp, #0x10
+  28:	94000000 	bl	0 <std::rt::lang_start_internal>
+			28: R_AARCH64_CALL26	std::rt::lang_start_internal
+  2c:	a9417bfd 	ldp	x29, x30, [sp, #16]
+  30:	910083ff 	add	sp, sp, #0x20
+  34:	d65f03c0 	ret
+
+Disassembly of section .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17h7af5a1293aa7ffb1E:
+
+0000000000000000 <std::rt::lang_start::{{closure}}>:
+   0:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   4:	f9400000 	ldr	x0, [x0]
+   8:	910003fd 	mov	x29, sp
+   c:	94000000 	bl	0 <std::rt::lang_start::{{closure}}>
+			c: R_AARCH64_CALL26	.text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17h7264f29b7911c693E
+  10:	2a1f03e0 	mov	w0, wzr
+  14:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17h7264f29b7911c693E:
+
+0000000000000000 <std::sys::backtrace::__rust_begin_short_backtrace>:
+   0:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   4:	910003fd 	mov	x29, sp
+   8:	d63f0000 	blr	x0
+   c:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E:
+
+0000000000000000 <<&T as core::fmt::Display>::fmt>:
+   0:	a9402408 	ldp	x8, x9, [x0]
+   4:	aa0103e2 	mov	x2, x1
+   8:	aa0803e0 	mov	x0, x8
+   c:	aa0903e1 	mov	x1, x9
+  10:	14000000 	b	0 <<str as core::fmt::Display>::fmt>
+			10: R_AARCH64_JUMP26	<str as core::fmt::Display>::fmt
+
+Disassembly of section .text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17hacfe263697969f6bE:
+
+0000000000000000 <core::ops::function::FnOnce::call_once{{vtable.shim}}>:
+   0:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   4:	f9400000 	ldr	x0, [x0]
+   8:	910003fd 	mov	x29, sp
+   c:	94000000 	bl	0 <core::ops::function::FnOnce::call_once{{vtable.shim}}>
+			c: R_AARCH64_CALL26	.text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17h7264f29b7911c693E
+  10:	2a1f03e0 	mov	w0, wzr
+  14:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E:
+
+0000000000000000 <<&mut T as core::fmt::Display>::fmt>:
+   0:	f9400000 	ldr	x0, [x0]
+   4:	14000000 	b	0 <core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt>
+			4: R_AARCH64_JUMP26	core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt
+
+Disassembly of section .text.pilot_helper:
+
+0000000000000000 <pilot_helper>:
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	a9014ff4 	stp	x20, x19, [sp, #16]
+   8:	aa0103f3 	mov	x19, x1
+   c:	aa0003f4 	mov	x20, x0
+  10:	90000001 	adrp	x1, 0 <pilot_helper>
+			10: R_AARCH64_ADR_PREL_PG_HI21	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+  14:	91000021 	add	x1, x1, #0x0
+			14: R_AARCH64_ADD_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+  18:	52800020 	mov	w0, #0x1                   	// #1
+  1c:	910003fd 	mov	x29, sp
+  20:	94000000 	bl	0 <__aarch64_ldadd8_relax>
+			20: R_AARCH64_CALL26	__aarch64_ldadd8_relax
+  24:	d29950e8 	mov	x8, #0xca87                	// #51847
+  28:	f2b0bd68 	movk	x8, #0x85eb, lsl #16
+  2c:	f2cf3628 	movk	x8, #0x79b1, lsl #32
+  30:	f2f3c6e8 	movk	x8, #0x9e37, lsl #48
+  34:	9b087e68 	mul	x8, x19, x8
+  38:	cad4cd00 	eor	x0, x8, x20, ror #51
+  3c:	a9414ff4 	ldp	x20, x19, [sp, #16]
+  40:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  44:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E:
+
+0000000000000000 <extended_pilot::rust_mul>:
+   0:	9b007c28 	mul	x8, x1, x0
+   4:	9bc07c21 	umulh	x1, x1, x0
+   8:	aa0803e0 	mov	x0, x8
+   c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E:
+
+0000000000000000 <extended_pilot::rust_add128>:
+   0:	ab030028 	adds	x8, x1, x3
+   4:	ba040049 	adcs	x9, x2, x4
+   8:	a9002408 	stp	x8, x9, [x0]
+   c:	1a9f37e8 	cset	w8, cs	// cs = hs, nlast
+  10:	f9000808 	str	x8, [x0, #16]
+  14:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE:
+
+0000000000000000 <extended_pilot::rust_carry>:
+   0:	ab000028 	adds	x8, x1, x0
+   4:	1a9f37e9 	cset	w9, cs	// cs = hs, nlast
+   8:	ab020100 	adds	x0, x8, x2
+   c:	9a893521 	cinc	x1, x9, cs	// cs = hs, nlast
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E:
+
+0000000000000000 <extended_pilot::rust_swap>:
+   0:	dac00c00 	rev	x0, x0
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E:
+
+0000000000000000 <extended_pilot::rust_store>:
+   0:	f9000001 	str	x1, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E:
+
+0000000000000000 <extended_pilot::rust_copy16>:
+   0:	3dc00000 	ldr	q0, [x0]
+   4:	3d800020 	str	q0, [x1]
+   8:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E:
+
+0000000000000000 <extended_pilot::rust_ptr>:
+   0:	8b010000 	add	x0, x0, x1
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E:
+
+0000000000000000 <extended_pilot::rust_label>:
+   0:	52800528 	mov	w8, #0x29                  	// #41
+   4:	f100001f 	cmp	x0, #0x0
+   8:	52800229 	mov	w9, #0x11                  	// #17
+   c:	9a880120 	csel	x0, x9, x8, eq	// eq = none
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE:
+
+0000000000000000 <extended_pilot::rust_add16>:
+   0:	3dc00020 	ldr	q0, [x1]
+   4:	3dc00041 	ldr	q1, [x2]
+   8:	4e208420 	add	v0.16b, v1.16b, v0.16b
+   c:	3d800000 	str	q0, [x0]
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E:
+
+0000000000000000 <extended_pilot::rust_call_helper>:
+   0:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   4:	910003fd 	mov	x29, sp
+   8:	94000000 	bl	0 <extended_pilot::rust_call_helper>
+			8: R_AARCH64_CALL26	pilot_helper
+   c:	91000400 	add	x0, x0, #0x1
+  10:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  14:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE:
+
+0000000000000000 <extended_pilot::inline_carry>:
+   0:	f100045f 	cmp	x2, #0x1
+   4:	ba010000 	adcs	x0, x0, x1
+   8:	9a9f37e1 	cset	x1, cs	// cs = hs, nlast
+   c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE:
+
+0000000000000000 <extended_pilot::inline_label>:
+   0:	b4000060 	cbz	x0, c <extended_pilot::inline_label+0xc>
+   4:	52800520 	mov	w0, #0x29                  	// #41
+   8:	d65f03c0 	ret
+   c:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+  10:	910003fd 	mov	x29, sp
+  14:	52800220 	mov	w0, #0x11                  	// #17
+  18:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE:
+
+0000000000000000 <extended_pilot::inline_load>:
+   0:	f9400000 	ldr	x0, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E:
+
+0000000000000000 <extended_pilot::inline_store>:
+   0:	f9000001 	str	x1, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E:
+
+0000000000000000 <extended_pilot::zc_decode>:
+   0:	dac00c00 	rev	x0, x0
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E:
+
+0000000000000000 <extended_pilot::zc_encode>:
+   0:	dac00c08 	rev	x8, x0
+   4:	f9000028 	str	x8, [x1]
+   8:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E:
+
+0000000000000000 <extended_pilot::zc_copy16>:
+   0:	b9400008 	ldr	w8, [x0]
+   4:	b8403009 	ldur	w9, [x0, #3]
+   8:	f840700a 	ldur	x10, [x0, #7]
+   c:	b9000028 	str	w8, [x1]
+  10:	39403c08 	ldrb	w8, [x0, #15]
+  14:	b8003029 	stur	w9, [x1, #3]
+  18:	f800702a 	stur	x10, [x1, #7]
+  1c:	39003c28 	strb	w8, [x1, #15]
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot4main17hca72231bfee5693fE:
+
+0000000000000000 <extended_pilot::main>:
+       0:	a9ba7bfd 	stp	x29, x30, [sp, #-96]!
+       4:	d14017e9 	sub	x9, sp, #0x5, lsl #12
+       8:	a9016ffc 	stp	x28, x27, [sp, #16]
+       c:	910003fd 	mov	x29, sp
+      10:	a90267fa 	stp	x26, x25, [sp, #32]
+      14:	a9035ff8 	stp	x24, x23, [sp, #48]
+      18:	a90457f6 	stp	x22, x21, [sp, #64]
+      1c:	a9054ff4 	stp	x20, x19, [sp, #80]
+      20:	d14007ff 	sub	sp, sp, #0x1, lsl #12
+      24:	eb2963ff 	cmp	sp, x9
+      28:	f90003ff 	str	xzr, [sp]
+      2c:	54ffffa1 	b.ne	20 <extended_pilot::main+0x20>  // b.any
+      30:	d13143ff 	sub	sp, sp, #0xc50
+      34:	f90003ff 	str	xzr, [sp]
+      38:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			38: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst16
+      3c:	910183f3 	add	x19, sp, #0x60
+      40:	52800029 	mov	w9, #0x1                   	// #1
+      44:	3dc00100 	ldr	q0, [x8]
+			44: R_AARCH64_LDST128_ABS_LO12_NC	.rodata.cst16
+      48:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			48: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.0
+      4c:	91000021 	add	x1, x1, #0x0
+			4c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.0
+      50:	91004260 	add	x0, x19, #0x10
+      54:	52848402 	mov	w2, #0x2420                	// #9248
+      58:	f9001fe9 	str	x9, [sp, #56]
+      5c:	3d8003e0 	str	q0, [sp]
+      60:	3d801be0 	str	q0, [sp, #96]
+      64:	94000000 	bl	0 <memcpy>
+			64: R_AARCH64_CALL26	memcpy
+      68:	d28ef11a 	mov	x26, #0x7788                	// #30600
+      6c:	914017f5 	add	x21, sp, #0x5, lsl #12
+      70:	928483f7 	mov	x23, #0xffffffffffffdbe0    	// #-9248
+      74:	f2aaacda 	movk	x26, #0x5566, lsl #16
+      78:	912d02b5 	add	x21, x21, #0xb40
+      7c:	9100e3f9 	add	x25, sp, #0x38
+      80:	f2c6689a 	movk	x26, #0x3344, lsl #32
+      84:	5280011b 	mov	w27, #0x8                   	// #8
+      88:	f2e2245a 	movk	x26, #0x1122, lsl #48
+      8c:	8b170268 	add	x8, x19, x23
+      90:	d2844238 	mov	x24, #0x2211                	// #8721
+      94:	910022a2 	add	x2, x21, #0x8
+      98:	f9521913 	ldr	x19, [x8, #9264]
+      9c:	f9521d14 	ldr	x20, [x8, #9272]
+      a0:	f2a88678 	movk	x24, #0x4433, lsl #16
+      a4:	f2cccab8 	movk	x24, #0x6655, lsl #32
+      a8:	f9522116 	ldr	x22, [x8, #9280]
+      ac:	f952251c 	ldr	x28, [x8, #9288]
+      b0:	f2f10ef8 	movk	x24, #0x8877, lsl #48
+      b4:	aa1303e0 	mov	x0, x19
+      b8:	aa1403e1 	mov	x1, x20
+      bc:	a900febf 	stp	xzr, xzr, [x21, #8]
+      c0:	f92da3fa 	str	x26, [sp, #23360]
+      c4:	f92daff8 	str	x24, [sp, #23384]
+      c8:	94000000 	bl	0 <extended_pilot::main>
+			c8: R_AARCH64_CALL26	pilot_mul
+      cc:	f96da3e8 	ldr	x8, [sp, #23360]
+      d0:	f96da7e9 	ldr	x9, [sp, #23368]
+      d4:	f96dabea 	ldr	x10, [sp, #23376]
+      d8:	a9325bba 	stp	x26, x22, [x29, #-224]
+      dc:	eb1a011f 	cmp	x8, x26
+      e0:	f96dafe8 	ldr	x8, [sp, #23384]
+      e4:	a93363bc 	stp	x28, x24, [x29, #-208]
+      e8:	fa560120 	ccmp	x9, x22, #0x0, eq	// eq = none
+      ec:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			ec: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38
+      f0:	91000129 	add	x9, x9, #0x0
+			f0: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38
+      f4:	fa5c0140 	ccmp	x10, x28, #0x0, eq	// eq = none
+      f8:	f92d8be9 	str	x9, [sp, #23312]
+      fc:	fa580100 	ccmp	x8, x24, #0x0, eq	// eq = none
+     100:	528000e8 	mov	w8, #0x7                   	// #7
+     104:	f92d73f9 	str	x25, [sp, #23264]
+     108:	f92d8fe8 	str	x8, [sp, #23320]
+     10c:	54007f01 	b.ne	10ec <extended_pilot::main+0x10ec>  // b.any
+     110:	f9401fe8 	ldr	x8, [sp, #56]
+     114:	b1000518 	adds	x24, x8, #0x1
+     118:	540072a2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     11c:	aa1303e0 	mov	x0, x19
+     120:	aa1403e1 	mov	x1, x20
+     124:	f9001ff8 	str	x24, [sp, #56]
+     128:	94000000 	bl	0 <extended_pilot::main>
+			128: R_AARCH64_CALL26	.text._ZN14extended_pilot8rust_mul17h23452971b31aa446E
+     12c:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			12c: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst8+0x10
+     130:	91000108 	add	x8, x8, #0x0
+			130: R_AARCH64_ADD_ABS_LO12_NC	.rodata.cst8+0x10
+     134:	eb16001f 	cmp	x0, x22
+     138:	a9326fa8 	stp	x8, x27, [x29, #-224]
+     13c:	f92d8bf9 	str	x25, [sp, #23312]
+     140:	54007f21 	b.ne	1124 <extended_pilot::main+0x1124>  // b.any
+     144:	eb1c003f 	cmp	x1, x28
+     148:	54007ee1 	b.ne	1124 <extended_pilot::main+0x1124>  // b.any
+     14c:	b1000708 	adds	x8, x24, #0x1
+     150:	910183f3 	add	x19, sp, #0x60
+     154:	540070c2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     158:	910082f7 	add	x23, x23, #0x20
+     15c:	f9001fe8 	str	x8, [sp, #56]
+     160:	b5fff977 	cbnz	x23, 8c <extended_pilot::main+0x8c>
+     164:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			164: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst16+0x10
+     168:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			168: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.1
+     16c:	91000021 	add	x1, x1, #0x0
+			16c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.1
+     170:	3dc00100 	ldr	q0, [x8]
+			170: R_AARCH64_LDST128_ABS_LO12_NC	.rodata.cst16+0x10
+     174:	910183e8 	add	x8, sp, #0x60
+     178:	5283f002 	mov	w2, #0x1f80                	// #8064
+     17c:	91004100 	add	x0, x8, #0x10
+     180:	3d801be0 	str	q0, [sp, #96]
+     184:	94000000 	bl	0 <memcpy>
+			184: R_AARCH64_CALL26	memcpy
+     188:	d10383b4 	sub	x20, x29, #0xe0
+     18c:	9283eff5 	mov	x21, #0xffffffffffffe080    	// #-8064
+     190:	9100e3f3 	add	x19, sp, #0x38
+     194:	90000016 	adrp	x22, 0 <extended_pilot::main>
+			194: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_c168e215480fb2698effa558f0e4841f
+     198:	910002d6 	add	x22, x22, #0x0
+			198: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_c168e215480fb2698effa558f0e4841f
+     19c:	52800179 	mov	w25, #0xb                   	// #11
+     1a0:	910183e8 	add	x8, sp, #0x60
+     1a4:	d28ef11c 	mov	x28, #0x7788                	// #30600
+     1a8:	d2844237 	mov	x23, #0x2211                	// #8721
+     1ac:	8b150108 	add	x8, x8, x21
+     1b0:	f2aaacdc 	movk	x28, #0x5566, lsl #16
+     1b4:	f2a88677 	movk	x23, #0x4433, lsl #16
+     1b8:	f94fcd0a 	ldr	x10, [x8, #8088]
+     1bc:	f94fd50c 	ldr	x12, [x8, #8104]
+     1c0:	f94fc909 	ldr	x9, [x8, #8080]
+     1c4:	f94fd10b 	ldr	x11, [x8, #8096]
+     1c8:	f94fd91b 	ldr	x27, [x8, #8112]
+     1cc:	f94fdd1a 	ldr	x26, [x8, #8120]
+     1d0:	eb0c015f 	cmp	x10, x12
+     1d4:	f94fe118 	ldr	x24, [x8, #8128]
+     1d8:	914017e8 	add	x8, sp, #0x5, lsl #12
+     1dc:	a93a2ba9 	stp	x9, x10, [x29, #-96]
+     1e0:	fa4b0120 	ccmp	x9, x11, #0x0, eq	// eq = none
+     1e4:	f2c6689c 	movk	x28, #0x3344, lsl #32
+     1e8:	912b8108 	add	x8, x8, #0xae0
+     1ec:	d10183a9 	sub	x9, x29, #0x60
+     1f0:	f2cccab7 	movk	x23, #0x6655, lsl #32
+     1f4:	f2e2245c 	movk	x28, #0x1122, lsl #48
+     1f8:	9a880121 	csel	x1, x9, x8, eq	// eq = none
+     1fc:	f2f10ef7 	movk	x23, #0x8877, lsl #48
+     200:	d10183a0 	sub	x0, x29, #0x60
+     204:	91002282 	add	x2, x20, #0x8
+     208:	f92d73eb 	str	x11, [sp, #23264]
+     20c:	f92d77ec 	str	x12, [sp, #23272]
+     210:	a900fe9f 	stp	xzr, xzr, [x20, #8]
+     214:	f81203bc 	stur	x28, [x29, #-224]
+     218:	f81383b7 	stur	x23, [x29, #-200]
+     21c:	94000000 	bl	10 <extended_pilot::main+0x10>
+			21c: R_AARCH64_CALL26	pilot_add128
+     220:	a97227a8 	ldp	x8, x9, [x29, #-224]
+     224:	eb1c011f 	cmp	x8, x28
+     228:	a9732ba8 	ldp	x8, x10, [x29, #-208]
+     22c:	fa5b0120 	ccmp	x9, x27, #0x0, eq	// eq = none
+     230:	fa5a0100 	ccmp	x8, x26, #0x0, eq	// eq = none
+     234:	fa570140 	ccmp	x10, x23, #0x0, eq	// eq = none
+     238:	54007301 	b.ne	1098 <extended_pilot::main+0x1098>  // b.any
+     23c:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			23c: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6
+     240:	91000108 	add	x8, x8, #0x0
+			240: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6
+     244:	eb18001f 	cmp	x0, x24
+     248:	f92da3e8 	str	x8, [sp, #23360]
+     24c:	52800148 	mov	w8, #0xa                   	// #10
+     250:	f92da7e8 	str	x8, [sp, #23368]
+     254:	f92d8bf3 	str	x19, [sp, #23312]
+     258:	540072e1 	b.ne	10b4 <extended_pilot::main+0x10b4>  // b.any
+     25c:	f9401ff7 	ldr	x23, [sp, #56]
+     260:	b10006fc 	adds	x28, x23, #0x1
+     264:	54006842 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     268:	a97a0ba1 	ldp	x1, x2, [x29, #-96]
+     26c:	914017e0 	add	x0, sp, #0x5, lsl #12
+     270:	f96d73e3 	ldr	x3, [sp, #23264]
+     274:	f96d77e4 	ldr	x4, [sp, #23272]
+     278:	912d0000 	add	x0, x0, #0xb40
+     27c:	f9001ffc 	str	x28, [sp, #56]
+     280:	94000000 	bl	0 <extended_pilot::main>
+			280: R_AARCH64_CALL26	.text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E
+     284:	f96da3e8 	ldr	x8, [sp, #23360]
+     288:	eb1b011f 	cmp	x8, x27
+     28c:	54006ee1 	b.ne	1068 <extended_pilot::main+0x1068>  // b.any
+     290:	f96da7e8 	ldr	x8, [sp, #23368]
+     294:	eb1a011f 	cmp	x8, x26
+     298:	54006e81 	b.ne	1068 <extended_pilot::main+0x1068>  // b.any
+     29c:	f96dabe8 	ldr	x8, [sp, #23376]
+     2a0:	f92d8bf6 	str	x22, [sp, #23312]
+     2a4:	f92d8ff9 	str	x25, [sp, #23320]
+     2a8:	eb18011f 	cmp	x8, x24
+     2ac:	f81883b3 	stur	x19, [x29, #-120]
+     2b0:	54006e61 	b.ne	107c <extended_pilot::main+0x107c>  // b.any
+     2b4:	b1000788 	adds	x8, x28, #0x1
+     2b8:	540065a2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     2bc:	b100e2b5 	adds	x21, x21, #0x38
+     2c0:	f9001fe8 	str	x8, [sp, #56]
+     2c4:	54fff6e1 	b.ne	1a0 <extended_pilot::main+0x1a0>  // b.any
+     2c8:	910183f3 	add	x19, sp, #0x60
+     2cc:	52804848 	mov	w8, #0x242                 	// #578
+     2d0:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			2d0: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.2
+     2d4:	91000021 	add	x1, x1, #0x0
+			2d4: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.2
+     2d8:	91004260 	add	x0, x19, #0x10
+     2dc:	528b4a02 	mov	w2, #0x5a50                	// #23120
+     2e0:	f90037e8 	str	x8, [sp, #104]
+     2e4:	94000000 	bl	0 <memcpy>
+			2e4: R_AARCH64_CALL26	memcpy
+     2e8:	b200f3e8 	mov	x8, #0x5555555555555555    	// #6148914691236517205
+     2ec:	b201f3ea 	mov	x10, #0xaaaaaaaaaaaaaaaa    	// #-6148914691236517206
+     2f0:	d280002b 	mov	x11, #0x1                   	// #1
+     2f4:	9b087ee8 	mul	x8, x23, x8
+     2f8:	f295556a 	movk	x10, #0xaaab
+     2fc:	b200f3e9 	mov	x9, #0x5555555555555555    	// #6148914691236517205
+     300:	f28aaae9 	movk	x9, #0x5557
+     304:	aa1f03f9 	mov	x25, xzr
+     308:	91000efa 	add	x26, x23, #0x3
+     30c:	9b0a2eeb 	madd	x11, x23, x10, x11
+     310:	9100627b 	add	x27, x19, #0x18
+     314:	9100e3f8 	add	x24, sp, #0x38
+     318:	cb08014a 	sub	x10, x10, x8
+     31c:	cb080128 	sub	x8, x9, x8
+     320:	9100055c 	add	x28, x10, #0x1
+     324:	a901afe8 	stp	x8, x11, [sp, #24]
+     328:	a9404f75 	ldp	x21, x19, [x27]
+     32c:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			32c: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_149d364d8349edfe71770e753c396aa0
+     330:	91000109 	add	x9, x8, #0x0
+			330: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_149d364d8349edfe71770e753c396aa0
+     334:	a9415b77 	ldp	x23, x22, [x27, #16]
+     338:	f85f8374 	ldur	x20, [x27, #-8]
+     33c:	52800188 	mov	w8, #0xc                   	// #12
+     340:	f92da3f8 	str	x24, [sp, #23360]
+     344:	f1000a7f 	cmp	x19, #0x2
+     348:	a93223a9 	stp	x9, x8, [x29, #-224]
+     34c:	54007202 	b.cs	118c <extended_pilot::main+0x118c>  // b.hs, b.nlast
+     350:	f94013e8 	ldr	x8, [sp, #32]
+     354:	eb19011f 	cmp	x8, x25
+     358:	540060a0 	b.eq	f6c <extended_pilot::main+0xf6c>  // b.none
+     35c:	aa1403e0 	mov	x0, x20
+     360:	aa1503e1 	mov	x1, x21
+     364:	aa1303e2 	mov	x2, x19
+     368:	f9001ffa 	str	x26, [sp, #56]
+     36c:	94000000 	bl	0 <extended_pilot::main>
+			36c: R_AARCH64_CALL26	.text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE
+     370:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			370: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_b3cea492701bfda0e383697982d6e842
+     374:	91000109 	add	x9, x8, #0x0
+			374: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_b3cea492701bfda0e383697982d6e842
+     378:	eb17001f 	cmp	x0, x23
+     37c:	52800188 	mov	w8, #0xc                   	// #12
+     380:	f92da3f8 	str	x24, [sp, #23360]
+     384:	a93223a9 	stp	x9, x8, [x29, #-224]
+     388:	54007021 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     38c:	eb16003f 	cmp	x1, x22
+     390:	54006fe1 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     394:	eb19039f 	cmp	x28, x25
+     398:	54005ea0 	b.eq	f6c <extended_pilot::main+0xf6c>  // b.none
+     39c:	91000748 	add	x8, x26, #0x1
+     3a0:	aa1403e0 	mov	x0, x20
+     3a4:	aa1503e1 	mov	x1, x21
+     3a8:	aa1303e2 	mov	x2, x19
+     3ac:	f9001fe8 	str	x8, [sp, #56]
+     3b0:	94000000 	bl	0 <extended_pilot::main>
+			3b0: R_AARCH64_CALL26	.text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE
+     3b4:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			3b4: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92
+     3b8:	91000109 	add	x9, x8, #0x0
+			3b8: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92
+     3bc:	eb17001f 	cmp	x0, x23
+     3c0:	52800148 	mov	w8, #0xa                   	// #10
+     3c4:	f92da3f8 	str	x24, [sp, #23360]
+     3c8:	a93223a9 	stp	x9, x8, [x29, #-224]
+     3cc:	54006e01 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     3d0:	eb16003f 	cmp	x1, x22
+     3d4:	54006dc1 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     3d8:	f9400fe8 	ldr	x8, [sp, #24]
+     3dc:	eb19011f 	cmp	x8, x25
+     3e0:	54005c60 	b.eq	f6c <extended_pilot::main+0xf6c>  // b.none
+     3e4:	d1000739 	sub	x25, x25, #0x1
+     3e8:	91000b48 	add	x8, x26, #0x2
+     3ec:	9100a37b 	add	x27, x27, #0x28
+     3f0:	b1090b3f 	cmn	x25, #0x242
+     3f4:	91000f5a 	add	x26, x26, #0x3
+     3f8:	f9001fe8 	str	x8, [sp, #56]
+     3fc:	54fff961 	b.ne	328 <extended_pilot::main+0x328>  // b.any
+     400:	52800228 	mov	w8, #0x11                  	// #17
+     404:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			404: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.3
+     408:	91000021 	add	x1, x1, #0x0
+			408: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.3
+     40c:	f90037e8 	str	x8, [sp, #104]
+     410:	910183e8 	add	x8, sp, #0x60
+     414:	52802202 	mov	w2, #0x110                 	// #272
+     418:	91004100 	add	x0, x8, #0x10
+     41c:	94000000 	bl	0 <memcpy>
+			41c: R_AARCH64_CALL26	memcpy
+     420:	aa1f03f9 	mov	x25, xzr
+     424:	9100e3fc 	add	x28, sp, #0x38
+     428:	5280013a 	mov	w26, #0x9                   	// #9
+     42c:	528001bb 	mov	w27, #0xd                   	// #13
+     430:	90000016 	adrp	x22, 0 <extended_pilot::main>
+			430: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8
+     434:	910002d6 	add	x22, x22, #0x0
+			434: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8
+     438:	528002b5 	mov	w21, #0x15                  	// #21
+     43c:	910183e8 	add	x8, sp, #0x60
+     440:	8b190108 	add	x8, x8, x25
+     444:	a9415d13 	ldp	x19, x23, [x8, #16]
+     448:	aa1303e0 	mov	x0, x19
+     44c:	94000000 	bl	2c <extended_pilot::main+0x2c>
+			44c: R_AARCH64_CALL26	pilot_bswap
+     450:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			450: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst8+0x8
+     454:	91000109 	add	x9, x8, #0x0
+			454: R_AARCH64_ADD_ABS_LO12_NC	.rodata.cst8+0x8
+     458:	eb17001f 	cmp	x0, x23
+     45c:	52800108 	mov	w8, #0x8                   	// #8
+     460:	f92da3fc 	str	x28, [sp, #23360]
+     464:	a93223a9 	stp	x9, x8, [x29, #-224]
+     468:	54006921 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     46c:	f9401fe8 	ldr	x8, [sp, #56]
+     470:	b1000514 	adds	x20, x8, #0x1
+     474:	540057c2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     478:	aa1303e0 	mov	x0, x19
+     47c:	f9001ff4 	str	x20, [sp, #56]
+     480:	94000000 	bl	0 <extended_pilot::main>
+			480: R_AARCH64_CALL26	.text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E
+     484:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			484: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c
+     488:	91000108 	add	x8, x8, #0x0
+			488: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c
+     48c:	eb17001f 	cmp	x0, x23
+     490:	a9326ba8 	stp	x8, x26, [x29, #-224]
+     494:	f92da3fc 	str	x28, [sp, #23360]
+     498:	540067a1 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     49c:	b1000698 	adds	x24, x20, #0x1
+     4a0:	54005662 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     4a4:	914017e1 	add	x1, sp, #0x5, lsl #12
+     4a8:	aa1303e0 	mov	x0, x19
+     4ac:	f9001ff8 	str	x24, [sp, #56]
+     4b0:	912c4021 	add	x1, x1, #0xb10
+     4b4:	94000000 	bl	0 <extended_pilot::main>
+			4b4: R_AARCH64_CALL26	.text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E
+     4b8:	f96d8be8 	ldr	x8, [sp, #23312]
+     4bc:	dac00e74 	rev	x20, x19
+     4c0:	eb14011f 	cmp	x8, x20
+     4c4:	54005fe1 	b.ne	10c0 <extended_pilot::main+0x10c0>  // b.any
+     4c8:	aa1403e0 	mov	x0, x20
+     4cc:	94000000 	bl	0 <extended_pilot::main>
+			4cc: R_AARCH64_CALL26	.text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E
+     4d0:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			4d0: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de
+     4d4:	91000108 	add	x8, x8, #0x0
+			4d4: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de
+     4d8:	eb13001f 	cmp	x0, x19
+     4dc:	a9326fa8 	stp	x8, x27, [x29, #-224]
+     4e0:	f92da3fc 	str	x28, [sp, #23360]
+     4e4:	54006541 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     4e8:	b1000708 	adds	x8, x24, #0x1
+     4ec:	54005402 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     4f0:	eb17029f 	cmp	x20, x23
+     4f4:	f9001fe8 	str	x8, [sp, #56]
+     4f8:	a93257b6 	stp	x22, x21, [x29, #-224]
+     4fc:	f92da3fc 	str	x28, [sp, #23360]
+     500:	54006461 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     504:	b1000509 	adds	x9, x8, #0x1
+     508:	54005322 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     50c:	b1000528 	adds	x8, x9, #0x1
+     510:	f9001fe9 	str	x9, [sp, #56]
+     514:	540052c2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     518:	91004339 	add	x25, x25, #0x10
+     51c:	f9001fe8 	str	x8, [sp, #56]
+     520:	f104433f 	cmp	x25, #0x110
+     524:	54fff8c1 	b.ne	43c <extended_pilot::main+0x43c>  // b.any
+     528:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			528: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.4
+     52c:	91000108 	add	x8, x8, #0x0
+			52c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.4
+     530:	910183f6 	add	x22, sp, #0x60
+     534:	ad420500 	ldp	q0, q1, [x8, #64]
+     538:	914017fa 	add	x26, sp, #0x5, lsl #12
+     53c:	914017fb 	add	x27, sp, #0x5, lsl #12
+     540:	52800237 	mov	w23, #0x11                  	// #17
+     544:	b200f3e9 	mov	x9, #0x5555555555555555    	// #6148914691236517205
+     548:	912b235a 	add	x26, x26, #0xac8
+     54c:	912d037b 	add	x27, x27, #0xb40
+     550:	d10383b8 	sub	x24, x29, #0xe0
+     554:	3d802fe0 	str	q0, [sp, #176]
+     558:	ad430900 	ldp	q0, q2, [x8, #96]
+     55c:	9100e3fc 	add	x28, sp, #0x38
+     560:	52800219 	mov	w25, #0x10                  	// #16
+     564:	f90037f7 	str	x23, [sp, #104]
+     568:	f9007be9 	str	x9, [sp, #240]
+     56c:	ad0302c1 	stp	q1, q0, [x22, #96]
+     570:	ad400500 	ldp	q0, q1, [x8]
+     574:	3d8022c2 	str	q2, [x22, #128]
+     578:	ad0387e0 	stp	q0, q1, [sp, #112]
+     57c:	ad410102 	ldp	q2, q0, [x8, #32]
+     580:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			580: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst16+0x20
+     584:	ad0483e2 	stp	q2, q0, [sp, #144]
+     588:	3dc00100 	ldr	q0, [x8]
+			588: R_AARCH64_LDST128_ABS_LO12_NC	.rodata.cst16+0x20
+     58c:	3d800be0 	str	q0, [sp, #32]
+     590:	910183e8 	add	x8, sp, #0x60
+     594:	d28ef109 	mov	x9, #0x7788                	// #30600
+     598:	3dc00be0 	ldr	q0, [sp, #32]
+     59c:	f8796913 	ldr	x19, [x8, x25]
+     5a0:	d2844228 	mov	x8, #0x2211                	// #8721
+     5a4:	f2aaacc9 	movk	x9, #0x5566, lsl #16
+     5a8:	f2a88668 	movk	x8, #0x4433, lsl #16
+     5ac:	f2c66889 	movk	x9, #0x3344, lsl #32
+     5b0:	91002340 	add	x0, x26, #0x8
+     5b4:	f2cccaa8 	movk	x8, #0x6655, lsl #32
+     5b8:	f2e22449 	movk	x9, #0x1122, lsl #48
+     5bc:	f92d6bf3 	str	x19, [sp, #23248]
+     5c0:	f2f10ee8 	movk	x8, #0x8877, lsl #48
+     5c4:	f92d67e9 	str	x9, [sp, #23240]
+     5c8:	f92d6fe8 	str	x8, [sp, #23256]
+     5cc:	3d96bac0 	str	q0, [x22, #23264]
+     5d0:	f92dabe8 	str	x8, [sp, #23376]
+     5d4:	94000000 	bl	34 <extended_pilot::main+0x34>
+			5d4: R_AARCH64_CALL26	pilot_load
+     5d8:	aa0003f4 	mov	x20, x0
+     5dc:	91002340 	add	x0, x26, #0x8
+     5e0:	94000000 	bl	0 <extended_pilot::main>
+			5e0: R_AARCH64_CALL26	.text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE
+     5e4:	eb13029f 	cmp	x20, x19
+     5e8:	54005921 	b.ne	110c <extended_pilot::main+0x110c>  // b.any
+     5ec:	eb13001f 	cmp	x0, x19
+     5f0:	540058e1 	b.ne	110c <extended_pilot::main+0x110c>  // b.any
+     5f4:	f96d6be8 	ldr	x8, [sp, #23248]
+     5f8:	eb13011f 	cmp	x8, x19
+     5fc:	54005881 	b.ne	110c <extended_pilot::main+0x110c>  // b.any
+     600:	914017e8 	add	x8, sp, #0x5, lsl #12
+     604:	f96d67e9 	ldr	x9, [sp, #23240]
+     608:	f96d6bea 	ldr	x10, [sp, #23248]
+     60c:	91272508 	add	x8, x8, #0x9c9
+     610:	f92d8bfc 	str	x28, [sp, #23312]
+     614:	3ccff100 	ldur	q0, [x8, #255]
+     618:	3d96eec0 	str	q0, [x22, #23472]
+     61c:	a97c2fa8 	ldp	x8, x11, [x29, #-64]
+     620:	eb08013f 	cmp	x9, x8
+     624:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			624: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39
+     628:	91000109 	add	x9, x8, #0x0
+			628: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39
+     62c:	fa4b0140 	ccmp	x10, x11, #0x0, eq	// eq = none
+     630:	528002a8 	mov	w8, #0x15                  	// #21
+     634:	a93223a9 	stp	x9, x8, [x29, #-224]
+     638:	54005761 	b.ne	1124 <extended_pilot::main+0x1124>  // b.any
+     63c:	f9401fe8 	ldr	x8, [sp, #56]
+     640:	b1000508 	adds	x8, x8, #0x1
+     644:	54004942 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     648:	b27d0360 	orr	x0, x27, #0x8
+     64c:	aa1303e1 	mov	x1, x19
+     650:	f9001fe8 	str	x8, [sp, #56]
+     654:	94000000 	bl	3c <extended_pilot::main+0x3c>
+			654: R_AARCH64_CALL26	pilot_store
+     658:	914017e8 	add	x8, sp, #0x5, lsl #12
+     65c:	f96da3ea 	ldr	x10, [sp, #23360]
+     660:	f96da7eb 	ldr	x11, [sp, #23368]
+     664:	91272508 	add	x8, x8, #0x9c9
+     668:	f96dabed 	ldr	x13, [sp, #23376]
+     66c:	f92d73fc 	str	x28, [sp, #23264]
+     670:	3ccff100 	ldur	q0, [x8, #255]
+     674:	f96d6fe8 	ldr	x8, [sp, #23256]
+     678:	3d96c6c0 	str	q0, [x22, #23312]
+     67c:	a97233a9 	ldp	x9, x12, [x29, #-224]
+     680:	f81303a8 	stur	x8, [x29, #-208]
+     684:	eb09015f 	cmp	x10, x9
+     688:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			688: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst16+0x40
+     68c:	91000129 	add	x9, x9, #0x0
+			68c: R_AARCH64_ADD_ABS_LO12_NC	.rodata.cst16+0x40
+     690:	fa4c0160 	ccmp	x11, x12, #0x0, eq	// eq = none
+     694:	f92d8be9 	str	x9, [sp, #23312]
+     698:	fa4801a0 	ccmp	x13, x8, #0x0, eq	// eq = none
+     69c:	52800208 	mov	w8, #0x10                  	// #16
+     6a0:	f92d8fe8 	str	x8, [sp, #23320]
+     6a4:	54005241 	b.ne	10ec <extended_pilot::main+0x10ec>  // b.any
+     6a8:	f9401fe8 	ldr	x8, [sp, #56]
+     6ac:	b1000508 	adds	x8, x8, #0x1
+     6b0:	540045e2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     6b4:	b27d0360 	orr	x0, x27, #0x8
+     6b8:	aa1303e1 	mov	x1, x19
+     6bc:	f9001fe8 	str	x8, [sp, #56]
+     6c0:	f92da7ff 	str	xzr, [sp, #23368]
+     6c4:	94000000 	bl	0 <extended_pilot::main>
+			6c4: R_AARCH64_CALL26	.text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E
+     6c8:	914017e8 	add	x8, sp, #0x5, lsl #12
+     6cc:	f96da3ea 	ldr	x10, [sp, #23360]
+     6d0:	f96da7eb 	ldr	x11, [sp, #23368]
+     6d4:	91272508 	add	x8, x8, #0x9c9
+     6d8:	f96dabed 	ldr	x13, [sp, #23376]
+     6dc:	f92d73fc 	str	x28, [sp, #23264]
+     6e0:	3ccff100 	ldur	q0, [x8, #255]
+     6e4:	f96d6fe8 	ldr	x8, [sp, #23256]
+     6e8:	3d96c6c0 	str	q0, [x22, #23312]
+     6ec:	a97233a9 	ldp	x9, x12, [x29, #-224]
+     6f0:	f81303a8 	stur	x8, [x29, #-208]
+     6f4:	eb09015f 	cmp	x10, x9
+     6f8:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			6f8: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280
+     6fc:	91000129 	add	x9, x9, #0x0
+			6fc: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280
+     700:	fa4c0160 	ccmp	x11, x12, #0x0, eq	// eq = none
+     704:	f92d8be9 	str	x9, [sp, #23312]
+     708:	fa4801a0 	ccmp	x13, x8, #0x0, eq	// eq = none
+     70c:	528002e8 	mov	w8, #0x17                  	// #23
+     710:	f92d8fe8 	str	x8, [sp, #23320]
+     714:	54004ec1 	b.ne	10ec <extended_pilot::main+0x10ec>  // b.any
+     718:	f9401fe8 	ldr	x8, [sp, #56]
+     71c:	b1000514 	adds	x20, x8, #0x1
+     720:	54004262 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     724:	d28ef108 	mov	x8, #0x7788                	// #30600
+     728:	91002300 	add	x0, x24, #0x8
+     72c:	aa1303e1 	mov	x1, x19
+     730:	f2aaacc8 	movk	x8, #0x5566, lsl #16
+     734:	f9001ff4 	str	x20, [sp, #56]
+     738:	f2c66888 	movk	x8, #0x3344, lsl #32
+     73c:	f2e22448 	movk	x8, #0x1122, lsl #48
+     740:	f81203a8 	stur	x8, [x29, #-224]
+     744:	d2844228 	mov	x8, #0x2211                	// #8721
+     748:	f2a88668 	movk	x8, #0x4433, lsl #16
+     74c:	f2cccaa8 	movk	x8, #0x6655, lsl #32
+     750:	f2f10ee8 	movk	x8, #0x8877, lsl #48
+     754:	f81303a8 	stur	x8, [x29, #-208]
+     758:	94000000 	bl	0 <extended_pilot::main>
+			758: R_AARCH64_CALL26	.text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E
+     75c:	a9722fa8 	ldp	x8, x11, [x29, #-224]
+     760:	f96da3e9 	ldr	x9, [sp, #23360]
+     764:	f96da7ea 	ldr	x10, [sp, #23368]
+     768:	f96dabec 	ldr	x12, [sp, #23376]
+     76c:	f85303ad 	ldur	x13, [x29, #-208]
+     770:	f92d73fc 	str	x28, [sp, #23264]
+     774:	eb08013f 	cmp	x9, x8
+     778:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			778: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_d402f7413af788172cdb7d05f581a90e
+     77c:	91000108 	add	x8, x8, #0x0
+			77c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_d402f7413af788172cdb7d05f581a90e
+     780:	fa4b0140 	ccmp	x10, x11, #0x0, eq	// eq = none
+     784:	f92d8be8 	str	x8, [sp, #23312]
+     788:	52800268 	mov	w8, #0x13                  	// #19
+     78c:	fa4d0180 	ccmp	x12, x13, #0x0, eq	// eq = none
+     790:	f92d8fe8 	str	x8, [sp, #23320]
+     794:	54004ac1 	b.ne	10ec <extended_pilot::main+0x10ec>  // b.any
+     798:	b1000688 	adds	x8, x20, #0x1
+     79c:	54003e82 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     7a0:	aa1303e0 	mov	x0, x19
+     7a4:	f9001fe8 	str	x8, [sp, #56]
+     7a8:	94000000 	bl	0 <extended_pilot::main>
+			7a8: R_AARCH64_CALL26	.text._ZN14extended_pilot12inline_label17hce24d0f42a259affE
+     7ac:	aa0003f4 	mov	x20, x0
+     7b0:	aa1303e0 	mov	x0, x19
+     7b4:	94000000 	bl	0 <extended_pilot::main>
+			7b4: R_AARCH64_CALL26	.text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E
+     7b8:	eb00029f 	cmp	x20, x0
+     7bc:	540048a1 	b.ne	10d0 <extended_pilot::main+0x10d0>  // b.any
+     7c0:	f100027f 	cmp	x19, #0x0
+     7c4:	52800528 	mov	w8, #0x29                  	// #41
+     7c8:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			7c8: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada
+     7cc:	91000129 	add	x9, x9, #0x0
+			7cc: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada
+     7d0:	9a8802e8 	csel	x8, x23, x8, eq	// eq = none
+     7d4:	f92d73fc 	str	x28, [sp, #23264]
+     7d8:	f92d8be9 	str	x9, [sp, #23312]
+     7dc:	52800189 	mov	w9, #0xc                   	// #12
+     7e0:	eb08029f 	cmp	x20, x8
+     7e4:	f92d8fe9 	str	x9, [sp, #23320]
+     7e8:	54004821 	b.ne	10ec <extended_pilot::main+0x10ec>  // b.any
+     7ec:	f9401fe8 	ldr	x8, [sp, #56]
+     7f0:	b1000515 	adds	x21, x8, #0x1
+     7f4:	54003bc2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     7f8:	91002339 	add	x25, x25, #0x8
+     7fc:	f9001ff5 	str	x21, [sp, #56]
+     800:	f102633f 	cmp	x25, #0x98
+     804:	54ffec61 	b.ne	590 <extended_pilot::main+0x590>  // b.any
+     808:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			808: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     80c:	91000129 	add	x9, x9, #0x0
+			80c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     810:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			810: R_AARCH64_ADR_PREL_PG_HI21	.rodata.cst16+0x30
+     814:	ad448520 	ldp	q0, q1, [x9, #144]
+     818:	3dc02d22 	ldr	q2, [x9, #176]
+     81c:	b203e3f8 	mov	x24, #0x2222222222222222    	// #2459565876494606882
+     820:	914017ea 	add	x10, sp, #0x5, lsl #12
+     824:	aa1f03f9 	mov	x25, xzr
+     828:	3d8032c2 	str	q2, [x22, #192]
+     82c:	ad438923 	ldp	q3, q2, [x9, #112]
+     830:	ad0506c0 	stp	q0, q1, [x22, #160]
+     834:	ad428520 	ldp	q0, q1, [x9, #80]
+     838:	d205cf18 	eor	x24, x24, #0x7878787878787878
+     83c:	912d014a 	add	x10, x10, #0xb40
+     840:	d102c3ac 	sub	x12, x29, #0xb0
+     844:	ad040ac3 	stp	q3, q2, [x22, #128]
+     848:	9100e3fb 	add	x27, sp, #0x38
+     84c:	9000001a 	adrp	x26, 0 <extended_pilot::main>
+			84c: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_85fda77841ed425dbdbff2ea33376135
+     850:	9100035a 	add	x26, x26, #0x0
+			850: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_85fda77841ed425dbdbff2ea33376135
+     854:	ad0306c0 	stp	q0, q1, [x22, #96]
+     858:	3dc00100 	ldr	q0, [x8]
+			858: R_AARCH64_LDST128_ABS_LO12_NC	.rodata.cst16+0x30
+     85c:	ad400921 	ldp	q1, q2, [x9]
+     860:	910183e8 	add	x8, sp, #0x60
+     864:	91004108 	add	x8, x8, #0x10
+     868:	b202e3f6 	mov	x22, #0x4444444444444444    	// #4919131752989213764
+     86c:	528003bc 	mov	w28, #0x1d                  	// #29
+     870:	f90013e8 	str	x8, [sp, #32]
+     874:	914017e8 	add	x8, sp, #0x5, lsl #12
+     878:	d203ced6 	eor	x22, x22, #0xe1e1e1e1e1e1e1e1
+     87c:	ad0307e0 	stp	q0, q1, [sp, #96]
+     880:	ad410d20 	ldp	q0, q3, [x9, #32]
+     884:	3dc01121 	ldr	q1, [x9, #64]
+     888:	912b8108 	add	x8, x8, #0xae0
+     88c:	914017e9 	add	x9, sp, #0x5, lsl #12
+     890:	91004113 	add	x19, x8, #0x10
+     894:	912c4129 	add	x9, x9, #0xb10
+     898:	ad0403e2 	stp	q2, q0, [sp, #128]
+     89c:	ad0507e3 	stp	q3, q1, [sp, #160]
+     8a0:	14000008 	b	8c0 <extended_pilot::main+0x8c0>
+     8a4:	914017e9 	add	x9, sp, #0x5, lsl #12
+     8a8:	914017ea 	add	x10, sp, #0x5, lsl #12
+     8ac:	f100333f 	cmp	x25, #0xc
+     8b0:	912c4129 	add	x9, x9, #0xb10
+     8b4:	912d014a 	add	x10, x10, #0xb40
+     8b8:	d102c3ac 	sub	x12, x29, #0xb0
+     8bc:	54001540 	b.eq	b64 <extended_pilot::main+0xb64>  // b.none
+     8c0:	f94013e8 	ldr	x8, [sp, #32]
+     8c4:	a9026198 	stp	x24, x24, [x12, #32]
+     8c8:	b203e3ec 	mov	x12, #0x2222222222222222    	// #2459565876494606882
+     8cc:	d205cd8c 	eor	x12, x12, #0x7878787878787878
+     8d0:	b202e3eb 	mov	x11, #0x4444444444444444    	// #4919131752989213764
+     8d4:	a9355bb6 	stp	x22, x22, [x29, #-176]
+     8d8:	8b191108 	add	x8, x8, x25, lsl #4
+     8dc:	d203cd6b 	eor	x11, x11, #0xe1e1e1e1e1e1e1e1
+     8e0:	aa1903f6 	mov	x22, x25
+     8e4:	d102c3b8 	sub	x24, x29, #0xb0
+     8e8:	d10383b9 	sub	x25, x29, #0xe0
+     8ec:	f92d73eb 	str	x11, [sp, #23264]
+     8f0:	a9405d14 	ldp	x20, x23, [x8]
+     8f4:	914017e8 	add	x8, sp, #0x5, lsl #12
+     8f8:	912b8108 	add	x8, x8, #0xae0
+     8fc:	f92d77eb 	str	x11, [sp, #23272]
+     900:	a902310c 	stp	x12, x12, [x8, #32]
+     904:	b202e7e8 	mov	x8, #0xcccccccccccccccc    	// #-3689348814741910324
+     908:	a9012128 	stp	x8, x8, [x9, #16]
+     90c:	a9012148 	stp	x8, x8, [x10, #16]
+     910:	b10006a8 	adds	x8, x21, #0x1
+     914:	914017f5 	add	x21, sp, #0x5, lsl #12
+     918:	912d02b5 	add	x21, x21, #0xb40
+     91c:	f92d7ff7 	str	x23, [sp, #23288]
+     920:	f92d7bf4 	str	x20, [sp, #23280]
+     924:	f92d8feb 	str	x11, [sp, #23320]
+     928:	f92d8beb 	str	x11, [sp, #23312]
+     92c:	a902312c 	stp	x12, x12, [x9, #32]
+     930:	f92da7eb 	str	x11, [sp, #23368]
+     934:	f92da3eb 	str	x11, [sp, #23360]
+     938:	a902314c 	stp	x12, x12, [x10, #32]
+     93c:	a9322fab 	stp	x11, x11, [x29, #-224]
+     940:	a902332c 	stp	x12, x12, [x25, #32]
+     944:	54003142 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     948:	91004120 	add	x0, x9, #0x10
+     94c:	aa1303e1 	mov	x1, x19
+     950:	f9001fe8 	str	x8, [sp, #56]
+     954:	94000000 	bl	44 <extended_pilot::main+0x44>
+			954: R_AARCH64_CALL26	pilot_copy16
+     958:	910042a0 	add	x0, x21, #0x10
+     95c:	aa1303e1 	mov	x1, x19
+     960:	94000000 	bl	70 <extended_pilot::main+0x70>
+			960: R_AARCH64_CALL26	pilot_simd_copy16
+     964:	91004321 	add	x1, x25, #0x10
+     968:	aa1303e0 	mov	x0, x19
+     96c:	94000000 	bl	0 <extended_pilot::main>
+			96c: R_AARCH64_CALL26	.text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E
+     970:	91004301 	add	x1, x24, #0x10
+     974:	aa1303e0 	mov	x0, x19
+     978:	94000000 	bl	0 <extended_pilot::main>
+			978: R_AARCH64_CALL26	.text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E
+     97c:	f96d97e8 	ldr	x8, [sp, #23336]
+     980:	f96d93e9 	ldr	x9, [sp, #23328]
+     984:	eb17011f 	cmp	x8, x23
+     988:	fa540120 	ccmp	x9, x20, #0x0, eq	// eq = none
+     98c:	54003da1 	b.ne	1140 <extended_pilot::main+0x1140>  // b.any
+     990:	f96dafe8 	ldr	x8, [sp, #23384]
+     994:	f96dabe9 	ldr	x9, [sp, #23376]
+     998:	eb17011f 	cmp	x8, x23
+     99c:	fa540120 	ccmp	x9, x20, #0x0, eq	// eq = none
+     9a0:	54003d01 	b.ne	1140 <extended_pilot::main+0x1140>  // b.any
+     9a4:	a97323a9 	ldp	x9, x8, [x29, #-208]
+     9a8:	eb17011f 	cmp	x8, x23
+     9ac:	fa540120 	ccmp	x9, x20, #0x0, eq	// eq = none
+     9b0:	54003c81 	b.ne	1140 <extended_pilot::main+0x1140>  // b.any
+     9b4:	a97623a9 	ldp	x9, x8, [x29, #-160]
+     9b8:	b203e3f8 	mov	x24, #0x2222222222222222    	// #2459565876494606882
+     9bc:	d205cf18 	eor	x24, x24, #0x7878787878787878
+     9c0:	f81983bb 	stur	x27, [x29, #-104]
+     9c4:	eb17011f 	cmp	x8, x23
+     9c8:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			9c8: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea
+     9cc:	9100010a 	add	x10, x8, #0x0
+			9cc: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea
+     9d0:	fa540120 	ccmp	x9, x20, #0x0, eq	// eq = none
+     9d4:	52800368 	mov	w8, #0x1b                  	// #27
+     9d8:	a938a3aa 	stp	x10, x8, [x29, #-120]
+     9dc:	54002d61 	b.ne	f88 <extended_pilot::main+0xf88>  // b.any
+     9e0:	f9401fe8 	ldr	x8, [sp, #56]
+     9e4:	aa1603f9 	mov	x25, x22
+     9e8:	b202e3f6 	mov	x22, #0x4444444444444444    	// #4919131752989213764
+     9ec:	d203ced6 	eor	x22, x22, #0xe1e1e1e1e1e1e1e1
+     9f0:	b1000508 	adds	x8, x8, #0x1
+     9f4:	54002bc2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     9f8:	f96d8fe9 	ldr	x9, [sp, #23320]
+     9fc:	f96d8bea 	ldr	x10, [sp, #23312]
+     a00:	f9001fe8 	str	x8, [sp, #56]
+     a04:	eb16013f 	cmp	x9, x22
+     a08:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     a0c:	54002e61 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a10:	f96d9fe9 	ldr	x9, [sp, #23352]
+     a14:	f96d9bea 	ldr	x10, [sp, #23344]
+     a18:	eb18013f 	cmp	x9, x24
+     a1c:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     a20:	54002dc1 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a24:	f96da7e9 	ldr	x9, [sp, #23368]
+     a28:	f96da3ea 	ldr	x10, [sp, #23360]
+     a2c:	eb16013f 	cmp	x9, x22
+     a30:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     a34:	54002d21 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a38:	f96db7e9 	ldr	x9, [sp, #23400]
+     a3c:	f96db3ea 	ldr	x10, [sp, #23392]
+     a40:	eb18013f 	cmp	x9, x24
+     a44:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     a48:	54002c81 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a4c:	a97227aa 	ldp	x10, x9, [x29, #-224]
+     a50:	eb16013f 	cmp	x9, x22
+     a54:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     a58:	54002c01 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a5c:	a97427aa 	ldp	x10, x9, [x29, #-192]
+     a60:	eb18013f 	cmp	x9, x24
+     a64:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     a68:	54002b81 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a6c:	a97527aa 	ldp	x10, x9, [x29, #-176]
+     a70:	eb16013f 	cmp	x9, x22
+     a74:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     a78:	54002b01 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a7c:	a97727aa 	ldp	x10, x9, [x29, #-144]
+     a80:	eb18013f 	cmp	x9, x24
+     a84:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     a88:	54002a81 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     a8c:	f96d77e9 	ldr	x9, [sp, #23272]
+     a90:	f96d73ea 	ldr	x10, [sp, #23264]
+     a94:	eb16013f 	cmp	x9, x22
+     a98:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     a9c:	540029e1 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     aa0:	f96d87e9 	ldr	x9, [sp, #23304]
+     aa4:	f96d83ea 	ldr	x10, [sp, #23296]
+     aa8:	eb18013f 	cmp	x9, x24
+     aac:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     ab0:	54002941 	b.ne	fd8 <extended_pilot::main+0xfd8>  // b.any
+     ab4:	f96d7fe9 	ldr	x9, [sp, #23288]
+     ab8:	f96d7bea 	ldr	x10, [sp, #23280]
+     abc:	f81983bb 	stur	x27, [x29, #-104]
+     ac0:	eb17013f 	cmp	x9, x23
+     ac4:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			ac4: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_2dce8867486f99811029456ce360cb96
+     ac8:	9100012b 	add	x11, x9, #0x0
+			ac8: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_2dce8867486f99811029456ce360cb96
+     acc:	fa540140 	ccmp	x10, x20, #0x0, eq	// eq = none
+     ad0:	52800189 	mov	w9, #0xc                   	// #12
+     ad4:	a938a7ab 	stp	x11, x9, [x29, #-120]
+     ad8:	54002581 	b.ne	f88 <extended_pilot::main+0xf88>  // b.any
+     adc:	b1000509 	adds	x9, x8, #0x1
+     ae0:	54002462 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ae4:	b1000528 	adds	x8, x9, #0x1
+     ae8:	f9001fe9 	str	x9, [sp, #56]
+     aec:	54002402 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     af0:	aa1f03f4 	mov	x20, xzr
+     af4:	91000739 	add	x25, x25, #0x1
+     af8:	f9001fe8 	str	x8, [sp, #56]
+     afc:	f100429f 	cmp	x20, #0x10
+     b00:	aa1303e0 	mov	x0, x19
+     b04:	aa1403e1 	mov	x1, x20
+     b08:	9a940697 	cinc	x23, x20, ne	// ne = any
+     b0c:	94000000 	bl	50 <extended_pilot::main+0x50>
+			b0c: R_AARCH64_CALL26	pilot_ptr
+     b10:	8b140268 	add	x8, x19, x20
+     b14:	eb08001f 	cmp	x0, x8
+     b18:	54002301 	b.ne	f78 <extended_pilot::main+0xf78>  // b.any
+     b1c:	aa0003f5 	mov	x21, x0
+     b20:	aa1303e0 	mov	x0, x19
+     b24:	aa1403e1 	mov	x1, x20
+     b28:	94000000 	bl	0 <extended_pilot::main>
+			b28: R_AARCH64_CALL26	.text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E
+     b2c:	eb15001f 	cmp	x0, x21
+     b30:	a938f3ba 	stp	x26, x28, [x29, #-120]
+     b34:	f81983bb 	stur	x27, [x29, #-104]
+     b38:	54002281 	b.ne	f88 <extended_pilot::main+0xf88>  // b.any
+     b3c:	f9401fe8 	ldr	x8, [sp, #56]
+     b40:	b1000515 	adds	x21, x8, #0x1
+     b44:	54002142 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     b48:	f100429f 	cmp	x20, #0x10
+     b4c:	f9001ff5 	str	x21, [sp, #56]
+     b50:	54ffeaa0 	b.eq	8a4 <extended_pilot::main+0x8a4>  // b.none
+     b54:	f10042ff 	cmp	x23, #0x10
+     b58:	aa1703f4 	mov	x20, x23
+     b5c:	54fffd09 	b.ls	afc <extended_pilot::main+0xafc>  // b.plast
+     b60:	17ffff51 	b	8a4 <extended_pilot::main+0x8a4>
+     b64:	52801208 	mov	w8, #0x90                  	// #144
+     b68:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			b68: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.5
+     b6c:	91000021 	add	x1, x1, #0x0
+			b6c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.5
+     b70:	f90037e8 	str	x8, [sp, #104]
+     b74:	910183e8 	add	x8, sp, #0x60
+     b78:	52824002 	mov	w2, #0x1200                	// #4608
+     b7c:	91004100 	add	x0, x8, #0x10
+     b80:	94000000 	bl	0 <memcpy>
+			b80: R_AARCH64_CALL26	memcpy
+     b84:	914017e8 	add	x8, sp, #0x5, lsl #12
+     b88:	d10383a9 	sub	x9, x29, #0xe0
+     b8c:	b202e3ec 	mov	x12, #0x4444444444444444    	// #4919131752989213764
+     b90:	912d0108 	add	x8, x8, #0xb40
+     b94:	b203e3ed 	mov	x13, #0x2222222222222222    	// #2459565876494606882
+     b98:	d102c3ab 	sub	x11, x29, #0xb0
+     b9c:	92823ffc 	mov	x28, #0xffffffffffffee00    	// #-4608
+     ba0:	91004113 	add	x19, x8, #0x10
+     ba4:	91004134 	add	x20, x9, #0x10
+     ba8:	d203cd8c 	eor	x12, x12, #0xe1e1e1e1e1e1e1e1
+     bac:	d205cdad 	eor	x13, x13, #0x7878787878787878
+     bb0:	9000000a 	adrp	x10, 0 <extended_pilot::main>
+			bb0: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     bb4:	9100014a 	add	x10, x10, #0x0
+			bb4: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     bb8:	910183e8 	add	x8, sp, #0x60
+     bbc:	8b1c0109 	add	x9, x8, x28
+     bc0:	f9490920 	ldr	x0, [x9, #4624]
+     bc4:	f100301f 	cmp	x0, #0xc
+     bc8:	54002ce2 	b.cs	1164 <extended_pilot::main+0x1164>  // b.hs, b.nlast
+     bcc:	8b00115a 	add	x26, x10, x0, lsl #4
+     bd0:	f9490d28 	ldr	x8, [x9, #4632]
+     bd4:	f9491537 	ldr	x23, [x9, #4648]
+     bd8:	f9491139 	ldr	x25, [x9, #4640]
+     bdc:	914017e9 	add	x9, sp, #0x5, lsl #12
+     be0:	f92da3ec 	str	x12, [sp, #23360]
+     be4:	3dc00340 	ldr	q0, [x26]
+     be8:	f100311f 	cmp	x8, #0xc
+     bec:	912d0129 	add	x9, x9, #0xb40
+     bf0:	f92da7ec 	str	x12, [sp, #23368]
+     bf4:	3d800260 	str	q0, [x19]
+     bf8:	a902352d 	stp	x13, x13, [x9, #32]
+     bfc:	54002aa2 	b.cs	1150 <extended_pilot::main+0x1150>  // b.hs, b.nlast
+     c00:	8b08115b 	add	x27, x10, x8, lsl #4
+     c04:	d10383a9 	sub	x9, x29, #0xe0
+     c08:	a93233ac 	stp	x12, x12, [x29, #-224]
+     c0c:	a902352d 	stp	x13, x13, [x9, #32]
+     c10:	b202e7e9 	mov	x9, #0xcccccccccccccccc    	// #-3689348814741910324
+     c14:	3dc00360 	ldr	q0, [x27]
+     c18:	a9012569 	stp	x9, x9, [x11, #16]
+     c1c:	b10006a9 	adds	x9, x21, #0x1
+     c20:	a93533ac 	stp	x12, x12, [x29, #-176]
+     c24:	3d800280 	str	q0, [x20]
+     c28:	a902356d 	stp	x13, x13, [x11, #32]
+     c2c:	54001a02 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     c30:	eb08001f 	cmp	x0, x8
+     c34:	91004160 	add	x0, x11, #0x10
+     c38:	aa1303e1 	mov	x1, x19
+     c3c:	9a940262 	csel	x2, x19, x20, eq	// eq = none
+     c40:	f9001fe9 	str	x9, [sp, #56]
+     c44:	94000000 	bl	7c <extended_pilot::main+0x7c>
+			c44: R_AARCH64_CALL26	pilot_simd_add16
+     c48:	d10183a0 	sub	x0, x29, #0x60
+     c4c:	aa1303e1 	mov	x1, x19
+     c50:	aa1403e2 	mov	x2, x20
+     c54:	94000000 	bl	0 <extended_pilot::main>
+			c54: R_AARCH64_CALL26	.text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE
+     c58:	a97623a9 	ldp	x9, x8, [x29, #-160]
+     c5c:	528001ce 	mov	w14, #0xe                   	// #14
+     c60:	9100e3ef 	add	x15, sp, #0x38
+     c64:	f92d77ee 	str	x14, [sp, #23272]
+     c68:	f81883af 	stur	x15, [x29, #-120]
+     c6c:	eb17011f 	cmp	x8, x23
+     c70:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			c70: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_aff5e137726c4d2349c18b19090c6249
+     c74:	91000108 	add	x8, x8, #0x0
+			c74: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_aff5e137726c4d2349c18b19090c6249
+     c78:	f92d73e8 	str	x8, [sp, #23264]
+     c7c:	fa590120 	ccmp	x9, x25, #0x0, eq	// eq = none
+     c80:	a97a23a9 	ldp	x9, x8, [x29, #-96]
+     c84:	54001c21 	b.ne	1008 <extended_pilot::main+0x1008>  // b.any
+     c88:	eb17011f 	cmp	x8, x23
+     c8c:	fa590120 	ccmp	x9, x25, #0x0, eq	// eq = none
+     c90:	54001bc1 	b.ne	1008 <extended_pilot::main+0x1008>  // b.any
+     c94:	f9401fe8 	ldr	x8, [sp, #56]
+     c98:	b1000508 	adds	x8, x8, #0x1
+     c9c:	54001682 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ca0:	a97527aa 	ldp	x10, x9, [x29, #-176]
+     ca4:	b203e3ed 	mov	x13, #0x2222222222222222    	// #2459565876494606882
+     ca8:	d205cdad 	eor	x13, x13, #0x7878787878787878
+     cac:	f9001fe8 	str	x8, [sp, #56]
+     cb0:	eb16013f 	cmp	x9, x22
+     cb4:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     cb8:	540019a1 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     cbc:	a97727aa 	ldp	x10, x9, [x29, #-144]
+     cc0:	eb18013f 	cmp	x9, x24
+     cc4:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     cc8:	54001921 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     ccc:	f96da7e9 	ldr	x9, [sp, #23368]
+     cd0:	f96da3ea 	ldr	x10, [sp, #23360]
+     cd4:	eb16013f 	cmp	x9, x22
+     cd8:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     cdc:	54001881 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     ce0:	f96db7e9 	ldr	x9, [sp, #23400]
+     ce4:	f96db3ea 	ldr	x10, [sp, #23392]
+     ce8:	eb18013f 	cmp	x9, x24
+     cec:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     cf0:	540017e1 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     cf4:	a97227aa 	ldp	x10, x9, [x29, #-224]
+     cf8:	eb16013f 	cmp	x9, x22
+     cfc:	fa560140 	ccmp	x10, x22, #0x0, eq	// eq = none
+     d00:	54001761 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     d04:	a97427aa 	ldp	x10, x9, [x29, #-192]
+     d08:	eb18013f 	cmp	x9, x24
+     d0c:	fa580140 	ccmp	x10, x24, #0x0, eq	// eq = none
+     d10:	540016e1 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     d14:	a9402b4c 	ldp	x12, x10, [x26]
+     d18:	f96dafe9 	ldr	x9, [sp, #23384]
+     d1c:	f96dabeb 	ldr	x11, [sp, #23376]
+     d20:	eb0a013f 	cmp	x9, x10
+     d24:	fa4c0160 	ccmp	x11, x12, #0x0, eq	// eq = none
+     d28:	54001621 	b.ne	fec <extended_pilot::main+0xfec>  // b.any
+     d2c:	a97327ab 	ldp	x11, x9, [x29, #-208]
+     d30:	f92d77ee 	str	x14, [sp, #23272]
+     d34:	a9402b6c 	ldp	x12, x10, [x27]
+     d38:	f81883af 	stur	x15, [x29, #-120]
+     d3c:	eb0a013f 	cmp	x9, x10
+     d40:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			d40: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625
+     d44:	91000129 	add	x9, x9, #0x0
+			d44: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625
+     d48:	fa4c0160 	ccmp	x11, x12, #0x0, eq	// eq = none
+     d4c:	f92d73e9 	str	x9, [sp, #23264]
+     d50:	540015c1 	b.ne	1008 <extended_pilot::main+0x1008>  // b.any
+     d54:	b202e3ec 	mov	x12, #0x4444444444444444    	// #4919131752989213764
+     d58:	b1000515 	adds	x21, x8, #0x1
+     d5c:	9000000a 	adrp	x10, 0 <extended_pilot::main>
+			d5c: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     d60:	9100014a 	add	x10, x10, #0x0
+			d60: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+     d64:	d102c3ab 	sub	x11, x29, #0xb0
+     d68:	d203cd8c 	eor	x12, x12, #0xe1e1e1e1e1e1e1e1
+     d6c:	54001002 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     d70:	b100839c 	adds	x28, x28, #0x20
+     d74:	f9001ff5 	str	x21, [sp, #56]
+     d78:	54fff201 	b.ne	bb8 <extended_pilot::main+0xbb8>  // b.any
+     d7c:	3dc003e0 	ldr	q0, [sp]
+     d80:	910183e8 	add	x8, sp, #0x60
+     d84:	90000001 	adrp	x1, 0 <extended_pilot::main>
+			d84: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.6
+     d88:	91000021 	add	x1, x1, #0x0
+			d88: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lanon.f507188058a165a71be766ad23ec52dc.6
+     d8c:	91004100 	add	x0, x8, #0x10
+     d90:	52836302 	mov	w2, #0x1b18                	// #6936
+     d94:	3d801be0 	str	q0, [sp, #96]
+     d98:	94000000 	bl	0 <memcpy>
+			d98: R_AARCH64_CALL26	memcpy
+     d9c:	928362f6 	mov	x22, #0xffffffffffffe4e8    	// #-6936
+     da0:	90000018 	adrp	x24, 0 <extended_pilot::main>
+			da0: R_AARCH64_ADR_PREL_PG_HI21	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+     da4:	9100e3fb 	add	x27, sp, #0x38
+     da8:	52800235 	mov	w21, #0x11                  	// #17
+     dac:	90000017 	adrp	x23, 0 <extended_pilot::main>
+			dac: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_7fb6948253e08425011968cd1ab90324
+     db0:	910002f7 	add	x23, x23, #0x0
+			db0: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_7fb6948253e08425011968cd1ab90324
+     db4:	90000019 	adrp	x25, 0 <extended_pilot::main>
+			db4: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3
+     db8:	91000339 	add	x25, x25, #0x0
+			db8: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3
+     dbc:	528002da 	mov	w26, #0x16                  	// #22
+     dc0:	910183e8 	add	x8, sp, #0x60
+     dc4:	8b160108 	add	x8, x8, x22
+     dc8:	f94d9513 	ldr	x19, [x8, #6952]
+     dcc:	f94d9914 	ldr	x20, [x8, #6960]
+     dd0:	f94d9d1c 	ldr	x28, [x8, #6968]
+     dd4:	f900031f 	str	xzr, [x24]
+			dd4: R_AARCH64_LDST64_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+     dd8:	aa1303e0 	mov	x0, x19
+     ddc:	aa1403e1 	mov	x1, x20
+     de0:	94000000 	bl	58 <extended_pilot::main+0x58>
+			de0: R_AARCH64_CALL26	pilot_call_helper
+     de4:	eb1c001f 	cmp	x0, x28
+     de8:	54001c61 	b.ne	1174 <extended_pilot::main+0x1174>  // b.any
+     dec:	d29950e8 	mov	x8, #0xca87                	// #51847
+     df0:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			df0: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138
+     df4:	9100012a 	add	x10, x9, #0x0
+			df4: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138
+     df8:	f2b0bd68 	movk	x8, #0x85eb, lsl #16
+     dfc:	52800269 	mov	w9, #0x13                  	// #19
+     e00:	f92da3fb 	str	x27, [sp, #23360]
+     e04:	f2cf3628 	movk	x8, #0x79b1, lsl #32
+     e08:	a93227aa 	stp	x10, x9, [x29, #-224]
+     e0c:	f2f3c6e8 	movk	x8, #0x9e37, lsl #48
+     e10:	9b087e88 	mul	x8, x20, x8
+     e14:	cad3cd08 	eor	x8, x8, x19, ror #51
+     e18:	91000508 	add	x8, x8, #0x1
+     e1c:	eb1c011f 	cmp	x8, x28
+     e20:	54001b61 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     e24:	f9401fe8 	ldr	x8, [sp, #56]
+     e28:	b1000508 	adds	x8, x8, #0x1
+     e2c:	54000a02 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     e30:	f9001fe8 	str	x8, [sp, #56]
+     e34:	9000000a 	adrp	x10, 0 <extended_pilot::main>
+			e34: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9
+     e38:	9100014a 	add	x10, x10, #0x0
+			e38: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9
+     e3c:	f9400309 	ldr	x9, [x24]
+			e3c: R_AARCH64_LDST64_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+     e40:	a93257aa 	stp	x10, x21, [x29, #-224]
+     e44:	f92da3fb 	str	x27, [sp, #23360]
+     e48:	f100053f 	cmp	x9, #0x1
+     e4c:	54001a01 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     e50:	b1000508 	adds	x8, x8, #0x1
+     e54:	540008c2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     e58:	aa1303e0 	mov	x0, x19
+     e5c:	aa1403e1 	mov	x1, x20
+     e60:	f9001fe8 	str	x8, [sp, #56]
+     e64:	f900031f 	str	xzr, [x24]
+			e64: R_AARCH64_LDST64_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+     e68:	94000000 	bl	0 <extended_pilot::main>
+			e68: R_AARCH64_CALL26	.text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E
+     e6c:	eb1c001f 	cmp	x0, x28
+     e70:	a93257b7 	stp	x23, x21, [x29, #-224]
+     e74:	f92da3fb 	str	x27, [sp, #23360]
+     e78:	540018a1 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     e7c:	f9401fe8 	ldr	x8, [sp, #56]
+     e80:	b1000508 	adds	x8, x8, #0x1
+     e84:	54000742 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     e88:	f9001fe8 	str	x8, [sp, #56]
+     e8c:	f9400309 	ldr	x9, [x24]
+			e8c: R_AARCH64_LDST64_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+     e90:	a9326bb9 	stp	x25, x26, [x29, #-224]
+     e94:	f92da3fb 	str	x27, [sp, #23360]
+     e98:	f100053f 	cmp	x9, #0x1
+     e9c:	54001781 	b.ne	118c <extended_pilot::main+0x118c>  // b.any
+     ea0:	b1000508 	adds	x8, x8, #0x1
+     ea4:	54000642 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ea8:	910062d6 	add	x22, x22, #0x18
+     eac:	f9001fe8 	str	x8, [sp, #56]
+     eb0:	b5fff896 	cbnz	x22, dc0 <extended_pilot::main+0xdc0>
+     eb4:	b1000509 	adds	x9, x8, #0x1
+     eb8:	540005a2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ebc:	b1000528 	adds	x8, x9, #0x1
+     ec0:	f9001fe9 	str	x9, [sp, #56]
+     ec4:	54000542 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ec8:	b1000509 	adds	x9, x8, #0x1
+     ecc:	f9001fe8 	str	x8, [sp, #56]
+     ed0:	540004e2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ed4:	b1000528 	adds	x8, x9, #0x1
+     ed8:	f9001fe9 	str	x9, [sp, #56]
+     edc:	54000482 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ee0:	b1000509 	adds	x9, x8, #0x1
+     ee4:	f9001fe8 	str	x8, [sp, #56]
+     ee8:	54000422 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     eec:	b1000528 	adds	x8, x9, #0x1
+     ef0:	f9001fe9 	str	x9, [sp, #56]
+     ef4:	540003c2 	b.cs	f6c <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+     ef8:	f9001fe8 	str	x8, [sp, #56]
+     efc:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			efc: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_eec757f04e6f6b88836c129c6dcb75a2
+     f00:	91000108 	add	x8, x8, #0x0
+			f00: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_eec757f04e6f6b88836c129c6dcb75a2
+     f04:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			f04: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+     f08:	91000129 	add	x9, x9, #0x0
+			f08: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+     f0c:	910183e0 	add	x0, sp, #0x60
+     f10:	a93c27a8 	stp	x8, x9, [x29, #-64]
+     f14:	90000009 	adrp	x9, 0 <core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt>
+			f14: R_AARCH64_ADR_GOT_PAGE	core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt
+     f18:	9100e3e8 	add	x8, sp, #0x38
+     f1c:	f9400129 	ldr	x9, [x9]
+			f1c: R_AARCH64_LD64_GOT_LO12_NC	core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt
+     f20:	a93d27a8 	stp	x8, x9, [x29, #-48]
+     f24:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			f24: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86
+     f28:	91000108 	add	x8, x8, #0x0
+			f28: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86
+     f2c:	52800069 	mov	w9, #0x3                   	// #3
+     f30:	a90627e8 	stp	x8, x9, [sp, #96]
+     f34:	d10103a8 	sub	x8, x29, #0x40
+     f38:	52800049 	mov	w9, #0x2                   	// #2
+     f3c:	f9003be8 	str	x8, [sp, #112]
+     f40:	a907ffe9 	stp	x9, xzr, [sp, #120]
+     f44:	94000000 	bl	0 <std::io::stdio::_print>
+			f44: R_AARCH64_CALL26	std::io::stdio::_print
+     f48:	914017ff 	add	sp, sp, #0x5, lsl #12
+     f4c:	913143ff 	add	sp, sp, #0xc50
+     f50:	a9454ff4 	ldp	x20, x19, [sp, #80]
+     f54:	a94457f6 	ldp	x22, x21, [sp, #64]
+     f58:	a9435ff8 	ldp	x24, x23, [sp, #48]
+     f5c:	a94267fa 	ldp	x26, x25, [sp, #32]
+     f60:	a9416ffc 	ldp	x28, x27, [sp, #16]
+     f64:	a8c67bfd 	ldp	x29, x30, [sp], #96
+     f68:	d65f03c0 	ret
+     f6c:	90000000 	adrp	x0, 0 <extended_pilot::main>
+			f6c: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d
+     f70:	91000000 	add	x0, x0, #0x0
+			f70: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d
+     f74:	94000000 	bl	0 <core::panicking::panic_const::panic_const_add_overflow>
+			f74: R_AARCH64_CALL26	core::panicking::panic_const::panic_const_add_overflow
+     f78:	528003a8 	mov	w8, #0x1d                  	// #29
+     f7c:	f81883ba 	stur	x26, [x29, #-120]
+     f80:	9100e3e9 	add	x9, sp, #0x38
+     f84:	a93927a8 	stp	x8, x9, [x29, #-112]
+     f88:	d101e3a8 	sub	x8, x29, #0x78
+     f8c:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			f8c: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+     f90:	91000129 	add	x9, x9, #0x0
+			f90: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+     f94:	a93a27a8 	stp	x8, x9, [x29, #-96]
+     f98:	d101a3a8 	sub	x8, x29, #0x68
+     f9c:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			f9c: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+     fa0:	91000129 	add	x9, x9, #0x0
+			fa0: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+     fa4:	f81e03bf 	stur	xzr, [x29, #-32]
+     fa8:	a93b27a8 	stp	x8, x9, [x29, #-80]
+     fac:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			fac: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+     fb0:	91000108 	add	x8, x8, #0x0
+			fb0: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+     fb4:	52800069 	mov	w9, #0x3                   	// #3
+     fb8:	a93c27a8 	stp	x8, x9, [x29, #-64]
+     fbc:	d10183a8 	sub	x8, x29, #0x60
+     fc0:	52800049 	mov	w9, #0x2                   	// #2
+     fc4:	d10103a0 	sub	x0, x29, #0x40
+     fc8:	a93d27a8 	stp	x8, x9, [x29, #-48]
+     fcc:	94000000 	bl	0 <std::io::stdio::_eprint>
+			fcc: R_AARCH64_CALL26	std::io::stdio::_eprint
+     fd0:	52800040 	mov	w0, #0x2                   	// #2
+     fd4:	94000000 	bl	0 <std::process::exit>
+			fd4: R_AARCH64_CALL26	std::process::exit
+     fd8:	52800188 	mov	w8, #0xc                   	// #12
+     fdc:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			fdc: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_2dce8867486f99811029456ce360cb96
+     fe0:	91000129 	add	x9, x9, #0x0
+			fe0: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_2dce8867486f99811029456ce360cb96
+     fe4:	f81883a9 	stur	x9, [x29, #-120]
+     fe8:	17ffffe6 	b	f80 <extended_pilot::main+0xf80>
+     fec:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			fec: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625
+     ff0:	91000129 	add	x9, x9, #0x0
+			ff0: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625
+     ff4:	528001c8 	mov	w8, #0xe                   	// #14
+     ff8:	f92d73e9 	str	x9, [sp, #23264]
+     ffc:	9100e3e9 	add	x9, sp, #0x38
+    1000:	f92d77e8 	str	x8, [sp, #23272]
+    1004:	f81883a9 	stur	x9, [x29, #-120]
+    1008:	914017e8 	add	x8, sp, #0x5, lsl #12
+    100c:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			100c: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1010:	91000129 	add	x9, x9, #0x0
+			1010: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1014:	912b8108 	add	x8, x8, #0xae0
+    1018:	f92d8fe9 	str	x9, [sp, #23320]
+    101c:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			101c: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+    1020:	91000129 	add	x9, x9, #0x0
+			1020: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+    1024:	f92d8be8 	str	x8, [sp, #23312]
+    1028:	d101e3a8 	sub	x8, x29, #0x78
+    102c:	f92d93e8 	str	x8, [sp, #23328]
+    1030:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			1030: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+    1034:	91000108 	add	x8, x8, #0x0
+			1034: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+    1038:	f92d97e9 	str	x9, [sp, #23336]
+    103c:	52800069 	mov	w9, #0x3                   	// #3
+    1040:	a93c27a8 	stp	x8, x9, [x29, #-64]
+    1044:	914017e8 	add	x8, sp, #0x5, lsl #12
+    1048:	f81e03bf 	stur	xzr, [x29, #-32]
+    104c:	912c4108 	add	x8, x8, #0xb10
+    1050:	52800049 	mov	w9, #0x2                   	// #2
+    1054:	d10103a0 	sub	x0, x29, #0x40
+    1058:	a93d27a8 	stp	x8, x9, [x29, #-48]
+    105c:	94000000 	bl	0 <std::io::stdio::_eprint>
+			105c: R_AARCH64_CALL26	std::io::stdio::_eprint
+    1060:	52800040 	mov	w0, #0x2                   	// #2
+    1064:	94000000 	bl	0 <std::process::exit>
+			1064: R_AARCH64_CALL26	std::process::exit
+    1068:	52800168 	mov	w8, #0xb                   	// #11
+    106c:	9100e3e9 	add	x9, sp, #0x38
+    1070:	f92d8bf6 	str	x22, [sp, #23312]
+    1074:	f92d8fe8 	str	x8, [sp, #23320]
+    1078:	f81883a9 	stur	x9, [x29, #-120]
+    107c:	914017e8 	add	x8, sp, #0x5, lsl #12
+    1080:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1080: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1084:	91000129 	add	x9, x9, #0x0
+			1084: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1088:	912c4108 	add	x8, x8, #0xb10
+    108c:	f81503a8 	stur	x8, [x29, #-176]
+    1090:	d101e3a8 	sub	x8, x29, #0x78
+    1094:	14000044 	b	11a4 <extended_pilot::main+0x11a4>
+    1098:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1098: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6
+    109c:	91000129 	add	x9, x9, #0x0
+			109c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6
+    10a0:	52800148 	mov	w8, #0xa                   	// #10
+    10a4:	f92da3e9 	str	x9, [sp, #23360]
+    10a8:	9100e3e9 	add	x9, sp, #0x38
+    10ac:	f92da7e8 	str	x8, [sp, #23368]
+    10b0:	f92d8be9 	str	x9, [sp, #23312]
+    10b4:	914017e8 	add	x8, sp, #0x5, lsl #12
+    10b8:	912d0108 	add	x8, x8, #0xb40
+    10bc:	1400001b 	b	1128 <extended_pilot::main+0x1128>
+    10c0:	528001a8 	mov	w8, #0xd                   	// #13
+    10c4:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			10c4: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de
+    10c8:	91000129 	add	x9, x9, #0x0
+			10c8: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de
+    10cc:	1400002d 	b	1180 <extended_pilot::main+0x1180>
+    10d0:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			10d0: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada
+    10d4:	91000129 	add	x9, x9, #0x0
+			10d4: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada
+    10d8:	52800188 	mov	w8, #0xc                   	// #12
+    10dc:	f92d8be9 	str	x9, [sp, #23312]
+    10e0:	9100e3e9 	add	x9, sp, #0x38
+    10e4:	f92d8fe8 	str	x8, [sp, #23320]
+    10e8:	f92d73e9 	str	x9, [sp, #23264]
+    10ec:	914017e8 	add	x8, sp, #0x5, lsl #12
+    10f0:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			10f0: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    10f4:	91000129 	add	x9, x9, #0x0
+			10f4: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    10f8:	912c4108 	add	x8, x8, #0xb10
+    10fc:	f81503a8 	stur	x8, [x29, #-176]
+    1100:	914017e8 	add	x8, sp, #0x5, lsl #12
+    1104:	912b8108 	add	x8, x8, #0xae0
+    1108:	14000027 	b	11a4 <extended_pilot::main+0x11a4>
+    110c:	528002a8 	mov	w8, #0x15                  	// #21
+    1110:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1110: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39
+    1114:	91000129 	add	x9, x9, #0x0
+			1114: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39
+    1118:	a93223a9 	stp	x9, x8, [x29, #-224]
+    111c:	9100e3e9 	add	x9, sp, #0x38
+    1120:	f92d8be9 	str	x9, [sp, #23312]
+    1124:	d10383a8 	sub	x8, x29, #0xe0
+    1128:	f81503a8 	stur	x8, [x29, #-176]
+    112c:	914017e8 	add	x8, sp, #0x5, lsl #12
+    1130:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1130: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1134:	91000129 	add	x9, x9, #0x0
+			1134: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1138:	912c4108 	add	x8, x8, #0xb10
+    113c:	1400001a 	b	11a4 <extended_pilot::main+0x11a4>
+    1140:	52800368 	mov	w8, #0x1b                  	// #27
+    1144:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1144: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea
+    1148:	91000129 	add	x9, x9, #0x0
+			1148: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea
+    114c:	17ffffa6 	b	fe4 <extended_pilot::main+0xfe4>
+    1150:	90000002 	adrp	x2, 0 <extended_pilot::main>
+			1150: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad
+    1154:	91000042 	add	x2, x2, #0x0
+			1154: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad
+    1158:	aa0803e0 	mov	x0, x8
+    115c:	52800181 	mov	w1, #0xc                   	// #12
+    1160:	94000000 	bl	0 <core::panicking::panic_bounds_check>
+			1160: R_AARCH64_CALL26	core::panicking::panic_bounds_check
+    1164:	90000002 	adrp	x2, 0 <extended_pilot::main>
+			1164: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873
+    1168:	91000042 	add	x2, x2, #0x0
+			1168: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873
+    116c:	52800181 	mov	w1, #0xc                   	// #12
+    1170:	94000000 	bl	0 <core::panicking::panic_bounds_check>
+			1170: R_AARCH64_CALL26	core::panicking::panic_bounds_check
+    1174:	52800268 	mov	w8, #0x13                  	// #19
+    1178:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1178: R_AARCH64_ADR_PREL_PG_HI21	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138
+    117c:	91000129 	add	x9, x9, #0x0
+			117c: R_AARCH64_ADD_ABS_LO12_NC	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138
+    1180:	a93223a9 	stp	x9, x8, [x29, #-224]
+    1184:	9100e3e9 	add	x9, sp, #0x38
+    1188:	f92da3e9 	str	x9, [sp, #23360]
+    118c:	d10383a8 	sub	x8, x29, #0xe0
+    1190:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			1190: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1194:	91000129 	add	x9, x9, #0x0
+			1194: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17he0eca8908db0c495E
+    1198:	f81503a8 	stur	x8, [x29, #-176]
+    119c:	914017e8 	add	x8, sp, #0x5, lsl #12
+    11a0:	912d0108 	add	x8, x8, #0xb40
+    11a4:	a935a3a9 	stp	x9, x8, [x29, #-168]
+    11a8:	90000009 	adrp	x9, 0 <extended_pilot::main>
+			11a8: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+    11ac:	91000129 	add	x9, x9, #0x0
+			11ac: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h42a98dc259c74509E
+    11b0:	f81683a9 	stur	x9, [x29, #-152]
+    11b4:	90000008 	adrp	x8, 0 <extended_pilot::main>
+			11b4: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+    11b8:	91000108 	add	x8, x8, #0x0
+			11b8: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+    11bc:	52800069 	mov	w9, #0x3                   	// #3
+    11c0:	f81e03bf 	stur	xzr, [x29, #-32]
+    11c4:	a93c27a8 	stp	x8, x9, [x29, #-64]
+    11c8:	d102c3a8 	sub	x8, x29, #0xb0
+    11cc:	52800049 	mov	w9, #0x2                   	// #2
+    11d0:	d10103a0 	sub	x0, x29, #0x40
+    11d4:	a93d27a8 	stp	x8, x9, [x29, #-48]
+    11d8:	94000000 	bl	0 <std::io::stdio::_eprint>
+			11d8: R_AARCH64_CALL26	std::io::stdio::_eprint
+    11dc:	52800040 	mov	w0, #0x2                   	// #2
+    11e0:	94000000 	bl	0 <std::process::exit>
+			11e0: R_AARCH64_CALL26	std::process::exit
+
+Disassembly of section .text.main:
+
+0000000000000000 <main>:
+   0:	d10083ff 	sub	sp, sp, #0x20
+   4:	93407c02 	sxtw	x2, w0
+   8:	aa0103e3 	mov	x3, x1
+   c:	90000008 	adrp	x8, 0 <main>
+			c: R_AARCH64_ADR_PREL_PG_HI21	.text._ZN14extended_pilot4main17hca72231bfee5693fE
+  10:	91000108 	add	x8, x8, #0x0
+			10: R_AARCH64_ADD_ABS_LO12_NC	.text._ZN14extended_pilot4main17hca72231bfee5693fE
+  14:	90000001 	adrp	x1, 0 <main>
+			14: R_AARCH64_ADR_PREL_PG_HI21	.data.rel.ro..Lvtable.0
+  18:	91000021 	add	x1, x1, #0x0
+			18: R_AARCH64_ADD_ABS_LO12_NC	.data.rel.ro..Lvtable.0
+  1c:	910023e0 	add	x0, sp, #0x8
+  20:	2a1f03e4 	mov	w4, wzr
+  24:	a9017bfd 	stp	x29, x30, [sp, #16]
+  28:	910043fd 	add	x29, sp, #0x10
+  2c:	f90007e8 	str	x8, [sp, #8]
+  30:	94000000 	bl	0 <std::rt::lang_start_internal>
+			30: R_AARCH64_CALL26	std::rt::lang_start_internal
+  34:	a9417bfd 	ldp	x29, x30, [sp, #16]
+  38:	910083ff 	add	sp, sp, #0x20
+  3c:	d65f03c0 	ret

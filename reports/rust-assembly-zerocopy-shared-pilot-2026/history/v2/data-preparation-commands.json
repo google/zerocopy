@@ -1,0 +1,38 @@
+{
+  "kind": "owned Python integer/byte preparation only",
+  "preparation_revision": 2,
+  "python_version": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "display_projection": "Actual Python executable path is represented by portable python3; its actual resolved bytes and serialized actual argv are hashed. No subject command exists.",
+  "commands": [
+    {
+      "argv_display": [
+        "python3",
+        "prepare_oracles.py"
+      ],
+      "cwd_display": ".",
+      "actual_python_executable_sha256": "6e7ae61f68a3838094fc56590f84c52069a97d7816f6bb79e0e85995b340e464",
+      "actual_argv_sha256": "2926df61c590bc8b09ccaacd1efdd608d6b917ccde43838bb6c78ab9d017a4c3",
+      "exit": 0,
+      "elapsed_seconds": 0.025927583000000004,
+      "stdout_sha256": "d5b614632f172825f86337ca3fb834d7082deaf279cae4ece73999720ba5c8e5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "subject_compiled": false,
+      "subject_executed": false
+    },
+    {
+      "argv_display": [
+        "python3",
+        "check_preparation.py"
+      ],
+      "cwd_display": ".",
+      "actual_python_executable_sha256": "6e7ae61f68a3838094fc56590f84c52069a97d7816f6bb79e0e85995b340e464",
+      "actual_argv_sha256": "6e728732db150e4856046331180b4ba0a0985bcb00c146eb2bec4740a41e92eb",
+      "exit": 0,
+      "elapsed_seconds": 0.024929916999999996,
+      "stdout_sha256": "285bac7ee39be655b6aa0d551147b53f87f5a5fc5a9b405f5b4b9536cab365ff",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "subject_compiled": false,
+      "subject_executed": false
+    }
+  ]
+}

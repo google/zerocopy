@@ -1,0 +1,249 @@
+{
+  "status": "pure-data-header-record-regression-passed",
+  "checks_passed": 28,
+  "checks": [
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300b700",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300b600",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c460201010000000000000000000300b700",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300b700",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300b600",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c460201010300000000000000000300b700",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300b700",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300b600",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c460201010000000000000000000300b700",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003f00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c4602010103000000000000000003003e00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003f00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c4602010103000000000000000003003e00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010300000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c4602010103000000000000000003003f00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c4602010103000000000000000003003e00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+      "control": "old-18-reject",
+      "candidate_ELF_identity": "7f454c460201010000000000000000000300",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+      "control": "exact-20-accept",
+      "candidate_ELF_identity": "7f454c4602010100000000000000000003003e00",
+      "accepted": true,
+      "expected_acceptance": true,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+      "control": "changed-e_machine-reject",
+      "candidate_ELF_identity": "7f454c4602010100000000000000000003003f00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+      "control": "changed-earlier-byte-reject",
+      "candidate_ELF_identity": "7e454c4602010100000000000000000003003e00",
+      "accepted": false,
+      "expected_acceptance": false,
+      "pass": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-files.stdout",
+      "sha256": "9d55a8406dec0893cf2137a03f1922ca3e56c58f42e00f589da3cb8185c4ad18"
+    },
+    {
+      "path": "compile-static/inspection/runtime-library-files-read-only.stdout",
+      "sha256": "0d0cbbddc3326b10fcafaabc147531bc7c7e094cc912f52d178cb0d9e6c53257"
+    },
+    {
+      "path": "runtime-capture-policy.json",
+      "sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f"
+    }
+  ],
+  "actual_static_header_bytes": 20,
+  "failed_reader_header_bytes": 18,
+  "target_or_docker_invoked": false,
+  "mutant_executed": false,
+  "limit": "Exact retained record equality only; no instruction semantics or new target observation."
+}

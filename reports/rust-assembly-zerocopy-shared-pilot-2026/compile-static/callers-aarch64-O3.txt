@@ -1,0 +1,260 @@
+
+pilot_mul
+    97ec:	f2c6689a 	movk	x26, #0x3344, lsl #32
+    97f0:	5280011b 	mov	w27, #0x8                   	// #8
+    97f4:	f2e2245a 	movk	x26, #0x1122, lsl #48
+    97f8:	8b170268 	add	x8, x19, x23
+    97fc:	d2844238 	mov	x24, #0x2211                	// #8721
+    9800:	910022a2 	add	x2, x21, #0x8
+    9804:	f9521913 	ldr	x19, [x8, #9264]
+    9808:	f9521d14 	ldr	x20, [x8, #9272]
+    980c:	f2a88678 	movk	x24, #0x4433, lsl #16
+    9810:	f2cccab8 	movk	x24, #0x6655, lsl #32
+    9814:	f9522116 	ldr	x22, [x8, #9280]
+    9818:	f952251c 	ldr	x28, [x8, #9288]
+    981c:	f2f10ef8 	movk	x24, #0x8877, lsl #48
+    9820:	aa1303e0 	mov	x0, x19
+    9824:	aa1403e1 	mov	x1, x20
+    9828:	a900febf 	stp	xzr, xzr, [x21, #8]
+    982c:	f92da3fa 	str	x26, [sp, #23360]
+    9830:	f92daff8 	str	x24, [sp, #23384]
+    9834:	97ffff38 	bl	9514 <pilot_mul>
+    9838:	f96da3e8 	ldr	x8, [sp, #23360]
+    983c:	f96da7e9 	ldr	x9, [sp, #23368]
+    9840:	f96dabea 	ldr	x10, [sp, #23376]
+    9844:	a9325bba 	stp	x26, x22, [x29, #-224]
+    9848:	eb1a011f 	cmp	x8, x26
+
+pilot_add128
+    9940:	f94fe118 	ldr	x24, [x8, #8128]
+    9944:	914017e8 	add	x8, sp, #0x5, lsl #12
+    9948:	a93a2ba9 	stp	x9, x10, [x29, #-96]
+    994c:	fa4b0120 	ccmp	x9, x11, #0x0, eq	// eq = none
+    9950:	f2c6689c 	movk	x28, #0x3344, lsl #32
+    9954:	912b8108 	add	x8, x8, #0xae0
+    9958:	d10183a9 	sub	x9, x29, #0x60
+    995c:	f2cccab7 	movk	x23, #0x6655, lsl #32
+    9960:	f2e2245c 	movk	x28, #0x1122, lsl #48
+    9964:	9a880121 	csel	x1, x9, x8, eq	// eq = none
+    9968:	f2f10ef7 	movk	x23, #0x8877, lsl #48
+    996c:	d10183a0 	sub	x0, x29, #0x60
+    9970:	91002282 	add	x2, x20, #0x8
+    9974:	f92d73eb 	str	x11, [sp, #23264]
+    9978:	f92d77ec 	str	x12, [sp, #23272]
+    997c:	a900fe9f 	stp	xzr, xzr, [x20, #8]
+    9980:	f81203bc 	stur	x28, [x29, #-224]
+    9984:	f81383b7 	stur	x23, [x29, #-200]
+    9988:	97fffee7 	bl	9524 <pilot_add128>
+    998c:	a97227a8 	ldp	x8, x9, [x29, #-224]
+    9990:	eb1c011f 	cmp	x8, x28
+    9994:	a9732ba8 	ldp	x8, x10, [x29, #-208]
+    9998:	fa5b0120 	ccmp	x9, x27, #0x0, eq	// eq = none
+    999c:	fa5a0100 	ccmp	x8, x26, #0x0, eq	// eq = none
+
+pilot_bswap
+    9b70:	f00001e1 	adrp	x1, 48000 <_fini+0x8fb8>
+    9b74:	913b2021 	add	x1, x1, #0xec8
+    9b78:	f90037e8 	str	x8, [sp, #104]
+    9b7c:	910183e8 	add	x8, sp, #0x60
+    9b80:	52802202 	mov	w2, #0x110                 	// #272
+    9b84:	91004100 	add	x0, x8, #0x10
+    9b88:	97ffebba 	bl	4a70 <memcpy@plt>
+    9b8c:	aa1f03f9 	mov	x25, xzr
+    9b90:	9100e3fc 	add	x28, sp, #0x38
+    9b94:	5280013a 	mov	w26, #0x9                   	// #9
+    9b98:	528001bb 	mov	w27, #0xd                   	// #13
+    9b9c:	d0000216 	adrp	x22, 4b000 <_fini+0xbfb8>
+    9ba0:	913e52d6 	add	x22, x22, #0xf94
+    9ba4:	528002b5 	mov	w21, #0x15                  	// #21
+    9ba8:	910183e8 	add	x8, sp, #0x60
+    9bac:	8b190108 	add	x8, x8, x25
+    9bb0:	a9415d13 	ldp	x19, x23, [x8, #16]
+    9bb4:	aa1303e0 	mov	x0, x19
+    9bb8:	97fffe62 	bl	9540 <pilot_bswap>
+    9bbc:	d0000208 	adrp	x8, 4b000 <_fini+0xbfb8>
+    9bc0:	91394d09 	add	x9, x8, #0xe53
+    9bc4:	eb17001f 	cmp	x0, x23
+    9bc8:	52800108 	mov	w8, #0x8                   	// #8
+    9bcc:	f92da3fc 	str	x28, [sp, #23360]
+
+pilot_load
+    9cf8:	3d800be0 	str	q0, [sp, #32]
+    9cfc:	910183e8 	add	x8, sp, #0x60
+    9d00:	d28ef109 	mov	x9, #0x7788                	// #30600
+    9d04:	3dc00be0 	ldr	q0, [sp, #32]
+    9d08:	f8796913 	ldr	x19, [x8, x25]
+    9d0c:	d2844228 	mov	x8, #0x2211                	// #8721
+    9d10:	f2aaacc9 	movk	x9, #0x5566, lsl #16
+    9d14:	f2a88668 	movk	x8, #0x4433, lsl #16
+    9d18:	f2c66889 	movk	x9, #0x3344, lsl #32
+    9d1c:	91002340 	add	x0, x26, #0x8
+    9d20:	f2cccaa8 	movk	x8, #0x6655, lsl #32
+    9d24:	f2e22449 	movk	x9, #0x1122, lsl #48
+    9d28:	f92d6bf3 	str	x19, [sp, #23248]
+    9d2c:	f2f10ee8 	movk	x8, #0x8877, lsl #48
+    9d30:	f92d67e9 	str	x9, [sp, #23240]
+    9d34:	f92d6fe8 	str	x8, [sp, #23256]
+    9d38:	3d96bac0 	str	q0, [x22, #23264]
+    9d3c:	f92dabe8 	str	x8, [sp, #23376]
+    9d40:	97fffe02 	bl	9548 <pilot_load>
+    9d44:	aa0003f4 	mov	x20, x0
+    9d48:	91002340 	add	x0, x26, #0x8
+    9d4c:	97fffe76 	bl	9724 <extended_pilot::inline_load>
+    9d50:	eb13029f 	cmp	x20, x19
+    9d54:	54005921 	b.ne	a878 <extended_pilot::main+0x110c>  // b.any
+
+pilot_store
+    9d78:	91272508 	add	x8, x8, #0x9c9
+    9d7c:	f92d8bfc 	str	x28, [sp, #23312]
+    9d80:	3ccff100 	ldur	q0, [x8, #255]
+    9d84:	3d96eec0 	str	q0, [x22, #23472]
+    9d88:	a97c2fa8 	ldp	x8, x11, [x29, #-64]
+    9d8c:	eb08013f 	cmp	x9, x8
+    9d90:	d0000208 	adrp	x8, 4b000 <_fini+0xbfb8>
+    9d94:	913ccd09 	add	x9, x8, #0xf33
+    9d98:	fa4b0140 	ccmp	x10, x11, #0x0, eq	// eq = none
+    9d9c:	528002a8 	mov	w8, #0x15                  	// #21
+    9da0:	a93223a9 	stp	x9, x8, [x29, #-224]
+    9da4:	54005761 	b.ne	a890 <extended_pilot::main+0x1124>  // b.any
+    9da8:	f9401fe8 	ldr	x8, [sp, #56]
+    9dac:	b1000508 	adds	x8, x8, #0x1
+    9db0:	54004942 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    9db4:	b27d0360 	orr	x0, x27, #0x8
+    9db8:	aa1303e1 	mov	x1, x19
+    9dbc:	f9001fe8 	str	x8, [sp, #56]
+    9dc0:	97fffde4 	bl	9550 <pilot_store>
+    9dc4:	914017e8 	add	x8, sp, #0x5, lsl #12
+    9dc8:	f96da3ea 	ldr	x10, [sp, #23360]
+    9dcc:	f96da7eb 	ldr	x11, [sp, #23368]
+    9dd0:	91272508 	add	x8, x8, #0x9c9
+    9dd4:	f96dabed 	ldr	x13, [sp, #23376]
+
+pilot_copy16
+    a078:	a9012148 	stp	x8, x8, [x10, #16]
+    a07c:	b10006a8 	adds	x8, x21, #0x1
+    a080:	914017f5 	add	x21, sp, #0x5, lsl #12
+    a084:	912d02b5 	add	x21, x21, #0xb40
+    a088:	f92d7ff7 	str	x23, [sp, #23288]
+    a08c:	f92d7bf4 	str	x20, [sp, #23280]
+    a090:	f92d8feb 	str	x11, [sp, #23320]
+    a094:	f92d8beb 	str	x11, [sp, #23312]
+    a098:	a902312c 	stp	x12, x12, [x9, #32]
+    a09c:	f92da7eb 	str	x11, [sp, #23368]
+    a0a0:	f92da3eb 	str	x11, [sp, #23360]
+    a0a4:	a902314c 	stp	x12, x12, [x10, #32]
+    a0a8:	a9322fab 	stp	x11, x11, [x29, #-224]
+    a0ac:	a902332c 	stp	x12, x12, [x25, #32]
+    a0b0:	54003142 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    a0b4:	91004120 	add	x0, x9, #0x10
+    a0b8:	aa1303e1 	mov	x1, x19
+    a0bc:	f9001fe8 	str	x8, [sp, #56]
+    a0c0:	97fffd26 	bl	9558 <pilot_copy16>
+    a0c4:	910042a0 	add	x0, x21, #0x10
+    a0c8:	aa1303e1 	mov	x1, x19
+    a0cc:	97fffd2e 	bl	9584 <pilot_simd_copy16>
+    a0d0:	91004321 	add	x1, x25, #0x10
+    a0d4:	aa1303e0 	mov	x0, x19
+
+pilot_simd_copy16
+    a084:	912d02b5 	add	x21, x21, #0xb40
+    a088:	f92d7ff7 	str	x23, [sp, #23288]
+    a08c:	f92d7bf4 	str	x20, [sp, #23280]
+    a090:	f92d8feb 	str	x11, [sp, #23320]
+    a094:	f92d8beb 	str	x11, [sp, #23312]
+    a098:	a902312c 	stp	x12, x12, [x9, #32]
+    a09c:	f92da7eb 	str	x11, [sp, #23368]
+    a0a0:	f92da3eb 	str	x11, [sp, #23360]
+    a0a4:	a902314c 	stp	x12, x12, [x10, #32]
+    a0a8:	a9322fab 	stp	x11, x11, [x29, #-224]
+    a0ac:	a902332c 	stp	x12, x12, [x25, #32]
+    a0b0:	54003142 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    a0b4:	91004120 	add	x0, x9, #0x10
+    a0b8:	aa1303e1 	mov	x1, x19
+    a0bc:	f9001fe8 	str	x8, [sp, #56]
+    a0c0:	97fffd26 	bl	9558 <pilot_copy16>
+    a0c4:	910042a0 	add	x0, x21, #0x10
+    a0c8:	aa1303e1 	mov	x1, x19
+    a0cc:	97fffd2e 	bl	9584 <pilot_simd_copy16>
+    a0d0:	91004321 	add	x1, x25, #0x10
+    a0d4:	aa1303e0 	mov	x0, x19
+    a0d8:	97fffd9c 	bl	9748 <extended_pilot::zc_copy16>
+    a0dc:	91004301 	add	x1, x24, #0x10
+    a0e0:	aa1303e0 	mov	x0, x19
+
+pilot_ptr
+    a230:	b0000209 	adrp	x9, 4b000 <_fini+0xbfb8>
+    a234:	913c292b 	add	x11, x9, #0xf0a
+    a238:	fa540140 	ccmp	x10, x20, #0x0, eq	// eq = none
+    a23c:	52800189 	mov	w9, #0xc                   	// #12
+    a240:	a938a7ab 	stp	x11, x9, [x29, #-120]
+    a244:	54002581 	b.ne	a6f4 <extended_pilot::main+0xf88>  // b.any
+    a248:	b1000509 	adds	x9, x8, #0x1
+    a24c:	54002462 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    a250:	b1000528 	adds	x8, x9, #0x1
+    a254:	f9001fe9 	str	x9, [sp, #56]
+    a258:	54002402 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    a25c:	aa1f03f4 	mov	x20, xzr
+    a260:	91000739 	add	x25, x25, #0x1
+    a264:	f9001fe8 	str	x8, [sp, #56]
+    a268:	f100429f 	cmp	x20, #0x10
+    a26c:	aa1303e0 	mov	x0, x19
+    a270:	aa1403e1 	mov	x1, x20
+    a274:	9a940697 	cinc	x23, x20, ne	// ne = any
+    a278:	97fffcbb 	bl	9564 <pilot_ptr>
+    a27c:	8b140268 	add	x8, x19, x20
+    a280:	eb08001f 	cmp	x0, x8
+    a284:	54002301 	b.ne	a6e4 <extended_pilot::main+0xf78>  // b.any
+    a288:	aa0003f5 	mov	x21, x0
+    a28c:	aa1303e0 	mov	x0, x19
+
+pilot_simd_add16
+    a368:	54002aa2 	b.cs	a8bc <extended_pilot::main+0x1150>  // b.hs, b.nlast
+    a36c:	8b08115b 	add	x27, x10, x8, lsl #4
+    a370:	d10383a9 	sub	x9, x29, #0xe0
+    a374:	a93233ac 	stp	x12, x12, [x29, #-224]
+    a378:	a902352d 	stp	x13, x13, [x9, #32]
+    a37c:	b202e7e9 	mov	x9, #0xcccccccccccccccc    	// #-3689348814741910324
+    a380:	3dc00360 	ldr	q0, [x27]
+    a384:	a9012569 	stp	x9, x9, [x11, #16]
+    a388:	b10006a9 	adds	x9, x21, #0x1
+    a38c:	a93533ac 	stp	x12, x12, [x29, #-176]
+    a390:	3d800280 	str	q0, [x20]
+    a394:	a902356d 	stp	x13, x13, [x11, #32]
+    a398:	54001a02 	b.cs	a6d8 <extended_pilot::main+0xf6c>  // b.hs, b.nlast
+    a39c:	eb08001f 	cmp	x0, x8
+    a3a0:	91004160 	add	x0, x11, #0x10
+    a3a4:	aa1303e1 	mov	x1, x19
+    a3a8:	9a940262 	csel	x2, x19, x20, eq	// eq = none
+    a3ac:	f9001fe9 	str	x9, [sp, #56]
+    a3b0:	97fffc78 	bl	9590 <pilot_simd_add16>
+    a3b4:	d10183a0 	sub	x0, x29, #0x60
+    a3b8:	aa1303e1 	mov	x1, x19
+    a3bc:	aa1403e2 	mov	x2, x20
+    a3c0:	97fffcc2 	bl	96c8 <extended_pilot::rust_add16>
+    a3c4:	a97623a9 	ldp	x9, x8, [x29, #-160]
+
+pilot_call_helper
+    a504:	97ffe95b 	bl	4a70 <memcpy@plt>
+    a508:	928362f6 	mov	x22, #0xffffffffffffe4e8    	// #-6936
+    a50c:	d0000338 	adrp	x24, 70000 <__dso_handle>
+    a510:	9100e3fb 	add	x27, sp, #0x38
+    a514:	52800235 	mov	w21, #0x11                  	// #17
+    a518:	b0000217 	adrp	x23, 4b000 <_fini+0xbfb8>
+    a51c:	913ab2f7 	add	x23, x23, #0xeac
+    a520:	b0000219 	adrp	x25, 4b000 <_fini+0xbfb8>
+    a524:	913af739 	add	x25, x25, #0xebd
+    a528:	528002da 	mov	w26, #0x16                  	// #22
+    a52c:	910183e8 	add	x8, sp, #0x60
+    a530:	8b160108 	add	x8, x8, x22
+    a534:	f94d9513 	ldr	x19, [x8, #6952]
+    a538:	f94d9914 	ldr	x20, [x8, #6960]
+    a53c:	f94d9d1c 	ldr	x28, [x8, #6968]
+    a540:	f904bf1f 	str	xzr, [x24, #2424]
+    a544:	aa1303e0 	mov	x0, x19
+    a548:	aa1403e1 	mov	x1, x20
+    a54c:	97fffc08 	bl	956c <pilot_call_helper>
+    a550:	eb1c001f 	cmp	x0, x28
+    a554:	54001c61 	b.ne	a8e0 <extended_pilot::main+0x1174>  // b.any
+    a558:	d29950e8 	mov	x8, #0xca87                	// #51847
+    a55c:	b0000209 	adrp	x9, 4b000 <_fini+0xbfb8>
+    a560:	913a212a 	add	x10, x9, #0xe88

@@ -1,0 +1,7 @@
+{
+  "stage": "aarch64-O0-positive-before",
+  "exception": "CaptureStop('Metadata capture failed: aarch64-O0-positive-before-files')",
+  "stop_dependent_work": true,
+  "retry_performed": false,
+  "completed_positive_summaries": []
+}

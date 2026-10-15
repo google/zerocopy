@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/path/to/docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "/usr/bin/python3",
+    "-c",
+    "\"\"\"Read-only identities for the two parent-authorized reader/wrapper tools.\"\"\"\nfrom pathlib import Path\nimport hashlib\nimport json\nimport os\nimport stat\nimport sys\n\n\ndef digest(path):\n    result = hashlib.sha256()\n    with path.open(\"rb\") as stream:\n        for chunk in iter(lambda: stream.read(1024 * 1024), b\"\"):\n            result.update(chunk)\n    return result.hexdigest()\n\n\ndef identify(name):\n    path = Path(name)\n    resolved = path.resolve(strict=True)\n    link = os.readlink(path) if path.is_symlink() else None\n    return {\"path\": str(path), \"resolved\": str(resolved),\n            \"bytes\": path.stat().st_size, \"sha256\": digest(path),\n            \"mode\": oct(stat.S_IMODE(path.stat().st_mode)),\n            \"path_is_symlink\": path.is_symlink(),\n            \"path_lstat_mode\": oct(stat.S_IMODE(path.lstat().st_mode)),\n            \"link_target\": link,\n            \"link_literal_sha256\": hashlib.sha256(os.fsencode(link)).hexdigest() if link is not None else None,\n            \"resolved_target\": {\"path\": str(resolved), \"bytes\": resolved.stat().st_size,\n                                \"sha256\": digest(resolved),\n                                \"mode\": oct(stat.S_IMODE(resolved.stat().st_mode))}}\n\n\nprint(json.dumps({\"actual_python_executable\": sys.executable,\n                  \"python_version\": sys.version,\n                  \"tools\": [identify(\"/usr/bin/env\"), identify(\"/usr/bin/python3\")],\n                  \"scope\": \"Read-only file identity; trusted reader/wrapper implementations; no target call\"}, indent=2))\n"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.073931125,
+  "query_source_sha256": "25b446a77a4e2ddc6ca3f1fc34f933b02adcb9d018e085963d1df352d81987f4",
+  "stdout_sha256": "21b10088160dcdd29664929b96a8edc4bfbb726f8c7082efecdd807863fb27f9",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Parent-authorized read-only env/Python identity query only; no target or other container action"
+}

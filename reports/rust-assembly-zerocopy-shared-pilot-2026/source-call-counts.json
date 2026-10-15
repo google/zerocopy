@@ -1,0 +1,39 @@
+{
+  "role": "Derived source-loop counts per target/profile; not hardware trace/call counters",
+  "pilot_sha256": "1b9466576e315530e54eea9622d102e59ae219177473440c2ebade46fd9e4616",
+  "whole_assembly_entry_source_invocations": {
+    "pilot_mul": 289,
+    "pilot_add128": 144,
+    "pilot_bswap": 17,
+    "pilot_load": 17,
+    "pilot_store": 17,
+    "pilot_copy16": 12,
+    "pilot_ptr": 204,
+    "pilot_call_helper": 289,
+    "pilot_simd_copy16": 12,
+    "pilot_simd_add16": 144
+  },
+  "whole_total": 1145,
+  "inline_wrapper_source_invocations": {
+    "inline_carry": 578,
+    "inline_load": 17,
+    "inline_store": 17,
+    "inline_label": 17
+  },
+  "inline_total": 629,
+  "harness_check_source_count_formula": {
+    "layout": 1,
+    "mul": 578,
+    "add128": 288,
+    "carry_domain_inline_rust": 1734,
+    "swap_rust_zerocopy": 85,
+    "word_load_store_label": 85,
+    "copy_guards_view_and_pointer": 252,
+    "simd_add_align_lanes_frame": 432,
+    "helper_assembly_rust_counters": 1156,
+    "safe_size_errors": 6
+  },
+  "harness_checks_per_profile": 4617,
+  "actual_observation": "Each image printed checks=4617 and exit0, while source/caller/bytes were inspected. Runtime stdout does not enumerate individual foreign-call hits.",
+  "limits": "Rust baselines/domain/guards contribute to4617; optimized wrappers/private Rust calls may inline/fold. Helper callbacks are additional selected callee behavior, not additional whole-assembly entry names."
+}

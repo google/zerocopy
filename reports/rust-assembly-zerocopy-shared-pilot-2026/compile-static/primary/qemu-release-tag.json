@@ -1,0 +1,24 @@
+{
+  "node_id": "TA_kwDOAFImM9oAKDE2NmIyM2YxM2MxYmJmYmU0OTNiNDMzNmRlN2YxYjEyZjI0NWE5ZmI",
+  "sha": "166b23f13c1bbfbe493b4336de7f1b12f245a9fb",
+  "url": "https://api.github.com/repos/qemu/qemu/git/tags/166b23f13c1bbfbe493b4336de7f1b12f245a9fb",
+  "tagger": {
+    "name": "Michael Tokarev",
+    "email": "mjt@tls.msk.ru",
+    "date": "2025-12-05T07:23:51Z"
+  },
+  "object": {
+    "sha": "30a68773a4de9960647aa82718e5b8dafea05e7a",
+    "type": "commit",
+    "url": "https://api.github.com/repos/qemu/qemu/git/commits/30a68773a4de9960647aa82718e5b8dafea05e7a"
+  },
+  "tag": "v7.2.22",
+  "message": "v7.2.22 release\n-----BEGIN PGP SIGNATURE-----\n\niQIzBAABCgAdFiEEZKoqtTHVaQM2a/75gqpKJDselHgFAmkyiIcACgkQgqpKJDse\nlHgK8hAAkCbXROkarcw6jQeNWc071OezZnzu6FNHEr/wfrvz3t/GKjwaYvKXDKbw\n+V+F6SDktxSaPZSSN/FKsvIsNXQkpiqvBznfgaH6RhwQx/ZeNTaXef0L55+tJYgw\nchYReGRvueKCiutGRBM8IMYzIG/7o48T/A3YSE3GoD6QZrRBpJxnVVx5SWnFGTzI\nOfwpf/vmpTfMY9iwseyBgRL78juCfM+WPUslxZIod48b3l4VCCiS5k8vvtfi5e+L\n3Qu7BV/NSSOULz12wOGF1+RcYyv25yqd3OKcSDeSdPTHSqh7LMXmnyZ/QV04Qeln\naTUvldq4Z/rRfaSDqZxXXPBW1zPGZJCesuI0rYozXvWNuTV5HFU2SfT44YHcvgc0\nEB/QgokjpAxo8j/VG2gQroM6LG8eulGD5i4FE+9PV8g6RYe7hWGGb71h5BVchCee\nH4PP8vfcxPAa3Pq+aL0M0VwGhWMVsG6yUh2KJXp7SJBN3UxdlZH00lp3JxuFPZBe\n5/aXrl+RjN7kMRQYDnNxHWcvPNHC4BVRKZbcoruYiKMIFdynbRha9UDAxqtLU9Qh\nEdRc0h+GCeW8P63Xvts5M47AdAmmkS+8Pa1C+zhfjvWNjsdBdbWu7+MoHYUfumEp\ndxWG36iDjxPVlHuWw2GrPscRzSzGtRnc/bWKMGLpmjjzkt7i5UM=\n=gfOQ\n-----END PGP SIGNATURE-----\n",
+  "verification": {
+    "verified": false,
+    "reason": "no_user",
+    "signature": "-----BEGIN PGP SIGNATURE-----\n\niQIzBAABCgAdFiEEZKoqtTHVaQM2a/75gqpKJDselHgFAmkyiIcACgkQgqpKJDse\nlHgK8hAAkCbXROkarcw6jQeNWc071OezZnzu6FNHEr/wfrvz3t/GKjwaYvKXDKbw\n+V+F6SDktxSaPZSSN/FKsvIsNXQkpiqvBznfgaH6RhwQx/ZeNTaXef0L55+tJYgw\nchYReGRvueKCiutGRBM8IMYzIG/7o48T/A3YSE3GoD6QZrRBpJxnVVx5SWnFGTzI\nOfwpf/vmpTfMY9iwseyBgRL78juCfM+WPUslxZIod48b3l4VCCiS5k8vvtfi5e+L\n3Qu7BV/NSSOULz12wOGF1+RcYyv25yqd3OKcSDeSdPTHSqh7LMXmnyZ/QV04Qeln\naTUvldq4Z/rRfaSDqZxXXPBW1zPGZJCesuI0rYozXvWNuTV5HFU2SfT44YHcvgc0\nEB/QgokjpAxo8j/VG2gQroM6LG8eulGD5i4FE+9PV8g6RYe7hWGGb71h5BVchCee\nH4PP8vfcxPAa3Pq+aL0M0VwGhWMVsG6yUh2KJXp7SJBN3UxdlZH00lp3JxuFPZBe\n5/aXrl+RjN7kMRQYDnNxHWcvPNHC4BVRKZbcoruYiKMIFdynbRha9UDAxqtLU9Qh\nEdRc0h+GCeW8P63Xvts5M47AdAmmkS+8Pa1C+zhfjvWNjsdBdbWu7+MoHYUfumEp\ndxWG36iDjxPVlHuWw2GrPscRzSzGtRnc/bWKMGLpmjjzkt7i5UM=\n=gfOQ\n-----END PGP SIGNATURE-----\n",
+    "payload": "object 30a68773a4de9960647aa82718e5b8dafea05e7a\ntype commit\ntag v7.2.22\ntagger Michael Tokarev <mjt@tls.msk.ru> 1764919431 +0300\n\nv7.2.22 release\n",
+    "verified_at": null
+  }
+}

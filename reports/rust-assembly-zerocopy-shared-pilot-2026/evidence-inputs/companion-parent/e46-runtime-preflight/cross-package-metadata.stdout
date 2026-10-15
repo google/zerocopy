@@ -1,0 +1,388 @@
+Package: gcc-12-x86-64-linux-gnu-base
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 100
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: arm64
+Breaks: gnat (<< 7)
+Description: GCC, the GNU Compiler Collection (base package)
+Description-md5: b6e93638a6d08ea7a18929d7cf078e5d
+Multi-Arch: same
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/gcc-12-x86-64-linux-gnu-base_12.2.0-14cross1_arm64.deb
+Size: 37696
+MD5sum: f70b1ad2456d5fc793c61b2b0365cc12
+SHA256: 7c3f7dd786947e4782a20e1a1287c10cb2be1a03c10d7cbf14d8395e47df326c
+
+Package: cpp-12-x86-64-linux-gnu
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 31941
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: arm64
+Depends: gcc-12-x86-64-linux-gnu-base (= 12.2.0-14cross1), libc6 (>= 2.36), libgmp10 (>= 2:6.2.1+dfsg1), libisl23 (>= 0.15), libmpc3 (>= 1.1.0), libmpfr6 (>= 3.1.3), libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Suggests: gcc-12-locales (>= 12), cpp-12-doc (>= 12)
+Breaks: libmagics++-dev (<< 2.28.0-4)
+Description: GNU C preprocessor
+Description-md5: 19592ef74b19df819d4a3dd5bc0d7ecc
+Multi-Arch: foreign
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/cpp-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb
+Size: 8764116
+MD5sum: d86a88b6d8d0cee192c1faefb722149f
+SHA256: 920e889328a3165fcdbde222db0c2024adf66181d424941be6f8dd4eb66d59e7
+
+Package: cpp-x86-64-linux-gnu
+Source: gcc-defaults (1.203)
+Version: 4:12.2.0-3
+Installed-Size: 16
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: arm64
+Depends: cpp-12-x86-64-linux-gnu (>= 12.2.0-1~)
+Suggests: cpp-doc
+Description: GNU C preprocessor (cpp) for the amd64 architecture
+Description-md5: 3fbc5e8c78ef39c4933d03ea07322966
+Multi-Arch: foreign
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-defaults/cpp-x86-64-linux-gnu_12.2.0-3_arm64.deb
+Size: 3980
+MD5sum: 8e44bcee4fbe2edb72f523bd15db5e64
+SHA256: 8d637d1c3b97ae5a77f7f56bee70610b52b0fcfcd9c1263d675f81992793cdc3
+
+Package: binutils-x86-64-linux-gnu
+Source: binutils
+Version: 2.40-2
+Installed-Size: 14405
+Maintainer: Matthias Klose <doko@debian.org>
+Architecture: arm64
+Replaces: binutils (<< 2.29-6), binutils-dev (<< 2.38.50.20220609-2)
+Depends: binutils-common (= 2.40-2), libbinutils (>= 2.39.50), libc6 (>= 2.36), libgcc-s1 (>= 4.2), libjansson4 (>= 2.14), libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Suggests: binutils-doc (= 2.40-2)
+Breaks: binutils (<< 2.29-6), binutils-dev (<< 2.38.50.20220609-2)
+Description: GNU binary utilities, for x86-64-linux-gnu target
+Description-md5: 7656652c296f89ae4e4e73a71d3c84f9
+Multi-Arch: allowed
+Homepage: https://www.gnu.org/software/binutils/
+Section: devel
+Priority: extra
+Filename: pool/main/b/binutils/binutils-x86-64-linux-gnu_2.40-2_arm64.deb
+Size: 2368284
+MD5sum: 8c6f2f719f96744ba343c2ed2d5e27f1
+SHA256: 01db01c3506e3d135c1ee3156e8ec6717a31f1986b8187fdae0b3533243e0e25
+
+Package: libgcc-s1-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 140
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Replaces: libgcc1-amd64-cross (<< 1:10)
+Provides: libgcc-s1-amd64-dcv1, libgcc1-amd64-cross (= 1:12.2.0-14)
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.35)
+Breaks: libgcc1-amd64-cross (<< 1:10)
+Description: GCC support library (amd64)
+Description-md5: dbd58de92a4101b2b20e035a2233fc65
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libgcc-s1-amd64-cross_12.2.0-14cross1_all.deb
+Size: 49860
+MD5sum: 23db57991c8c9ed8641441c77cbf72cb
+SHA256: b432ba4cfc37d81fc9efe03da3c706eaa64859513f496397c56d11c08262994f
+
+Package: libgomp1-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 294
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34)
+Description: GCC OpenMP (GOMP) support library
+Description-md5: 9651123458dd1bf3c162dfb6a6292ff4
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libgomp1-amd64-cross_12.2.0-14cross1_all.deb
+Size: 113568
+MD5sum: a133a0de786bd6919f180b6e1e9fd548
+SHA256: f3ae7df016ec6ed06f653635691ffeebdf1af327678faac9dc4142383f9eee68
+
+Package: libitm1-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 109
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34)
+Description: GNU Transactional Memory Library
+Description-md5: 353dc4001cbe783e9f0a27c29f5dc3b5
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libitm1-amd64-cross_12.2.0-14cross1_all.deb
+Size: 25524
+MD5sum: faa983ae9e13486f6f65b2d4f9e39cd5
+SHA256: ba3fea5b302e65e88e9c937fe231478d63dec9a46e3faa59ad1886145c21e400
+
+Package: libatomic1-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 40
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.14)
+Description: support library providing __atomic built-in functions
+Description-md5: 16938852526fc26bdbcb46c18435ed08
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libatomic1-amd64-cross_12.2.0-14cross1_all.deb
+Size: 9084
+MD5sum: fb5616c9c4402dabc4d8fbb4130e0900
+SHA256: f27d207736a491041b4a5815e326eb0d7066a4b84742504656f40b18f5833cbc
+
+Package: libasan8-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 8017
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34), libgcc-s1-amd64-cross (>= 3.3)
+Description: AddressSanitizer -- a fast memory error detector
+Description-md5: 04e20d522e263c6563c2ea719c87026f
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libasan8-amd64-cross_12.2.0-14cross1_all.deb
+Size: 2193952
+MD5sum: f1dd28f8f93f80a4bc267980bf5893f4
+SHA256: 876b20dd4d6e00475211156163629c0e14d1e09dcbc831220f29c1a115708129
+
+Package: liblsan0-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 2936
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34), libgcc-s1-amd64-cross (>= 3.3)
+Description: LeakSanitizer -- a memory leak detector (runtime)
+Description-md5: fd77936d8cda7d6af8bc33d6f395c678
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/liblsan0-amd64-cross_12.2.0-14cross1_all.deb
+Size: 968484
+MD5sum: de6baa1048d30a05c90e0d92ff75a0b4
+SHA256: ffe358486c406f9134c74ebf6c6763a964f0b42c0bdecc6b1c5772beb5f5054a
+
+Package: libtsan2-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 7815
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34), libgcc-s1-amd64-cross (>= 3.3)
+Description: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
+Description-md5: 750c144e4cc79bcf76c58f43c882ff70
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libtsan2-amd64-cross_12.2.0-14cross1_all.deb
+Size: 2196868
+MD5sum: 8fb7b5eb5ab2c5c35dfda40499edf159
+SHA256: 0eeef35ab003f38b71a28bced43028d02fb2c61405fdc73ddf6a94a197b6b0fd
+
+Package: libc6-amd64-cross
+Source: cross-toolchain-base (66)
+Version: 2.36-8cross1
+Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>
+Architecture: all
+Replaces: libc6-amd64-amd64-cross
+Provides: libc6-amd64-dcv1
+Description: GNU C Library: Shared libraries (for cross-compiling)
+Description-md5: b266351f0a5ff19b39a85a1e2ab438d7
+Multi-Arch: foreign
+Built-Using: binutils (= 2.40-2), linux (= 6.1.4-1), gcc-12 (= 12.2.0-14), glibc (= 2.36-8)
+Tag: role::shared-lib
+Section: libs
+Priority: optional
+Filename: pool/main/c/cross-toolchain-base/libc6-amd64-cross_2.36-8cross1_all.deb
+Size: 1471600
+MD5sum: 2c56aed68b932080e545a3054b97b2c8
+SHA256: e410f3d2da35bccf757976d38e6a309d4d94d25c0dfde565a9662e3f75951b2c
+
+Package: libstdc++6-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 2157
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Replaces: libstdc++6-12-dbg-amd64-cross (<< 4.9.0-3)
+Provides: libstdc++6-amd64-dcv1
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6-amd64-cross (>= 2.23), libc6 (>= 2.36), libgcc-s1-amd64-cross (>= 4.2)
+Conflicts: scim (<< 1.4.2-1)
+Description: GNU Standard C++ Library v3 (amd64)
+Description-md5: 5e49ca869389309d7a1689d9c5c97e1a
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libstdc++6-amd64-cross_12.2.0-14cross1_all.deb
+Size: 570416
+MD5sum: 57d9b8b3fd6e83f688645e059b457abd
+SHA256: ad91d29ea6b2a819fe6f79138fee2ce4c1a1dbe7fcd355c3a8f27e8c3d13dd88
+
+Package: libubsan1-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 2646
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.34), libgcc-s1-amd64-cross (>= 3.3), libstdc++6-amd64-cross
+Description: UBSan -- undefined behaviour sanitizer (runtime)
+Description-md5: 0d50b6d1808d18442db720f04627b846
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libubsan1-amd64-cross_12.2.0-14cross1_all.deb
+Size: 882456
+MD5sum: c512cab4040bddf930f7a918bb5b3df5
+SHA256: 02503858cdd30e0adae9105259723779355fd16ff1ee119e67c6618496a461f6
+
+Package: libquadmath0-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 289
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Depends: gcc-12-cross-base (>= 12.2.0-14), libc6 (>= 2.23)
+Description: GCC Quad-Precision Math Library
+Description-md5: fb375c278b15a5774cef34cf9570ecc9
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libquadmath0-amd64-cross_12.2.0-14cross1_all.deb
+Size: 144384
+MD5sum: 08f66b81b132d9016d85c40783b8eefd
+SHA256: e7a8f1f9b599ff3819b2f658fec8dfa773b0fad26afbd2e56ea49a36531b8b6b
+
+Package: libgcc-12-dev-amd64-cross
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 14284
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: all
+Replaces: libtsan2-amd64-cross (<< 12-20211113-2~)
+Depends: gcc-12-cross-base (>= 12.2.0-14), libgcc-s1-amd64-cross (>= 12.2.0-14cross1), libgomp1-amd64-cross (>= 12.2.0-14cross1), libitm1-amd64-cross (>= 12.2.0-14cross1), libatomic1-amd64-cross (>= 12.2.0-14cross1), libasan8-amd64-cross (>= 12.2.0-14cross1), liblsan0-amd64-cross (>= 12.2.0-14cross1), libtsan2-amd64-cross (>= 12.2.0-14cross1), libubsan1-amd64-cross (>= 12.2.0-14cross1), libquadmath0-amd64-cross (>= 12.2.0-14cross1)
+Recommends: libc6-dev-amd64-cross (>= 2.23-1~)
+Breaks: libtsan2-amd64-cross (<< 12-20211113-2~)
+Description: GCC support library (development files)
+Description-md5: 4ab7cb439b47e1d0796fbaf8447229ac
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Tag: devel::library, role::devel-lib
+Section: libdevel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/libgcc-12-dev-amd64-cross_12.2.0-14cross1_all.deb
+Size: 2436652
+MD5sum: 31f0f665b63003765c0a9a22beb1e089
+SHA256: 51934acb03f4345c98da94c6b759e6e3246b809f343f2d07795a132c072541ca
+
+Package: gcc-12-x86-64-linux-gnu
+Source: gcc-12-cross (15)
+Version: 12.2.0-14cross1
+Installed-Size: 65196
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: arm64
+Replaces: cpp-12-x86-64-linux-gnu (<< 7.1.1-8)
+Provides: c-compiler-x86-64-linux-gnu
+Depends: cpp-12-x86-64-linux-gnu (= 12.2.0-14cross1), gcc-12-x86-64-linux-gnu-base (= 12.2.0-14cross1), libcc1-0 (>= 12), binutils-x86-64-linux-gnu (>= 2.40), libgcc-12-dev-amd64-cross (>= 12.2.0-14cross1), libc6 (>= 2.36), libgcc-s1 (>= 3.0), libgmp10 (>= 2:6.2.1+dfsg1), libisl23 (>= 0.15), libmpc3 (>= 1.1.0), libmpfr6 (>= 3.1.3), libstdc++6 (>= 5), libzstd1 (>= 1.5.2), zlib1g (>= 1:1.1.4)
+Recommends: libc6-dev-amd64-cross (>= 2.23-1~)
+Suggests: gcc-12-multilib-x86-64-linux-gnu, gcc-12-doc (>= 12), gcc-12-locales (>= 12)
+Conflicts: gcc-multilib
+Description: GNU C compiler (cross compiler for amd64 architecture)
+Description-md5: 27ad2535df4dd16de394d9e004be6da7
+Multi-Arch: foreign
+Homepage: http://gcc.gnu.org/
+Built-Using: gcc-12 (= 12.2.0-14)
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-12-cross/gcc-12-x86-64-linux-gnu_12.2.0-14cross1_arm64.deb
+Size: 17390664
+MD5sum: 73c38665a3f02c473a1b2757365709d4
+SHA256: 8ce1b9395390e513a0c1de952527e8ce362049eea58c5df25c39562868bf0172
+
+Package: gcc-x86-64-linux-gnu
+Source: gcc-defaults (1.203)
+Version: 4:12.2.0-3
+Installed-Size: 25
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: arm64
+Depends: cpp-x86-64-linux-gnu (= 4:12.2.0-3), gcc-12-x86-64-linux-gnu (>= 12.2.0-1~)
+Recommends: libc6-dev-amd64-cross | libc-dev-amd64-cross
+Suggests: make, manpages-dev, autoconf, automake, libtool, flex, bison, gdb-x86-64-linux-gnu, gcc-doc
+Description: GNU C compiler for the amd64 architecture
+Description-md5: 74fd7698add747ec9f3ca61030b62c40
+Multi-Arch: foreign
+Section: devel
+Priority: optional
+Filename: pool/main/g/gcc-defaults/gcc-x86-64-linux-gnu_12.2.0-3_arm64.deb
+Size: 1472
+MD5sum: b9adbbdc1270bbf94226656add37ee43
+SHA256: a688ffa97d9fc578959c37f4f1a1825b7f65f8306f3e4076bdb4eae549b02e63
+
+Package: linux-libc-dev-amd64-cross
+Source: cross-toolchain-base (66)
+Version: 6.1.4-1cross1
+Installed-Size: 7123
+Maintainer: Cross Toolchain Base Team <cross-toolchain-base-devs@lists.launchpad.net>
+Architecture: all
+Provides: linux-kernel-headers-amd64-cross, linux-libc-dev-amd64-dcv1
+Description: Linux Kernel Headers for development (for cross-compiling)
+Description-md5: 1451bbb6883623d253eaf0cf7565213a
+Multi-Arch: foreign
+Built-Using: linux (= 6.1.4-1)
+Section: devel
+Priority: optional
+Filename: pool/main/c/cross-toolchain-base/linux-libc-dev-amd64-cross_6.1.4-1cross1_all.deb
+Size: 1838924
+MD5sum: 5d4aef784ae08267621ed78872aedaa8
+SHA256: b7ec9f95d20bd4669119201ec6a1ac372189fc222d35f21631bb79b723519293
+
+Package: libc6-dev-amd64-cross
+Source: cross-toolchain-base (66)
+Version: 2.36-8cross1
+Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>
+Architecture: all
+Replaces: libc6-amd64-cross (<= 2.32-1)
+Provides: libc-dev-amd64-cross (= 2.36-8), libc6-dev-amd64-dcv1
+Depends: libc6-amd64-cross (= 2.36-8cross1), linux-libc-dev-amd64-cross
+Conflicts: libc0.1-dev-amd64-cross, libc0.3-dev-amd64-cross, libc6.1-dev-amd64-cross
+Description: GNU C Library: Development Libraries and Header Files (for cross-compiling)
+Description-md5: fc7d1124da33f2f1ca4b4e0833019db4
+Multi-Arch: foreign
+Built-Using: binutils (= 2.40-2), linux (= 6.1.4-1), gcc-12 (= 12.2.0-14), glibc (= 2.36-8)
+Tag: devel::library, role::devel-lib
+Section: libdevel
+Priority: optional
+Filename: pool/main/c/cross-toolchain-base/libc6-dev-amd64-cross_2.36-8cross1_all.deb
+Size: 1893992
+MD5sum: b12e03f9517268d6ddb0d0c9536415f8
+SHA256: 197b497ed91056e6c4093b0972296199260424f24943d7108a8124cc7de750d6
+

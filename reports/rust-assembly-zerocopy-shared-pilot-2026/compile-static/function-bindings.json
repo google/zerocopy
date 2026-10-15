@@ -1,0 +1,3490 @@
+{
+  "status": "static-data-only",
+  "subject_executed": false,
+  "reader": "owned unverified ELF64LE parser, cross-checked with captured GNU objdump",
+  "limits": "Not an ISA decoder/reference semantics theorem or compiler proof; Rust function relocation bodies are hashed, not universally validated.",
+  "images": [
+    {
+      "arch": "aarch64",
+      "opt": 0,
+      "object_sha256": "0f1c90ffb65103b3b912efa9542d80b5d6017eb65c7f990d75df9ea8e5f58bb8",
+      "image_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "functions": [
+        {
+          "name": "pilot_mul",
+          "object": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 2,
+              "value": 0,
+              "size": 16
+            },
+            "file_offset": 64,
+            "bytes": 16,
+            "hex": "037c019b047cc19b431000a9c0035fd6",
+            "sha256": "e29fb585cdaf61bf7a661a3bb754cf3dfc0221dfaff54cbdac57dd847e5b056c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 13,
+              "value": 40148,
+              "size": 16
+            },
+            "file_offset": 40148,
+            "bytes": 16,
+            "hex": "037c019b047cc19b431000a9c0035fd6",
+            "sha256": "e29fb585cdaf61bf7a661a3bb754cf3dfc0221dfaff54cbdac57dd847e5b056c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_add128",
+          "object": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 2,
+              "value": 16,
+              "size": 28
+            },
+            "file_offset": 80,
+            "bytes": 28,
+            "hex": "031040a9251840a9630005ab840006bae0379f9a431000a9c0035fd6",
+            "sha256": "f2b19776e3e0bc65430235fc73ddcc5e20455c560e4f9b0db1d5e556812ff96c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 13,
+              "value": 40164,
+              "size": 28
+            },
+            "file_offset": 40164,
+            "bytes": 28,
+            "hex": "031040a9251840a9630005ab840006bae0379f9a431000a9c0035fd6",
+            "sha256": "f2b19776e3e0bc65430235fc73ddcc5e20455c560e4f9b0db1d5e556812ff96c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_bswap",
+          "object": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 2,
+              "value": 44,
+              "size": 8
+            },
+            "file_offset": 108,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 13,
+              "value": 40192,
+              "size": 8
+            },
+            "file_offset": 40192,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_load",
+          "object": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 2,
+              "value": 52,
+              "size": 8
+            },
+            "file_offset": 116,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 13,
+              "value": 40200,
+              "size": 8
+            },
+            "file_offset": 40200,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_store",
+          "object": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 2,
+              "value": 60,
+              "size": 8
+            },
+            "file_offset": 124,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 13,
+              "value": 40208,
+              "size": 8
+            },
+            "file_offset": 40208,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 68,
+              "size": 12
+            },
+            "file_offset": 132,
+            "bytes": 12,
+            "hex": "220c40a9020c00a9c0035fd6",
+            "sha256": "4147cb5ca2c9b811ed9d7612568a526fa6e77175f65e5722139dc2ad086a32ec"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 13,
+              "value": 40216,
+              "size": 12
+            },
+            "file_offset": 40216,
+            "bytes": 12,
+            "hex": "220c40a9020c00a9c0035fd6",
+            "sha256": "4147cb5ca2c9b811ed9d7612568a526fa6e77175f65e5722139dc2ad086a32ec"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_ptr",
+          "object": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 2,
+              "value": 80,
+              "size": 8
+            },
+            "file_offset": 144,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 13,
+              "value": 40228,
+              "size": 8
+            },
+            "file_offset": 40228,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_call_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 2,
+              "value": 88,
+              "size": 24
+            },
+            "file_offset": 152,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300910000009400040091fd7bc1a8c0035fd6",
+            "sha256": "dd82915e6c0e12a7c7ef68cf891331ea02c26e881ff744e7fef7eda3999cc07c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 13,
+              "value": 40236,
+              "size": 24
+            },
+            "file_offset": 40236,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300916617009400040091fd7bc1a8c0035fd6",
+            "sha256": "c24eb69d40f8b35e2ae9628ed3be3d86bc0110fc38dea15179466bec1db371bc"
+          },
+          "relocations": [
+            {
+              "offset_in_function": 8,
+              "type": 283,
+              "target": "pilot_helper",
+              "addend": 0
+            }
+          ],
+          "call_target": 64204,
+          "object_linked_bytes_differ_only_by_checked_call_relocation": true
+        },
+        {
+          "name": "pilot_simd_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 112,
+              "size": 12
+            },
+            "file_offset": 176,
+            "bytes": 12,
+            "hex": "2000c03d0000803dc0035fd6",
+            "sha256": "03644c9499a57327198f6cd07662de02fe54fa3f94027cd47cefa626de0d3fe8"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 13,
+              "value": 40260,
+              "size": 12
+            },
+            "file_offset": 40260,
+            "bytes": 12,
+            "hex": "2000c03d0000803dc0035fd6",
+            "sha256": "03644c9499a57327198f6cd07662de02fe54fa3f94027cd47cefa626de0d3fe8"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_simd_add16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 2,
+              "value": 124,
+              "size": 20
+            },
+            "file_offset": 188,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d0084214e0000803dc0035fd6",
+            "sha256": "067dab895e610e08164fd964d95c5deb076932bda5a2a6563db4783679c5741b"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 13,
+              "value": 40272,
+              "size": 20
+            },
+            "file_offset": 40272,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d0084214e0000803dc0035fd6",
+            "sha256": "067dab895e610e08164fd964d95c5deb076932bda5a2a6563db4783679c5741b"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 503,
+              "value": 0,
+              "size": 72
+            },
+            "file_offset": 24508,
+            "bytes": 72,
+            "hex": "ffc300d1fd7b02a9fd830091e00b00f9e10700f9bff31f38a2f35f38000000900000009128008052e103082a00000094e10740f9e00b40f900000094fd7b42a9ffc30091c0035fd6",
+            "sha256": "fd30b3fbcee516e676a3fd41c7342f1d7692a2ebeca7e8409c35508a656225ce"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 13,
+              "value": 64204,
+              "size": 72
+            },
+            "file_offset": 64204,
+            "bytes": 72,
+            "hex": "ffc300d1fd7b02a9fd830091e00b00f9e10700f9bff31f38a2f35f38800300b000e0259128008052e103082afeedff97e10740f9e00b40f9e6ffff97fd7b42a9ffc30091c0035fd6",
+            "sha256": "b4422225ca077b25ccdc6cf8d0c1109bab41675834f370b032ae3bee028e7609"
+          }
+        },
+        {
+          "name": "inline_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 523,
+              "value": 0,
+              "size": 48
+            },
+            "file_offset": 25264,
+            "bytes": 48,
+            "hex": "ff4300d1e00300f9e90340f95f0400f1290101bae8379f9ae90300f9e80700f9e00340f9e10740f9ff430091c0035fd6",
+            "sha256": "810d7c994dc9d20d59b5408cf62a8f33d76146da9d69bb3740ae4a799955631e"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 13,
+              "value": 64960,
+              "size": 48
+            },
+            "file_offset": 64960,
+            "bytes": 48,
+            "hex": "ff4300d1e00300f9e90340f95f0400f1290101bae8379f9ae90300f9e80700f9e00340f9e10740f9ff430091c0035fd6",
+            "sha256": "810d7c994dc9d20d59b5408cf62a8f33d76146da9d69bb3740ae4a799955631e"
+          }
+        },
+        {
+          "name": "inline_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 524,
+              "value": 0,
+              "size": 56
+            },
+            "file_offset": 25312,
+            "bytes": 56,
+            "hex": "ff8300d1fd7b01a9fd43009128058052e80700f9400000b40400001428028052e80700f901000014e00740f9fd7b41a9ff830091c0035fd6",
+            "sha256": "edf4ab7870401fa0dcb0de4ab94ef7c70a1ef82db0e7e4d5ad75046d92a37d84"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 13,
+              "value": 65008,
+              "size": 56
+            },
+            "file_offset": 65008,
+            "bytes": 56,
+            "hex": "ff8300d1fd7b01a9fd43009128058052e80700f9400000b40400001428028052e80700f901000014e00740f9fd7b41a9ff830091c0035fd6",
+            "sha256": "edf4ab7870401fa0dcb0de4ab94ef7c70a1ef82db0e7e4d5ad75046d92a37d84"
+          }
+        },
+        {
+          "name": "inline_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 525,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 25368,
+            "bytes": 24,
+            "hex": "ff4300d1080040f9e80700f9e00740f9ff430091c0035fd6",
+            "sha256": "8666e1be8ccaadce82f2913110506f83314157ccc6b75f7b25ed84546c31a9fa"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 13,
+              "value": 65064,
+              "size": 24
+            },
+            "file_offset": 65064,
+            "bytes": 24,
+            "hex": "ff4300d1080040f9e80700f9e00740f9ff430091c0035fd6",
+            "sha256": "8666e1be8ccaadce82f2913110506f83314157ccc6b75f7b25ed84546c31a9fa"
+          }
+        },
+        {
+          "name": "inline_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 526,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 25392,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 13,
+              "value": 65088,
+              "size": 8
+            },
+            "file_offset": 65088,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          }
+        },
+        {
+          "name": "zc_decode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 530,
+              "value": 0,
+              "size": 144
+            },
+            "file_offset": 25560,
+            "bytes": 144,
+            "hex": "ffc301d1fd7b06a9fd830191e8630091e80700f909018052e103092a00000094e00740f90100009021000091a8018052e203082a030000906300009100000094e01700f9e81740f9e80b00f9e80b40f9e81b00f9e81b40f9a8031ef8a8035ef8a8831df8a8835df8a8031ff8a8035ff8a8831ff8a0835ff800000094a0831ef8a0835ef8fd7b46a9ffc30191c0035fd6",
+            "sha256": "a36f4c2e1290a0dd7e4fd18537ac262ecbbdeaa76b7fcb1a855696b699e854e2"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 13,
+              "value": 65256,
+              "size": 144
+            },
+            "file_offset": 65256,
+            "bytes": 144,
+            "hex": "ffc301d1fd7b06a9fd830191e8630091e80700f909018052e103092a68fdff97e00740f9c101009021441091a8018052e203082a630300d063200391fcf3ff97e01700f9e81740f9e80b00f9e80b40f9e81b00f9e81b40f9a8031ef8a8035ef8a8831df8a8835df8a8031ff8a8035ff8a8831ff8a0835ff83eeaff97a0831ef8a0835ef8fd7b46a9ffc30191c0035fd6",
+            "sha256": "aee885bcad1df117ec8900d67a85cab94e86b54fb07a2ce2030bcf6caa3fb6e5"
+          }
+        },
+        {
+          "name": "zc_encode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 532,
+              "value": 0,
+              "size": 208
+            },
+            "file_offset": 25704,
+            "bytes": 208,
+            "hex": "ff4302d1fd7b08a9fd030291e00700f9e10b00f9e0031faa00000094e80300aae00740f9a8831cf8a8835cf8e81f00f9e81f40f9e82300f9e82340f9e81b00f9e81b40f9e81700f9e81740f9e9830091e90f00f9e81300f900000094e10b40f9e80300aae00f40f9a8831ff8a8835ff8a8831ef8a8835ef8a8031ff8a8035ff8a8031ef8a8035ef8a8831df8a8835df8a8031df8a8035df8e81300f908018052e203082a00000094010000902100009148028052e203082a030000906300009100000094fd7b48a9ff430291c0035fd6",
+            "sha256": "074c5430208121d286c603ffee038799d97f8c083fc8578bf1169f57d4519139"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 13,
+              "value": 65400,
+              "size": 208
+            },
+            "file_offset": 65400,
+            "bytes": 208,
+            "hex": "ff4302d1fd7b08a9fd030291e00700f9e10b00f9e0031faa2aeaff97e80300aae00740f9a8831cf8a8835cf8e81f00f9e81f40f9e82300f9e82340f9e81b00f9e81b40f9e81700f9e81740f9e9830091e90f00f9e81300f91aeaff97e10b40f9e80300aae00f40f9a8831ff8a8835ff8a8831ef8a8835ef8a8031ff8a8035ff8a8031ef8a8035ef8a8831df8a8835df8a8031df8a8035df8e81300f908018052e203082aeefdff97a10100f02178109148028052e203082a630300b0638003919ff3ff97fd7b48a9ff430291c0035fd6",
+            "sha256": "6896243fde387ad44eed03394731ebac20229b12a61a61074b56cabaeeff0a1c"
+          }
+        },
+        {
+          "name": "zc_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 534,
+              "value": 0,
+              "size": 136
+            },
+            "file_offset": 25912,
+            "bytes": 136,
+            "hex": "ff8301d1fd7b05a9fd430191e10f00f9a86300d1e80700f909028052e103092ae11300f900000094e00740f9e8a30091e80b00f90100009021000091c9018052e203092a030000906300009100000094e00b40f9e10f40f9e21340f900000094010000902100009168028052e203082a030000906300009100000094fd7b45a9ff830191c0035fd6",
+            "sha256": "dc70fdb5705c4e8f3d48e2945e7db2d1d2b4c8cbc691026fe3f35fe249018683"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 13,
+              "value": 65608,
+              "size": 136
+            },
+            "file_offset": 65608,
+            "bytes": 136,
+            "hex": "ff8301d1fd7b05a9fd430191e10f00f9a86300d1e80700f909028052e103092ae11300f968fdff97e00740f9e8a30091e80b00f9a10100f021c01091c9018052e203092a630300b063e0039130f3ff97e00b40f9e10f40f9e21340f901feff97a10100f021f8109168028052e203082a630300b0634004910df3ff97fd7b45a9ff830191c0035fd6",
+            "sha256": "df3faea02eca8afade3aad16a5214c18550311fa60ab4d545839e01f8c8f2512"
+          }
+        },
+        {
+          "name": "rust_mul",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 505,
+              "value": 0,
+              "size": 76
+            },
+            "file_offset": 24580,
+            "bytes": 76,
+            "hex": "ff8300d1fd7b01a9fd430091e80301aa017cc89b007c089be10300f9e00700f9e8031f2ae800003501000014e10340f9e00740f9fd7b41a9ff830091c0035fd6000000900000009100000094",
+            "sha256": "86f9a43def9be02003b6ee5886822a4a62a8261bf78074c7e89241047cc6aa05"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 13,
+              "value": 64276,
+              "size": 76
+            },
+            "file_offset": 64276,
+            "bytes": 76,
+            "hex": "ff8300d1fd7b01a9fd430091e80301aa017cc89b007c089be10300f9e00700f9e8031f2ae800003501000014e10340f9e00740f9fd7b41a9ff830091c0035fd6600300d0004001918fe7ff97",
+            "sha256": "df5aeda5ab68df0e80862992c365f3d1f47a4bc5593de371c0f86ea81c68541f"
+          }
+        },
+        {
+          "name": "rust_add128",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 507,
+              "value": 0,
+              "size": 112
+            },
+            "file_offset": 24656,
+            "bytes": 112,
+            "hex": "ff8300d1e90308aa0b0040f9ea031faa080440f96b010aaa480108aa2c0040f92d0440f98c010aaa4a010daa6b010cab0a010abae8379f1a601d084e401d184ee003803de8430039e003c03de84340390140601e0004185e08014092210100fd200500fd280900f9ff830091c0035fd6",
+            "sha256": "1d9951fec178d9dbc3171ed7ba46494d546cf6c1ff799512fe09098ab113abe0"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 13,
+              "value": 64352,
+              "size": 112
+            },
+            "file_offset": 64352,
+            "bytes": 112,
+            "hex": "ff8300d1e90308aa0b0040f9ea031faa080440f96b010aaa480108aa2c0040f92d0440f98c010aaa4a010daa6b010cab0a010abae8379f1a601d084e401d184ee003803de8430039e003c03de84340390140601e0004185e08014092210100fd200500fd280900f9ff830091c0035fd6",
+            "sha256": "1d9951fec178d9dbc3171ed7ba46494d546cf6c1ff799512fe09098ab113abe0"
+          }
+        },
+        {
+          "name": "rust_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 508,
+              "value": 0,
+              "size": 136
+            },
+            "file_offset": 24768,
+            "bytes": 136,
+            "hex": "ff0301d1fd7b03a9fdc30091e20f00f9e8031faa090001aba9031ff8080108baa8831ff8e8379f1aa801003701000014a8835ff8aa035ff8eb0f40f9e9031faa4a010babea0700f9080109bae80b00f9e8379f1a4801003704000014000000900000009100000094e10b40f9e00740f9fd7b43a9ff030191c0035fd6000000900000009100000094",
+            "sha256": "a4aacb325862116e31cd994dce452518d3771e4b827a090cc26c629043ca4e74"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 13,
+              "value": 64464,
+              "size": 136
+            },
+            "file_offset": 64464,
+            "bytes": 136,
+            "hex": "ff0301d1fd7b03a9fdc30091e20f00f9e8031faa090001aba9031ff8080108baa8831ff8e8379f1aa801003701000014a8835ff8aa035ff8eb0f40f9e9031faa4a010babea0700f9080109bae80b00f9e8379f1a4801003704000014600300d000a001913fe7ff97e10b40f9e00740f9fd7b43a9ff030191c0035fd6600300d000a0019137e7ff97",
+            "sha256": "293add645f38a58eb0728f647982a7aada22eb69337c276786ff250998c70481"
+          }
+        },
+        {
+          "name": "rust_swap",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 510,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 24904,
+            "bytes": 24,
+            "hex": "ff4300d1080cc0dae80700f9e00740f9ff430091c0035fd6",
+            "sha256": "6f8eb4e4c9b24ea19fa42cbb69c9ea5b10f17a2ecf00017ba7cfc276624285e0"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 13,
+              "value": 64600,
+              "size": 24
+            },
+            "file_offset": 64600,
+            "bytes": 24,
+            "hex": "ff4300d1080cc0dae80700f9e00740f9ff430091c0035fd6",
+            "sha256": "6f8eb4e4c9b24ea19fa42cbb69c9ea5b10f17a2ecf00017ba7cfc276624285e0"
+          }
+        },
+        {
+          "name": "rust_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_load17h119de87a71289100E",
+              "info": 2,
+              "section": 511,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 24928,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_load17h119de87a71289100E",
+              "info": 2,
+              "section": 13,
+              "value": 64624,
+              "size": 8
+            },
+            "file_offset": 64624,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          }
+        },
+        {
+          "name": "rust_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 512,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 24936,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 13,
+              "value": 64632,
+              "size": 8
+            },
+            "file_offset": 64632,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          }
+        },
+        {
+          "name": "rust_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 513,
+              "value": 0,
+              "size": 48
+            },
+            "file_offset": 24944,
+            "bytes": 48,
+            "hex": "fd7bbfa9fd030091e20300aae00301aa08028052e303082ae10303aa040000908400009100000094fd7bc1a8c0035fd6",
+            "sha256": "ad5d4193873c9fef97c4822e61e1c96273460880f8f8681960e4191ddf63cb1c"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 13,
+              "value": 64640,
+              "size": 48
+            },
+            "file_offset": 64640,
+            "bytes": 48,
+            "hex": "fd7bbfa9fd030091e20300aae00301aa08028052e303082ae10303aa640300d08400029140f3ff97fd7bc1a8c0035fd6",
+            "sha256": "6c105f23ad39017d5e78edb838f7200d5bcd4f1da44ee5153761799a147ee533"
+          }
+        },
+        {
+          "name": "rust_ptr",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 515,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 24992,
+            "bytes": 24,
+            "hex": "ff4300d10800018be80700f9e00740f9ff430091c0035fd6",
+            "sha256": "fe9112405c8447802634dd408bb37356ff6061286a0e4459663a32508d2251d4"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 13,
+              "value": 64688,
+              "size": 24
+            },
+            "file_offset": 64688,
+            "bytes": 24,
+            "hex": "ff4300d10800018be80700f9e00740f9ff430091c0035fd6",
+            "sha256": "fe9112405c8447802634dd408bb37356ff6061286a0e4459663a32508d2251d4"
+          }
+        },
+        {
+          "name": "rust_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 516,
+              "value": 0,
+              "size": 48
+            },
+            "file_offset": 25016,
+            "bytes": 48,
+            "hex": "ff4300d1a00000b50100001428028052e80700f90400001428058052e80700f901000014e00740f9ff430091c0035fd6",
+            "sha256": "c46613faf5db170e67cc692885ee150b42f2fb1336fdaeaa1fba4217c67e258f"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 13,
+              "value": 64712,
+              "size": 48
+            },
+            "file_offset": 64712,
+            "bytes": 48,
+            "hex": "ff4300d1a00000b50100001428028052e80700f90400001428058052e80700f901000014e00740f9ff430091c0035fd6",
+            "sha256": "c46613faf5db170e67cc692885ee150b42f2fb1336fdaeaa1fba4217c67e258f"
+          }
+        },
+        {
+          "name": "rust_add16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 517,
+              "value": 0,
+              "size": 20
+            },
+            "file_offset": 25064,
+            "bytes": 20,
+            "hex": "fd7bbfa9fd03009100000094fd7bc1a8c0035fd6",
+            "sha256": "29b6564ac3991260f0b288bcd4263ca6713aec6269a98d8add1862c4d5fdaa17"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 13,
+              "value": 64760,
+              "size": 20
+            },
+            "file_offset": 64760,
+            "bytes": 20,
+            "hex": "fd7bbfa9fd030091dff2ff97fd7bc1a8c0035fd6",
+            "sha256": "2e1d533741d2c2ae3bcb169111f7dc7129219eca75100fb998c28fabb33e29b3"
+          }
+        },
+        {
+          "name": "rust_call_helper",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 521,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 25240,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300910000009400040091fd7bc1a8c0035fd6",
+            "sha256": "dd82915e6c0e12a7c7ef68cf891331ea02c26e881ff744e7fef7eda3999cc07c"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 13,
+              "value": 64936,
+              "size": 24
+            },
+            "file_offset": 64936,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd03009147ffff9700040091fd7bc1a8c0035fd6",
+            "sha256": "39e2afab61ab15ebe6af1db7b578a5e3050998747bff190b50102d6c7a47acc4"
+          }
+        }
+      ],
+      "missing_named_rust_functions": []
+    },
+    {
+      "arch": "aarch64",
+      "opt": 3,
+      "object_sha256": "ba178e05a648ba2d16d43ab7a56038a42fe23df0b10ac4296dfa4541f810d49a",
+      "image_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+      "functions": [
+        {
+          "name": "pilot_mul",
+          "object": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 2,
+              "value": 0,
+              "size": 16
+            },
+            "file_offset": 64,
+            "bytes": 16,
+            "hex": "037c019b047cc19b431000a9c0035fd6",
+            "sha256": "e29fb585cdaf61bf7a661a3bb754cf3dfc0221dfaff54cbdac57dd847e5b056c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 13,
+              "value": 38164,
+              "size": 16
+            },
+            "file_offset": 38164,
+            "bytes": 16,
+            "hex": "037c019b047cc19b431000a9c0035fd6",
+            "sha256": "e29fb585cdaf61bf7a661a3bb754cf3dfc0221dfaff54cbdac57dd847e5b056c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_add128",
+          "object": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 2,
+              "value": 16,
+              "size": 28
+            },
+            "file_offset": 80,
+            "bytes": 28,
+            "hex": "031040a9251840a9630005ab840006bae0379f9a431000a9c0035fd6",
+            "sha256": "f2b19776e3e0bc65430235fc73ddcc5e20455c560e4f9b0db1d5e556812ff96c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 13,
+              "value": 38180,
+              "size": 28
+            },
+            "file_offset": 38180,
+            "bytes": 28,
+            "hex": "031040a9251840a9630005ab840006bae0379f9a431000a9c0035fd6",
+            "sha256": "f2b19776e3e0bc65430235fc73ddcc5e20455c560e4f9b0db1d5e556812ff96c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_bswap",
+          "object": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 2,
+              "value": 44,
+              "size": 8
+            },
+            "file_offset": 108,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 13,
+              "value": 38208,
+              "size": 8
+            },
+            "file_offset": 38208,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_load",
+          "object": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 2,
+              "value": 52,
+              "size": 8
+            },
+            "file_offset": 116,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 13,
+              "value": 38216,
+              "size": 8
+            },
+            "file_offset": 38216,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_store",
+          "object": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 2,
+              "value": 60,
+              "size": 8
+            },
+            "file_offset": 124,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 13,
+              "value": 38224,
+              "size": 8
+            },
+            "file_offset": 38224,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 68,
+              "size": 12
+            },
+            "file_offset": 132,
+            "bytes": 12,
+            "hex": "220c40a9020c00a9c0035fd6",
+            "sha256": "4147cb5ca2c9b811ed9d7612568a526fa6e77175f65e5722139dc2ad086a32ec"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 13,
+              "value": 38232,
+              "size": 12
+            },
+            "file_offset": 38232,
+            "bytes": 12,
+            "hex": "220c40a9020c00a9c0035fd6",
+            "sha256": "4147cb5ca2c9b811ed9d7612568a526fa6e77175f65e5722139dc2ad086a32ec"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_ptr",
+          "object": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 2,
+              "value": 80,
+              "size": 8
+            },
+            "file_offset": 144,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 13,
+              "value": 38244,
+              "size": 8
+            },
+            "file_offset": 38244,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_call_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 2,
+              "value": 88,
+              "size": 24
+            },
+            "file_offset": 152,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300910000009400040091fd7bc1a8c0035fd6",
+            "sha256": "dd82915e6c0e12a7c7ef68cf891331ea02c26e881ff744e7fef7eda3999cc07c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 13,
+              "value": 38252,
+              "size": 24
+            },
+            "file_offset": 38252,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300912600009400040091fd7bc1a8c0035fd6",
+            "sha256": "d7d951da1dbc8ac773f451975d48abc3d4c4b5aff325eba4c27efa1fbaa61503"
+          },
+          "relocations": [
+            {
+              "offset_in_function": 8,
+              "type": 283,
+              "target": "pilot_helper",
+              "addend": 0
+            }
+          ],
+          "call_target": 38412,
+          "object_linked_bytes_differ_only_by_checked_call_relocation": true
+        },
+        {
+          "name": "pilot_simd_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 112,
+              "size": 12
+            },
+            "file_offset": 176,
+            "bytes": 12,
+            "hex": "2000c03d0000803dc0035fd6",
+            "sha256": "03644c9499a57327198f6cd07662de02fe54fa3f94027cd47cefa626de0d3fe8"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 13,
+              "value": 38276,
+              "size": 12
+            },
+            "file_offset": 38276,
+            "bytes": 12,
+            "hex": "2000c03d0000803dc0035fd6",
+            "sha256": "03644c9499a57327198f6cd07662de02fe54fa3f94027cd47cefa626de0d3fe8"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_simd_add16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 2,
+              "value": 124,
+              "size": 20
+            },
+            "file_offset": 188,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d0084214e0000803dc0035fd6",
+            "sha256": "067dab895e610e08164fd964d95c5deb076932bda5a2a6563db4783679c5741b"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 13,
+              "value": 38288,
+              "size": 20
+            },
+            "file_offset": 38288,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d0084214e0000803dc0035fd6",
+            "sha256": "067dab895e610e08164fd964d95c5deb076932bda5a2a6563db4783679c5741b"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 16,
+              "value": 0,
+              "size": 72
+            },
+            "file_offset": 368,
+            "bytes": 72,
+            "hex": "fd7bbea9f44f01a9f30301aaf40300aa010000902100009120008052fd03009100000094e85099d268bdb0f22836cff2e8c6f3f2687e089b00cdd4caf44f41a9fd7bc2a8c0035fd6",
+            "sha256": "e60aa77af66a2ad870310c22a771005c60408cb128e166ad918b24c52e7b63cc"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 13,
+              "value": 38412,
+              "size": 72
+            },
+            "file_offset": 38412,
+            "bytes": 72,
+            "hex": "fd7bbea9f44f01a9f30301aaf40300aa210300f021e0259120008052fd03009111d50094e85099d268bdb0f22836cff2e8c6f3f2687e089b00cdd4caf44f41a9fd7bc2a8c0035fd6",
+            "sha256": "b3e7bcccaff8210b1076e05c6543af568a364b4589b457b4dd25b8f954f4e9e4"
+          }
+        },
+        {
+          "name": "inline_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 29,
+              "value": 0,
+              "size": 16
+            },
+            "file_offset": 600,
+            "bytes": 16,
+            "hex": "5f0400f1000001bae1379f9ac0035fd6",
+            "sha256": "0405b6a9828e94bf44fea718ed87a37002a2521e1770dcd93da14d21ab0af460"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 13,
+              "value": 38644,
+              "size": 16
+            },
+            "file_offset": 38644,
+            "bytes": 16,
+            "hex": "5f0400f1000001bae1379f9ac0035fd6",
+            "sha256": "0405b6a9828e94bf44fea718ed87a37002a2521e1770dcd93da14d21ab0af460"
+          }
+        },
+        {
+          "name": "inline_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 30,
+              "value": 0,
+              "size": 32
+            },
+            "file_offset": 616,
+            "bytes": 32,
+            "hex": "600000b420058052c0035fd6fd7bbfa9fd03009120028052fd7bc1a8c0035fd6",
+            "sha256": "e94497209806bfeb43951ecfaeb869ec571d7287461f1d24268476e68ed22bae"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 13,
+              "value": 38660,
+              "size": 32
+            },
+            "file_offset": 38660,
+            "bytes": 32,
+            "hex": "600000b420058052c0035fd6fd7bbfa9fd03009120028052fd7bc1a8c0035fd6",
+            "sha256": "e94497209806bfeb43951ecfaeb869ec571d7287461f1d24268476e68ed22bae"
+          }
+        },
+        {
+          "name": "inline_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 31,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 648,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 13,
+              "value": 38692,
+              "size": 8
+            },
+            "file_offset": 38692,
+            "bytes": 8,
+            "hex": "000040f9c0035fd6",
+            "sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369"
+          }
+        },
+        {
+          "name": "inline_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 32,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 656,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 13,
+              "value": 38700,
+              "size": 8
+            },
+            "file_offset": 38700,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          }
+        },
+        {
+          "name": "zc_decode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 33,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 664,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 13,
+              "value": 38708,
+              "size": 8
+            },
+            "file_offset": 38708,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          }
+        },
+        {
+          "name": "zc_encode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 34,
+              "value": 0,
+              "size": 12
+            },
+            "file_offset": 672,
+            "bytes": 12,
+            "hex": "080cc0da280000f9c0035fd6",
+            "sha256": "db6f29cf5b53c732df94b77a37992643b75ef8ea08d6c85868f6c3d390059815"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 13,
+              "value": 38716,
+              "size": 12
+            },
+            "file_offset": 38716,
+            "bytes": 12,
+            "hex": "080cc0da280000f9c0035fd6",
+            "sha256": "db6f29cf5b53c732df94b77a37992643b75ef8ea08d6c85868f6c3d390059815"
+          }
+        },
+        {
+          "name": "zc_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 35,
+              "value": 0,
+              "size": 36
+            },
+            "file_offset": 684,
+            "bytes": 36,
+            "hex": "080040b9093040b80a7040f8280000b9083c4039293000b82a7000f8283c0039c0035fd6",
+            "sha256": "e4de2541f70ee77db55e7f89b607543d34cb2d7761b2158c3ee64296865fe80d"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 13,
+              "value": 38728,
+              "size": 36
+            },
+            "file_offset": 38728,
+            "bytes": 36,
+            "hex": "080040b9093040b80a7040f8280000b9083c4039293000b82a7000f8283c0039c0035fd6",
+            "sha256": "e4de2541f70ee77db55e7f89b607543d34cb2d7761b2158c3ee64296865fe80d"
+          }
+        },
+        {
+          "name": "rust_mul",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 18,
+              "value": 0,
+              "size": 16
+            },
+            "file_offset": 440,
+            "bytes": 16,
+            "hex": "287c009b217cc09be00308aac0035fd6",
+            "sha256": "75e082288cf99a77996d8b77de339f40b5b9c0b5a836e0383afc9b291d3c565b"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 13,
+              "value": 38484,
+              "size": 16
+            },
+            "file_offset": 38484,
+            "bytes": 16,
+            "hex": "287c009b217cc09be00308aac0035fd6",
+            "sha256": "75e082288cf99a77996d8b77de339f40b5b9c0b5a836e0383afc9b291d3c565b"
+          }
+        },
+        {
+          "name": "rust_add128",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 19,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 456,
+            "bytes": 24,
+            "hex": "280003ab490004ba082400a9e8379f1a080800f9c0035fd6",
+            "sha256": "8aadc6255a64d295a31dac5750579dc35a1bbafc1bbfd1d8f14340ada6a463e5"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 13,
+              "value": 38500,
+              "size": 24
+            },
+            "file_offset": 38500,
+            "bytes": 24,
+            "hex": "280003ab490004ba082400a9e8379f1a080800f9c0035fd6",
+            "sha256": "8aadc6255a64d295a31dac5750579dc35a1bbafc1bbfd1d8f14340ada6a463e5"
+          }
+        },
+        {
+          "name": "rust_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 20,
+              "value": 0,
+              "size": 20
+            },
+            "file_offset": 480,
+            "bytes": 20,
+            "hex": "280000abe9379f1a000102ab2135899ac0035fd6",
+            "sha256": "25b7880f1bab781051329d299a2fd6ee4f32d8f8266d29d0501060c25052e8a2"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 13,
+              "value": 38524,
+              "size": 20
+            },
+            "file_offset": 38524,
+            "bytes": 20,
+            "hex": "280000abe9379f1a000102ab2135899ac0035fd6",
+            "sha256": "25b7880f1bab781051329d299a2fd6ee4f32d8f8266d29d0501060c25052e8a2"
+          }
+        },
+        {
+          "name": "rust_swap",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 21,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 500,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 13,
+              "value": 38544,
+              "size": 8
+            },
+            "file_offset": 38544,
+            "bytes": 8,
+            "hex": "000cc0dac0035fd6",
+            "sha256": "edde00a86c1a114feb14f7637790e44ce4c0405924e36e9460a8cc4f8976e813"
+          }
+        },
+        {
+          "name": "rust_load",
+          "object": null,
+          "image": null
+        },
+        {
+          "name": "rust_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 22,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 508,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 13,
+              "value": 38552,
+              "size": 8
+            },
+            "file_offset": 38552,
+            "bytes": 8,
+            "hex": "010000f9c0035fd6",
+            "sha256": "bc7d7bfe1862508f235acee5544afc3a7c13a06c79ca1e67d8ba71c403df8071"
+          }
+        },
+        {
+          "name": "rust_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 23,
+              "value": 0,
+              "size": 12
+            },
+            "file_offset": 516,
+            "bytes": 12,
+            "hex": "0000c03d2000803dc0035fd6",
+            "sha256": "0d8e34716322f016b50c3deae42ef7c40f4e693e88fefd9d43a5668b008d9ae9"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 13,
+              "value": 38560,
+              "size": 12
+            },
+            "file_offset": 38560,
+            "bytes": 12,
+            "hex": "0000c03d2000803dc0035fd6",
+            "sha256": "0d8e34716322f016b50c3deae42ef7c40f4e693e88fefd9d43a5668b008d9ae9"
+          }
+        },
+        {
+          "name": "rust_ptr",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 24,
+              "value": 0,
+              "size": 8
+            },
+            "file_offset": 528,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 13,
+              "value": 38572,
+              "size": 8
+            },
+            "file_offset": 38572,
+            "bytes": 8,
+            "hex": "0000018bc0035fd6",
+            "sha256": "03039bd23d144842d3aee713b1af8f07b38005873a0cbf9ad5379526cf7a64b5"
+          }
+        },
+        {
+          "name": "rust_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 25,
+              "value": 0,
+              "size": 20
+            },
+            "file_offset": 536,
+            "bytes": 20,
+            "hex": "280580521f0000f1290280522001889ac0035fd6",
+            "sha256": "2600d818a340676f4bb8d153d057925976f5a2d9d6fd82c56314305dd3e9380e"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 13,
+              "value": 38580,
+              "size": 20
+            },
+            "file_offset": 38580,
+            "bytes": 20,
+            "hex": "280580521f0000f1290280522001889ac0035fd6",
+            "sha256": "2600d818a340676f4bb8d153d057925976f5a2d9d6fd82c56314305dd3e9380e"
+          }
+        },
+        {
+          "name": "rust_add16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 26,
+              "value": 0,
+              "size": 20
+            },
+            "file_offset": 556,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d2084204e0000803dc0035fd6",
+            "sha256": "cb0d4203f9247258206159dee277d24a15fe523920730eddccebc03e648f6737"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 13,
+              "value": 38600,
+              "size": 20
+            },
+            "file_offset": 38600,
+            "bytes": 20,
+            "hex": "2000c03d4100c03d2084204e0000803dc0035fd6",
+            "sha256": "cb0d4203f9247258206159dee277d24a15fe523920730eddccebc03e648f6737"
+          }
+        },
+        {
+          "name": "rust_call_helper",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 27,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 576,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd0300910000009400040091fd7bc1a8c0035fd6",
+            "sha256": "dd82915e6c0e12a7c7ef68cf891331ea02c26e881ff744e7fef7eda3999cc07c"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 13,
+              "value": 38620,
+              "size": 24
+            },
+            "file_offset": 38620,
+            "bytes": 24,
+            "hex": "fd7bbfa9fd030091caffff9700040091fd7bc1a8c0035fd6",
+            "sha256": "3dda5aace055720aef383d5bf6749b8cf8fc58956fb9331fe79e4c52266c2ae2"
+          }
+        }
+      ],
+      "missing_named_rust_functions": [
+        {
+          "name": "rust_load",
+          "artifact": "object"
+        },
+        {
+          "name": "rust_load",
+          "artifact": "image"
+        }
+      ]
+    },
+    {
+      "arch": "x86_64",
+      "opt": 0,
+      "object_sha256": "6ec7cae837203a116b2cf54c603e81581ab35adac61025252bfd5b07e03aa576",
+      "image_sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+      "functions": [
+        {
+          "name": "pilot_mul",
+          "object": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 2,
+              "value": 0,
+              "size": 17
+            },
+            "file_offset": 64,
+            "bytes": 17,
+            "hex": "4889d14889f848f7e648890148895108c3",
+            "sha256": "a032a55f80102402ad50ee2d49949fba2a553665e02afebe95f7e0b3e2ab288c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 15,
+              "value": 51936,
+              "size": 17
+            },
+            "file_offset": 51936,
+            "bytes": 17,
+            "hex": "4889d14889f848f7e648890148895108c3",
+            "sha256": "a032a55f80102402ad50ee2d49949fba2a553665e02afebe95f7e0b3e2ab288c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_add128",
+          "object": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 2,
+              "value": 17,
+              "size": 28
+            },
+            "file_offset": 81,
+            "bytes": 28,
+            "hex": "488b0f4c8b470848030e4c1346080f92c00fb6c048890a4c894208c3",
+            "sha256": "aa1efdefea791dd5b7bc4c740e6bc58264aad2354770304a7f122f7cb971f9fe"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 15,
+              "value": 51953,
+              "size": 28
+            },
+            "file_offset": 51953,
+            "bytes": 28,
+            "hex": "488b0f4c8b470848030e4c1346080f92c00fb6c048890a4c894208c3",
+            "sha256": "aa1efdefea791dd5b7bc4c740e6bc58264aad2354770304a7f122f7cb971f9fe"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_bswap",
+          "object": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 2,
+              "value": 45,
+              "size": 7
+            },
+            "file_offset": 109,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 15,
+              "value": 51981,
+              "size": 7
+            },
+            "file_offset": 51981,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_load",
+          "object": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 2,
+              "value": 52,
+              "size": 4
+            },
+            "file_offset": 116,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 15,
+              "value": 51988,
+              "size": 4
+            },
+            "file_offset": 51988,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_store",
+          "object": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 2,
+              "value": 56,
+              "size": 4
+            },
+            "file_offset": 120,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 15,
+              "value": 51992,
+              "size": 4
+            },
+            "file_offset": 51992,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 60,
+              "size": 15
+            },
+            "file_offset": 124,
+            "bytes": 15,
+            "hex": "488b06488b4e0848890748894f08c3",
+            "sha256": "10bb74b7730819ab4b6e71d02f5a8003e0fd0e6e6a553563cb771268eef21657"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 15,
+              "value": 51996,
+              "size": 15
+            },
+            "file_offset": 51996,
+            "bytes": 15,
+            "hex": "488b06488b4e0848890748894f08c3",
+            "sha256": "10bb74b7730819ab4b6e71d02f5a8003e0fd0e6e6a553563cb771268eef21657"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_ptr",
+          "object": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 2,
+              "value": 75,
+              "size": 5
+            },
+            "file_offset": 139,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 15,
+              "value": 52011,
+              "size": 5
+            },
+            "file_offset": 52011,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_call_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 2,
+              "value": 80,
+              "size": 18
+            },
+            "file_offset": 144,
+            "bytes": 18,
+            "hex": "4883ec08e8000000004883c0014883c408c3",
+            "sha256": "21c1c3183df41eb0a604e745889c65dd2bd76f75450edc488dfe14b0cb0c2be0"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 15,
+              "value": 52016,
+              "size": 18
+            },
+            "file_offset": 52016,
+            "bytes": 18,
+            "hex": "4883ec08e8a76900004883c0014883c408c3",
+            "sha256": "baca61ff0c95fff4c1974252d6fc30d23aa64c15e0accfb58065070ac059bc61"
+          },
+          "relocations": [
+            {
+              "offset_in_function": 5,
+              "type": 4,
+              "target": "pilot_helper",
+              "addend": -4
+            }
+          ],
+          "call_target": 79072,
+          "object_linked_bytes_differ_only_by_checked_call_relocation": true
+        },
+        {
+          "name": "pilot_simd_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 98,
+              "size": 9
+            },
+            "file_offset": 162,
+            "bytes": 9,
+            "hex": "660f6f06660f7f07c3",
+            "sha256": "62076864910a7af48a85279272aea0b118c66acda670e184d9f427281a75bede"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 15,
+              "value": 52034,
+              "size": 9
+            },
+            "file_offset": 52034,
+            "bytes": 9,
+            "hex": "660f6f06660f7f07c3",
+            "sha256": "62076864910a7af48a85279272aea0b118c66acda670e184d9f427281a75bede"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_simd_add16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 2,
+              "value": 107,
+              "size": 17
+            },
+            "file_offset": 171,
+            "bytes": 17,
+            "hex": "660f6f06660f6f0a660ffcc1660f7f07c3",
+            "sha256": "d8a104162bde8e0461f62e8c11f3abd6dac0af7be2102c4e9e50e4119c70dd9e"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 15,
+              "value": 52043,
+              "size": 17
+            },
+            "file_offset": 52043,
+            "bytes": 17,
+            "hex": "660f6f06660f6f0a660ffcc1660f7f07c3",
+            "sha256": "d8a104162bde8e0461f62e8c11f3abd6dac0af7be2102c4e9e50e4119c70dd9e"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 509,
+              "value": 0,
+              "size": 59
+            },
+            "file_offset": 27632,
+            "bytes": 59,
+            "hex": "4883ec1848893c244889742408c644241700488d3d00000000be010000000fb6542417e800000000488b3c24488b742408e8000000004883c418c3",
+            "sha256": "43fe3447c1dbf62ce0574771a7d0150d5985333d7001ee5ea8abef11c91d190b"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 15,
+              "value": 79072,
+              "size": 59
+            },
+            "file_offset": 79072,
+            "bytes": 59,
+            "hex": "4883ec1848893c244889742408c644241700488d3d87e40500be010000000fb6542417e808abffff488b3c24488b742408e8aaffffff4883c418c3",
+            "sha256": "a3f9930577f0d8575c512f8f4c7d838778d415ab35dbc1ae9750df53e3c8801c"
+          }
+        },
+        {
+          "name": "inline_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 529,
+              "value": 0,
+              "size": 43
+            },
+            "file_offset": 28304,
+            "bytes": 43,
+            "hex": "48897c24f0488b4c24f0480fbae2004811f10f92c048894c24f0884424ff488b4424f00fb64c24ff89cac3",
+            "sha256": "ccabc15f4c25f11b5ad2cf866fc7d5c236eff18b6a2654100362d71f368e0c4f"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 15,
+              "value": 79744,
+              "size": 43
+            },
+            "file_offset": 79744,
+            "bytes": 43,
+            "hex": "48897c24f0488b4c24f0480fbae2004811f10f92c048894c24f0884424ff488b4424f00fb64c24ff89cac3",
+            "sha256": "ccabc15f4c25f11b5ad2cf866fc7d5c236eff18b6a2654100362d71f368e0c4f"
+          }
+        },
+        {
+          "name": "inline_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 530,
+              "value": 0,
+              "size": 30
+            },
+            "file_offset": 28352,
+            "bytes": 30,
+            "hex": "5048c70424290000004885ff7402eb0848c7042411000000488b042459c3",
+            "sha256": "e0427d31c844cc2383deb778222148f322dd1f34e33be986418bb7cd56bd5a95"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 15,
+              "value": 79792,
+              "size": 30
+            },
+            "file_offset": 79792,
+            "bytes": 30,
+            "hex": "5048c70424290000004885ff7402eb0848c7042411000000488b042459c3",
+            "sha256": "e0427d31c844cc2383deb778222148f322dd1f34e33be986418bb7cd56bd5a95"
+          }
+        },
+        {
+          "name": "inline_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 531,
+              "value": 0,
+              "size": 14
+            },
+            "file_offset": 28384,
+            "bytes": 14,
+            "hex": "488b0748894424f8488b4424f8c3",
+            "sha256": "05ef1b09ab1f2697f7184b6252ae95c019ff2dd5bfbf7d072a504ec29b627b32"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 15,
+              "value": 79824,
+              "size": 14
+            },
+            "file_offset": 79824,
+            "bytes": 14,
+            "hex": "488b0748894424f8488b4424f8c3",
+            "sha256": "05ef1b09ab1f2697f7184b6252ae95c019ff2dd5bfbf7d072a504ec29b627b32"
+          }
+        },
+        {
+          "name": "inline_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 532,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 28400,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 15,
+              "value": 79840,
+              "size": 4
+            },
+            "file_offset": 79840,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          }
+        },
+        {
+          "name": "zc_decode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 537,
+              "value": 0,
+              "size": 141
+            },
+            "file_offset": 28624,
+            "bytes": 141,
+            "hex": "4883ec584889fe488d7c2410ba08000000e800000000488d7c2410488d3500000000ba0d000000488d0d00000000e8000000004889442420488b4424204889442408488b4424084889442428488b4424284889442438488b4424384889442430488b4424304889442448488b4424484889442450488b7c2450e8000000004889442440488b4424404883c458c3",
+            "sha256": "a0495a8ec2998e54f765091d4d11e674ceb4256371a7c78f3ae7cca6c9079c8d"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 15,
+              "value": 80064,
+              "size": 141
+            },
+            "file_offset": 80064,
+            "bytes": 141,
+            "hex": "4883ec584889fe488d7c2410ba08000000e83af4ffff488d7c2410488d3597e50300ba0d000000488d0d32a10500e81dc4ffff4889442420488b4424204889442408488b4424084889442428488b4424284889442438488b4424384889442430488b4424304889442448488b4424484889442450488b7c2450e8d29bffff4889442440488b4424404883c458c3",
+            "sha256": "ce4f30edcd1dd2d66ae4900565fe17a237920a1fb48a0e5e8b31dba933b61abb"
+          }
+        },
+        {
+          "name": "zc_encode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 539,
+              "value": 0,
+              "size": 205
+            },
+            "file_offset": 28768,
+            "bytes": 205,
+            "hex": "4883ec7848897c2408488974241031c089c7e800000000488b7c24084889442440488b4424404889442430488b4424304889442438488b4424384889442428488b4424284889442420488b4424204889442418e800000000488b7424104889442470488b4424704889442460488b4424604889442468488b4424684889442458488b4424584889442450488b4424504889442448488b4424484889442418488d7c2418ba08000000e8000000004889c7488d3500000000ba12000000488d0d00000000e8000000004883c478c3",
+            "sha256": "93104556f0d9e14ae8e75effcbb55d30ae3a8310da86bf39055d8f0767c9cc55"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 15,
+              "value": 80208,
+              "size": 205
+            },
+            "file_offset": 80208,
+            "bytes": 205,
+            "hex": "4883ec7848897c2408488974241031c089c7e8899bffff488b7c24084889442440488b4424404889442430488b4424304889442438488b4424384889442428488b4424284889442420488b4424204889442418e8489bffff488b7424104889442470488b4424704889442460488b4424604889442468488b4424684889442458488b4424584889442450488b4424504889442448488b4424484889442418488d7c2418ba08000000e8e3f7ffff4889c7488d357fe40300ba12000000488d0d25a00500e878c3ffff4883c478c3",
+            "sha256": "f934f92a1cd0adacd0764e95becad86a36a92cd43838987d2632b06bba98dcda"
+          }
+        },
+        {
+          "name": "zc_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 541,
+              "value": 0,
+              "size": 116
+            },
+            "file_offset": 28976,
+            "bytes": 116,
+            "hex": "4883ec384889f04889fe4889442408488d7c2420ba10000000e800000000488d7c2410488d742420488d1500000000b90e0000004c8d0500000000e800000000488b742408488d7c2410ba10000000e8000000004889c7488d3500000000ba13000000488d0d00000000e8000000004883c438c3",
+            "sha256": "5fbf6018329d448a782ee01e9d8837a1dded5ae9d9389915b75e4fe51a5fd55b"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 15,
+              "value": 80416,
+              "size": 116
+            },
+            "file_offset": 80416,
+            "bytes": 116,
+            "hex": "4883ec384889f04889fe4889442408488d7c2420ba10000000e802f5ffff488d7c2410488d742420488d1549e40300b90e0000004c8d05f59f0500e8a0c3ffff488b742408488d7c2410ba10000000e83cf8ffff4889c7488d3528e40300ba13000000488d0dde9f0500e891c1ffff4883c438c3",
+            "sha256": "9db0633b7be400da615745fcf920e43ee4ce2448176535ba9fda83a09eac032a"
+          }
+        },
+        {
+          "name": "rust_mul",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 511,
+              "value": 0,
+              "size": 57
+            },
+            "file_offset": 27696,
+            "bytes": 57,
+            "hex": "4883ec184889f848f7e64889c131c0488954240848894c2410a801750f488b542408488b4424104883c418c3488d3d00000000ff1500000000",
+            "sha256": "3a53a774b3be9c143f39a9ecc9b38826f020110e5254bfcc0db3a1aca865a9d4"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 15,
+              "value": 79136,
+              "size": 57
+            },
+            "file_offset": 79136,
+            "bytes": 57,
+            "hex": "4883ec184889f848f7e64889c131c0488954240848894c2410a801750f488b542408488b4424104883c418c3488d3d55a40500ff15d7d30500",
+            "sha256": "791280dfdfe5e7a3d7f78fb834caf7ef781d1629193be8e9e9ad4a9963709258"
+          }
+        },
+        {
+          "name": "rust_add128",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 513,
+              "value": 0,
+              "size": 83
+            },
+            "file_offset": 27760,
+            "bytes": 83,
+            "hex": "48895424d04889f1488b7424d04889f8488b11488b49084c8b06488b76084c01c24811f148895424d848894c24e00f924424e8488b7424d8488b5424e08a4c24e880e1010fb6c94889374889570848894f10c3",
+            "sha256": "d4b944313770a4eb484518b937cdab5b24cba5ba49c3e5d41e8b58a1db9749d7"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 15,
+              "value": 79200,
+              "size": 83
+            },
+            "file_offset": 79200,
+            "bytes": 83,
+            "hex": "48895424d04889f1488b7424d04889f8488b11488b49084c8b06488b76084c01c24811f148895424d848894c24e00f924424e8488b7424d8488b5424e08a4c24e880e1010fb6c94889374889570848894f10c3",
+            "sha256": "d4b944313770a4eb484518b937cdab5b24cba5ba49c3e5d41e8b58a1db9749d7"
+          }
+        },
+        {
+          "name": "rust_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 514,
+              "value": 0,
+              "size": 122
+            },
+            "file_offset": 27856,
+            "bytes": 122,
+            "hex": "4883ec284889d04889fa48894424104801f20f92c00fb6c089c131c0488954241848894c2420a8017528488b4c2420488b442410488b5424184801c2488914244883d1000f92c048894c2408a801751deb0d488d3d00000000ff1500000000488b542408488b04244883c428c3488d3d00000000ff1500000000",
+            "sha256": "d73d98394dbffd8c96436882cb2120f37d261166eebd9a006ef29e1b5873b2fe"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 15,
+              "value": 79296,
+              "size": 122
+            },
+            "file_offset": 79296,
+            "bytes": 122,
+            "hex": "4883ec284889d04889fa48894424104801f20f92c00fb6c089c131c0488954241848894c2420a8017528488b4c2420488b442410488b5424184801c2488914244883d1000f92c048894c2408a801751deb0d488d3da7a30500ff15f9d10500488b542408488b04244883c428c3488d3d8ca30500ff15ded10500",
+            "sha256": "e2be937b16cfb4aefa1dd31a4b0b40d20cde26f6849cc065d715dc4f5a634084"
+          }
+        },
+        {
+          "name": "rust_swap",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 516,
+              "value": 0,
+              "size": 14
+            },
+            "file_offset": 27984,
+            "bytes": 14,
+            "hex": "480fcf48897c24f8488b4424f8c3",
+            "sha256": "af487febd3d033b194ca7203d8a93ae3e03463cd877c0656996bc2ff2e38d29d"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 15,
+              "value": 79424,
+              "size": 14
+            },
+            "file_offset": 79424,
+            "bytes": 14,
+            "hex": "480fcf48897c24f8488b4424f8c3",
+            "sha256": "af487febd3d033b194ca7203d8a93ae3e03463cd877c0656996bc2ff2e38d29d"
+          }
+        },
+        {
+          "name": "rust_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_load17h119de87a71289100E",
+              "info": 2,
+              "section": 517,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 28000,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_load17h119de87a71289100E",
+              "info": 2,
+              "section": 15,
+              "value": 79440,
+              "size": 4
+            },
+            "file_offset": 79440,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          }
+        },
+        {
+          "name": "rust_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 518,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 28016,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 15,
+              "value": 79456,
+              "size": 4
+            },
+            "file_offset": 79456,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          }
+        },
+        {
+          "name": "rust_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 519,
+              "value": 0,
+              "size": 34
+            },
+            "file_offset": 28032,
+            "bytes": 34,
+            "hex": "50488934244889fa488b3c24b9100000004c8d05000000004889cee80000000058c3",
+            "sha256": "7d2841c7d4042672a7c28bbc5905eca62159d49d5ce0d8ed6e144034ba274cd2"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 15,
+              "value": 79472,
+              "size": 34
+            },
+            "file_offset": 79472,
+            "bytes": 34,
+            "hex": "50488934244889fa488b3c24b9100000004c8d0550a305004889cee860c1ffff58c3",
+            "sha256": "fac758fd422f0b04ccc88a21e6f9646cdd2bb3fcd72e95df71fd3ce29309e951"
+          }
+        },
+        {
+          "name": "rust_ptr",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 521,
+              "value": 0,
+              "size": 14
+            },
+            "file_offset": 28080,
+            "bytes": 14,
+            "hex": "4801f748897c24f8488b4424f8c3",
+            "sha256": "82241cebd1552eb4d391a7ab6e811fb1cc25b6ad08bf2bd6a8d8feff74015022"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 15,
+              "value": 79520,
+              "size": 14
+            },
+            "file_offset": 79520,
+            "bytes": 14,
+            "hex": "4801f748897c24f8488b4424f8c3",
+            "sha256": "82241cebd1552eb4d391a7ab6e811fb1cc25b6ad08bf2bd6a8d8feff74015022"
+          }
+        },
+        {
+          "name": "rust_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 522,
+              "value": 0,
+              "size": 32
+            },
+            "file_offset": 28096,
+            "bytes": 32,
+            "hex": "4883ff00750b48c74424f811000000eb0948c74424f829000000488b4424f8c3",
+            "sha256": "484b67cf7afbeddd5195bde80711f1f04e70c6bad53c442e2a02d5f476912116"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 15,
+              "value": 79536,
+              "size": 32
+            },
+            "file_offset": 79536,
+            "bytes": 32,
+            "hex": "4883ff00750b48c74424f811000000eb0948c74424f829000000488b4424f8c3",
+            "sha256": "484b67cf7afbeddd5195bde80711f1f04e70c6bad53c442e2a02d5f476912116"
+          }
+        },
+        {
+          "name": "rust_add16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 523,
+              "value": 0,
+              "size": 19
+            },
+            "file_offset": 28128,
+            "bytes": 19,
+            "hex": "504889f848890424e800000000488b042459c3",
+            "sha256": "b6483ef73a729480c6e51248dd98e374fddb432eaf42860161ba13d16ce2af62"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 15,
+              "value": 79568,
+              "size": 19
+            },
+            "file_offset": 79568,
+            "bytes": 19,
+            "hex": "504889f848890424e803c0ffff488b042459c3",
+            "sha256": "7388005f7252f12998db9fb9208b9cd3a7864c4748620d157901527dbdaf37b9"
+          }
+        },
+        {
+          "name": "rust_call_helper",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 527,
+              "value": 0,
+              "size": 12
+            },
+            "file_offset": 28288,
+            "bytes": 12,
+            "hex": "50e8000000004883c00159c3",
+            "sha256": "0aaecdea6ed08c4877a7461a68f99bd987808af41acb10d2f6fb63c00e79d256"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 15,
+              "value": 79728,
+              "size": 12
+            },
+            "file_offset": 79728,
+            "bytes": 12,
+            "hex": "50e86afdffff4883c00159c3",
+            "sha256": "878a761941508b16e3dd45f60c611213e745cf1d04992e0340f73160fbf7a7c7"
+          }
+        }
+      ],
+      "missing_named_rust_functions": []
+    },
+    {
+      "arch": "x86_64",
+      "opt": 3,
+      "object_sha256": "412216a187aa5a2e6fee73b561dc7c71042a012d1555a1829b546d23bbd6ea71",
+      "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "functions": [
+        {
+          "name": "pilot_mul",
+          "object": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 2,
+              "value": 0,
+              "size": 17
+            },
+            "file_offset": 64,
+            "bytes": 17,
+            "hex": "4889d14889f848f7e648890148895108c3",
+            "sha256": "a032a55f80102402ad50ee2d49949fba2a553665e02afebe95f7e0b3e2ab288c"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_mul",
+              "info": 18,
+              "section": 15,
+              "value": 47632,
+              "size": 17
+            },
+            "file_offset": 47632,
+            "bytes": 17,
+            "hex": "4889d14889f848f7e648890148895108c3",
+            "sha256": "a032a55f80102402ad50ee2d49949fba2a553665e02afebe95f7e0b3e2ab288c"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_add128",
+          "object": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 2,
+              "value": 17,
+              "size": 28
+            },
+            "file_offset": 81,
+            "bytes": 28,
+            "hex": "488b0f4c8b470848030e4c1346080f92c00fb6c048890a4c894208c3",
+            "sha256": "aa1efdefea791dd5b7bc4c740e6bc58264aad2354770304a7f122f7cb971f9fe"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_add128",
+              "info": 18,
+              "section": 15,
+              "value": 47649,
+              "size": 28
+            },
+            "file_offset": 47649,
+            "bytes": 28,
+            "hex": "488b0f4c8b470848030e4c1346080f92c00fb6c048890a4c894208c3",
+            "sha256": "aa1efdefea791dd5b7bc4c740e6bc58264aad2354770304a7f122f7cb971f9fe"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_bswap",
+          "object": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 2,
+              "value": 45,
+              "size": 7
+            },
+            "file_offset": 109,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_bswap",
+              "info": 18,
+              "section": 15,
+              "value": 47677,
+              "size": 7
+            },
+            "file_offset": 47677,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_load",
+          "object": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 2,
+              "value": 52,
+              "size": 4
+            },
+            "file_offset": 116,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_load",
+              "info": 18,
+              "section": 15,
+              "value": 47684,
+              "size": 4
+            },
+            "file_offset": 47684,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_store",
+          "object": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 2,
+              "value": 56,
+              "size": 4
+            },
+            "file_offset": 120,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_store",
+              "info": 18,
+              "section": 15,
+              "value": 47688,
+              "size": 4
+            },
+            "file_offset": 47688,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 60,
+              "size": 15
+            },
+            "file_offset": 124,
+            "bytes": 15,
+            "hex": "488b06488b4e0848890748894f08c3",
+            "sha256": "10bb74b7730819ab4b6e71d02f5a8003e0fd0e6e6a553563cb771268eef21657"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_copy16",
+              "info": 18,
+              "section": 15,
+              "value": 47692,
+              "size": 15
+            },
+            "file_offset": 47692,
+            "bytes": 15,
+            "hex": "488b06488b4e0848890748894f08c3",
+            "sha256": "10bb74b7730819ab4b6e71d02f5a8003e0fd0e6e6a553563cb771268eef21657"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_ptr",
+          "object": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 2,
+              "value": 75,
+              "size": 5
+            },
+            "file_offset": 139,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_ptr",
+              "info": 18,
+              "section": 15,
+              "value": 47707,
+              "size": 5
+            },
+            "file_offset": 47707,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_call_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 2,
+              "value": 80,
+              "size": 18
+            },
+            "file_offset": 144,
+            "bytes": 18,
+            "hex": "4883ec08e8000000004883c0014883c408c3",
+            "sha256": "21c1c3183df41eb0a604e745889c65dd2bd76f75450edc488dfe14b0cb0c2be0"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_call_helper",
+              "info": 18,
+              "section": 15,
+              "value": 47712,
+              "size": 18
+            },
+            "file_offset": 47712,
+            "bytes": 18,
+            "hex": "4883ec08e8870000004883c0014883c408c3",
+            "sha256": "37388d03ca0add2e6a82c97655f17bef40bb668bdd246a8b226d8a7bb0b671b5"
+          },
+          "relocations": [
+            {
+              "offset_in_function": 5,
+              "type": 4,
+              "target": "pilot_helper",
+              "addend": -4
+            }
+          ],
+          "call_target": 47856,
+          "object_linked_bytes_differ_only_by_checked_call_relocation": true
+        },
+        {
+          "name": "pilot_simd_copy16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 2,
+              "value": 98,
+              "size": 9
+            },
+            "file_offset": 162,
+            "bytes": 9,
+            "hex": "660f6f06660f7f07c3",
+            "sha256": "62076864910a7af48a85279272aea0b118c66acda670e184d9f427281a75bede"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_copy16",
+              "info": 18,
+              "section": 15,
+              "value": 47730,
+              "size": 9
+            },
+            "file_offset": 47730,
+            "bytes": 9,
+            "hex": "660f6f06660f7f07c3",
+            "sha256": "62076864910a7af48a85279272aea0b118c66acda670e184d9f427281a75bede"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_simd_add16",
+          "object": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 2,
+              "value": 107,
+              "size": 17
+            },
+            "file_offset": 171,
+            "bytes": 17,
+            "hex": "660f6f06660f6f0a660ffcc1660f7f07c3",
+            "sha256": "d8a104162bde8e0461f62e8c11f3abd6dac0af7be2102c4e9e50e4119c70dd9e"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_simd_add16",
+              "info": 18,
+              "section": 15,
+              "value": 47739,
+              "size": 17
+            },
+            "file_offset": 47739,
+            "bytes": 17,
+            "hex": "660f6f06660f6f0a660ffcc1660f7f07c3",
+            "sha256": "d8a104162bde8e0461f62e8c11f3abd6dac0af7be2102c4e9e50e4119c70dd9e"
+          },
+          "relocations": [],
+          "object_linked_exact_bytes": true
+        },
+        {
+          "name": "pilot_helper",
+          "object": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 16,
+              "value": 0,
+              "size": 30
+            },
+            "file_offset": 320,
+            "bytes": 30,
+            "hex": "f048ff050000000048c1c70d48b887caeb85b179379e480fafc64831f8c3",
+            "sha256": "d4e6f59cf985b5f1835c481d7322bcec69bb2f6c0c7ed425dff9b084b8468936"
+          },
+          "image": {
+            "symbol": {
+              "name": "pilot_helper",
+              "info": 18,
+              "section": 15,
+              "value": 47856,
+              "size": 30
+            },
+            "file_offset": 47856,
+            "bytes": 30,
+            "hex": "f048ff0588ce050048c1c70d48b887caeb85b179379e480fafc64831f8c3",
+            "sha256": "fbd7119f5f2480b2551d4052dfe8539a8d2de5e915bfd505c0dd0f520bf33dc7"
+          }
+        },
+        {
+          "name": "inline_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 29,
+              "value": 0,
+              "size": 18
+            },
+            "file_offset": 576,
+            "bytes": 18,
+            "hex": "4889f8480fbae2004811f00f92c10fb6d1c3",
+            "sha256": "e9b797a974d1137fe3d0e4fc25774c5ff951396fcb03c17db2c02b114777d718"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE",
+              "info": 2,
+              "section": 15,
+              "value": 48112,
+              "size": 18
+            },
+            "file_offset": 48112,
+            "bytes": 18,
+            "hex": "4889f8480fbae2004811f00f92c10fb6d1c3",
+            "sha256": "e9b797a974d1137fe3d0e4fc25774c5ff951396fcb03c17db2c02b114777d718"
+          }
+        },
+        {
+          "name": "inline_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 30,
+              "value": 0,
+              "size": 22
+            },
+            "file_offset": 608,
+            "bytes": 22,
+            "hex": "b8290000004885ff7401c350b8110000004883c408c3",
+            "sha256": "8508716dfe4cb61eda18fa178a30ae8c3439aa403a9eaa524337d23ae6faa843"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_label17hce24d0f42a259affE",
+              "info": 2,
+              "section": 15,
+              "value": 48144,
+              "size": 22
+            },
+            "file_offset": 48144,
+            "bytes": 22,
+            "hex": "b8290000004885ff7401c350b8110000004883c408c3",
+            "sha256": "8508716dfe4cb61eda18fa178a30ae8c3439aa403a9eaa524337d23ae6faa843"
+          }
+        },
+        {
+          "name": "inline_load",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 31,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 640,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE",
+              "info": 2,
+              "section": 15,
+              "value": 48176,
+              "size": 4
+            },
+            "file_offset": 48176,
+            "bytes": 4,
+            "hex": "488b07c3",
+            "sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23"
+          }
+        },
+        {
+          "name": "inline_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 32,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 656,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot12inline_store17h07e83f398e5e13c5E",
+              "info": 2,
+              "section": 15,
+              "value": 48192,
+              "size": 4
+            },
+            "file_offset": 48192,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          }
+        },
+        {
+          "name": "zc_decode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 33,
+              "value": 0,
+              "size": 7
+            },
+            "file_offset": 672,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E",
+              "info": 2,
+              "section": 15,
+              "value": 48208,
+              "size": 7
+            },
+            "file_offset": 48208,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          }
+        },
+        {
+          "name": "zc_encode",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 34,
+              "value": 0,
+              "size": 7
+            },
+            "file_offset": 688,
+            "bytes": 7,
+            "hex": "480fcf48893ec3",
+            "sha256": "ad2188b6bc429cff2c193cf939b29b47264a63789811a1176de9bfd4446d0d08"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E",
+              "info": 2,
+              "section": 15,
+              "value": 48224,
+              "size": 7
+            },
+            "file_offset": 48224,
+            "bytes": 7,
+            "hex": "480fcf48893ec3",
+            "sha256": "ad2188b6bc429cff2c193cf939b29b47264a63789811a1176de9bfd4446d0d08"
+          }
+        },
+        {
+          "name": "zc_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 35,
+              "value": 0,
+              "size": 26
+            },
+            "file_offset": 704,
+            "bytes": 26,
+            "hex": "488b47070fb64f0f8b178b7f03897e03891648894607884e0fc3",
+            "sha256": "baba3820534484f806f3ccb34e240f49dd2f328762d456a9f1b332287a29c860"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9zc_copy1617h333cef0da883ee38E",
+              "info": 2,
+              "section": 15,
+              "value": 48240,
+              "size": 26
+            },
+            "file_offset": 48240,
+            "bytes": 26,
+            "hex": "488b47070fb64f0f8b178b7f03897e03891648894607884e0fc3",
+            "sha256": "baba3820534484f806f3ccb34e240f49dd2f328762d456a9f1b332287a29c860"
+          }
+        },
+        {
+          "name": "rust_mul",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 18,
+              "value": 0,
+              "size": 7
+            },
+            "file_offset": 352,
+            "bytes": 7,
+            "hex": "4889f048f7e7c3",
+            "sha256": "e23ddb899fa304278926b6bcb2183233e3a79456096d7ddd0ccc417c449392b7"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_mul17h23452971b31aa446E",
+              "info": 2,
+              "section": 15,
+              "value": 47888,
+              "size": 7
+            },
+            "file_offset": 47888,
+            "bytes": 7,
+            "hex": "4889f048f7e7c3",
+            "sha256": "e23ddb899fa304278926b6bcb2183233e3a79456096d7ddd0ccc417c449392b7"
+          }
+        },
+        {
+          "name": "rust_add128",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 19,
+              "value": 0,
+              "size": 24
+            },
+            "file_offset": 368,
+            "bytes": 24,
+            "hex": "4801ce4c11c20f92c00fb6c04889374889570848894710c3",
+            "sha256": "676cc092a090e4e1eb4a615887c3f31266003acf30fd2bb51f7bd34893d956a3"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_add12817h7f46eaca12712c06E",
+              "info": 2,
+              "section": 15,
+              "value": 47904,
+              "size": 24
+            },
+            "file_offset": 47904,
+            "bytes": 24,
+            "hex": "4801ce4c11c20f92c00fb6c04889374889570848894710c3",
+            "sha256": "676cc092a090e4e1eb4a615887c3f31266003acf30fd2bb51f7bd34893d956a3"
+          }
+        },
+        {
+          "name": "rust_carry",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 20,
+              "value": 0,
+              "size": 22
+            },
+            "file_offset": 400,
+            "bytes": 22,
+            "hex": "4889f831c94801f00f92c14801d04883d1004889cac3",
+            "sha256": "6a987211f916c7eea8adfd02566b015ce74414cd827fccf3401b24a9d0f695b7"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE",
+              "info": 2,
+              "section": 15,
+              "value": 47936,
+              "size": 22
+            },
+            "file_offset": 47936,
+            "bytes": 22,
+            "hex": "4889f831c94801f00f92c14801d04883d1004889cac3",
+            "sha256": "6a987211f916c7eea8adfd02566b015ce74414cd827fccf3401b24a9d0f695b7"
+          }
+        },
+        {
+          "name": "rust_swap",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 21,
+              "value": 0,
+              "size": 7
+            },
+            "file_offset": 432,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E",
+              "info": 2,
+              "section": 15,
+              "value": 47968,
+              "size": 7
+            },
+            "file_offset": 47968,
+            "bytes": 7,
+            "hex": "4889f8480fc8c3",
+            "sha256": "820d1213081405be87dedc4efa4f8eecb95d22f65e290dbe5642db4251becdde"
+          }
+        },
+        {
+          "name": "rust_load",
+          "object": null,
+          "image": null
+        },
+        {
+          "name": "rust_store",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 22,
+              "value": 0,
+              "size": 4
+            },
+            "file_offset": 448,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E",
+              "info": 2,
+              "section": 15,
+              "value": 47984,
+              "size": 4
+            },
+            "file_offset": 47984,
+            "bytes": 4,
+            "hex": "488937c3",
+            "sha256": "539cfe51c3dc23be3a51b13f4cd6c55a914a4a8b4c38fc3a0789fb490f8d23ac"
+          }
+        },
+        {
+          "name": "rust_copy16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 23,
+              "value": 0,
+              "size": 7
+            },
+            "file_offset": 464,
+            "bytes": 7,
+            "hex": "0f10070f1106c3",
+            "sha256": "c0dcc73f38dfc0191d87a44ac10f46aff0abc718e7cb26a03fb4743efeb94a53"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E",
+              "info": 2,
+              "section": 15,
+              "value": 48000,
+              "size": 7
+            },
+            "file_offset": 48000,
+            "bytes": 7,
+            "hex": "0f10070f1106c3",
+            "sha256": "c0dcc73f38dfc0191d87a44ac10f46aff0abc718e7cb26a03fb4743efeb94a53"
+          }
+        },
+        {
+          "name": "rust_ptr",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 24,
+              "value": 0,
+              "size": 5
+            },
+            "file_offset": 480,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot8rust_ptr17h749ef15fb3237769E",
+              "info": 2,
+              "section": 15,
+              "value": 48016,
+              "size": 5
+            },
+            "file_offset": 48016,
+            "bytes": 5,
+            "hex": "488d0437c3",
+            "sha256": "d9cf89c572e9a193175b8735a341790208fabfe36d704868ed206cb6a85af1ba"
+          }
+        },
+        {
+          "name": "rust_label",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 25,
+              "value": 0,
+              "size": 18
+            },
+            "file_offset": 496,
+            "bytes": 18,
+            "hex": "4885ffb911000000b829000000480f44c1c3",
+            "sha256": "6bfd0ee2ed8a22900af1a56cae6adbd83fe5d925096bbfa667c0497ef440f2c4"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E",
+              "info": 2,
+              "section": 15,
+              "value": 48032,
+              "size": 18
+            },
+            "file_offset": 48032,
+            "bytes": 18,
+            "hex": "4885ffb911000000b829000000480f44c1c3",
+            "sha256": "6bfd0ee2ed8a22900af1a56cae6adbd83fe5d925096bbfa667c0497ef440f2c4"
+          }
+        },
+        {
+          "name": "rust_add16",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 26,
+              "value": 0,
+              "size": 17
+            },
+            "file_offset": 528,
+            "bytes": 17,
+            "hex": "f30f6f06f30f6f0a660ffcc8f30f7f0fc3",
+            "sha256": "cfce211c3a7121ae3ba91aebe3eb2b71a3a14858f1a0d3e58cbc097b204cce1b"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE",
+              "info": 2,
+              "section": 15,
+              "value": 48064,
+              "size": 17
+            },
+            "file_offset": 48064,
+            "bytes": 17,
+            "hex": "f30f6f06f30f6f0a660ffcc8f30f7f0fc3",
+            "sha256": "cfce211c3a7121ae3ba91aebe3eb2b71a3a14858f1a0d3e58cbc097b204cce1b"
+          }
+        },
+        {
+          "name": "rust_call_helper",
+          "object": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 27,
+              "value": 0,
+              "size": 11
+            },
+            "file_offset": 560,
+            "bytes": 11,
+            "hex": "50e80000000048ffc059c3",
+            "sha256": "5a84c42e9f7583fffbfaf4e220ce69db2a49a3b7df8849934258a9007d482387"
+          },
+          "image": {
+            "symbol": {
+              "name": "_ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E",
+              "info": 2,
+              "section": 15,
+              "value": 48096,
+              "size": 11
+            },
+            "file_offset": 48096,
+            "bytes": 11,
+            "hex": "50e80affffff48ffc059c3",
+            "sha256": "58a456b7ccd83493be520c3a8eb22ea175c3d8cbfe87065718778ce30f6664c1"
+          }
+        }
+      ],
+      "missing_named_rust_functions": [
+        {
+          "name": "rust_load",
+          "artifact": "object"
+        },
+        {
+          "name": "rust_load",
+          "artifact": "image"
+        }
+      ]
+    }
+  ]
+}

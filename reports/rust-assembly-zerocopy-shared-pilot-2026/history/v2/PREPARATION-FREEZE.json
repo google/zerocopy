@@ -1,0 +1,262 @@
+{
+  "status": "frozen-preparation-revision-2-for-parent-review",
+  "preparation_revision": 2,
+  "supersedes": {
+    "sha256": "562388809486a803a45a09e28d1a0ac65ee481556e2090de38028c96a0981e95",
+    "exact_retained_freeze": "history/v1/PREPARATION-FREEZE.json",
+    "all_21_exact_bound_files_retained": "history/v1/"
+  },
+  "subject_compiled": false,
+  "subject_assembled": false,
+  "subject_linked": false,
+  "subject_executed": false,
+  "compiler_or_container_commands_by_agent": 0,
+  "recorded_current_data_preparation_commands": 2,
+  "historical_frozen_data_preparation_commands": 2,
+  "data_checks_passed": 1475,
+  "revision_identity_checks_passed": 36,
+  "future_harness_checks_per_proposed_run": 4617,
+  "proposed_positive_runs": 4,
+  "source_revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+  "compiler_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "primary_contracts": "Selected Rust1.89 actual Reference gitlink 9571d4d38cc580bd9fe926f97fccd98f215564a9 and later selected SysV e1ce098331da5dbd66e1ffc74162380bcc213236 clauses independently read; no compiler-conformance theorem.",
+  "source_correction": "Only parent-authorized balanced section push/pop; exact transformation checked; no instruction/controlflow/CFI line changed.",
+  "CFI_limit": ".cfi_* outside guaranteed1.89 directive subset; explicit LLVM20/GNU-ELF assembler premise to inspect in actual outputs before runtime.",
+  "physical_root_verified": true,
+  "root_device": 16777230,
+  "root_inode": 19385135,
+  "files": [
+    {
+      "path": "CONTRACTS.md",
+      "bytes": 12942,
+      "sha256": "17890210a5e1c8aa31a6795f8ad96131d2daa82e513d42fa9dbe6ae6974608c7"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 12666,
+      "sha256": "157860fcfd308951d3fbf40a9abb960101e52329a606493e76138fa9e9084e46"
+    },
+    {
+      "path": "aarch64.s",
+      "bytes": 2046,
+      "sha256": "ad1d035551286a22b0e189a3ba1aed427154258df6a4fac897a4e842e52aa895"
+    },
+    {
+      "path": "case-inventory.json",
+      "bytes": 5906,
+      "sha256": "23470be7a7ceb646252a2da10fcac79677056ebddd135ff086e122997c087bef"
+    },
+    {
+      "path": "check_preparation.py",
+      "bytes": 4819,
+      "sha256": "fbc3e3c38ac15af85fb5a0326d423e4e07814bdb4b339fd41e75a891e86ad56f"
+    },
+    {
+      "path": "check_preparation.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "check_preparation.py.stdout",
+      "bytes": 942,
+      "sha256": "285bac7ee39be655b6aa0d551147b53f87f5a5fc5a9b405f5b4b9536cab365ff"
+    },
+    {
+      "path": "commands-proposed.json",
+      "bytes": 20592,
+      "sha256": "cd61eb1d84432583d3080a80fcc78954adb3300fac4da04f3684fe995e1207b0"
+    },
+    {
+      "path": "controls-proposed.json",
+      "bytes": 2262,
+      "sha256": "ce25f226dc183be555286428316adb4e4f4214561c12bc70f73136f0e98ab640"
+    },
+    {
+      "path": "data-preparation-commands.json",
+      "bytes": 1666,
+      "sha256": "2de4a4fd3f4b42d74723a4272302601271fc5e86aa129ed17b97bb81f1654c1a"
+    },
+    {
+      "path": "expected.json",
+      "bytes": 160785,
+      "sha256": "9d5d92d90fee1b40aeb944c1796df868f45edc6318e10766ffc5972338be0b74"
+    },
+    {
+      "path": "history/v1/CONTRACTS.md",
+      "bytes": 10811,
+      "sha256": "58b3e07ae1f98d019518927f95d1e71234d2774d5d53e8bd1fe20d64181ec011"
+    },
+    {
+      "path": "history/v1/PLAN.md",
+      "bytes": 11769,
+      "sha256": "e6c012bbb771b753968e31025de2d63734d333c8675ef3b6e1e792065f607241"
+    },
+    {
+      "path": "history/v1/PREPARATION-FREEZE.json",
+      "bytes": 4363,
+      "sha256": "562388809486a803a45a09e28d1a0ac65ee481556e2090de38028c96a0981e95"
+    },
+    {
+      "path": "history/v1/aarch64.s",
+      "bytes": 2005,
+      "sha256": "10ced77786b04e29ac41810ee634026af2fc7c7bb0dfa63aad9cdbab4377dd79"
+    },
+    {
+      "path": "history/v1/case-inventory.json",
+      "bytes": 5906,
+      "sha256": "23470be7a7ceb646252a2da10fcac79677056ebddd135ff086e122997c087bef"
+    },
+    {
+      "path": "history/v1/check_preparation.py",
+      "bytes": 4819,
+      "sha256": "fbc3e3c38ac15af85fb5a0326d423e4e07814bdb4b339fd41e75a891e86ad56f"
+    },
+    {
+      "path": "history/v1/check_preparation.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "history/v1/check_preparation.py.stdout",
+      "bytes": 942,
+      "sha256": "6eea224a1a98dae6c29e64d44456cd086f9df44bf670c3e6d670a2b8b0ee27e0"
+    },
+    {
+      "path": "history/v1/commands-proposed.json",
+      "bytes": 20592,
+      "sha256": "cd61eb1d84432583d3080a80fcc78954adb3300fac4da04f3684fe995e1207b0"
+    },
+    {
+      "path": "history/v1/controls-proposed.json",
+      "bytes": 2262,
+      "sha256": "ce25f226dc183be555286428316adb4e4f4214561c12bc70f73136f0e98ab640"
+    },
+    {
+      "path": "history/v1/data-preparation-commands.json",
+      "bytes": 1628,
+      "sha256": "2c3d02e8bcf226ee49a7fe2f0ac344005846ac1eae3debb012e6601fe6a1a234"
+    },
+    {
+      "path": "history/v1/expected.json",
+      "bytes": 160785,
+      "sha256": "9d5d92d90fee1b40aeb944c1796df868f45edc6318e10766ffc5972338be0b74"
+    },
+    {
+      "path": "history/v1/oracle-preparation.json",
+      "bytes": 546,
+      "sha256": "ffb16a661b24b8afafbd041781c9b4e2fe78dc07a4e58f7d4855775c2f9650c8"
+    },
+    {
+      "path": "history/v1/parent-input-identities.json",
+      "bytes": 8457,
+      "sha256": "648fe5fab322e5623d413d7a8acc31252830a42c85c5bc5d0243d09050a46f19"
+    },
+    {
+      "path": "history/v1/pilot.rs",
+      "bytes": 18769,
+      "sha256": "afa5db9fb83b2deedc716ed0cce90bdb3f40cb7b1e7d2c3b28751eaf379768c4"
+    },
+    {
+      "path": "history/v1/preparation-checks.json",
+      "bytes": 105613,
+      "sha256": "9c8d52818283aaccf840444dbdcf908004ffa2d8fdb1aa6b0ed8098228313f85"
+    },
+    {
+      "path": "history/v1/prepare_oracles.py",
+      "bytes": 6135,
+      "sha256": "97677c511e70aca88b647a894b308a87cd27a9206db2e8f346ac15a6c2dd75e6"
+    },
+    {
+      "path": "history/v1/prepare_oracles.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "history/v1/prepare_oracles.py.stdout",
+      "bytes": 490,
+      "sha256": "d5b614632f172825f86337ca3fb834d7082deaf279cae4ece73999720ba5c8e5"
+    },
+    {
+      "path": "history/v1/vectors.rs",
+      "bytes": 140966,
+      "sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28"
+    },
+    {
+      "path": "history/v1/x86_64.s",
+      "bytes": 1995,
+      "sha256": "64bc9215898e22a4f5f8b724c18c8509a8d444a2f30894f32fe844dcac630c62"
+    },
+    {
+      "path": "history/v1/zerocopy-selected-source.json",
+      "bytes": 7090,
+      "sha256": "45e956eb714c7f473cadd6f43d32424bccca7132c43915d4940f8cafb6a0ab0c"
+    },
+    {
+      "path": "oracle-preparation.json",
+      "bytes": 546,
+      "sha256": "ffb16a661b24b8afafbd041781c9b4e2fe78dc07a4e58f7d4855775c2f9650c8"
+    },
+    {
+      "path": "parent-input-identities.json",
+      "bytes": 10263,
+      "sha256": "0a59baff6efd04c4c3172191eaf28117dbd64c5f5ed54d35291841aacd6fb527"
+    },
+    {
+      "path": "pilot.rs",
+      "bytes": 18769,
+      "sha256": "afa5db9fb83b2deedc716ed0cce90bdb3f40cb7b1e7d2c3b28751eaf379768c4"
+    },
+    {
+      "path": "preparation-checks.json",
+      "bytes": 105613,
+      "sha256": "f37d6044b519b0a5fa61ef137f0040d2516868259be504ad04978657935c1369"
+    },
+    {
+      "path": "prepare_oracles.py",
+      "bytes": 6135,
+      "sha256": "97677c511e70aca88b647a894b308a87cd27a9206db2e8f346ac15a6c2dd75e6"
+    },
+    {
+      "path": "prepare_oracles.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "prepare_oracles.py.stdout",
+      "bytes": 490,
+      "sha256": "d5b614632f172825f86337ca3fb834d7082deaf279cae4ece73999720ba5c8e5"
+    },
+    {
+      "path": "primary-contract-index.json",
+      "bytes": 13120,
+      "sha256": "57e6012608cd87316db65d67795a6dd63dcd7725e7d898f9fa1fffbd837cc686"
+    },
+    {
+      "path": "revision-validation.json",
+      "bytes": 3281,
+      "sha256": "0bd25c875c1db5d47db6b7dc2f51745a5a04e0b61ea7b61c616d26a0bee6d8b1"
+    },
+    {
+      "path": "vectors.rs",
+      "bytes": 140966,
+      "sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28"
+    },
+    {
+      "path": "x86_64.s",
+      "bytes": 2036,
+      "sha256": "f8a609d98c11518606547a7436f76a23a5f06a4058b898cba75143985c7c5e50"
+    },
+    {
+      "path": "zerocopy-selected-source.json",
+      "bytes": 7090,
+      "sha256": "45e956eb714c7f473cadd6f43d32424bccca7132c43915d4940f8cafb6a0ab0c"
+    }
+  ],
+  "bytes": 1048878,
+  "pending": [
+    "Parent accepts exact revised source/ABI/oracle/commands plan.",
+    "Parent acquires exact missing x86 std/linker/sysroot and records identities/resources.",
+    "Separate compile/actual caller/object/final/CFI review and native/emulated runtime grants."
+  ],
+  "authority": "Parent owns milestone decisions, installations, publication and cleanup. Existing frozen reports unchanged; original preparation snapshot retained as historical data."
+}

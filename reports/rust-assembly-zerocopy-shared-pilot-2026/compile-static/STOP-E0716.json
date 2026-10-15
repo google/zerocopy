@@ -1,0 +1,44 @@
+{
+  "status": "stopped-on-compiler-diagnostic-before-dependent-work",
+  "reviewed_preparation_freeze": "d1571ef5fbe5da290df68cc2bac668b941473d80ae4aac08cc3510df1a96fcd0",
+  "attempted_compilers": [
+    {
+      "id": "aarch64-O0-zerocopy",
+      "exit": 0,
+      "streams": "empty"
+    },
+    {
+      "id": "aarch64-O0-pilot",
+      "exit": 1,
+      "diagnostic": "E0716 temporary Self borrowed by returned SizeError and dropped before result.is_err()"
+    }
+  ],
+  "sources_libraries_tools_unchanged": true,
+  "native_or_guest_execution": false,
+  "remaining_six_compilers": "not started",
+  "outputs": [
+    {
+      "path": "build/aarch64/O0/libzerocopy.rlib",
+      "bytes": 14083066,
+      "sha256": "9a9d4f302a8c820263a0dc2295d6026218b1e277cf98cdde7c83227c736488e5",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O0/libzerocopy.rlib"
+    }
+  ],
+  "output_bytes": 14083066,
+  "proposed_patch_sha256": "b30f4f72fbfa3fbf1385834362bca30a991361478e9ae8eb4f425be496683954",
+  "proposal_status": "data-only diff, not applied; parent review/restaging/renewed grant required",
+  "cause": "Fixture source lifetime mistake, not a tool panic/ICE or an executed invalid program",
+  "other_operational_notes": [
+    {
+      "event": "Read-only receipt inventory initially tried rust189-component-manifest.json, which does not exist; FileNotFoundError stopped query.",
+      "diagnosis": "Actual preserved input is rust189-component-manifest.toml; corrected read and hash completed before compile. No source/container mutation."
+    },
+    {
+      "event": "First Docker snapshot API socket sandbox denial, no compiler started.",
+      "diagnosis": "Exact failed preflight and helper preserved under operational/preflight-sandbox-denial-01; parent-approved narrow escalation then succeeded."
+    }
+  ],
+  "authority": "No implicit retry, input source patch, install, runtime or mutation of staged files.",
+  "no_pilot_image_or_pilot_function_artifact_produced": true
+}

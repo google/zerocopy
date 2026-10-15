@@ -1,0 +1,1810 @@
+
+build/x86_64/O3/pilot.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <pilot_mul>:
+   0:	48 89 d1             	mov    rcx,rdx
+   3:	48 89 f8             	mov    rax,rdi
+   6:	48 f7 e6             	mul    rsi
+   9:	48 89 01             	mov    QWORD PTR [rcx],rax
+   c:	48 89 51 08          	mov    QWORD PTR [rcx+0x8],rdx
+  10:	c3                   	ret
+
+0000000000000011 <pilot_add128>:
+  11:	48 8b 0f             	mov    rcx,QWORD PTR [rdi]
+  14:	4c 8b 47 08          	mov    r8,QWORD PTR [rdi+0x8]
+  18:	48 03 0e             	add    rcx,QWORD PTR [rsi]
+  1b:	4c 13 46 08          	adc    r8,QWORD PTR [rsi+0x8]
+  1f:	0f 92 c0             	setb   al
+  22:	0f b6 c0             	movzx  eax,al
+  25:	48 89 0a             	mov    QWORD PTR [rdx],rcx
+  28:	4c 89 42 08          	mov    QWORD PTR [rdx+0x8],r8
+  2c:	c3                   	ret
+
+000000000000002d <pilot_bswap>:
+  2d:	48 89 f8             	mov    rax,rdi
+  30:	48 0f c8             	bswap  rax
+  33:	c3                   	ret
+
+0000000000000034 <pilot_load>:
+  34:	48 8b 07             	mov    rax,QWORD PTR [rdi]
+  37:	c3                   	ret
+
+0000000000000038 <pilot_store>:
+  38:	48 89 37             	mov    QWORD PTR [rdi],rsi
+  3b:	c3                   	ret
+
+000000000000003c <pilot_copy16>:
+  3c:	48 8b 06             	mov    rax,QWORD PTR [rsi]
+  3f:	48 8b 4e 08          	mov    rcx,QWORD PTR [rsi+0x8]
+  43:	48 89 07             	mov    QWORD PTR [rdi],rax
+  46:	48 89 4f 08          	mov    QWORD PTR [rdi+0x8],rcx
+  4a:	c3                   	ret
+
+000000000000004b <pilot_ptr>:
+  4b:	48 8d 04 37          	lea    rax,[rdi+rsi*1]
+  4f:	c3                   	ret
+
+0000000000000050 <pilot_call_helper>:
+  50:	48 83 ec 08          	sub    rsp,0x8
+  54:	e8 00 00 00 00       	call   59 <pilot_call_helper+0x9>
+			55: R_X86_64_PLT32	pilot_helper-0x4
+  59:	48 83 c0 01          	add    rax,0x1
+  5d:	48 83 c4 08          	add    rsp,0x8
+  61:	c3                   	ret
+
+0000000000000062 <pilot_simd_copy16>:
+  62:	66 0f 6f 06          	movdqa xmm0,XMMWORD PTR [rsi]
+  66:	66 0f 7f 07          	movdqa XMMWORD PTR [rdi],xmm0
+  6a:	c3                   	ret
+
+000000000000006b <pilot_simd_add16>:
+  6b:	66 0f 6f 06          	movdqa xmm0,XMMWORD PTR [rsi]
+  6f:	66 0f 6f 0a          	movdqa xmm1,XMMWORD PTR [rdx]
+  73:	66 0f fc c1          	paddb  xmm0,xmm1
+  77:	66 0f 7f 07          	movdqa XMMWORD PTR [rdi],xmm0
+  7b:	c3                   	ret
+
+Disassembly of section .text._ZN3std2rt10lang_start17hceb1b6aa47208e68E:
+
+0000000000000000 <std::rt::lang_start>:
+   0:	50                   	push   rax
+   1:	41 89 c8             	mov    r8d,ecx
+   4:	48 89 d1             	mov    rcx,rdx
+   7:	48 89 f2             	mov    rdx,rsi
+   a:	48 89 3c 24          	mov    QWORD PTR [rsp],rdi
+   e:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 15 <std::rt::lang_start+0x15>
+			11: R_X86_64_PC32	.data.rel.ro..Lvtable.0-0x4
+  15:	48 89 e7             	mov    rdi,rsp
+  18:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 1e <std::rt::lang_start+0x1e>
+			1a: R_X86_64_GOTPCREL	std::rt::lang_start_internal-0x4
+  1e:	59                   	pop    rcx
+  1f:	c3                   	ret
+
+Disassembly of section .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE:
+
+0000000000000000 <std::rt::lang_start::{{closure}}>:
+   0:	50                   	push   rax
+   1:	48 8b 3f             	mov    rdi,QWORD PTR [rdi]
+   4:	e8 00 00 00 00       	call   9 <std::rt::lang_start::{{closure}}+0x9>
+			5: R_X86_64_PLT32	.text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E-0x4
+   9:	31 c0                	xor    eax,eax
+   b:	59                   	pop    rcx
+   c:	c3                   	ret
+
+Disassembly of section .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E:
+
+0000000000000000 <std::sys::backtrace::__rust_begin_short_backtrace>:
+   0:	50                   	push   rax
+   1:	ff d7                	call   rdi
+   3:	58                   	pop    rax
+   4:	c3                   	ret
+
+Disassembly of section .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE:
+
+0000000000000000 <<&T as core::fmt::Display>::fmt>:
+   0:	48 89 f2             	mov    rdx,rsi
+   3:	48 8b 07             	mov    rax,QWORD PTR [rdi]
+   6:	48 8b 77 08          	mov    rsi,QWORD PTR [rdi+0x8]
+   a:	48 89 c7             	mov    rdi,rax
+   d:	ff 25 00 00 00 00    	jmp    QWORD PTR [rip+0x0]        # 13 <pilot_add128+0x2>
+			f: R_X86_64_GOTPCREL	<str as core::fmt::Display>::fmt-0x4
+
+Disassembly of section .text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E:
+
+0000000000000000 <core::ops::function::FnOnce::call_once{{vtable.shim}}>:
+   0:	50                   	push   rax
+   1:	48 8b 3f             	mov    rdi,QWORD PTR [rdi]
+   4:	e8 00 00 00 00       	call   9 <core::ops::function::FnOnce::call_once{{vtable.shim}}+0x9>
+			5: R_X86_64_PLT32	.text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E-0x4
+   9:	31 c0                	xor    eax,eax
+   b:	59                   	pop    rcx
+   c:	c3                   	ret
+
+Disassembly of section .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE:
+
+0000000000000000 <<&mut T as core::fmt::Display>::fmt>:
+   0:	48 8b 3f             	mov    rdi,QWORD PTR [rdi]
+   3:	ff 25 00 00 00 00    	jmp    QWORD PTR [rip+0x0]        # 9 <.Lalloc_0d1d49781481982934645de3da0719d5+0x1>
+			5: R_X86_64_GOTPCREL	core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt-0x4
+
+Disassembly of section .text.pilot_helper:
+
+0000000000000000 <pilot_helper>:
+   0:	f0 48 ff 05 00 00 00 	lock inc QWORD PTR [rip+0x0]        # 8 <pilot_helper+0x8>
+   7:	00 
+			4: R_X86_64_PC32	.bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE-0x4
+   8:	48 c1 c7 0d          	rol    rdi,0xd
+   c:	48 b8 87 ca eb 85 b1 	movabs rax,0x9e3779b185ebca87
+  13:	79 37 9e 
+  16:	48 0f af c6          	imul   rax,rsi
+  1a:	48 31 f8             	xor    rax,rdi
+  1d:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E:
+
+0000000000000000 <extended_pilot::rust_mul>:
+   0:	48 89 f0             	mov    rax,rsi
+   3:	48 f7 e7             	mul    rdi
+   6:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E:
+
+0000000000000000 <extended_pilot::rust_add128>:
+   0:	48 01 ce             	add    rsi,rcx
+   3:	4c 11 c2             	adc    rdx,r8
+   6:	0f 92 c0             	setb   al
+   9:	0f b6 c0             	movzx  eax,al
+   c:	48 89 37             	mov    QWORD PTR [rdi],rsi
+   f:	48 89 57 08          	mov    QWORD PTR [rdi+0x8],rdx
+  13:	48 89 47 10          	mov    QWORD PTR [rdi+0x10],rax
+  17:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE:
+
+0000000000000000 <extended_pilot::rust_carry>:
+   0:	48 89 f8             	mov    rax,rdi
+   3:	31 c9                	xor    ecx,ecx
+   5:	48 01 f0             	add    rax,rsi
+   8:	0f 92 c1             	setb   cl
+   b:	48 01 d0             	add    rax,rdx
+   e:	48 83 d1 00          	adc    rcx,0x0
+  12:	48 89 ca             	mov    rdx,rcx
+  15:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E:
+
+0000000000000000 <extended_pilot::rust_swap>:
+   0:	48 89 f8             	mov    rax,rdi
+   3:	48 0f c8             	bswap  rax
+   6:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E:
+
+0000000000000000 <extended_pilot::rust_store>:
+   0:	48 89 37             	mov    QWORD PTR [rdi],rsi
+   3:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E:
+
+0000000000000000 <extended_pilot::rust_copy16>:
+   0:	0f 10 07             	movups xmm0,XMMWORD PTR [rdi]
+   3:	0f 11 06             	movups XMMWORD PTR [rsi],xmm0
+   6:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E:
+
+0000000000000000 <extended_pilot::rust_ptr>:
+   0:	48 8d 04 37          	lea    rax,[rdi+rsi*1]
+   4:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E:
+
+0000000000000000 <extended_pilot::rust_label>:
+   0:	48 85 ff             	test   rdi,rdi
+   3:	b9 11 00 00 00       	mov    ecx,0x11
+   8:	b8 29 00 00 00       	mov    eax,0x29
+   d:	48 0f 44 c1          	cmove  rax,rcx
+  11:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE:
+
+0000000000000000 <extended_pilot::rust_add16>:
+   0:	f3 0f 6f 06          	movdqu xmm0,XMMWORD PTR [rsi]
+   4:	f3 0f 6f 0a          	movdqu xmm1,XMMWORD PTR [rdx]
+   8:	66 0f fc c8          	paddb  xmm1,xmm0
+   c:	f3 0f 7f 0f          	movdqu XMMWORD PTR [rdi],xmm1
+  10:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E:
+
+0000000000000000 <extended_pilot::rust_call_helper>:
+   0:	50                   	push   rax
+   1:	e8 00 00 00 00       	call   6 <extended_pilot::rust_call_helper+0x6>
+			2: R_X86_64_PLT32	pilot_helper-0x4
+   6:	48 ff c0             	inc    rax
+   9:	59                   	pop    rcx
+   a:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE:
+
+0000000000000000 <extended_pilot::inline_carry>:
+   0:	48 89 f8             	mov    rax,rdi
+   3:	48 0f ba e2 00       	bt     rdx,0x0
+   8:	48 11 f0             	adc    rax,rsi
+   b:	0f 92 c1             	setb   cl
+   e:	0f b6 d1             	movzx  edx,cl
+  11:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE:
+
+0000000000000000 <extended_pilot::inline_label>:
+   0:	b8 29 00 00 00       	mov    eax,0x29
+   5:	48 85 ff             	test   rdi,rdi
+   8:	74 01                	je     b <extended_pilot::inline_label+0xb>
+   a:	c3                   	ret
+   b:	50                   	push   rax
+   c:	b8 11 00 00 00       	mov    eax,0x11
+  11:	48 83 c4 08          	add    rsp,0x8
+  15:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE:
+
+0000000000000000 <extended_pilot::inline_load>:
+   0:	48 8b 07             	mov    rax,QWORD PTR [rdi]
+   3:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E:
+
+0000000000000000 <extended_pilot::inline_store>:
+   0:	48 89 37             	mov    QWORD PTR [rdi],rsi
+   3:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E:
+
+0000000000000000 <extended_pilot::zc_decode>:
+   0:	48 89 f8             	mov    rax,rdi
+   3:	48 0f c8             	bswap  rax
+   6:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E:
+
+0000000000000000 <extended_pilot::zc_encode>:
+   0:	48 0f cf             	bswap  rdi
+   3:	48 89 3e             	mov    QWORD PTR [rsi],rdi
+   6:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E:
+
+0000000000000000 <extended_pilot::zc_copy16>:
+   0:	48 8b 47 07          	mov    rax,QWORD PTR [rdi+0x7]
+   4:	0f b6 4f 0f          	movzx  ecx,BYTE PTR [rdi+0xf]
+   8:	8b 17                	mov    edx,DWORD PTR [rdi]
+   a:	8b 7f 03             	mov    edi,DWORD PTR [rdi+0x3]
+   d:	89 7e 03             	mov    DWORD PTR [rsi+0x3],edi
+  10:	89 16                	mov    DWORD PTR [rsi],edx
+  12:	48 89 46 07          	mov    QWORD PTR [rsi+0x7],rax
+  16:	88 4e 0f             	mov    BYTE PTR [rsi+0xf],cl
+  19:	c3                   	ret
+
+Disassembly of section .text._ZN14extended_pilot4main17hca72231bfee5693fE:
+
+0000000000000000 <extended_pilot::main>:
+       0:	55                   	push   rbp
+       1:	41 57                	push   r15
+       3:	41 56                	push   r14
+       5:	41 55                	push   r13
+       7:	41 54                	push   r12
+       9:	53                   	push   rbx
+       a:	48 81 ec 00 10 00 00 	sub    rsp,0x1000
+      11:	48 c7 04 24 00 00 00 	mov    QWORD PTR [rsp],0x0
+      18:	00 
+      19:	48 81 ec 00 10 00 00 	sub    rsp,0x1000
+      20:	48 c7 04 24 00 00 00 	mov    QWORD PTR [rsp],0x0
+      27:	00 
+      28:	48 81 ec 00 10 00 00 	sub    rsp,0x1000
+      2f:	48 c7 04 24 00 00 00 	mov    QWORD PTR [rsp],0x0
+      36:	00 
+      37:	48 81 ec 00 10 00 00 	sub    rsp,0x1000
+      3e:	48 c7 04 24 00 00 00 	mov    QWORD PTR [rsp],0x0
+      45:	00 
+      46:	48 81 ec 00 10 00 00 	sub    rsp,0x1000
+      4d:	48 c7 04 24 00 00 00 	mov    QWORD PTR [rsp],0x0
+      54:	00 
+      55:	48 81 ec 28 0c 00 00 	sub    rsp,0xc28
+      5c:	48 c7 44 24 08 01 00 	mov    QWORD PTR [rsp+0x8],0x1
+      63:	00 00 
+      65:	48 c7 84 24 b0 01 00 	mov    QWORD PTR [rsp+0x1b0],0x0
+      6c:	00 00 00 00 00 
+      71:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x121
+      78:	00 21 01 00 00 
+      7d:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+      84:	00 
+      85:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 8c <extended_pilot::main+0x8c>
+			88: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.0-0x4
+      8c:	ba 20 24 00 00       	mov    edx,0x2420
+      91:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 97 <extended_pilot::main+0x97>
+			93: R_X86_64_GOTPCREL	memcpy-0x4
+      97:	41 bc 28 00 00 00    	mov    r12d,0x28
+      9d:	0f 1f 00             	nop    DWORD PTR [rax]
+      a0:	4e 8b b4 24 98 01 00 	mov    r14,QWORD PTR [rsp+r12*1+0x198]
+      a7:	00 
+      a8:	4e 8b bc 24 a0 01 00 	mov    r15,QWORD PTR [rsp+r12*1+0x1a0]
+      af:	00 
+      b0:	4e 8b ac 24 a8 01 00 	mov    r13,QWORD PTR [rsp+r12*1+0x1a8]
+      b7:	00 
+      b8:	4a 8b ac 24 b0 01 00 	mov    rbp,QWORD PTR [rsp+r12*1+0x1b0]
+      bf:	00 
+      c0:	48 bb 88 77 66 55 44 	movabs rbx,0x1122334455667788
+      c7:	33 22 11 
+      ca:	48 89 9c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rbx
+      d1:	00 
+      d2:	48 8d 94 24 b8 00 00 	lea    rdx,[rsp+0xb8]
+      d9:	00 
+      da:	0f 57 c0             	xorps  xmm0,xmm0
+      dd:	0f 11 02             	movups XMMWORD PTR [rdx],xmm0
+      e0:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+      e7:	66 77 88 
+      ea:	48 89 84 24 c8 00 00 	mov    QWORD PTR [rsp+0xc8],rax
+      f1:	00 
+      f2:	4c 89 f7             	mov    rdi,r14
+      f5:	4c 89 fe             	mov    rsi,r15
+      f8:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # fe <extended_pilot::main+0xfe>
+			fa: R_X86_64_GOTPCREL	pilot_mul-0x4
+      fe:	48 89 5c 24 70       	mov    QWORD PTR [rsp+0x70],rbx
+     103:	4c 89 6c 24 78       	mov    QWORD PTR [rsp+0x78],r13
+     108:	48 89 ac 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rbp
+     10f:	00 
+     110:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+     117:	66 77 88 
+     11a:	48 89 84 24 88 00 00 	mov    QWORD PTR [rsp+0x88],rax
+     121:	00 
+     122:	f3 0f 6f 44 24 70    	movdqu xmm0,XMMWORD PTR [rsp+0x70]
+     128:	f3 0f 6f 8c 24 c0 00 	movdqu xmm1,XMMWORD PTR [rsp+0xc0]
+     12f:	00 00 
+     131:	f3 0f 6f 94 24 80 00 	movdqu xmm2,XMMWORD PTR [rsp+0x80]
+     138:	00 00 
+     13a:	66 0f 74 d1          	pcmpeqb xmm2,xmm1
+     13e:	66 0f 74 84 24 b0 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0xb0]
+     145:	00 00 
+     147:	66 0f db c2          	pand   xmm0,xmm2
+     14b:	66 0f d7 c0          	pmovmskb eax,xmm0
+     14f:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 156 <extended_pilot::main+0x156>
+			152: R_X86_64_PC32	.rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38-0x4
+     156:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     15d:	00 
+     15e:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0x7
+     165:	00 07 00 00 00 
+     16a:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     16f:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+     176:	00 
+     177:	3d ff ff 00 00       	cmp    eax,0xffff
+     17c:	0f 85 b7 15 00 00    	jne    1739 <extended_pilot::main+0x1739>
+     182:	48 8b 5c 24 08       	mov    rbx,QWORD PTR [rsp+0x8]
+     187:	48 ff c3             	inc    rbx
+     18a:	0f 84 8f 13 00 00    	je     151f <extended_pilot::main+0x151f>
+     190:	48 89 5c 24 08       	mov    QWORD PTR [rsp+0x8],rbx
+     195:	4c 89 f7             	mov    rdi,r14
+     198:	4c 89 fe             	mov    rsi,r15
+     19b:	e8 00 00 00 00       	call   1a0 <extended_pilot::main+0x1a0>
+			19c: R_X86_64_PLT32	.text._ZN14extended_pilot8rust_mul17h23452971b31aa446E-0x4
+     1a0:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 1a7 <extended_pilot::main+0x1a7>
+			1a3: R_X86_64_PC32	.Lalloc_ad3f71f8fadccdea3aae76bb9fc6967b-0x4
+     1a7:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     1ac:	48 c7 44 24 78 08 00 	mov    QWORD PTR [rsp+0x78],0x8
+     1b3:	00 00 
+     1b5:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     1ba:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     1c1:	00 
+     1c2:	4c 39 e8             	cmp    rax,r13
+     1c5:	0f 85 b6 15 00 00    	jne    1781 <extended_pilot::main+0x1781>
+     1cb:	48 39 ea             	cmp    rdx,rbp
+     1ce:	0f 85 ad 15 00 00    	jne    1781 <extended_pilot::main+0x1781>
+     1d4:	48 ff c3             	inc    rbx
+     1d7:	0f 84 42 13 00 00    	je     151f <extended_pilot::main+0x151f>
+     1dd:	48 89 5c 24 08       	mov    QWORD PTR [rsp+0x8],rbx
+     1e2:	49 83 c4 20          	add    r12,0x20
+     1e6:	49 81 fc 48 24 00 00 	cmp    r12,0x2448
+     1ed:	0f 85 ad fe ff ff    	jne    a0 <extended_pilot::main+0xa0>
+     1f3:	48 c7 84 24 b0 01 00 	mov    QWORD PTR [rsp+0x1b0],0x0
+     1fa:	00 00 00 00 00 
+     1ff:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x90
+     206:	00 90 00 00 00 
+     20b:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     212:	00 
+     213:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 21a <extended_pilot::main+0x21a>
+			216: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.1-0x4
+     21a:	ba 80 1f 00 00       	mov    edx,0x1f80
+     21f:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 225 <extended_pilot::main+0x225>
+			221: R_X86_64_GOTPCREL	memcpy-0x4
+     225:	41 bf 40 00 00 00    	mov    r15d,0x40
+     22b:	4c 8d 64 24 78       	lea    r12,[rsp+0x78]
+     230:	4c 8d 84 24 30 01 00 	lea    r8,[rsp+0x130]
+     237:	00 
+     238:	0f 1f 84 00 00 00 00 	nop    DWORD PTR [rax+rax*1+0x0]
+     23f:	00 
+     240:	4a 8b 84 3c 80 01 00 	mov    rax,QWORD PTR [rsp+r15*1+0x180]
+     247:	00 
+     248:	4a 8b 8c 3c 88 01 00 	mov    rcx,QWORD PTR [rsp+r15*1+0x188]
+     24f:	00 
+     250:	4a 8b 94 3c 90 01 00 	mov    rdx,QWORD PTR [rsp+r15*1+0x190]
+     257:	00 
+     258:	4a 8b b4 3c 98 01 00 	mov    rsi,QWORD PTR [rsp+r15*1+0x198]
+     25f:	00 
+     260:	4e 8b ac 3c a0 01 00 	mov    r13,QWORD PTR [rsp+r15*1+0x1a0]
+     267:	00 
+     268:	4e 8b b4 3c a8 01 00 	mov    r14,QWORD PTR [rsp+r15*1+0x1a8]
+     26f:	00 
+     270:	4a 8b bc 3c b0 01 00 	mov    rdi,QWORD PTR [rsp+r15*1+0x1b0]
+     277:	00 
+     278:	48 89 bc 24 e0 00 00 	mov    QWORD PTR [rsp+0xe0],rdi
+     27f:	00 
+     280:	48 89 84 24 30 01 00 	mov    QWORD PTR [rsp+0x130],rax
+     287:	00 
+     288:	48 89 8c 24 38 01 00 	mov    QWORD PTR [rsp+0x138],rcx
+     28f:	00 
+     290:	48 89 94 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rdx
+     297:	00 
+     298:	48 89 b4 24 58 01 00 	mov    QWORD PTR [rsp+0x158],rsi
+     29f:	00 
+     2a0:	48 bf 88 77 66 55 44 	movabs rdi,0x1122334455667788
+     2a7:	33 22 11 
+     2aa:	48 89 7c 24 70       	mov    QWORD PTR [rsp+0x70],rdi
+     2af:	66 0f ef c0          	pxor   xmm0,xmm0
+     2b3:	f3 41 0f 7f 04 24    	movdqu XMMWORD PTR [r12],xmm0
+     2b9:	48 bf 11 22 33 44 55 	movabs rdi,0x8877665544332211
+     2c0:	66 77 88 
+     2c3:	48 89 bc 24 88 00 00 	mov    QWORD PTR [rsp+0x88],rdi
+     2ca:	00 
+     2cb:	48 31 d0             	xor    rax,rdx
+     2ce:	48 31 f1             	xor    rcx,rsi
+     2d1:	48 09 c1             	or     rcx,rax
+     2d4:	4c 89 c6             	mov    rsi,r8
+     2d7:	74 08                	je     2e1 <extended_pilot::main+0x2e1>
+     2d9:	48 8d b4 24 50 01 00 	lea    rsi,[rsp+0x150]
+     2e0:	00 
+     2e1:	4c 89 c7             	mov    rdi,r8
+     2e4:	4c 89 e2             	mov    rdx,r12
+     2e7:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 2ed <extended_pilot::main+0x2ed>
+			2e9: R_X86_64_GOTPCREL	pilot_add128-0x4
+     2ed:	48 b9 88 77 66 55 44 	movabs rcx,0x1122334455667788
+     2f4:	33 22 11 
+     2f7:	48 89 4c 24 10       	mov    QWORD PTR [rsp+0x10],rcx
+     2fc:	4c 89 6c 24 18       	mov    QWORD PTR [rsp+0x18],r13
+     301:	4c 89 74 24 20       	mov    QWORD PTR [rsp+0x20],r14
+     306:	48 b9 11 22 33 44 55 	movabs rcx,0x8877665544332211
+     30d:	66 77 88 
+     310:	48 89 4c 24 28       	mov    QWORD PTR [rsp+0x28],rcx
+     315:	f3 0f 6f 44 24 10    	movdqu xmm0,XMMWORD PTR [rsp+0x10]
+     31b:	f3 0f 6f 8c 24 80 00 	movdqu xmm1,XMMWORD PTR [rsp+0x80]
+     322:	00 00 
+     324:	f3 0f 6f 54 24 20    	movdqu xmm2,XMMWORD PTR [rsp+0x20]
+     32a:	66 0f 74 44 24 70    	pcmpeqb xmm0,XMMWORD PTR [rsp+0x70]
+     330:	66 0f 74 d1          	pcmpeqb xmm2,xmm1
+     334:	66 0f db c2          	pand   xmm0,xmm2
+     338:	66 0f d7 c8          	pmovmskb ecx,xmm0
+     33c:	81 f9 ff ff 00 00    	cmp    ecx,0xffff
+     342:	0f 85 7a 13 00 00    	jne    16c2 <extended_pilot::main+0x16c2>
+     348:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 34f <extended_pilot::main+0x34f>
+			34b: R_X86_64_PC32	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6-0x4
+     34f:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     356:	00 
+     357:	48 c7 84 24 b8 00 00 	mov    QWORD PTR [rsp+0xb8],0xa
+     35e:	00 0a 00 00 00 
+     363:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     368:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     36f:	00 
+     370:	48 8b 8c 24 e0 00 00 	mov    rcx,QWORD PTR [rsp+0xe0]
+     377:	00 
+     378:	48 39 c8             	cmp    rax,rcx
+     37b:	0f 85 34 13 00 00    	jne    16b5 <extended_pilot::main+0x16b5>
+     381:	4c 89 eb             	mov    rbx,r13
+     384:	4d 89 e5             	mov    r13,r12
+     387:	4c 8b 64 24 08       	mov    r12,QWORD PTR [rsp+0x8]
+     38c:	4c 89 a4 24 28 01 00 	mov    QWORD PTR [rsp+0x128],r12
+     393:	00 
+     394:	49 ff c4             	inc    r12
+     397:	0f 84 82 11 00 00    	je     151f <extended_pilot::main+0x151f>
+     39d:	4c 89 f5             	mov    rbp,r14
+     3a0:	49 89 ce             	mov    r14,rcx
+     3a3:	4c 89 64 24 08       	mov    QWORD PTR [rsp+0x8],r12
+     3a8:	48 8b b4 24 30 01 00 	mov    rsi,QWORD PTR [rsp+0x130]
+     3af:	00 
+     3b0:	48 8b 94 24 38 01 00 	mov    rdx,QWORD PTR [rsp+0x138]
+     3b7:	00 
+     3b8:	48 8b 8c 24 50 01 00 	mov    rcx,QWORD PTR [rsp+0x150]
+     3bf:	00 
+     3c0:	4c 8b 84 24 58 01 00 	mov    r8,QWORD PTR [rsp+0x158]
+     3c7:	00 
+     3c8:	48 8d bc 24 b0 00 00 	lea    rdi,[rsp+0xb0]
+     3cf:	00 
+     3d0:	e8 00 00 00 00       	call   3d5 <extended_pilot::main+0x3d5>
+			3d1: R_X86_64_PLT32	.text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E-0x4
+     3d5:	48 39 9c 24 b0 00 00 	cmp    QWORD PTR [rsp+0xb0],rbx
+     3dc:	00 
+     3dd:	0f 85 84 12 00 00    	jne    1667 <extended_pilot::main+0x1667>
+     3e3:	48 39 ac 24 b8 00 00 	cmp    QWORD PTR [rsp+0xb8],rbp
+     3ea:	00 
+     3eb:	0f 85 76 12 00 00    	jne    1667 <extended_pilot::main+0x1667>
+     3f1:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 3f8 <extended_pilot::main+0x3f8>
+			3f4: R_X86_64_PC32	.rodata..Lalloc_c168e215480fb2698effa558f0e4841f-0x4
+     3f8:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+     3ff:	00 
+     400:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0xb
+     407:	00 0b 00 00 00 
+     40c:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+     411:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+     418:	00 
+     419:	4c 39 b4 24 c0 00 00 	cmp    QWORD PTR [rsp+0xc0],r14
+     420:	00 
+     421:	0f 85 68 12 00 00    	jne    168f <extended_pilot::main+0x168f>
+     427:	49 ff c4             	inc    r12
+     42a:	0f 84 ef 10 00 00    	je     151f <extended_pilot::main+0x151f>
+     430:	4c 89 64 24 08       	mov    QWORD PTR [rsp+0x8],r12
+     435:	49 83 c7 38          	add    r15,0x38
+     439:	49 81 ff c0 1f 00 00 	cmp    r15,0x1fc0
+     440:	4d 89 ec             	mov    r12,r13
+     443:	4c 8d 84 24 30 01 00 	lea    r8,[rsp+0x130]
+     44a:	00 
+     44b:	0f 85 ef fd ff ff    	jne    240 <extended_pilot::main+0x240>
+     451:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x242
+     458:	00 42 02 00 00 
+     45d:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     464:	00 
+     465:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 46c <extended_pilot::main+0x46c>
+			468: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.2-0x4
+     46c:	ba 50 5a 00 00       	mov    edx,0x5a50
+     471:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 477 <extended_pilot::main+0x477>
+			473: R_X86_64_GOTPCREL	memcpy-0x4
+     477:	48 b9 55 55 55 55 55 	movabs rcx,0x5555555555555555
+     47e:	55 55 55 
+     481:	4c 8b a4 24 28 01 00 	mov    r12,QWORD PTR [rsp+0x128]
+     488:	00 
+     489:	4c 89 e0             	mov    rax,r12
+     48c:	48 0f af c1          	imul   rax,rcx
+     490:	48 29 c1             	sub    rcx,rax
+     493:	48 83 c1 02          	add    rcx,0x2
+     497:	48 89 8c 24 98 01 00 	mov    QWORD PTR [rsp+0x198],rcx
+     49e:	00 
+     49f:	48 b9 ab aa aa aa aa 	movabs rcx,0xaaaaaaaaaaaaaaab
+     4a6:	aa aa aa 
+     4a9:	4c 89 e2             	mov    rdx,r12
+     4ac:	48 0f af d1          	imul   rdx,rcx
+     4b0:	48 29 c1             	sub    rcx,rax
+     4b3:	48 ff c1             	inc    rcx
+     4b6:	48 89 8c 24 a0 01 00 	mov    QWORD PTR [rsp+0x1a0],rcx
+     4bd:	00 
+     4be:	48 ff c2             	inc    rdx
+     4c1:	48 89 94 24 a8 01 00 	mov    QWORD PTR [rsp+0x1a8],rdx
+     4c8:	00 
+     4c9:	4c 8d ac 24 e0 01 00 	lea    r13,[rsp+0x1e0]
+     4d0:	00 
+     4d1:	49 83 c4 05          	add    r12,0x5
+     4d5:	31 ed                	xor    ebp,ebp
+     4d7:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+     4de:	00 00 
+     4e0:	49 8b 5d e0          	mov    rbx,QWORD PTR [r13-0x20]
+     4e4:	4d 8b 75 e8          	mov    r14,QWORD PTR [r13-0x18]
+     4e8:	4d 8b 7d f0          	mov    r15,QWORD PTR [r13-0x10]
+     4ec:	49 8b 45 f8          	mov    rax,QWORD PTR [r13-0x8]
+     4f0:	48 89 84 24 e0 00 00 	mov    QWORD PTR [rsp+0xe0],rax
+     4f7:	00 
+     4f8:	49 8b 45 00          	mov    rax,QWORD PTR [r13+0x0]
+     4fc:	48 89 84 24 28 01 00 	mov    QWORD PTR [rsp+0x128],rax
+     503:	00 
+     504:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 50b <extended_pilot::main+0x50b>
+			507: R_X86_64_PC32	.rodata..Lalloc_149d364d8349edfe71770e753c396aa0-0x4
+     50b:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+     510:	48 c7 44 24 78 0c 00 	mov    QWORD PTR [rsp+0x78],0xc
+     517:	00 00 
+     519:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+     51e:	48 89 84 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rax
+     525:	00 
+     526:	49 83 ff 02          	cmp    r15,0x2
+     52a:	0f 83 dd 12 00 00    	jae    180d <extended_pilot::main+0x180d>
+     530:	48 39 ac 24 a8 01 00 	cmp    QWORD PTR [rsp+0x1a8],rbp
+     537:	00 
+     538:	0f 84 e1 0f 00 00    	je     151f <extended_pilot::main+0x151f>
+     53e:	49 8d 44 24 fe       	lea    rax,[r12-0x2]
+     543:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     548:	48 89 df             	mov    rdi,rbx
+     54b:	4c 89 f6             	mov    rsi,r14
+     54e:	4c 89 fa             	mov    rdx,r15
+     551:	e8 00 00 00 00       	call   556 <extended_pilot::main+0x556>
+			552: R_X86_64_PLT32	.text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE-0x4
+     556:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 55d <extended_pilot::main+0x55d>
+			559: R_X86_64_PC32	.rodata..Lalloc_b3cea492701bfda0e383697982d6e842-0x4
+     55d:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     562:	48 c7 44 24 78 0c 00 	mov    QWORD PTR [rsp+0x78],0xc
+     569:	00 00 
+     56b:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     570:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     577:	00 
+     578:	48 3b 84 24 e0 00 00 	cmp    rax,QWORD PTR [rsp+0xe0]
+     57f:	00 
+     580:	0f 85 87 12 00 00    	jne    180d <extended_pilot::main+0x180d>
+     586:	48 3b 94 24 28 01 00 	cmp    rdx,QWORD PTR [rsp+0x128]
+     58d:	00 
+     58e:	0f 85 79 12 00 00    	jne    180d <extended_pilot::main+0x180d>
+     594:	48 39 ac 24 a0 01 00 	cmp    QWORD PTR [rsp+0x1a0],rbp
+     59b:	00 
+     59c:	0f 84 7d 0f 00 00    	je     151f <extended_pilot::main+0x151f>
+     5a2:	49 8d 44 24 ff       	lea    rax,[r12-0x1]
+     5a7:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     5ac:	48 89 df             	mov    rdi,rbx
+     5af:	4c 89 f6             	mov    rsi,r14
+     5b2:	4c 89 fa             	mov    rdx,r15
+     5b5:	e8 00 00 00 00       	call   5ba <extended_pilot::main+0x5ba>
+			5b6: R_X86_64_PLT32	.text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE-0x4
+     5ba:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 5c1 <extended_pilot::main+0x5c1>
+			5bd: R_X86_64_PC32	.rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92-0x4
+     5c1:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     5c6:	48 c7 44 24 78 0a 00 	mov    QWORD PTR [rsp+0x78],0xa
+     5cd:	00 00 
+     5cf:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     5d4:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     5db:	00 
+     5dc:	48 3b 84 24 e0 00 00 	cmp    rax,QWORD PTR [rsp+0xe0]
+     5e3:	00 
+     5e4:	0f 85 23 12 00 00    	jne    180d <extended_pilot::main+0x180d>
+     5ea:	48 3b 94 24 28 01 00 	cmp    rdx,QWORD PTR [rsp+0x128]
+     5f1:	00 
+     5f2:	0f 85 15 12 00 00    	jne    180d <extended_pilot::main+0x180d>
+     5f8:	48 39 ac 24 98 01 00 	cmp    QWORD PTR [rsp+0x198],rbp
+     5ff:	00 
+     600:	0f 84 19 0f 00 00    	je     151f <extended_pilot::main+0x151f>
+     606:	4c 89 64 24 08       	mov    QWORD PTR [rsp+0x8],r12
+     60b:	48 ff cd             	dec    rbp
+     60e:	49 83 c5 28          	add    r13,0x28
+     612:	49 83 c4 03          	add    r12,0x3
+     616:	48 81 fd be fd ff ff 	cmp    rbp,0xfffffffffffffdbe
+     61d:	0f 85 bd fe ff ff    	jne    4e0 <extended_pilot::main+0x4e0>
+     623:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x11
+     62a:	00 11 00 00 00 
+     62f:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     636:	00 
+     637:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 63e <extended_pilot::main+0x63e>
+			63a: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.3-0x4
+     63e:	ba 10 01 00 00       	mov    edx,0x110
+     643:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 649 <extended_pilot::main+0x649>
+			645: R_X86_64_GOTPCREL	memcpy-0x4
+     649:	41 bf 18 00 00 00    	mov    r15d,0x18
+     64f:	4c 8d 2d 00 00 00 00 	lea    r13,[rip+0x0]        # 656 <extended_pilot::main+0x656>
+			652: R_X86_64_PC32	.rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8-0x4
+     656:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+     65d:	00 00 00 
+     660:	4a 8b 9c 3c a8 01 00 	mov    rbx,QWORD PTR [rsp+r15*1+0x1a8]
+     667:	00 
+     668:	4e 8b a4 3c b0 01 00 	mov    r12,QWORD PTR [rsp+r15*1+0x1b0]
+     66f:	00 
+     670:	48 89 df             	mov    rdi,rbx
+     673:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 679 <extended_pilot::main+0x679>
+			675: R_X86_64_GOTPCREL	pilot_bswap-0x4
+     679:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 680 <extended_pilot::main+0x680>
+			67c: R_X86_64_PC32	.Lalloc_0d1d49781481982934645de3da0719d5-0x4
+     680:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     685:	48 c7 44 24 78 08 00 	mov    QWORD PTR [rsp+0x78],0x8
+     68c:	00 00 
+     68e:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     693:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     69a:	00 
+     69b:	4c 39 e0             	cmp    rax,r12
+     69e:	0f 85 69 11 00 00    	jne    180d <extended_pilot::main+0x180d>
+     6a4:	48 8b 6c 24 08       	mov    rbp,QWORD PTR [rsp+0x8]
+     6a9:	48 ff c5             	inc    rbp
+     6ac:	0f 84 6d 0e 00 00    	je     151f <extended_pilot::main+0x151f>
+     6b2:	48 89 6c 24 08       	mov    QWORD PTR [rsp+0x8],rbp
+     6b7:	48 89 df             	mov    rdi,rbx
+     6ba:	e8 00 00 00 00       	call   6bf <extended_pilot::main+0x6bf>
+			6bb: R_X86_64_PLT32	.text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E-0x4
+     6bf:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 6c6 <extended_pilot::main+0x6c6>
+			6c2: R_X86_64_PC32	.rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c-0x4
+     6c6:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     6cb:	48 c7 44 24 78 09 00 	mov    QWORD PTR [rsp+0x78],0x9
+     6d2:	00 00 
+     6d4:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     6d9:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     6e0:	00 
+     6e1:	4c 39 e0             	cmp    rax,r12
+     6e4:	0f 85 23 11 00 00    	jne    180d <extended_pilot::main+0x180d>
+     6ea:	48 ff c5             	inc    rbp
+     6ed:	0f 84 2c 0e 00 00    	je     151f <extended_pilot::main+0x151f>
+     6f3:	48 89 6c 24 08       	mov    QWORD PTR [rsp+0x8],rbp
+     6f8:	48 89 df             	mov    rdi,rbx
+     6fb:	48 8d b4 24 f0 00 00 	lea    rsi,[rsp+0xf0]
+     702:	00 
+     703:	e8 00 00 00 00       	call   708 <extended_pilot::main+0x708>
+			704: R_X86_64_PLT32	.text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E-0x4
+     708:	49 89 de             	mov    r14,rbx
+     70b:	49 0f ce             	bswap  r14
+     70e:	4c 39 b4 24 f0 00 00 	cmp    QWORD PTR [rsp+0xf0],r14
+     715:	00 
+     716:	0f 85 db 0f 00 00    	jne    16f7 <extended_pilot::main+0x16f7>
+     71c:	4c 89 f7             	mov    rdi,r14
+     71f:	e8 00 00 00 00       	call   724 <extended_pilot::main+0x724>
+			720: R_X86_64_PLT32	.text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E-0x4
+     724:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 72b <extended_pilot::main+0x72b>
+			727: R_X86_64_PC32	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de-0x4
+     72b:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+     730:	48 c7 44 24 78 0d 00 	mov    QWORD PTR [rsp+0x78],0xd
+     737:	00 00 
+     739:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     73e:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     745:	00 
+     746:	48 39 d8             	cmp    rax,rbx
+     749:	0f 85 be 10 00 00    	jne    180d <extended_pilot::main+0x180d>
+     74f:	48 ff c5             	inc    rbp
+     752:	0f 84 c7 0d 00 00    	je     151f <extended_pilot::main+0x151f>
+     758:	48 89 6c 24 08       	mov    QWORD PTR [rsp+0x8],rbp
+     75d:	4c 89 6c 24 70       	mov    QWORD PTR [rsp+0x70],r13
+     762:	48 c7 44 24 78 15 00 	mov    QWORD PTR [rsp+0x78],0x15
+     769:	00 00 
+     76b:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+     770:	48 89 84 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rax
+     777:	00 
+     778:	4d 39 e6             	cmp    r14,r12
+     77b:	0f 85 8c 10 00 00    	jne    180d <extended_pilot::main+0x180d>
+     781:	48 ff c5             	inc    rbp
+     784:	0f 84 95 0d 00 00    	je     151f <extended_pilot::main+0x151f>
+     78a:	48 89 6c 24 08       	mov    QWORD PTR [rsp+0x8],rbp
+     78f:	48 ff c5             	inc    rbp
+     792:	0f 84 87 0d 00 00    	je     151f <extended_pilot::main+0x151f>
+     798:	48 89 6c 24 08       	mov    QWORD PTR [rsp+0x8],rbp
+     79d:	49 83 c7 10          	add    r15,0x10
+     7a1:	49 81 ff 28 01 00 00 	cmp    r15,0x128
+     7a8:	0f 85 b2 fe ff ff    	jne    660 <extended_pilot::main+0x660>
+     7ae:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x11
+     7b5:	00 11 00 00 00 
+     7ba:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     7c1:	00 
+     7c2:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 7c9 <extended_pilot::main+0x7c9>
+			7c5: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.4-0x4
+     7c9:	ba 88 00 00 00       	mov    edx,0x88
+     7ce:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 7d4 <extended_pilot::main+0x7d4>
+			7d0: R_X86_64_GOTPCREL	memcpy-0x4
+     7d4:	48 8d 9c 24 88 01 00 	lea    rbx,[rsp+0x188]
+     7db:	00 
+     7dc:	4c 8d b4 24 b8 00 00 	lea    r14,[rsp+0xb8]
+     7e3:	00 
+     7e4:	bd 02 00 00 00       	mov    ebp,0x2
+     7e9:	0f 1f 80 00 00 00 00 	nop    DWORD PTR [rax+0x0]
+     7f0:	4c 8b a4 ec b0 01 00 	mov    r12,QWORD PTR [rsp+rbp*8+0x1b0]
+     7f7:	00 
+     7f8:	48 b9 88 77 66 55 44 	movabs rcx,0x1122334455667788
+     7ff:	33 22 11 
+     802:	48 89 8c 24 80 01 00 	mov    QWORD PTR [rsp+0x180],rcx
+     809:	00 
+     80a:	4c 89 a4 24 88 01 00 	mov    QWORD PTR [rsp+0x188],r12
+     811:	00 
+     812:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+     819:	66 77 88 
+     81c:	48 89 84 24 90 01 00 	mov    QWORD PTR [rsp+0x190],rax
+     823:	00 
+     824:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+     82b:	00 
+     82c:	48 c7 84 24 b8 00 00 	mov    QWORD PTR [rsp+0xb8],0x0
+     833:	00 00 00 00 00 
+     838:	48 89 84 24 c0 00 00 	mov    QWORD PTR [rsp+0xc0],rax
+     83f:	00 
+     840:	48 89 df             	mov    rdi,rbx
+     843:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 849 <extended_pilot::main+0x849>
+			845: R_X86_64_GOTPCREL	pilot_load-0x4
+     849:	49 89 c5             	mov    r13,rax
+     84c:	48 89 df             	mov    rdi,rbx
+     84f:	e8 00 00 00 00       	call   854 <extended_pilot::main+0x854>
+			850: R_X86_64_PLT32	.text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE-0x4
+     854:	4d 39 e5             	cmp    r13,r12
+     857:	0f 85 02 0f 00 00    	jne    175f <extended_pilot::main+0x175f>
+     85d:	4c 39 e0             	cmp    rax,r12
+     860:	0f 85 f9 0e 00 00    	jne    175f <extended_pilot::main+0x175f>
+     866:	4c 39 a4 24 88 01 00 	cmp    QWORD PTR [rsp+0x188],r12
+     86d:	00 
+     86e:	0f 85 eb 0e 00 00    	jne    175f <extended_pilot::main+0x175f>
+     874:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 87b <extended_pilot::main+0x87b>
+			877: R_X86_64_PC32	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39-0x4
+     87b:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+     880:	48 c7 44 24 78 15 00 	mov    QWORD PTR [rsp+0x78],0x15
+     887:	00 00 
+     889:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+     88e:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+     895:	00 
+     896:	b0 01                	mov    al,0x1
+     898:	84 c0                	test   al,al
+     89a:	0f 84 e1 0e 00 00    	je     1781 <extended_pilot::main+0x1781>
+     8a0:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+     8a5:	48 ff c0             	inc    rax
+     8a8:	0f 84 71 0c 00 00    	je     151f <extended_pilot::main+0x151f>
+     8ae:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     8b3:	4c 89 f7             	mov    rdi,r14
+     8b6:	4c 89 e6             	mov    rsi,r12
+     8b9:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 8bf <extended_pilot::main+0x8bf>
+			8bb: R_X86_64_GOTPCREL	pilot_store-0x4
+     8bf:	48 8b 84 24 90 01 00 	mov    rax,QWORD PTR [rsp+0x190]
+     8c6:	00 
+     8c7:	48 89 84 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rax
+     8ce:	00 
+     8cf:	f3 0f 6f 84 24 80 01 	movdqu xmm0,XMMWORD PTR [rsp+0x180]
+     8d6:	00 00 
+     8d8:	66 0f 7f 44 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm0
+     8de:	f3 0f 7e 8c 24 c0 00 	movq   xmm1,QWORD PTR [rsp+0xc0]
+     8e5:	00 00 
+     8e7:	f3 0f 7e 94 24 90 01 	movq   xmm2,QWORD PTR [rsp+0x190]
+     8ee:	00 00 
+     8f0:	66 0f 74 d1          	pcmpeqb xmm2,xmm1
+     8f4:	66 0f 74 84 24 b0 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0xb0]
+     8fb:	00 00 
+     8fd:	66 0f db c2          	pand   xmm0,xmm2
+     901:	66 0f d7 c0          	pmovmskb eax,xmm0
+     905:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 90c <extended_pilot::main+0x90c>
+			908: R_X86_64_PC32	.Lalloc_a3022215cbc4d93d75ff36ef0e45ea7d-0x4
+     90c:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     913:	00 
+     914:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0x10
+     91b:	00 10 00 00 00 
+     920:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     925:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+     92c:	00 
+     92d:	3d ff ff 00 00       	cmp    eax,0xffff
+     932:	0f 85 01 0e 00 00    	jne    1739 <extended_pilot::main+0x1739>
+     938:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+     93d:	48 ff c0             	inc    rax
+     940:	0f 84 d9 0b 00 00    	je     151f <extended_pilot::main+0x151f>
+     946:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     94b:	48 c7 84 24 b8 00 00 	mov    QWORD PTR [rsp+0xb8],0x0
+     952:	00 00 00 00 00 
+     957:	4c 89 f7             	mov    rdi,r14
+     95a:	4c 89 e6             	mov    rsi,r12
+     95d:	e8 00 00 00 00       	call   962 <extended_pilot::main+0x962>
+			95e: R_X86_64_PLT32	.text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E-0x4
+     962:	48 8b 84 24 90 01 00 	mov    rax,QWORD PTR [rsp+0x190]
+     969:	00 
+     96a:	48 89 84 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rax
+     971:	00 
+     972:	f3 0f 6f 84 24 80 01 	movdqu xmm0,XMMWORD PTR [rsp+0x180]
+     979:	00 00 
+     97b:	66 0f 7f 44 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm0
+     981:	f3 0f 7e 8c 24 c0 00 	movq   xmm1,QWORD PTR [rsp+0xc0]
+     988:	00 00 
+     98a:	f3 0f 7e 94 24 90 01 	movq   xmm2,QWORD PTR [rsp+0x190]
+     991:	00 00 
+     993:	66 0f 74 d1          	pcmpeqb xmm2,xmm1
+     997:	66 0f 74 84 24 b0 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0xb0]
+     99e:	00 00 
+     9a0:	66 0f db c2          	pand   xmm0,xmm2
+     9a4:	66 0f d7 c0          	pmovmskb eax,xmm0
+     9a8:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 9af <extended_pilot::main+0x9af>
+			9ab: R_X86_64_PC32	.rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280-0x4
+     9af:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     9b6:	00 
+     9b7:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0x17
+     9be:	00 17 00 00 00 
+     9c3:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     9c8:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+     9cf:	00 
+     9d0:	3d ff ff 00 00       	cmp    eax,0xffff
+     9d5:	0f 85 5e 0d 00 00    	jne    1739 <extended_pilot::main+0x1739>
+     9db:	4c 8b 7c 24 08       	mov    r15,QWORD PTR [rsp+0x8]
+     9e0:	49 ff c7             	inc    r15
+     9e3:	0f 84 36 0b 00 00    	je     151f <extended_pilot::main+0x151f>
+     9e9:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+     9ee:	48 b8 88 77 66 55 44 	movabs rax,0x1122334455667788
+     9f5:	33 22 11 
+     9f8:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+     9fd:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+     a04:	66 77 88 
+     a07:	48 89 84 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rax
+     a0e:	00 
+     a0f:	48 8d 7c 24 78       	lea    rdi,[rsp+0x78]
+     a14:	4c 89 e6             	mov    rsi,r12
+     a17:	e8 00 00 00 00       	call   a1c <extended_pilot::main+0xa1c>
+			a18: R_X86_64_PLT32	.text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E-0x4
+     a1c:	f3 0f 6f 44 24 70    	movdqu xmm0,XMMWORD PTR [rsp+0x70]
+     a22:	f3 0f 7e 8c 24 c0 00 	movq   xmm1,QWORD PTR [rsp+0xc0]
+     a29:	00 00 
+     a2b:	f3 0f 7e 94 24 80 00 	movq   xmm2,QWORD PTR [rsp+0x80]
+     a32:	00 00 
+     a34:	66 0f 74 d1          	pcmpeqb xmm2,xmm1
+     a38:	66 0f 74 84 24 b0 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0xb0]
+     a3f:	00 00 
+     a41:	66 0f db c2          	pand   xmm0,xmm2
+     a45:	66 0f d7 c0          	pmovmskb eax,xmm0
+     a49:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # a50 <extended_pilot::main+0xa50>
+			a4c: R_X86_64_PC32	.rodata..Lalloc_d402f7413af788172cdb7d05f581a90e-0x4
+     a50:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     a57:	00 
+     a58:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0x13
+     a5f:	00 13 00 00 00 
+     a64:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     a69:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+     a70:	00 
+     a71:	3d ff ff 00 00       	cmp    eax,0xffff
+     a76:	0f 85 bd 0c 00 00    	jne    1739 <extended_pilot::main+0x1739>
+     a7c:	49 ff c7             	inc    r15
+     a7f:	0f 84 9a 0a 00 00    	je     151f <extended_pilot::main+0x151f>
+     a85:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+     a8a:	4c 89 e7             	mov    rdi,r12
+     a8d:	e8 00 00 00 00       	call   a92 <extended_pilot::main+0xa92>
+			a8e: R_X86_64_PLT32	.text._ZN14extended_pilot12inline_label17hce24d0f42a259affE-0x4
+     a92:	49 89 c5             	mov    r13,rax
+     a95:	4c 89 e7             	mov    rdi,r12
+     a98:	e8 00 00 00 00       	call   a9d <extended_pilot::main+0xa9d>
+			a99: R_X86_64_PLT32	.text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E-0x4
+     a9d:	49 39 c5             	cmp    r13,rax
+     aa0:	0f 85 6b 0c 00 00    	jne    1711 <extended_pilot::main+0x1711>
+     aa6:	4d 85 e4             	test   r12,r12
+     aa9:	b8 29 00 00 00       	mov    eax,0x29
+     aae:	b9 11 00 00 00       	mov    ecx,0x11
+     ab3:	48 0f 44 c1          	cmove  rax,rcx
+     ab7:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # abe <extended_pilot::main+0xabe>
+			aba: R_X86_64_PC32	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada-0x4
+     abe:	48 89 8c 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rcx
+     ac5:	00 
+     ac6:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0xc
+     acd:	00 0c 00 00 00 
+     ad2:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     ad7:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+     ade:	00 
+     adf:	49 39 c5             	cmp    r13,rax
+     ae2:	0f 85 51 0c 00 00    	jne    1739 <extended_pilot::main+0x1739>
+     ae8:	4c 8b 7c 24 08       	mov    r15,QWORD PTR [rsp+0x8]
+     aed:	49 ff c7             	inc    r15
+     af0:	0f 84 29 0a 00 00    	je     151f <extended_pilot::main+0x151f>
+     af6:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+     afb:	48 ff c5             	inc    rbp
+     afe:	48 83 fd 13          	cmp    rbp,0x13
+     b02:	0f 85 e8 fc ff ff    	jne    7f0 <extended_pilot::main+0x7f0>
+     b08:	48 c7 84 24 b0 01 00 	mov    QWORD PTR [rsp+0x1b0],0x0
+     b0f:	00 00 00 00 00 
+     b14:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0xc
+     b1b:	00 0c 00 00 00 
+     b20:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # b27 <extended_pilot::main+0xb27>
+			b23: R_X86_64_PC32	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5-0x4
+     b27:	ba c0 00 00 00       	mov    edx,0xc0
+     b2c:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     b33:	00 
+     b34:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # b3a <extended_pilot::main+0xb3a>
+			b36: R_X86_64_GOTPCREL	memcpy-0x4
+     b3a:	4c 8d b4 24 60 01 00 	lea    r14,[rsp+0x160]
+     b41:	00 
+     b42:	48 8d bc 24 00 01 00 	lea    rdi,[rsp+0x100]
+     b49:	00 
+     b4a:	4c 8d a4 24 c0 00 00 	lea    r12,[rsp+0xc0]
+     b51:	00 
+     b52:	48 8d 9c 24 80 00 00 	lea    rbx,[rsp+0x80]
+     b59:	00 
+     b5a:	4c 8d 6c 24 50       	lea    r13,[rsp+0x50]
+     b5f:	31 c0                	xor    eax,eax
+     b61:	66 0f 6f 05 00 00 00 	movdqa xmm0,XMMWORD PTR [rip+0x0]        # b69 <extended_pilot::main+0xb69>
+     b68:	00 
+			b65: R_X86_64_PC32	.LCPI24_0-0x4
+     b69:	66 0f 6f 0d 00 00 00 	movdqa xmm1,XMMWORD PTR [rip+0x0]        # b71 <extended_pilot::main+0xb71>
+     b70:	00 
+			b6d: R_X86_64_PC32	.LCPI24_1-0x4
+     b71:	eb 4c                	jmp    bbf <extended_pilot::main+0xbbf>
+     b73:	66 66 66 66 2e 0f 1f 	data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+     b7a:	84 00 00 00 00 00 
+     b80:	48 8b 84 24 e0 00 00 	mov    rax,QWORD PTR [rsp+0xe0]
+     b87:	00 
+     b88:	48 83 f8 0c          	cmp    rax,0xc
+     b8c:	4c 8d a4 24 c0 00 00 	lea    r12,[rsp+0xc0]
+     b93:	00 
+     b94:	48 8d 9c 24 80 00 00 	lea    rbx,[rsp+0x80]
+     b9b:	00 
+     b9c:	4c 8d 6c 24 50       	lea    r13,[rsp+0x50]
+     ba1:	66 0f 6f 05 00 00 00 	movdqa xmm0,XMMWORD PTR [rip+0x0]        # ba9 <extended_pilot::main+0xba9>
+     ba8:	00 
+			ba5: R_X86_64_PC32	.LCPI24_0-0x4
+     ba9:	66 0f 6f 0d 00 00 00 	movdqa xmm1,XMMWORD PTR [rip+0x0]        # bb1 <extended_pilot::main+0xbb1>
+     bb0:	00 
+			bad: R_X86_64_PC32	.LCPI24_1-0x4
+     bb1:	48 8d bc 24 00 01 00 	lea    rdi,[rsp+0x100]
+     bb8:	00 
+     bb9:	0f 84 bb 03 00 00    	je     f7a <extended_pilot::main+0xf7a>
+     bbf:	48 89 84 24 e0 00 00 	mov    QWORD PTR [rsp+0xe0],rax
+     bc6:	00 
+     bc7:	48 c1 e0 04          	shl    rax,0x4
+     bcb:	48 8d 8c 24 c0 01 00 	lea    rcx,[rsp+0x1c0]
+     bd2:	00 
+     bd3:	48 8b 14 01          	mov    rdx,QWORD PTR [rcx+rax*1]
+     bd7:	48 8b 6c 01 08       	mov    rbp,QWORD PTR [rcx+rax*1+0x8]
+     bdc:	66 0f 7f 44 24 40    	movdqa XMMWORD PTR [rsp+0x40],xmm0
+     be2:	66 41 0f 7f 4d 10    	movdqa XMMWORD PTR [r13+0x10],xmm1
+     be8:	66 0f 7f 84 24 50 01 	movdqa XMMWORD PTR [rsp+0x150],xmm0
+     bef:	00 00 
+     bf1:	48 89 ac 24 68 01 00 	mov    QWORD PTR [rsp+0x168],rbp
+     bf8:	00 
+     bf9:	48 89 94 24 28 01 00 	mov    QWORD PTR [rsp+0x128],rdx
+     c00:	00 
+     c01:	48 89 94 24 60 01 00 	mov    QWORD PTR [rsp+0x160],rdx
+     c08:	00 
+     c09:	66 41 0f 7f 4e 10    	movdqa XMMWORD PTR [r14+0x10],xmm1
+     c0f:	66 0f 7f 84 24 f0 00 	movdqa XMMWORD PTR [rsp+0xf0],xmm0
+     c16:	00 00 
+     c18:	66 0f 6f 15 00 00 00 	movdqa xmm2,XMMWORD PTR [rip+0x0]        # c20 <extended_pilot::main+0xc20>
+     c1f:	00 
+			c1c: R_X86_64_PC32	.LCPI24_2-0x4
+     c20:	66 0f 7f 17          	movdqa XMMWORD PTR [rdi],xmm2
+     c24:	66 0f 7f 4f 10       	movdqa XMMWORD PTR [rdi+0x10],xmm1
+     c29:	66 0f 7f 84 24 b0 00 	movdqa XMMWORD PTR [rsp+0xb0],xmm0
+     c30:	00 00 
+     c32:	66 41 0f 7f 14 24    	movdqa XMMWORD PTR [r12],xmm2
+     c38:	66 41 0f 7f 4c 24 10 	movdqa XMMWORD PTR [r12+0x10],xmm1
+     c3f:	66 0f 7f 44 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm0
+     c45:	66 0f 7f 4b 10       	movdqa XMMWORD PTR [rbx+0x10],xmm1
+     c4a:	49 ff c7             	inc    r15
+     c4d:	0f 84 cc 08 00 00    	je     151f <extended_pilot::main+0x151f>
+     c53:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+     c58:	4c 89 f6             	mov    rsi,r14
+     c5b:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # c61 <extended_pilot::main+0xc61>
+			c5d: R_X86_64_GOTPCREL	pilot_copy16-0x4
+     c61:	4c 89 e7             	mov    rdi,r12
+     c64:	4c 89 f6             	mov    rsi,r14
+     c67:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # c6d <extended_pilot::main+0xc6d>
+			c69: R_X86_64_GOTPCREL	pilot_simd_copy16-0x4
+     c6d:	4c 89 f7             	mov    rdi,r14
+     c70:	48 89 de             	mov    rsi,rbx
+     c73:	e8 00 00 00 00       	call   c78 <extended_pilot::main+0xc78>
+			c74: R_X86_64_PLT32	.text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E-0x4
+     c78:	4c 89 f7             	mov    rdi,r14
+     c7b:	4c 89 ee             	mov    rsi,r13
+     c7e:	e8 00 00 00 00       	call   c83 <extended_pilot::main+0xc83>
+			c7f: R_X86_64_PLT32	.text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E-0x4
+     c83:	48 8b 84 24 08 01 00 	mov    rax,QWORD PTR [rsp+0x108]
+     c8a:	00 
+     c8b:	48 31 e8             	xor    rax,rbp
+     c8e:	48 8b 8c 24 00 01 00 	mov    rcx,QWORD PTR [rsp+0x100]
+     c95:	00 
+     c96:	4c 8b 84 24 28 01 00 	mov    r8,QWORD PTR [rsp+0x128]
+     c9d:	00 
+     c9e:	4c 31 c1             	xor    rcx,r8
+     ca1:	48 09 c1             	or     rcx,rax
+     ca4:	0f 85 fa 0a 00 00    	jne    17a4 <extended_pilot::main+0x17a4>
+     caa:	48 8b 84 24 c0 00 00 	mov    rax,QWORD PTR [rsp+0xc0]
+     cb1:	00 
+     cb2:	4c 31 c0             	xor    rax,r8
+     cb5:	48 8b 8c 24 c8 00 00 	mov    rcx,QWORD PTR [rsp+0xc8]
+     cbc:	00 
+     cbd:	48 31 e9             	xor    rcx,rbp
+     cc0:	48 09 c1             	or     rcx,rax
+     cc3:	0f 85 db 0a 00 00    	jne    17a4 <extended_pilot::main+0x17a4>
+     cc9:	48 8b 84 24 80 00 00 	mov    rax,QWORD PTR [rsp+0x80]
+     cd0:	00 
+     cd1:	4c 31 c0             	xor    rax,r8
+     cd4:	48 8b 8c 24 88 00 00 	mov    rcx,QWORD PTR [rsp+0x88]
+     cdb:	00 
+     cdc:	48 31 e9             	xor    rcx,rbp
+     cdf:	48 09 c1             	or     rcx,rax
+     ce2:	0f 85 bc 0a 00 00    	jne    17a4 <extended_pilot::main+0x17a4>
+     ce8:	48 8b 44 24 50       	mov    rax,QWORD PTR [rsp+0x50]
+     ced:	4c 31 c0             	xor    rax,r8
+     cf0:	48 8b 4c 24 58       	mov    rcx,QWORD PTR [rsp+0x58]
+     cf5:	48 31 e9             	xor    rcx,rbp
+     cf8:	48 09 c1             	or     rcx,rax
+     cfb:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # d02 <extended_pilot::main+0xd02>
+			cfe: R_X86_64_PC32	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea-0x4
+     d02:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+     d09:	00 
+     d0a:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0x1b
+     d11:	00 1b 00 00 00 
+     d16:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+     d1b:	48 89 84 24 e8 00 00 	mov    QWORD PTR [rsp+0xe8],rax
+     d22:	00 
+     d23:	48 be a5 a5 a5 a5 a5 	movabs rsi,0xa5a5a5a5a5a5a5a5
+     d2a:	a5 a5 a5 
+     d2d:	48 bf 5a 5a 5a 5a 5a 	movabs rdi,0x5a5a5a5a5a5a5a5a
+     d34:	5a 5a 5a 
+     d37:	48 8d 1d 00 00 00 00 	lea    rbx,[rip+0x0]        # d3e <extended_pilot::main+0xd3e>
+			d3a: R_X86_64_PC32	.rodata..Lalloc_85fda77841ed425dbdbff2ea33376135-0x4
+     d3e:	4c 8b 2d 00 00 00 00 	mov    r13,QWORD PTR [rip+0x0]        # d45 <extended_pilot::main+0xd45>
+			d41: R_X86_64_GOTPCREL	pilot_ptr-0x4
+     d45:	0f 85 02 08 00 00    	jne    154d <extended_pilot::main+0x154d>
+     d4b:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+     d50:	48 ff c0             	inc    rax
+     d53:	0f 84 c6 07 00 00    	je     151f <extended_pilot::main+0x151f>
+     d59:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     d5e:	48 8b 8c 24 f0 00 00 	mov    rcx,QWORD PTR [rsp+0xf0]
+     d65:	00 
+     d66:	48 31 f1             	xor    rcx,rsi
+     d69:	48 8b 94 24 f8 00 00 	mov    rdx,QWORD PTR [rsp+0xf8]
+     d70:	00 
+     d71:	48 31 f2             	xor    rdx,rsi
+     d74:	48 09 ca             	or     rdx,rcx
+     d77:	0f 85 39 08 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     d7d:	48 8b 8c 24 10 01 00 	mov    rcx,QWORD PTR [rsp+0x110]
+     d84:	00 
+     d85:	48 31 f9             	xor    rcx,rdi
+     d88:	48 8b 94 24 18 01 00 	mov    rdx,QWORD PTR [rsp+0x118]
+     d8f:	00 
+     d90:	48 31 fa             	xor    rdx,rdi
+     d93:	48 09 ca             	or     rdx,rcx
+     d96:	0f 85 1a 08 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     d9c:	48 8b 8c 24 b0 00 00 	mov    rcx,QWORD PTR [rsp+0xb0]
+     da3:	00 
+     da4:	48 31 f1             	xor    rcx,rsi
+     da7:	48 8b 94 24 b8 00 00 	mov    rdx,QWORD PTR [rsp+0xb8]
+     dae:	00 
+     daf:	48 31 f2             	xor    rdx,rsi
+     db2:	48 09 ca             	or     rdx,rcx
+     db5:	0f 85 fb 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     dbb:	48 8b 8c 24 d0 00 00 	mov    rcx,QWORD PTR [rsp+0xd0]
+     dc2:	00 
+     dc3:	48 31 f9             	xor    rcx,rdi
+     dc6:	48 8b 94 24 d8 00 00 	mov    rdx,QWORD PTR [rsp+0xd8]
+     dcd:	00 
+     dce:	48 31 fa             	xor    rdx,rdi
+     dd1:	48 09 ca             	or     rdx,rcx
+     dd4:	0f 85 dc 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     dda:	48 8b 4c 24 70       	mov    rcx,QWORD PTR [rsp+0x70]
+     ddf:	48 31 f1             	xor    rcx,rsi
+     de2:	48 8b 54 24 78       	mov    rdx,QWORD PTR [rsp+0x78]
+     de7:	48 31 f2             	xor    rdx,rsi
+     dea:	48 09 ca             	or     rdx,rcx
+     ded:	0f 85 c3 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     df3:	48 8b 8c 24 90 00 00 	mov    rcx,QWORD PTR [rsp+0x90]
+     dfa:	00 
+     dfb:	48 31 f9             	xor    rcx,rdi
+     dfe:	48 8b 94 24 98 00 00 	mov    rdx,QWORD PTR [rsp+0x98]
+     e05:	00 
+     e06:	48 31 fa             	xor    rdx,rdi
+     e09:	48 09 ca             	or     rdx,rcx
+     e0c:	0f 85 a4 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     e12:	48 8b 4c 24 40       	mov    rcx,QWORD PTR [rsp+0x40]
+     e17:	48 31 f1             	xor    rcx,rsi
+     e1a:	48 8b 54 24 48       	mov    rdx,QWORD PTR [rsp+0x48]
+     e1f:	48 31 f2             	xor    rdx,rsi
+     e22:	48 09 ca             	or     rdx,rcx
+     e25:	0f 85 8b 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     e2b:	48 8b 4c 24 60       	mov    rcx,QWORD PTR [rsp+0x60]
+     e30:	48 31 f9             	xor    rcx,rdi
+     e33:	48 8b 54 24 68       	mov    rdx,QWORD PTR [rsp+0x68]
+     e38:	48 31 fa             	xor    rdx,rdi
+     e3b:	48 09 ca             	or     rdx,rcx
+     e3e:	0f 85 72 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     e44:	48 8b 8c 24 50 01 00 	mov    rcx,QWORD PTR [rsp+0x150]
+     e4b:	00 
+     e4c:	48 31 f1             	xor    rcx,rsi
+     e4f:	48 8b 94 24 58 01 00 	mov    rdx,QWORD PTR [rsp+0x158]
+     e56:	00 
+     e57:	48 31 f2             	xor    rdx,rsi
+     e5a:	48 09 ca             	or     rdx,rcx
+     e5d:	0f 85 53 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     e63:	48 8b 8c 24 70 01 00 	mov    rcx,QWORD PTR [rsp+0x170]
+     e6a:	00 
+     e6b:	48 31 f9             	xor    rcx,rdi
+     e6e:	48 8b 94 24 78 01 00 	mov    rdx,QWORD PTR [rsp+0x178]
+     e75:	00 
+     e76:	48 31 fa             	xor    rdx,rdi
+     e79:	48 09 ca             	or     rdx,rcx
+     e7c:	0f 85 34 07 00 00    	jne    15b6 <extended_pilot::main+0x15b6>
+     e82:	4c 33 84 24 60 01 00 	xor    r8,QWORD PTR [rsp+0x160]
+     e89:	00 
+     e8a:	48 33 ac 24 68 01 00 	xor    rbp,QWORD PTR [rsp+0x168]
+     e91:	00 
+     e92:	4c 09 c5             	or     rbp,r8
+     e95:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # e9c <extended_pilot::main+0xe9c>
+			e98: R_X86_64_PC32	.rodata..Lalloc_2dce8867486f99811029456ce360cb96-0x4
+     e9c:	48 89 8c 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rcx
+     ea3:	00 
+     ea4:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0xc
+     eab:	00 0c 00 00 00 
+     eb0:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     eb5:	48 89 8c 24 e8 00 00 	mov    QWORD PTR [rsp+0xe8],rcx
+     ebc:	00 
+     ebd:	0f 85 8a 06 00 00    	jne    154d <extended_pilot::main+0x154d>
+     ec3:	48 ff c0             	inc    rax
+     ec6:	0f 84 53 06 00 00    	je     151f <extended_pilot::main+0x151f>
+     ecc:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     ed1:	48 ff c0             	inc    rax
+     ed4:	0f 84 45 06 00 00    	je     151f <extended_pilot::main+0x151f>
+     eda:	48 ff 84 24 e0 00 00 	inc    QWORD PTR [rsp+0xe0]
+     ee1:	00 
+     ee2:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+     ee7:	45 31 e4             	xor    r12d,r12d
+     eea:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+     ef0:	49 8d 6c 24 01       	lea    rbp,[r12+0x1]
+     ef5:	49 83 fc 10          	cmp    r12,0x10
+     ef9:	49 0f 44 ec          	cmove  rbp,r12
+     efd:	4c 89 f7             	mov    rdi,r14
+     f00:	4c 89 e6             	mov    rsi,r12
+     f03:	41 ff d5             	call   r13
+     f06:	49 89 c7             	mov    r15,rax
+     f09:	4b 8d 04 26          	lea    rax,[r14+r12*1]
+     f0d:	49 39 c7             	cmp    r15,rax
+     f10:	0f 85 16 06 00 00    	jne    152c <extended_pilot::main+0x152c>
+     f16:	4c 89 f7             	mov    rdi,r14
+     f19:	4c 89 e6             	mov    rsi,r12
+     f1c:	e8 00 00 00 00       	call   f21 <extended_pilot::main+0xf21>
+			f1d: R_X86_64_PLT32	.text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E-0x4
+     f21:	48 89 9c 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rbx
+     f28:	00 
+     f29:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0x1d
+     f30:	00 1d 00 00 00 
+     f35:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+     f3a:	48 89 8c 24 e8 00 00 	mov    QWORD PTR [rsp+0xe8],rcx
+     f41:	00 
+     f42:	4c 39 f8             	cmp    rax,r15
+     f45:	0f 85 02 06 00 00    	jne    154d <extended_pilot::main+0x154d>
+     f4b:	4c 8b 7c 24 08       	mov    r15,QWORD PTR [rsp+0x8]
+     f50:	49 ff c7             	inc    r15
+     f53:	0f 84 c6 05 00 00    	je     151f <extended_pilot::main+0x151f>
+     f59:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+     f5e:	49 83 fc 10          	cmp    r12,0x10
+     f62:	0f 84 18 fc ff ff    	je     b80 <extended_pilot::main+0xb80>
+     f68:	49 89 ec             	mov    r12,rbp
+     f6b:	48 83 fd 10          	cmp    rbp,0x10
+     f6f:	0f 86 7b ff ff ff    	jbe    ef0 <extended_pilot::main+0xef0>
+     f75:	e9 06 fc ff ff       	jmp    b80 <extended_pilot::main+0xb80>
+     f7a:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x90
+     f81:	00 90 00 00 00 
+     f86:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+     f8d:	00 
+     f8e:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # f95 <extended_pilot::main+0xf95>
+			f91: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.5-0x4
+     f95:	ba 00 12 00 00       	mov    edx,0x1200
+     f9a:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # fa0 <extended_pilot::main+0xfa0>
+			f9c: R_X86_64_GOTPCREL	memcpy-0x4
+     fa0:	66 0f 6f 15 00 00 00 	movdqa xmm2,XMMWORD PTR [rip+0x0]        # fa8 <extended_pilot::main+0xfa8>
+     fa7:	00 
+			fa4: R_X86_64_PC32	.LCPI24_1-0x4
+     fa8:	66 0f 6f 0d 00 00 00 	movdqa xmm1,XMMWORD PTR [rip+0x0]        # fb0 <extended_pilot::main+0xfb0>
+     faf:	00 
+			fac: R_X86_64_PC32	.LCPI24_0-0x4
+     fb0:	48 8d 8c 24 c0 00 00 	lea    rcx,[rsp+0xc0]
+     fb7:	00 
+     fb8:	ba 20 00 00 00       	mov    edx,0x20
+     fbd:	4c 8d 05 00 00 00 00 	lea    r8,[rip+0x0]        # fc4 <extended_pilot::main+0xfc4>
+			fc0: R_X86_64_PC32	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5-0x4
+     fc4:	66 66 66 2e 0f 1f 84 	data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+     fcb:	00 00 00 00 00 
+     fd0:	48 8b bc 14 a0 01 00 	mov    rdi,QWORD PTR [rsp+rdx*1+0x1a0]
+     fd7:	00 
+     fd8:	48 83 ff 0c          	cmp    rdi,0xc
+     fdc:	0f 83 f7 07 00 00    	jae    17d9 <extended_pilot::main+0x17d9>
+     fe2:	48 8b 84 14 a8 01 00 	mov    rax,QWORD PTR [rsp+rdx*1+0x1a8]
+     fe9:	00 
+     fea:	48 8b ac 14 b8 01 00 	mov    rbp,QWORD PTR [rsp+rdx*1+0x1b8]
+     ff1:	00 
+     ff2:	4c 8b b4 14 b0 01 00 	mov    r14,QWORD PTR [rsp+rdx*1+0x1b0]
+     ff9:	00 
+     ffa:	49 89 fc             	mov    r12,rdi
+     ffd:	49 c1 e4 04          	shl    r12,0x4
+    1001:	43 0f 10 04 04       	movups xmm0,XMMWORD PTR [r12+r8*1]
+    1006:	0f 11 01             	movups XMMWORD PTR [rcx],xmm0
+    1009:	66 0f 7f 8c 24 b0 00 	movdqa XMMWORD PTR [rsp+0xb0],xmm1
+    1010:	00 00 
+    1012:	66 0f 7f 51 10       	movdqa XMMWORD PTR [rcx+0x10],xmm2
+    1017:	48 83 f8 0c          	cmp    rax,0xc
+    101b:	48 8d 9c 24 80 00 00 	lea    rbx,[rsp+0x80]
+    1022:	00 
+    1023:	48 8d 74 24 50       	lea    rsi,[rsp+0x50]
+    1028:	0f 83 96 07 00 00    	jae    17c4 <extended_pilot::main+0x17c4>
+    102e:	48 89 94 24 e0 00 00 	mov    QWORD PTR [rsp+0xe0],rdx
+    1035:	00 
+    1036:	49 89 c5             	mov    r13,rax
+    1039:	49 c1 e5 04          	shl    r13,0x4
+    103d:	43 0f 10 44 05 00    	movups xmm0,XMMWORD PTR [r13+r8*1+0x0]
+    1043:	0f 11 03             	movups XMMWORD PTR [rbx],xmm0
+    1046:	66 0f 7f 4c 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm1
+    104c:	66 0f 7f 53 10       	movdqa XMMWORD PTR [rbx+0x10],xmm2
+    1051:	66 0f 6f 05 00 00 00 	movdqa xmm0,XMMWORD PTR [rip+0x0]        # 1059 <extended_pilot::main+0x1059>
+    1058:	00 
+			1055: R_X86_64_PC32	.LCPI24_2-0x4
+    1059:	66 0f 7f 06          	movdqa XMMWORD PTR [rsi],xmm0
+    105d:	66 0f 7f 4c 24 40    	movdqa XMMWORD PTR [rsp+0x40],xmm1
+    1063:	66 0f 7f 56 10       	movdqa XMMWORD PTR [rsi+0x10],xmm2
+    1068:	49 ff c7             	inc    r15
+    106b:	0f 84 ae 04 00 00    	je     151f <extended_pilot::main+0x151f>
+    1071:	48 39 c7             	cmp    rdi,rax
+    1074:	48 89 da             	mov    rdx,rbx
+    1077:	48 0f 44 d1          	cmove  rdx,rcx
+    107b:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    1080:	48 89 f7             	mov    rdi,rsi
+    1083:	49 89 cf             	mov    r15,rcx
+    1086:	48 89 ce             	mov    rsi,rcx
+    1089:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 108f <extended_pilot::main+0x108f>
+			108b: R_X86_64_GOTPCREL	pilot_simd_add16-0x4
+    108f:	48 8d bc 24 30 01 00 	lea    rdi,[rsp+0x130]
+    1096:	00 
+    1097:	4c 89 fe             	mov    rsi,r15
+    109a:	48 89 da             	mov    rdx,rbx
+    109d:	e8 00 00 00 00       	call   10a2 <extended_pilot::main+0x10a2>
+			109e: R_X86_64_PLT32	.text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE-0x4
+    10a2:	48 8b 44 24 58       	mov    rax,QWORD PTR [rsp+0x58]
+    10a7:	48 31 e8             	xor    rax,rbp
+    10aa:	48 8b 4c 24 50       	mov    rcx,QWORD PTR [rsp+0x50]
+    10af:	4c 31 f1             	xor    rcx,r14
+    10b2:	48 09 c1             	or     rcx,rax
+    10b5:	48 8b 84 24 30 01 00 	mov    rax,QWORD PTR [rsp+0x130]
+    10bc:	00 
+    10bd:	48 8b 8c 24 38 01 00 	mov    rcx,QWORD PTR [rsp+0x138]
+    10c4:	00 
+    10c5:	48 8d 15 00 00 00 00 	lea    rdx,[rip+0x0]        # 10cc <extended_pilot::main+0x10cc>
+			10c8: R_X86_64_PC32	.rodata..Lalloc_aff5e137726c4d2349c18b19090c6249-0x4
+    10cc:	48 89 94 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rdx
+    10d3:	00 
+    10d4:	48 c7 84 24 58 01 00 	mov    QWORD PTR [rsp+0x158],0xe
+    10db:	00 0e 00 00 00 
+    10e0:	48 8d 54 24 08       	lea    rdx,[rsp+0x8]
+    10e5:	48 89 94 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rdx
+    10ec:	00 
+    10ed:	0f 85 0b 05 00 00    	jne    15fe <extended_pilot::main+0x15fe>
+    10f3:	4c 31 f0             	xor    rax,r14
+    10f6:	48 31 e9             	xor    rcx,rbp
+    10f9:	48 09 c1             	or     rcx,rax
+    10fc:	0f 85 fc 04 00 00    	jne    15fe <extended_pilot::main+0x15fe>
+    1102:	4c 8b 7c 24 08       	mov    r15,QWORD PTR [rsp+0x8]
+    1107:	49 ff c7             	inc    r15
+    110a:	48 ba a5 a5 a5 a5 a5 	movabs rdx,0xa5a5a5a5a5a5a5a5
+    1111:	a5 a5 a5 
+    1114:	48 be 5a 5a 5a 5a 5a 	movabs rsi,0x5a5a5a5a5a5a5a5a
+    111b:	5a 5a 5a 
+    111e:	0f 84 fb 03 00 00    	je     151f <extended_pilot::main+0x151f>
+    1124:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    1129:	48 8b 44 24 40       	mov    rax,QWORD PTR [rsp+0x40]
+    112e:	48 31 d0             	xor    rax,rdx
+    1131:	48 8b 4c 24 48       	mov    rcx,QWORD PTR [rsp+0x48]
+    1136:	48 31 d1             	xor    rcx,rdx
+    1139:	48 09 c1             	or     rcx,rax
+    113c:	4c 8d 05 00 00 00 00 	lea    r8,[rip+0x0]        # 1143 <extended_pilot::main+0x1143>
+			113f: R_X86_64_PC32	.rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5-0x4
+    1143:	66 0f 6f 0d 00 00 00 	movdqa xmm1,XMMWORD PTR [rip+0x0]        # 114b <extended_pilot::main+0x114b>
+    114a:	00 
+			1147: R_X86_64_PC32	.LCPI24_0-0x4
+    114b:	66 0f 6f 15 00 00 00 	movdqa xmm2,XMMWORD PTR [rip+0x0]        # 1153 <extended_pilot::main+0x1153>
+    1152:	00 
+			114f: R_X86_64_PC32	.LCPI24_1-0x4
+    1153:	0f 85 7d 04 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    1159:	48 8b 44 24 60       	mov    rax,QWORD PTR [rsp+0x60]
+    115e:	48 31 f0             	xor    rax,rsi
+    1161:	48 8b 4c 24 68       	mov    rcx,QWORD PTR [rsp+0x68]
+    1166:	48 31 f1             	xor    rcx,rsi
+    1169:	48 09 c1             	or     rcx,rax
+    116c:	0f 85 64 04 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    1172:	48 8b 84 24 b0 00 00 	mov    rax,QWORD PTR [rsp+0xb0]
+    1179:	00 
+    117a:	48 31 d0             	xor    rax,rdx
+    117d:	48 8b 8c 24 b8 00 00 	mov    rcx,QWORD PTR [rsp+0xb8]
+    1184:	00 
+    1185:	48 31 d1             	xor    rcx,rdx
+    1188:	48 09 c1             	or     rcx,rax
+    118b:	0f 85 45 04 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    1191:	48 8b 84 24 d0 00 00 	mov    rax,QWORD PTR [rsp+0xd0]
+    1198:	00 
+    1199:	48 31 f0             	xor    rax,rsi
+    119c:	48 8b 8c 24 d8 00 00 	mov    rcx,QWORD PTR [rsp+0xd8]
+    11a3:	00 
+    11a4:	48 31 f1             	xor    rcx,rsi
+    11a7:	48 09 c1             	or     rcx,rax
+    11aa:	0f 85 26 04 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    11b0:	48 8b 44 24 70       	mov    rax,QWORD PTR [rsp+0x70]
+    11b5:	48 31 d0             	xor    rax,rdx
+    11b8:	48 8b 4c 24 78       	mov    rcx,QWORD PTR [rsp+0x78]
+    11bd:	48 31 d1             	xor    rcx,rdx
+    11c0:	48 09 c1             	or     rcx,rax
+    11c3:	0f 85 0d 04 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    11c9:	48 8b 84 24 90 00 00 	mov    rax,QWORD PTR [rsp+0x90]
+    11d0:	00 
+    11d1:	48 31 f0             	xor    rax,rsi
+    11d4:	48 8b 8c 24 98 00 00 	mov    rcx,QWORD PTR [rsp+0x98]
+    11db:	00 
+    11dc:	48 31 f1             	xor    rcx,rsi
+    11df:	48 09 c1             	or     rcx,rax
+    11e2:	0f 85 ee 03 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    11e8:	4d 01 c4             	add    r12,r8
+    11eb:	f3 41 0f 6f 04 24    	movdqu xmm0,XMMWORD PTR [r12]
+    11f1:	66 0f 74 84 24 c0 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0xc0]
+    11f8:	00 00 
+    11fa:	66 0f d7 c0          	pmovmskb eax,xmm0
+    11fe:	3d ff ff 00 00       	cmp    eax,0xffff
+    1203:	0f 85 cd 03 00 00    	jne    15d6 <extended_pilot::main+0x15d6>
+    1209:	4d 01 c5             	add    r13,r8
+    120c:	f3 41 0f 6f 45 00    	movdqu xmm0,XMMWORD PTR [r13+0x0]
+    1212:	66 0f 74 84 24 80 00 	pcmpeqb xmm0,XMMWORD PTR [rsp+0x80]
+    1219:	00 00 
+    121b:	66 0f d7 c0          	pmovmskb eax,xmm0
+    121f:	48 8d 0d 00 00 00 00 	lea    rcx,[rip+0x0]        # 1226 <extended_pilot::main+0x1226>
+			1222: R_X86_64_PC32	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625-0x4
+    1226:	48 89 8c 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rcx
+    122d:	00 
+    122e:	48 c7 84 24 58 01 00 	mov    QWORD PTR [rsp+0x158],0xe
+    1235:	00 0e 00 00 00 
+    123a:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+    123f:	48 89 8c 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rcx
+    1246:	00 
+    1247:	3d ff ff 00 00       	cmp    eax,0xffff
+    124c:	0f 85 ac 03 00 00    	jne    15fe <extended_pilot::main+0x15fe>
+    1252:	49 ff c7             	inc    r15
+    1255:	48 8d 8c 24 c0 00 00 	lea    rcx,[rsp+0xc0]
+    125c:	00 
+    125d:	48 8b 94 24 e0 00 00 	mov    rdx,QWORD PTR [rsp+0xe0]
+    1264:	00 
+    1265:	0f 84 b4 02 00 00    	je     151f <extended_pilot::main+0x151f>
+    126b:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    1270:	48 83 c2 20          	add    rdx,0x20
+    1274:	48 81 fa 20 12 00 00 	cmp    rdx,0x1220
+    127b:	0f 85 4f fd ff ff    	jne    fd0 <extended_pilot::main+0xfd0>
+    1281:	48 c7 84 24 b0 01 00 	mov    QWORD PTR [rsp+0x1b0],0x0
+    1288:	00 00 00 00 00 
+    128d:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x121
+    1294:	00 21 01 00 00 
+    1299:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+    12a0:	00 
+    12a1:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 12a8 <extended_pilot::main+0x12a8>
+			12a4: R_X86_64_PC32	.rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.6-0x4
+    12a8:	ba 18 1b 00 00       	mov    edx,0x1b18
+    12ad:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 12b3 <extended_pilot::main+0x12b3>
+			12af: R_X86_64_GOTPCREL	memcpy-0x4
+    12b3:	41 bf 20 00 00 00    	mov    r15d,0x20
+    12b9:	4c 8d 2d 00 00 00 00 	lea    r13,[rip+0x0]        # 12c0 <extended_pilot::main+0x12c0>
+			12bc: R_X86_64_PC32	.rodata..Lalloc_7fb6948253e08425011968cd1ab90324-0x4
+    12c0:	48 8d 2d 00 00 00 00 	lea    rbp,[rip+0x0]        # 12c7 <extended_pilot::main+0x12c7>
+			12c3: R_X86_64_PC32	.rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3-0x4
+    12c7:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+    12ce:	00 00 
+    12d0:	4a 8b 9c 3c a0 01 00 	mov    rbx,QWORD PTR [rsp+r15*1+0x1a0]
+    12d7:	00 
+    12d8:	4e 8b b4 3c a8 01 00 	mov    r14,QWORD PTR [rsp+r15*1+0x1a8]
+    12df:	00 
+    12e0:	4e 8b a4 3c b0 01 00 	mov    r12,QWORD PTR [rsp+r15*1+0x1b0]
+    12e7:	00 
+    12e8:	48 c7 05 00 00 00 00 	mov    QWORD PTR [rip+0x0],0x0        # 12f3 <extended_pilot::main+0x12f3>
+    12ef:	00 00 00 00 
+			12eb: R_X86_64_PC32	.bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE-0x8
+    12f3:	48 89 df             	mov    rdi,rbx
+    12f6:	4c 89 f6             	mov    rsi,r14
+    12f9:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 12ff <extended_pilot::main+0x12ff>
+			12fb: R_X86_64_GOTPCREL	pilot_call_helper-0x4
+    12ff:	4c 39 e0             	cmp    rax,r12
+    1302:	0f 85 e3 04 00 00    	jne    17eb <extended_pilot::main+0x17eb>
+    1308:	48 89 d8             	mov    rax,rbx
+    130b:	48 c1 c0 0d          	rol    rax,0xd
+    130f:	4c 89 f1             	mov    rcx,r14
+    1312:	48 ba 87 ca eb 85 b1 	movabs rdx,0x9e3779b185ebca87
+    1319:	79 37 9e 
+    131c:	48 0f af ca          	imul   rcx,rdx
+    1320:	48 31 c1             	xor    rcx,rax
+    1323:	48 ff c1             	inc    rcx
+    1326:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 132d <extended_pilot::main+0x132d>
+			1329: R_X86_64_PC32	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138-0x4
+    132d:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+    1332:	48 c7 44 24 78 13 00 	mov    QWORD PTR [rsp+0x78],0x13
+    1339:	00 00 
+    133b:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1340:	48 89 84 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rax
+    1347:	00 
+    1348:	4c 39 e1             	cmp    rcx,r12
+    134b:	0f 85 bc 04 00 00    	jne    180d <extended_pilot::main+0x180d>
+    1351:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+    1356:	48 ff c0             	inc    rax
+    1359:	0f 84 c0 01 00 00    	je     151f <extended_pilot::main+0x151f>
+    135f:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1364:	48 8b 0d 00 00 00 00 	mov    rcx,QWORD PTR [rip+0x0]        # 136b <extended_pilot::main+0x136b>
+			1367: R_X86_64_PC32	.bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE-0x4
+    136b:	48 8d 15 00 00 00 00 	lea    rdx,[rip+0x0]        # 1372 <extended_pilot::main+0x1372>
+			136e: R_X86_64_PC32	.rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9-0x4
+    1372:	48 89 54 24 70       	mov    QWORD PTR [rsp+0x70],rdx
+    1377:	48 c7 44 24 78 11 00 	mov    QWORD PTR [rsp+0x78],0x11
+    137e:	00 00 
+    1380:	48 8d 54 24 08       	lea    rdx,[rsp+0x8]
+    1385:	48 89 94 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rdx
+    138c:	00 
+    138d:	48 83 f9 01          	cmp    rcx,0x1
+    1391:	0f 85 76 04 00 00    	jne    180d <extended_pilot::main+0x180d>
+    1397:	48 ff c0             	inc    rax
+    139a:	0f 84 7f 01 00 00    	je     151f <extended_pilot::main+0x151f>
+    13a0:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    13a5:	48 c7 05 00 00 00 00 	mov    QWORD PTR [rip+0x0],0x0        # 13b0 <extended_pilot::main+0x13b0>
+    13ac:	00 00 00 00 
+			13a8: R_X86_64_PC32	.bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE-0x8
+    13b0:	48 89 df             	mov    rdi,rbx
+    13b3:	4c 89 f6             	mov    rsi,r14
+    13b6:	e8 00 00 00 00       	call   13bb <extended_pilot::main+0x13bb>
+			13b7: R_X86_64_PLT32	.text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E-0x4
+    13bb:	4c 89 6c 24 70       	mov    QWORD PTR [rsp+0x70],r13
+    13c0:	48 c7 44 24 78 11 00 	mov    QWORD PTR [rsp+0x78],0x11
+    13c7:	00 00 
+    13c9:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+    13ce:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+    13d5:	00 
+    13d6:	4c 39 e0             	cmp    rax,r12
+    13d9:	0f 85 2e 04 00 00    	jne    180d <extended_pilot::main+0x180d>
+    13df:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+    13e4:	48 ff c0             	inc    rax
+    13e7:	0f 84 32 01 00 00    	je     151f <extended_pilot::main+0x151f>
+    13ed:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    13f2:	48 8b 0d 00 00 00 00 	mov    rcx,QWORD PTR [rip+0x0]        # 13f9 <extended_pilot::main+0x13f9>
+			13f5: R_X86_64_PC32	.bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE-0x4
+    13f9:	48 89 6c 24 70       	mov    QWORD PTR [rsp+0x70],rbp
+    13fe:	48 c7 44 24 78 16 00 	mov    QWORD PTR [rsp+0x78],0x16
+    1405:	00 00 
+    1407:	48 8d 54 24 08       	lea    rdx,[rsp+0x8]
+    140c:	48 89 94 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rdx
+    1413:	00 
+    1414:	48 83 f9 01          	cmp    rcx,0x1
+    1418:	0f 85 ef 03 00 00    	jne    180d <extended_pilot::main+0x180d>
+    141e:	48 ff c0             	inc    rax
+    1421:	0f 84 f8 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    1427:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    142c:	49 83 c7 18          	add    r15,0x18
+    1430:	49 81 ff 38 1b 00 00 	cmp    r15,0x1b38
+    1437:	0f 85 93 fe ff ff    	jne    12d0 <extended_pilot::main+0x12d0>
+    143d:	48 ff c0             	inc    rax
+    1440:	0f 84 d9 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    1446:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    144b:	48 ff c0             	inc    rax
+    144e:	0f 84 cb 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    1454:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1459:	48 ff c0             	inc    rax
+    145c:	0f 84 bd 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    1462:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1467:	48 ff c0             	inc    rax
+    146a:	0f 84 af 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    1470:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1475:	48 ff c0             	inc    rax
+    1478:	0f 84 a1 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    147e:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1483:	48 ff c0             	inc    rax
+    1486:	0f 84 93 00 00 00    	je     151f <extended_pilot::main+0x151f>
+    148c:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    1491:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1498 <extended_pilot::main+0x1498>
+			1494: R_X86_64_PC32	.data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c-0x4
+    1498:	48 89 44 24 10       	mov    QWORD PTR [rsp+0x10],rax
+    149d:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 14a4 <extended_pilot::main+0x14a4>
+			14a0: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    14a4:	48 89 44 24 18       	mov    QWORD PTR [rsp+0x18],rax
+    14a9:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    14ae:	48 89 44 24 20       	mov    QWORD PTR [rsp+0x20],rax
+    14b3:	48 8b 05 00 00 00 00 	mov    rax,QWORD PTR [rip+0x0]        # 14ba <extended_pilot::main+0x14ba>
+			14b6: R_X86_64_GOTPCREL	core::fmt::num::imp::<impl core::fmt::Display for u64>::fmt-0x4
+    14ba:	48 89 44 24 28       	mov    QWORD PTR [rsp+0x28],rax
+    14bf:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 14c6 <extended_pilot::main+0x14c6>
+			14c2: R_X86_64_PC32	.data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86-0x4
+    14c6:	48 89 84 24 b0 01 00 	mov    QWORD PTR [rsp+0x1b0],rax
+    14cd:	00 
+    14ce:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x3
+    14d5:	00 03 00 00 00 
+    14da:	48 c7 84 24 d0 01 00 	mov    QWORD PTR [rsp+0x1d0],0x0
+    14e1:	00 00 00 00 00 
+    14e6:	48 8d 44 24 10       	lea    rax,[rsp+0x10]
+    14eb:	48 89 84 24 c0 01 00 	mov    QWORD PTR [rsp+0x1c0],rax
+    14f2:	00 
+    14f3:	48 c7 84 24 c8 01 00 	mov    QWORD PTR [rsp+0x1c8],0x2
+    14fa:	00 02 00 00 00 
+    14ff:	48 8d bc 24 b0 01 00 	lea    rdi,[rsp+0x1b0]
+    1506:	00 
+    1507:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 150d <extended_pilot::main+0x150d>
+			1509: R_X86_64_GOTPCREL	std::io::stdio::_print-0x4
+    150d:	48 81 c4 28 5c 00 00 	add    rsp,0x5c28
+    1514:	5b                   	pop    rbx
+    1515:	41 5c                	pop    r12
+    1517:	41 5d                	pop    r13
+    1519:	41 5e                	pop    r14
+    151b:	41 5f                	pop    r15
+    151d:	5d                   	pop    rbp
+    151e:	c3                   	ret
+    151f:	48 8d 3d 00 00 00 00 	lea    rdi,[rip+0x0]        # 1526 <extended_pilot::main+0x1526>
+			1522: R_X86_64_PC32	.data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d-0x4
+    1526:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 152c <extended_pilot::main+0x152c>
+			1528: R_X86_64_GOTPCREL	core::panicking::panic_const::panic_const_add_overflow-0x4
+    152c:	48 89 9c 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rbx
+    1533:	00 
+    1534:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0x1d
+    153b:	00 1d 00 00 00 
+    1540:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1545:	48 89 84 24 e8 00 00 	mov    QWORD PTR [rsp+0xe8],rax
+    154c:	00 
+    154d:	48 8d 84 24 a0 00 00 	lea    rax,[rsp+0xa0]
+    1554:	00 
+    1555:	48 89 84 24 30 01 00 	mov    QWORD PTR [rsp+0x130],rax
+    155c:	00 
+    155d:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1564 <extended_pilot::main+0x1564>
+			1560: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    1564:	48 89 84 24 38 01 00 	mov    QWORD PTR [rsp+0x138],rax
+    156b:	00 
+    156c:	48 8d 84 24 e8 00 00 	lea    rax,[rsp+0xe8]
+    1573:	00 
+    1574:	48 89 84 24 40 01 00 	mov    QWORD PTR [rsp+0x140],rax
+    157b:	00 
+    157c:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1583 <extended_pilot::main+0x1583>
+			157f: R_X86_64_PC32	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE-0x4
+    1583:	48 89 84 24 48 01 00 	mov    QWORD PTR [rsp+0x148],rax
+    158a:	00 
+    158b:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1592 <extended_pilot::main+0x1592>
+			158e: R_X86_64_PC32	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a-0x4
+    1592:	48 89 44 24 10       	mov    QWORD PTR [rsp+0x10],rax
+    1597:	48 c7 44 24 18 03 00 	mov    QWORD PTR [rsp+0x18],0x3
+    159e:	00 00 
+    15a0:	48 c7 44 24 30 00 00 	mov    QWORD PTR [rsp+0x30],0x0
+    15a7:	00 00 
+    15a9:	48 8d 84 24 30 01 00 	lea    rax,[rsp+0x130]
+    15b0:	00 
+    15b1:	e9 a9 02 00 00       	jmp    185f <extended_pilot::main+0x185f>
+    15b6:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 15bd <extended_pilot::main+0x15bd>
+			15b9: R_X86_64_PC32	.rodata..Lalloc_2dce8867486f99811029456ce360cb96-0x4
+    15bd:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+    15c4:	00 
+    15c5:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0xc
+    15cc:	00 0c 00 00 00 
+    15d1:	e9 6a ff ff ff       	jmp    1540 <extended_pilot::main+0x1540>
+    15d6:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 15dd <extended_pilot::main+0x15dd>
+			15d9: R_X86_64_PC32	.rodata..Lalloc_99f669e0aea23b6e9811243e2889d625-0x4
+    15dd:	48 89 84 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rax
+    15e4:	00 
+    15e5:	48 c7 84 24 58 01 00 	mov    QWORD PTR [rsp+0x158],0xe
+    15ec:	00 0e 00 00 00 
+    15f1:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    15f6:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+    15fd:	00 
+    15fe:	48 8d 84 24 50 01 00 	lea    rax,[rsp+0x150]
+    1605:	00 
+    1606:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    160d:	00 
+    160e:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1615 <extended_pilot::main+0x1615>
+			1611: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    1615:	48 89 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],rax
+    161c:	00 
+    161d:	48 8d 84 24 a0 00 00 	lea    rax,[rsp+0xa0]
+    1624:	00 
+    1625:	48 89 84 24 00 01 00 	mov    QWORD PTR [rsp+0x100],rax
+    162c:	00 
+    162d:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1634 <extended_pilot::main+0x1634>
+			1630: R_X86_64_PC32	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE-0x4
+    1634:	48 89 84 24 08 01 00 	mov    QWORD PTR [rsp+0x108],rax
+    163b:	00 
+    163c:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1643 <extended_pilot::main+0x1643>
+			163f: R_X86_64_PC32	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a-0x4
+    1643:	48 89 44 24 10       	mov    QWORD PTR [rsp+0x10],rax
+    1648:	48 c7 44 24 18 03 00 	mov    QWORD PTR [rsp+0x18],0x3
+    164f:	00 00 
+    1651:	48 c7 44 24 30 00 00 	mov    QWORD PTR [rsp+0x30],0x0
+    1658:	00 00 
+    165a:	48 8d 84 24 f0 00 00 	lea    rax,[rsp+0xf0]
+    1661:	00 
+    1662:	e9 f8 01 00 00       	jmp    185f <extended_pilot::main+0x185f>
+    1667:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 166e <extended_pilot::main+0x166e>
+			166a: R_X86_64_PC32	.rodata..Lalloc_c168e215480fb2698effa558f0e4841f-0x4
+    166e:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    1675:	00 
+    1676:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0xb
+    167d:	00 0b 00 00 00 
+    1682:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1687:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+    168e:	00 
+    168f:	48 8d 84 24 f0 00 00 	lea    rax,[rsp+0xf0]
+    1696:	00 
+    1697:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+    169c:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 16a3 <extended_pilot::main+0x16a3>
+			169f: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    16a3:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+    16a8:	48 8d 84 24 a0 00 00 	lea    rax,[rsp+0xa0]
+    16af:	00 
+    16b0:	e9 76 01 00 00       	jmp    182b <extended_pilot::main+0x182b>
+    16b5:	48 8d 84 24 b0 00 00 	lea    rax,[rsp+0xb0]
+    16bc:	00 
+    16bd:	e9 c4 00 00 00       	jmp    1786 <extended_pilot::main+0x1786>
+    16c2:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 16c9 <extended_pilot::main+0x16c9>
+			16c5: R_X86_64_PC32	.rodata..Lalloc_02eca21413ccc32994161c12acef02d6-0x4
+    16c9:	48 89 84 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rax
+    16d0:	00 
+    16d1:	48 c7 84 24 b8 00 00 	mov    QWORD PTR [rsp+0xb8],0xa
+    16d8:	00 0a 00 00 00 
+    16dd:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    16e2:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    16e9:	00 
+    16ea:	48 8d 84 24 b0 00 00 	lea    rax,[rsp+0xb0]
+    16f1:	00 
+    16f2:	e9 8f 00 00 00       	jmp    1786 <extended_pilot::main+0x1786>
+    16f7:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 16fe <extended_pilot::main+0x16fe>
+			16fa: R_X86_64_PC32	.rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de-0x4
+    16fe:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+    1703:	48 c7 44 24 78 0d 00 	mov    QWORD PTR [rsp+0x78],0xd
+    170a:	00 00 
+    170c:	e9 ef 00 00 00       	jmp    1800 <extended_pilot::main+0x1800>
+    1711:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1718 <extended_pilot::main+0x1718>
+			1714: R_X86_64_PC32	.rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada-0x4
+    1718:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    171f:	00 
+    1720:	48 c7 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],0xc
+    1727:	00 0c 00 00 00 
+    172c:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1731:	48 89 84 24 50 01 00 	mov    QWORD PTR [rsp+0x150],rax
+    1738:	00 
+    1739:	48 8d 84 24 f0 00 00 	lea    rax,[rsp+0xf0]
+    1740:	00 
+    1741:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+    1746:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 174d <extended_pilot::main+0x174d>
+			1749: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    174d:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+    1752:	48 8d 84 24 50 01 00 	lea    rax,[rsp+0x150]
+    1759:	00 
+    175a:	e9 cc 00 00 00       	jmp    182b <extended_pilot::main+0x182b>
+    175f:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1766 <extended_pilot::main+0x1766>
+			1762: R_X86_64_PC32	.rodata..Lalloc_b110a08ed55610b06df9c62d38498d39-0x4
+    1766:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+    176b:	48 c7 44 24 78 15 00 	mov    QWORD PTR [rsp+0x78],0x15
+    1772:	00 00 
+    1774:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1779:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    1780:	00 
+    1781:	48 8d 44 24 70       	lea    rax,[rsp+0x70]
+    1786:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+    178b:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1792 <extended_pilot::main+0x1792>
+			178e: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    1792:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+    1797:	48 8d 84 24 f0 00 00 	lea    rax,[rsp+0xf0]
+    179e:	00 
+    179f:	e9 87 00 00 00       	jmp    182b <extended_pilot::main+0x182b>
+    17a4:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 17ab <extended_pilot::main+0x17ab>
+			17a7: R_X86_64_PC32	.rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea-0x4
+    17ab:	48 89 84 24 a0 00 00 	mov    QWORD PTR [rsp+0xa0],rax
+    17b2:	00 
+    17b3:	48 c7 84 24 a8 00 00 	mov    QWORD PTR [rsp+0xa8],0x1b
+    17ba:	00 1b 00 00 00 
+    17bf:	e9 7c fd ff ff       	jmp    1540 <extended_pilot::main+0x1540>
+    17c4:	48 8d 15 00 00 00 00 	lea    rdx,[rip+0x0]        # 17cb <extended_pilot::main+0x17cb>
+			17c7: R_X86_64_PC32	.data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad-0x4
+    17cb:	be 0c 00 00 00       	mov    esi,0xc
+    17d0:	48 89 c7             	mov    rdi,rax
+    17d3:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 17d9 <extended_pilot::main+0x17d9>
+			17d5: R_X86_64_GOTPCREL	core::panicking::panic_bounds_check-0x4
+    17d9:	48 8d 15 00 00 00 00 	lea    rdx,[rip+0x0]        # 17e0 <extended_pilot::main+0x17e0>
+			17dc: R_X86_64_PC32	.data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873-0x4
+    17e0:	be 0c 00 00 00       	mov    esi,0xc
+    17e5:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 17eb <extended_pilot::main+0x17eb>
+			17e7: R_X86_64_GOTPCREL	core::panicking::panic_bounds_check-0x4
+    17eb:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 17f2 <extended_pilot::main+0x17f2>
+			17ee: R_X86_64_PC32	.rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138-0x4
+    17f2:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+    17f7:	48 c7 44 24 78 13 00 	mov    QWORD PTR [rsp+0x78],0x13
+    17fe:	00 00 
+    1800:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    1805:	48 89 84 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rax
+    180c:	00 
+    180d:	48 8d 44 24 70       	lea    rax,[rsp+0x70]
+    1812:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+    1817:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 181e <extended_pilot::main+0x181e>
+			181a: R_X86_64_PC32	.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE-0x4
+    181e:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+    1823:	48 8d 84 24 b0 00 00 	lea    rax,[rsp+0xb0]
+    182a:	00 
+    182b:	48 89 44 24 50       	mov    QWORD PTR [rsp+0x50],rax
+    1830:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1837 <extended_pilot::main+0x1837>
+			1833: R_X86_64_PC32	.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE-0x4
+    1837:	48 89 44 24 58       	mov    QWORD PTR [rsp+0x58],rax
+    183c:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # 1843 <extended_pilot::main+0x1843>
+			183f: R_X86_64_PC32	.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a-0x4
+    1843:	48 89 44 24 10       	mov    QWORD PTR [rsp+0x10],rax
+    1848:	48 c7 44 24 18 03 00 	mov    QWORD PTR [rsp+0x18],0x3
+    184f:	00 00 
+    1851:	48 c7 44 24 30 00 00 	mov    QWORD PTR [rsp+0x30],0x0
+    1858:	00 00 
+    185a:	48 8d 44 24 40       	lea    rax,[rsp+0x40]
+    185f:	48 89 44 24 20       	mov    QWORD PTR [rsp+0x20],rax
+    1864:	48 c7 44 24 28 02 00 	mov    QWORD PTR [rsp+0x28],0x2
+    186b:	00 00 
+    186d:	48 8d 7c 24 10       	lea    rdi,[rsp+0x10]
+    1872:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 1878 <extended_pilot::main+0x1878>
+			1874: R_X86_64_GOTPCREL	std::io::stdio::_eprint-0x4
+    1878:	bf 02 00 00 00       	mov    edi,0x2
+    187d:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 1883 <pilot_simd_add16+0x1818>
+			187f: R_X86_64_GOTPCREL	std::process::exit-0x4
+
+Disassembly of section .text.main:
+
+0000000000000000 <main>:
+   0:	50                   	push   rax
+   1:	48 89 f1             	mov    rcx,rsi
+   4:	48 63 d7             	movsxd rdx,edi
+   7:	48 8d 05 00 00 00 00 	lea    rax,[rip+0x0]        # e <main+0xe>
+			a: R_X86_64_PC32	.text._ZN14extended_pilot4main17hca72231bfee5693fE-0x4
+   e:	48 89 04 24          	mov    QWORD PTR [rsp],rax
+  12:	48 8d 35 00 00 00 00 	lea    rsi,[rip+0x0]        # 19 <main+0x19>
+			15: R_X86_64_PC32	.data.rel.ro..Lvtable.0-0x4
+  19:	48 89 e7             	mov    rdi,rsp
+  1c:	45 31 c0             	xor    r8d,r8d
+  1f:	ff 15 00 00 00 00    	call   QWORD PTR [rip+0x0]        # 25 <main+0x25>
+			21: R_X86_64_GOTPCREL	std::rt::lang_start_internal-0x4
+  25:	59                   	pop    rcx
+  26:	c3                   	ret

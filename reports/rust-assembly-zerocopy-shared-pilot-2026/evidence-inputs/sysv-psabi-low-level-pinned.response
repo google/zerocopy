@@ -1,0 +1,2648 @@
+%%% vim:ai:tw=72:
+\chapter{Low Level System Information}
+
+\section{Machine Interface}
+
+\subsection{Processor Architecture}
+
+Any program can expect that an \xARCH processor implements the
+baseline features mentioned in table~\ref{features}.  Most feature names
+correspond to CPUID bits, as described in the processor manual.
+Exceptions are OSFXSR and SCE, which are controlled by bits in the
+\reg{cr4} register and the \verb|IA32_EFER| MSR.
+
+\begin{table}
+\caption{Micro-Architecture Levels}\label{features}
+\label{levels}
+  \begin{center}
+\begin{tabular}{>{\tt}l|l|>{\tt}l}
+  \multicolumn{1}{l}{Level Name} & \multicolumn{1}{l}{CPU Feature}
+     & \multicolumn{1}{l}{\rmfamily Example instruction} \\\hline
+  \rmfamily (baseline)
+    & CMOV & cmov \\
+    & CX8 & cmpxchg8b \\
+    & FPU & fld \\
+    & FXSR & fxsave \\
+    & MMX & emms \\
+    & OSFXSR & fxsave \\
+    & SCE & syscall \\
+    & SSE & cvtss2si \\
+    & SSE2 & cvtpi2pd \\\hline
+  x86-64-v2
+    & CMPXCHG16B & cmpxchg16b \\
+    & LAHF-SAHF & lahf \\
+    & POPCNT &  popcnt \\
+    & SSE3 & addsubpd \\
+    & SSE4\symbol{95}1 & blendpd \\
+    & SSE4\symbol{95}2 & pcmpestri \\
+    & SSSE3 & phaddd \\\hline
+  x86-64-v3
+    & AVX & vzeroall \\
+    & AVX2 & vpermd \\
+    & BMI1 & andn \\
+    & BMI2 & bzhi \\
+    & F16C & vcvtph2ps \\
+    & FMA & vfmadd132pd \\
+    & LZCNT & lzcnt \\
+    & MOVBE & movbe\\
+    & OSXSAVE & xgetbv \\\hline
+  x86-64-v4
+    & AVX512F & kmovw \\
+    & AVX512BW & vdbpsadbw \\
+    & AVX512CD & vplzcntd \\
+    & AVX512DQ & vpmullq \\
+    & AVX512VL & \rmfamily n/a\\
+  \end{tabular}
+\end{center}
+\end{table}
+
+In addition to the \xARCH baseline architecture, several
+\textindex{micro-architecture levels} implemented by later CPU modules
+have been defined, starting at level \texttt{x86-64-v2}.  These levels
+are intended to support loading of optimized implementations on those
+systems that are compatible with them (see below).  The levels are
+cumulative in the sense that features from previous levels are
+implicitly included in later levels.
+
+Levels \texttt{x86-64-v3} and \texttt{x86-64-v4} are only available if
+the corresponding features have been fully enabled.  This means that
+the system must pass the full sequence of checks in the processor
+manual for these features, including verification of the XCR0 feature
+flags obtained using \texttt{xgetbv}.
+
+\subsubsection{Recommended Uses of Micro-Architecture Levels}
+
+The names for the micro-architecture levels of table~\ref{features}
+are expected to be used as directory names (to be searched by the
+dynamic linker, based on the levels supported by the current CPU), and
+by compilers, to select groups of CPU features.  Distributions may
+also specify that they require CPU support for a certain level.
+
+For example, to select the second level, \texttt{x86-64-v3}, a
+programmer would build a shared object with the
+\texttt{-march=x86-64-v3} GCC flag.  The resulting shared object needs
+to be installed into the directory
+\path{/usr/lib64/glibc-hwcaps/x86-64-v3} or
+\path{/usr/lib/x86_64-linux-gnu/glibc-hwcaps/x86-64-v3} (in case of
+distributions with a multi-arch file system layout).  In order to
+support systems that only implement the K8 baseline, a fallback
+implementation must be installed into the default locations,
+\path{/usr/lib64} or \path{/usr/lib/x86_64-linux-gnu}.  It has to be
+built with \texttt{-march=x86-64} (the upstream GCC default).  If this
+guideline is not followed, loading the library will fail on systems
+that do not support the level for which the optimized shared object
+was built.
+
+Shared objects that are installed under the matching
+\texttt{glibc-hwcaps} subdirectory can use the CPU features for this
+level and earlier levels without further detection logic.  Run-time
+detection for other CPU features not listed in this section, or listed
+only under later levels, is still required (even if all current CPUs
+implement certain CPU features together).
+
+If a distribution requires support for a certain level, they build
+everything with the appropriate \texttt{-march=} option and install
+the built binaries in the default file system locations.  When
+targeting such distributions, programmers can build their binaries
+with the same \texttt{-march=} option and install them into the
+default locations.  Optimized shared objects for later levels can
+still be installed into subdirectories with the appropriate name.
+
+
+\subsection{Data Representation}
+
+Within this specification, the term \emph{\textindex{\byte{}}} refers to
+a 8-bit object, the term \emph{\textindex{\twobyte{}}} refers to a 16-bit
+object, the term \emph{\textindex{\fourbyte{}}} refers to a 32-bit
+object, the term \emph{\textindex{\eightbyte{}}} refers to a 64-bit
+object, and the term \emph{\textindex{\sixteenbyte{}}} refers to a
+128-bit object.%
+\footnote{The \intelabi uses the term \emph{\textindex{halfword}} for
+  a 16-bit object, the term \emph{\textindex{word}} for a 32-bit
+  object, the term \emph{\textindex{doubleword}} for a 64-bit object.  But
+  most IA-32 processor specific documentation define a
+  \emph{\textindex{word}} as a 16-bit object, a
+  \emph{\textindex{doubleword}} as a 32-bit object, a
+  \emph{\textindex{quadword}} as a 64-bit object and a
+  \emph{\textindex{double quadword}} as a 128-bit object.}
+
+\subsubsection{Fundamental Types}
+
+Figure~\ref{basic-types} shows the correspondence between ISO C's
+scalar types and the processor's.  \code{__int128}, \code{_Float16},
+\code{__float80},
+\code{__float128}, \code{__m64}, \code{__m128}, \code{__m256} and
+\code{__m512} types are optional.
+
+\begin{figure}
+  \caption{Scalar Types}\label{basic-types}
+{ % Use small here - the table is still too large
+  % Has anybody an idea how to shrink the table so that it fits the page?
+  \myfontsize
+  \begin{tabular}{l|l|c|c|l}
+    \noalign{\smallskip}
+     & &  & \multicolumn{1}{c|}{Alignment} & \multicolumn{1}{c}{\xARCH} \\
+    \multicolumn{1}{c|}{Type} & \multicolumn{1}{c|}{C}
+     &  \texttt{sizeof} & (bytes)
+     & \multicolumn{1}{c}{Architecture}  \\
+    \hline
+    & \texttt{_Bool}$^\dagger$ & 1 & 1 & boolean \\
+    \cline{2-5}
+    & \texttt{char}        & 1 & 1 & signed byte \\
+    & \texttt{signed char} & & \\
+    \cline{2-5}
+    & \texttt{unsigned char} & 1 & 1 & unsigned byte \\
+    \cline{2-5}
+    & \texttt{signed short} & 2 & 2 & signed \twobyte \\
+    \cline{2-5}
+    & \texttt{unsigned short} & 2 & 2 & unsigned \twobyte \\
+    \cline{2-5}
+    Integral & \texttt{signed int} & 4 & 4 & signed \fourbyte \\
+    & \texttt{enum}$^{\dagger\dagger\dagger}$ & & \\
+    \cline{2-5}
+    & \texttt{unsigned int} & 4 & 4 & unsigned \fourbyte \\
+    \cline{2-5}
+    & \texttt{signed long (LP64)} & 8 & 8 & signed \eightbyte \\
+    \cline{2-5}
+    & \texttt{unsigned long (LP64)} & 8 & 8 & unsigned \eightbyte \\
+    \cline{2-5}
+    & \texttt{signed long (ILP32)} & 4 & 4 & signed \fourbyte \\
+    \cline{2-5}
+    & \texttt{unsigned long (ILP32)} & 4 & 4 & unsigned \fourbyte \\
+    \cline{2-5}
+    & \texttt{signed long long} & 8 &
+	8$^{\dagger\dagger\dagger\dagger}$ & signed \eightbyte \\
+    \cline{2-5}
+    & \texttt{unsigned long long} & 8
+	& 8$^{\dagger\dagger\dagger\dagger}$ & unsigned \eightbyte \\
+    \cline{2-5}
+    & \texttt{__int128}$^{\dagger\dagger}$ & 16 & 16 & signed \sixteenbyte \\
+    & \texttt{signed __int128}$^{\dagger\dagger}$ & 16 & 16 & signed \sixteenbyte \\
+    \cline{2-5}
+    & \texttt{unsigned __int128}$^{\dagger\dagger}$ & 16 & 16 & unsigned \sixteenbyte \\
+    \hline
+    Pointer
+    & \texttt{\textit{any-type} * (LP64)} & 8 & 8 & unsigned \eightbyte \\
+    & \texttt{\textit{any-type} (*)() (LP64)} & & \\
+    \cline{2-5}
+    & \texttt{\textit{any-type} * (ILP32)} & 4 & 4 & unsigned \fourbyte \\
+    & \texttt{\textit{any-type} (*)() (ILP32)} & & \\
+    \hline
+    & \texttt{_Float16}$^{\dagger\dagger\dagger\dagger\dagger\dagger}$ & 2 & 2 & 16-bit (IEEE-754) \\
+    \cline{2-5}
+    & \texttt{float} & 4 & 4 & single (IEEE-754) \\
+    \cline{2-5}
+    Floating- & \texttt{double} & 8
+	& 8$^{\dagger\dagger\dagger\dagger}$ & double (IEEE-754) \\
+    \cline{2-5}
+    point & \texttt{__float80}$^{\dagger\dagger}$  & 16 & 16 & 80-bit extended (IEEE-754) \\
+    & \texttt{long double}$^{\dagger\dagger\dagger\dagger\dagger}$  & 16 & 16 & 80-bit extended (IEEE-754) \\
+    \cline{2-5}
+    & \texttt{__float128}$^{\dagger\dagger}$ & 16 & 16 & 128-bit extended (IEEE-754) \\
+    & \texttt{long double}$^{\dagger\dagger\dagger\dagger\dagger}$  & 16 & 16 & 128-bit extended (IEEE-754) \\
+    \hline
+    Decimal-& \texttt{_Decimal32} & 4 & 4 & 32bit BID (IEEE-754R) \\
+    \cline{2-5}
+    floating-& \texttt{_Decimal64} & 8 & 8 & 64bit BID (IEEE-754R) \\
+    \cline{2-5}
+    point & \texttt{_Decimal128} & 16 & 16 & 128bit BID (IEEE-754R) \\
+    \hline
+    Packed & \texttt{__m64}$^{\dagger\dagger}$ & 8 & 8 & \MMX{} and \threednow \\
+    \cline{2-5}
+    & \texttt{__m128}$^{\dagger\dagger}$ & 16 & 16 & SSE and SSE-2 \\
+    \cline{2-5}
+    & \texttt{__m256}$^{\dagger\dagger}$ & 32 & 32 & AVX \\
+    \cline{2-5}
+    & \texttt{__m512}$^{\dagger\dagger}$ & 64 & 64 & AVX-512 \\
+\noalign{\smallskip}
+\cline{1-5}
+\multicolumn{3}{l}{\myfontsize $^\dagger$ This type is called \texttt{bool}
+in C++.}\\
+\multicolumn{3}{l}{\myfontsize $^{\dagger\dagger}$ These types are optional.}\\
+\multicolumn{5}{p{13cm}}{\myfontsize $^{\dagger\dagger\dagger}$ C++ and some
+implementations of C permit enums larger than an int.  The underlying
+type is bumped to an unsigned int, long int or unsigned long int, in
+that order.}\\
+\multicolumn{5}{p{13cm}}{\myfontsize $^{\dagger\dagger\dagger\dagger}$
+The \texttt{long long},  \texttt{signed long long},
+\texttt{unsigned long long} and \texttt{double} types have 4-byte
+alignment in the \intelabi.}\\
+\multicolumn{5}{p{13cm}}{\myfontsize $^{\dagger\dagger\dagger\dagger\dagger}$
+The \texttt{long double} type is 128-bit, the same as the \texttt{__float128}
+type, on the Android{\texttrademark} platform.  More information on the
+Android{\texttrademark} platform is available from
+\url{http://www.android.com/}.}\\
+\multicolumn{5}{p{13cm}}{\myfontsize $^{\dagger\dagger\dagger\dagger\dagger\dagger}$
+The \texttt{_Float16} type, from ISO/IEC TS 18661-3:2015, is optional.}\\
+  \end{tabular}
+}
+\end{figure}
+
+The \codeindex{__float128} type uses a 15-bit exponent, a 113-bit
+mantissa (the high order significant bit is implicit) and an exponent
+bias of 16383.\footnote{Initial implementations of the \xARCH
+  architecture are expected to support operations on the
+  \texttt{__float128} type only via software emulation.}
+
+The \code{long double} type uses a 15 bit exponent, a 64-bit mantissa
+with an explicit high order significant bit and an exponent bias of
+16383.\footnote{This type is the x87 double extended precision data
+  type.}  Although a \code{long double} requires 16 bytes of storage,
+only the first 10 bytes are significant.  The remaining six bytes are
+tail padding, and the contents of these bytes are undefined.
+
+The \code{__int128} type is stored in little-endian order in memory,
+i.e., the 64 low-order bits are stored at a a lower address than the
+64 high-order bits.
+
+The value of \code{_Alignof(max_align_t)} is 16.
+
+A null pointer (for all types) has the value zero.
+
+The type \codeindex{size\_t} is defined as \code{unsigned long} for LP64
+and \code{unsigned int} for ILP32.
+
+Booleans\index{boolean}, when stored in a memory object, are stored as
+single byte objects the value of which is always 0 (\code{false}) or 1
+(\code{true}).  When stored in integer registers (except for passing
+as arguments), all 8 bytes of the register are significant;
+any nonzero value is considered \code{true}.
+
+Like the Intel386 architecture, the \xARCH architecture in general
+does not require all data accesses to be properly aligned.  Misaligned
+data accesses are slower than aligned accesses
+but otherwise behave identically.  The only exceptions are that
+\code{__m128}, \code{__m256} and \code{__m512} must always be aligned
+properly.
+
+\subsubsection{Fundamental Types of N-bit Integers}
+
+\texttt{_BitInt(N)} from ISO/IEC WG14 N2763, where \code{N} is an
+integral constant expression representing the exact number of bits to
+be used to represent the type, is a family of integer types.
+
+\begin{itemize}
+ \item \texttt{_BitInt(N)} types are signed by default, and
+  \texttt{unsigned _BitInt(N)} types are unsigned.
+ \item \texttt{_BitInt(N)} types are stored in little-endian order in
+  memory.  Bits in each byte are allocated from right to left.
+ \item For N <= 64, they have the same size and alignment as
+  the smallest of (signed and unsigned) \code{char}, \code{short},
+  \code{int}, \code{long} and \code{long long} types that can contain
+  them.
+ \item For N > 64, they are treated as struct of 64-bit integer
+  chunks.  The number of chunks is the smallest number that can contain
+  the type.  \texttt{_BitInt(N)} types are byte-aligned to 64 bits.
+  The size of these types is the
+  smallest multiple of the 64-bit chunks greater than or equal to N.
+  \item The value of the unused bits beyond the width of the
+   \texttt{_BitInt(N)} value but within the size of the
+   \texttt{_BitInt(N)} are unspecified when stored in memory or register.
+\end{itemize}
+
+This permits the use of these types in allocated arrays using the common
+sizeof(Array)/sizeof(ElementType) pattern.
+
+\subsubsection{Special Types}
+
+The \code{__bf16}\footnote{This type is used in \code{BF16} intrinsics.} type
+is an alternate encoding format for 16-bit float with 8-bit exponent and 7-bit
+mantissa. \code{__bf16} represents Brain Floating Point Format\footnote{This
+  type is used to accelerate machine learning (deep learning training,
+  in particular) algorithms.} which is a truncated (16-bit) version of the
+32-bit IEEE 754 single-precision floating-point format. It has the same size,
+alignment, parameter passing and return rules as _Float16.
+
+\subsubsection{Aggregates and Unions}
+
+Structures and unions assume the alignment of their most strictly
+aligned component.  Each member is assigned to the lowest available
+offset with the appropriate alignment.  The size of any object is always
+a multiple of the object`s alignment.
+
+An array uses the same alignment as its elements, except that a local
+or global array variable of length at least 16 bytes or a C99
+variable-length array variable always has alignment
+of at least 16 bytes.\footnote{The alignment requirement allows the
+  use of SSE instructions when operating on the array.  The compiler
+  cannot in general calculate the size of a variable-length array (VLA), but
+  it is expected that most VLAs will require at least 16 bytes, so it
+  is logical to mandate that VLAs have at least a 16-byte alignment.}
+
+Structure and union objects can require padding to meet size and
+alignment constraints.  The contents of any padding is undefined.
+
+%%% SUN <examples - add diagrams>
+
+\subsubsection{Bit-Fields}
+
+C struct and union definitions may include bit-fields that define
+integral values of a specified size.
+
+%%% SUN <table><include complete i386 + below table>
+\begin{figure}[h]
+\Hrule
+  \caption{Bit-Field Ranges}
+  \begin{center}
+    \leavevmode
+    \begin{tabular}{l|l|l}
+      \multicolumn{1}{c}{Bit-field Type}
+         & \multicolumn{1}{c}{Width $w$}
+         & \multicolumn{1}{c}{Range} \\
+      \hline
+      \texttt{signed char} & & $-2^{w - 1}$ to $2^{w-1}-1$ \\
+      \texttt{char} & 1 to 8 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned char} & & 0 to $2^{w}-1$ \\
+      \hline
+      \texttt{signed short} & & $-2^{w - 1}$ to $2^{w-1}-1$ \\
+      \texttt{short} & 1 to 16 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned short} & & 0 to $2^{w}-1$ \\
+      \hline
+      \texttt{signed int} & & $-2^{w - 1}$ to $2^{w-1}-1$ \\
+      \texttt{int} & 1 to 32 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned int} & & 0 to $2^{w}-1$ \\
+      \hline
+      \texttt{signed long (LP64)} & & $-2^{w - 1}$ to $2^{w-1}-1$ \\
+      \texttt{long (LP64)} & 1 to 64 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned long (LP64)} & & 0 to $2^{w}-1$ \\
+      \hline
+      \texttt{long (ILP32)} & 1 to 32 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned long (ILP32)} & & 0 to $2^{w}-1$ \\
+      \hline
+      \texttt{signed long long} & & $-2^{w - 1}$ to $2^{w-1}-1$ \\
+      \texttt{long long} & 1 to 64 & 0 to $2^{w}-1$ \\
+      \texttt{unsigned long long} & & 0 to $2^{w}-1$ \\
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+The ABI does not permit bit-fields having the type \texttt{__m64},
+\texttt{__m128}, \texttt{__m256} or \texttt{__m512}.  Programs using
+bit-fields of these types are not portable.
+
+Bit-fields that are neither signed nor unsigned
+always have non-negative values. Although they may have type char,
+short, int, or long (which can have negative values), these bit-fields
+have the same range as a bit-field of the same size with the
+corresponding unsigned type. Bit-fields obey the same size and
+alignment rules as other structure and union members.
+
+Also:
+\begin{itemize}
+ \item bit-fields are allocated from right to left
+ \item bit-fields must be contained in a storage unit appropriate 
+       for its declared type
+ \item bit-fields may share a storage unit with other struct / union members
+\end{itemize}
+
+Unnamed bit-fields' types do not affect the alignment of a structure
+or union.
+
+%%% SUN <examples - add diagrams>
+
+\section{Function Calling Sequence}
+
+This section describes the standard function calling sequence,
+including stack frame layout, register usage, parameter passing and so
+on.
+
+The standard calling sequence requirements apply only to global
+functions.  Local functions that are not reachable from other
+compilation units may use different conventions.  Nevertheless, it is
+recommended that all functions use the standard calling sequence when
+possible.
+
+\subsection{Registers}
+\label{subsec-registers}
+
+The \xARCH architecture provides 16 general purpose 64-bit registers.
+In addition the architecture provides 16 SSE registers, each 128 bits
+wide and 8 x87 floating point registers, each 80 bits wide.  Each of
+the x87 floating point registers may be referred to in \MMX/\threednow
+mode as a 64-bit register.  All of these registers are global to all
+procedures active for a given thread.
+
+Intel AVX (Advanced Vector Extensions) provides 16 256-bit wide AVX registers
+(\reg{ymm0} - \reg{ymm15}).  The lower 128-bits of \reg{ymm0} - \reg{ymm15}
+are aliased to the respective 128b-bit SSE registers (\reg{xmm0} -
+\reg{xmm15}).  Intel AVX-512 provides 32 512-bit wide SIMD registers
+(\reg{zmm0} - \reg{zmm31}).  The lower 128-bits of \reg{zmm0} - \reg{zmm31}
+are aliased to the respective 128b-bit SSE registers
+(\reg{xmm0} - \reg{xmm31}\footnote{\reg{xmm16} - \reg{xmm31}
+are only available with Intel AVX-512.}).
+The lower 256-bits of \reg{zmm0} - \reg{zmm31}
+are aliased to the respective 256-bit AVX registers
+(\reg{ymm0} - \reg{ymm31}\footnote{\reg{ymm16} - \reg{ymm31}
+are only available with Intel AVX-512.}).
+For purposes of parameter passing
+and function return, \reg{xmmN}, \reg{ymmN} and \reg{zmmN} refer to the
+same register. Only one of them can be used at the same time.  We use
+vector register to refer to either SSE, AVX or AVX-512 register.  In
+addition, Intel AVX-512 also provides 8 vector mask registers (\reg{k0}
+- \reg{k7}), each 64-bit wide.
+
+Intel Advanced Matrix Extensions (Intel AMX) is a programming
+paradigm consisting of two components: a set of 2-dimensional registers
+(tiles) representing sub-arrays from a larger 2-dimensional memory image,
+and accelerators able to operate on tiles.  Capability of Intel AMX
+implementation is enumerated by palettes.  Two palettes are supported:
+palette 0 represents the initialized state and palette 1 consists of
+8 tile registers (\reg{tmm0} - \reg{tmm7}) of up to 1 KB size, which
+is controlled by a tile control register.
+
+Intel APX (Advanced Performance Extensions) provides 16 general purpose
+64-bit registers (\reg{r16} - \reg{r31}).
+
+This subsection discusses usage of each register.  Registers \RBP, \RBX and
+\reg{r12} through \reg{r15} ``belong'' to the calling function and the
+called function is required to preserve their values.  In other words,
+a called function must preserve these registers' values for its
+caller.  Remaining registers ``belong'' to the called
+function.\footnote{Note that in contrast to the \intelabi, \RDI,
+  and \RSI belong to the called function, not the caller.}  If a
+calling function wants to preserve such a register value across a
+function call, it must save the value in its local stack frame.
+
+The CPU shall be in x87 mode upon entry to a function.  Therefore,
+every function that uses the \MMX registers is required to issue an
+\op{emms} or \op{femms} instruction after using \MMX registers, before
+returning or calling another function.  \footnote{All x87 registers
+are caller-saved, so callees that make use of the \MMX registers may
+use the faster \op{femms} instruction.}  The direction flag \code{DF} in the
+\reg{rFLAGS} register must be clear (set to ``forward'' direction) on function
+entry and return.  Other user flags have no specified role in the
+standard calling sequence and are {\em not} preserved across calls.
+
+The control bits of the \code{MXCSR} register are callee-saved
+(preserved across calls), while the status bits are caller-saved (not
+preserved).  The x87 status word register is caller-saved, whereas
+the x87 control word is callee-saved.
+
+\subsection{The Stack Frame}
+\label{sec-stack-frame}
+
+In addition to registers, each function has a frame on the run-time
+stack.  This stack grows downwards from high addresses.  Figure~
+\ref{fig-stack-frame} shows the stack organization.
+
+\begin{figure}
+\Hrule
+  \caption{Stack Frame with Base Pointer}
+  \label{fig-stack-frame}
+  \begin{center}
+    \begin{tabular}{r|c|l}
+      \noalign{\smallskip}
+      \multicolumn{1}{l}{Position} &
+      \multicolumn{1}{c}{Contents} &
+      \multicolumn{1}{l}{Frame} \\
+      \noalign{\smallskip}  \cline{1-3}
+      \code{8n+16(\RBP)} & memory argument \eightbyte $n$ \\
+      & \dots & Previous \\
+      \code{16(\RBP)} & memory argument \eightbyte $0$ \\
+      \cline{1-3}
+      \code{8(\RBP)} & return address \\ \cline{2-2}
+      \code{0(\RBP)} & previous \RBP value \\
+      \cline{2-2}
+      \code{-8(\RBP)} & unspecified & Current \\
+      & \dots & \\
+      \code{0(\RSP)} & variable size \\
+      \cline{2-2}
+      \code{-128(\RSP)} & red zone\\
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+The end of the input argument area shall be aligned on a 16 (32 or 64, if
+\texttt{__m256} or \texttt{__m512} is passed on stack) byte boundary.
+\footnote{The maximum aligned boundary is the maximum alignment of
+all variables passed on stack.  In C11, variable of type
+\code{typedef struct \{ _Alignas (512) int i; \} var_t;}
+is aligned to 512 bytes.}
+In other words, the stack needs to be 16 (32 or 64) byte aligned
+immediately before the call instruction is executed. Once control has
+been transferred to the function entry point, i.e.~immediately after the
+return address has been pushed, \RSP points to the return address, and the
+value of $(\RSP + 8)$ is a multiple of $16$ ($32$ or $64$).
+\footnote{The conventional use of \RBP{} as a frame
+  pointer for the stack frame may be avoided by using \RSP (the stack
+  pointer) to index into the stack frame.  This technique saves two
+  instructions in the prologue and epilogue and makes one additional
+  general-purpose register (\RBP) available.}
+
+The 128-byte area beyond the location pointed to by \RSP is considered
+to be reserved and shall not be modified by signal or interrupt
+handlers.\footnote{Locations within 128 bytes can be addressed using
+  one-byte displacements.}  Therefore, functions may use this area for
+temporary data that is not needed across function calls.  In
+particular, leaf functions may use this area for their entire stack
+frame, rather than adjusting the stack pointer in the prologue and
+epilogue.  This area is known as the \textindex{red zone}.
+
+\subsection{Parameter Passing}
+\label{sec-calling-conventions}
+
+After the argument values have been computed, they are placed either in
+registers or pushed on the stack.  The way how values are passed is
+described in the following sections.
+
+\paragraph{Definitions}
+We first define a number of classes to classify arguments.  The
+classes are corresponding to \xARCH register classes and defined as:
+
+\begin{description}
+\item[INTEGER] This class consists of integral types that fit into one of
+  the general purpose registers.
+\item[SSE] The class consists of types that fit into a vector register.
+\item[SSEUP] The class consists of types that fit into a vector
+  register and can be passed and returned in the upper bytes of it.
+\item[X87, X87UP] These classes consists of types that will be returned via
+  the x87 FPU.
+\item[COMPLEX\_X87] This class consists of types that will be returned
+  via the x87 FPU.
+\item[NO\_CLASS] This class is used as initializer in the algorithms.  It
+  will be used for padding and empty structures and unions.
+\item[MEMORY] This class consists of types that will be passed and
+  returned in memory via the stack.
+\end{description}
+
+
+\paragraph{Classification}
+The size of each argument gets rounded up to
+\eightbytes.\footnote{Therefore the stack will always be \eightbyte aligned.}
+
+The basic types are assigned their natural classes:
+\begin{itemize}
+\item Arguments of types (signed and unsigned) \code{_Bool}, \code{char},
+  \code{short}, \code{int}, \code{long}, \code{long long}, and
+  pointers are in the INTEGER class.
+\item Arguments of types \code{_Float16}, \code{float}, \code{double},
+  \code{_Decimal32},
+  \code{_Decimal64} and \code{__m64} are in class SSE.
+\item Arguments of types \code{__float128}, \code{_Decimal128}
+  and \code{__m128} are split into two halves.  The least significant
+  ones belong to class SSE, the most significant one to class SSEUP.
+\item Arguments of type \code{__m256} are split into four \eightbyte
+  chunks.  The least significant one belongs to class SSE and all the
+  others to class SSEUP.
+\item Arguments of type \code{__m512} are split into eight \eightbyte
+  chunks.  The least significant one belongs to class SSE and all the
+  others to class SSEUP.
+\item The 64-bit mantissa of arguments of type \code{long double}
+  belongs to class X87, the 16-bit exponent plus 6 bytes of padding
+  belongs to class X87UP.
+\item Arguments of type \code{__int128} offer the same operations as
+INTEGERs, yet they do not fit into one general purpose register but
+require two registers.  For
+classification purposes \code{__int128} is treated as if it
+were implemented as:
+\begin{verbatim}
+typedef struct {
+  long low, high;
+} __int128;
+\end{verbatim}
+with the exception that arguments of type \code{__int128} that are
+stored in memory must be aligned on a 16-byte boundary.
+
+\item Arguments of type \code{_BitInt(N)} with N <= 64 are in the
+INTEGER class.
+
+\item Arguments of type \code{_BitInt(N)} with N > 64 are classified
+as if they were implemented as struct of 64-bit integer fields.
+
+\item Arguments of \code{complex T} where \code{T} is one of the types
+  \code{_Float16, float, double or __float128} are treated as if they are
+  implemented as:
+\begin{verbatim}
+struct complexT {
+  T real;
+  T imag;
+};
+\end{verbatim}
+\item A variable of type \code{complex long double} is classified as
+  type COMPLEX\_X87.
+\end{itemize}
+
+
+The classification of aggregate (structures and arrays) and union
+types works as follows:
+
+\begin{enumerate}
+\item If the size of an object is larger than eight \eightbytes, or
+  it contains unaligned fields, it has class MEMORY
+  \footnote{The post merger clean up described later ensures that,
+  for the processors that do not support the \code{__m256} type, if
+  the size of an object is larger than two \eightbytes and the first
+  \eightbyte is not SSE or any other \eightbyte is not SSEUP, it still
+  has class MEMORY. This in turn ensures that for processors that
+  do support the \code{__m256} type, if the size of an object is
+  four \eightbytes and the first eightbyte is SSE and all other
+  eightbytes are SSEUP, it can be passed in a register. This also
+  applies to the \code{__m512} type.  That is for processors that support
+  the \code{__m512} type, if the size of an object is eight \eightbytes
+  and the first eightbyte is SSE and all other eightbytes are SSEUP, it
+  can be passed in a register, otherwise, it will be passed in memory.}.
+
+\item If a C++ object is non-trivial for the purpose of calls, as
+    specified in the C++ ABI \footnote{See section~\ref{section-cpp}
+    for details on C++ ABI.},
+    it is passed by invisible reference
+    (the object is replaced in the parameter list by a pointer that
+    has class INTEGER)
+  \footnote{An object whose type is non-trivial for the purpose of
+   calls cannot be passed by value because such objects must have the
+   same address in the caller and the callee. Similar
+   issues apply when returning an object from a function.
+   See C++17 [class.temporary] paragraph 3.}.
+
+\item If the size of the aggregate exceeds a single \eightbyte, each is
+    classified separately.  Each \eightbyte gets initialized to class NO_CLASS.
+
+\item Each field of an object is classified recursively so that always
+   two fields \footnote{Zero-width bit-fields are NO_CLASS.} are
+   considered.  The resulting class is calculated
+   according to the classes of the fields in the \eightbyte:
+   \begin{enumerate}
+   \item
+      If both classes are equal, this is the resulting class.
+   \item If one of the classes is NO_CLASS, the resulting class is the other class.
+   \item If one of the classes is MEMORY, the result is the MEMORY class.
+   \item If one of the classes is INTEGER, the result is the INTEGER.
+   \item If one of the classes is X87, X87UP, COMPLEX\_X87 class,
+     MEMORY is used as class.
+   \item Otherwise class SSE is used.
+   \end{enumerate}
+\item Then a post merger cleanup is done:
+  \begin{enumerate}
+  \item If one of the classes is MEMORY, the whole argument is passed in memory.
+  \item If X87UP is not preceded by X87, the whole argument is passed in
+    memory.
+  \item If the size of the aggregate exceeds two \eightbytes and the first
+    \eightbyte isn't SSE or any other \eightbyte isn't SSEUP, the whole
+    argument is passed in memory.
+  \item If SSEUP is not preceded by SSE or SSEUP, it is converted to SSE.
+  \end{enumerate}
+\end{enumerate}
+
+\paragraph{Passing}
+Once arguments are classified, the registers get assigned (in
+left-to-right order) for passing as follows:
+
+\begin{enumerate}
+\item If the class is MEMORY, pass the argument on the stack at an
+  address respecting the arguments alignment (which might be more
+  than its natural alignement).
+
+\item If the class is INTEGER, the next available register of the
+  sequence \RDI, \RSI, \RDX, \RCX, \reg{r8} and \reg{r9} is
+  used\footnote{Note that \reg{r11} is neither required to be
+    preserved, nor is it used to pass arguments.  Making this register
+    available as scratch register means that code in the PLT need not
+    spill any registers when computing the address to which control
+    needs to be transferred.  \reg{al} is used to indicate the number of
+    vector arguments passed to a function requiring a variable number of
+    arguments. \reg{r10} is used for passing a function's static chain
+    pointer.}.
+
+\item If the class is SSE, the next available vector register is used, the
+   registers are taken in the order from \reg{xmm0} to \reg{xmm7}.
+
+\item If the class is SSEUP, the \eightbyte is passed in the next
+   available \eightbyte chunk of the last used vector register.
+
+\item If the class is X87, X87UP or COMPLEX\_X87, it is passed in memory.
+\end{enumerate}
+
+When a value of a type of class INTEGER is returned or passed in a register
+or on the stack, the excess bits that would not be present in the
+memory representation of the type (see figure~\ref{basic-types}) are
+unspecified.\footnote{That is, the consumer side of those values needs
+to extend them or use short form instruction variants.  As in the
+memory representation, for a value of type \code{_Bool}, the lowest 8
+bits are significant, together forming the value 0 or 1.}
+
+\begin{figure}
+\Hrule
+  \caption{Register Usage}
+  \myfontsize
+  \label{fig-reg-usage}
+  \begin{center}
+    \begin{tabular}{l|p{7.95cm}|l}
+      \noalign{\smallskip}
+      \multicolumn{1}{c}{} &
+      \multicolumn{1}{c}{}&
+      \multicolumn{1}{l}{callee}\\
+      \multicolumn{1}{c}{Register} &
+      \multicolumn{1}{c}{Usage}&
+      \multicolumn{1}{l}{saved}\\
+      \hline
+\RAX & temporary register; with variable arguments passes
+information about the number of vector registers used; 1$^{\rm st}$
+return register & No \\
+\RBX & callee-saved register & Yes \\
+\RCX & used to pass 4$^{\rm th}$ integer argument to functions & No \\
+\RDX & used to pass 3$^{\rm rd}$ argument to functions; 2$^{\rm nd}$ return register & No \\
+\RSP & stack pointer & Yes \\
+\RBP & callee-saved register; optionally used as frame pointer & Yes \\
+\RSI & used to pass 2$^{\rm nd}$  argument to functions & No \\
+\RDI & used to pass 1$^{\rm st}$  argument to functions & No \\
+\reg{r8} & used to pass 5$^{\rm th}$  argument to functions & No \\
+\reg{r9} & used to pass 6$^{\rm th}$  argument to functions & No \\
+\reg{r10} & temporary register, used for passing a function's static
+chain pointer & No \\
+\reg{r11} & temporary register & No\\
+\reg{r12}--\reg{r14} & callee-saved registers & Yes \\
+\reg{r15} & callee-saved register; optionally used as GOT base pointer & Yes \\
+\reg{r16}--\reg{r31} & temporary registers & No\\
+\reg{xmm0}--\reg{xmm1} & used to pass and return floating point
+arguments & No\\
+\reg{xmm2}--\reg{xmm7} & used to pass floating point arguments & No\\
+\reg{xmm8}--\reg{xmm15} & temporary registers & No\\
+\reg{xmm16}--\reg{xmm31} & temporary registers & No\\
+\reg{tmm0}--\reg{tmm7}& temporary registers & No\\
+\reg{mm0}--\reg{mm7}& temporary registers & No\\
+\reg{k0}--\reg{k7} & temporary registers & No\\
+\reg{st0},\reg{st1} & temporary registers, used to return \code{long double} arguments & No \\
+\reg{st2}--\reg{st7} & temporary registers & No \\
+\reg{fs}& thread pointer & Yes\\
+\code{mxcsr}& SSE2 control and status word & partial\\
+\code{x87 SW}& x87 status word & No\\
+\code{x87 CW}& x87 control word & Yes\\
+\code{tilecfg} & Tile control register & No \\
+    \end{tabular}
+
+  \end{center}
+\Hrule
+\end{figure}
+
+If there are no registers available for any \eightbyte of an
+argument, the whole argument is passed on the stack. If registers have
+already been assigned for some \eightbytes of such an argument, the
+assignments get reverted.
+
+Once registers are assigned, the arguments passed in memory are pushed
+on the stack in reversed (right-to-left\footnote{Right-to-left order
+  on the stack makes the handling of functions that take a variable
+  number of arguments simpler.  The location of the first argument can
+  always be computed statically, based on the type of that argument.
+  It would be difficult to compute the address of the first argument
+  if the arguments were pushed in left-to-right order.}) order.
+
+For calls that may call functions that use varargs or stdargs
+(prototype-less calls or calls to functions containing ellipsis
+(\dots) in the declaration) \reg{al}%
+\footnote{Note that the rest of \RAX is undefined, only the contents
+  of \reg{al} is defined.}
+ is used as hidden argument to specify the number of vector registers
+ used. The contents of \reg{al} do not need to
+match exactly the number of registers, but must be an upper bound on
+the number of vector registers used and is in the range 0--8 inclusive.
+
+When passing \texttt{__m256} or \texttt{__m512} arguments to functions
+that use varargs or stdarg, function prototypes must be provided.
+Otherwise, the run-time behavior is undefined.
+
+\paragraph{Returning of Values}
+The returning of values is done according to the following algorithm:
+\begin{enumerate}
+\item Classify the return type with the classification algorithm.
+
+\item If the type has class MEMORY, then the caller provides space for
+   the return value and passes the address of this storage in \RDI as
+   if it were the first argument to the function.  In effect, this
+   address becomes a ``hidden'' first argument.  This storage must
+   not overlap any data visible to the callee through other names
+   than this argument.
+
+   On return \RAX will contain the address that has been passed in by
+   the caller in \RDI.
+
+\item If the class is INTEGER, the next available register of the
+   sequence \RAX, \RDX is used.
+
+\item If the class is SSE, the next available vector register of the
+   sequence \reg{xmm0}, \reg{xmm1} is used.
+
+\item If the class is SSEUP, the \eightbyte is returned in the next
+   available \eightbyte chunk of the last used vector register.
+
+\item If the class is X87, the value is returned on the X87 stack in
+   \reg{st0} as 80-bit x87 number.
+
+\item If the class is X87UP, the value is returned together with the
+   previous X87 value in \reg{st0}.
+\item If the class is COMPLEX\_X87, the real part of the value is
+  returned in \reg{st0} and the imaginary part in \reg{st1}.
+\end{enumerate}
+
+As an example of the register passing conventions, consider the
+declarations and the function call shown in
+Figure~\ref{fig_passing_example}.  The corresponding register
+allocation is given in Figure~\ref{fig_allocation_example}, the stack
+frame offset given shows the frame before calling the function.
+
+\begin{figure}[H]
+\Hrule
+\caption{Parameter Passing Example}
+\label{fig_passing_example}
+\begin{center}
+\code{
+\begin{tabular}{|l|}
+\cline{1-1}
+typedef struct \{ \\
+\ \ int a, b;\\
+\ \ double d;\\
+\} structparm;\\
+structparm s;\\
+int e, f, g, h, i, j, k;\\
+long double ld;\\
+double m, n;\\
+__m256 y;\\
+__m512 z;\\
+\\
+extern void func (int e, int f,\\
+\phantom{extern void func (}structparm s, int g, int h,\\
+\phantom{extern void func (}long double ld, double m,\\
+\phantom{extern void func (}__m256 y,\\
+\phantom{extern void func (}__m512 z,\\
+\phantom{extern void func (}double n, int i, int j, int k);\\
+\\
+func (e, f, s, g, h, ld, m, y, z, n, i, j, k);\\
+\cline{1-1}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Register Allocation Example}
+\label{fig_allocation_example}
+\begin{center}
+\begin{tabular}{ll|ll|ll}
+\multicolumn{2}{c}{General Purpose Registers} &
+\multicolumn{2}{c}{Floating Point Registers} &
+\multicolumn{2}{c}{Stack Frame Offset}\\
+\hline
+\RDI:    &\code{e}      &\reg{xmm0}:&\code{s.d}&\code{0:} &\code{ld} \\
+\RSI:    &\code{f}      &\reg{xmm1}:&\code{m}  &\code{16:}&\code{j} \\
+\RDX:    &\code{s.a,s.b}&\reg{ymm2}:&\code{y}  &\code{24:}&\code{k} \\
+\RCX:    &\code{g}      &\reg{zmm3}:&\code{z}  &          & \\
+\reg{r8}:&\code{h}      &\reg{xmm4}:&\code{n}  &          & \\
+\reg{r9}:&\code{i}      &           &          &          & \\
+\end{tabular}
+
+\end{center}
+\Hrule
+\end{figure}
+
+\section{Operating System Interface}
+
+\subsection{Exception Interface}
+
+As the \xARCH manuals describe, the processor changes mode to handle
+\emph{\textindex{exceptions},} which may be synchronous,
+floating-point/coprocessor or asynchronous.
+Synchronous and floating-point/coprocessor exceptions,
+being caused by instruction execution, can be explicitly generated
+by a process. This section, therefore, specifies those exception types
+with defined behavior. The \xARCH architecture classifies exceptions as
+\emph{faults}, \emph{traps}, and \emph{aborts}. See the \intelabi
+for more information about their differences.
+
+\subsubsection{Hardware Exception Types}
+The operating system defines the correspondence between hardware
+exceptions and the signals specified by \codeindex{signal}(BA\_OS)
+as shown in table~\ref{tab-hw-exceptions}. Contrary to the i386
+architecture, the \xARCH does not define any instructions that
+generate a bounds check fault in long mode.
+
+\begin{table}
+\Hrule
+  \caption{Hardware Exceptions and Signals}
+  \label{tab-hw-exceptions}
+  \begin{center}
+    \begin{tabular}[t]{c|l|l}
+      \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Exception name}
+         & \multicolumn{1}{c}{Signal}\\
+      \hline
+      \texttt{0} & \texttt{divide error fault} & \texttt{SIGFPE} \\
+      \texttt{1} & \texttt{single step trap/fault} & \texttt{SIGTRAP} \\
+      \texttt{2} & \texttt{non-maskable interrupt} & \texttt{none} \\
+      \texttt{3} & \texttt{breakpoint trap} & \texttt{SIGTRAP} \\
+      \texttt{4} & \texttt{overflow trap} & \texttt{SIGSEGV} \\
+      \texttt{5} & \texttt{(reserved)} &\\
+      \texttt{6} & \texttt{invalid opcode fault} & \texttt{SIGILL} \\
+      \texttt{7} & \texttt{no coprocessor fault} & \texttt{SIGFPE} \\
+      \texttt{8} & \texttt{double fault abort} & \texttt{none} \\
+      \texttt{9} & \texttt{coprocessor overrun abort} & \texttt{SIGSEGV} \\
+      \texttt{10} & \texttt{invalid TSS fault} & \texttt{none} \\
+      \texttt{11} & \texttt{segment not present fault} & \texttt{none} \\
+      \texttt{12} & \texttt{stack exception fault} & \texttt{SIGSEGV} \\
+      \texttt{13} & \texttt{general protection fault/abort}&\texttt{SIGSEGV} \\
+      \texttt{14} & \texttt{page fault} & \texttt{SIGSEGV} \\
+      \texttt{15} & \texttt{(reserved)} &\\
+      \texttt{16} & \texttt{coprocessor error fault} & \texttt{SIGFPE} \\
+      \texttt{other} & \texttt{(unspecified)} & \texttt{SIGILL}
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{table}
+
+\begin{table}
+\Hrule
+  \caption{Floating-Point Exceptions}
+  \begin{center}
+    \begin{tabular}[t]{l|l}
+      \multicolumn{1}{c}{Code} & \multicolumn{1}{c}{Reason} \\
+      \hline
+      \texttt{FPE\_FLTDIV} & \texttt{floating-point divide by zero} \\
+      \texttt{FPE\_FLTOVF} & \texttt{floating-point overflow} \\
+      \texttt{FPE\_FLTUND} & \texttt{floating-point underflow} \\
+      \texttt{FPE\_FLTRES} & \texttt{floating-point inexact result} \\
+      \texttt{FPE\_FLTINV} & \texttt{invalid floating-point operation}
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{table}
+
+\subsection{Virtual Address Space}
+
+Although the \xARCH architecture uses 64-bit pointers, implementations
+are only required to handle 48-bit addresses.  Therefore, conforming
+processes may only use addresses from \texttt{0x00000000\,00000000} to
+\texttt{0x00007fff\,ffffffff}\footnote{0x0000ffff\,ffffffff is not a
+  canonical address and cannot be used.}.
+
+Processes begin with three logical segments, commonly called text,
+data, and stack. Use of shared libraries add other segments and
+a process may dynamically create segments.
+
+\subsection{Page Size}
+
+Systems are permitted to use any power-of-two page size between 4KB
+and 64KB, inclusive.
+
+\subsection{Virtual Address Assignments}
+
+Conceptually processes have the full address space available.
+In practice, however, several factors limit the size of a process.
+\begin{itemize}
+  \item The system reserves a configuration dependent amount of virtual space.
+  \item The system reserves a configuration dependent amount of space per
+    process.
+  \item
+    A process whose size exceeds the system's available combined physical
+    memory and secondary storage cannot run. Although some physical memory
+    must be present to run any process, the system can execute processes that
+    are bigger than physical memory, paging them to and from secondary storage.
+    Nonetheless, both physical memory and secondary storage are
+    shared resources. System load, which can vary from one program execution
+    to the next, affects the available amount.
+\end{itemize}
+
+Programs that dereference null pointers are erroneous and a process
+should not expect 0x0 to be a valid address.
+
+\begin{figure}[H]
+\Hrule
+  \caption{Virtual Address Configuration}
+  \label{fig-address}
+  \begin{center}
+    \begin{tabular}{r|c|l}
+      \noalign{\smallskip}  \cline{2-2}
+      \verb|0xffffffffffffffff| & Reserved system area & End of memory\\
+      & \dots & \\ \cline{2-2}
+      & \dots & \\
+      \verb|0x80000000000| & Dynamic segments & \\ \cline{2-2}
+      & \dots & \\
+      \verb|0| & Process segments & Beginning of memory\\ \cline{2-2}
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+Although applications may control their memory assignments, the typical
+arrangement appears in figure~\ref{fig-cfg}.
+
+\begin{figure}[H]
+\Hrule
+  \caption{Conventional Segment Arrangements}
+  \label{fig-cfg}
+  \begin{center}
+    \begin{tabular}{r|c|l}
+      \cline{2-2}
+      & \dots & \\
+      \verb|0x80000000000| & Dynamic segments & \\ \cline{2-2}
+      & Stack segment & \\
+      & \dots & \\ \cline{2-2}
+      & \dots & \\
+      & Data segments & \\ \cline{2-2}
+      & \dots & \\
+      \verb|0x400000| & Text segments & \\ \cline{2-2}
+      \verb|0| & Unmapped & \\ \cline{2-2}
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+\section{Process Initialization}
+
+\subsection{Initial Stack and Register State}
+
+\subsubsection{Special Registers}
+
+The \xARCH architecture defines floating point instructions.  At
+process startup the two floating point units, SSE2 and x87, both have
+all floating-point exception status flags cleared.  The status of the
+control words is as defined in tables~\ref{x87-fpucw} and
+\ref{mxcsr-status}.
+
+\begin{table}[H]
+\Hrule
+  \caption{x87 Floating-Point Control Word}
+  \label{x87-fpucw}
+  \begin{center}
+    \begin{tabular}[t]{l|l|l}
+      \multicolumn{1}{c}{Field} & \multicolumn{1}{c}{Value}& \multicolumn{1}{c}{Note} \\
+      \hline
+      \texttt{RC} & 0 & Round to nearest\\
+      \texttt{PC} & 11& Double extended precision\\
+      \texttt{PM} & 1 & Precision masked\\
+      \texttt{UM} & 1 & Underflow masked\\
+      \texttt{OM} & 1 & Overflow masked\\
+      \texttt{ZM} & 1 & Zero divide masked\\
+      \texttt{DM} & 1 & De-normal operand masked\\
+      \texttt{IM} & 1 & Invalid operation masked\\
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{table}
+
+\begin{table}[H]
+\Hrule
+  \caption{MXCSR Status Bits}
+  \label{mxcsr-status}
+  \begin{center}
+    \begin{tabular}[t]{l|l|l}
+      \multicolumn{1}{c}{Field} & \multicolumn{1}{c}{Value}& \multicolumn{1}{c}{Note} \\
+      \hline
+      \texttt{FZ}  & 0 & Do not flush to zero\\
+      \texttt{RC}  & 0 & Round to nearest\\
+      \texttt{PM}  & 1 & Precision masked\\
+      \texttt{UM}  & 1 & Underflow masked\\
+      \texttt{OM}  & 1 & Overflow masked\\
+      \texttt{ZM}  & 1 & Zero divide masked\\
+      \texttt{DM}  & 1 & De-normal operand masked\\
+      \texttt{IM}  & 1 & Invalid operation masked\\
+      \texttt{DAZ} & 0 & De-normals are not zero\\
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{table}
+
+The \code{rFLAGS} register contains the system flags, such as the
+direction flag and the carry flag.  The low 16 bits (FLAGS portion)
+of \code{rFLAGS} are accessible by
+application software.  The state of them at process initialization
+is shown in table~\ref{rflags-status}.
+
+\begin{table}[H]
+\Hrule
+  \caption{\code{rFLAGS} Bits}
+  \label{rflags-status}
+  \begin{center}
+    \begin{tabular}[t]{l|l|l}
+      \multicolumn{1}{c}{Field} & \multicolumn{1}{c}{Value}& \multicolumn{1}{c}{Note} \\
+      \hline
+      \texttt{DF} & 0 & Direction forward\\
+      \texttt{CF} & 0 & No carry\\
+      \texttt{PF} & 0 & Even parity\\
+      \texttt{AF} & 0 & No auxiliary carry\\
+      \texttt{ZF} & 0 & No zero result\\
+      \texttt{SF} & 0 & Unsigned result\\
+      \texttt{OF} & 0 & No overflow occurred\\
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{table}
+
+\subsubsection{Stack State}
+
+This section describes the machine state that \codeindex{exec}(BA\_OS) creates
+for new processes. Various language implementations transform this
+initial program state to the state required by the language standard.
+
+For example, a C program begins executing at a
+function named \code{main} declared as:
+
+\begin{footnotesize}
+\begin{verbatim}
+    extern int main ( int argc , char *argv[ ] , char* envp[ ] );
+\end{verbatim}
+\end{footnotesize}
+
+where
+\begin{description}
+ \item[argc] is a non-negative argument count
+ \item[argv] is an array of argument strings, with \code{argv[argc] == 0}
+ \item[envp] is an array of environment strings,
+             terminated by a null pointer.
+\end{description}
+
+When \code{main()} returns its value is passed to \code{exit()} and if
+that has been
+over-ridden and returns, \code{\_exit()} (which must be immune to user
+interposition).
+
+The initial state of the process stack, i.e. when \code{\_start} is called
+is shown in figure~\ref{initial-stack}.
+
+\begin{figure}[H]
+\Hrule
+\caption{Initial Process Stack}
+\label{initial-stack}
+\begin{center}
+\begin{tabular}{p{14em}|l|p{7em}}
+  \multicolumn{1}{c}{Purpose}
+         & \multicolumn{1}{c}{Start Address}
+         & \multicolumn{1}{c}{Length} \\
+\hline
+  Unspecified & High Addresses & \\ \hline
+  Information block, including argument strings, environment strings,
+    auxiliary information ... & & varies \\ \hline
+  Unspecified & & \\ \hline
+  Null auxiliary vector entry & & 1 eightbyte \\ \hline
+  Auxiliary vector entries ... & & 2 eightbytes each \\ \hline
+  0 & & eightbyte \\ \hline
+  Environment pointers ... & & 1 eightbyte each \\ \hline
+  0 & \code{8+8*argc+\RSP} & eightbyte \\ \hline
+  Argument pointers & \code{8+\RSP} & argc eightbytes \\ \hline
+  Argument count & \RSP & eightbyte \\ \hline
+  Undefined & Low Addresses & \\ \hline
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+Argument strings, environment strings, and the auxiliary information
+appear in no specific order within the information block and they
+need not be compactly allocated.
+
+Only the registers listed below have specified values at process
+entry:
+\begin{description}
+ \item[\RBP] The content of this register is unspecified at process
+                initialization time, but the user code should mark the
+                deepest stack frame by setting the frame pointer to zero.
+ \item[\RSP] The stack pointer holds the address of the byte with
+                lowest address which is part of the stack. It is
+                guaranteed to be 16-byte aligned at process entry.
+ \item[\RDX] a function pointer that the application should register
+                with \code{atexit}(BA\_OS).
+\end{description}
+
+It is unspecified whether 
+the data and stack segments are initially mapped with
+execute permissions or not.
+Applications which need to execute code on the stack or data
+segments should take proper precautions, e.g., by calling
+\code{mprotect()}.
+
+\subsection{Thread State}
+
+New threads inherit the floating-point state of the parent thread
+and the state is private to the thread thereafter.
+
+\subsection{Auxiliary Vector}
+
+The \textindex{auxiliary vector} is an array of the following structures
+(ref. figure~\ref{fig_auxv_t}),
+interpreted according to the \code{a\_type} member.
+
+\begin{figure}[H]
+\Hrule
+\caption{\code{auxv\_t} Type Definition}
+\label{fig_auxv_t}
+\begin{center}
+\begin{verbatim}
+ typedef struct
+ {
+     int a_type;
+     union {
+         long a_val;
+         void *a_ptr;
+         void (*a_fnc)();
+     } a_un;
+ } auxv_t;
+\end{verbatim}
+\end{center}
+\Hrule
+\end{figure}
+
+The \xARCH ABI uses the auxiliary vector types defined in figure~\ref{aux-vec}.
+
+\begin{figure}[H]
+\Hrule
+\caption{Auxiliary Vector Types}
+\label{aux-vec}
+\begin{center}
+\begin{tabular}{l|r|l}
+  \multicolumn{1}{c}{Name}
+         & \multicolumn{1}{c}{Value}
+         & \multicolumn{1}{c}{\code{a\_un}} \\
+      \hline
+\texttt{AT_NULL}& 0 & ignored\\
+\texttt{AT_IGNORE}& 1& ignored\\
+\texttt{AT_EXECFD}& 2& \texttt{a_val}\\
+\texttt{AT_PHDR}& 3& \texttt{a_ptr}\\
+\texttt{AT_PHENT}& 4& \texttt{a_val}\\
+\texttt{AT_PHNUM}& 5& \texttt{a_val}\\
+\texttt{AT_PAGESZ}& 6& \texttt{a_val}\\
+\texttt{AT_BASE}& 7& \texttt{a_ptr}\\
+\texttt{AT_FLAGS}& 8& \texttt{a_val}\\
+\texttt{AT_ENTRY}& 9& \texttt{a_ptr}\\
+\texttt{AT_NOTELF}& 10& \texttt{a_val}\\
+\texttt{AT_UID}& 11& \texttt{a_val}\\
+\texttt{AT_EUID}& 12& \texttt{a_val}\\
+\texttt{AT_GID}& 13& \texttt{a_val}\\
+\texttt{AT_EGID}& 14& \texttt{a_val}\\
+\texttt{AT_PLATFORM}& 15& \texttt{a_ptr}\\
+\texttt{AT_HWCAP}& 16& \texttt{a_val}\\
+\texttt{AT_CLKTCK}& 17& \texttt{a_val}\\
+\texttt{AT_SECURE}& 23& \texttt{a_val}\\
+\texttt{AT_BASE_PLATFORM}& 24& \texttt{a_ptr}\\
+\texttt{AT_RANDOM}& 25& \texttt{a_ptr}\\
+\texttt{AT_HWCAP2}& 26& \texttt{a_val}\\
+\texttt{AT_EXECFN}& 31& \texttt{a_ptr}\\
+\hline
+    \end{tabular}
+  \end{center}
+\Hrule
+\end{figure}
+
+\begin{description}
+\item[AT_NULL] The auxiliary vector has no fixed length; instead its
+  last entry's \code{a\_type} member has this value.
+\item[AT_IGNORE] This type indicates the entry has no meaning. The
+  corresponding value of \code{a\_un} is undefined.
+\item[AT_EXECFD] At process creation the system may pass control to an
+  interpreter program. When this happens, the system places either an
+  entry of type \code{AT\_EXECFD} or one of type \code{AT\_PHDR} in the
+  auxiliary vector. The entry for type \code{AT\_EXECFD} uses the
+  \code{a\_val} member to contain a file descriptor open to read the
+  application program's object file.
+\item[AT_PHDR] The system may create the memory image of the
+  application program before passing control to the interpreter program.
+  When this happens, the \code{a\_ptr} member of the \code{AT\_PHDR}
+  entry tells the interpreter where to find the program header table in
+  the memory image.
+\item[AT_PHENT] The \code{a\_val} member of this entry holds the size,
+  in bytes, of one entry in the program header table to which the
+  \code{AT\_PHDR} entry points.
+\item[AT_PHNUM] The \code{a\_val} member of this entry holds the number of
+  entries in the program header table to which the \code{AT\_PHDR} entry
+  points.
+\item[AT_PAGESZ] If present, this entry's \code{a\_val} member gives the
+  system page size, in bytes.
+\item[AT_BASE] The \code{a\_ptr} member of this entry holds the base address
+  at which the interpreter program was loaded into memory. See ``Program
+  Header'' in the System V ABI for more information about the base
+  address.
+\item[AT_FLAGS] If present, the \code{a\_val} member of this entry holds
+  one-bit flags.  Bits with undefined semantics are set to zero.
+\item[AT_ENTRY] The \code{a\_ptr} member of this entry holds the entry point
+  of the application program to which the interpreter program should
+  transfer control.
+\item[AT_NOTELF] The \code{a_val} member of this entry is non-zero if
+  the program is in another format than ELF.
+\item[AT_UID] The \code{a_val} member of this entry holds the real
+  user id of the process.
+\item[AT_EUID] The \code{a_val} member of this entry holds the
+  effective user id of the process.
+\item[AT_GID] The \code{a_val} member of this entry holds the
+  real group id of the process.
+\item[AT_EGID] The \code{a_val} member of this entry holds the
+  effective group id of the process.
+\item[AT_PLATFORM] The \code{a_ptr} member of this entry points to
+  a string containing the platform name.
+\item[AT_HWCAP] The \code{a_val} member of this entry contains an bitmask
+  of CPU features. It mask to the value returned by CPUID 1.EDX.
+\item[AT_CLKTCK] The \code{a_val} member of this entry contains the
+  frequency at which times() increments.
+\item[AT_SECURE] The \code{a_val} member of this entry contains one
+  if the program is in secure mode (for example started with suid).
+  Otherwise zero.
+\item[AT_BASE_PLATFORM] The \code{a_ptr} member of this entry points to
+  a string identifying the base architecture platform (which may be different
+  from the platform).
+\item[AT_RANDOM] The \code{a_ptr} member of this entry points to 16 securely
+  generated random bytes.
+\item[AT_HWCAP2] The \code{a_val} member of this entry contains the extended
+  hardware feature mask. Currently it is 0, but may contain additional feature
+  bits in the future.
+\item[AT_EXECFN] The \code{a_ptr} member of this entry is a pointer to the
+  file name of the executed program.
+\end{description}
+
+
+\section{Coding Examples}
+\label{sec_coding_examples}
+
+This section discusses example code sequences for fundamental
+operations such as calling functions, accessing static objects, and
+transferring control from one part of a program to another.  Unlike
+previous material, this material is not normative.
+
+\subsection{Architectural Constraints\label{models}}
+
+The \xARCH architecture usually does not allow an instruction to encode
+arbitrary
+64-bit constants as immediate operand.  Most
+instructions accept 32-bit immediates that are sign extended to the
+64-bit ones.  Additionally the 32-bit operations with register
+destinations implicitly perform zero extension making loads of 64-bit
+immediates with upper half set to 0 even cheaper.
+
+Additionally the branch instructions accept 32-bit immediate operands
+that are sign extended and used to adjust the instruction pointer.
+Similarly an instruction pointer relative addressing mode exists for
+data accesses with equivalent limitations.
+
+In order to improve performance and reduce code size, it is desirable
+to use different \textindex{code models} depending on the
+requirements.
+
+Code models define constraints for symbolic values that allow the
+compiler to generate better code.  Basically code models differ in
+addressing (absolute versus position independent), code size, data
+size and address range.  We define only a small number of code models
+that are of general interest:
+
+\begin{description}
+\item[\textindex{Small code model}]
+  The virtual address of code executed is known at link time.
+  Additionally all symbols are known to be located in the virtual
+  addresses in the range from $0$ to $2^{31}-2^{24}-1$ or from $0x00000000$ to $0x7effffff$\footnote{
+    The number $24$ is chosen arbitrarily.  It allows for all memory of
+    objects of size up to $2^{24}$ or 16M bytes to be addressed directly because the
+    base address of such objects is constrained to be less than $2^{31}-2^{24}$ or $0x7f000000$.
+    Without such constraint only the base address would be accessible
+    directly, but not any offsetted variant of it.}.
+
+  This allows the compiler to encode symbolic references with offsets
+  in the range from $-(2^{31})$ to $2^{24}$ or from $0x80000000$ to $0x01000000$ directly in the sign
+  extended immediate operands, with offsets in the range from $0$ to
+  $2^{31}-2^{24}$ or from $0x00000000$ to $0x7f000000$ in the zero extended immediate operands and use
+  instruction pointer relative addressing for the symbols with offsets
+  in the range $-(2^{24})$ to $2^{24}$ or $0xff000000$ to $0x01000000$.
+
+  This is the fastest code model and we expect it to be suitable for
+  the vast majority of programs.
+
+\item[\textindex{Kernel code model}]
+
+  The kernel of an operating system is usually rather small but runs
+  in the negative half of the address space.  So we define all symbols
+  to be in the range from $2^{64}-2^{31}$ to $2^{64}-2^{24}$ or from $0xffffffff80000000$ to $0xffffffffff000000$.
+
+  This code model has advantages similar to those of the small model,
+  but allows encoding of zero extended symbolic references only for
+  offsets from $2^{31}$ to $2^{31}+2^{24}$ or from $0x80000000$ to $0x81000000$. The range offsets for
+  sign extended reference changes to $0$ to $2^{31}+2^{24}$ or $0x00000000$ to $0x81000000$.
+
+\item[\textindex{Medium code model}]
+
+  The data sections are split into two parts --- the regular data
+  sections still limited in the same way as in the small code model
+  and the large data sections having no limits except for available
+  addressing space.  The program layout must be set in a way so that
+  large data sections (\code{.ldata}, \code{.lrodata}, \code{.lbss})
+  are not between regular text and data sections.
+
+  This model requires the compiler to use \code{movabs} instructions
+  to access large static data and to load addresses into registers, but
+  keeps the advantages of the small code model for manipulation of
+  addresses in the small data and text sections (specially needed for
+  branches).
+
+  By default only data larger than 65535 bytes will be placed in the
+  large data section.
+
+\item[\textindex{Large code model}]
+
+  The large code model makes no assumptions about addresses and sizes
+  of sections.
+
+  Although not strictly necessary, the data sections can be split into
+  normal and large parts like in the medium model, to improve
+  interoperability.
+
+  The compiler is required to use the \code{movabs} instruction, as in
+  the medium code model, even for dealing with addresses inside the
+  text section.  Additionally, indirect branches are needed when
+  branching to addresses whose offset from the current instruction
+  pointer is unknown.
+
+  It is possible to avoid the limitation on the text section in the
+  small and medium models by breaking up the program into multiple
+  shared libraries, so this model is strictly only required if the text
+  of a single function becomes larger than what the medium model allows.
+
+\item[\textindex{Small position independent code model} (\textindex{PIC})]
+
+  Unlike the previous models, the virtual addresses of instructions
+  and data are not known until dynamic link time.  So all addresses
+  have to be relative to the instruction pointer.
+
+  Additionally the maximum distance between a symbol and the end of an
+  instruction is limited to $2^{31}-2^{24}-1$ or $0x7effffff$, allowing the compiler
+  to use instruction pointer relative branches and addressing modes
+  supported by the hardware for every symbol with an offset in the
+  range $-(2^{24})$ to $2^{24}$ or $0xff000000$ to $0x01000000$.
+
+\item[\textindex{Medium position independent code model}
+  (\textindex{PIC})]
+
+  This model is like the previous model, but similarly to the medium static
+  model adds large data sections at the end of object files.
+
+  In the medium PIC model, the instruction pointer relative addressing
+  can not be used directly for accessing large static data, since the
+  offset can exceed the limitations on the size of the displacement
+  field in the instruction.  Instead an unwind sequence consisting of
+  \code{movabs}, \code{lea} and \code{add} needs to be used.
+
+\item[\textindex{Large position independent code model}
+  (\textindex{PIC})]
+
+  This model is like the previous model, but makes no assumptions
+  about the distance of symbols.
+
+  The large PIC model implies the same limitation as the medium
+  PIC model regarding addressing of static data.  Additionally,
+  references to the global offset table and to the procedure linkage
+  table and branch destinations need to be calculated in a similar
+  way.  Further the size of the text segment is allowed to be up to
+  16EB in size, hence similar restrictions apply to all address
+  references into the text segments, including branches.
+
+\end{description}
+
+Only small code model and small position independent code model
+(\textindex{PIC}) are used in ILP32 binaries.
+
+\subsection{Conventions}
+
+In this document some special assembler symbols are used in the coding
+examples and discussion.  They are:
+
+\begin{itemize}
+\item \code{name@GOT}: specifies the offset to the GOT entry for
+      the symbol \code{name} from the base of the GOT.
+\item \code{name@GOTOFF}: specifies the offset to the location of
+      the symbol \code{name} from the base of the GOT.
+\item \code{name@GOTPCREL}: specifies the offset to the GOT entry
+      for the symbol \code{name} from the current code location.
+\item \code{name@PLT}: specifies the offset to the PLT entry of
+      symbol \code{name} from the current code location.
+\item \code{name@PLTOFF}: specifies the offset to the PLT entry of
+      symbol \code{name} from the base of the GOT.
+\item \code{_GLOBAL_OFFSET_TABLE_}: specifies the offset to the base
+      of the GOT from the current code location.
+\end{itemize}
+
+\subsection{Position-Independent Function Prologue}
+
+In the small code model all addresses (including GOT entries) are
+accessible via the IP-relative addressing provided by the \xARCH
+architecture.  Hence there is no need for an explicit GOT pointer and
+therefore no function prologue for setting it up is necessary.
+
+In the medium and large code models a register has to be allocated to hold the
+address of the GOT in position-independent objects, because the \xARCH ISA does
+not support an immediate displacement larger than 32 bits.
+
+As \code{\%r15} is preserved across function calls, it is initialized
+in the function prologue to hold the GOT address\footnote{If, at code
+generation-time, it is determined that either no other functions are
+called (leaf functions), the called functions addresses can be
+resolved and are within 2GB, or no global data objects are referred
+to, it is not necessary to store the GOT address in \code{\%r15} and
+the prologue code that initializes it may be omitted.} for non-leaf
+functions which call other functions through the PLT. Other functions
+are free to use any other register. Throughout this document,
+\code{\%r15} will be used in examples.
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Function Prologue Code} \label{large_pic_prolog}
+medium model:
+\begin{footnotesize}
+\begin{verbatim}
+   leaq     _GLOBAL_OFFSET_TABLE_(%rip),%r15 # GOTPC32 reloc
+\end{verbatim}
+\end{footnotesize}
+large model:
+\begin{footnotesize}
+\begin{verbatim}
+   pushq    %r15                          # save %r15
+   leaq     1f(%rip),%r11                 # absolute %rip
+1: movabs   $_GLOBAL_OFFSET_TABLE_,%r15   # offset to the GOT (R_X86_64_GOTPC64)
+   leaq     (%r11,%r15),%r15              # absolute address of the GOT
+\end{verbatim}
+\end{footnotesize}
+\Hrule
+\end{figure}%$
+
+For the medium model the GOT pointer is directly loaded, for the large
+model
+the absolute value of \code{\%rip} is added to the relative offset to the base
+of the GOT in order to obtain its absolute address (see figure~
+\ref{large_pic_prolog}).
+
+\subsection{Data Objects}
+
+This section describes only objects with static storage.
+Stack-resident objects are excluded since programs always compute
+their virtual address relative to the stack or frame pointers.
+
+Because only the \code{movabs} instruction uses 64-bit addresses
+directly, depending on the code model either \RIP-relative addressing
+or building addresses in registers and accessing the memory through
+the register has to be used.
+
+For absolute addresses \RIP-relative encoding can be used in the small
+model.  In the medium model the \code{movabs} instruction has to be
+used for accessing addresses.
+
+Position-independent code cannot contain absolute address.  To access
+a global symbol the address of the symbol has to be loaded from the
+Global Offset Table.  The address of the entry in the GOT can be
+obtained with a \RIP-relative instruction in the small model.
+
+\subsubsection{Small models}
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Load and Store (Small Model)}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|ll|}
+\cline{1-1}\cline{3-4}
+extern int src[65536];&&.extern& src\\
+extern int dst[65536];&&.extern& dst\\
+extern int *ptr;&&.extern& ptr\\
+static int lsrc[65536];&&.local& lsrc\\
+		&&.comm& lsrc,262144,4\\
+static int ldst[65536];&&.local& ldst\\
+		&&.comm& ldst,262144,4\\
+static int *lptr;&&.local& lptr\\
+		&&.comm& lptr,8,8\\
+&&.text&\\
+dst[0] = src[0]; && movl& src(\%rip), \%eax\\
+	   && movl& \%eax, dst(\%rip)\\
+&&&\\
+ptr = dst[0];&&movq& \$dst, ptr(\%rip)\\
+&&&\\
+\hbox{}*ptr = src[0];&&movq& ptr(\%rip),\%rax\\
+           &&movl& src(\%rip),\%edx\\
+           &&movl& \%edx, (\%rax)\\
+&&&\\
+ldst[0] = lsrc[0]; && movl& lsrc(\%rip), \%eax\\
+	   && movl& \%eax, ldst(\%rip)\\
+&&&\\
+lptr = ldst;&&movq& \$dst, lptr(\%rip)\\
+&&&\\
+\hbox{}*lptr = lsrc[0];&&movq& lptr(\%rip),\%rax\\
+           &&movl& lsrc(\%rip),\%edx\\
+           &&movl& \%edx, (\%rax)\\
+\cline{1-1}\cline{3-4}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Load and Store (Small PIC Model)}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|ll|}
+\cline{1-1}\cline{3-4}
+extern int src[65536];&&.extern& src\\
+extern int dst[65536];&&.extern& dst\\
+extern int *ptr;&&.extern& ptr\\
+static int lsrc[65536];&&.local& lsrc\\
+		&&.comm& lsrc,262144,4\\
+static int ldst[65536];&&.local& ldst\\
+		&&.comm& ldst,262144,4\\
+static int *lptr;&&.local& lptr\\
+		&&.comm& lptr,8,8\\
+           &&.text&\\
+dst[0] = src[0]; && movq& src@GOTPCREL(\%rip), \%rax\\
+	   && movl& (\%rax), \%edx\\
+           && movq& dst@GOTPCREL(\%rip), \%rax\\
+           && movl& \%edx, (\%rax)\\
+&&&\\
+ptr = dst;&& movq& ptr@GOTPCREL(\%rip), \%rax\\
+           && movq& dst@GOTPCREL(\%rip), \%rdx\\
+           && movq& \%rdx, (\%rax)\\
+&&&\\
+\hbox{}*ptr = src[0];&& movq &ptr@GOTPCREL(\%rip),\%rax\\
+           && movq &(\%rax), \%rdx\\
+           && movq &src@GOTPCREL(\%rip), \%rax\\
+           && movl &(\%rax), \%eax\\
+           && movl &\%eax, (\%rdx)\\
+&&&\\
+ldst[0] = lsrc[0]; && movl& lsrc(\%rip), \%eax\\
+	   && movl& \%eax, ldst(\%rip)\\
+&&&\\
+lptr = ldst;&&lea& ldst(\%rip),\%rdx\\
+           &&movq& \%rdx, lptr(\%rip)\\
+&&&\\
+\hbox{}*lptr = lsrc[0];&&movq& lptr(\%rip),\%rax\\
+           &&movl& lsrc(\%rip),\%edx\\
+           &&movl& \%edx, (\%rax)\\
+\cline{1-1}\cline{3-4}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\subsubsection{Medium models}
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Load and Store (Medium Model)}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|ll|}
+\cline{1-1}\cline{3-4}
+extern int src[65536];&&.extern& src\\
+extern int dst[65536];&&.extern& dst\\
+extern int *ptr;&&.extern& ptr\\
+static int lsrc[65536];&&.local& lsrc\\
+		&&.comm& lsrc,262144,4\footnote{linker is responsible for placing the symbol in large data section}\\
+static int ldst[65536];&&.local& ldst\\
+		&&.comm& ldst,262144,4\\
+static int *lptr;&&.local& lptr\\
+		&&.comm& lptr,8,8\\
+&&.text&\\
+dst[0] = src[0]; && movabsl& src, \%eax\\
+	   && movabsl& \%eax, dst\\
+&&&\\
+ptr = dst;&&movabsq& \$dst,\%rdx\\
+           &&movq& \%rdx, ptr\\
+&&&\\
+\hbox{}*ptr = src[0];&&movq& ptr(\%rip),\%rdx\\
+           &&movabsl& src,\%eax\\
+           &&movl& \%eax, (\%rdx)\\
+&&&\\
+ldst[0] = lsrc[0]; && movabsl& lsrc, \%eax\\
+	   && movabsl& \%eax, ldst\\
+&&&\\
+lptr = ldst;&&movabsq& \$ldst,\%rdx\\
+           &&movabsq& \%rdx, lptr\\
+&&&\\
+\hbox{}*lptr = lsrc[0];&&movq& lptr(\%rip),\%rdx\\
+           &&movabsl& lsrc,\%eax\\
+           &&movl& \%eax, (\%rdx)\\
+\cline{1-1}\cline{3-4}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Load and Store (Medium PIC Model)}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|ll|}
+\cline{1-1}\cline{3-4}
+extern int src[65536];&&.extern& src\\
+extern int dst[65536];&&.extern& dst\\
+extern int *ptr;&&.extern& ptr\\
+static int lsrc[65536];&&.local& lsrc\\
+		&&.comm& lsrc,262144,4\\
+static int ldst[65536];&&.local& ldst\\
+		&&.comm& ldst,262144,4\\
+static int *lptr;&&.local& lptr\\
+		&&.comm& lptr,8,8\\
+           &&.text&\\
+dst[0] = src[0]; && movq& src@GOTPCREL(\%rip), \%rax\\
+	   && movl& (\%rax), \%edx\\
+           && movq& dst@GOTPCREL(\%rip), \%rax\\
+           && movl& \%edx, (\%rax)\\
+&&&\\
+ptr = dst;&& movq& ptr@GOTPCREL(\%rip), \%rax\\
+           && movq& dst@GOTPCREL(\%rip), \%rdx\\
+           && movq& \%rdx, (\%rax)\\
+&&&\\
+\hbox{}*ptr = src[0];&& movq &ptr@GOTPCREL(\%rip),\%rax\\
+           && movq &(\%rax), \%rdx\\
+           && movq &src@GOTPCREL(\%rip), \%rax\\
+           && movl &(\%rax), \%eax\\
+           && movl &\%eax, (\%rdx)\\
+\cline{1-1}\cline{3-4}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Load and Store (Medium PIC Model), continued}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|ll|}
+\cline{1-1}\cline{3-4}
+ldst[0] = lsrc[0]; && movabsq& lsrc@GOTOFF, \%rax\\
+	   && movl& (\%rax,\%r15), \%eax\\
+	   && movabsq& ldst@GOTOFF, \%rdx\\
+	   && movl& \%eax, (\%rdx,\%r15)\\
+&&&\\
+lptr = ldst;&& movabsq& ldst@GOTOFF, \%rax\\
+           &&addq& \%r15, \%rax\\
+           &&movq& \%rax, lptr(\%rip)\\
+&&&\\
+\hbox{}*lptr = lsrc[0];&& movabsq& lsrc@GOTOFF, \%rax\\
+           &&movl& (\%rax,\%r15),\%eax\\
+	   &&movq& lptr(\%rip),\%rdx\\
+           &&movl& \%eax, (\%rdx)\\
+\cline{1-1}\cline{3-4}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\subsubsection{Large Models}
+
+Again, in order to access data at any position in the 64-bit
+addressing space, it is necessary to calculate the address
+explicitly\footnote{ If, at code generation-time, it is
+determined that a referred to global data object address is
+resolved within 2GB, the \code{\%rip-relative} addressing
+mode can be used instead. See example in figure~
+\ref{large_rip_rel_addr_abs}.}, not unlike the medium code
+model.
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Global Data Load and Store}\label{large_abs_data_load_store}
+\begin{center}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# static int src;  # & \verb#  Lsrc: .long                # \\
+\verb# static int dst;  # & \verb#  Ldst: .long                # \\
+\verb# extern int *ptr; # & \verb#        .extern  ptr         # \\
+\hline
+\verb# dst = src;       # & \verb#        movabs  $Lsrc,%rax   ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movabs  $Ldst,%rdx   ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movl    (%rax),%ecx  # \\
+\verb#                  # & \verb#        movl    %ecx,(%rdx)  # \\
+\hline
+\verb# ptr = &dst;      # & \verb#        movabs  $ptr,%rax    ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movabs  $Ldst,%rdx   ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movq    %rdx,(%rax)  # \\
+\hline
+\verb# *ptr = src;      # & \verb#        movabs  $Lsrc,%rax   ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movabs  $ptr,%rdx    ;R_X86_64_64 # \\
+\verb#                  # & \verb#        movl    (%rax),%ecx  # \\
+\verb#                  # & \verb#        movq    (%rdx),%rdx  # \\ 
+\verb#                  # & \verb#        movl    %ecx,(%rdx)  # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{center}
+\end{figure}
+            
+\begin{figure}[H]
+\Hrule
+\caption{Faster Absolute Global Data Load and Store}
+\label{large_rip_rel_addr_abs}
+\begin{center}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# *ptr = src; # & \verb#   movabs    $ptr,%rdx        ;R_X86_64_64 # \\
+\verb#             # & \verb#   movl      Lsrc(%rip),%ecx  # \\
+\verb#             # & \verb#   movq      (%rdx),%rdx      # \\
+\verb#             # & \verb#   movl      %ecx,(%rdx)      # \\
+\hline
+\end{tabular} %$
+\end{footnotesize}
+\end{center}
+\end{figure}
+
+For position-independent code access to both static and external global
+data assumes that the GOT address is stored in a dedicated register.
+In these examples we assume it is in \code{\%r15}\footnote{If,
+at code generation-time, it is determined that a referred to global data
+object address is resolved within 2GB, the \code{\%rip-relative}
+addressing mode can be used instead. See example in figure~
+\ref{large_rip_rel_addr_pic}.} (see Function Prologue):
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Global Data Load and Store}
+\label{large_pic_data_load_store}
+\begin{center}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb#static int src; # & \verb# Lsrc: .long                      # \\
+\verb#static int dst; # & \verb# Ldst: .long                      # \\
+\verb#extern int *ptr;# & \verb#       .extern  ptr               # \\
+\hline 
+\verb# dst = src;     # & \verb# movabs $Lsrc@GOTOFF,%rax ;R_X86_64_GOTOFF64# \\
+\verb#                # & \verb# movabs $Ldst@GOTOFF,%rdx ;R_X86_64_GOTOFF64# \\
+\verb#                # & \verb# movl   (%rax,%r15),%ecx  # \\
+\verb#                # & \verb# movl   %ecx,(%rdx,%r15)  # \\
+\hline
+\verb# ptr = &dst;    # & \verb# movabs $ptr@GOT,%rax     ;R_X86_64_GOT64# \\
+\verb#                # & \verb# movabs $Ldst@GOTOFF,%rdx ;R_X86_64_GOTOFF64# \\
+\verb#                # & \verb# movq   (%rax,%r15),%rax    # \\
+\verb#                # & \verb# leaq   (%rdx,%r15),%rcx    # \\
+\verb#                # & \verb# movq   %rcx,(%rax)         # \\
+\hline
+\verb# *ptr = src;    # & \verb# movabs $Lsrc@GOTOFF,%rax ;R_X86_64_GOTOFF64# \\
+\verb#                # & \verb# movabs $ptr@GOT,%rdx     ;R_X86_64_GOT64# \\
+\verb#                # & \verb# movl   (%rax,%r15),%ecx    # \\
+\verb#                # & \verb# movq   (%rdx,%r15),%rdx    # \\
+\verb#                # & \verb# movl   %ecx,(%rdx)         # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Faster Position-Independent Global Data Load and Store}
+\label{large_rip_rel_addr_pic}
+\begin{center}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# *ptr = src; # & \verb#     movabs    $ptr@GOT,%rdx    ;R_X86_64_GOT64 # \\
+\verb#             # & \verb#     movl      Lsrc(%rip),%ecx  # \\
+\verb#             # & \verb#     movq      (%rdx,%r15),%rdx # \\
+\verb#             # & \verb#     movl      %ecx,(%rdx)      # \\
+\hline
+\end{tabular} %$
+\end{footnotesize}
+\end{center}
+\end{figure}
+
+\subsection{Function Calls}
+
+\subsubsection{Small and Medium Models}
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Direct Function Call (Small and Medium Model)}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|l|}
+\cline{1-1}\cline{3-3}
+extern void function ();  &&.globl function\\
+function ();              &&call function@PLT\\
+\cline{1-1}\cline{3-3}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Indirect Function Call}
+\begin{center}
+\code{
+\begin{tabular}{|l|c|l|}
+\cline{1-1}\cline{3-3}
+extern void (*ptr) ();    &&.globl ptr, name\\
+extern void name ();      && \\
+ptr = name;               &&movq ptr@GOTPCREL(\%rip), \%rax  \\
+                          &&movq name@GOTPCREL(\%rip), \%rdx  \\
+                          &&movq \%rdx, (\%rax)  \\
+                          &&  \\
+(*ptr)();                 &&movq ptr@GOTPCREL(\%rip), \%rax  \\
+                          &&call *(\%rax)  \\
+\cline{1-1}\cline{3-3}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\subsubsection {Large models}
+
+It cannot be assumed that a function is within 2GB in
+general. Therefore, it is necessary to explicitly calculate the
+desired address reaching the whole 64-bit address space.
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Direct and Indirect Function Call} \label{large_abs_dir_func_call}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\code{static (*ptr) (void);} & \verb#Lptr: .quad                  # \\
+\code{extern foo (void);}    & \verb#      .globl foo             # \\
+\code{static bar (void);}    & \verb#Lbar: ...                    # \\
+\hline
+\code{foo ();}                    & \verb#       movabs    $foo,%r11   ;R_X86_64_64# \\
+                                  & \verb#       call      *%r11       # \\
+\code{bar ();}                    & \verb#       movabs    $Lbar,%r11  ;R_X86_64_64# \\
+                                  & \verb#       call      *%r11       # \\
+\hline
+\code{ptr = foo;}                 & \verb#       movabs    $Lptr,%rax  ;R_X86_64_64# \\
+                                  & \verb#       movabs    $foo,%r11   ;R_X86_64_64# \\
+                                  & \verb#       movq      %r11,(%rax) # \\
+\code{ptr = bar;}                 & \verb#       movabs    $Lbar,%r11  ;R_X86_64_64# \\
+                                  & \verb#       movq      %r11,(%rax) # \\
+\hline
+\code{(*ptr) ();}                 & \verb#       movabs    $Lptr,%r11  ;R_X86_64_64# \\
+                                  & \verb#       call      *(%r11)     # \\
+\hline
+\end{tabular}
+\\
+\end{footnotesize}
+\end{figure}
+
+And in the case of position-independent objects
+\footnote{See subsection ``Implementation advice'' for some optimizations.}:
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Direct and Indirect Function Call}\label{large_pic_pic_ind_func_call}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\code{static (*ptr) (void);} & \verb#Lptr: .quad                      # \\
+\code{extern foo (void);}    & \verb#      .globl foo                 # \\
+\code{static bar (void);}    & \verb#Lbar: ...                        # \\
+\hline
+\code{foo ();}               & \verb#movabs $foo@PLTOFF,%r11  ;R_X86_64_PLTOFF64#\\
+                             & \verb#call   *(%r11,%r15)      # \\
+\code{bar ();}               & \verb#movabs $Lbar@GOTOFF,%r11 ;R_X86_64_GOTOFF64#\\
+                             & \verb#leaq   (%r11,%r15),%r11  # \\
+                             & \verb#call   *%r11             # \\
+\hline
+\code{ptr = foo;}            & \verb#movabs $Lptr@GOTOFF,%rax ;R_X86_64_GOTOFF64#\\
+                             & \verb#movabs $foo@PLTOFF,%r11  ;R_X86_64_PLTOFF64#\\
+                             & \verb#leaq   (%r11,%r15),%r11  # \\
+                             & \verb#movq   %r11,(%rax,%r15)  # \\
+\code{ptr = bar;}            & \verb#movabs $Lbar@GOTOFF,%r11 ;R_X86_64_GOTOFF64#\\
+                             & \verb#leaq   (%r11,%r15),%r11  # \\
+                             & \verb#movq   %r11,(%rax,%r15)  # \\
+\hline
+\code{(*ptr) ();}            & \verb#movabs $Lptr@GOTOFF,%r11 ;R_X86_64_GOTOFF64#\\
+                             & \verb#call   *(%r11,%r15)      # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}
+
+\subsubsection{Implementation advice}
+
+If, at code generation-time, certain conditions are determined, it's
+possible to generate faster or smaller code sequences as the large model
+normally requires.  When:
+
+\begin{description}
+  \item[(absolute) target of function call is within 2GB], a direct call
+  or \RIP-relative addressing might be used:\\
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb#bar ();#    & \verb# call   Lbar              # \\
+\hline
+\verb#ptr = bar;# & \verb# movabs $Lptr,%rax         ;R_X86_64_64 # \\
+                  & \verb# leaq   $Lbar(%rip),%r11 # \\
+                  & \verb# movq   %r11,(%rax)      # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+  \item[(PIC) the base of GOT is within 2GB] an indirect call to the GOT
+  entry might be implemented like so:\\
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\code{foo ();}    & \verb# call   *(foo@GOT)  ;R_X86_64_GOTPCREL # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+  \item[(PIC) the base of PLT is within 2GB], the PLT entry may be referred to
+  relatively to \RIP:\\
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\code{ptr = foo;} & \verb# movabs $Lptr@GOTOFF,%rax   ;R_X86_64_GOTOFF64# \\
+                  & \verb# leaq   $foo@PLT(%rip),%r11 ;R_X86_64_PLT32# \\
+                  & \verb# movq   %r11,(%rax,%r15)    # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+  \item[(PIC) target of function call is within 2GB] and is either not global
+  or bound locally, a direct call to the symbol may be used or it may be
+  referred to relatively to \RIP:\\
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\code{bar ();}     & \verb#call      Lbar               # \\
+\hline
+\code{ptr = bar;}  & \verb#movabs    $Lptr@GOTOFF,%rax  ;R_X86_64_GOTOFF64# \\
+                   & \verb#leaq      $Lbar(%rip),%r11   # \\
+                   & \verb#movq      %r11,(%rax,%r15)   # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+\end{description}
+
+\subsection{Branching}
+
+\subsubsection{Small and Medium Models}
+
+As all labels are within 2GB no special care has to be taken when
+implementing branches.  The full \xARCH ISA is usable.
+
+\subsubsection{Large Models}
+
+Because functions can be theoretically up to 16EB long, the
+maximum 32-bit displacement of conditional and unconditional
+branches in the \xARCH ISA are not enough to address the
+branch target. Therefore, a branch target address is
+calculated explicitly \footnote{If, at code generation-time,
+it is determined that the target addresses are within 2GB,
+alternatively, branch target addresses may be calculated
+implicitly (see figure~\ref{large_cal_tgt_addr})}. For absolute objects:
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Branching Code}\label{large_abs_branching}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# if (!a)     # & \verb#        testl     %eax,%eax   # \\
+\verb# {           # & \verb#        jnz       1f          # \\
+\verb#             # & \verb#        movabs    $2f,%r11    ;R_X86_64_64 # \\
+\verb#             # & \verb#        jmpq      *%r11       # \\
+\verb#        ...  # & \verb# 1:      ...                  # \\
+\verb# }           # & \verb# 2:                           # \\
+\hline
+\verb# goto Label; # & \verb#        movabs    $Label,%r11 ;R_X86_64_64 # \\
+\verb#             # & \verb#        jmpq      *%r11       # \\
+\verb# ...         # & \verb#        ...                   # \\
+\verb# Label:      # & \verb# Label:                       # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Implicit Calculation of Target Address}\label{large_cal_tgt_addr}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# if (!a)     # & \verb#        testl   %eax,%eax  # \\
+\verb# {           # & \verb#        jz      2f         # \\
+\verb#        ...  # & \verb# 1:     ...                # \\
+\verb# }           # & \verb# 2:                        # \\
+\hline
+\verb# goto Label; # & \verb#        jmp     Label      # \\
+\verb# ...         # & \verb#        ...                # \\
+\verb# Label:      # & \verb# Label:                    # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}
+
+For position-independent objects:
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Branching Code}\label{large_pic_branching}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# if (!a)    # & \verb#     testl  %eax,%eax          # \\
+\verb# {          # & \verb#     jnz    1f                 # \\
+\verb#            # & \verb#     movabs $2f@GOTOFF,%r11    ;R_X86_64_GOTOFF64# \\
+\verb#            # & \verb#     leaq   (%r11,%r15),%r11   # \\
+\verb#            # & \verb#     jmpq   *%r11              # \\
+\verb#            # & \verb# 1:  ...                       # \\
+\verb#         ...# & \verb# 2:                            # \\
+\verb# }          # & \verb#                               # \\
+\hline
+\verb# goto Label;# & \verb#     movabs $Label@GOTOFF,%r11 ;R_X86_64_GOTOFF64# \\
+\verb#            # & \verb#     leaq   (%r11,%r15),%r11   # \\
+\verb#            # & \verb#     jmpq   *%r11              # \\
+\verb# ...        # & \verb#                               # \\
+\verb# ...        # & \verb#     Label:                    # \\
+\verb# Label:     # & \verb#                               # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}
+
+For absolute objects, the implementation of the \code{switch} statement is:
+
+\begin{figure}[H]
+\Hrule
+\caption{Absolute Switch Code}\label{large_abs_switch}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# switch (a)     # & \verb#     cmpl   $0,%eax           # \\
+\verb# {              # & \verb#     jl     .Ldefault         # \\
+\verb#                # & \verb#     cmpl   $2,%eax           # \\
+\verb#                # & \verb#     jg     .Ldefault         # \\
+\verb#                # & \verb#     movabs $.Ltable,%r11  ;R_X86_64_64 # \\
+\verb#                # & \verb#     jmpq   *(%r11,%eax,8)    # \\
+\verb#                # & \verb#    .section .lrodata,"aLM",@progbits,8 # \\
+\verb#                # & \verb#    .align 8                  # \\ 
+\verb#                # & \verb#  .Ltable:                    # \\
+\verb#                # & \verb#     .quad .Lcase0          ;R_X86_64_64 # \\
+\verb#                # & \verb#     .quad .Ldefault        ;R_X86_64_64 # \\
+\verb#                # & \verb#     .quad .Lcase2          ;R_X86_64_64 # \\
+\verb#                # & \verb#    .previous                 # \\
+\verb#       default: # & \verb#  .Ldefault:                         # \\
+\verb#        ...     # & \verb#      ...                            # \\
+\verb#       case 0:  # & \verb#  .Lcase0:                           # \\
+\verb#       ...      # & \verb#       ...                           # \\
+\verb#       case 2:  # & \verb#  .Lcase2:                           # \\
+\verb#       ...      # & \verb#       ...                           # \\
+\verb# }              # & \verb#                                     # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}
+
+When building position-independent objects, the \code{switch}
+statement implementation changes to:
+
+\begin{figure}[H]
+\Hrule
+\caption{Position-Independent Switch Code}\label{large_pic_switch}
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+\verb# switch (a)  # & \verb#  cmpl   $0,%eax              # \\
+\verb# {           # & \verb#  jl     .Ldefault            # \\
+\verb#             # & \verb#  cmpl   $2,%eax              # \\
+\verb#             # & \verb#  jg     .Ldefault            # \\
+\verb#             # & \verb#  movabs $.Ltable@GOTOFF,%r11 ;R_X86_64_GOTOFF64#\\
+\verb#             # & \verb#  leaq   (%r11,%r15),%r11     # \\
+\verb#             # & \verb#  movq   *(%r11,%eax,8),%r11  # \\
+\verb#             # & \verb#  leaq   (%r11,%r15),%r11     # \\
+\verb#             # & \verb#  jmpq   *%r11                # \\
+\verb#             # & \verb#  .section .lrodata,"aLM",@progbits,8 # \\
+\verb#             # & \verb#  .align 8                      # \\
+\verb#             # & \verb#.Ltable:                        # \\
+\verb#             # & \verb#   .quad .Lcase0@GOTOFF       ;R_X86_64_GOTOFF64#\\
+\verb#             # & \verb#   .quad .Ldefault@GOTOFF     ;R_X86_64_GOTOFF64#\\
+\verb#             # & \verb#   .quad .Lcase2@GOTOFF       ;R_X86_64_GOTOFF64#\\
+\verb#             # & \verb#  .previous               # \\
+\verb#     default:# & \verb#.Ldefault:                       # \\
+\verb#     ...     # & \verb#   ...                           # \\
+\verb#     case 0: # & \verb#.Lcase0:                         # \\
+\verb#     ...     # & \verb#   ...                           # \\
+\verb#     case 2: # & \verb#.Lcase2:                         # \\
+\verb#     ...     # & \verb#   ...                           # \\
+\verb# }           # & \verb#                                 # \\
+\hline
+\end{tabular}
+\end{footnotesize}
+\end{figure}\footnote{The
+jump-table is emitted in a different section so as to occupy cache lines
+without instruction bytes, thus avoiding exclusive cache
+subsystems to thrash.}
+
+\subsection{Variable Argument Lists}
+
+Some otherwise portable C programs depend on the argument passing
+scheme, implicitly assuming that all arguments are passed on the
+stack, and arguments appear in increasing order on the stack.
+Programs that make these assumptions never have been portable, but
+they have worked on many implementations. However, they do not work on
+the \xARCH architecture because some arguments are passed in
+registers.  Portable C programs must use the header file
+\code{<stdarg.h>} in order to handle variable argument lists.
+
+When a function taking variable-arguments is called, \reg{al}\index{\RAX}
+must be set to the total number of floating point parameters passed to
+the function in vector registers.%
+\footnote{This implies that the only legal values for \reg{al} when
+  calling a function with variable-argument lists are 0 to 8
+  (inclusive).}
+
+When \texttt{__m256} or \texttt{__m512} is passed as variable-argument,
+it should always be passed on stack. Only named \texttt{__m256} and
+\texttt{__m512} arguments may be passed in register as specified in
+section~\ref{sec-calling-conventions}.
+
+\begin{figure}[H]
+\Hrule
+\caption{Parameter Passing Example with Variable-Argument List}
+\label{fig_va_passing_example}
+\begin{center}
+\code{
+\begin{tabular}{|l|}
+\cline{1-1}
+int a, b;\\
+long double ld;\\
+double m, n;\\
+__m256 u, y;\\
+__m512 v, z;\\
+\\
+extern void func (int a, double m, __m256 u, __m512 v, ...);\\
+\\
+func (a, m, u, v, b, ld, y, z, n);\\
+\cline{1-1}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+\begin{figure}[H]
+\Hrule
+\caption{Register Allocation Example for Variable-Argument List}
+\label{fig_va_allocation_example}
+\begin{center}
+\begin{tabular}{ll|ll|ll}
+\multicolumn{2}{c}{General Purpose Registers} &
+\multicolumn{2}{c}{Floating Point Registers} &
+\multicolumn{2}{c}{Stack Frame Offset}\\
+\hline
+\RDI: &\code{a}&\reg{xmm0}:&\code{m}&\code{0:} &\code{ld} \\
+\RSI: &\code{b}&\reg{ymm1}:&\code{u}&\code{32:}&\code{y} \\
+\RAX: & 3      &\reg{zmm2}:&\code{v}& \\
+\     &        &\reg{xmm3}:&\code{n}& \\
+\end{tabular}
+\end{center}
+\Hrule
+\end{figure}
+
+
+\subsubsection{The Register Save Area\index{register save area}}
+
+The prologue of a function taking a variable argument list and known
+to call the macro \code{va_start} is expected to save the argument
+registers to the \emph{register save area}.  Each argument register
+has a fixed offset in the register save area as defined in the figure~
+\ref{fig-reg-save}.
+
+Only registers that might be used to pass arguments need to be saved.
+Other registers are not accessed and can be used for other purposes.  If a
+function is known to never accept arguments passed in
+registers\footnote{This fact may be determined either by exploring
+  types used by the \code{va_arg}
+macro, or by the fact that the named
+  arguments already are exhausted the argument registers entirely.},
+the register save area may be omitted entirely.
+
+The prologue should use \reg{al} to avoid unnecessarily saving XMM
+registers.  This is especially important for integer only programs to
+prevent the initialization of the XMM unit.
+
+
+\begin{figure}[H]
+\Hrule
+\caption{Register Save Area}
+\label{fig-reg-save}
+\begin{center}
+\begin{tabular}{l|r}
+\multicolumn{1}{c}{Register}&\multicolumn{1}{c}{Offset}\\
+\hline
+\RDI & $0$ \\
+\RSI & $8$ \\
+\RDX & $16$ \\
+\RCX & $24$ \\
+\reg{r8} & $32$ \\
+\reg{r9} & $40$ \\
+\reg{xmm0} & $48$ \\
+\reg{xmm1} & $64$ \\
+\dots &  \\
+\reg{xmm7} & $160$ \\
+\end{tabular}
+\end{center}
+\Hrule
+\end{figure}
+
+\subsubsection{The \codeindex{va_list} Type}
+
+The \code{va_list} type is an array containing a single element of one
+structure
+containing the necessary information to implement the \code{va_arg} macro. The C
+definition of \code{va_list} type is given in figure~\ref{fig-va_list}.
+
+\begin{figure}[H]
+\Hrule
+\caption{\code{va_list} Type Declaration}
+\label{fig-va_list}
+\begin{center}
+\code{
+\begin{tabular}{|l|}
+\cline{1-1}
+typedef struct \{\\
+\ \ \ unsigned int gp_offset;\\
+\ \ \ unsigned int fp_offset;\\
+\ \ \ void *overflow_arg_area;\\
+\ \ \ void *reg_save_area;\\
+  \} va_list[1];\\
+\cline{1-1}
+\end{tabular}
+}
+\end{center}
+\Hrule
+\end{figure}
+
+
+\subsubsection{The \codeindex{va_start} Macro}
+
+The \code{va_start} macro initializes the structure as follows:
+
+\begin{description}
+\item [reg_save_area]
+The element points to the start of the register save area.
+\item [overflow_arg_area] This pointer is used to fetch arguments
+  passed on the stack.  It is initialized with the address of the
+  first argument passed on the stack, if any, and then always updated
+  to point to the start of the next argument on the stack.
+\item [gp_offset] The element holds the offset in bytes from
+  \code{reg_save_area} to the place where the next available general
+  purpose argument register is saved.  In case all argument registers
+  have been exhausted, it is set to the value 48 ($6*8$).
+\item [fp_offset]
+The element holds the offset in bytes from \code{reg_save_area} to the
+place where the next available floating point
+argument register is saved.  In case all argument registers have been exhausted,
+it is set to the value 176 ($6*8+8*16$).
+\end{description}
+
+\subsubsection{The \codeindex{va_arg} Macro}
+
+The algorithm for the generic \code{va_arg(l, type)} implementation is
+defined as follows:
+
+\begin{enumerate}
+\item
+Determine whether \code{type} may be passed in the registers.  If not go to step~\ref{stack}.
+\item
+Compute \code{num_gp} to hold the number of general purpose registers needed to pass \code{type}
+and \code{num_fp} to hold the number of floating point registers needed.
+\item
+Verify whether arguments fit into registers.
+In the case:
+$$\code{l->gp_offset} > 48 - \code{num_gp} * 8$$ or $$\code{l->fp_offset} > 176 - \code{num_fp} * 16$$
+go to step~\ref{stack}.
+\item
+  Fetch \code{type} from \code{l->reg_save_area} with an offset of
+  \code{l->gp_offset} and/or \code{l->fp_offset}.  This may require
+  copying to a temporary location in case the parameter is passed in
+  different register classes or requires an alignment greater than 8 for
+  general purpose registers and 16 for XMM registers.
+\item
+Set:
+$$\code{l->gp_offset} = \code{l->gp_offset} + \code{num_gp} * 8$$
+$$\code{l->fp_offset} = \code{l->fp_offset} + \code{num_fp} * 16.$$
+\item
+Return the fetched \code{type}.
+\item
+\label{stack}
+Align \code{l->overflow_arg_area} upwards to a 16 byte boundary if
+alignment needed by \code{type} exceeds 8 byte boundary.
+\item
+Fetch \code{type} from \code{l->overflow_arg_area}.
+\item
+Set \code{l->overflow_arg_area} to:
+$$\code{l->overflow_arg_area} + \code{sizeof} (\code{type})$$
+\item
+Align \code{l->overflow_arg_area} upwards to an 8 byte boundary.
+\item
+Return the fetched \code{type}.
+\end{enumerate}
+
+The \code{va_arg} macro is usually implemented as a compiler builtin and expanded in
+simplified forms for each particular type.  Figure~\ref{fig-va_arg} is a sample
+implementation of the \code{va_arg} macro.
+\begin{figure}[H]
+\Hrule
+\caption{Sample Implementation of \code{va_arg(l, int)}}
+\label{fig-va_arg}
+\begin{center}
+\begin{tabular}{|llll|}
+\cline{1-4}
+&movl&\code{l->gp_offset}, \reg{eax}&\\
+&cmpl&\$48, \reg{eax}&Is register available?\\
+&jae&stack&If not, use stack\\
+&leal&\$8(\RAX), \reg{edx}&Next available register\\
+&addq&\code{l->reg_save_area}, \RAX&Address of saved register\\
+&movl&\reg{edx}, \code{l->gp_offset}&Update \code{gp_offset}\\
+&jmp&fetch&\\
+stack:&movq&\code{l->overflow_arg_area}, \RAX&Address of stack slot\\
+&leaq&8(\RAX), \RDX&Next available stack slot\\
+&movq&\RDX,\code{l->overflow_arg_area}&Update\\
+fetch:&movl&(\RAX), \reg{eax}&Load argument\\
+\cline{1-4}
+\end{tabular}
+\end{center}
+\Hrule
+\end{figure}
+
+\section{DWARF Definition}
+
+This section\footnote{This section is structured in a way similar to
+  the PowerPC psABI}
+defines the Debug With Arbitrary Record Format (DWARF) debugging
+format for the \xARCH processor family. The \xARCH ABI does not define
+a debug format.  However, all systems that do implement DWARF on \xARCH shall
+use the following definitions.
+
+DWARF is a specification developed for symbolic, source-level debugging.
+The debugging information format does not favor the design of any
+compiler or debugger.  For more information on DWARF,
+see \emph{DWARF Debugging Format Standard},
+available at: \url{http://www.dwarfstd.org/}.
+
+\subsection{DWARF Release Number}
+
+The DWARF definition requires some machine-specific definitions.
+The register number mapping needs to be specified for the \xARCH
+registers. In addition, starting with version 3 the DWARF specification
+requires processor-specific address class codes to be defined.
+
+\subsection{DWARF Register Number Mapping}
+
+Table~\ref{tbl-reg-num-map}\footnote{The table defines Return Address
+  to have a register number, even though the address is stored in
+  0(\RSP) and not in a physical register.}  outlines the register
+number mapping for the \xARCH processor family.%
+\footnote{This document does not define mappings for privileged registers.}%
+
+\begin{figure}
+\Hrule
+\caption{DWARF Register Number Mapping} \label{tbl-reg-num-map}
+\myfontsize
+\begin{center}
+\begin{tabular}{l|r|l}
+\multicolumn{1}{c}{Register Name}&\multicolumn{1}{c}{Number}&\multicolumn{1}{c}{Abbreviation}\\
+\hline
+General Purpose Register RAX & 0 &\RAX\\
+General Purpose Register RDX & 1 &\RDX\\
+General Purpose Register RCX & 2 &\RCX\\
+General Purpose Register RBX & 3 &\RBX\\
+General Purpose Register RSI & 4 &\RSI\\
+General Purpose Register RDI & 5 &\RDI\\
+Frame Pointer Register   RBP & 6 &\RBP\\
+Stack Pointer Register   RSP & 7 &\RSP\\
+Extended Integer Registers 8-15 & 8-15 &\reg{r8}--\reg{r15}\\
+Return Address RA
+& 16&\\
+Vector Registers 0--7              & 17-24 & \reg{xmm0}--\reg{xmm7} \\
+Extended Vector Registers 8--15    & 25-32 & \reg{xmm8}--\reg{xmm15} \\
+Floating Point Registers 0--7   & 33-40 & \reg{st0}--\reg{st7} \\
+MMX Registers 0--7              & 41-48 & \reg{mm0}--\reg{mm7} \\
+Flag Register                   & 49    & \reg{rFLAGS} \\
+Segment Register ES             & 50    & \reg{es} \\
+Segment Register CS             & 51    & \reg{cs} \\
+Segment Register SS             & 52    & \reg{ss} \\
+Segment Register DS             & 53    & \reg{ds} \\
+Segment Register FS             & 54    & \reg{fs} \\
+Segment Register GS             & 55    & \reg{gs} \\
+Reserved                        & 56-57 & \\
+FS Base address                 & 58    & \reg{fs.base} \\
+GS Base address                 & 59    & \reg{gs.base} \\
+Reserved                        & 60-61 & \\
+Task Register                   & 62    & \reg{tr} \\
+LDT Register                    & 63    & \reg{ldtr} \\
+128-bit Media Control and Status & 64   & \reg{mxcsr} \\
+x87 Control Word                & 65    & \reg{fcw} \\
+x87 Status Word                 & 66    & \reg{fsw} \\
+Upper Vector Registers 16--31   & 67-82 & \reg{xmm16}--\reg{xmm31} \\
+Reserved                        & 83-117 & \\
+Vector Mask Registers 0--7      & 118-125 & \reg{k0}--\reg{k7} \\
+Reserved                        & 126-129 & \\
+APX Integer Registers 16-31     & 130-145 &\reg{r16}--\reg{r31}\\
+Tile Registers 0--7             & 146-153 & \reg{tmm0}--\reg{tmm7} \\
+Tile Control Register           & 154   & \reg{tilecfg} \\
+\end{tabular}
+\end{center}
+\Hrule
+\end{figure}
+
+\section{Stack Unwind Algorithm}
+
+The stack frames are not self descriptive and where stack unwinding is
+desirable (such as for exception handling) additional unwind
+information needs to be generated.  The information is stored in an
+allocatable section \code{.eh_frame} whose format is identical to
+\code{.debug_frame} defined by the DWARF debug information standard,
+see \emph{DWARF Debugging Information Format}, with the following
+extensions:
+
+\begin{description}
+\item[Position independence]
+
+  In order to avoid load time relocations for position independent
+  code, the FDE CIE offset pointer should be stored relative to the
+  start of CIE table entry.  Frames using this extension of the DWARF
+  standard must set the CIE identifier tag to 1.
+
+\item[Outgoing arguments area delta]
+  
+  To maintain the size of the temporarily allocated outgoing arguments
+  area present on the end of the stack (when using \code{push}
+  instructions), operation \code{GNU_ARGS_SIZE} (\code{0x2e}) can be
+  used.  This operation takes a single \code{uleb128} argument
+  specifying the current size.  This information is used to adjust the
+  stack frame when jumping into the exception handler of the function
+  after unwinding the stack frame.  Additionally the CIE Augmentation
+  shall contain an exact specification of the encoding used.  It is
+  recommended to use a PC relative encoding whenever possible and
+  adjust the size according to the code model used.
+
+\item[CIE Augmentations:]
+ 
+  The augmentation field is formated according to the augmentation
+  field formating string stored in the CIE header.
+  
+  The string may contain the following characters:
+
+\begin{description}
+\item[z] Indicates that a \code{uleb128} is present determining the size of
+  the augmentation section.
+\item[L] Indicates the encoding (and thus presence) of an LSDA pointer in the FDE augmentation.
+  
+  The data filed consist of single byte specifying the way pointers
+  are encoded.  It is a mask of the values specified by the table~
+  \ref{tbl-pointer-encoding}.
+
+\begin{figure}
+\Hrule
+\caption{Pointer Encoding Specification Byte} \label{tbl-pointer-encoding}
+\begin{center}
+\begin{tabular}{r|l}
+\multicolumn{1}{c}{Mask}&\multicolumn{1}{c}{Meaning}\\
+\hline
+0x1 & Values are stored as \code{uleb128} or \code{sleb128} type (according to flag 0x8)\\
+0x2 & Values are stored as 2 bytes wide integers (\code{udata2} or \code{sdata2})\\
+0x3 & Values are stored as 4 bytes wide integers (\code{udata4} or \code{sdata4})\\
+0x4 & Values are stored as 8 bytes wide integers (\code{udata8} or \code{sdata8})\\
+0x8 & Values are signed\\
+0x10 & Values are PC relative\\
+0x20 & Values are text section relative\\
+0x30 & Values are data section relative\\
+0x40 & Values are relative to the start of function\\
+\end{tabular}
+\end{center}
+\Hrule
+\end{figure}
+
+The default DWARF pointer encoding (direct 4-byte absolute pointers)
+is represented by value 0.
+
+\item[R]  
+  Indicates a non-default pointer encoding for FDE code pointers.  The
+  formating is represented by a single byte in the same way as in the
+  `L' command.
+
+\item[P]  
+  Indicates the presence and an encoding of a language personality
+  routine in the CIE augmentation.  The encoding is represented by a
+  single byte in the same way as in the 'L' command followed by a
+  pointer to the personality function encoded by the specified
+  encoding.
+
+\end{description}
+
+When the augmentation is present, the first command must always be
+`\code{z}' to allow easy skipping of the information.
+
+\end{description}
+
+In order to simplify manipulation of the unwind tables, the runtime
+library provide higher level API to stack unwinding mechanism, for
+details see section~\ref{unwindlib}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "abi"
+%%% End:

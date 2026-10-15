@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "sha256sum",
+    "/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu/bin/rustc",
+    "/usr/bin/cc",
+    "/usr/bin/x86_64-linux-gnu-gcc",
+    "/usr/bin/qemu-x86_64",
+    "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2"
+  ],
+  "exit_code": 0,
+  "seconds": 0.055419082986190915
+}

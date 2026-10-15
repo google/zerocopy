@@ -1,0 +1,24 @@
+{
+  "helper_sha256": "862a6a7bfcd8c23783c9d0e64dd0d24032402cf3bab631fdd7cbbf82a9607887",
+  "policy_sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f",
+  "static_freeze_sha256": "e4de79c8b18cdb1f8735cef55e89c231eba4087c9da2065b31073fbb5ab50c3f",
+  "reviewed_preparation_sha256": "bccd0f29af33b3df04b9997bf1c667f220fc7bed32ad65e7f568478fc722aecb",
+  "proposal_sha256": "b4855757ea4b0d0b5096c12274432cdf8af1b50cc7d1938e04bcdc2f42aba186",
+  "host_tools": [
+    {
+      "label": "python",
+      "path": "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "resolved": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "bytes": 53200,
+      "sha256": "6e7ae61f68a3838094fc56590f84c52069a97d7816f6bb79e0e85995b340e464"
+    },
+    {
+      "label": "docker",
+      "path": "/path/to/docker",
+      "resolved": "/Applications/OrbStack.app/Contents/MacOS/xbin/docker-tools",
+      "bytes": 72068112,
+      "sha256": "70d5a06adf388bd09b652f47ddc9ca31663a3e5353d24188bdb0054b3014ab3e"
+    }
+  ],
+  "scope": "Four fixed unchanged positive images, serial, once; no retry or mutant execution"
+}

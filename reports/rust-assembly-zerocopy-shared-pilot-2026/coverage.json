@@ -1,0 +1,74 @@
+{
+  "purpose": "Evidence mapping for parent assessment; no issue/checklist mutation",
+  "execution_milestones": [
+    {
+      "id": "E46",
+      "bounded_investigation": "Performed actual matched Rust/whole+inline assembly/real zerocopy corpus with oneRust1.89 compiler, twoGNU targets, O0/O3, native A64 and QEMU x64; exact four image/stream/status bindings",
+      "evidence": "runtime-results.json",
+      "scope": "Valid finite calls only; 4617 reported checks per run;24 receipt-data mutants;28 header-data controls",
+      "decision": "Parent owns criterion/checkbox assessment",
+      "source_questions": [
+        "MR23",
+        "MR24",
+        "AS04",
+        "AS11",
+        "AS14",
+        "AS28"
+      ],
+      "exact_acceptance": "Perform multiply/carry/byte-swap/load/store/copy/pointer-return/inline-label/C-ABI/helper and justified SIMD cases on both architectures, with real zerocopy operations and negative controls."
+    }
+  ],
+  "stronger_unestablished": [
+    {
+      "ids": [
+        "E29"
+      ],
+      "claim": "Universal reference-ISA state/flags/access/fault relation remains unproved"
+    },
+    {
+      "ids": [
+        "E30"
+      ],
+      "claim": "Complete actual memory-operation trace/permission spans/frames, vector-width correctness and modeled authority versus Rust/page resources remain unproved"
+    },
+    {
+      "ids": [
+        "E34"
+      ],
+      "claim": "Universal legal inline operand/register/options/continuation/stack/flags/label/unwind contracts remain unproved"
+    },
+    {
+      "ids": [
+        "E35"
+      ],
+      "claim": "Actual MiniRust/machine live-allocation/provenance/initialization/borrow/stack/return resource relation across every prefix/exit remains unproved"
+    },
+    {
+      "ids": [
+        "E36"
+      ],
+      "claim": "Behavioral/contextual Rust-assembly refinement or equivalence in permitted contexts remains unproved"
+    },
+    {
+      "ids": [
+        "E37"
+      ],
+      "claim": "Verified deployed decoder/loader, relocations/ranges/dispatch and fixed-fragment host/loop/escape composition remain unproved; concrete hashes and selected relocations are bounded inspection only"
+    }
+  ],
+  "genuine_unexamined_in_this_package": [
+    "Other compiler releases/profiles/LTO/features",
+    "Overlapping or invalid spans/callers, arbitrary aliases",
+    "Wider SIMD and vector/aggregate C ABI values",
+    "Physical x86 hardware, guest CPUID feature probe, QEMU source replay",
+    "Unwinding/concurrency/general atomic mapping/access-event traces"
+  ],
+  "not_unperformed_in_bounded_scope": [
+    "Four approved positive runs actually completed once each",
+    "Actual compiler/object/final/caller/helper/CFI/loader inspection",
+    "Real pinned zerocopy read/write/byteorder/view/error paths",
+    "Data-only output/ELF-header/byte identity controls"
+  ],
+  "limits": "This mapping does not claim all48 milestones, complete model correctness, all suggested experiments, or report/mention-count semantic completion.",
+  "exact_criteria_snapshot": "milestone-scope.json"
+}

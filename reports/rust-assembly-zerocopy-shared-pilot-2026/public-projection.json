@@ -1,0 +1,1838 @@
+{
+  "scope": "Deterministic display projection only; original raw manifests remain historical original-byte identities, not public-file manifests. Actual Rust/assembly/zerocopy/oracle/ELF/object/IR/disassembly subject bytes unchanged. No projected helper was run.",
+  "raw_results_manifest_sha256": "17efb32e043d40a49415c7c93bfd7962162ae3aa40b8b0716914e3a45eb02b0d",
+  "mappings": [
+    {
+      "label": "workspace display root",
+      "raw_prefix_sha256": "1a833d75b1bb644e7fb1bdffadb45656f11859ca1d4cf89f8e104ec702e1a637",
+      "raw_prefix_bytes": 79,
+      "display_prefix": "/path/to/anneal-workspace"
+    },
+    {
+      "label": "host Docker CLI display path",
+      "raw_prefix_sha256": "faa9dcf1e1ddde5530b7486c301eb534ef740eae26ab8cf9bc77039cadf42faa",
+      "raw_prefix_bytes": 33,
+      "display_prefix": "/path/to/docker"
+    },
+    {
+      "label": "host Docker socket diagnostic path",
+      "raw_prefix_sha256": "95640def7a76b21097861b0c2fd19b59938fdfc643d93b2320506ad74b8f7afe",
+      "raw_prefix_bytes": 38,
+      "display_prefix": "/path/to/docker.sock"
+    }
+  ],
+  "changed_support_files": [
+    {
+      "path": "capture_static.py",
+      "raw_sha256": "b00fb547a5d670be0c204d0ede911e883ad1503f609703412b9ebdc228cf3037",
+      "raw_bytes": 7642,
+      "display_sha256": "74cc6207e8aebfb3e3e670c48db8a932ebc4be1c1ac8bfef954ab07ddd574b7d",
+      "display_bytes": 7624,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/artifact-copies.json",
+      "raw_sha256": "2b2fcdfe3c6b7b7870609c5567b316588d90d6afde0d0008453f956a2f148f1f",
+      "raw_bytes": 16219,
+      "display_sha256": "6bfc130408bf2bbf9ae23f35132a0f4ae65e574d81cab641fc5f5a4f374b8b75",
+      "display_bytes": 15067,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 16
+        },
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 16
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-pilot-after.json",
+      "raw_sha256": "3e1acd457227f4f395d99320b2a336eede9f42662d14fbffa435040c82164da5",
+      "raw_bytes": 20171,
+      "display_sha256": "dc68ec04b4cbd8b7438801dc45a550c1742d001a58d9d24c711b1b767d89e1dc",
+      "display_bytes": 20153,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-pilot-before.json",
+      "raw_sha256": "da264da30e646bf389db9217bf53dc44d63895e7def6a61178fa240d4f979430",
+      "raw_bytes": 20163,
+      "display_sha256": "edfb7353b02425b6254e32dbdf6d9441f531df58cfcbc0a0ce16953e98885f40",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-pilot.json",
+      "raw_sha256": "bf96bf19cf6996f4099b0c52eafa01f8399a10df6db75861982a5aa3186c3372",
+      "raw_bytes": 1186,
+      "display_sha256": "63f86fa4aa53376a3de4ca24642d92d8c677b4a635fb3efaeb3360092ac73a51",
+      "display_bytes": 1168,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-zerocopy-after.json",
+      "raw_sha256": "d7f867d9339e6fbc80df1ef3e1ae4b52e6c917304070e98e9dda53c57c195ac1",
+      "raw_bytes": 20170,
+      "display_sha256": "d54a37eccdcbd2f828302a235def09426aa04d080611a724d4ba6cbea77a4278",
+      "display_bytes": 20152,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-zerocopy-before.json",
+      "raw_sha256": "de15b5b4731a6dcfd82d6805ccc315b3e1b4f8fc42663fd8a1c312afa11a8db2",
+      "raw_bytes": 20171,
+      "display_sha256": "b801ab888206be7856a62aaa5478d056ae7e801e71776e5d461ac3bb31d13ade",
+      "display_bytes": 20153,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures/aarch64-O0-zerocopy.json",
+      "raw_sha256": "3c12aabbac907e04a906f747446939159d102b64e7f29ce050a197679cf16b2f",
+      "raw_bytes": 1071,
+      "display_sha256": "e9c2fa66b701319fce56dd49d71d551da7a8b4bf3c7b2a0ded64c2eb22ef0740",
+      "display_bytes": 1053,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O0-pilot-after.json",
+      "raw_sha256": "23c617a6fc6f70453b7845394755ad75ccc7e611a05b58a24db769c5a8723a9a",
+      "raw_bytes": 20171,
+      "display_sha256": "9ea5e35c4a5b14f43296375664db771824a98d0db12d511ec0f46ea2be379c92",
+      "display_bytes": 20153,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O0-pilot-before.json",
+      "raw_sha256": "1093011bed54c9f14c9f44886dc0b0d97ba5cce33571919eca7fe499806c749d",
+      "raw_bytes": 20171,
+      "display_sha256": "ece3f6a34ef78a9272db73c465e167dbd533a7702a7784ddcdf336be80e70379",
+      "display_bytes": 20153,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O0-pilot.json",
+      "raw_sha256": "18f623beeffe47bc6e4ac0b936947971b0af01a1a3bb57de0391b6e2a4154c61",
+      "raw_bytes": 1186,
+      "display_sha256": "e43c0bc73b71eed39f0f8116da0630f208ad13157b32cf68e907ff74f0eb47bf",
+      "display_bytes": 1168,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-pilot-after.json",
+      "raw_sha256": "b3266d2260e704c1345b731d011c47d2c929bf73a15daddcf5537223d30b0f81",
+      "raw_bytes": 20163,
+      "display_sha256": "3a3453055a60ccb2608823fab07055d39a87a12b97a981b10bdce29b87b826bd",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-pilot-before.json",
+      "raw_sha256": "2fb4613746858afbc0c5298b08dcc261b2548c603e54ecc97ae29572730cf6ba",
+      "raw_bytes": 20163,
+      "display_sha256": "b78c50b54c06ee0653ccb426cbb4b3b44415de05853e112070ac40b8682827c7",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-pilot.json",
+      "raw_sha256": "5d6b833871ef34b5316a0dc9b1d992eff96196f2e80bf00424155bfc87c1e6de",
+      "raw_bytes": 1186,
+      "display_sha256": "d607b77f7f68bab915d3bd60302484552a57ab5613c24ee65b49d44eecd2d4d1",
+      "display_bytes": 1168,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-zerocopy-after.json",
+      "raw_sha256": "9764fd1be095fee864731e54b408b16dbc462dacce85cbe67ce9640f45406062",
+      "raw_bytes": 20171,
+      "display_sha256": "530963dce5f5a0bc2deddac473fcaa505e58aa1c232efde9ac1d47ed72976492",
+      "display_bytes": 20153,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-zerocopy-before.json",
+      "raw_sha256": "faf760a471175ff9b050bfa73f3bf06c7ffe5c49f447ce29eec252590d8f5562",
+      "raw_bytes": 20163,
+      "display_sha256": "17bf1d9cfcfde7e22fba7eda6133dae5602dd64d136e41f8e9f1f60b6447e52a",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/aarch64-O3-zerocopy.json",
+      "raw_sha256": "1942e349e1930597fdd8fbfd717a139bbbf7c801d22aac11c139bcfe5eb6baa4",
+      "raw_bytes": 1071,
+      "display_sha256": "e783bdd117602859518e59f52ab486ad75eea7f8b19f935456b88c8d7c40c581",
+      "display_bytes": 1053,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-pilot-after.json",
+      "raw_sha256": "caee63c8918d87b7372475dff6337ee983fad5e5cfc3f876128dbad3609a181b",
+      "raw_bytes": 20163,
+      "display_sha256": "5efacdaabd0d1c9e27f638b856588640bbd47412aa4b0d148a7ba3788751e45f",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-pilot-before.json",
+      "raw_sha256": "42f0b85eda9246432f3fc199ce1752d9131547963e448e8f404f862ff93a9e24",
+      "raw_bytes": 20163,
+      "display_sha256": "feebea00484a8b89bcba91b1211eea83ca4a97a93ebaae5cbda5893cdf590862",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-pilot.json",
+      "raw_sha256": "78aa07bc56e4b0b3a4004fa8976c226aebfa7a0fe5bd1aae841477466160a3fd",
+      "raw_bytes": 1198,
+      "display_sha256": "36de5ec6df2511de0e35629c6dcb026c125732d7cee5a0ba444146a7bc1046a6",
+      "display_bytes": 1180,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-zerocopy-after.json",
+      "raw_sha256": "df2ac08d91a6102b0c701c4dc11d0162eba74b1ae4b99c0ea2d4c64c644094bd",
+      "raw_bytes": 20170,
+      "display_sha256": "53ea47fc367758915d480df792b2edbacd1cb1fe5feab9e3ebe09177296f32d0",
+      "display_bytes": 20152,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-zerocopy-before.json",
+      "raw_sha256": "f973683efbae06c24a3ff95a36b6dd820ad86167ba74630fc3b63e8145449141",
+      "raw_bytes": 20163,
+      "display_sha256": "26b1bbcc24571179dfb11e8b8d71a1dd1c5a04a16420703915783875214effea",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O0-zerocopy.json",
+      "raw_sha256": "49686f933af5e3f72f18d8d79123d0c8f674bb7a2eaf5f087c4390f80d672836",
+      "raw_bytes": 1062,
+      "display_sha256": "7c5298c139c0dd236fa193d9f0b14501038da77ab8b5e89b32ca7a91255bb142",
+      "display_bytes": 1044,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-pilot-after.json",
+      "raw_sha256": "c3d974f30376378870bbc00f3848b10d1973184089724f90b73aefa88a4e1e4b",
+      "raw_bytes": 20163,
+      "display_sha256": "075a0b052718ef132edab65c7ec56e44e1f634c5f4a69cb10461e71d13ddb635",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-pilot-before.json",
+      "raw_sha256": "b2a3ae777ddb675ceaad3c13d78195a65affe55ef78927296dda3c49c8912af8",
+      "raw_bytes": 20162,
+      "display_sha256": "6b4508103dc7d3d5d51e0c92b4f3e1517393717ebae3b6349aec5b3914ff2612",
+      "display_bytes": 20144,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-pilot.json",
+      "raw_sha256": "a9197d70031718226d9ffb48bfaf922eb9050575ba3d05e6b017ac29dd903adf",
+      "raw_bytes": 1190,
+      "display_sha256": "0feaf65babde4f255235ce93777a56299f10749c66d32218197be4f8b6fdfba6",
+      "display_bytes": 1172,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-zerocopy-after.json",
+      "raw_sha256": "ffdd8dbac55841bea2f80697c1f84aa3f1db0feed87c0835930d313e8b24afba",
+      "raw_bytes": 20170,
+      "display_sha256": "89608bd305492916b15951c6b1174495ab8256f101116aa463fe7201f8c61027",
+      "display_bytes": 20152,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-zerocopy-before.json",
+      "raw_sha256": "720851e5b70da6d9791dea3de1221745f82910001a4577e6d7a2a4ee13249196",
+      "raw_bytes": 20163,
+      "display_sha256": "c3bd0f692b3e1abaf1c0e6a1f772cd20eaa882e9ed96b9f2e76cfcef5013597c",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/captures-v3/x86_64-O3-zerocopy.json",
+      "raw_sha256": "97c83a582fd6b81b48c8466ec58d52bd03d63ec4f376cb183c5ba229816ed862",
+      "raw_bytes": 1062,
+      "display_sha256": "816c35cff8fba8789620f966008414d9d10d1b689f3b001dadaf3630a7aeb919",
+      "display_bytes": 1044,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-image-disassembly.json",
+      "raw_sha256": "0fae493a2bee6695af276030b1776b05381eb9dfc89eab3868b3ecfb4e04d531",
+      "raw_bytes": 695,
+      "display_sha256": "2d84956b0a5febd9f74d3dc090c618d05d4f31f9ca781a5101942b45df46f17f",
+      "display_bytes": 677,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-image-dynamic.json",
+      "raw_sha256": "f9ce0e5b0aff7a07371adb616dff6ac41738ae5343a381873226682a14a3dcac",
+      "raw_bytes": 695,
+      "display_sha256": "11fcec6455089cac3e5f92d177ff1bab5d865938f37e71bc991e803f938a3d90",
+      "display_bytes": 677,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-image-frames.json",
+      "raw_sha256": "5dfcaa4ced0b099bd735aaa5a9bef420e5aed75d756e1b9624078bd3cb136c80",
+      "raw_bytes": 691,
+      "display_sha256": "3f0ab9513f56eb2a6fb93f85ec3cf15449a60fe01bba14043a53b684bc4b5476",
+      "display_bytes": 673,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-image-metadata.json",
+      "raw_sha256": "5060fc268c8eb3b92e4161d06b98f8d753d23e4cb192c3b02db4f6ad5147554d",
+      "raw_bytes": 717,
+      "display_sha256": "3514a6a2bd395dfd5d33a0281c0781dadb40c254fb22209db43c528a7d0cb4b0",
+      "display_bytes": 699,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-object-disassembly.json",
+      "raw_sha256": "f28319f4f01c450dda8beb95033f4e72daac9901804924720ab4388b6290e20b",
+      "raw_bytes": 696,
+      "display_sha256": "f0f69bb288ce3a5128deff77ce5c85aa9e1377c708fc0770d2924f3a5330c528",
+      "display_bytes": 678,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-object-frames.json",
+      "raw_sha256": "98f3ba5ecf08219d3d469566e04666b94c914ef9f622b61866e7ec46dbbf9f92",
+      "raw_bytes": 691,
+      "display_sha256": "a7ea3a9c5e6f3f3691c719d1220393bdb680daf8d22783d6e7dee04a6d8df938",
+      "display_bytes": 673,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O0-object-metadata.json",
+      "raw_sha256": "4df939440cd9b730a09e32b0686cfac62275df64bfe44f1eb8c915c8ca056c62",
+      "raw_bytes": 710,
+      "display_sha256": "972a1631fef77e4fcc34daf0d2bbc963dd01404ac416708e106d678272d80be6",
+      "display_bytes": 692,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-image-disassembly.json",
+      "raw_sha256": "680a882810b308c07c34635260ff7cce031a012d9fa5e382bda73cd07dae8fb3",
+      "raw_bytes": 695,
+      "display_sha256": "e0197866b9208468141e3f3f1e86ac0193df0abf5ffa8b91ed66ccee550fb0f6",
+      "display_bytes": 677,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-image-dynamic.json",
+      "raw_sha256": "415f225eb5a3b9762fe382c835d4fd52a534adff572a12308bdc308a70c2707c",
+      "raw_bytes": 695,
+      "display_sha256": "9b7f6e69f31272703d936735125c078c3a0836e6b2451511c3f286f58f09b2b4",
+      "display_bytes": 677,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-image-frames.json",
+      "raw_sha256": "bd89b9fa5567a7b520df9455942cd54a1a04780ce0c2ec5b68f28333fd131962",
+      "raw_bytes": 691,
+      "display_sha256": "ff131081cfc1d53e41f815a74ed7c92e5ae18b2be07fde167c8d7b3bb403de31",
+      "display_bytes": 673,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-image-metadata.json",
+      "raw_sha256": "a24d4d93f9035aa073e7551a6e775a559301914c30c0a1c4894336fe0b5db426",
+      "raw_bytes": 716,
+      "display_sha256": "92c88860bcb222be60752b8b4f6d7a24df63cbce368a4987e418a5217852bb01",
+      "display_bytes": 698,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-object-disassembly.json",
+      "raw_sha256": "0208436f5094a0c9d4ae48a5be1d1deffb28f97e7cacce4e72993f4ced3ba6e5",
+      "raw_bytes": 696,
+      "display_sha256": "41ae0b71327bdb7229dc2933d3037c18bf2f7ec5580f9540417e47e492d17971",
+      "display_bytes": 678,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-object-frames.json",
+      "raw_sha256": "3f6adf85d18adada0389307d2ae465691f9efa697aefc9c1578af9f15baefcda",
+      "raw_bytes": 691,
+      "display_sha256": "57ff3aa108ed735d79f0fd5f0b41996f21a1421dabcb44945da293de816b8f59",
+      "display_bytes": 673,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-O3-object-metadata.json",
+      "raw_sha256": "1bf30931f54246fab975514d71bcf85a1ab1bf5caf2663db46c01c7c40ebc607",
+      "raw_bytes": 718,
+      "display_sha256": "593cf30bbc6205ac5d2ac1f814cfa65f96cb1323e3ef9244587aabc74c8139b6",
+      "display_bytes": 700,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.json",
+      "raw_sha256": "e343180176c6c3d7f6c9418fa9ad906df907550d185835a1e3992ae389be8f31",
+      "raw_bytes": 718,
+      "display_sha256": "3bc035b7cf78966e3ca3141e467dcd51ba5d6bd98ea9f4c8f07e8a11eb19f4b2",
+      "display_bytes": 700,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-library-libc-so-6.json",
+      "raw_sha256": "1fece7ad86a249315ae1d64d8b8fdffa7f813f4d403deec474df128f94637513",
+      "raw_bytes": 715,
+      "display_sha256": "7e26de78a2bbc3be87c7ee38bc8992a991350a7ed05245b2477f46d4c2af9d6d",
+      "display_bytes": 697,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/aarch64-library-libgcc_s-so-1.json",
+      "raw_sha256": "f4badb5214132e650ada9553457eafe1d3a9b44ab427ee1018116970f0806776",
+      "raw_bytes": 719,
+      "display_sha256": "959cd49ce90580b264894268cdd35d718054e9e2edeb58f1d63911946aa08a5e",
+      "display_bytes": 701,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/runtime-library-files-read-only.json",
+      "raw_sha256": "eeb16cc5e6e90e46d88bd066840ddc3b77a6052f1e6a9467df1a1f3afae5f88f",
+      "raw_bytes": 1323,
+      "display_sha256": "4f279cc50645e30cb3bbb825456e63c7e4ce11b39c2287da9640bf0a3af7d091",
+      "display_bytes": 1305,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-image-disassembly.json",
+      "raw_sha256": "6a34c636ed91d0debe8018f54586bf3a4f22778bda7049d353460780b16883d1",
+      "raw_bytes": 734,
+      "display_sha256": "d5bde8793bcf5b9ff30396978b866db6ad48b3c5df89ba1a24d44295e51de5cd",
+      "display_bytes": 716,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-image-dynamic.json",
+      "raw_sha256": "364c487a44af3c95d6ad50158465a6dc7508a86267806c688cf9e95f2d4d763f",
+      "raw_bytes": 693,
+      "display_sha256": "6bd23e065bfa19f85d4b27f9164210300e260c6fc0895f4aae26b4cc6a4e2638",
+      "display_bytes": 675,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-image-frames.json",
+      "raw_sha256": "91345839ae8efd5e16ec604caab496cfdacb4747a96072795b8ac1021f39bb09",
+      "raw_bytes": 690,
+      "display_sha256": "b5df4c88f8a006ee7b91f096bc94f9307d24a4821b459ca716c77b81624064f6",
+      "display_bytes": 672,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-image-metadata.json",
+      "raw_sha256": "652b981f4a7e4b0f9e1b1f5cee5177dece121125732c3719621545dca4776683",
+      "raw_bytes": 715,
+      "display_sha256": "728918c244819f8a4e489bd2dc6ca9e7da7645e731c929ab0b2528cc65ca596f",
+      "display_bytes": 697,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-object-disassembly.json",
+      "raw_sha256": "2ae684be138da75d5f134c91bbaf2b75344b3ca3b4b886fa7a9848f72fc66ad5",
+      "raw_bytes": 734,
+      "display_sha256": "98dc46ab0836cbf8015fd68cf9d17a375c8d4413ff07fa4a9d59b867606eedba",
+      "display_bytes": 716,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-object-frames.json",
+      "raw_sha256": "fff91b3c0b67644eb313c072edcfd870cc7fe2ea44f3cd0936db159441bcf287",
+      "raw_bytes": 690,
+      "display_sha256": "315ef6a6808e61878093915f02a9524ff777e9bb03cdb46d837dbd8657717970",
+      "display_bytes": 672,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O0-object-metadata.json",
+      "raw_sha256": "59fd8a94a7ec6dc34c97847f0a6b841da9021ef5a92262c881c84bb9c2aabf89",
+      "raw_bytes": 718,
+      "display_sha256": "5d0a5c8c605107a62d990ca350c6624047e3422ee5645b3c2dd0810d7338d4fa",
+      "display_bytes": 700,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-image-disassembly.json",
+      "raw_sha256": "987c0c672afaec7c82853d1316b2e403a09349968ec57466095f3cd850e6bd60",
+      "raw_bytes": 734,
+      "display_sha256": "cb77150643379b88051f6edce943852294bd2c2373a6366b0adb5ce55d8f508a",
+      "display_bytes": 716,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-image-dynamic.json",
+      "raw_sha256": "01a3481d8aa49b950b3411767b7f8ef58ff805508e08e784c36dd1ab6b9bbd06",
+      "raw_bytes": 685,
+      "display_sha256": "927d8d8ed689905f40a4527349fe340e42339eea58e27e1fbd10a7f997922ea7",
+      "display_bytes": 667,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-image-frames.json",
+      "raw_sha256": "a1d702c8c91b43069b96d141dd433073016d494f70678ab2113f134aefdd8796",
+      "raw_bytes": 691,
+      "display_sha256": "09f9dfaae6f902bdeabff6b27b4b478b39a98669dbbddf54da9ee058b265512e",
+      "display_bytes": 673,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-image-metadata.json",
+      "raw_sha256": "e517852acb13b5a7714c96440fe513f8eac776f63207f274dd72f53d6c786f4b",
+      "raw_bytes": 715,
+      "display_sha256": "ca66361eede1becd2e7fca070ff87f7f8caa993b464cd789ec53b82022bca280",
+      "display_bytes": 697,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-object-disassembly.json",
+      "raw_sha256": "8c834f68c2429bd222062e5f5870160c30824e6253a786dceac0b5a5304f27d6",
+      "raw_bytes": 735,
+      "display_sha256": "981eb520f85f0e50cd2923a2d3d714fc586cff38ee87aa3cb603181fba24c575",
+      "display_bytes": 717,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-object-frames.json",
+      "raw_sha256": "4ae49948c953fabf7b82d2abc96bd6f86fee3c3ee7b0de77b4077e7bc034399e",
+      "raw_bytes": 690,
+      "display_sha256": "53a4414d0070526d5549d5fa59b625dc5fb7bddcc65674c48b3cef1c6f658b63",
+      "display_bytes": 672,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-O3-object-metadata.json",
+      "raw_sha256": "d86796e75f9eebeef875ae822e4508f356ec3032461bb60942136862a644a0e5",
+      "raw_bytes": 716,
+      "display_sha256": "ca68492ac5cc404c959f921337678c6fe7cc33677e64b0f6bd4e123103a2e32c",
+      "display_bytes": 698,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.json",
+      "raw_sha256": "83661eed3b47a021a15c2b41ed1da34dff8312cb10a6ffa9b18f76bf3dd4a031",
+      "raw_bytes": 728,
+      "display_sha256": "1b91c6f814e3bc9f5eb5e9144763e5ef0641048a49e3b8ee8452676d3f77145a",
+      "display_bytes": 710,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-library-libc-so-6.json",
+      "raw_sha256": "efa1ff9d344dcbed0067c07075c49608e0eb4d2dad970f693bf47815a8bd55df",
+      "raw_bytes": 710,
+      "display_sha256": "a19cabd36bd05846661342d04897608a4ae6678eeb9cace18adca139cf213fae",
+      "display_bytes": 692,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/inspection/x86_64-library-libgcc_s-so-1.json",
+      "raw_sha256": "8b2c9f9a39a5d439bbe625059fbe5330e7fd36989d7201656c915a841fb189cc",
+      "raw_bytes": 721,
+      "display_sha256": "aec9486b895c73b98822b2e7bf865185a7bff4d385bc2c1911bf5b391a7d03f7",
+      "display_bytes": 703,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.json",
+      "raw_sha256": "b35f85550cb5ae39caa5a2a7ea01b98ca41a788426f27f468d97a1b162c19eb8",
+      "raw_bytes": 20163,
+      "display_sha256": "0f9f6083104bd742d92c792c298f38dc8fd542575a16a56aabec46d09850be53",
+      "display_bytes": 20145,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stderr",
+      "raw_sha256": "04a3faf39fb94119676a774b1955c3c84628c33c2000cee7d8e38e40897b73af",
+      "raw_bytes": 109,
+      "display_sha256": "5fb69785f155bae4331d26849a8c28435a478097b34c79f397310f98a4a87ffc",
+      "display_bytes": 91,
+      "changes": [
+        {
+          "mapping": "host Docker socket diagnostic path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "compile-static/operational/preflight-sandbox-denial-01/capture_static.py",
+      "raw_sha256": "b00fb547a5d670be0c204d0ede911e883ad1503f609703412b9ebdc228cf3037",
+      "raw_bytes": 7642,
+      "display_sha256": "74cc6207e8aebfb3e3e670c48db8a932ebc4be1c1ac8bfef954ab07ddd574b7d",
+      "display_bytes": 7624,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-capture-policy.json",
+      "raw_sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f",
+      "raw_bytes": 56524,
+      "display_sha256": "43a65bc6acd10e70bd8004b6be4ffb3839f9f0f4d6f48d8efc99c3535042c865",
+      "display_bytes": 56506,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v1/ATTEMPT.json",
+      "raw_sha256": "9482450d5a02c2a64faaabcd6d720a27d04070c999d07ad076d6044bf2b83fb9",
+      "raw_bytes": 1189,
+      "display_sha256": "6df9c5efb2b9598f6a931af31842235a5e8e1ef2e7595434a418c54d11837753",
+      "display_bytes": 1171,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v1/STOP-traceback.txt",
+      "raw_sha256": "5d86b0aa9fa2414db57e5af23010d03aea2964161a5a36daadec5d3f1a20e499",
+      "raw_bytes": 980,
+      "display_sha256": "f46a674dd495435ee5bf7542811eca4900933c599c104d6626683ab397e839d7",
+      "display_bytes": 764,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 4
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-files.json",
+      "raw_sha256": "23e7304795778d77b5b56382f83565dd6abaa1585944f452eef2e3a5e49ae557",
+      "raw_bytes": 46770,
+      "display_sha256": "a9b001a65eb8b966526480b4b1ca530f18f66a36152fd3735f70db5aab42fd19",
+      "display_bytes": 46752,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-resources.json",
+      "raw_sha256": "885d2785435fe1a03dfadf4782b2eb4b42a79c67c2e4a487a9625c29bfe8dc86",
+      "raw_bytes": 469,
+      "display_sha256": "cad34d878c0fa889d502a639a4eed8373418b13e2afdf2fd816847d6f7abb28f",
+      "display_bytes": 451,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/ATTEMPT.json",
+      "raw_sha256": "72824041bd1848cb9a2f7956312fe66394a2487f9f3e7058141a409a76055b98",
+      "raw_bytes": 1189,
+      "display_sha256": "005e73736b4f6b753881589c6136bf26dd1f81c2992b77efca7125a7e3d240bd",
+      "display_bytes": 1171,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O0-positive-after-files.json",
+      "raw_sha256": "84e53ad42f1585a5e16044978f82d5278cb5153aa239ad30b556aff7f1322d8b",
+      "raw_bytes": 46763,
+      "display_sha256": "b96d3ba7f782706eff1eddae74edf4420158fe8f582314d078e5574bf4ee4040",
+      "display_bytes": 46745,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O0-positive-after-resources.json",
+      "raw_sha256": "2a54e4084ae478ed26a88446be08f49f605dc9c7d3da477cd4029f749c534a2c",
+      "raw_bytes": 460,
+      "display_sha256": "3ea828e22e9a97d265eac8f07aaa1253180583c6e0ea2be5f33efb2f611a1e0c",
+      "display_bytes": 442,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O0-positive-before-files.json",
+      "raw_sha256": "0c0195dc2e950c1052305dd48070df758605fd1c145d7a27c1f898288d36b3f3",
+      "raw_bytes": 46763,
+      "display_sha256": "c22eabf52eeaf18c102cd279f75a7dd8a3755722d726ed4ff33c404c3851e2ca",
+      "display_bytes": 46745,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O0-positive-before-resources.json",
+      "raw_sha256": "34b740ec50dda00780156fe007b8f24c81dc11605d9b323ec648bce9472a87a7",
+      "raw_bytes": 470,
+      "display_sha256": "ac560f2e9c3424e496034ab144695dcf7f5eb2bb447168c13d1565fbd2407cfb",
+      "display_bytes": 452,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O0-positive.json",
+      "raw_sha256": "f96ae91bad88f9034a7f3a39d3bb8c9fe3fcfc2137af4b82e0117cde68c4defe",
+      "raw_bytes": 713,
+      "display_sha256": "554e73cc8ea3acfd2611bd03bd25a12e98b4b6cae63a4d497ebe20d348165cc4",
+      "display_bytes": 695,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O3-positive-after-files.json",
+      "raw_sha256": "cdbebd7afa2dfa9fa23ed9855d681ee8c3fc602e6a1a0ab6bf5ade92d1bcafc1",
+      "raw_bytes": 46771,
+      "display_sha256": "a6a221f92c5746707876ad1010fce95939094705b866c4931172fee3c1a89df8",
+      "display_bytes": 46753,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O3-positive-after-resources.json",
+      "raw_sha256": "a2a0aee84a9928cad531feb28f8daea757f8073349dc73a383c1529672d8f0de",
+      "raw_bytes": 469,
+      "display_sha256": "323c2e84441fc2af9fe954c2712d2b9bd906db8378df80bce565304e7956cff2",
+      "display_bytes": 451,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O3-positive-before-files.json",
+      "raw_sha256": "acf57ea610b62b9ca3055dd1ebf4c18c152b537798beee69765d51d125f4bce3",
+      "raw_bytes": 46763,
+      "display_sha256": "df33dfaae1597dff1b2a5ed67ffb5020e0bd74d8bd280f55f7c84367f137cec2",
+      "display_bytes": 46745,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O3-positive-before-resources.json",
+      "raw_sha256": "66e814c6a89c19db29d4bcac4fec613a60d7779360d055bbfba523861e565644",
+      "raw_bytes": 470,
+      "display_sha256": "c73dbbf09efbc5dd6f1cab4b58c0b58762660df65279811afdcb0f8cdf527e35",
+      "display_bytes": 452,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/aarch64-O3-positive.json",
+      "raw_sha256": "9195f13074a8fb368cb249672a0b6eedb8cb9d7c80a08c2a29fa85b436fa8c92",
+      "raw_bytes": 712,
+      "display_sha256": "db7e2c42703bdd3d45916d2e8fa39fa3e2d02dd0ac28c0b2663de18f11de60d2",
+      "display_bytes": 694,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O0-positive-after-files.json",
+      "raw_sha256": "d76d72e51913401916d5fb513982166c5dad818d8206f011fe3d2963e404198c",
+      "raw_bytes": 46763,
+      "display_sha256": "5d5b4586dd80af4e83cf5044b31273e75934754e2a21bc9523d40f414aca9dd5",
+      "display_bytes": 46745,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O0-positive-after-resources.json",
+      "raw_sha256": "8b08504cbdafcb2e4a75b23e3b3405a34779a5ede3412bde7a4b8f3446c85097",
+      "raw_bytes": 469,
+      "display_sha256": "d13ca3427c077351bfadbcb248525ec78b91996fc4f7d8832b2ddb7f934e0287",
+      "display_bytes": 451,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O0-positive-before-files.json",
+      "raw_sha256": "f9fa465539c01adeba7b1f08f2c082b5fac5d783de9138e9ea60f48d05e30bbf",
+      "raw_bytes": 46771,
+      "display_sha256": "8b3fbcbead28af8c8ba5f3f5846e395acd6054575a772fecfa7118054ad8ebe0",
+      "display_bytes": 46753,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O0-positive-before-resources.json",
+      "raw_sha256": "bc4335922a646a5ad84993f50977817c6fc064d67cc5faf1d5c55ed748060f79",
+      "raw_bytes": 470,
+      "display_sha256": "f175d731910de21951ebc0c8000a830cd395d13dff06cae97d478b16f87516f9",
+      "display_bytes": 452,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O0-positive.json",
+      "raw_sha256": "8b2f04d5c764fe2112a00209d13835018221abe93a7824a17cca28b202390df8",
+      "raw_bytes": 808,
+      "display_sha256": "7be349edfb4d3b0655912e1544b7bb9854bc067b1406038e0d8ca0f0ed37a82c",
+      "display_bytes": 790,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O3-positive-after-files.json",
+      "raw_sha256": "f3a89a1e294d401d5c11e8a672c1adff4f186475c93cb308142de446e7e17061",
+      "raw_bytes": 46771,
+      "display_sha256": "6cd518d2551b3d231729c091b45d0eb9fc355ab09552ecc6c8046cc7c45ffeee",
+      "display_bytes": 46753,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O3-positive-after-resources.json",
+      "raw_sha256": "261c6650d795b04a127a7db46030f53ee020a338cbfdf5272f2681702d9bb925",
+      "raw_bytes": 470,
+      "display_sha256": "d56b6345bc54afc47d4c8af3e8b039737f3c0357575358f5c043fd095061817e",
+      "display_bytes": 452,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O3-positive-before-files.json",
+      "raw_sha256": "98d1183610c1f896f319e820f6f49cd9914e0bee8a0611f338cc6bb4cd9db4a1",
+      "raw_bytes": 46771,
+      "display_sha256": "3aa3a90b3182727168fd1d46d0df7d0afac97fd1dae8f433e2e405be7302528d",
+      "display_bytes": 46753,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O3-positive-before-resources.json",
+      "raw_sha256": "cfd1c55d98c5d591d87ff5e43c07264f60329c01469089e870c1bcfddb4358c0",
+      "raw_bytes": 469,
+      "display_sha256": "1e7d1381856969a931fab86883c3a40ba62664914efcf6f4ccc33ae83a3d26a7",
+      "display_bytes": 451,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-captures-v2/x86_64-O3-positive.json",
+      "raw_sha256": "5fe79e29a98e9a707f1f20f9c9dbaaab48953632f0df2e8b85cd09b8dd3a82e7",
+      "raw_bytes": 807,
+      "display_sha256": "9efdc5cd4e506e24346020157e20a38905b3423ceb4d5e5f22b47d085928654f",
+      "display_bytes": 789,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-driver-v1/receipt.json",
+      "raw_sha256": "027ae338e857fbf6df20553d74fa0b2025f6e79838942e3811ccc324812eeb75",
+      "raw_bytes": 987,
+      "display_sha256": "20a8b099ae117fe1acadfd68b17d06e4e9b56cb57893686267dcf535147d58eb",
+      "display_bytes": 933,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-driver-v1/stderr",
+      "raw_sha256": "ba50dc8258c7bf695c15edb5cc55ff06fe716fa6a1ebedaa4142db5bd5a3a0e5",
+      "raw_bytes": 1164,
+      "display_sha256": "02a71fc956fa92c3b20fdc23b6f384663f13f418b2dd874c36a6fc317a4f898d",
+      "display_bytes": 894,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 5
+        }
+      ]
+    },
+    {
+      "path": "runtime-driver-v2/receipt.json",
+      "raw_sha256": "aff784aeffe6f77ae0b06f9ebb0228ddf61f4206ff9195eb52b9c0708af5d112",
+      "raw_bytes": 1000,
+      "display_sha256": "1fbd8edfa0f6ed7b67dfa34372146eb09546a8ac54a9385bdf37c0ba92d6fd87",
+      "display_bytes": 946,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-preparation/metadata-tools.json",
+      "raw_sha256": "98ba36bc54d635e36485e45af65612e20722074a533da179865e9dafaa084f57",
+      "raw_bytes": 2228,
+      "display_sha256": "4f46b888688d4959f3367274a197f9d21c6ba4c2f67b8502a5cf16ed5fbcaa63",
+      "display_bytes": 2210,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-preparation/policy-before-reader-pins.json",
+      "raw_sha256": "c41d31243be4b860f5dea6a599ae67af3594b8a8a84d53a5c4b1d82167b6c147",
+      "raw_bytes": 54732,
+      "display_sha256": "65d2add0217e8875ae065790823a193e8caac4bedab153bec07fe04d223293f6",
+      "display_bytes": 54714,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-preparation/regression-v2.json",
+      "raw_sha256": "5172880f3b68a5d180dc539a1109b3edfbe4ee15bc6b63f0b9da293ccb8bc423",
+      "raw_bytes": 621,
+      "display_sha256": "a8912d886de32539be20bdea051fd35fe51988a89e32aee36c3a8bad34b80e85",
+      "display_bytes": 567,
+      "changes": [
+        {
+          "mapping": "workspace display root",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "runtime-results.json",
+      "raw_sha256": "2b7e3e1dbbc4637ee22dcbfc68ebc2960bcab1fdc6ddefc0859a33295d9ad1c3",
+      "raw_bytes": 22229,
+      "display_sha256": "995f66efe1f55a7d43c7e546eb3f7560922bfb7f61f7e7729ab51ca1d50c8546",
+      "display_bytes": 22157,
+      "changes": [
+        {
+          "mapping": "host Docker CLI display path",
+          "occurrences": 4
+        }
+      ]
+    }
+  ],
+  "unchanged_original_files": [
+    "COMPILE-STATIC-FREEZE.json",
+    "CONTRACTS.md",
+    "PLAN.md",
+    "PREPARATION-FREEZE.json",
+    "PUBLICATION-HANDOFF.md",
+    "REPORT.json",
+    "REPORT.md",
+    "RUNTIME-CAPTURE-PLAN.md",
+    "RUNTIME-CAPTURE-PREPARATION-v2.json",
+    "RUNTIME-CAPTURE-PREPARATION.json",
+    "RUNTIME-CAPTURE-V2-PLAN.md",
+    "aarch64.s",
+    "audit_static.py",
+    "bind_elf.py",
+    "capture_runtime_v1.py",
+    "capture_runtime_v2.py",
+    "capture_static_v3.py",
+    "case-inventory.json",
+    "check_preparation.py",
+    "check_preparation.py.stderr",
+    "check_preparation.py.stdout",
+    "commands-proposed.json",
+    "compile-static/CURRENT-STATUS.md",
+    "compile-static/E0716-proposed-fix.diff",
+    "compile-static/STATIC-HANDOFF.md",
+    "compile-static/STOP-E0716.json",
+    "compile-static/artifacts/build/aarch64/O0/pilot",
+    "compile-static/artifacts/build/aarch64/O0/pilot.ll",
+    "compile-static/artifacts/build/aarch64/O0/pilot.o",
+    "compile-static/artifacts/build/aarch64/O0/pilot.s",
+    "compile-static/artifacts/build/aarch64/O3/pilot",
+    "compile-static/artifacts/build/aarch64/O3/pilot.ll",
+    "compile-static/artifacts/build/aarch64/O3/pilot.o",
+    "compile-static/artifacts/build/aarch64/O3/pilot.s",
+    "compile-static/artifacts/build/x86_64/O0/pilot",
+    "compile-static/artifacts/build/x86_64/O0/pilot.ll",
+    "compile-static/artifacts/build/x86_64/O0/pilot.o",
+    "compile-static/artifacts/build/x86_64/O0/pilot.s",
+    "compile-static/artifacts/build/x86_64/O3/pilot",
+    "compile-static/artifacts/build/x86_64/O3/pilot.ll",
+    "compile-static/artifacts/build/x86_64/O3/pilot.o",
+    "compile-static/artifacts/build/x86_64/O3/pilot.s",
+    "compile-static/byte-identity-controls.json",
+    "compile-static/callers-aarch64-O0.txt",
+    "compile-static/callers-aarch64-O3.txt",
+    "compile-static/callers-x86_64-O0.txt",
+    "compile-static/callers-x86_64-O3.txt",
+    "compile-static/captures/aarch64-O0-pilot-after.stderr",
+    "compile-static/captures/aarch64-O0-pilot-after.stdout",
+    "compile-static/captures/aarch64-O0-pilot-before.stderr",
+    "compile-static/captures/aarch64-O0-pilot-before.stdout",
+    "compile-static/captures/aarch64-O0-pilot-summary.json",
+    "compile-static/captures/aarch64-O0-pilot.stderr",
+    "compile-static/captures/aarch64-O0-pilot.stdout",
+    "compile-static/captures/aarch64-O0-zerocopy-after.stderr",
+    "compile-static/captures/aarch64-O0-zerocopy-after.stdout",
+    "compile-static/captures/aarch64-O0-zerocopy-before.stderr",
+    "compile-static/captures/aarch64-O0-zerocopy-before.stdout",
+    "compile-static/captures/aarch64-O0-zerocopy-summary.json",
+    "compile-static/captures/aarch64-O0-zerocopy.stderr",
+    "compile-static/captures/aarch64-O0-zerocopy.stdout",
+    "compile-static/captures-v3/aarch64-O0-pilot-after.stderr",
+    "compile-static/captures-v3/aarch64-O0-pilot-after.stdout",
+    "compile-static/captures-v3/aarch64-O0-pilot-before.stderr",
+    "compile-static/captures-v3/aarch64-O0-pilot-before.stdout",
+    "compile-static/captures-v3/aarch64-O0-pilot-summary.json",
+    "compile-static/captures-v3/aarch64-O0-pilot.stderr",
+    "compile-static/captures-v3/aarch64-O0-pilot.stdout",
+    "compile-static/captures-v3/aarch64-O3-pilot-after.stderr",
+    "compile-static/captures-v3/aarch64-O3-pilot-after.stdout",
+    "compile-static/captures-v3/aarch64-O3-pilot-before.stderr",
+    "compile-static/captures-v3/aarch64-O3-pilot-before.stdout",
+    "compile-static/captures-v3/aarch64-O3-pilot-summary.json",
+    "compile-static/captures-v3/aarch64-O3-pilot.stderr",
+    "compile-static/captures-v3/aarch64-O3-pilot.stdout",
+    "compile-static/captures-v3/aarch64-O3-zerocopy-after.stderr",
+    "compile-static/captures-v3/aarch64-O3-zerocopy-after.stdout",
+    "compile-static/captures-v3/aarch64-O3-zerocopy-before.stderr",
+    "compile-static/captures-v3/aarch64-O3-zerocopy-before.stdout",
+    "compile-static/captures-v3/aarch64-O3-zerocopy-summary.json",
+    "compile-static/captures-v3/aarch64-O3-zerocopy.stderr",
+    "compile-static/captures-v3/aarch64-O3-zerocopy.stdout",
+    "compile-static/captures-v3/x86_64-O0-pilot-after.stderr",
+    "compile-static/captures-v3/x86_64-O0-pilot-after.stdout",
+    "compile-static/captures-v3/x86_64-O0-pilot-before.stderr",
+    "compile-static/captures-v3/x86_64-O0-pilot-before.stdout",
+    "compile-static/captures-v3/x86_64-O0-pilot-summary.json",
+    "compile-static/captures-v3/x86_64-O0-pilot.stderr",
+    "compile-static/captures-v3/x86_64-O0-pilot.stdout",
+    "compile-static/captures-v3/x86_64-O0-zerocopy-after.stderr",
+    "compile-static/captures-v3/x86_64-O0-zerocopy-after.stdout",
+    "compile-static/captures-v3/x86_64-O0-zerocopy-before.stderr",
+    "compile-static/captures-v3/x86_64-O0-zerocopy-before.stdout",
+    "compile-static/captures-v3/x86_64-O0-zerocopy-summary.json",
+    "compile-static/captures-v3/x86_64-O0-zerocopy.stderr",
+    "compile-static/captures-v3/x86_64-O0-zerocopy.stdout",
+    "compile-static/captures-v3/x86_64-O3-pilot-after.stderr",
+    "compile-static/captures-v3/x86_64-O3-pilot-after.stdout",
+    "compile-static/captures-v3/x86_64-O3-pilot-before.stderr",
+    "compile-static/captures-v3/x86_64-O3-pilot-before.stdout",
+    "compile-static/captures-v3/x86_64-O3-pilot-summary.json",
+    "compile-static/captures-v3/x86_64-O3-pilot.stderr",
+    "compile-static/captures-v3/x86_64-O3-pilot.stdout",
+    "compile-static/captures-v3/x86_64-O3-zerocopy-after.stderr",
+    "compile-static/captures-v3/x86_64-O3-zerocopy-after.stdout",
+    "compile-static/captures-v3/x86_64-O3-zerocopy-before.stderr",
+    "compile-static/captures-v3/x86_64-O3-zerocopy-before.stdout",
+    "compile-static/captures-v3/x86_64-O3-zerocopy-summary.json",
+    "compile-static/captures-v3/x86_64-O3-zerocopy.stderr",
+    "compile-static/captures-v3/x86_64-O3-zerocopy.stdout",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.ll.stderr",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.ll.stdout",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.o.stderr",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.o.stdout",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.s.stderr",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.s.stdout",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.stderr",
+    "compile-static/copy-captures/build-aarch64-O0-pilot.stdout",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.ll.stderr",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.ll.stdout",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.o.stderr",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.o.stdout",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.s.stderr",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.s.stdout",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.stderr",
+    "compile-static/copy-captures/build-aarch64-O3-pilot.stdout",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.ll.stderr",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.ll.stdout",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.o.stderr",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.o.stdout",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.s.stderr",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.s.stdout",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.stderr",
+    "compile-static/copy-captures/build-x86_64-O0-pilot.stdout",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.ll.stderr",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.ll.stdout",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.o.stderr",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.o.stdout",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.s.stderr",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.s.stdout",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.stderr",
+    "compile-static/copy-captures/build-x86_64-O3-pilot.stdout",
+    "compile-static/function-bindings.json",
+    "compile-static/handoff-validation.json",
+    "compile-static/image-and-function-identities.json",
+    "compile-static/inspection/aarch64-O0-image-disassembly.stderr",
+    "compile-static/inspection/aarch64-O0-image-disassembly.stdout",
+    "compile-static/inspection/aarch64-O0-image-dynamic.stderr",
+    "compile-static/inspection/aarch64-O0-image-dynamic.stdout",
+    "compile-static/inspection/aarch64-O0-image-frames.stderr",
+    "compile-static/inspection/aarch64-O0-image-frames.stdout",
+    "compile-static/inspection/aarch64-O0-image-metadata.stderr",
+    "compile-static/inspection/aarch64-O0-image-metadata.stdout",
+    "compile-static/inspection/aarch64-O0-object-disassembly.stderr",
+    "compile-static/inspection/aarch64-O0-object-disassembly.stdout",
+    "compile-static/inspection/aarch64-O0-object-frames.stderr",
+    "compile-static/inspection/aarch64-O0-object-frames.stdout",
+    "compile-static/inspection/aarch64-O0-object-metadata.stderr",
+    "compile-static/inspection/aarch64-O0-object-metadata.stdout",
+    "compile-static/inspection/aarch64-O3-image-disassembly.stderr",
+    "compile-static/inspection/aarch64-O3-image-disassembly.stdout",
+    "compile-static/inspection/aarch64-O3-image-dynamic.stderr",
+    "compile-static/inspection/aarch64-O3-image-dynamic.stdout",
+    "compile-static/inspection/aarch64-O3-image-frames.stderr",
+    "compile-static/inspection/aarch64-O3-image-frames.stdout",
+    "compile-static/inspection/aarch64-O3-image-metadata.stderr",
+    "compile-static/inspection/aarch64-O3-image-metadata.stdout",
+    "compile-static/inspection/aarch64-O3-object-disassembly.stderr",
+    "compile-static/inspection/aarch64-O3-object-disassembly.stdout",
+    "compile-static/inspection/aarch64-O3-object-frames.stderr",
+    "compile-static/inspection/aarch64-O3-object-frames.stdout",
+    "compile-static/inspection/aarch64-O3-object-metadata.stderr",
+    "compile-static/inspection/aarch64-O3-object-metadata.stdout",
+    "compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.stderr",
+    "compile-static/inspection/aarch64-library-ld-linux-aarch64-so-1.stdout",
+    "compile-static/inspection/aarch64-library-libc-so-6.stderr",
+    "compile-static/inspection/aarch64-library-libc-so-6.stdout",
+    "compile-static/inspection/aarch64-library-libgcc_s-so-1.stderr",
+    "compile-static/inspection/aarch64-library-libgcc_s-so-1.stdout",
+    "compile-static/inspection/runtime-library-files-read-only.stderr",
+    "compile-static/inspection/runtime-library-files-read-only.stdout",
+    "compile-static/inspection/x86_64-O0-image-disassembly.stderr",
+    "compile-static/inspection/x86_64-O0-image-disassembly.stdout",
+    "compile-static/inspection/x86_64-O0-image-dynamic.stderr",
+    "compile-static/inspection/x86_64-O0-image-dynamic.stdout",
+    "compile-static/inspection/x86_64-O0-image-frames.stderr",
+    "compile-static/inspection/x86_64-O0-image-frames.stdout",
+    "compile-static/inspection/x86_64-O0-image-metadata.stderr",
+    "compile-static/inspection/x86_64-O0-image-metadata.stdout",
+    "compile-static/inspection/x86_64-O0-object-disassembly.stderr",
+    "compile-static/inspection/x86_64-O0-object-disassembly.stdout",
+    "compile-static/inspection/x86_64-O0-object-frames.stderr",
+    "compile-static/inspection/x86_64-O0-object-frames.stdout",
+    "compile-static/inspection/x86_64-O0-object-metadata.stderr",
+    "compile-static/inspection/x86_64-O0-object-metadata.stdout",
+    "compile-static/inspection/x86_64-O3-image-disassembly.stderr",
+    "compile-static/inspection/x86_64-O3-image-disassembly.stdout",
+    "compile-static/inspection/x86_64-O3-image-dynamic.stderr",
+    "compile-static/inspection/x86_64-O3-image-dynamic.stdout",
+    "compile-static/inspection/x86_64-O3-image-frames.stderr",
+    "compile-static/inspection/x86_64-O3-image-frames.stdout",
+    "compile-static/inspection/x86_64-O3-image-metadata.stderr",
+    "compile-static/inspection/x86_64-O3-image-metadata.stdout",
+    "compile-static/inspection/x86_64-O3-object-disassembly.stderr",
+    "compile-static/inspection/x86_64-O3-object-disassembly.stdout",
+    "compile-static/inspection/x86_64-O3-object-frames.stderr",
+    "compile-static/inspection/x86_64-O3-object-frames.stdout",
+    "compile-static/inspection/x86_64-O3-object-metadata.stderr",
+    "compile-static/inspection/x86_64-O3-object-metadata.stdout",
+    "compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.stderr",
+    "compile-static/inspection/x86_64-library-ld-linux-x86-64-so-2.stdout",
+    "compile-static/inspection/x86_64-library-libc-so-6.stderr",
+    "compile-static/inspection/x86_64-library-libc-so-6.stdout",
+    "compile-static/inspection/x86_64-library-libgcc_s-so-1.stderr",
+    "compile-static/inspection/x86_64-library-libgcc_s-so-1.stdout",
+    "compile-static/operational/handoff-writer-01/diagnosis.json",
+    "compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stdout",
+    "compile-static/operational/preflight-sandbox-denial-01/diagnosis.json",
+    "compile-static/operational/static-caller-reader-01/audit_static.py",
+    "compile-static/operational/static-caller-reader-01/diagnosis.json",
+    "compile-static/primary/qemu-release-tag.json",
+    "compile-static/primary/qemu-v7.2.22-cpu.c",
+    "compile-static/review-core-excerpts.txt",
+    "compile-static/revision3-validation.json",
+    "compile-static/runtime-proposal.json",
+    "compile-static/selected-aarch64-O0.txt",
+    "compile-static/selected-aarch64-O3.txt",
+    "compile-static/selected-x86_64-O0.txt",
+    "compile-static/selected-x86_64-O3.txt",
+    "compile-static/static-checks.json",
+    "compile-static/static-input-identities.json",
+    "compile-static/static-summary.json",
+    "controls-proposed.json",
+    "copy_artifacts.py",
+    "coverage.json",
+    "data-preparation-commands.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/container.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/container.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/container.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-acquisition-plan.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-lock.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install-simulation.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-install.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-installed-versions.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-package-metadata.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-package-metadata.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-packages.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/cross-resolved-sha256.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/disk.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/disk.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/disk.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/fresh-container.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/install-boundary-inspect.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/linker.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/linker.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/linker.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/manifest-reader-setup-failure.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/qemu-release-tag.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/qemu-v722-cpu.c",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/qemu-x64.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-e46-destination.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-loader.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/ready-stdlib-inventory.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/rust189-component-manifest.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/rust189-x64-component.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/rustc.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/rustc.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/rustc.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-head.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-head.response",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-low-level.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-low-level.response",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-root-tree.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-root-tree.response",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-tex-tree.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/sysv-psabi-tex-tree.response",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/targets.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/targets.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/targets.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-installed-targets.stdout",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.json",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.stderr",
+    "evidence-inputs/companion-parent/e46-runtime-preflight/x64-std-install.stdout",
+    "evidence-inputs/companion-parent/e46-staging-v3/staged-inputs.json",
+    "evidence-inputs/cross-installed-versions.json",
+    "evidence-inputs/cross-installed-versions.stdout",
+    "evidence-inputs/provenance-selection39.json",
+    "evidence-inputs/provenance.json",
+    "evidence-inputs/ready-a64-cfg.json",
+    "evidence-inputs/ready-a64-cfg.stderr",
+    "evidence-inputs/ready-a64-cfg.stdout",
+    "evidence-inputs/ready-cpuinfo.json",
+    "evidence-inputs/ready-cpuinfo.stderr",
+    "evidence-inputs/ready-cpuinfo.stdout",
+    "evidence-inputs/ready-cross-linker.json",
+    "evidence-inputs/ready-cross-linker.stderr",
+    "evidence-inputs/ready-cross-linker.stdout",
+    "evidence-inputs/ready-native-linker.json",
+    "evidence-inputs/ready-native-linker.stderr",
+    "evidence-inputs/ready-native-linker.stdout",
+    "evidence-inputs/ready-platform.json",
+    "evidence-inputs/ready-platform.stderr",
+    "evidence-inputs/ready-platform.stdout",
+    "evidence-inputs/ready-qemu-cpus.json",
+    "evidence-inputs/ready-qemu-cpus.stderr",
+    "evidence-inputs/ready-qemu-cpus.stdout",
+    "evidence-inputs/ready-qemu.json",
+    "evidence-inputs/ready-qemu.stderr",
+    "evidence-inputs/ready-qemu.stdout",
+    "evidence-inputs/ready-rustc.json",
+    "evidence-inputs/ready-rustc.stderr",
+    "evidence-inputs/ready-rustc.stdout",
+    "evidence-inputs/ready-tool-hashes.json",
+    "evidence-inputs/ready-tool-hashes.stderr",
+    "evidence-inputs/ready-tool-hashes.stdout",
+    "evidence-inputs/ready-x64-cfg.json",
+    "evidence-inputs/ready-x64-cfg.stderr",
+    "evidence-inputs/ready-x64-cfg.stdout",
+    "evidence-inputs/rust189-component-manifest.toml",
+    "evidence-inputs/rust189-inline-assembly.json",
+    "evidence-inputs/rust189-inline-assembly.response",
+    "evidence-inputs/rust189-reference-submodule.json",
+    "evidence-inputs/sysv-psabi-low-level-pinned.json",
+    "evidence-inputs/sysv-psabi-low-level-pinned.response",
+    "evidence-inputs/zerocopy-e46-source.json",
+    "expected.json",
+    "history/v1/CONTRACTS.md",
+    "history/v1/PLAN.md",
+    "history/v1/PREPARATION-FREEZE.json",
+    "history/v1/aarch64.s",
+    "history/v1/case-inventory.json",
+    "history/v1/check_preparation.py",
+    "history/v1/check_preparation.py.stderr",
+    "history/v1/check_preparation.py.stdout",
+    "history/v1/commands-proposed.json",
+    "history/v1/controls-proposed.json",
+    "history/v1/data-preparation-commands.json",
+    "history/v1/expected.json",
+    "history/v1/oracle-preparation.json",
+    "history/v1/parent-input-identities.json",
+    "history/v1/pilot.rs",
+    "history/v1/preparation-checks.json",
+    "history/v1/prepare_oracles.py",
+    "history/v1/prepare_oracles.py.stderr",
+    "history/v1/prepare_oracles.py.stdout",
+    "history/v1/vectors.rs",
+    "history/v1/x86_64.s",
+    "history/v1/zerocopy-selected-source.json",
+    "history/v2/CONTRACTS.md",
+    "history/v2/PLAN.md",
+    "history/v2/PREPARATION-FREEZE.json",
+    "history/v2/aarch64.s",
+    "history/v2/case-inventory.json",
+    "history/v2/check_preparation.py",
+    "history/v2/check_preparation.py.stderr",
+    "history/v2/check_preparation.py.stdout",
+    "history/v2/commands-proposed.json",
+    "history/v2/controls-proposed.json",
+    "history/v2/data-preparation-commands.json",
+    "history/v2/expected.json",
+    "history/v2/history/v1/CONTRACTS.md",
+    "history/v2/history/v1/PLAN.md",
+    "history/v2/history/v1/PREPARATION-FREEZE.json",
+    "history/v2/history/v1/aarch64.s",
+    "history/v2/history/v1/case-inventory.json",
+    "history/v2/history/v1/check_preparation.py",
+    "history/v2/history/v1/check_preparation.py.stderr",
+    "history/v2/history/v1/check_preparation.py.stdout",
+    "history/v2/history/v1/commands-proposed.json",
+    "history/v2/history/v1/controls-proposed.json",
+    "history/v2/history/v1/data-preparation-commands.json",
+    "history/v2/history/v1/expected.json",
+    "history/v2/history/v1/oracle-preparation.json",
+    "history/v2/history/v1/parent-input-identities.json",
+    "history/v2/history/v1/pilot.rs",
+    "history/v2/history/v1/preparation-checks.json",
+    "history/v2/history/v1/prepare_oracles.py",
+    "history/v2/history/v1/prepare_oracles.py.stderr",
+    "history/v2/history/v1/prepare_oracles.py.stdout",
+    "history/v2/history/v1/vectors.rs",
+    "history/v2/history/v1/x86_64.s",
+    "history/v2/history/v1/zerocopy-selected-source.json",
+    "history/v2/oracle-preparation.json",
+    "history/v2/parent-input-identities.json",
+    "history/v2/pilot.rs",
+    "history/v2/preparation-checks.json",
+    "history/v2/prepare_oracles.py",
+    "history/v2/prepare_oracles.py.stderr",
+    "history/v2/prepare_oracles.py.stdout",
+    "history/v2/primary-contract-index.json",
+    "history/v2/revision-validation.json",
+    "history/v2/vectors.rs",
+    "history/v2/x86_64.s",
+    "history/v2/zerocopy-selected-source.json",
+    "inspect_libraries.py",
+    "inspect_static.py",
+    "milestone-scope.json",
+    "oracle-preparation.json",
+    "parent-input-identities.json",
+    "pilot.rs",
+    "preparation-checks.json",
+    "prepare_oracles.py",
+    "prepare_oracles.py.stderr",
+    "prepare_oracles.py.stdout",
+    "primary-contract-index.json",
+    "query_runtime_metadata_tools.py",
+    "regress_runtime_header_v2.py",
+    "result-validation.json",
+    "revision-validation.json",
+    "runtime-captures-v1/STOP.json",
+    "runtime-captures-v1/aarch64-O0-positive-before-files.stderr",
+    "runtime-captures-v1/aarch64-O0-positive-before-files.stdout",
+    "runtime-captures-v1/aarch64-O0-positive-before-resources.stderr",
+    "runtime-captures-v1/aarch64-O0-positive-before-resources.stdout",
+    "runtime-captures-v2/SEQUENCE.json",
+    "runtime-captures-v2/aarch64-O0-positive-after-files.stderr",
+    "runtime-captures-v2/aarch64-O0-positive-after-files.stdout",
+    "runtime-captures-v2/aarch64-O0-positive-after-resources.stderr",
+    "runtime-captures-v2/aarch64-O0-positive-after-resources.stdout",
+    "runtime-captures-v2/aarch64-O0-positive-before-files.stderr",
+    "runtime-captures-v2/aarch64-O0-positive-before-files.stdout",
+    "runtime-captures-v2/aarch64-O0-positive-before-resources.stderr",
+    "runtime-captures-v2/aarch64-O0-positive-before-resources.stdout",
+    "runtime-captures-v2/aarch64-O0-positive-data-only-controls.json",
+    "runtime-captures-v2/aarch64-O0-positive-summary.json",
+    "runtime-captures-v2/aarch64-O0-positive.stderr",
+    "runtime-captures-v2/aarch64-O0-positive.stdout",
+    "runtime-captures-v2/aarch64-O3-positive-after-files.stderr",
+    "runtime-captures-v2/aarch64-O3-positive-after-files.stdout",
+    "runtime-captures-v2/aarch64-O3-positive-after-resources.stderr",
+    "runtime-captures-v2/aarch64-O3-positive-after-resources.stdout",
+    "runtime-captures-v2/aarch64-O3-positive-before-files.stderr",
+    "runtime-captures-v2/aarch64-O3-positive-before-files.stdout",
+    "runtime-captures-v2/aarch64-O3-positive-before-resources.stderr",
+    "runtime-captures-v2/aarch64-O3-positive-before-resources.stdout",
+    "runtime-captures-v2/aarch64-O3-positive-data-only-controls.json",
+    "runtime-captures-v2/aarch64-O3-positive-summary.json",
+    "runtime-captures-v2/aarch64-O3-positive.stderr",
+    "runtime-captures-v2/aarch64-O3-positive.stdout",
+    "runtime-captures-v2/x86_64-O0-positive-after-files.stderr",
+    "runtime-captures-v2/x86_64-O0-positive-after-files.stdout",
+    "runtime-captures-v2/x86_64-O0-positive-after-resources.stderr",
+    "runtime-captures-v2/x86_64-O0-positive-after-resources.stdout",
+    "runtime-captures-v2/x86_64-O0-positive-before-files.stderr",
+    "runtime-captures-v2/x86_64-O0-positive-before-files.stdout",
+    "runtime-captures-v2/x86_64-O0-positive-before-resources.stderr",
+    "runtime-captures-v2/x86_64-O0-positive-before-resources.stdout",
+    "runtime-captures-v2/x86_64-O0-positive-data-only-controls.json",
+    "runtime-captures-v2/x86_64-O0-positive-summary.json",
+    "runtime-captures-v2/x86_64-O0-positive.stderr",
+    "runtime-captures-v2/x86_64-O0-positive.stdout",
+    "runtime-captures-v2/x86_64-O3-positive-after-files.stderr",
+    "runtime-captures-v2/x86_64-O3-positive-after-files.stdout",
+    "runtime-captures-v2/x86_64-O3-positive-after-resources.stderr",
+    "runtime-captures-v2/x86_64-O3-positive-after-resources.stdout",
+    "runtime-captures-v2/x86_64-O3-positive-before-files.stderr",
+    "runtime-captures-v2/x86_64-O3-positive-before-files.stdout",
+    "runtime-captures-v2/x86_64-O3-positive-before-resources.stderr",
+    "runtime-captures-v2/x86_64-O3-positive-before-resources.stdout",
+    "runtime-captures-v2/x86_64-O3-positive-data-only-controls.json",
+    "runtime-captures-v2/x86_64-O3-positive-summary.json",
+    "runtime-captures-v2/x86_64-O3-positive.stderr",
+    "runtime-captures-v2/x86_64-O3-positive.stdout",
+    "runtime-driver-v1/stdout",
+    "runtime-driver-v2/stderr",
+    "runtime-driver-v2/stdout",
+    "runtime-header-v2-regression.json",
+    "runtime-preparation/ast-inspection-diagnosis.json",
+    "runtime-preparation/metadata-tools.stderr",
+    "runtime-preparation/metadata-tools.stdout",
+    "runtime-preparation/regression-v2.stderr",
+    "runtime-preparation/regression-v2.stdout",
+    "runtime-preparation/validation.json",
+    "runtime-stop-v1-diagnosis.json",
+    "runtime-v2.diff",
+    "source-call-counts.json",
+    "vectors.rs",
+    "x86_64.s",
+    "zerocopy-selected-source.json",
+    "RESULTS-FREEZE.json"
+  ],
+  "additional_editorial_change": {
+    "path": "REPORT.md",
+    "original_sha256": "6b9b45fa8fe2cfd86df6d18a7760b33a9bab67c2fc9f8b8a7e7ee94cde99af85",
+    "public_sha256": "6cb44415bbf5cd7d74b83de1019418490deb4b9c540505a1840e2dece87c5355",
+    "reason": "Explain display projections and public versus historical manifests, and link the independently reviewed original-image replays; no original technical outcome changed"
+  }
+}

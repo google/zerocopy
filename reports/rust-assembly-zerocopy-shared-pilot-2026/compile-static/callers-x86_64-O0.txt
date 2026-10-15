@@ -1,0 +1,260 @@
+
+pilot_mul
+   13cd4:	00 
+   13cd5:	48 89 84 24 f8 00 00 	mov    QWORD PTR [rsp+0xf8],rax
+   13cdc:	00 
+   13cdd:	48 8b 8c 24 10 01 00 	mov    rcx,QWORD PTR [rsp+0x110]
+   13ce4:	00 
+   13ce5:	48 8b 84 24 18 01 00 	mov    rax,QWORD PTR [rsp+0x118]
+   13cec:	00 
+   13ced:	48 89 8c 24 a8 49 00 	mov    QWORD PTR [rsp+0x49a8],rcx
+   13cf4:	00 
+   13cf5:	48 c7 84 24 b0 49 00 	mov    QWORD PTR [rsp+0x49b0],0x0
+   13cfc:	00 00 00 00 00 
+   13d01:	48 c7 84 24 b8 49 00 	mov    QWORD PTR [rsp+0x49b8],0x0
+   13d08:	00 00 00 00 00 
+   13d0d:	48 89 84 24 c0 49 00 	mov    QWORD PTR [rsp+0x49c0],rax
+   13d14:	00 
+   13d15:	48 8d 94 24 a8 49 00 	lea    rdx,[rsp+0x49a8]
+   13d1c:	00 
+   13d1d:	48 83 c2 08          	add    rdx,0x8
+   13d21:	ff 15 29 d0 05 00    	call   QWORD PTR [rip+0x5d029]        # 70d50 <_GLOBAL_OFFSET_TABLE_+0x648>
+   13d27:	48 8b 94 24 f0 00 00 	mov    rdx,QWORD PTR [rsp+0xf0]
+   13d2e:	00 
+   13d2f:	48 8b 8c 24 f8 00 00 	mov    rcx,QWORD PTR [rsp+0xf8]
+   13d36:	00 
+   13d37:	48 8b b4 24 10 01 00 	mov    rsi,QWORD PTR [rsp+0x110]
+
+pilot_bswap
+   141a8:	ba 20 01 00 00       	mov    edx,0x120
+   141ad:	e8 a6 2e ff ff       	call   7058 <memcpy@plt>
+   141b2:	48 8d bc 24 78 41 01 	lea    rdi,[rsp+0x14178]
+   141b9:	00 
+   141ba:	48 8d b4 24 58 40 01 	lea    rsi,[rsp+0x14058]
+   141c1:	00 
+   141c2:	e8 59 f2 ff ff       	call   13420 <<core::array::iter::IntoIter<T,_> as core::iter::traits::iterator::Iterator>::next>
+   141c7:	48 f7 84 24 78 41 01 	test   QWORD PTR [rsp+0x14178],0x1
+   141ce:	00 01 00 00 00 
+   141d3:	0f 84 fd 00 00 00    	je     142d6 <extended_pilot::main+0x736>
+   141d9:	48 8b bc 24 80 41 01 	mov    rdi,QWORD PTR [rsp+0x14180]
+   141e0:	00 
+   141e1:	48 89 bc 24 88 00 00 	mov    QWORD PTR [rsp+0x88],rdi
+   141e8:	00 
+   141e9:	48 8b 84 24 88 41 01 	mov    rax,QWORD PTR [rsp+0x14188]
+   141f0:	00 
+   141f1:	48 89 84 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rax
+   141f8:	00 
+   141f9:	ff 15 81 c8 05 00    	call   QWORD PTR [rip+0x5c881]        # 70a80 <_GLOBAL_OFFSET_TABLE_+0x378>
+   141ff:	48 8b 8c 24 80 00 00 	mov    rcx,QWORD PTR [rsp+0x80]
+   14206:	00 
+   14207:	48 39 c8             	cmp    rax,rcx
+   1420a:	0f 94 c0             	sete   al
+   1420d:	0f b6 f8             	movzx  edi,al
+
+pilot_load
+   1437e:	00 
+   1437f:	48 89 8c 24 08 43 01 	mov    QWORD PTR [rsp+0x14308],rcx
+   14386:	00 
+   14387:	48 89 84 24 10 43 01 	mov    QWORD PTR [rsp+0x14310],rax
+   1438e:	00 
+   1438f:	48 8b 8c 24 10 01 00 	mov    rcx,QWORD PTR [rsp+0x110]
+   14396:	00 
+   14397:	48 8b 84 24 18 01 00 	mov    rax,QWORD PTR [rsp+0x118]
+   1439e:	00 
+   1439f:	48 89 8c 24 18 43 01 	mov    QWORD PTR [rsp+0x14318],rcx
+   143a6:	00 
+   143a7:	48 c7 84 24 20 43 01 	mov    QWORD PTR [rsp+0x14320],0x0
+   143ae:	00 00 00 00 00 
+   143b3:	48 89 84 24 28 43 01 	mov    QWORD PTR [rsp+0x14328],rax
+   143ba:	00 
+   143bb:	48 8d bc 24 00 43 01 	lea    rdi,[rsp+0x14300]
+   143c2:	00 
+   143c3:	48 83 c7 08          	add    rdi,0x8
+   143c7:	ff 15 c3 cb 05 00    	call   QWORD PTR [rip+0x5cbc3]        # 70f90 <_GLOBAL_OFFSET_TABLE_+0x888>
+   143cd:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+   143d2:	48 8d bc 24 00 43 01 	lea    rdi,[rsp+0x14300]
+   143d9:	00 
+   143da:	48 83 c7 08          	add    rdi,0x8
+   143de:	e8 ed f3 ff ff       	call   137d0 <extended_pilot::inline_load>
+
+pilot_call_helper
+   14707:	00 
+   14708:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+   1470d:	48 8b 84 24 58 a4 01 	mov    rax,QWORD PTR [rsp+0x1a458]
+   14714:	00 
+   14715:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+   1471a:	48 8b 84 24 60 a4 01 	mov    rax,QWORD PTR [rsp+0x1a460]
+   14721:	00 
+   14722:	48 89 44 24 50       	mov    QWORD PTR [rsp+0x50],rax
+   14727:	c6 84 24 6b a4 01 00 	mov    BYTE PTR [rsp+0x1a46b],0x0
+   1472e:	00 
+   1472f:	48 8d 3d 4a d2 05 00 	lea    rdi,[rip+0x5d24a]        # 71980 <extended_pilot::HELPER_CALLS>
+   14736:	31 c0                	xor    eax,eax
+   14738:	89 c6                	mov    esi,eax
+   1473a:	0f b6 94 24 6b a4 01 	movzx  edx,BYTE PTR [rsp+0x1a46b]
+   14741:	00 
+   14742:	e8 b9 98 ff ff       	call   e000 <core::sync::atomic::AtomicUsize::store>
+   14747:	48 8b 7c 24 40       	mov    rdi,QWORD PTR [rsp+0x40]
+   1474c:	48 8b 74 24 48       	mov    rsi,QWORD PTR [rsp+0x48]
+   14751:	ff 15 99 c5 05 00    	call   QWORD PTR [rip+0x5c599]        # 70cf0 <_GLOBAL_OFFSET_TABLE_+0x5e8>
+   14757:	48 8b 4c 24 50       	mov    rcx,QWORD PTR [rsp+0x50]
+   1475c:	48 39 c8             	cmp    rax,rcx
+   1475f:	0f 84 07 03 00 00    	je     14a6c <extended_pilot::main+0xecc>
+   14765:	e9 f8 02 00 00       	jmp    14a62 <extended_pilot::main+0xec2>
+   1476a:	48 8d bc 24 20 89 01 	lea    rdi,[rsp+0x18920]
+
+pilot_simd_add16
+   14d25:	24 01                	and    al,0x1
+   14d27:	88 84 24 e5 6d 01 00 	mov    BYTE PTR [rsp+0x16de5],al
+   14d2e:	8a 84 24 e5 6d 01 00 	mov    al,BYTE PTR [rsp+0x16de5]
+   14d35:	48 8d 35 e0 9f 04 00 	lea    rsi,[rip+0x49fe0]        # 5ed1c <_fini+0xdedc>
+   14d3c:	ba 12 00 00 00       	mov    edx,0x12
+   14d41:	48 8d 8c 24 00 01 00 	lea    rcx,[rsp+0x100]
+   14d48:	00 
+   14d49:	24 01                	and    al,0x1
+   14d4b:	0f b6 f8             	movzx  edi,al
+   14d4e:	e8 4d ed ff ff       	call   13aa0 <extended_pilot::check>
+   14d53:	48 8d bc 24 90 6d 01 	lea    rdi,[rsp+0x16d90]
+   14d5a:	00 
+   14d5b:	48 83 c7 10          	add    rdi,0x10
+   14d5f:	48 8d b4 24 90 6b 01 	lea    rsi,[rsp+0x16b90]
+   14d66:	00 
+   14d67:	48 83 c6 10          	add    rsi,0x10
+   14d6b:	48 8b 94 24 d8 6d 01 	mov    rdx,QWORD PTR [rsp+0x16dd8]
+   14d72:	00 
+   14d73:	ff 15 d7 ba 05 00    	call   QWORD PTR [rip+0x5bad7]        # 70850 <_GLOBAL_OFFSET_TABLE_+0x148>
+   14d79:	48 8d b4 24 90 6b 01 	lea    rsi,[rsp+0x16b90]
+   14d80:	00 
+   14d81:	48 83 c6 10          	add    rsi,0x10
+   14d85:	48 8d 94 24 90 6c 01 	lea    rdx,[rsp+0x16c90]
+   14d8c:	00 
+
+pilot_copy16
+   14f59:	48 83 f8 00          	cmp    rax,0x0
+   14f5d:	0f 94 c0             	sete   al
+   14f60:	24 01                	and    al,0x1
+   14f62:	88 84 24 bd 46 01 00 	mov    BYTE PTR [rsp+0x146bd],al
+   14f69:	8a 84 24 bd 46 01 00 	mov    al,BYTE PTR [rsp+0x146bd]
+   14f70:	48 8d 35 d3 9d 04 00 	lea    rsi,[rip+0x49dd3]        # 5ed4a <_fini+0xdf0a>
+   14f77:	ba 0e 00 00 00       	mov    edx,0xe
+   14f7c:	48 8d 8c 24 00 01 00 	lea    rcx,[rsp+0x100]
+   14f83:	00 
+   14f84:	24 01                	and    al,0x1
+   14f86:	0f b6 f8             	movzx  edi,al
+   14f89:	e8 12 eb ff ff       	call   13aa0 <extended_pilot::check>
+   14f8e:	48 8d bc 24 b0 45 01 	lea    rdi,[rsp+0x145b0]
+   14f95:	00 
+   14f96:	48 83 c7 10          	add    rdi,0x10
+   14f9a:	48 8d b4 24 70 45 01 	lea    rsi,[rsp+0x14570]
+   14fa1:	00 
+   14fa2:	48 83 c6 10          	add    rsi,0x10
+   14fa6:	ff 15 cc b7 05 00    	call   QWORD PTR [rip+0x5b7cc]        # 70778 <_GLOBAL_OFFSET_TABLE_+0x70>
+   14fac:	48 8d bc 24 f0 45 01 	lea    rdi,[rsp+0x145f0]
+   14fb3:	00 
+   14fb4:	48 83 c7 10          	add    rdi,0x10
+   14fb8:	48 8d b4 24 70 45 01 	lea    rsi,[rsp+0x14570]
+   14fbf:	00 
+
+pilot_simd_copy16
+   14f7c:	48 8d 8c 24 00 01 00 	lea    rcx,[rsp+0x100]
+   14f83:	00 
+   14f84:	24 01                	and    al,0x1
+   14f86:	0f b6 f8             	movzx  edi,al
+   14f89:	e8 12 eb ff ff       	call   13aa0 <extended_pilot::check>
+   14f8e:	48 8d bc 24 b0 45 01 	lea    rdi,[rsp+0x145b0]
+   14f95:	00 
+   14f96:	48 83 c7 10          	add    rdi,0x10
+   14f9a:	48 8d b4 24 70 45 01 	lea    rsi,[rsp+0x14570]
+   14fa1:	00 
+   14fa2:	48 83 c6 10          	add    rsi,0x10
+   14fa6:	ff 15 cc b7 05 00    	call   QWORD PTR [rip+0x5b7cc]        # 70778 <_GLOBAL_OFFSET_TABLE_+0x70>
+   14fac:	48 8d bc 24 f0 45 01 	lea    rdi,[rsp+0x145f0]
+   14fb3:	00 
+   14fb4:	48 83 c7 10          	add    rdi,0x10
+   14fb8:	48 8d b4 24 70 45 01 	lea    rsi,[rsp+0x14570]
+   14fbf:	00 
+   14fc0:	48 83 c6 10          	add    rsi,0x10
+   14fc4:	ff 15 a6 bc 05 00    	call   QWORD PTR [rip+0x5bca6]        # 70c70 <_GLOBAL_OFFSET_TABLE_+0x568>
+   14fca:	48 8d bc 24 70 45 01 	lea    rdi,[rsp+0x14570]
+   14fd1:	00 
+   14fd2:	48 83 c7 10          	add    rdi,0x10
+   14fd6:	48 8d b4 24 30 46 01 	lea    rsi,[rsp+0x14630]
+   14fdd:	00 
+
+pilot_ptr
+   15220:	48 89 84 24 18 47 01 	mov    QWORD PTR [rsp+0x14718],rax
+   15227:	00 
+   15228:	48 8d bc 24 08 47 01 	lea    rdi,[rsp+0x14708]
+   1522f:	00 
+   15230:	e8 ab 8d ff ff       	call   dfe0 <core::iter::range::<impl core::iter::traits::iterator::Iterator for core::ops::range::RangeInclusive<A>>::next>
+   15235:	48 89 84 24 20 47 01 	mov    QWORD PTR [rsp+0x14720],rax
+   1523c:	00 
+   1523d:	48 89 94 24 28 47 01 	mov    QWORD PTR [rsp+0x14728],rdx
+   15244:	00 
+   15245:	48 f7 84 24 20 47 01 	test   QWORD PTR [rsp+0x14720],0x1
+   1524c:	00 01 00 00 00 
+   15251:	0f 84 01 f2 ff ff    	je     14458 <extended_pilot::main+0x8b8>
+   15257:	48 8b b4 24 28 47 01 	mov    rsi,QWORD PTR [rsp+0x14728]
+   1525e:	00 
+   1525f:	48 89 74 24 18       	mov    QWORD PTR [rsp+0x18],rsi
+   15264:	48 8d bc 24 70 45 01 	lea    rdi,[rsp+0x14570]
+   1526b:	00 
+   1526c:	48 83 c7 10          	add    rdi,0x10
+   15270:	ff 15 9a b6 05 00    	call   QWORD PTR [rip+0x5b69a]        # 70910 <_GLOBAL_OFFSET_TABLE_+0x208>
+   15276:	48 8b 54 24 18       	mov    rdx,QWORD PTR [rsp+0x18]
+   1527b:	48 8d 8c 24 70 45 01 	lea    rcx,[rsp+0x14570]
+   15282:	00 
+   15283:	48 83 c1 10          	add    rcx,0x10
+   15287:	48 01 d1             	add    rcx,rdx
+
+pilot_store
+   1535a:	00 
+   1535b:	48 8d b4 24 38 43 01 	lea    rsi,[rsp+0x14338]
+   15362:	00 
+   15363:	e8 78 a4 ff ff       	call   f7e0 <core::array::equality::<impl core::cmp::PartialEq<[U; N]> for [T; N]>::eq>
+   15368:	24 01                	and    al,0x1
+   1536a:	88 84 24 37 43 01 00 	mov    BYTE PTR [rsp+0x14337],al
+   15371:	8a 84 24 37 43 01 00 	mov    al,BYTE PTR [rsp+0x14337]
+   15378:	48 8d 35 3f 9a 04 00 	lea    rsi,[rip+0x49a3f]        # 5edbe <_fini+0xdf7e>
+   1537f:	ba 15 00 00 00       	mov    edx,0x15
+   15384:	48 8d 8c 24 00 01 00 	lea    rcx,[rsp+0x100]
+   1538b:	00 
+   1538c:	24 01                	and    al,0x1
+   1538e:	0f b6 f8             	movzx  edi,al
+   15391:	e8 0a e7 ff ff       	call   13aa0 <extended_pilot::check>
+   15396:	48 8b 74 24 68       	mov    rsi,QWORD PTR [rsp+0x68]
+   1539b:	48 8d bc 24 18 43 01 	lea    rdi,[rsp+0x14318]
+   153a2:	00 
+   153a3:	48 83 c7 08          	add    rdi,0x8
+   153a7:	ff 15 b3 b5 05 00    	call   QWORD PTR [rip+0x5b5b3]        # 70960 <_GLOBAL_OFFSET_TABLE_+0x258>
+   153ad:	48 8b 4c 24 68       	mov    rcx,QWORD PTR [rsp+0x68]
+   153b2:	48 8b 94 24 10 01 00 	mov    rdx,QWORD PTR [rsp+0x110]
+   153b9:	00 
+   153ba:	48 8b 84 24 18 01 00 	mov    rax,QWORD PTR [rsp+0x118]
+   153c1:	00 
+
+pilot_add128
+   156de:	eb 25                	jmp    15705 <extended_pilot::main+0x1b65>
+   156e0:	48 8b 84 24 b8 00 00 	mov    rax,QWORD PTR [rsp+0xb8]
+   156e7:	00 
+   156e8:	48 8b 8c 24 c0 00 00 	mov    rcx,QWORD PTR [rsp+0xc0]
+   156ef:	00 
+   156f0:	48 39 c8             	cmp    rax,rcx
+   156f3:	75 d9                	jne    156ce <extended_pilot::main+0x1b2e>
+   156f5:	48 8d 84 24 68 89 00 	lea    rax,[rsp+0x8968]
+   156fc:	00 
+   156fd:	48 89 84 24 a8 89 00 	mov    QWORD PTR [rsp+0x89a8],rax
+   15704:	00 
+   15705:	48 8b b4 24 a8 89 00 	mov    rsi,QWORD PTR [rsp+0x89a8]
+   1570c:	00 
+   1570d:	48 8d 94 24 88 89 00 	lea    rdx,[rsp+0x8988]
+   15714:	00 
+   15715:	48 83 c2 08          	add    rdx,0x8
+   15719:	48 8d bc 24 68 89 00 	lea    rdi,[rsp+0x8968]
+   15720:	00 
+   15721:	ff 15 89 b4 05 00    	call   QWORD PTR [rip+0x5b489]        # 70bb0 <_GLOBAL_OFFSET_TABLE_+0x4a8>
+   15727:	48 8b 94 24 c8 00 00 	mov    rdx,QWORD PTR [rsp+0xc8]
+   1572e:	00 
+   1572f:	48 8b 8c 24 d0 00 00 	mov    rcx,QWORD PTR [rsp+0xd0]
+   15736:	00 
+   15737:	48 89 04 24          	mov    QWORD PTR [rsp],rax

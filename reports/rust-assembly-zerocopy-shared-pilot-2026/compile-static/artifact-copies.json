@@ -1,0 +1,370 @@
+[
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O0/pilot",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O0/pilot"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.063918208,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O0/pilot",
+      "bytes": 4049280,
+      "sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "mode": "0o755",
+      "resolved": "/e46/build/aarch64/O0/pilot"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+    "copy_bytes": 4049280,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O0/pilot.ll",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O0/pilot.ll"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.029572666999999997,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O0/pilot.ll",
+      "bytes": 661043,
+      "sha256": "a616239be3a38f2d8ba72d02a8ff97f6465d8f9d7a825cbac75b1a1ccd2c1bc0",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O0/pilot.ll"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "a616239be3a38f2d8ba72d02a8ff97f6465d8f9d7a825cbac75b1a1ccd2c1bc0",
+    "copy_bytes": 661043,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O0/pilot.o",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O0/pilot.o"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.024139582999999992,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O0/pilot.o",
+      "bytes": 253736,
+      "sha256": "0f1c90ffb65103b3b912efa9542d80b5d6017eb65c7f990d75df9ea8e5f58bb8",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O0/pilot.o"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "0f1c90ffb65103b3b912efa9542d80b5d6017eb65c7f990d75df9ea8e5f58bb8",
+    "copy_bytes": 253736,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O0/pilot.s",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O0/pilot.s"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.029762542000000003,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O0/pilot.s",
+      "bytes": 670135,
+      "sha256": "38a353f98ec007ecffe60cab1b6f045db0809b92eaa4baf87ae42d8e7e94be65",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O0/pilot.s"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "38a353f98ec007ecffe60cab1b6f045db0809b92eaa4baf87ae42d8e7e94be65",
+    "copy_bytes": 670135,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O3/pilot",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O3/pilot"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.038298957999999994,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O3/pilot",
+      "bytes": 3933984,
+      "sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+      "mode": "0o755",
+      "resolved": "/e46/build/aarch64/O3/pilot"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+    "copy_bytes": 3933984,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O3/pilot.ll",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O3/pilot.ll"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.026184333000000004,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O3/pilot.ll",
+      "bytes": 345281,
+      "sha256": "30c4507913b6339e6325e5947a683f49dafd4a3813163351c42fd764bc527aa2",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O3/pilot.ll"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "30c4507913b6339e6325e5947a683f49dafd4a3813163351c42fd764bc527aa2",
+    "copy_bytes": 345281,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O3/pilot.o",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O3/pilot.o"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.025163457999999972,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O3/pilot.o",
+      "bytes": 79744,
+      "sha256": "ba178e05a648ba2d16d43ab7a56038a42fe23df0b10ac4296dfa4541f810d49a",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O3/pilot.o"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "ba178e05a648ba2d16d43ab7a56038a42fe23df0b10ac4296dfa4541f810d49a",
+    "copy_bytes": 79744,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/aarch64/O3/pilot.s",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/aarch64/O3/pilot.s"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.027485334000000028,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/aarch64/O3/pilot.s",
+      "bytes": 252599,
+      "sha256": "21ee7045f210cd1acf52310032a5c91f1833b2b1f2db73ddac4175933f580c7c",
+      "mode": "0o644",
+      "resolved": "/e46/build/aarch64/O3/pilot.s"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "21ee7045f210cd1acf52310032a5c91f1833b2b1f2db73ddac4175933f580c7c",
+    "copy_bytes": 252599,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O0/pilot",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O0/pilot"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.039909749999999966,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O0/pilot",
+      "bytes": 3956504,
+      "sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+      "mode": "0o755",
+      "resolved": "/e46/build/x86_64/O0/pilot"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+    "copy_bytes": 3956504,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O0/pilot.ll",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O0/pilot.ll"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.02646779199999999,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O0/pilot.ll",
+      "bytes": 664874,
+      "sha256": "f2c954b2e451d53dfde0eae876f1b8783d9fbfe2979904df1066e86af93c716f",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O0/pilot.ll"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "f2c954b2e451d53dfde0eae876f1b8783d9fbfe2979904df1066e86af93c716f",
+    "copy_bytes": 664874,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O0/pilot.o",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O0/pilot.o"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.02350595900000002,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O0/pilot.o",
+      "bytes": 240784,
+      "sha256": "6ec7cae837203a116b2cf54c603e81581ab35adac61025252bfd5b07e03aa576",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O0/pilot.o"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "6ec7cae837203a116b2cf54c603e81581ab35adac61025252bfd5b07e03aa576",
+    "copy_bytes": 240784,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O0/pilot.s",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O0/pilot.s"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.026225749999999992,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O0/pilot.s",
+      "bytes": 645166,
+      "sha256": "7d0fb852c232c5aff0aa34dfba5792b21ddcf55c15f5327ab6195aa379192f50",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O0/pilot.s"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "7d0fb852c232c5aff0aa34dfba5792b21ddcf55c15f5327ab6195aa379192f50",
+    "copy_bytes": 645166,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O3/pilot",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O3/pilot"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.041555624999999985,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O3/pilot",
+      "bytes": 3877584,
+      "sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "mode": "0o755",
+      "resolved": "/e46/build/x86_64/O3/pilot"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+    "copy_bytes": 3877584,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O3/pilot.ll",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O3/pilot.ll"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.025513500000000022,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O3/pilot.ll",
+      "bytes": 345794,
+      "sha256": "450b462e6c5ee33f7cf268ffc5fa3e2e6e40529e9fbf259a028526ac26f23d6a",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O3/pilot.ll"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "450b462e6c5ee33f7cf268ffc5fa3e2e6e40529e9fbf259a028526ac26f23d6a",
+    "copy_bytes": 345794,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O3/pilot.o",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O3/pilot.o"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.025029499999999982,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O3/pilot.o",
+      "bytes": 78280,
+      "sha256": "412216a187aa5a2e6fee73b561dc7c71042a012d1555a1829b546d23bbd6ea71",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O3/pilot.o"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "412216a187aa5a2e6fee73b561dc7c71042a012d1555a1829b546d23bbd6ea71",
+    "copy_bytes": 78280,
+    "copy_mode": "0o644"
+  },
+  {
+    "argv": [
+      "/path/to/docker",
+      "cp",
+      "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5:/e46/build/x86_64/O3/pilot.s",
+      "/path/to/anneal-workspace/work/execution/extended-pilot/compile-static/artifacts/build/x86_64/O3/pilot.s"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.02502854199999993,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "expected": {
+      "path": "build/x86_64/O3/pilot.s",
+      "bytes": 248286,
+      "sha256": "5b88cd5444a5e71b89c3468692fefa181a57b522e57558775ce63e305e0335e8",
+      "mode": "0o644",
+      "resolved": "/e46/build/x86_64/O3/pilot.s"
+    },
+    "evidence_copy_executed": false,
+    "copy_sha256": "5b88cd5444a5e71b89c3468692fefa181a57b522e57558775ce63e305e0335e8",
+    "copy_bytes": 248286,
+    "copy_mode": "0o644"
+  }
+]

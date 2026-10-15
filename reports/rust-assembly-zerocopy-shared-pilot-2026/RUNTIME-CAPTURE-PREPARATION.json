@@ -1,0 +1,71 @@
+{
+  "stage": "frozen-runtime-capture-preparation-only",
+  "created_utc": "2026-10-15T00:52:09.063077+00:00",
+  "helper": "capture_runtime_v1.py",
+  "helper_sha256": "862a6a7bfcd8c23783c9d0e64dd0d24032402cf3bab631fdd7cbbf82a9607887",
+  "policy_sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f",
+  "prior_static_freeze_sha256": "e4de79c8b18cdb1f8735cef55e89c231eba4087c9da2065b31073fbb5ab50c3f",
+  "runtime_proposal_sha256": "b4855757ea4b0d0b5096c12274432cdf8af1b50cc7d1938e04bcdc2f42aba186",
+  "runtime_helper_invoked": false,
+  "target_executed": false,
+  "new_container_action": "Only explicit parent-authorized read-only env/Python resolved-path/stat/SHA query; actual raw receipt retained",
+  "expected_future_target_calls": 4,
+  "data_only_output_controls_after_success": 6,
+  "manifest_self_excluded": true,
+  "files": [
+    {
+      "path": "capture_runtime_v1.py",
+      "bytes": 18862,
+      "sha256": "862a6a7bfcd8c23783c9d0e64dd0d24032402cf3bab631fdd7cbbf82a9607887"
+    },
+    {
+      "path": "runtime-capture-policy.json",
+      "bytes": 56524,
+      "sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f"
+    },
+    {
+      "path": "query_runtime_metadata_tools.py",
+      "bytes": 1529,
+      "sha256": "25b446a77a4e2ddc6ca3f1fc34f933b02adcb9d018e085963d1df352d81987f4"
+    },
+    {
+      "path": "RUNTIME-CAPTURE-PLAN.md",
+      "bytes": 5183,
+      "sha256": "74ce9b7e872aa4dcafb039e5eaa5f518972eee3b66543630d213b05d4cf1e39d"
+    },
+    {
+      "path": "runtime-preparation/ast-inspection-diagnosis.json",
+      "bytes": 645,
+      "sha256": "2a0247f9c6b1076bc3af69982e49062be239dfab8f2f4577de470cefb040fe7d"
+    },
+    {
+      "path": "runtime-preparation/metadata-tools.json",
+      "bytes": 2228,
+      "sha256": "98ba36bc54d635e36485e45af65612e20722074a533da179865e9dafaa084f57"
+    },
+    {
+      "path": "runtime-preparation/metadata-tools.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "runtime-preparation/metadata-tools.stdout",
+      "bytes": 1398,
+      "sha256": "21b10088160dcdd29664929b96a8edc4bfbb726f8c7082efecdd807863fb27f9"
+    },
+    {
+      "path": "runtime-preparation/policy-before-reader-pins.json",
+      "bytes": 54732,
+      "sha256": "c41d31243be4b860f5dea6a599ae67af3594b8a8a84d53a5c4b1d82167b6c147"
+    },
+    {
+      "path": "runtime-preparation/validation.json",
+      "bytes": 1938,
+      "sha256": "695670ccea79d637f15b197464e0e5e6ae41d26837b9548e3f4e47bd6cd03bfc"
+    }
+  ],
+  "file_count": 10,
+  "bytes": 143039,
+  "future_capture_directory": "runtime-captures-v1",
+  "authority": "No runtime grant is implied by this preparation. Parent reads exact helper and grants separately."
+}

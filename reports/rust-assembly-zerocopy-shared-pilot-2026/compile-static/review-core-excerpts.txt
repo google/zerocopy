@@ -1,0 +1,689 @@
+=== aarch64 O0 selected helper/FDE ===
+object helper [0x58,0x70)
+00000014 0000000000000020 00000018 FDE cie=00000000 pc=0000000000000058..0000000000000070
+  DW_CFA_advance_loc: 4 to 000000000000005c
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_offset: r29 (x29) at cfa-16
+  DW_CFA_offset: r30 (x30) at cfa-8
+  DW_CFA_advance_loc: 4 to 0000000000000060
+  DW_CFA_def_cfa_register: r29 (x29)
+  DW_CFA_advance_loc: 12 to 000000000000006c
+  DW_CFA_def_cfa: r31 (sp) ofs 0
+  DW_CFA_restore: r29 (x29)
+  DW_CFA_restore: r30 (x30)
+  DW_CFA_nop
+  DW_CFA_nop
+  DW_CFA_nop
+image helper [0x9d2c,0x9d44)
+0000009c 0000000000000020 00000018 FDE cie=00000088 pc=0000000000009d2c..0000000000009d44
+  DW_CFA_advance_loc: 4 to 0000000000009d30
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_offset: r29 (x29) at cfa-16
+  DW_CFA_offset: r30 (x30) at cfa-8
+  DW_CFA_advance_loc: 4 to 0000000000009d34
+  DW_CFA_def_cfa_register: r29 (x29)
+  DW_CFA_advance_loc: 12 to 0000000000009d40
+  DW_CFA_def_cfa: r31 (sp) ofs 0
+  DW_CFA_restore: r29 (x29)
+  DW_CFA_restore: r30 (x30)
+  DW_CFA_nop
+  DW_CFA_nop
+  DW_CFA_nop
+
+### image: pilot_helper
+000000000000facc <pilot_helper>:
+    facc:	d100c3ff 	sub	sp, sp, #0x30
+    fad0:	a9027bfd 	stp	x29, x30, [sp, #32]
+    fad4:	910083fd 	add	x29, sp, #0x20
+    fad8:	f9000be0 	str	x0, [sp, #16]
+    fadc:	f90007e1 	str	x1, [sp, #8]
+    fae0:	381ff3bf 	sturb	wzr, [x29, #-1]
+    fae4:	385ff3a2 	ldurb	w2, [x29, #-1]
+    fae8:	b0000380 	adrp	x0, 80000 <__dso_handle>
+    faec:	9125e000 	add	x0, x0, #0x978
+    faf0:	52800028 	mov	w8, #0x1                   	// #1
+    faf4:	2a0803e1 	mov	w1, w8
+    faf8:	97ffedfe 	bl	b2f0 <core::sync::atomic::AtomicUsize::fetch_add>
+    fafc:	f94007e1 	ldr	x1, [sp, #8]
+    fb00:	f9400be0 	ldr	x0, [sp, #16]
+    fb04:	97ffffe6 	bl	fa9c <extended_pilot::helper_math>
+    fb08:	a9427bfd 	ldp	x29, x30, [sp, #32]
+    fb0c:	9100c3ff 	add	sp, sp, #0x30
+    fb10:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_carry
+000000000000fdc0 <extended_pilot::inline_carry>:
+    fdc0:	d10043ff 	sub	sp, sp, #0x10
+    fdc4:	f90003e0 	str	x0, [sp]
+    fdc8:	f94003e9 	ldr	x9, [sp]
+    fdcc:	f100045f 	cmp	x2, #0x1
+    fdd0:	ba010129 	adcs	x9, x9, x1
+    fdd4:	9a9f37e8 	cset	x8, cs	// cs = hs, nlast
+    fdd8:	f90003e9 	str	x9, [sp]
+    fddc:	f90007e8 	str	x8, [sp, #8]
+    fde0:	f94003e0 	ldr	x0, [sp]
+    fde4:	f94007e1 	ldr	x1, [sp, #8]
+    fde8:	910043ff 	add	sp, sp, #0x10
+    fdec:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_label
+000000000000fdf0 <extended_pilot::inline_label>:
+    fdf0:	d10083ff 	sub	sp, sp, #0x20
+    fdf4:	a9017bfd 	stp	x29, x30, [sp, #16]
+    fdf8:	910043fd 	add	x29, sp, #0x10
+    fdfc:	52800528 	mov	w8, #0x29                  	// #41
+    fe00:	f90007e8 	str	x8, [sp, #8]
+    fe04:	b4000040 	cbz	x0, fe0c <extended_pilot::inline_label+0x1c>
+    fe08:	14000004 	b	fe18 <extended_pilot::inline_label+0x28>
+    fe0c:	52800228 	mov	w8, #0x11                  	// #17
+    fe10:	f90007e8 	str	x8, [sp, #8]
+    fe14:	14000001 	b	fe18 <extended_pilot::inline_label+0x28>
+    fe18:	f94007e0 	ldr	x0, [sp, #8]
+    fe1c:	a9417bfd 	ldp	x29, x30, [sp, #16]
+    fe20:	910083ff 	add	sp, sp, #0x20
+    fe24:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_load
+000000000000fe28 <extended_pilot::inline_load>:
+    fe28:	d10043ff 	sub	sp, sp, #0x10
+    fe2c:	f9400008 	ldr	x8, [x0]
+    fe30:	f90007e8 	str	x8, [sp, #8]
+    fe34:	f94007e0 	ldr	x0, [sp, #8]
+    fe38:	910043ff 	add	sp, sp, #0x10
+    fe3c:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_store
+000000000000fe40 <extended_pilot::inline_store>:
+    fe40:	f9000001 	str	x1, [x0]
+    fe44:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_decode
+000000000000fee8 <extended_pilot::zc_decode>:
+    fee8:	d101c3ff 	sub	sp, sp, #0x70
+    feec:	a9067bfd 	stp	x29, x30, [sp, #96]
+    fef0:	910183fd 	add	x29, sp, #0x60
+    fef4:	910063e8 	add	x8, sp, #0x18
+    fef8:	f90007e8 	str	x8, [sp, #8]
+    fefc:	52800109 	mov	w9, #0x8                   	// #8
+    ff00:	2a0903e1 	mov	w1, w9
+    ff04:	97fffd68 	bl	f4a4 <zerocopy::FromBytes::read_from_bytes>
+    ff08:	f94007e0 	ldr	x0, [sp, #8]
+    ff0c:	900001c1 	adrp	x1, 47000 <_fini+0xa48>
+    ff10:	91104421 	add	x1, x1, #0x411
+    ff14:	528001a8 	mov	w8, #0xd                   	// #13
+    ff18:	2a0803e2 	mov	w2, w8
+    ff1c:	d0000363 	adrp	x3, 7d000 <__do_global_dtors_aux_fini_array_entry+0x530>
+    ff20:	91032063 	add	x3, x3, #0xc8
+    ff24:	97fff3fc 	bl	cf14 <core::result::Result<T,E>::expect>
+    ff28:	f90017e0 	str	x0, [sp, #40]
+    ff2c:	f94017e8 	ldr	x8, [sp, #40]
+    ff30:	f9000be8 	str	x8, [sp, #16]
+    ff34:	f9400be8 	ldr	x8, [sp, #16]
+    ff38:	f9001be8 	str	x8, [sp, #48]
+    ff3c:	f9401be8 	ldr	x8, [sp, #48]
+    ff40:	f81e03a8 	stur	x8, [x29, #-32]
+    ff44:	f85e03a8 	ldur	x8, [x29, #-32]
+    ff48:	f81d83a8 	stur	x8, [x29, #-40]
+    ff4c:	f85d83a8 	ldur	x8, [x29, #-40]
+    ff50:	f81f03a8 	stur	x8, [x29, #-16]
+    ff54:	f85f03a8 	ldur	x8, [x29, #-16]
+    ff58:	f81f83a8 	stur	x8, [x29, #-8]
+    ff5c:	f85f83a0 	ldur	x0, [x29, #-8]
+    ff60:	97ffea3e 	bl	a858 <core::num::<impl u64>::from_be_bytes>
+    ff64:	f81e83a0 	stur	x0, [x29, #-24]
+    ff68:	f85e83a0 	ldur	x0, [x29, #-24]
+    ff6c:	a9467bfd 	ldp	x29, x30, [sp, #96]
+    ff70:	9101c3ff 	add	sp, sp, #0x70
+    ff74:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_encode
+000000000000ff78 <extended_pilot::zc_encode>:
+    ff78:	d10243ff 	sub	sp, sp, #0x90
+    ff7c:	a9087bfd 	stp	x29, x30, [sp, #128]
+    ff80:	910203fd 	add	x29, sp, #0x80
+    ff84:	f90007e0 	str	x0, [sp, #8]
+    ff88:	f9000be1 	str	x1, [sp, #16]
+    ff8c:	aa1f03e0 	mov	x0, xzr
+    ff90:	97ffea2a 	bl	a838 <core::num::<impl u64>::to_be_bytes>
+    ff94:	aa0003e8 	mov	x8, x0
+    ff98:	f94007e0 	ldr	x0, [sp, #8]
+    ff9c:	f81c83a8 	stur	x8, [x29, #-56]
+    ffa0:	f85c83a8 	ldur	x8, [x29, #-56]
+    ffa4:	f9001fe8 	str	x8, [sp, #56]
+    ffa8:	f9401fe8 	ldr	x8, [sp, #56]
+    ffac:	f90023e8 	str	x8, [sp, #64]
+    ffb0:	f94023e8 	ldr	x8, [sp, #64]
+    ffb4:	f9001be8 	str	x8, [sp, #48]
+    ffb8:	f9401be8 	ldr	x8, [sp, #48]
+    ffbc:	f90017e8 	str	x8, [sp, #40]
+    ffc0:	f94017e8 	ldr	x8, [sp, #40]
+    ffc4:	910083e9 	add	x9, sp, #0x20
+    ffc8:	f9000fe9 	str	x9, [sp, #24]
+    ffcc:	f90013e8 	str	x8, [sp, #32]
+    ffd0:	97ffea1a 	bl	a838 <core::num::<impl u64>::to_be_bytes>
+    ffd4:	f9400be1 	ldr	x1, [sp, #16]
+    ffd8:	aa0003e8 	mov	x8, x0
+    ffdc:	f9400fe0 	ldr	x0, [sp, #24]
+    ffe0:	f81f83a8 	stur	x8, [x29, #-8]
+    ffe4:	f85f83a8 	ldur	x8, [x29, #-8]
+    ffe8:	f81e83a8 	stur	x8, [x29, #-24]
+    ffec:	f85e83a8 	ldur	x8, [x29, #-24]
+    fff0:	f81f03a8 	stur	x8, [x29, #-16]
+    fff4:	f85f03a8 	ldur	x8, [x29, #-16]
+    fff8:	f81e03a8 	stur	x8, [x29, #-32]
+    fffc:	f85e03a8 	ldur	x8, [x29, #-32]
+   10000:	f81d83a8 	stur	x8, [x29, #-40]
+   10004:	f85d83a8 	ldur	x8, [x29, #-40]
+   10008:	f81d03a8 	stur	x8, [x29, #-48]
+   1000c:	f85d03a8 	ldur	x8, [x29, #-48]
+   10010:	f90013e8 	str	x8, [sp, #32]
+   10014:	52800108 	mov	w8, #0x8                   	// #8
+   10018:	2a0803e2 	mov	w2, w8
+   1001c:	97fffdee 	bl	f7d4 <zerocopy::IntoBytes::write_to>
+   10020:	f00001a1 	adrp	x1, 47000 <_fini+0xa48>
+   10024:	91107821 	add	x1, x1, #0x41e
+   10028:	52800248 	mov	w8, #0x12                  	// #18
+   1002c:	2a0803e2 	mov	w2, w8
+   10030:	b0000363 	adrp	x3, 7d000 <__do_global_dtors_aux_fini_array_entry+0x530>
+   10034:	91038063 	add	x3, x3, #0xe0
+   10038:	97fff39f 	bl	ceb4 <core::result::Result<T,E>::expect>
+   1003c:	a9487bfd 	ldp	x29, x30, [sp, #128]
+   10040:	910243ff 	add	sp, sp, #0x90
+   10044:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_copy16
+0000000000010048 <extended_pilot::zc_copy16>:
+   10048:	d10183ff 	sub	sp, sp, #0x60
+   1004c:	a9057bfd 	stp	x29, x30, [sp, #80]
+   10050:	910143fd 	add	x29, sp, #0x50
+   10054:	f9000fe1 	str	x1, [sp, #24]
+   10058:	d10063a8 	sub	x8, x29, #0x18
+   1005c:	f90007e8 	str	x8, [sp, #8]
+   10060:	52800209 	mov	w9, #0x10                  	// #16
+   10064:	2a0903e1 	mov	w1, w9
+   10068:	f90013e1 	str	x1, [sp, #32]
+   1006c:	97fffd68 	bl	f60c <zerocopy::FromBytes::read_from_bytes>
+   10070:	f94007e0 	ldr	x0, [sp, #8]
+   10074:	9100a3e8 	add	x8, sp, #0x28
+   10078:	f9000be8 	str	x8, [sp, #16]
+   1007c:	f00001a1 	adrp	x1, 47000 <_fini+0xa48>
+   10080:	9110c021 	add	x1, x1, #0x430
+   10084:	528001c9 	mov	w9, #0xe                   	// #14
+   10088:	2a0903e2 	mov	w2, w9
+   1008c:	b0000363 	adrp	x3, 7d000 <__do_global_dtors_aux_fini_array_entry+0x530>
+   10090:	9103e063 	add	x3, x3, #0xf8
+   10094:	97fff330 	bl	cd54 <core::result::Result<T,E>::expect>
+   10098:	f9400be0 	ldr	x0, [sp, #16]
+   1009c:	f9400fe1 	ldr	x1, [sp, #24]
+   100a0:	f94013e2 	ldr	x2, [sp, #32]
+   100a4:	97fffe01 	bl	f8a8 <zerocopy::IntoBytes::write_to>
+   100a8:	f00001a1 	adrp	x1, 47000 <_fini+0xa48>
+   100ac:	9110f821 	add	x1, x1, #0x43e
+   100b0:	52800268 	mov	w8, #0x13                  	// #19
+   100b4:	2a0803e2 	mov	w2, w8
+   100b8:	b0000363 	adrp	x3, 7d000 <__do_global_dtors_aux_fini_array_entry+0x530>
+   100bc:	91044063 	add	x3, x3, #0x110
+   100c0:	97fff30d 	bl	ccf4 <core::result::Result<T,E>::expect>
+   100c4:	a9457bfd 	ldp	x29, x30, [sp, #80]
+   100c8:	910183ff 	add	sp, sp, #0x60
+   100cc:	d65f03c0 	ret
+
+
+### image: extended_pilot::rust_call_helper
+000000000000fda8 <extended_pilot::rust_call_helper>:
+    fda8:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    fdac:	910003fd 	mov	x29, sp
+    fdb0:	97ffff47 	bl	facc <pilot_helper>
+    fdb4:	91000400 	add	x0, x0, #0x1
+    fdb8:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    fdbc:	d65f03c0 	ret
+
+=== aarch64 O3 selected helper/FDE ===
+object helper [0x58,0x70)
+00000014 0000000000000020 00000018 FDE cie=00000000 pc=0000000000000058..0000000000000070
+  DW_CFA_advance_loc: 4 to 000000000000005c
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_offset: r29 (x29) at cfa-16
+  DW_CFA_offset: r30 (x30) at cfa-8
+  DW_CFA_advance_loc: 4 to 0000000000000060
+  DW_CFA_def_cfa_register: r29 (x29)
+  DW_CFA_advance_loc: 12 to 000000000000006c
+  DW_CFA_def_cfa: r31 (sp) ofs 0
+  DW_CFA_restore: r29 (x29)
+  DW_CFA_restore: r30 (x30)
+  DW_CFA_nop
+  DW_CFA_nop
+  DW_CFA_nop
+image helper [0x956c,0x9584)
+0000009c 0000000000000020 00000018 FDE cie=00000088 pc=000000000000956c..0000000000009584
+  DW_CFA_advance_loc: 4 to 0000000000009570
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_offset: r29 (x29) at cfa-16
+  DW_CFA_offset: r30 (x30) at cfa-8
+  DW_CFA_advance_loc: 4 to 0000000000009574
+  DW_CFA_def_cfa_register: r29 (x29)
+  DW_CFA_advance_loc: 12 to 0000000000009580
+  DW_CFA_def_cfa: r31 (sp) ofs 0
+  DW_CFA_restore: r29 (x29)
+  DW_CFA_restore: r30 (x30)
+  DW_CFA_nop
+  DW_CFA_nop
+  DW_CFA_nop
+
+### image: pilot_helper
+000000000000960c <pilot_helper>:
+    960c:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+    9610:	a9014ff4 	stp	x20, x19, [sp, #16]
+    9614:	aa0103f3 	mov	x19, x1
+    9618:	aa0003f4 	mov	x20, x0
+    961c:	f0000321 	adrp	x1, 70000 <__dso_handle>
+    9620:	9125e021 	add	x1, x1, #0x978
+    9624:	52800020 	mov	w0, #0x1                   	// #1
+    9628:	910003fd 	mov	x29, sp
+    962c:	9400d511 	bl	3ea70 <__aarch64_ldadd8_relax>
+    9630:	d29950e8 	mov	x8, #0xca87                	// #51847
+    9634:	f2b0bd68 	movk	x8, #0x85eb, lsl #16
+    9638:	f2cf3628 	movk	x8, #0x79b1, lsl #32
+    963c:	f2f3c6e8 	movk	x8, #0x9e37, lsl #48
+    9640:	9b087e68 	mul	x8, x19, x8
+    9644:	cad4cd00 	eor	x0, x8, x20, ror #51
+    9648:	a9414ff4 	ldp	x20, x19, [sp, #16]
+    964c:	a8c27bfd 	ldp	x29, x30, [sp], #32
+    9650:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_carry
+00000000000096f4 <extended_pilot::inline_carry>:
+    96f4:	f100045f 	cmp	x2, #0x1
+    96f8:	ba010000 	adcs	x0, x0, x1
+    96fc:	9a9f37e1 	cset	x1, cs	// cs = hs, nlast
+    9700:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_label
+0000000000009704 <extended_pilot::inline_label>:
+    9704:	b4000060 	cbz	x0, 9710 <extended_pilot::inline_label+0xc>
+    9708:	52800520 	mov	w0, #0x29                  	// #41
+    970c:	d65f03c0 	ret
+    9710:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    9714:	910003fd 	mov	x29, sp
+    9718:	52800220 	mov	w0, #0x11                  	// #17
+    971c:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    9720:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_load
+0000000000009724 <extended_pilot::inline_load>:
+    9724:	f9400000 	ldr	x0, [x0]
+    9728:	d65f03c0 	ret
+
+
+### image: extended_pilot::inline_store
+000000000000972c <extended_pilot::inline_store>:
+    972c:	f9000001 	str	x1, [x0]
+    9730:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_decode
+0000000000009734 <extended_pilot::zc_decode>:
+    9734:	dac00c00 	rev	x0, x0
+    9738:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_encode
+000000000000973c <extended_pilot::zc_encode>:
+    973c:	dac00c08 	rev	x8, x0
+    9740:	f9000028 	str	x8, [x1]
+    9744:	d65f03c0 	ret
+
+
+### image: extended_pilot::zc_copy16
+0000000000009748 <extended_pilot::zc_copy16>:
+    9748:	b9400008 	ldr	w8, [x0]
+    974c:	b8403009 	ldur	w9, [x0, #3]
+    9750:	f840700a 	ldur	x10, [x0, #7]
+    9754:	b9000028 	str	w8, [x1]
+    9758:	39403c08 	ldrb	w8, [x0, #15]
+    975c:	b8003029 	stur	w9, [x1, #3]
+    9760:	f800702a 	stur	x10, [x1, #7]
+    9764:	39003c28 	strb	w8, [x1, #15]
+    9768:	d65f03c0 	ret
+
+
+### image: extended_pilot::rust_call_helper
+00000000000096dc <extended_pilot::rust_call_helper>:
+    96dc:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    96e0:	910003fd 	mov	x29, sp
+    96e4:	97ffffca 	bl	960c <pilot_helper>
+    96e8:	91000400 	add	x0, x0, #0x1
+    96ec:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    96f0:	d65f03c0 	ret
+
+=== x86_64 O0 selected helper/FDE ===
+object helper [0x50,0x62)
+00000018 0000000000000014 0000001c FDE cie=00000000 pc=0000000000000050..0000000000000062
+  DW_CFA_advance_loc: 4 to 0000000000000054
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_advance_loc: 13 to 0000000000000061
+  DW_CFA_def_cfa_offset: 8
+  DW_CFA_nop
+image helper [0xcb30,0xcb42)
+00000088 0000000000000014 0000005c FDE cie=00000030 pc=000000000000cb30..000000000000cb42
+  DW_CFA_advance_loc: 4 to 000000000000cb34
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_advance_loc: 13 to 000000000000cb41
+  DW_CFA_def_cfa_offset: 8
+  DW_CFA_nop
+
+### image: pilot_helper
+00000000000134e0 <pilot_helper>:
+   134e0:	48 83 ec 18          	sub    rsp,0x18
+   134e4:	48 89 3c 24          	mov    QWORD PTR [rsp],rdi
+   134e8:	48 89 74 24 08       	mov    QWORD PTR [rsp+0x8],rsi
+   134ed:	c6 44 24 17 00       	mov    BYTE PTR [rsp+0x17],0x0
+   134f2:	48 8d 3d 87 e4 05 00 	lea    rdi,[rip+0x5e487]        # 71980 <extended_pilot::HELPER_CALLS>
+   134f9:	be 01 00 00 00       	mov    esi,0x1
+   134fe:	0f b6 54 24 17       	movzx  edx,BYTE PTR [rsp+0x17]
+   13503:	e8 08 ab ff ff       	call   e010 <core::sync::atomic::AtomicUsize::fetch_add>
+   13508:	48 8b 3c 24          	mov    rdi,QWORD PTR [rsp]
+   1350c:	48 8b 74 24 08       	mov    rsi,QWORD PTR [rsp+0x8]
+   13511:	e8 aa ff ff ff       	call   134c0 <extended_pilot::helper_math>
+   13516:	48 83 c4 18          	add    rsp,0x18
+   1351a:	c3                   	ret
+   1351b:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+
+
+### image: extended_pilot::inline_carry
+0000000000013780 <extended_pilot::inline_carry>:
+   13780:	48 89 7c 24 f0       	mov    QWORD PTR [rsp-0x10],rdi
+   13785:	48 8b 4c 24 f0       	mov    rcx,QWORD PTR [rsp-0x10]
+   1378a:	48 0f ba e2 00       	bt     rdx,0x0
+   1378f:	48 11 f1             	adc    rcx,rsi
+   13792:	0f 92 c0             	setb   al
+   13795:	48 89 4c 24 f0       	mov    QWORD PTR [rsp-0x10],rcx
+   1379a:	88 44 24 ff          	mov    BYTE PTR [rsp-0x1],al
+   1379e:	48 8b 44 24 f0       	mov    rax,QWORD PTR [rsp-0x10]
+   137a3:	0f b6 4c 24 ff       	movzx  ecx,BYTE PTR [rsp-0x1]
+   137a8:	89 ca                	mov    edx,ecx
+   137aa:	c3                   	ret
+   137ab:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+
+
+### image: extended_pilot::inline_label
+00000000000137b0 <extended_pilot::inline_label>:
+   137b0:	50                   	push   rax
+   137b1:	48 c7 04 24 29 00 00 	mov    QWORD PTR [rsp],0x29
+   137b8:	00 
+   137b9:	48 85 ff             	test   rdi,rdi
+   137bc:	74 02                	je     137c0 <extended_pilot::inline_label+0x10>
+   137be:	eb 08                	jmp    137c8 <extended_pilot::inline_label+0x18>
+   137c0:	48 c7 04 24 11 00 00 	mov    QWORD PTR [rsp],0x11
+   137c7:	00 
+   137c8:	48 8b 04 24          	mov    rax,QWORD PTR [rsp]
+   137cc:	59                   	pop    rcx
+   137cd:	c3                   	ret
+   137ce:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::inline_load
+00000000000137d0 <extended_pilot::inline_load>:
+   137d0:	48 8b 07             	mov    rax,QWORD PTR [rdi]
+   137d3:	48 89 44 24 f8       	mov    QWORD PTR [rsp-0x8],rax
+   137d8:	48 8b 44 24 f8       	mov    rax,QWORD PTR [rsp-0x8]
+   137dd:	c3                   	ret
+   137de:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::inline_store
+00000000000137e0 <extended_pilot::inline_store>:
+   137e0:	48 89 37             	mov    QWORD PTR [rdi],rsi
+   137e3:	c3                   	ret
+   137e4:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+   137eb:	00 00 00 
+   137ee:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::zc_decode
+00000000000138c0 <extended_pilot::zc_decode>:
+   138c0:	48 83 ec 58          	sub    rsp,0x58
+   138c4:	48 89 fe             	mov    rsi,rdi
+   138c7:	48 8d 7c 24 10       	lea    rdi,[rsp+0x10]
+   138cc:	ba 08 00 00 00       	mov    edx,0x8
+   138d1:	e8 3a f4 ff ff       	call   12d10 <zerocopy::FromBytes::read_from_bytes>
+   138d6:	48 8d 7c 24 10       	lea    rdi,[rsp+0x10]
+   138db:	48 8d 35 97 e5 03 00 	lea    rsi,[rip+0x3e597]        # 51e79 <_fini+0x1039>
+   138e2:	ba 0d 00 00 00       	mov    edx,0xd
+   138e7:	48 8d 0d 32 a1 05 00 	lea    rcx,[rip+0x5a132]        # 6da20 <__do_global_dtors_aux_fini_array_entry+0x5f8>
+   138ee:	e8 1d c4 ff ff       	call   fd10 <core::result::Result<T,E>::expect>
+   138f3:	48 89 44 24 20       	mov    QWORD PTR [rsp+0x20],rax
+   138f8:	48 8b 44 24 20       	mov    rax,QWORD PTR [rsp+0x20]
+   138fd:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+   13902:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+   13907:	48 89 44 24 28       	mov    QWORD PTR [rsp+0x28],rax
+   1390c:	48 8b 44 24 28       	mov    rax,QWORD PTR [rsp+0x28]
+   13911:	48 89 44 24 38       	mov    QWORD PTR [rsp+0x38],rax
+   13916:	48 8b 44 24 38       	mov    rax,QWORD PTR [rsp+0x38]
+   1391b:	48 89 44 24 30       	mov    QWORD PTR [rsp+0x30],rax
+   13920:	48 8b 44 24 30       	mov    rax,QWORD PTR [rsp+0x30]
+   13925:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+   1392a:	48 8b 44 24 48       	mov    rax,QWORD PTR [rsp+0x48]
+   1392f:	48 89 44 24 50       	mov    QWORD PTR [rsp+0x50],rax
+   13934:	48 8b 7c 24 50       	mov    rdi,QWORD PTR [rsp+0x50]
+   13939:	e8 d2 9b ff ff       	call   d510 <core::num::<impl u64>::from_be_bytes>
+   1393e:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+   13943:	48 8b 44 24 40       	mov    rax,QWORD PTR [rsp+0x40]
+   13948:	48 83 c4 58          	add    rsp,0x58
+   1394c:	c3                   	ret
+   1394d:	0f 1f 00             	nop    DWORD PTR [rax]
+
+
+### image: extended_pilot::zc_encode
+0000000000013950 <extended_pilot::zc_encode>:
+   13950:	48 83 ec 78          	sub    rsp,0x78
+   13954:	48 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],rdi
+   13959:	48 89 74 24 10       	mov    QWORD PTR [rsp+0x10],rsi
+   1395e:	31 c0                	xor    eax,eax
+   13960:	89 c7                	mov    edi,eax
+   13962:	e8 89 9b ff ff       	call   d4f0 <core::num::<impl u64>::to_be_bytes>
+   13967:	48 8b 7c 24 08       	mov    rdi,QWORD PTR [rsp+0x8]
+   1396c:	48 89 44 24 40       	mov    QWORD PTR [rsp+0x40],rax
+   13971:	48 8b 44 24 40       	mov    rax,QWORD PTR [rsp+0x40]
+   13976:	48 89 44 24 30       	mov    QWORD PTR [rsp+0x30],rax
+   1397b:	48 8b 44 24 30       	mov    rax,QWORD PTR [rsp+0x30]
+   13980:	48 89 44 24 38       	mov    QWORD PTR [rsp+0x38],rax
+   13985:	48 8b 44 24 38       	mov    rax,QWORD PTR [rsp+0x38]
+   1398a:	48 89 44 24 28       	mov    QWORD PTR [rsp+0x28],rax
+   1398f:	48 8b 44 24 28       	mov    rax,QWORD PTR [rsp+0x28]
+   13994:	48 89 44 24 20       	mov    QWORD PTR [rsp+0x20],rax
+   13999:	48 8b 44 24 20       	mov    rax,QWORD PTR [rsp+0x20]
+   1399e:	48 89 44 24 18       	mov    QWORD PTR [rsp+0x18],rax
+   139a3:	e8 48 9b ff ff       	call   d4f0 <core::num::<impl u64>::to_be_bytes>
+   139a8:	48 8b 74 24 10       	mov    rsi,QWORD PTR [rsp+0x10]
+   139ad:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+   139b2:	48 8b 44 24 70       	mov    rax,QWORD PTR [rsp+0x70]
+   139b7:	48 89 44 24 60       	mov    QWORD PTR [rsp+0x60],rax
+   139bc:	48 8b 44 24 60       	mov    rax,QWORD PTR [rsp+0x60]
+   139c1:	48 89 44 24 68       	mov    QWORD PTR [rsp+0x68],rax
+   139c6:	48 8b 44 24 68       	mov    rax,QWORD PTR [rsp+0x68]
+   139cb:	48 89 44 24 58       	mov    QWORD PTR [rsp+0x58],rax
+   139d0:	48 8b 44 24 58       	mov    rax,QWORD PTR [rsp+0x58]
+   139d5:	48 89 44 24 50       	mov    QWORD PTR [rsp+0x50],rax
+   139da:	48 8b 44 24 50       	mov    rax,QWORD PTR [rsp+0x50]
+   139df:	48 89 44 24 48       	mov    QWORD PTR [rsp+0x48],rax
+   139e4:	48 8b 44 24 48       	mov    rax,QWORD PTR [rsp+0x48]
+   139e9:	48 89 44 24 18       	mov    QWORD PTR [rsp+0x18],rax
+   139ee:	48 8d 7c 24 18       	lea    rdi,[rsp+0x18]
+   139f3:	ba 08 00 00 00       	mov    edx,0x8
+   139f8:	e8 e3 f7 ff ff       	call   131e0 <zerocopy::IntoBytes::write_to>
+   139fd:	48 89 c7             	mov    rdi,rax
+   13a00:	48 8d 35 7f e4 03 00 	lea    rsi,[rip+0x3e47f]        # 51e86 <_fini+0x1046>
+   13a07:	ba 12 00 00 00       	mov    edx,0x12
+   13a0c:	48 8d 0d 25 a0 05 00 	lea    rcx,[rip+0x5a025]        # 6da38 <__do_global_dtors_aux_fini_array_entry+0x610>
+   13a13:	e8 78 c3 ff ff       	call   fd90 <core::result::Result<T,E>::expect>
+   13a18:	48 83 c4 78          	add    rsp,0x78
+   13a1c:	c3                   	ret
+   13a1d:	0f 1f 00             	nop    DWORD PTR [rax]
+
+
+### image: extended_pilot::zc_copy16
+0000000000013a20 <extended_pilot::zc_copy16>:
+   13a20:	48 83 ec 38          	sub    rsp,0x38
+   13a24:	48 89 f0             	mov    rax,rsi
+   13a27:	48 89 fe             	mov    rsi,rdi
+   13a2a:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+   13a2f:	48 8d 7c 24 20       	lea    rdi,[rsp+0x20]
+   13a34:	ba 10 00 00 00       	mov    edx,0x10
+   13a39:	e8 02 f5 ff ff       	call   12f40 <zerocopy::FromBytes::read_from_bytes>
+   13a3e:	48 8d 7c 24 10       	lea    rdi,[rsp+0x10]
+   13a43:	48 8d 74 24 20       	lea    rsi,[rsp+0x20]
+   13a48:	48 8d 15 49 e4 03 00 	lea    rdx,[rip+0x3e449]        # 51e98 <_fini+0x1058>
+   13a4f:	b9 0e 00 00 00       	mov    ecx,0xe
+   13a54:	4c 8d 05 f5 9f 05 00 	lea    r8,[rip+0x59ff5]        # 6da50 <__do_global_dtors_aux_fini_array_entry+0x628>
+   13a5b:	e8 a0 c3 ff ff       	call   fe00 <core::result::Result<T,E>::expect>
+   13a60:	48 8b 74 24 08       	mov    rsi,QWORD PTR [rsp+0x8]
+   13a65:	48 8d 7c 24 10       	lea    rdi,[rsp+0x10]
+   13a6a:	ba 10 00 00 00       	mov    edx,0x10
+   13a6f:	e8 3c f8 ff ff       	call   132b0 <zerocopy::IntoBytes::write_to>
+   13a74:	48 89 c7             	mov    rdi,rax
+   13a77:	48 8d 35 28 e4 03 00 	lea    rsi,[rip+0x3e428]        # 51ea6 <_fini+0x1066>
+   13a7e:	ba 13 00 00 00       	mov    edx,0x13
+   13a83:	48 8d 0d de 9f 05 00 	lea    rcx,[rip+0x59fde]        # 6da68 <__do_global_dtors_aux_fini_array_entry+0x640>
+   13a8a:	e8 91 c1 ff ff       	call   fc20 <core::result::Result<T,E>::expect>
+   13a8f:	48 83 c4 38          	add    rsp,0x38
+   13a93:	c3                   	ret
+   13a94:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+   13a9b:	00 00 00 
+   13a9e:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::rust_call_helper
+0000000000013770 <extended_pilot::rust_call_helper>:
+   13770:	50                   	push   rax
+   13771:	e8 6a fd ff ff       	call   134e0 <pilot_helper>
+   13776:	48 83 c0 01          	add    rax,0x1
+   1377a:	59                   	pop    rcx
+   1377b:	c3                   	ret
+   1377c:	0f 1f 40 00          	nop    DWORD PTR [rax+0x0]
+
+=== x86_64 O3 selected helper/FDE ===
+object helper [0x50,0x62)
+00000018 0000000000000014 0000001c FDE cie=00000000 pc=0000000000000050..0000000000000062
+  DW_CFA_advance_loc: 4 to 0000000000000054
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_advance_loc: 13 to 0000000000000061
+  DW_CFA_def_cfa_offset: 8
+  DW_CFA_nop
+image helper [0xba60,0xba72)
+00000088 0000000000000014 0000005c FDE cie=00000030 pc=000000000000ba60..000000000000ba72
+  DW_CFA_advance_loc: 4 to 000000000000ba64
+  DW_CFA_def_cfa_offset: 16
+  DW_CFA_advance_loc: 13 to 000000000000ba71
+  DW_CFA_def_cfa_offset: 8
+  DW_CFA_nop
+
+### image: pilot_helper
+000000000000baf0 <pilot_helper>:
+    baf0:	f0 48 ff 05 88 ce 05 	lock inc QWORD PTR [rip+0x5ce88]        # 68980 <extended_pilot::HELPER_CALLS>
+    baf7:	00 
+    baf8:	48 c1 c7 0d          	rol    rdi,0xd
+    bafc:	48 b8 87 ca eb 85 b1 	movabs rax,0x9e3779b185ebca87
+    bb03:	79 37 9e 
+    bb06:	48 0f af c6          	imul   rax,rsi
+    bb0a:	48 31 f8             	xor    rax,rdi
+    bb0d:	c3                   	ret
+    bb0e:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::inline_carry
+000000000000bbf0 <extended_pilot::inline_carry>:
+    bbf0:	48 89 f8             	mov    rax,rdi
+    bbf3:	48 0f ba e2 00       	bt     rdx,0x0
+    bbf8:	48 11 f0             	adc    rax,rsi
+    bbfb:	0f 92 c1             	setb   cl
+    bbfe:	0f b6 d1             	movzx  edx,cl
+    bc01:	c3                   	ret
+    bc02:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+    bc09:	00 00 00 
+    bc0c:	0f 1f 40 00          	nop    DWORD PTR [rax+0x0]
+
+
+### image: extended_pilot::inline_label
+000000000000bc10 <extended_pilot::inline_label>:
+    bc10:	b8 29 00 00 00       	mov    eax,0x29
+    bc15:	48 85 ff             	test   rdi,rdi
+    bc18:	74 01                	je     bc1b <extended_pilot::inline_label+0xb>
+    bc1a:	c3                   	ret
+    bc1b:	50                   	push   rax
+    bc1c:	b8 11 00 00 00       	mov    eax,0x11
+    bc21:	48 83 c4 08          	add    rsp,0x8
+    bc25:	c3                   	ret
+    bc26:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+    bc2d:	00 00 00 
+
+
+### image: extended_pilot::inline_load
+000000000000bc30 <extended_pilot::inline_load>:
+    bc30:	48 8b 07             	mov    rax,QWORD PTR [rdi]
+    bc33:	c3                   	ret
+    bc34:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+    bc3b:	00 00 00 
+    bc3e:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::inline_store
+000000000000bc40 <extended_pilot::inline_store>:
+    bc40:	48 89 37             	mov    QWORD PTR [rdi],rsi
+    bc43:	c3                   	ret
+    bc44:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+    bc4b:	00 00 00 
+    bc4e:	66 90                	xchg   ax,ax
+
+
+### image: extended_pilot::zc_decode
+000000000000bc50 <extended_pilot::zc_decode>:
+    bc50:	48 89 f8             	mov    rax,rdi
+    bc53:	48 0f c8             	bswap  rax
+    bc56:	c3                   	ret
+    bc57:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+    bc5e:	00 00 
+
+
+### image: extended_pilot::zc_encode
+000000000000bc60 <extended_pilot::zc_encode>:
+    bc60:	48 0f cf             	bswap  rdi
+    bc63:	48 89 3e             	mov    QWORD PTR [rsi],rdi
+    bc66:	c3                   	ret
+    bc67:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+    bc6e:	00 00 
+
+
+### image: extended_pilot::zc_copy16
+000000000000bc70 <extended_pilot::zc_copy16>:
+    bc70:	48 8b 47 07          	mov    rax,QWORD PTR [rdi+0x7]
+    bc74:	0f b6 4f 0f          	movzx  ecx,BYTE PTR [rdi+0xf]
+    bc78:	8b 17                	mov    edx,DWORD PTR [rdi]
+    bc7a:	8b 7f 03             	mov    edi,DWORD PTR [rdi+0x3]
+    bc7d:	89 7e 03             	mov    DWORD PTR [rsi+0x3],edi
+    bc80:	89 16                	mov    DWORD PTR [rsi],edx
+    bc82:	48 89 46 07          	mov    QWORD PTR [rsi+0x7],rax
+    bc86:	88 4e 0f             	mov    BYTE PTR [rsi+0xf],cl
+    bc89:	c3                   	ret
+    bc8a:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+
+
+### image: extended_pilot::rust_call_helper
+000000000000bbe0 <extended_pilot::rust_call_helper>:
+    bbe0:	50                   	push   rax
+    bbe1:	e8 0a ff ff ff       	call   baf0 <pilot_helper>
+    bbe6:	48 ff c0             	inc    rax
+    bbe9:	59                   	pop    rcx
+    bbea:	c3                   	ret
+    bbeb:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+

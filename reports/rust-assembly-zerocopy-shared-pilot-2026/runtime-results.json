@@ -1,0 +1,551 @@
+{
+  "stage": "actual-four-positive-runs-complete",
+  "collection_time_basis": {
+    "earliest_utc": "2026-10-15T00:56:17.135955+00:00",
+    "revalidated_utc": "2026-10-15T00:59:17.233706+00:00",
+    "local_date": "2026-10-14 America/New_York"
+  },
+  "runs": [
+    {
+      "id": "aarch64-O0-positive",
+      "execution_kind": "native-AArch64-container",
+      "image_path": "build/aarch64/O0/pilot",
+      "image_bytes": 4049280,
+      "image_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "cwd": "/e46",
+      "actual_argv": [
+        "/path/to/docker",
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "build/aarch64/O0/pilot"
+      ],
+      "exit": 0,
+      "stdout_utf8": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "stderr_utf8": "",
+      "stdout_sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_docker_supervisor_seconds": 0.034752834000000066,
+      "per_run_checks_reported": 4617,
+      "unchanged_domains": {
+        "source_files": 28,
+        "target_libraries": 69,
+        "prior_tool_files": 12,
+        "all_build_files": 20,
+        "runtime_library_paths": 7,
+        "env_python_tools": 2
+      },
+      "data_only_output_controls_rejected": 6,
+      "no_mutant_executed": true,
+      "raw_files": [
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive.json",
+          "bytes": 713,
+          "sha256": "f96ae91bad88f9034a7f3a39d3bb8c9fe3fcfc2137af4b82e0117cde68c4defe"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive.stdout",
+          "bytes": 68,
+          "sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-summary.json",
+          "bytes": 311,
+          "sha256": "c549ac030c13cabe079f9232f2a56aa5b1e48d1450dcc37323c50f4474badf17"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-data-only-controls.json",
+          "bytes": 2447,
+          "sha256": "075d593aa6ddfae6b3b097dc10986b66d5528e3968f4e89a019df341c5015577"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-files.json",
+          "bytes": 46763,
+          "sha256": "0c0195dc2e950c1052305dd48070df758605fd1c145d7a27c1f898288d36b3f3"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-files.stdout",
+          "bytes": 46073,
+          "sha256": "35c17203034b114dbf73c28696f17b25d2b06f8dcd36a8e18fda80621690546f"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-files.json",
+          "bytes": 46763,
+          "sha256": "84e53ad42f1585a5e16044978f82d5278cb5153aa239ad30b556aff7f1322d8b"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-files.stdout",
+          "bytes": 46073,
+          "sha256": "a4b3a71eddfee276e8767d924a788c8f51899ea0ae680bedf37e3de32a2599f9"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-resources.json",
+          "bytes": 470,
+          "sha256": "34b740ec50dda00780156fe007b8f24c81dc11605d9b323ec648bce9472a87a7"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-before-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-resources.json",
+          "bytes": 460,
+          "sha256": "2a54e4084ae478ed26a88446be08f49f605dc9c7d3da477cd4029f749c534a2c"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O0-positive-after-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "aarch64-O3-positive",
+      "execution_kind": "native-AArch64-container",
+      "image_path": "build/aarch64/O3/pilot",
+      "image_bytes": 3933984,
+      "image_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+      "cwd": "/e46",
+      "actual_argv": [
+        "/path/to/docker",
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "build/aarch64/O3/pilot"
+      ],
+      "exit": 0,
+      "stdout_utf8": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "stderr_utf8": "",
+      "stdout_sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_docker_supervisor_seconds": 0.03981883400000008,
+      "per_run_checks_reported": 4617,
+      "unchanged_domains": {
+        "source_files": 28,
+        "target_libraries": 69,
+        "prior_tool_files": 12,
+        "all_build_files": 20,
+        "runtime_library_paths": 7,
+        "env_python_tools": 2
+      },
+      "data_only_output_controls_rejected": 6,
+      "no_mutant_executed": true,
+      "raw_files": [
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive.json",
+          "bytes": 712,
+          "sha256": "9195f13074a8fb368cb249672a0b6eedb8cb9d7c80a08c2a29fa85b436fa8c92"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive.stdout",
+          "bytes": 68,
+          "sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-summary.json",
+          "bytes": 311,
+          "sha256": "f52832459e9113eed8b4c0c14a44b0ecd4b73f98f8c3772a00b9640078ec00bb"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-data-only-controls.json",
+          "bytes": 2447,
+          "sha256": "075d593aa6ddfae6b3b097dc10986b66d5528e3968f4e89a019df341c5015577"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-files.json",
+          "bytes": 46763,
+          "sha256": "acf57ea610b62b9ca3055dd1ebf4c18c152b537798beee69765d51d125f4bce3"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-files.stdout",
+          "bytes": 46073,
+          "sha256": "424d1161a71cc72f892e9d24a2039d5f0cbccd8498a5db040a24dbd7e663704d"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-files.json",
+          "bytes": 46771,
+          "sha256": "cdbebd7afa2dfa9fa23ed9855d681ee8c3fc602e6a1a0ab6bf5ade92d1bcafc1"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-files.stdout",
+          "bytes": 46073,
+          "sha256": "e2e5707026df5f48a35a89b7e4d437b31bc306fa81f0f78e30bd06b49cb5b0e2"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-resources.json",
+          "bytes": 470,
+          "sha256": "66e814c6a89c19db29d4bcac4fec613a60d7779360d055bbfba523861e565644"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-before-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-resources.json",
+          "bytes": 469,
+          "sha256": "a2a0aee84a9928cad531feb28f8daea757f8073349dc73a383c1529672d8f0de"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/aarch64-O3-positive-after-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "x86_64-O0-positive",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "image_path": "build/x86_64/O0/pilot",
+      "image_bytes": 3956504,
+      "image_sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+      "cwd": "/e46",
+      "actual_argv": [
+        "/path/to/docker",
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64-v1",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O0/pilot"
+      ],
+      "exit": 0,
+      "stdout_utf8": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "stderr_utf8": "",
+      "stdout_sha256": "ba9d9c596d0700f2e5404124661af97c59e94f34ed4b989933c0715d2aab96ac",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_docker_supervisor_seconds": 0.056330791999999796,
+      "per_run_checks_reported": 4617,
+      "unchanged_domains": {
+        "source_files": 28,
+        "target_libraries": 69,
+        "prior_tool_files": 12,
+        "all_build_files": 20,
+        "runtime_library_paths": 7,
+        "env_python_tools": 2
+      },
+      "data_only_output_controls_rejected": 6,
+      "no_mutant_executed": true,
+      "raw_files": [
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive.json",
+          "bytes": 808,
+          "sha256": "8b2f04d5c764fe2112a00209d13835018221abe93a7824a17cca28b202390df8"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive.stdout",
+          "bytes": 67,
+          "sha256": "ba9d9c596d0700f2e5404124661af97c59e94f34ed4b989933c0715d2aab96ac"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-summary.json",
+          "bytes": 311,
+          "sha256": "f0ed3f85367500548dc2a3c08c96223246eeaf75e24ac6185e6a97884e9146fe"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-data-only-controls.json",
+          "bytes": 2437,
+          "sha256": "19bab19a4e2d62f71bae28fc3dabcc319fb84a83f55fcd22776074935306e984"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-files.json",
+          "bytes": 46771,
+          "sha256": "f9fa465539c01adeba7b1f08f2c082b5fac5d783de9138e9ea60f48d05e30bbf"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-files.stdout",
+          "bytes": 46073,
+          "sha256": "b9709e26c06330d2d5a977cdcb25fea872b824233d43e68d9d76159e1ec69a6f"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-files.json",
+          "bytes": 46763,
+          "sha256": "d76d72e51913401916d5fb513982166c5dad818d8206f011fe3d2963e404198c"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-files.stdout",
+          "bytes": 46073,
+          "sha256": "5cb60caab8a96cbd1a9b20e9a77cc7b29ea035b24b9713cd58edcfd37f405150"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-resources.json",
+          "bytes": 470,
+          "sha256": "bc4335922a646a5ad84993f50977817c6fc064d67cc5faf1d5c55ed748060f79"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-before-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-resources.json",
+          "bytes": 469,
+          "sha256": "8b08504cbdafcb2e4a75b23e3b3405a34779a5ede3412bde7a4b8f3446c85097"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O0-positive-after-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "id": "x86_64-O3-positive",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "image_path": "build/x86_64/O3/pilot",
+      "image_bytes": 3877584,
+      "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "cwd": "/e46",
+      "actual_argv": [
+        "/path/to/docker",
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64-v1",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O3/pilot"
+      ],
+      "exit": 0,
+      "stdout_utf8": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "stderr_utf8": "",
+      "stdout_sha256": "ba9d9c596d0700f2e5404124661af97c59e94f34ed4b989933c0715d2aab96ac",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_docker_supervisor_seconds": 0.04782458300000014,
+      "per_run_checks_reported": 4617,
+      "unchanged_domains": {
+        "source_files": 28,
+        "target_libraries": 69,
+        "prior_tool_files": 12,
+        "all_build_files": 20,
+        "runtime_library_paths": 7,
+        "env_python_tools": 2
+      },
+      "data_only_output_controls_rejected": 6,
+      "no_mutant_executed": true,
+      "raw_files": [
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive.json",
+          "bytes": 807,
+          "sha256": "5fe79e29a98e9a707f1f20f9c9dbaaab48953632f0df2e8b85cd09b8dd3a82e7"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive.stdout",
+          "bytes": 67,
+          "sha256": "ba9d9c596d0700f2e5404124661af97c59e94f34ed4b989933c0715d2aab96ac"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-summary.json",
+          "bytes": 311,
+          "sha256": "b9f0655c6ddfc48c30727666f867700e926daad0ff4877f00162d1b1277fc4da"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-data-only-controls.json",
+          "bytes": 2437,
+          "sha256": "19bab19a4e2d62f71bae28fc3dabcc319fb84a83f55fcd22776074935306e984"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-files.json",
+          "bytes": 46771,
+          "sha256": "98d1183610c1f896f319e820f6f49cd9914e0bee8a0611f338cc6bb4cd9db4a1"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-files.stdout",
+          "bytes": 46073,
+          "sha256": "5c2d83b147344e2a7675918a8a7c9d036ba42a933910ac93d283ab4d8d4b2291"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-files.json",
+          "bytes": 46771,
+          "sha256": "f3a89a1e294d401d5c11e8a672c1adff4f186475c93cb308142de446e7e17061"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-files.stdout",
+          "bytes": 46073,
+          "sha256": "106c1de5a8d889706fb72d4d2f24ff1bbe7ec9159778b627b40b70efaa1848d5"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-files.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-resources.json",
+          "bytes": 469,
+          "sha256": "cfd1c55d98c5d591d87ff5e43c07264f60329c01469089e870c1bcfddb4358c0"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-before-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-resources.json",
+          "bytes": 470,
+          "sha256": "261c6650d795b04a127a7db46030f53ee020a338cbfdf5272f2681702d9bb925"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-resources.stdout",
+          "bytes": 7997,
+          "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+        },
+        {
+          "path": "runtime-captures-v2/x86_64-O3-positive-after-resources.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "reported_checks_total": 18468,
+  "data_only_output_controls_rejected_total": 24,
+  "pure_data_header_regression_checks": 28,
+  "v1_stopped_before_target": true,
+  "target_run_repeats": 0,
+  "compiled_mutant_or_invalid_rust_executed": false,
+  "helper_sha256": "1ff6f1010401509c6b2f9808eeec8e6167de08dad48f797e90c020f9f959bc37",
+  "v2_preparation_sha256": "b21552ce821273cabb4f772549896f99abfe31c6458f5b3fa26182a1bed61d96",
+  "policy_sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f",
+  "static_freeze_sha256": "e4de79c8b18cdb1f8735cef55e89c231eba4087c9da2065b31073fbb5ab50c3f",
+  "sequence_receipt_sha256": "efdd998dfb29a0963f0f1ce0ccc150489abf67af840192dee9ef918f3550a025",
+  "outer_driver_receipt_sha256": "aff784aeffe6f77ae0b06f9ebb0228ddf61f4206ff9195eb52b9c0708af5d112",
+  "limits": [
+    "Native means Linux AArch64 VM/container process calls, not x86 hardware observations.",
+    "x86_64 runs are QEMU user-mode emulation using explicit qemu64-v1.",
+    "Reported checks include Rust/compiler-optimized comparisons and guards; not18468 distinct ISA transitions or independent proofs.",
+    "Final guards/results do not expose complete read/write/access-event traces or prove absence of hidden/restored effects.",
+    "No Rust/MiniRust resource adequacy, compiler/referenceISA refinement, universal ABI/loader/unwinder/access semantics theorem or checkbox closure."
+  ]
+}

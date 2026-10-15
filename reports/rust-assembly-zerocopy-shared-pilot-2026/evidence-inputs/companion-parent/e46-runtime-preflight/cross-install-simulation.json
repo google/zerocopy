@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "apt-get",
+    "--simulate",
+    "--no-install-recommends",
+    "install",
+    "gcc-x86-64-linux-gnu=4:12.2.0-3",
+    "libc6-dev-amd64-cross=2.36-8cross1"
+  ],
+  "exit_code": 0,
+  "seconds": 0.609089041
+}

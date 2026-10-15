@@ -1,0 +1,12 @@
+{
+  "command_id": "aarch64-O0-pilot",
+  "compiler_exit": 0,
+  "clean_streams": true,
+  "inputs_libraries_tools_unchanged": true,
+  "source_files": 28,
+  "target_libraries": 69,
+  "tool_files": 12,
+  "generated_bytes": 19717260,
+  "subject_executed": false,
+  "producer": "owned unverified capture helper"
+}

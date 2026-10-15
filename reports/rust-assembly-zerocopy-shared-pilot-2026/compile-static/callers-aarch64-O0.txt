@@ -1,0 +1,260 @@
+
+pilot_mul
+   102ec:	f965cfe0 	ldr	x0, [sp, #19352]
+   102f0:	f90153e0 	str	x0, [sp, #672]
+   102f4:	f965d3e1 	ldr	x1, [sp, #19360]
+   102f8:	f90157e1 	str	x1, [sp, #680]
+   102fc:	f965d7e8 	ldr	x8, [sp, #19368]
+   10300:	f9015be8 	str	x8, [sp, #688]
+   10304:	f965dbe8 	ldr	x8, [sp, #19376]
+   10308:	f9015fe8 	str	x8, [sp, #696]
+   1030c:	f94193ea 	ldr	x10, [sp, #800]
+   10310:	f94197e9 	ldr	x9, [sp, #808]
+   10314:	914013e8 	add	x8, sp, #0x4, lsl #12
+   10318:	912ee108 	add	x8, x8, #0xbb8
+   1031c:	f9014fe8 	str	x8, [sp, #664]
+   10320:	f925dfea 	str	x10, [sp, #19384]
+   10324:	f925e3ff 	str	xzr, [sp, #19392]
+   10328:	f925e7ff 	str	xzr, [sp, #19400]
+   1032c:	f925ebe9 	str	x9, [sp, #19408]
+   10330:	91002102 	add	x2, x8, #0x8
+   10334:	97ffe668 	bl	9cd4 <pilot_mul>
+   10338:	f9414fe0 	ldr	x0, [sp, #664]
+   1033c:	f9415bea 	ldr	x10, [sp, #688]
+   10340:	f9415fe9 	ldr	x9, [sp, #696]
+   10344:	f94193eb 	ldr	x11, [sp, #800]
+   10348:	f94197e8 	ldr	x8, [sp, #808]
+
+pilot_bswap
+   1069c:	52802408 	mov	w8, #0x120                 	// #288
+   106a0:	2a0803e2 	mov	w2, w8
+   106a4:	97ffd2c3 	bl	51b0 <memcpy@plt>
+   106a8:	14000001 	b	106ac <extended_pilot::main+0x51c>
+   106ac:	914053e8 	add	x8, sp, #0x14, lsl #12
+   106b0:	910e2108 	add	x8, x8, #0x388
+   106b4:	914053e0 	add	x0, sp, #0x14, lsl #12
+   106b8:	9109a000 	add	x0, x0, #0x268
+   106bc:	97fffcc7 	bl	f9d8 <<core::array::iter::IntoIter<T,_> as core::iter::traits::iterator::Iterator>::next>
+   106c0:	f94183e8 	ldr	x8, [sp, #768]
+   106c4:	f9415908 	ldr	x8, [x8, #688]
+   106c8:	36000648 	tbz	w8, #0, 10790 <extended_pilot::main+0x600>
+   106cc:	14000001 	b	106d0 <extended_pilot::main+0x540>
+   106d0:	f94183e8 	ldr	x8, [sp, #768]
+   106d4:	f9415d00 	ldr	x0, [x8, #696]
+   106d8:	f900ffe0 	str	x0, [sp, #504]
+   106dc:	f9416108 	ldr	x8, [x8, #704]
+   106e0:	f900f7e8 	str	x8, [sp, #488]
+   106e4:	97ffe587 	bl	9d00 <pilot_bswap>
+   106e8:	f940f7e8 	ldr	x8, [sp, #488]
+   106ec:	eb080008 	subs	x8, x0, x8
+   106f0:	1a9f17e0 	cset	w0, eq	// eq = none
+   106f4:	f00001a1 	adrp	x1, 47000 <_fini+0xa48>
+   106f8:	91097821 	add	x1, x1, #0x25e
+
+pilot_load
+   1080c:	14000001 	b	10810 <extended_pilot::main+0x680>
+   10810:	f94183ea 	ldr	x10, [sp, #768]
+   10814:	f942194b 	ldr	x11, [x10, #1072]
+   10818:	f900e3eb 	str	x11, [sp, #448]
+   1081c:	f94193ec 	ldr	x12, [sp, #800]
+   10820:	f94197e9 	ldr	x9, [sp, #808]
+   10824:	914053e8 	add	x8, sp, #0x14, lsl #12
+   10828:	91144108 	add	x8, x8, #0x510
+   1082c:	f900dfe8 	str	x8, [sp, #440]
+   10830:	f9021d4c 	str	x12, [x10, #1080]
+   10834:	f902214b 	str	x11, [x10, #1088]
+   10838:	f9022549 	str	x9, [x10, #1096]
+   1083c:	f94193eb 	ldr	x11, [sp, #800]
+   10840:	f94197e9 	ldr	x9, [sp, #808]
+   10844:	f902294b 	str	x11, [x10, #1104]
+   10848:	f9022d5f 	str	xzr, [x10, #1112]
+   1084c:	f9023149 	str	x9, [x10, #1120]
+   10850:	91002100 	add	x0, x8, #0x8
+   10854:	97ffe52d 	bl	9d08 <pilot_load>
+   10858:	f940dfe8 	ldr	x8, [sp, #440]
+   1085c:	f900e7e0 	str	x0, [sp, #456]
+   10860:	91002100 	add	x0, x8, #0x8
+   10864:	97fffd71 	bl	fe28 <extended_pilot::inline_load>
+   10868:	f940e3e8 	ldr	x8, [sp, #448]
+
+pilot_call_helper
+   10b38:	f9400108 	ldr	x8, [x8]
+   10b3c:	360002c8 	tbz	w8, #0, 10b94 <extended_pilot::main+0xa04>
+   10b40:	14000001 	b	10b44 <extended_pilot::main+0x9b4>
+   10b44:	f94177e8 	ldr	x8, [sp, #744]
+   10b48:	f9400509 	ldr	x9, [x8, #8]
+   10b4c:	f900abe9 	str	x9, [sp, #336]
+   10b50:	f9400909 	ldr	x9, [x8, #16]
+   10b54:	f900afe9 	str	x9, [sp, #344]
+   10b58:	f9400d09 	ldr	x9, [x8, #24]
+   10b5c:	f900b3e9 	str	x9, [sp, #352]
+   10b60:	39008d1f 	strb	wzr, [x8, #35]
+   10b64:	39408d02 	ldrb	w2, [x8, #35]
+   10b68:	90000380 	adrp	x0, 80000 <__dso_handle>
+   10b6c:	9125e000 	add	x0, x0, #0x978
+   10b70:	aa1f03e1 	mov	x1, xzr
+   10b74:	97ffe9da 	bl	b2dc <core::sync::atomic::AtomicUsize::store>
+   10b78:	f940abe0 	ldr	x0, [sp, #336]
+   10b7c:	f940afe1 	ldr	x1, [sp, #344]
+   10b80:	97ffe46b 	bl	9d2c <pilot_call_helper>
+   10b84:	f940b3e8 	ldr	x8, [sp, #352]
+   10b88:	eb080008 	subs	x8, x0, x8
+   10b8c:	540013e0 	b.eq	10e08 <extended_pilot::main+0xc78>  // b.none
+   10b90:	1400009b 	b	10dfc <extended_pilot::main+0xc6c>
+   10b94:	914063e0 	add	x0, sp, #0x18, lsl #12
+
+pilot_simd_add16
+   110c8:	39400108 	ldrb	w8, [x8]
+   110cc:	12000100 	and	w0, w8, #0x1
+   110d0:	f0000201 	adrp	x1, 54000 <_fini+0xda48>
+   110d4:	910ad421 	add	x1, x1, #0x2b5
+   110d8:	52800248 	mov	w8, #0x12                  	// #18
+   110dc:	2a0803e2 	mov	w2, w8
+   110e0:	910c43e3 	add	x3, sp, #0x310
+   110e4:	97fffbfb 	bl	100d0 <extended_pilot::check>
+   110e8:	f9417fe8 	ldr	x8, [sp, #760]
+   110ec:	91405be9 	add	x9, sp, #0x16, lsl #12
+   110f0:	913e8129 	add	x9, x9, #0xfa0
+   110f4:	f90077e9 	str	x9, [sp, #232]
+   110f8:	91004120 	add	x0, x9, #0x10
+   110fc:	91405be9 	add	x9, sp, #0x16, lsl #12
+   11100:	91368129 	add	x9, x9, #0xda0
+   11104:	f90073e9 	str	x9, [sp, #224]
+   11108:	91004121 	add	x1, x9, #0x10
+   1110c:	f9543d02 	ldr	x2, [x8, #10360]
+   11110:	97ffe310 	bl	9d50 <pilot_simd_add16>
+   11114:	f94073e8 	ldr	x8, [sp, #224]
+   11118:	91004100 	add	x0, x8, #0x10
+   1111c:	91405be8 	add	x8, sp, #0x16, lsl #12
+   11120:	913a8108 	add	x8, x8, #0xea0
+   11124:	91004101 	add	x1, x8, #0x10
+
+pilot_copy16
+   11330:	14000001 	b	11334 <extended_pilot::main+0x11a4>
+   11334:	f9417fe8 	ldr	x8, [sp, #760]
+   11338:	39455508 	ldrb	w8, [x8, #341]
+   1133c:	12000100 	and	w0, w8, #0x1
+   11340:	f0000201 	adrp	x1, 54000 <_fini+0xda48>
+   11344:	910b8c21 	add	x1, x1, #0x2e3
+   11348:	528001c8 	mov	w8, #0xe                   	// #14
+   1134c:	2a0803e2 	mov	w2, w8
+   11350:	910c43e3 	add	x3, sp, #0x310
+   11354:	97fffb5f 	bl	100d0 <extended_pilot::check>
+   11358:	914053e8 	add	x8, sp, #0x14, lsl #12
+   1135c:	911f0108 	add	x8, x8, #0x7c0
+   11360:	f9005fe8 	str	x8, [sp, #184]
+   11364:	91004100 	add	x0, x8, #0x10
+   11368:	914053e8 	add	x8, sp, #0x14, lsl #12
+   1136c:	911e0108 	add	x8, x8, #0x780
+   11370:	f9005be8 	str	x8, [sp, #176]
+   11374:	91004101 	add	x1, x8, #0x10
+   11378:	97ffe268 	bl	9d18 <pilot_copy16>
+   1137c:	f9405be8 	ldr	x8, [sp, #176]
+   11380:	914053e9 	add	x9, sp, #0x14, lsl #12
+   11384:	91200129 	add	x9, x9, #0x800
+   11388:	91004120 	add	x0, x9, #0x10
+   1138c:	91004101 	add	x1, x8, #0x10
+
+pilot_simd_copy16
+   11348:	528001c8 	mov	w8, #0xe                   	// #14
+   1134c:	2a0803e2 	mov	w2, w8
+   11350:	910c43e3 	add	x3, sp, #0x310
+   11354:	97fffb5f 	bl	100d0 <extended_pilot::check>
+   11358:	914053e8 	add	x8, sp, #0x14, lsl #12
+   1135c:	911f0108 	add	x8, x8, #0x7c0
+   11360:	f9005fe8 	str	x8, [sp, #184]
+   11364:	91004100 	add	x0, x8, #0x10
+   11368:	914053e8 	add	x8, sp, #0x14, lsl #12
+   1136c:	911e0108 	add	x8, x8, #0x780
+   11370:	f9005be8 	str	x8, [sp, #176]
+   11374:	91004101 	add	x1, x8, #0x10
+   11378:	97ffe268 	bl	9d18 <pilot_copy16>
+   1137c:	f9405be8 	ldr	x8, [sp, #176]
+   11380:	914053e9 	add	x9, sp, #0x14, lsl #12
+   11384:	91200129 	add	x9, x9, #0x800
+   11388:	91004120 	add	x0, x9, #0x10
+   1138c:	91004101 	add	x1, x8, #0x10
+   11390:	97ffe26d 	bl	9d44 <pilot_simd_copy16>
+   11394:	f9405be8 	ldr	x8, [sp, #176]
+   11398:	91004100 	add	x0, x8, #0x10
+   1139c:	914053e8 	add	x8, sp, #0x14, lsl #12
+   113a0:	91210108 	add	x8, x8, #0x840
+   113a4:	91004101 	add	x1, x8, #0x10
+
+pilot_ptr
+   115dc:	f900d928 	str	x8, [x9, #432]
+   115e0:	14000001 	b	115e4 <extended_pilot::main+0x1454>
+   115e4:	914053e0 	add	x0, sp, #0x14, lsl #12
+   115e8:	91244000 	add	x0, x0, #0x910
+   115ec:	97ffe732 	bl	b2b4 <core::iter::range::<impl core::iter::traits::iterator::Iterator for core::ops::range::RangeInclusive<A>>::next>
+   115f0:	f9417fe8 	ldr	x8, [sp, #760]
+   115f4:	f900e100 	str	x0, [x8, #448]
+   115f8:	f900e501 	str	x1, [x8, #456]
+   115fc:	f940e108 	ldr	x8, [x8, #448]
+   11600:	36079708 	tbz	w8, #0, 108e0 <extended_pilot::main+0x750>
+   11604:	14000001 	b	11608 <extended_pilot::main+0x1478>
+   11608:	f9417fe8 	ldr	x8, [sp, #760]
+   1160c:	f940e501 	ldr	x1, [x8, #456]
+   11610:	f9003fe1 	str	x1, [sp, #120]
+   11614:	914053e8 	add	x8, sp, #0x14, lsl #12
+   11618:	911e0108 	add	x8, x8, #0x780
+   1161c:	f9003be8 	str	x8, [sp, #112]
+   11620:	91004100 	add	x0, x8, #0x10
+   11624:	97ffe1c0 	bl	9d24 <pilot_ptr>
+   11628:	f9403be8 	ldr	x8, [sp, #112]
+   1162c:	f9403fe9 	ldr	x9, [sp, #120]
+   11630:	91004108 	add	x8, x8, #0x10
+   11634:	8b090108 	add	x8, x8, x9
+   11638:	f90043e8 	str	x8, [sp, #128]
+
+pilot_store
+   11718:	f94183e8 	ldr	x8, [sp, #768]
+   1171c:	3911bd00 	strb	w0, [x8, #1135]
+   11720:	14000001 	b	11724 <extended_pilot::main+0x1594>
+   11724:	f94183e8 	ldr	x8, [sp, #768]
+   11728:	3951bd08 	ldrb	w8, [x8, #1135]
+   1172c:	12000100 	and	w0, w8, #0x1
+   11730:	f0000201 	adrp	x1, 54000 <_fini+0xda48>
+   11734:	910d5c21 	add	x1, x1, #0x357
+   11738:	528002a8 	mov	w8, #0x15                  	// #21
+   1173c:	2a0803e2 	mov	w2, w8
+   11740:	910c43e3 	add	x3, sp, #0x310
+   11744:	f90033e3 	str	x3, [sp, #96]
+   11748:	97fffa62 	bl	100d0 <extended_pilot::check>
+   1174c:	f940e3e1 	ldr	x1, [sp, #448]
+   11750:	914053e8 	add	x8, sp, #0x14, lsl #12
+   11754:	9114a108 	add	x8, x8, #0x528
+   11758:	f9002be8 	str	x8, [sp, #80]
+   1175c:	91002100 	add	x0, x8, #0x8
+   11760:	97ffe16c 	bl	9d10 <pilot_store>
+   11764:	f94183e9 	ldr	x9, [sp, #768]
+   11768:	f9402be0 	ldr	x0, [sp, #80]
+   1176c:	f940e3ea 	ldr	x10, [sp, #448]
+   11770:	f94193eb 	ldr	x11, [sp, #800]
+   11774:	f94197e8 	ldr	x8, [sp, #808]
+
+pilot_add128
+   11a2c:	f94133e8 	ldr	x8, [sp, #608]
+   11a30:	f94137e9 	ldr	x9, [sp, #616]
+   11a34:	eb090108 	subs	x8, x8, x9
+   11a38:	54ffff01 	b.ne	11a18 <extended_pilot::main+0x1888>  // b.any
+   11a3c:	14000001 	b	11a40 <extended_pilot::main+0x18b0>
+   11a40:	f94187e9 	ldr	x9, [sp, #776]
+   11a44:	914023e8 	add	x8, sp, #0x8, lsl #12
+   11a48:	912de108 	add	x8, x8, #0xb78
+   11a4c:	f9004128 	str	x8, [x9, #128]
+   11a50:	14000001 	b	11a54 <extended_pilot::main+0x18c4>
+   11a54:	f94187e8 	ldr	x8, [sp, #776]
+   11a58:	f9404101 	ldr	x1, [x8, #128]
+   11a5c:	914023e8 	add	x8, sp, #0x8, lsl #12
+   11a60:	912e6108 	add	x8, x8, #0xb98
+   11a64:	f9000fe8 	str	x8, [sp, #24]
+   11a68:	91002102 	add	x2, x8, #0x8
+   11a6c:	914023e0 	add	x0, sp, #0x8, lsl #12
+   11a70:	912de000 	add	x0, x0, #0xb78
+   11a74:	97ffe09c 	bl	9ce4 <pilot_add128>
+   11a78:	f9413beb 	ldr	x11, [sp, #624]
+   11a7c:	f9413fea 	ldr	x10, [sp, #632]
+   11a80:	f94187e9 	ldr	x9, [sp, #776]
+   11a84:	aa0003e8 	mov	x8, x0
+   11a88:	f9400fe0 	ldr	x0, [sp, #24]

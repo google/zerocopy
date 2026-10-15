@@ -1,0 +1,41 @@
+{
+  "actual_python_executable": "/usr/bin/python3",
+  "python_version": "3.11.2 (main, Apr 28 2025, 14:11:48) [GCC 12.2.0]",
+  "tools": [
+    {
+      "path": "/usr/bin/env",
+      "resolved": "/usr/bin/env",
+      "bytes": 68992,
+      "sha256": "67a8c7fac47281a5ee335366bcd12f31aa7eeca008cef6eccad38304753ddee9",
+      "mode": "0o755",
+      "path_is_symlink": false,
+      "path_lstat_mode": "0o755",
+      "link_target": null,
+      "link_literal_sha256": null,
+      "resolved_target": {
+        "path": "/usr/bin/env",
+        "bytes": 68992,
+        "sha256": "67a8c7fac47281a5ee335366bcd12f31aa7eeca008cef6eccad38304753ddee9",
+        "mode": "0o755"
+      }
+    },
+    {
+      "path": "/usr/bin/python3",
+      "resolved": "/usr/bin/python3.11",
+      "bytes": 6618304,
+      "sha256": "9a070c8a36e16c152dae21b66aeb707f4d21b506c875e9b15edf4387fca7dcf8",
+      "mode": "0o755",
+      "path_is_symlink": true,
+      "path_lstat_mode": "0o777",
+      "link_target": "python3.11",
+      "link_literal_sha256": "72e78ddac08187448a816f3688b1b27700b00f882d34e6021acdbdbe4c54008b",
+      "resolved_target": {
+        "path": "/usr/bin/python3.11",
+        "bytes": 6618304,
+        "sha256": "9a070c8a36e16c152dae21b66aeb707f4d21b506c875e9b15edf4387fca7dcf8",
+        "mode": "0o755"
+      }
+    }
+  ],
+  "scope": "Read-only file identity; trusted reader/wrapper implementations; no target call"
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "readelf",
+    "-h",
+    "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2"
+  ],
+  "exit_code": 0,
+  "seconds": 0.06272816704586148
+}

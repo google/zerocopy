@@ -1,0 +1,63 @@
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  binutils-x86-64-linux-gnu cpp-12-x86-64-linux-gnu cpp-x86-64-linux-gnu
+  gcc-12-x86-64-linux-gnu gcc-12-x86-64-linux-gnu-base libasan8-amd64-cross
+  libatomic1-amd64-cross libc6-amd64-cross libgcc-12-dev-amd64-cross
+  libgcc-s1-amd64-cross libgomp1-amd64-cross libitm1-amd64-cross
+  liblsan0-amd64-cross libquadmath0-amd64-cross libstdc++6-amd64-cross
+  libtsan2-amd64-cross libubsan1-amd64-cross linux-libc-dev-amd64-cross
+Suggested packages:
+  binutils-doc gcc-12-locales cpp-12-doc cpp-doc
+  gcc-12-multilib-x86-64-linux-gnu gcc-12-doc manpages-dev flex bison
+  gdb-x86-64-linux-gnu gcc-doc
+The following NEW packages will be installed:
+  binutils-x86-64-linux-gnu cpp-12-x86-64-linux-gnu cpp-x86-64-linux-gnu
+  gcc-12-x86-64-linux-gnu gcc-12-x86-64-linux-gnu-base gcc-x86-64-linux-gnu
+  libasan8-amd64-cross libatomic1-amd64-cross libc6-amd64-cross
+  libc6-dev-amd64-cross libgcc-12-dev-amd64-cross libgcc-s1-amd64-cross
+  libgomp1-amd64-cross libitm1-amd64-cross liblsan0-amd64-cross
+  libquadmath0-amd64-cross libstdc++6-amd64-cross libtsan2-amd64-cross
+  libubsan1-amd64-cross linux-libc-dev-amd64-cross
+0 upgraded, 20 newly installed, 0 to remove and 130 not upgraded.
+Inst gcc-12-x86-64-linux-gnu-base (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Inst cpp-12-x86-64-linux-gnu (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Inst cpp-x86-64-linux-gnu (4:12.2.0-3 Debian:12.15/oldstable [arm64])
+Inst binutils-x86-64-linux-gnu (2.40-2 Debian:12.15/oldstable [arm64])
+Inst libgcc-s1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libgomp1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libitm1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libatomic1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libasan8-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst liblsan0-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libtsan2-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libc6-amd64-cross (2.36-8cross1 Debian:12.15/oldstable [all])
+Inst libstdc++6-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libubsan1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libquadmath0-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst libgcc-12-dev-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Inst gcc-12-x86-64-linux-gnu (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Inst gcc-x86-64-linux-gnu (4:12.2.0-3 Debian:12.15/oldstable [arm64])
+Inst linux-libc-dev-amd64-cross (6.1.4-1cross1 Debian:12.15/oldstable [all])
+Inst libc6-dev-amd64-cross (2.36-8cross1 Debian:12.15/oldstable [all])
+Conf gcc-12-x86-64-linux-gnu-base (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Conf cpp-12-x86-64-linux-gnu (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Conf cpp-x86-64-linux-gnu (4:12.2.0-3 Debian:12.15/oldstable [arm64])
+Conf binutils-x86-64-linux-gnu (2.40-2 Debian:12.15/oldstable [arm64])
+Conf libgcc-s1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libgomp1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libitm1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libatomic1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libasan8-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf liblsan0-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libtsan2-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libc6-amd64-cross (2.36-8cross1 Debian:12.15/oldstable [all])
+Conf libstdc++6-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libubsan1-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libquadmath0-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf libgcc-12-dev-amd64-cross (12.2.0-14cross1 Debian:12.15/oldstable [all])
+Conf gcc-12-x86-64-linux-gnu (12.2.0-14cross1 Debian:12.15/oldstable [arm64])
+Conf gcc-x86-64-linux-gnu (4:12.2.0-3 Debian:12.15/oldstable [arm64])
+Conf linux-libc-dev-amd64-cross (6.1.4-1cross1 Debian:12.15/oldstable [all])
+Conf libc6-dev-amd64-cross (2.36-8cross1 Debian:12.15/oldstable [all])

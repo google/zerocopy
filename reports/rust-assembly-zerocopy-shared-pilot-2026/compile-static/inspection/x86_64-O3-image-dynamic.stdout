@@ -1,0 +1,72 @@
+
+Dynamic section at offset 0x66548 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]
+ 0x000000000000000c (INIT)               0x6000
+ 0x000000000000000d (FINI)               0x48850
+ 0x0000000000000019 (INIT_ARRAY)         0x64b48
+ 0x000000000000001b (INIT_ARRAYSZ)       16 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x64b58
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3d8
+ 0x0000000000000005 (STRTAB)             0xa30
+ 0x0000000000000006 (SYMTAB)             0x400
+ 0x000000000000000a (STRSZ)              995 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x67758
+ 0x0000000000000002 (PLTRELSZ)           48 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x5d78
+ 0x0000000000000007 (RELA)               0xfa8
+ 0x0000000000000008 (RELASZ)             19920 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0xe98
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x000000006ffffff0 (VERSYM)             0xe14
+ 0x000000006ffffff9 (RELACOUNT)          767
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 66 entries:
+ Addr: 0x0000000000000e14  Offset: 0x00000e14  Link: 6 (.dynsym)
+  000:   0 (*local*)       2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  004:   3 (GLIBC_2.34)    2 (GLIBC_2.2.5)   4 (GCC_3.3)       2 (GLIBC_2.2.5)
+  008:   1 (*global*)      2 (GLIBC_2.2.5)   5 (GLIBC_2.32)    2 (GLIBC_2.2.5)
+  00c:   6 (GLIBC_2.18)    7 (GLIBC_2.3.4)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  010:   8 (GCC_3.0)       2 (GLIBC_2.2.5)   8 (GCC_3.0)       2 (GLIBC_2.2.5)
+  014:   9 (GLIBC_2.33)    3 (GLIBC_2.34)    2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  018:   a (GCC_4.2.0)     2 (GLIBC_2.2.5)   8 (GCC_3.0)       3 (GLIBC_2.34) 
+  01c:   2 (GLIBC_2.2.5)   b (GLIBC_2.3)     2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  020:   2 (GLIBC_2.2.5)   3 (GLIBC_2.34)    1 (*global*)      c (GLIBC_2.3)  
+  024:   d (GLIBC_2.14)    8 (GCC_3.0)       3 (GLIBC_2.34)    2 (GLIBC_2.2.5)
+  028:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  02c:   2 (GLIBC_2.2.5)   e (GLIBC_2.16)    f (GLIBC_2.28)    8 (GCC_3.0)    
+  030:   2 (GLIBC_2.2.5)   8 (GCC_3.0)       2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  034:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)
+  038:   2 (GLIBC_2.2.5)   2 (GLIBC_2.2.5)   9 (GLIBC_2.33)    2 (GLIBC_2.2.5)
+  03c:   1 (*global*)      2 (GLIBC_2.2.5)   8 (GCC_3.0)       3 (GLIBC_2.34) 
+  040:   8 (GCC_3.0)       2 (GLIBC_2.2.5)
+
+Version needs section '.gnu.version_r' contains 3 entries:
+ Addr: 0x0000000000000e98  Offset: 0x00000e98  Link: 7 (.dynstr)
+  000000: Version: 1  File: ld-linux-x86-64.so.2  Cnt: 1
+  0x0010:   Name: GLIBC_2.3  Flags: none  Version: 11
+  0x0020: Version: 1  File: libgcc_s.so.1  Cnt: 3
+  0x0030:   Name: GCC_4.2.0  Flags: none  Version: 10
+  0x0040:   Name: GCC_3.0  Flags: none  Version: 8
+  0x0050:   Name: GCC_3.3  Flags: none  Version: 4
+  0x0060: Version: 1  File: libc.so.6  Cnt: 10
+  0x0070:   Name: GLIBC_2.28  Flags: none  Version: 15
+  0x0080:   Name: GLIBC_2.16  Flags: none  Version: 14
+  0x0090:   Name: GLIBC_2.14  Flags: none  Version: 13
+  0x00a0:   Name: GLIBC_2.3  Flags: none  Version: 12
+  0x00b0:   Name: GLIBC_2.33  Flags: none  Version: 9
+  0x00c0:   Name: GLIBC_2.3.4  Flags: none  Version: 7
+  0x00d0:   Name: GLIBC_2.18  Flags: none  Version: 6
+  0x00e0:   Name: GLIBC_2.32  Flags: none  Version: 5
+  0x00f0:   Name: GLIBC_2.34  Flags: none  Version: 3
+  0x0100:   Name: GLIBC_2.2.5  Flags: none  Version: 2

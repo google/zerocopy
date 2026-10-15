@@ -1,0 +1,17 @@
+{
+  "role": "Owned diagnosis transcribing actual tool result, not original subprocess receipt",
+  "reader_sha256": "dd50d2e97a7ab246be6b35f002682cd2269628f42d018e8f62b576ef5276693c",
+  "actual_result": "Static review disagreement: x86_64-O3-C-callsite-pilot_ptr",
+  "cause": "Reader supported A64 direct BL and x64 RIP/GOT calls only; exact x64 O3 uses LEA R13 then CALL R13.",
+  "actual_route": {
+    "lea_pc": "0xc9ce",
+    "lea_next_pc": "0xc9d5",
+    "displacement": "-0xf7a",
+    "target": "0xba5b",
+    "call_pc": "0xcb93",
+    "call_register": "r13"
+  },
+  "no_source_or_artifact_mutation": true,
+  "target_execution": false,
+  "earlier_excerpt_reader_note": "A one-off text-excerpt query stopped on Python Path+str TypeError before producing its excerpt file; diagnosed path concatenation precedence, then corrected parentheses. No compiler/artifact/target consequence."
+}

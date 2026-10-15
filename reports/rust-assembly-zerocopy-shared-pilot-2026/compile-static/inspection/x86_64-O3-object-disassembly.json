@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/path/to/docker",
+    "exec",
+    "--workdir",
+    "/e46",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "/usr/bin/env",
+    "-i",
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL=C",
+    "TZ=UTC",
+    "/usr/bin/x86_64-linux-gnu-objdump",
+    "-d",
+    "-r",
+    "-C",
+    "-M",
+    "intel",
+    "build/x86_64/O3/pilot.o"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.036592417000000044,
+  "stdout_bytes": 92623,
+  "stderr_bytes": 0,
+  "stdout_sha256": "44ce5a5a7486eb0aae6c582b4070b556c9874b17085f1e35ecb8ef1ecb529f21",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "target_executed": false
+}

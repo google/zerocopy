@@ -1,0 +1,84 @@
+{
+  "packages": [
+    {
+      "name": "gcc-12-x86-64-linux-gnu-base",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "cpp-12-x86-64-linux-gnu",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "cpp-x86-64-linux-gnu",
+      "version": "4:12.2.0-3"
+    },
+    {
+      "name": "binutils-x86-64-linux-gnu",
+      "version": "2.40-2"
+    },
+    {
+      "name": "libgcc-s1-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libgomp1-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libitm1-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libatomic1-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libasan8-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "liblsan0-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libtsan2-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libc6-amd64-cross",
+      "version": "2.36-8cross1"
+    },
+    {
+      "name": "libstdc++6-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libubsan1-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libquadmath0-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "libgcc-12-dev-amd64-cross",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "gcc-12-x86-64-linux-gnu",
+      "version": "12.2.0-14cross1"
+    },
+    {
+      "name": "gcc-x86-64-linux-gnu",
+      "version": "4:12.2.0-3"
+    },
+    {
+      "name": "linux-libc-dev-amd64-cross",
+      "version": "6.1.4-1cross1"
+    },
+    {
+      "name": "libc6-dev-amd64-cross",
+      "version": "2.36-8cross1"
+    }
+  ]
+}

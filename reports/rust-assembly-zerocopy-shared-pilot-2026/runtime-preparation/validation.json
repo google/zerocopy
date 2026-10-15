@@ -1,0 +1,51 @@
+{
+  "role": "Host data/AST inspection only; runtime helper was not imported or invoked",
+  "runtime_helper_sha256": "862a6a7bfcd8c23783c9d0e64dd0d24032402cf3bab631fdd7cbbf82a9607887",
+  "policy_sha256": "40895bfd66a333bf2aea2fd7e8ca84af278c26d718a251fcc2248781875d2e6f",
+  "python_sources_syntax_parsed": 3,
+  "embedded_snapshot_syntax_parsed": true,
+  "fixed_target_argv_image_rows_equal_reviewed_proposal": 4,
+  "static_freeze_entries_revalidated": 375,
+  "reader_wrapper_pins": [
+    {
+      "path": "/usr/bin/env",
+      "resolved": "/usr/bin/env",
+      "bytes": 68992,
+      "sha256": "67a8c7fac47281a5ee335366bcd12f31aa7eeca008cef6eccad38304753ddee9",
+      "mode": "0o755",
+      "path_is_symlink": false,
+      "path_lstat_mode": "0o755",
+      "link_target": null,
+      "link_literal_sha256": null,
+      "resolved_target": {
+        "path": "/usr/bin/env",
+        "bytes": 68992,
+        "sha256": "67a8c7fac47281a5ee335366bcd12f31aa7eeca008cef6eccad38304753ddee9",
+        "mode": "0o755"
+      }
+    },
+    {
+      "path": "/usr/bin/python3",
+      "resolved": "/usr/bin/python3.11",
+      "bytes": 6618304,
+      "sha256": "9a070c8a36e16c152dae21b66aeb707f4d21b506c875e9b15edf4387fca7dcf8",
+      "mode": "0o755",
+      "path_is_symlink": true,
+      "path_lstat_mode": "0o777",
+      "link_target": "python3.11",
+      "link_literal_sha256": "72e78ddac08187448a816f3688b1b27700b00f882d34e6021acdbdbe4c54008b",
+      "resolved_target": {
+        "path": "/usr/bin/python3.11",
+        "bytes": 6618304,
+        "sha256": "9a070c8a36e16c152dae21b66aeb707f4d21b506c875e9b15edf4387fca7dcf8",
+        "mode": "0o755"
+      }
+    }
+  ],
+  "metadata_query_exit": 0,
+  "metadata_query_stderr_empty": true,
+  "runtime_helper_invoked": false,
+  "target_executed": false,
+  "runtime_capture_directory_exists": false,
+  "limit": "Syntax/data/identity inspection, not execution or a correctness proof of the reader/capture helper."
+}

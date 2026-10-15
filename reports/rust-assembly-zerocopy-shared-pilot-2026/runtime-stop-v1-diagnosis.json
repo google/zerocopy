@@ -1,0 +1,136 @@
+{
+  "status": "stopped-before-first-target-call",
+  "actual_helper_exit": 1,
+  "metadata_reader_exit": 2,
+  "metadata_stderr_empty": true,
+  "target_calls_completed": 0,
+  "receipt_mutants_executed_as_data": 0,
+  "mutated_process_executed": false,
+  "root_cause": "New metadata reader took18 header bytes; preserved inventory ELF_identity is20 bytes, including e_machine. The two missing e_machine bytes caused all7 library path equality gates to fail. Full library hashes and all other identity fields agree.",
+  "library_differences": [
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c460201010000000000000000000300b700",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010000000000000000000300"
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c460201010300000000000000000300b700",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010300000000000000000300"
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c460201010000000000000000000300b700",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010000000000000000000300"
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010300000000000000000300"
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010300000000000000000300"
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c4602010103000000000000000003003e00",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010300000000000000000300"
+    },
+    {
+      "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+      "all_other_identity_fields_equal": true,
+      "expected_20_byte_ELF_identity": "7f454c4602010100000000000000000003003e00",
+      "actual_truncated_18_byte_ELF_identity": "7f454c460201010000000000000000000300"
+    }
+  ],
+  "unchanged_domains": {
+    "inputs": 28,
+    "target_libraries": 69,
+    "tools": 12,
+    "outputs": 20,
+    "env_python_pins": 2
+  },
+  "actual_cgroup_readings": {
+    "cpu.max": "100000 100000\n",
+    "memory.max": "1073741824\n",
+    "memory.current": "550596608\n",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "pids.max": "256\n",
+    "pids.current": "2\n"
+  },
+  "native_machine": "aarch64",
+  "proposed_correction_not_applied": "New distinct helper reads20 bytes, uses new v2 capture dir and manifest path; no comparison weakened and no policy/source/image/argv/oracle change. Requires parent review/grant before any patch/retry.",
+  "raw_files": [
+    {
+      "path": "runtime-captures-v1/ATTEMPT.json",
+      "bytes": 1189,
+      "sha256": "9482450d5a02c2a64faaabcd6d720a27d04070c999d07ad076d6044bf2b83fb9"
+    },
+    {
+      "path": "runtime-captures-v1/STOP-traceback.txt",
+      "bytes": 980,
+      "sha256": "5d86b0aa9fa2414db57e5af23010d03aea2964161a5a36daadec5d3f1a20e499"
+    },
+    {
+      "path": "runtime-captures-v1/STOP.json",
+      "bytes": 232,
+      "sha256": "352c0fa4922d7726d6479833ebf28110de4230218d145fe419392ca996fc5a46"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-files.json",
+      "bytes": 46770,
+      "sha256": "23e7304795778d77b5b56382f83565dd6abaa1585944f452eef2e3a5e49ae557"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-files.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-files.stdout",
+      "bytes": 46540,
+      "sha256": "9d55a8406dec0893cf2137a03f1922ca3e56c58f42e00f589da3cb8185c4ad18"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-resources.json",
+      "bytes": 469,
+      "sha256": "885d2785435fe1a03dfadf4782b2eb4b42a79c67c2e4a487a9625c29bfe8dc86"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-resources.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "runtime-captures-v1/aarch64-O0-positive-before-resources.stdout",
+      "bytes": 7997,
+      "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632"
+    },
+    {
+      "path": "runtime-driver-v1/receipt.json",
+      "bytes": 987,
+      "sha256": "027ae338e857fbf6df20553d74fa0b2025f6e79838942e3811ccc324812eeb75"
+    },
+    {
+      "path": "runtime-driver-v1/stderr",
+      "bytes": 1164,
+      "sha256": "ba50dc8258c7bf695c15edb5cc55ff06fe716fa6a1ebedaa4142db5bd5a3a0e5"
+    },
+    {
+      "path": "runtime-driver-v1/stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "unchanged_helper_sha256": "862a6a7bfcd8c23783c9d0e64dd0d24032402cf3bab631fdd7cbbf82a9607887",
+  "unchanged_preparation_sha256": "bccd0f29af33b3df04b9997bf1c667f220fc7bed32ad65e7f568478fc722aecb",
+  "no_retry_or_source_change": true
+}

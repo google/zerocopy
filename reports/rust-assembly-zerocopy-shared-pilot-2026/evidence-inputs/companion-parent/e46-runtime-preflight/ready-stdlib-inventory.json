@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "python3",
+    "-c",
+    "from pathlib import Path;import json,hashlib;root=Path('/usr/local/rustup/toolchains/1.89.0-aarch64-unknown-linux-gnu');print(json.dumps([{'path':str(p.relative_to(root)),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for target in ['aarch64-unknown-linux-gnu','x86_64-unknown-linux-gnu'] for p in sorted((root/'lib/rustlib'/target/'lib').iterdir()) if p.is_file()],indent=2))"
+  ],
+  "exit_code": 0,
+  "seconds": 0.3080454160226509
+}

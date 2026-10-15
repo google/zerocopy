@@ -1,0 +1,49 @@
+{
+  "status": "four-positive-runs-passed",
+  "runs": [
+    {
+      "id": "aarch64-O0-positive",
+      "image_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "execution_kind": "native-AArch64-container",
+      "exit": 0,
+      "output_status_match": true,
+      "identities_resources_unchanged": true,
+      "expected_checks": 4617,
+      "no_mutant_executed": true
+    },
+    {
+      "id": "aarch64-O3-positive",
+      "image_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+      "execution_kind": "native-AArch64-container",
+      "exit": 0,
+      "output_status_match": true,
+      "identities_resources_unchanged": true,
+      "expected_checks": 4617,
+      "no_mutant_executed": true
+    },
+    {
+      "id": "x86_64-O0-positive",
+      "image_sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "exit": 0,
+      "output_status_match": true,
+      "identities_resources_unchanged": true,
+      "expected_checks": 4617,
+      "no_mutant_executed": true
+    },
+    {
+      "id": "x86_64-O3-positive",
+      "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "exit": 0,
+      "output_status_match": true,
+      "identities_resources_unchanged": true,
+      "expected_checks": 4617,
+      "no_mutant_executed": true
+    }
+  ],
+  "finite_checks_total": 18468,
+  "data_only_output_controls": 24,
+  "mutants_executed": false,
+  "limit": "Finite corpus observation; no Rust/ISA/compiler/ABI/resource/trace theorem or checkbox decision"
+}

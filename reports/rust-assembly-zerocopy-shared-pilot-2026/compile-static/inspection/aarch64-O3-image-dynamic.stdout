@@ -1,0 +1,65 @@
+
+Dynamic section at offset 0x5fb10 contains 28 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x4a30
+ 0x000000000000000d (FINI)               0x3f048
+ 0x0000000000000019 (INIT_ARRAY)         0x6d1a0
+ 0x000000000000001b (INIT_ARRAYSZ)       32 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x6d1c0
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x2d0
+ 0x0000000000000005 (STRTAB)             0x938
+ 0x0000000000000006 (SYMTAB)             0x2f0
+ 0x000000000000000a (STRSZ)              914 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x6fd10
+ 0x0000000000000002 (PLTRELSZ)           1488 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x4460
+ 0x0000000000000007 (RELA)               0xe00
+ 0x0000000000000008 (RELASZ)             13920 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE
+ 0x000000006ffffffe (VERNEED)            0xd50
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0xcca
+ 0x000000006ffffff9 (RELACOUNT)          574
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 67 entries:
+ Addr: 0x0000000000000cca  Offset: 0x00000cca  Link: 5 (.dynsym)
+  000:   0 (*local*)       0 (*local*)       0 (*local*)       2 (GLIBC_2.17) 
+  004:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17) 
+  008:   2 (GLIBC_2.17)    3 (GLIBC_2.34)    4 (GCC_3.3)       1 (*global*)   
+  00c:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    5 (GLIBC_2.32)    2 (GLIBC_2.17) 
+  010:   2 (GLIBC_2.17)    6 (GLIBC_2.18)    7 (GCC_3.0)       7 (GCC_3.0)    
+  014:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17)    8 (GLIBC_2.33) 
+  018:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    3 (GLIBC_2.34)    2 (GLIBC_2.17) 
+  01c:   9 (GCC_4.2.0)     2 (GLIBC_2.17)    2 (GLIBC_2.17)    7 (GCC_3.0)    
+  020:   2 (GLIBC_2.17)    3 (GLIBC_2.34)    2 (GLIBC_2.17)    2 (GLIBC_2.17) 
+  024:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    3 (GLIBC_2.34)    1 (*global*)   
+  028:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    7 (GCC_3.0)       3 (GLIBC_2.34) 
+  02c:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    a (GLIBC_2.28)    7 (GCC_3.0)    
+  030:   7 (GCC_3.0)       2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17) 
+  034:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17)    2 (GLIBC_2.17) 
+  038:   8 (GLIBC_2.33)    1 (*global*)      2 (GLIBC_2.17)    2 (GLIBC_2.17) 
+  03c:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    7 (GCC_3.0)       2 (GLIBC_2.17) 
+  040:   2 (GLIBC_2.17)    3 (GLIBC_2.34)    7 (GCC_3.0)    
+
+Version needs section '.gnu.version_r' contains 2 entries:
+ Addr: 0x0000000000000d50  Offset: 0x00000d50  Link: 6 (.dynstr)
+  000000: Version: 1  File: libgcc_s.so.1  Cnt: 3
+  0x0010:   Name: GCC_4.2.0  Flags: none  Version: 9
+  0x0020:   Name: GCC_3.0  Flags: none  Version: 7
+  0x0030:   Name: GCC_3.3  Flags: none  Version: 4
+  0x0040: Version: 1  File: libc.so.6  Cnt: 6
+  0x0050:   Name: GLIBC_2.28  Flags: none  Version: 10
+  0x0060:   Name: GLIBC_2.33  Flags: none  Version: 8
+  0x0070:   Name: GLIBC_2.18  Flags: none  Version: 6
+  0x0080:   Name: GLIBC_2.32  Flags: none  Version: 5
+  0x0090:   Name: GLIBC_2.34  Flags: none  Version: 3
+  0x00a0:   Name: GLIBC_2.17  Flags: none  Version: 2

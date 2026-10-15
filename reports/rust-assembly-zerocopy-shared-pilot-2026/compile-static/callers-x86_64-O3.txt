@@ -1,0 +1,260 @@
+
+pilot_mul
+    bd40:	4e 8b ac 24 a8 01 00 	mov    r13,QWORD PTR [rsp+r12*1+0x1a8]
+    bd47:	00 
+    bd48:	4a 8b ac 24 b0 01 00 	mov    rbp,QWORD PTR [rsp+r12*1+0x1b0]
+    bd4f:	00 
+    bd50:	48 bb 88 77 66 55 44 	movabs rbx,0x1122334455667788
+    bd57:	33 22 11 
+    bd5a:	48 89 9c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rbx
+    bd61:	00 
+    bd62:	48 8d 94 24 b8 00 00 	lea    rdx,[rsp+0xb8]
+    bd69:	00 
+    bd6a:	0f 57 c0             	xorps  xmm0,xmm0
+    bd6d:	0f 11 02             	movups XMMWORD PTR [rdx],xmm0
+    bd70:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+    bd77:	66 77 88 
+    bd7a:	48 89 84 24 c8 00 00 	mov    QWORD PTR [rsp+0xc8],rax
+    bd81:	00 
+    bd82:	4c 89 f7             	mov    rdi,r14
+    bd85:	4c 89 fe             	mov    rsi,r15
+    bd88:	ff 15 ca bf 05 00    	call   QWORD PTR [rip+0x5bfca]        # 67d58 <_GLOBAL_OFFSET_TABLE_+0x600>
+    bd8e:	48 89 5c 24 70       	mov    QWORD PTR [rsp+0x70],rbx
+    bd93:	4c 89 6c 24 78       	mov    QWORD PTR [rsp+0x78],r13
+    bd98:	48 89 ac 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rbp
+    bd9f:	00 
+    bda0:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+
+pilot_add128
+    bf30:	48 bf 88 77 66 55 44 	movabs rdi,0x1122334455667788
+    bf37:	33 22 11 
+    bf3a:	48 89 7c 24 70       	mov    QWORD PTR [rsp+0x70],rdi
+    bf3f:	66 0f ef c0          	pxor   xmm0,xmm0
+    bf43:	f3 41 0f 7f 04 24    	movdqu XMMWORD PTR [r12],xmm0
+    bf49:	48 bf 11 22 33 44 55 	movabs rdi,0x8877665544332211
+    bf50:	66 77 88 
+    bf53:	48 89 bc 24 88 00 00 	mov    QWORD PTR [rsp+0x88],rdi
+    bf5a:	00 
+    bf5b:	48 31 d0             	xor    rax,rdx
+    bf5e:	48 31 f1             	xor    rcx,rsi
+    bf61:	48 09 c1             	or     rcx,rax
+    bf64:	4c 89 c6             	mov    rsi,r8
+    bf67:	74 08                	je     bf71 <extended_pilot::main+0x2e1>
+    bf69:	48 8d b4 24 50 01 00 	lea    rsi,[rsp+0x150]
+    bf70:	00 
+    bf71:	4c 89 c7             	mov    rdi,r8
+    bf74:	4c 89 e2             	mov    rdx,r12
+    bf77:	ff 15 43 bc 05 00    	call   QWORD PTR [rip+0x5bc43]        # 67bc0 <_GLOBAL_OFFSET_TABLE_+0x468>
+    bf7d:	48 b9 88 77 66 55 44 	movabs rcx,0x1122334455667788
+    bf84:	33 22 11 
+    bf87:	48 89 4c 24 10       	mov    QWORD PTR [rsp+0x10],rcx
+    bf8c:	4c 89 6c 24 18       	mov    QWORD PTR [rsp+0x18],r13
+    bf91:	4c 89 74 24 20       	mov    QWORD PTR [rsp+0x20],r14
+
+pilot_bswap
+    c2a6:	48 81 fd be fd ff ff 	cmp    rbp,0xfffffffffffffdbe
+    c2ad:	0f 85 bd fe ff ff    	jne    c170 <extended_pilot::main+0x4e0>
+    c2b3:	48 c7 84 24 b8 01 00 	mov    QWORD PTR [rsp+0x1b8],0x11
+    c2ba:	00 11 00 00 00 
+    c2bf:	48 8d bc 24 c0 01 00 	lea    rdi,[rsp+0x1c0]
+    c2c6:	00 
+    c2c7:	48 8d 35 9a 6b 04 00 	lea    rsi,[rip+0x46b9a]        # 52e68 <_fini+0xa618>
+    c2ce:	ba 10 01 00 00       	mov    edx,0x110
+    c2d3:	ff 15 c7 b8 05 00    	call   QWORD PTR [rip+0x5b8c7]        # 67ba0 <memcpy@GLIBC_2.14>
+    c2d9:	41 bf 18 00 00 00    	mov    r15d,0x18
+    c2df:	4c 8d 2d 4d 9c 04 00 	lea    r13,[rip+0x49c4d]        # 55f33 <_fini+0xd6e3>
+    c2e6:	66 2e 0f 1f 84 00 00 	cs nop WORD PTR [rax+rax*1+0x0]
+    c2ed:	00 00 00 
+    c2f0:	4a 8b 9c 3c a8 01 00 	mov    rbx,QWORD PTR [rsp+r15*1+0x1a8]
+    c2f7:	00 
+    c2f8:	4e 8b a4 3c b0 01 00 	mov    r12,QWORD PTR [rsp+r15*1+0x1b0]
+    c2ff:	00 
+    c300:	48 89 df             	mov    rdi,rbx
+    c303:	ff 15 97 b7 05 00    	call   QWORD PTR [rip+0x5b797]        # 67aa0 <_GLOBAL_OFFSET_TABLE_+0x348>
+    c309:	48 8d 0d e2 9a 04 00 	lea    rcx,[rip+0x49ae2]        # 55df2 <_fini+0xd5a2>
+    c310:	48 89 4c 24 70       	mov    QWORD PTR [rsp+0x70],rcx
+    c315:	48 c7 44 24 78 08 00 	mov    QWORD PTR [rsp+0x78],0x8
+    c31c:	00 00 
+    c31e:	48 8d 4c 24 08       	lea    rcx,[rsp+0x8]
+
+pilot_load
+    c487:	00 
+    c488:	48 b9 88 77 66 55 44 	movabs rcx,0x1122334455667788
+    c48f:	33 22 11 
+    c492:	48 89 8c 24 80 01 00 	mov    QWORD PTR [rsp+0x180],rcx
+    c499:	00 
+    c49a:	4c 89 a4 24 88 01 00 	mov    QWORD PTR [rsp+0x188],r12
+    c4a1:	00 
+    c4a2:	48 b8 11 22 33 44 55 	movabs rax,0x8877665544332211
+    c4a9:	66 77 88 
+    c4ac:	48 89 84 24 90 01 00 	mov    QWORD PTR [rsp+0x190],rax
+    c4b3:	00 
+    c4b4:	48 89 8c 24 b0 00 00 	mov    QWORD PTR [rsp+0xb0],rcx
+    c4bb:	00 
+    c4bc:	48 c7 84 24 b8 00 00 	mov    QWORD PTR [rsp+0xb8],0x0
+    c4c3:	00 00 00 00 00 
+    c4c8:	48 89 84 24 c0 00 00 	mov    QWORD PTR [rsp+0xc0],rax
+    c4cf:	00 
+    c4d0:	48 89 df             	mov    rdi,rbx
+    c4d3:	ff 15 b7 ba 05 00    	call   QWORD PTR [rip+0x5bab7]        # 67f90 <_GLOBAL_OFFSET_TABLE_+0x838>
+    c4d9:	49 89 c5             	mov    r13,rax
+    c4dc:	48 89 df             	mov    rdi,rbx
+    c4df:	e8 4c f7 ff ff       	call   bc30 <extended_pilot::inline_load>
+    c4e4:	4d 39 e5             	cmp    r13,r12
+    c4e7:	0f 85 02 0f 00 00    	jne    d3ef <extended_pilot::main+0x175f>
+
+pilot_store
+    c4fd:	00 
+    c4fe:	0f 85 eb 0e 00 00    	jne    d3ef <extended_pilot::main+0x175f>
+    c504:	48 8d 05 c7 99 04 00 	lea    rax,[rip+0x499c7]        # 55ed2 <_fini+0xd682>
+    c50b:	48 89 44 24 70       	mov    QWORD PTR [rsp+0x70],rax
+    c510:	48 c7 44 24 78 15 00 	mov    QWORD PTR [rsp+0x78],0x15
+    c517:	00 00 
+    c519:	48 8d 44 24 08       	lea    rax,[rsp+0x8]
+    c51e:	48 89 84 24 f0 00 00 	mov    QWORD PTR [rsp+0xf0],rax
+    c525:	00 
+    c526:	b0 01                	mov    al,0x1
+    c528:	84 c0                	test   al,al
+    c52a:	0f 84 e1 0e 00 00    	je     d411 <extended_pilot::main+0x1781>
+    c530:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+    c535:	48 ff c0             	inc    rax
+    c538:	0f 84 71 0c 00 00    	je     d1af <extended_pilot::main+0x151f>
+    c53e:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+    c543:	4c 89 f7             	mov    rdi,r14
+    c546:	4c 89 e6             	mov    rsi,r12
+    c549:	ff 15 31 b4 05 00    	call   QWORD PTR [rip+0x5b431]        # 67980 <_GLOBAL_OFFSET_TABLE_+0x228>
+    c54f:	48 8b 84 24 90 01 00 	mov    rax,QWORD PTR [rsp+0x190]
+    c556:	00 
+    c557:	48 89 84 24 80 00 00 	mov    QWORD PTR [rsp+0x80],rax
+    c55e:	00 
+    c55f:	f3 0f 6f 84 24 80 01 	movdqu xmm0,XMMWORD PTR [rsp+0x180]
+
+pilot_copy16
+    c898:	00 
+    c899:	66 41 0f 7f 4e 10    	movdqa XMMWORD PTR [r14+0x10],xmm1
+    c89f:	66 0f 7f 84 24 f0 00 	movdqa XMMWORD PTR [rsp+0xf0],xmm0
+    c8a6:	00 00 
+    c8a8:	66 0f 6f 15 70 c7 03 	movdqa xmm2,XMMWORD PTR [rip+0x3c770]        # 49020 <_fini+0x7d0>
+    c8af:	00 
+    c8b0:	66 0f 7f 17          	movdqa XMMWORD PTR [rdi],xmm2
+    c8b4:	66 0f 7f 4f 10       	movdqa XMMWORD PTR [rdi+0x10],xmm1
+    c8b9:	66 0f 7f 84 24 b0 00 	movdqa XMMWORD PTR [rsp+0xb0],xmm0
+    c8c0:	00 00 
+    c8c2:	66 41 0f 7f 14 24    	movdqa XMMWORD PTR [r12],xmm2
+    c8c8:	66 41 0f 7f 4c 24 10 	movdqa XMMWORD PTR [r12+0x10],xmm1
+    c8cf:	66 0f 7f 44 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm0
+    c8d5:	66 0f 7f 4b 10       	movdqa XMMWORD PTR [rbx+0x10],xmm1
+    c8da:	49 ff c7             	inc    r15
+    c8dd:	0f 84 cc 08 00 00    	je     d1af <extended_pilot::main+0x151f>
+    c8e3:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    c8e8:	4c 89 f6             	mov    rsi,r14
+    c8eb:	ff 15 d7 ae 05 00    	call   QWORD PTR [rip+0x5aed7]        # 677c8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    c8f1:	4c 89 e7             	mov    rdi,r12
+    c8f4:	4c 89 f6             	mov    rsi,r14
+    c8f7:	ff 15 83 b3 05 00    	call   QWORD PTR [rip+0x5b383]        # 67c80 <_GLOBAL_OFFSET_TABLE_+0x528>
+    c8fd:	4c 89 f7             	mov    rdi,r14
+    c900:	48 89 de             	mov    rsi,rbx
+
+pilot_simd_copy16
+    c8a6:	00 00 
+    c8a8:	66 0f 6f 15 70 c7 03 	movdqa xmm2,XMMWORD PTR [rip+0x3c770]        # 49020 <_fini+0x7d0>
+    c8af:	00 
+    c8b0:	66 0f 7f 17          	movdqa XMMWORD PTR [rdi],xmm2
+    c8b4:	66 0f 7f 4f 10       	movdqa XMMWORD PTR [rdi+0x10],xmm1
+    c8b9:	66 0f 7f 84 24 b0 00 	movdqa XMMWORD PTR [rsp+0xb0],xmm0
+    c8c0:	00 00 
+    c8c2:	66 41 0f 7f 14 24    	movdqa XMMWORD PTR [r12],xmm2
+    c8c8:	66 41 0f 7f 4c 24 10 	movdqa XMMWORD PTR [r12+0x10],xmm1
+    c8cf:	66 0f 7f 44 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm0
+    c8d5:	66 0f 7f 4b 10       	movdqa XMMWORD PTR [rbx+0x10],xmm1
+    c8da:	49 ff c7             	inc    r15
+    c8dd:	0f 84 cc 08 00 00    	je     d1af <extended_pilot::main+0x151f>
+    c8e3:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    c8e8:	4c 89 f6             	mov    rsi,r14
+    c8eb:	ff 15 d7 ae 05 00    	call   QWORD PTR [rip+0x5aed7]        # 677c8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    c8f1:	4c 89 e7             	mov    rdi,r12
+    c8f4:	4c 89 f6             	mov    rsi,r14
+    c8f7:	ff 15 83 b3 05 00    	call   QWORD PTR [rip+0x5b383]        # 67c80 <_GLOBAL_OFFSET_TABLE_+0x528>
+    c8fd:	4c 89 f7             	mov    rdi,r14
+    c900:	48 89 de             	mov    rsi,rbx
+    c903:	e8 68 f3 ff ff       	call   bc70 <extended_pilot::zc_copy16>
+    c908:	4c 89 f7             	mov    rdi,r14
+    c90b:	4c 89 ee             	mov    rsi,r13
+
+pilot_simd_add16
+    cccd:	43 0f 10 44 05 00    	movups xmm0,XMMWORD PTR [r13+r8*1+0x0]
+    ccd3:	0f 11 03             	movups XMMWORD PTR [rbx],xmm0
+    ccd6:	66 0f 7f 4c 24 70    	movdqa XMMWORD PTR [rsp+0x70],xmm1
+    ccdc:	66 0f 7f 53 10       	movdqa XMMWORD PTR [rbx+0x10],xmm2
+    cce1:	66 0f 6f 05 37 c3 03 	movdqa xmm0,XMMWORD PTR [rip+0x3c337]        # 49020 <_fini+0x7d0>
+    cce8:	00 
+    cce9:	66 0f 7f 06          	movdqa XMMWORD PTR [rsi],xmm0
+    cced:	66 0f 7f 4c 24 40    	movdqa XMMWORD PTR [rsp+0x40],xmm1
+    ccf3:	66 0f 7f 56 10       	movdqa XMMWORD PTR [rsi+0x10],xmm2
+    ccf8:	49 ff c7             	inc    r15
+    ccfb:	0f 84 ae 04 00 00    	je     d1af <extended_pilot::main+0x151f>
+    cd01:	48 39 c7             	cmp    rdi,rax
+    cd04:	48 89 da             	mov    rdx,rbx
+    cd07:	48 0f 44 d1          	cmove  rdx,rcx
+    cd0b:	4c 89 7c 24 08       	mov    QWORD PTR [rsp+0x8],r15
+    cd10:	48 89 f7             	mov    rdi,rsi
+    cd13:	49 89 cf             	mov    r15,rcx
+    cd16:	48 89 ce             	mov    rsi,rcx
+    cd19:	ff 15 71 ab 05 00    	call   QWORD PTR [rip+0x5ab71]        # 67890 <_GLOBAL_OFFSET_TABLE_+0x138>
+    cd1f:	48 8d bc 24 30 01 00 	lea    rdi,[rsp+0x130]
+    cd26:	00 
+    cd27:	4c 89 fe             	mov    rsi,r15
+    cd2a:	48 89 da             	mov    rdx,rbx
+    cd2d:	e8 8e ee ff ff       	call   bbc0 <extended_pilot::rust_add16>
+
+pilot_call_helper
+    cf31:	48 8d 35 88 73 04 00 	lea    rsi,[rip+0x47388]        # 542c0 <_fini+0xba70>
+    cf38:	ba 18 1b 00 00       	mov    edx,0x1b18
+    cf3d:	ff 15 5d ac 05 00    	call   QWORD PTR [rip+0x5ac5d]        # 67ba0 <memcpy@GLIBC_2.14>
+    cf43:	41 bf 20 00 00 00    	mov    r15d,0x20
+    cf49:	4c 8d 2d fb 8e 04 00 	lea    r13,[rip+0x48efb]        # 55e4b <_fini+0xd5fb>
+    cf50:	48 8d 2d 05 8f 04 00 	lea    rbp,[rip+0x48f05]        # 55e5c <_fini+0xd60c>
+    cf57:	66 0f 1f 84 00 00 00 	nop    WORD PTR [rax+rax*1+0x0]
+    cf5e:	00 00 
+    cf60:	4a 8b 9c 3c a0 01 00 	mov    rbx,QWORD PTR [rsp+r15*1+0x1a0]
+    cf67:	00 
+    cf68:	4e 8b b4 3c a8 01 00 	mov    r14,QWORD PTR [rsp+r15*1+0x1a8]
+    cf6f:	00 
+    cf70:	4e 8b a4 3c b0 01 00 	mov    r12,QWORD PTR [rsp+r15*1+0x1b0]
+    cf77:	00 
+    cf78:	48 c7 05 fd b9 05 00 	mov    QWORD PTR [rip+0x5b9fd],0x0        # 68980 <extended_pilot::HELPER_CALLS>
+    cf7f:	00 00 00 00 
+    cf83:	48 89 df             	mov    rdi,rbx
+    cf86:	4c 89 f6             	mov    rsi,r14
+    cf89:	ff 15 69 ad 05 00    	call   QWORD PTR [rip+0x5ad69]        # 67cf8 <_GLOBAL_OFFSET_TABLE_+0x5a0>
+    cf8f:	4c 39 e0             	cmp    rax,r12
+    cf92:	0f 85 e3 04 00 00    	jne    d47b <extended_pilot::main+0x17eb>
+    cf98:	48 89 d8             	mov    rax,rbx
+    cf9b:	48 c1 c0 0d          	rol    rax,0xd
+    cf9f:	4c 89 f1             	mov    rcx,r14
+
+pilot_ptr exact hoisted route
+    c9b3:	48 be a5 a5 a5 a5 a5 	movabs rsi,0xa5a5a5a5a5a5a5a5
+    c9ba:	a5 a5 a5 
+    c9bd:	48 bf 5a 5a 5a 5a 5a 	movabs rdi,0x5a5a5a5a5a5a5a5a
+    c9c4:	5a 5a 5a 
+    c9c7:	48 8d 1d e7 94 04 00 	lea    rbx,[rip+0x494e7]        # 55eb5 <_fini+0xd665>
+    c9ce:	4c 8d 2d 86 f0 ff ff 	lea    r13,[rip+0xfffffffffffff086]        # ba5b <pilot_ptr>
+    c9d5:	0f 85 02 08 00 00    	jne    d1dd <extended_pilot::main+0x154d>
+    c9db:	48 8b 44 24 08       	mov    rax,QWORD PTR [rsp+0x8]
+    c9e0:	48 ff c0             	inc    rax
+    c9e3:	0f 84 c6 07 00 00    	je     d1af <extended_pilot::main+0x151f>
+    c9e9:	48 89 44 24 08       	mov    QWORD PTR [rsp+0x8],rax
+
+pilot_ptr exact hoisted route
+    cb80:	49 8d 6c 24 01       	lea    rbp,[r12+0x1]
+    cb85:	49 83 fc 10          	cmp    r12,0x10
+    cb89:	49 0f 44 ec          	cmove  rbp,r12
+    cb8d:	4c 89 f7             	mov    rdi,r14
+    cb90:	4c 89 e6             	mov    rsi,r12
+    cb93:	41 ff d5             	call   r13
+    cb96:	49 89 c7             	mov    r15,rax
+    cb99:	4b 8d 04 26          	lea    rax,[r14+r12*1]
+    cb9d:	49 39 c7             	cmp    r15,rax
+    cba0:	0f 85 16 06 00 00    	jne    d1bc <extended_pilot::main+0x152c>
+    cba6:	4c 89 f7             	mov    rdi,r14

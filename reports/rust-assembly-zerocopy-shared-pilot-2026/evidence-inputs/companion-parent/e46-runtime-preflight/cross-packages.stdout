@@ -1,0 +1,12 @@
+gcc-x86-64-linux-gnu:
+  Installed: (none)
+  Candidate: 4:12.2.0-3
+  Version table:
+     4:12.2.0-3 500
+        500 http://deb.debian.org/debian bookworm/main arm64 Packages
+libc6-dev-amd64-cross:
+  Installed: (none)
+  Candidate: 2.36-8cross1
+  Version table:
+     2.36-8cross1 500
+        500 http://deb.debian.org/debian bookworm/main arm64 Packages

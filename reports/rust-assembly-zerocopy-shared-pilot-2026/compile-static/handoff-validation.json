@@ -1,0 +1,1020 @@
+{
+  "role": "Owned host data/identity validation after writing handoff; no compiler/container/target invocation",
+  "checks_passed": 253,
+  "checks": [
+    {
+      "id": "preparation:CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:capture_static.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/CURRENT-STATUS.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/E0716-proposed-fix.diff",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/STOP-E0716.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-after.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-before.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot-summary.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-pilot.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-after.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-after.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-after.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy-summary.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/captures/aarch64-O0-zerocopy.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/operational/preflight-sandbox-denial-01/aarch64-O0-zerocopy-before.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/operational/preflight-sandbox-denial-01/capture_static.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/operational/preflight-sandbox-denial-01/diagnosis.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:compile-static/revision3-validation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:expected.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/expected.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v1/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/expected.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/expected.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/history/v1/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/revision-validation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:history/v2/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "preparation:prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "preparation:prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "preparation:primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:revision-validation.json",
+      "pass": true
+    },
+    {
+      "id": "preparation:vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "preparation:x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "preparation:zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/zerocopy-e46-source.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-staging-v3/staged-inputs.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/container.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/container.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/container.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-acquisition-plan.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-acquisition-plan.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-acquisition-plan.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install-lock.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install-simulation.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install-simulation.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install-simulation.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-install.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-installed-versions.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-installed-versions.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-installed-versions.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-package-metadata.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-package-metadata.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-packages.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-packages.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-packages.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/cross-resolved-sha256.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/disk.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/disk.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/disk.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/fresh-container.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/fresh-container.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/fresh-container.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/install-boundary-inspect.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/linker.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/manifest-reader-setup-failure.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/qemu-release-tag.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/qemu-v722-cpu.c",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/qemu-x64.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/qemu-x64.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/qemu-x64.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-a64-cfg.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-a64-cfg.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-a64-cfg.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cpuinfo.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cpuinfo.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cpuinfo.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cross-linker.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cross-linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-cross-linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-e46-destination.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-e46-destination.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-e46-destination.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-loader.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-loader.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-loader.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-native-linker.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-native-linker.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-native-linker.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-platform.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-platform.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-platform.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu-cpus.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu-cpus.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu-cpus.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-qemu.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-rustc.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-rustc.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-rustc.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-stdlib-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-stdlib-inventory.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-stdlib-inventory.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-tool-hashes.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-tool-hashes.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-tool-hashes.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-x64-cfg.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-x64-cfg.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/ready-x64-cfg.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-component-manifest.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-component-manifest.toml",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-inline-assembly.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-inline-assembly.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-reference-submodule.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rust189-x64-component.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rustc.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rustc.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/rustc.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-head.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-head.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-low-level-pinned.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-low-level-pinned.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-low-level.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-low-level.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-root-tree.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-root-tree.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-tex-tree.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/sysv-psabi-tex-tree.response",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/targets.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/targets.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/targets.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-installed-targets.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-installed-targets.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-installed-targets.stdout",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-std-install.json",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-std-install.stderr",
+      "pass": true
+    },
+    {
+      "id": "parent:../../parent/e46-runtime-preflight/x64-std-install.stdout",
+      "pass": true
+    },
+    {
+      "id": "image:aarch640",
+      "pass": true
+    },
+    {
+      "id": "image:aarch643",
+      "pass": true
+    },
+    {
+      "id": "image:x86_640",
+      "pass": true
+    },
+    {
+      "id": "image:x86_643",
+      "pass": true
+    },
+    {
+      "id": "four-runtime-proposals",
+      "pass": true
+    },
+    {
+      "id": "unexecuted:aarch64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "unexecuted:aarch64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "unexecuted:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "qemu64-v1:x86_64-O0-positive",
+      "pass": true
+    },
+    {
+      "id": "unexecuted:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "qemu64-v1:x86_64-O3-positive",
+      "pass": true
+    },
+    {
+      "id": "runtime-env-allowlist",
+      "pass": true
+    },
+    {
+      "id": "330-static-passes",
+      "pass": true
+    },
+    {
+      "id": "compile:aarch640zerocopy",
+      "pass": true
+    },
+    {
+      "id": "compile:aarch640pilot",
+      "pass": true
+    },
+    {
+      "id": "compile:aarch643zerocopy",
+      "pass": true
+    },
+    {
+      "id": "compile:aarch643pilot",
+      "pass": true
+    },
+    {
+      "id": "compile:x86_640zerocopy",
+      "pass": true
+    },
+    {
+      "id": "compile:x86_640pilot",
+      "pass": true
+    },
+    {
+      "id": "compile:x86_643zerocopy",
+      "pass": true
+    },
+    {
+      "id": "compile:x86_643pilot",
+      "pass": true
+    },
+    {
+      "id": "byte-control:aarch64-actual-load-byte-identity",
+      "pass": true
+    },
+    {
+      "id": "byte-control:x86_64-actual-load-byte-identity",
+      "pass": true
+    },
+    {
+      "id": "qemu-source-copy",
+      "pass": true
+    },
+    {
+      "id": "v3-preparation-unchanged",
+      "pass": true
+    }
+  ],
+  "target_executed": false,
+  "no_external_or_canonical_mutation": true
+}

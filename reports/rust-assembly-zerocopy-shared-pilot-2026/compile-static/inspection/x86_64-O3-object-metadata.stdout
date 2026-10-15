@@ -1,0 +1,458 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          72008 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         98
+  Section header string table index: 1
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .strtab           STRTAB          0000000000000000 0106c8 001279 00      0   0  1
+  [ 2] .text             PROGBITS        0000000000000000 000040 00007c 00  AX  0   0 16
+  [ 3] .rela.text        RELA            0000000000000000 00f8d0 000018 18   I 97   2  8
+  [ 4] .note.GNU-stack   PROGBITS        0000000000000000 0000bc 000000 00      0   0  1
+  [ 5] .text._ZN3std2rt10lang_start17hceb1b6aa47208e68E PROGBITS        0000000000000000 0000c0 000020 00  AX  0   0 16
+  [ 6] .rela.text._ZN3std2rt10lang_start17hceb1b6aa47208e68E RELA            0000000000000000 00f8e8 000030 18   I 97   5  8
+  [ 7] .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE PROGBITS        0000000000000000 0000e0 00000d 00  AX  0   0 16
+  [ 8] .rela.text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE RELA            0000000000000000 00f918 000018 18   I 97   7  8
+  [ 9] .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E PROGBITS        0000000000000000 0000f0 000005 00  AX  0   0 16
+  [10] .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE PROGBITS        0000000000000000 000100 000013 00  AX  0   0 16
+  [11] .rela.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE RELA            0000000000000000 00f930 000018 18   I 97  10  8
+  [12] .text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E PROGBITS        0000000000000000 000120 00000d 00  AX  0   0 16
+  [13] .rela.text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E RELA            0000000000000000 00f948 000018 18   I 97  12  8
+  [14] .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE PROGBITS        0000000000000000 000130 000009 00  AX  0   0 16
+  [15] .rela.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE RELA            0000000000000000 00f960 000018 18   I 97  14  8
+  [16] .text.pilot_helper PROGBITS        0000000000000000 000140 00001e 00  AX  0   0 16
+  [17] .rela.text.pilot_helper RELA            0000000000000000 00f978 000018 18   I 97  16  8
+  [18] .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E PROGBITS        0000000000000000 000160 000007 00  AX  0   0 16
+  [19] .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E PROGBITS        0000000000000000 000170 000018 00  AX  0   0 16
+  [20] .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE PROGBITS        0000000000000000 000190 000016 00  AX  0   0 16
+  [21] .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E PROGBITS        0000000000000000 0001b0 000007 00  AX  0   0 16
+  [22] .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E PROGBITS        0000000000000000 0001c0 000004 00  AX  0   0 16
+  [23] .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E PROGBITS        0000000000000000 0001d0 000007 00  AX  0   0 16
+  [24] .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E PROGBITS        0000000000000000 0001e0 000005 00  AX  0   0 16
+  [25] .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E PROGBITS        0000000000000000 0001f0 000012 00  AX  0   0 16
+  [26] .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE PROGBITS        0000000000000000 000210 000011 00  AX  0   0 16
+  [27] .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E PROGBITS        0000000000000000 000230 00000b 00  AX  0   0 16
+  [28] .rela.text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E RELA            0000000000000000 00f990 000018 18   I 97  27  8
+  [29] .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE PROGBITS        0000000000000000 000240 000012 00  AX  0   0 16
+  [30] .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE PROGBITS        0000000000000000 000260 000016 00  AX  0   0 16
+  [31] .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE PROGBITS        0000000000000000 000280 000004 00  AX  0   0 16
+  [32] .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E PROGBITS        0000000000000000 000290 000004 00  AX  0   0 16
+  [33] .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E PROGBITS        0000000000000000 0002a0 000007 00  AX  0   0 16
+  [34] .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E PROGBITS        0000000000000000 0002b0 000007 00  AX  0   0 16
+  [35] .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E PROGBITS        0000000000000000 0002c0 00001a 00  AX  0   0 16
+  [36] .rodata.cst16     PROGBITS        0000000000000000 0002e0 000050 10  AM  0   0 16
+  [37] .text._ZN14extended_pilot4main17hca72231bfee5693fE PROGBITS        0000000000000000 000330 001883 00  AX  0   0 16
+  [38] .rela.text._ZN14extended_pilot4main17hca72231bfee5693fE RELA            0000000000000000 00f9a8 000b10 18   I 97  37  8
+  [39] .text.main        PROGBITS        0000000000000000 001bc0 000027 00  AX  0   0 16
+  [40] .rela.text.main   RELA            0000000000000000 0104b8 000048 18   I 97  39  8
+  [41] .data.rel.ro..Lvtable.0 PROGBITS        0000000000000000 001be8 000030 00  WA  0   0  8
+  [42] .rela.data.rel.ro..Lvtable.0 RELA            0000000000000000 010500 000048 18   I 97  41  8
+  [43] .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE NOBITS          0000000000000000 001c18 000008 00  WA  0   0  8
+  [44] .rodata.str1.1    PROGBITS        0000000000000000 001c18 000009 01 AMS  0   0  1
+  [45] .rodata..Lalloc_808ad300ebb34afb9eceb74f85f1e6d3 PROGBITS        0000000000000000 001c21 000012 00   A  0   0  1
+  [46] .rodata..Lalloc_2a9ce5f334b088ccf931185f4c3818c5 PROGBITS        0000000000000000 001c33 000007 00   A  0   0  1
+  [47] .rodata..Lalloc_49a1e817e911805af64bbc7efb390101 PROGBITS        0000000000000000 001c3a 000001 00   A  0   0  1
+  [48] .data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a PROGBITS        0000000000000000 001c40 000030 00  WA  0   0  8
+  [49] .rela.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a RELA            0000000000000000 010548 000048 18   I 97  48  8
+  [50] .data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d PROGBITS        0000000000000000 001c70 000018 00  WA  0   0  8
+  [51] .rela.data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d RELA            0000000000000000 010590 000018 18   I 97  50  8
+  [52] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.0 PROGBITS        0000000000000000 001c88 002420 00   A  0   0  8
+  [53] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.1 PROGBITS        0000000000000000 0040a8 001f80 00   A  0   0  8
+  [54] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.2 PROGBITS        0000000000000000 006028 005a50 00   A  0   0  8
+  [55] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.3 PROGBITS        0000000000000000 00ba78 000110 00   A  0   0  8
+  [56] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.4 PROGBITS        0000000000000000 00bb88 000088 00   A  0   0  8
+  [57] .rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5 PROGBITS        0000000000000000 00bc10 0000c0 00   A  0   0  8
+  [58] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.5 PROGBITS        0000000000000000 00bcd0 001200 00   A  0   0  8
+  [59] .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.6 PROGBITS        0000000000000000 00ced0 001b18 00   A  0   0  8
+  [60] .rodata..Lalloc_4a29a4faa0904cd7ff982831f2813e90 PROGBITS        0000000000000000 00e9e8 000006 00   A  0   0  1
+  [61] .data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c PROGBITS        0000000000000000 00e9f0 000010 00  WA  0   0  8
+  [62] .rela.data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c RELA            0000000000000000 0105a8 000018 18   I 97  61  8
+  [63] .rodata..Lalloc_44315d594dbcf3e603348f4c43d7c5fc PROGBITS        0000000000000000 00ea00 00000c 00   A  0   0  1
+  [64] .rodata.cst8      PROGBITS        0000000000000000 00ea0c 000018 08  AM  0   0  1
+  [65] .rodata..Lalloc_d3ac12b0dd8a8f05e09b09405411ead2 PROGBITS        0000000000000000 00ea24 000025 00   A  0   0  1
+  [66] .data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86 PROGBITS        0000000000000000 00ea50 000030 00  WA  0   0  8
+  [67] .rela.data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86 RELA            0000000000000000 0105c0 000048 18   I 97  66  8
+  [68] .rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138 PROGBITS        0000000000000000 00ea80 000013 00   A  0   0  1
+  [69] .rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9 PROGBITS        0000000000000000 00ea93 000011 00   A  0   0  1
+  [70] .rodata..Lalloc_7fb6948253e08425011968cd1ab90324 PROGBITS        0000000000000000 00eaa4 000011 00   A  0   0  1
+  [71] .rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3 PROGBITS        0000000000000000 00eab5 000016 00   A  0   0  1
+  [72] .data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873 PROGBITS        0000000000000000 00ead0 000018 00  WA  0   0  8
+  [73] .rela.data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873 RELA            0000000000000000 010608 000018 18   I 97  72  8
+  [74] .data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad PROGBITS        0000000000000000 00eae8 000018 00  WA  0   0  8
+  [75] .rela.data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad RELA            0000000000000000 010620 000018 18   I 97  74  8
+  [76] .rodata..Lalloc_aff5e137726c4d2349c18b19090c6249 PROGBITS        0000000000000000 00eb00 00000e 00   A  0   0  1
+  [77] .rodata..Lalloc_99f669e0aea23b6e9811243e2889d625 PROGBITS        0000000000000000 00eb0e 00000e 00   A  0   0  1
+  [78] .rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea PROGBITS        0000000000000000 00eb1c 00001b 00   A  0   0  1
+  [79] .rodata..Lalloc_2dce8867486f99811029456ce360cb96 PROGBITS        0000000000000000 00eb37 00000c 00   A  0   0  1
+  [80] .rodata..Lalloc_85fda77841ed425dbdbff2ea33376135 PROGBITS        0000000000000000 00eb43 00001d 00   A  0   0  1
+  [81] .rodata..Lalloc_b110a08ed55610b06df9c62d38498d39 PROGBITS        0000000000000000 00eb60 000015 00   A  0   0  1
+  [82] .rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280 PROGBITS        0000000000000000 00eb75 000017 00   A  0   0  1
+  [83] .rodata..Lalloc_d402f7413af788172cdb7d05f581a90e PROGBITS        0000000000000000 00eb8c 000013 00   A  0   0  1
+  [84] .rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada PROGBITS        0000000000000000 00eb9f 00000c 00   A  0   0  1
+  [85] .rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c PROGBITS        0000000000000000 00ebab 000009 00   A  0   0  1
+  [86] .rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de PROGBITS        0000000000000000 00ebb4 00000d 00   A  0   0  1
+  [87] .rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8 PROGBITS        0000000000000000 00ebc1 000015 00   A  0   0  1
+  [88] .rodata..Lalloc_149d364d8349edfe71770e753c396aa0 PROGBITS        0000000000000000 00ebd6 00000c 00   A  0   0  1
+  [89] .rodata..Lalloc_b3cea492701bfda0e383697982d6e842 PROGBITS        0000000000000000 00ebe2 00000c 00   A  0   0  1
+  [90] .rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92 PROGBITS        0000000000000000 00ebee 00000a 00   A  0   0  1
+  [91] .rodata..Lalloc_02eca21413ccc32994161c12acef02d6 PROGBITS        0000000000000000 00ebf8 00000a 00   A  0   0  1
+  [92] .rodata..Lalloc_c168e215480fb2698effa558f0e4841f PROGBITS        0000000000000000 00ec02 00000b 00   A  0   0  1
+  [93] .rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38 PROGBITS        0000000000000000 00ec0d 000007 00   A  0   0  1
+  [94] .comment          PROGBITS        0000000000000000 00ec14 00002d 01  MS  0   0  1
+  [95] .eh_frame         X86_64_UNWIND   0000000000000000 00ec48 0000e8 00   A  0   0  8
+  [96] .rela.eh_frame    RELA            0000000000000000 010638 000090 18   I 97  95  8
+  [97] .symtab           SYMTAB          0000000000000000 00ed30 000ba0 18      1 102  8
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  D (mbind), l (large), p (processor specific)
+
+There are no program headers in this file.
+
+Relocation section '.rela.text' at offset 0xf8d0 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000055  0000006e00000004 R_X86_64_PLT32         0000000000000000 pilot_helper - 4
+
+Relocation section '.rela.text._ZN3std2rt10lang_start17hceb1b6aa47208e68E' at offset 0xf8e8 contains 2 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000011  0000003800000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lvtable.0 - 4
+000000000000001a  0000007200000009 R_X86_64_GOTPCREL      0000000000000000 _ZN3std2rt19lang_start_internal17h31bbb7f936fd6b5dE - 4
+
+Relocation section '.rela.text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE' at offset 0xf918 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000005  0000000600000004 R_X86_64_PLT32         0000000000000000 .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E - 4
+
+Relocation section '.rela.text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE' at offset 0xf930 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000000000f  0000007300000009 R_X86_64_GOTPCREL      0000000000000000 _ZN42_$LT$str$u20$as$u20$core..fmt..Display$GT$3fmt17h9ae940ece0cd3177E - 4
+
+Relocation section '.rela.text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E' at offset 0xf948 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000005  0000000600000004 R_X86_64_PLT32         0000000000000000 .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E - 4
+
+Relocation section '.rela.text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE' at offset 0xf960 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000005  0000007400000009 R_X86_64_GOTPCREL      0000000000000000 _ZN4core3fmt3num3imp52_$LT$impl$u20$core..fmt..Display$u20$for$u20$u64$GT$3fmt17h7601fb479c860baeE - 4
+
+Relocation section '.rela.text.pilot_helper' at offset 0xf978 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000004  0000003900000002 R_X86_64_PC32          0000000000000000 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE - 4
+
+Relocation section '.rela.text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E' at offset 0xf990 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000002  0000006e00000004 R_X86_64_PLT32         0000000000000000 pilot_helper - 4
+
+Relocation section '.rela.text._ZN14extended_pilot4main17hca72231bfee5693fE' at offset 0xf9a8 contains 118 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000088  0000004000000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.0 - 4
+0000000000000093  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+00000000000000fa  0000006600000009 R_X86_64_GOTPCREL      0000000000000000 pilot_mul - 4
+0000000000000152  0000006500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38 - 4
+000000000000019c  0000000e00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E - 4
+00000000000001a3  0000003500000002 R_X86_64_PC32          0000000000000010 .Lalloc_ad3f71f8fadccdea3aae76bb9fc6967b - 4
+0000000000000216  0000004100000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.1 - 4
+0000000000000221  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+00000000000002e9  0000006700000009 R_X86_64_GOTPCREL      0000000000000011 pilot_add128 - 4
+000000000000034b  0000006300000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_02eca21413ccc32994161c12acef02d6 - 4
+00000000000003d1  0000001000000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E - 4
+00000000000003f4  0000006400000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_c168e215480fb2698effa558f0e4841f - 4
+0000000000000468  0000004200000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.2 - 4
+0000000000000473  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+0000000000000507  0000006000000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_149d364d8349edfe71770e753c396aa0 - 4
+0000000000000552  0000002200000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE - 4
+0000000000000559  0000006100000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_b3cea492701bfda0e383697982d6e842 - 4
+00000000000005b6  0000001200000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE - 4
+00000000000005bd  0000006200000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92 - 4
+000000000000063a  0000004300000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.3 - 4
+0000000000000645  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+0000000000000652  0000005f00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8 - 4
+0000000000000675  0000006800000009 R_X86_64_GOTPCREL      000000000000002d pilot_bswap - 4
+000000000000067c  0000003600000002 R_X86_64_PC32          0000000000000008 .Lalloc_0d1d49781481982934645de3da0719d5 - 4
+00000000000006bb  0000001400000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E - 4
+00000000000006c2  0000005d00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c - 4
+0000000000000704  0000002c00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E - 4
+0000000000000720  0000002a00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E - 4
+0000000000000727  0000005e00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de - 4
+00000000000007c5  0000004400000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.4 - 4
+00000000000007d0  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+0000000000000845  0000006900000009 R_X86_64_GOTPCREL      0000000000000034 pilot_load - 4
+0000000000000850  0000002600000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE - 4
+0000000000000877  0000005900000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_b110a08ed55610b06df9c62d38498d39 - 4
+00000000000008bb  0000006a00000009 R_X86_64_GOTPCREL      0000000000000038 pilot_store - 4
+0000000000000908  0000003700000002 R_X86_64_PC32          0000000000000040 .Lalloc_a3022215cbc4d93d75ff36ef0e45ea7d - 4
+000000000000095e  0000002800000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E - 4
+00000000000009ab  0000005a00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280 - 4
+0000000000000a18  0000001600000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E - 4
+0000000000000a4c  0000005b00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_d402f7413af788172cdb7d05f581a90e - 4
+0000000000000a8e  0000002400000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE - 4
+0000000000000a99  0000001c00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E - 4
+0000000000000aba  0000005c00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada - 4
+0000000000000b23  0000004500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5 - 4
+0000000000000b36  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+0000000000000b65  0000003000000002 R_X86_64_PC32          0000000000000000 .LCPI24_0 - 4
+0000000000000b6d  0000003100000002 R_X86_64_PC32          0000000000000010 .LCPI24_1 - 4
+0000000000000ba5  0000003000000002 R_X86_64_PC32          0000000000000000 .LCPI24_0 - 4
+0000000000000bad  0000003100000002 R_X86_64_PC32          0000000000000010 .LCPI24_1 - 4
+0000000000000c1c  0000003200000002 R_X86_64_PC32          0000000000000020 .LCPI24_2 - 4
+0000000000000c5d  0000006b00000009 R_X86_64_GOTPCREL      000000000000003c pilot_copy16 - 4
+0000000000000c69  0000006f00000009 R_X86_64_GOTPCREL      0000000000000062 pilot_simd_copy16 - 4
+0000000000000c74  0000002e00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E - 4
+0000000000000c7f  0000001800000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E - 4
+0000000000000cfe  0000005600000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea - 4
+0000000000000d3a  0000005800000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_85fda77841ed425dbdbff2ea33376135 - 4
+0000000000000d41  0000006c00000009 R_X86_64_GOTPCREL      000000000000004b pilot_ptr - 4
+0000000000000e98  0000005700000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_2dce8867486f99811029456ce360cb96 - 4
+0000000000000f1d  0000001a00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E - 4
+0000000000000f91  0000004600000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.5 - 4
+0000000000000f9c  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+0000000000000fa4  0000003100000002 R_X86_64_PC32          0000000000000010 .LCPI24_1 - 4
+0000000000000fac  0000003000000002 R_X86_64_PC32          0000000000000000 .LCPI24_0 - 4
+0000000000000fc0  0000004500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5 - 4
+0000000000001055  0000003200000002 R_X86_64_PC32          0000000000000020 .LCPI24_2 - 4
+000000000000108b  0000007000000009 R_X86_64_GOTPCREL      000000000000006b pilot_simd_add16 - 4
+000000000000109e  0000001e00000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE - 4
+00000000000010c8  0000005400000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_aff5e137726c4d2349c18b19090c6249 - 4
+000000000000113f  0000004500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5 - 4
+0000000000001147  0000003000000002 R_X86_64_PC32          0000000000000000 .LCPI24_0 - 4
+000000000000114f  0000003100000002 R_X86_64_PC32          0000000000000010 .LCPI24_1 - 4
+0000000000001222  0000005500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_99f669e0aea23b6e9811243e2889d625 - 4
+00000000000012a4  0000004700000002 R_X86_64_PC32          0000000000000000 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.6 - 4
+00000000000012af  0000007500000009 R_X86_64_GOTPCREL      0000000000000000 memcpy - 4
+00000000000012bc  0000005000000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_7fb6948253e08425011968cd1ab90324 - 4
+00000000000012c3  0000005100000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3 - 4
+00000000000012eb  0000003900000002 R_X86_64_PC32          0000000000000000 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE - 8
+00000000000012fb  0000006d00000009 R_X86_64_GOTPCREL      0000000000000050 pilot_call_helper - 4
+0000000000001329  0000004e00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138 - 4
+0000000000001367  0000003900000002 R_X86_64_PC32          0000000000000000 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE - 4
+000000000000136e  0000004f00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9 - 4
+00000000000013a8  0000003900000002 R_X86_64_PC32          0000000000000000 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE - 8
+00000000000013b7  0000002000000004 R_X86_64_PLT32         0000000000000000 .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E - 4
+00000000000013f5  0000003900000002 R_X86_64_PC32          0000000000000000 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE - 4
+0000000000001494  0000004900000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c - 4
+00000000000014a0  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+00000000000014b6  0000007400000009 R_X86_64_GOTPCREL      0000000000000000 _ZN4core3fmt3num3imp52_$LT$impl$u20$core..fmt..Display$u20$for$u20$u64$GT$3fmt17h7601fb479c860baeE - 4
+00000000000014c2  0000004d00000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86 - 4
+0000000000001509  0000007600000009 R_X86_64_GOTPCREL      0000000000000000 _ZN3std2io5stdio6_print17h86bf21ce6e231958E - 4
+0000000000001522  0000003f00000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d - 4
+0000000000001528  0000007700000009 R_X86_64_GOTPCREL      0000000000000000 _ZN4core9panicking11panic_const24panic_const_add_overflow17h371a9588e01a5f2aE - 4
+0000000000001560  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+000000000000157f  0000000b00000002 R_X86_64_PC32          0000000000000000 .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE - 4
+000000000000158e  0000003e00000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a - 4
+00000000000015b9  0000005700000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_2dce8867486f99811029456ce360cb96 - 4
+00000000000015d9  0000005500000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_99f669e0aea23b6e9811243e2889d625 - 4
+0000000000001611  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+0000000000001630  0000000b00000002 R_X86_64_PC32          0000000000000000 .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE - 4
+000000000000163f  0000003e00000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a - 4
+000000000000166a  0000006400000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_c168e215480fb2698effa558f0e4841f - 4
+000000000000169f  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+00000000000016c5  0000006300000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_02eca21413ccc32994161c12acef02d6 - 4
+00000000000016fa  0000005e00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de - 4
+0000000000001714  0000005c00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada - 4
+0000000000001749  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+0000000000001762  0000005900000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_b110a08ed55610b06df9c62d38498d39 - 4
+000000000000178e  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+00000000000017a7  0000005600000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea - 4
+00000000000017c7  0000005300000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad - 4
+00000000000017d5  0000007800000009 R_X86_64_GOTPCREL      0000000000000000 _ZN4core9panicking18panic_bounds_check17hfa2ac8420ad021dcE - 4
+00000000000017dc  0000005200000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873 - 4
+00000000000017e7  0000007800000009 R_X86_64_GOTPCREL      0000000000000000 _ZN4core9panicking18panic_bounds_check17hfa2ac8420ad021dcE - 4
+00000000000017ee  0000004e00000002 R_X86_64_PC32          0000000000000000 .rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138 - 4
+000000000000181a  0000000700000002 R_X86_64_PC32          0000000000000000 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE - 4
+0000000000001833  0000000b00000002 R_X86_64_PC32          0000000000000000 .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE - 4
+000000000000183f  0000003e00000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a - 4
+0000000000001874  0000007900000009 R_X86_64_GOTPCREL      0000000000000000 _ZN3std2io5stdio7_eprint17h58458461bd19d139E - 4
+000000000000187f  0000007a00000009 R_X86_64_GOTPCREL      0000000000000000 _ZN3std7process4exit17h00460fefcf032948E - 4
+
+Relocation section '.rela.text.main' at offset 0x104b8 contains 3 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000000000a  0000003300000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot4main17hca72231bfee5693fE - 4
+0000000000000015  0000003800000002 R_X86_64_PC32          0000000000000000 .data.rel.ro..Lvtable.0 - 4
+0000000000000021  0000007200000009 R_X86_64_GOTPCREL      0000000000000000 _ZN3std2rt19lang_start_internal17h31bbb7f936fd6b5dE - 4
+
+Relocation section '.rela.data.rel.ro..Lvtable.0' at offset 0x10500 contains 3 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000018  0000000900000001 R_X86_64_64            0000000000000000 .text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E + 0
+0000000000000020  0000000300000001 R_X86_64_64            0000000000000000 .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE + 0
+0000000000000028  0000000300000001 R_X86_64_64            0000000000000000 .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a' at offset 0x10548 contains 3 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000003b00000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_808ad300ebb34afb9eceb74f85f1e6d3 + 0
+0000000000000010  0000003c00000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_2a9ce5f334b088ccf931185f4c3818c5 + 0
+0000000000000020  0000003d00000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_49a1e817e911805af64bbc7efb390101 + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d' at offset 0x10590 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000003a00000001 R_X86_64_64            0000000000000000 .rodata.str1.1 + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c' at offset 0x105a8 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000004800000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_4a29a4faa0904cd7ff982831f2813e90 + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86' at offset 0x105c0 contains 3 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000004a00000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_44315d594dbcf3e603348f4c43d7c5fc + 0
+0000000000000010  0000004b00000001 R_X86_64_64            0000000000000000 .rodata.cst8 + 0
+0000000000000020  0000004c00000001 R_X86_64_64            0000000000000000 .rodata..Lalloc_d3ac12b0dd8a8f05e09b09405411ead2 + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873' at offset 0x10608 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000003a00000001 R_X86_64_64            0000000000000000 .rodata.str1.1 + 0
+
+Relocation section '.rela.data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad' at offset 0x10620 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000003a00000001 R_X86_64_64            0000000000000000 .rodata.str1.1 + 0
+
+Relocation section '.rela.eh_frame' at offset 0x10638 contains 6 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000020  0000000200000002 R_X86_64_PC32          0000000000000000 .text + 50
+0000000000000038  0000001e00000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE + 0
+000000000000004c  0000002a00000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E + 0
+0000000000000060  0000002c00000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E + 0
+0000000000000074  0000002e00000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E + 0
+0000000000000088  0000003300000002 R_X86_64_PC32          0000000000000000 .text._ZN14extended_pilot4main17hca72231bfee5693fE + 0
+
+Symbol table '.symtab' contains 124 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS extended_pilot.9ff03a49851a832a-cgu.0
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    2 .text
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    7 .text._ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE
+     4: 0000000000000000    13 FUNC    LOCAL  DEFAULT    7 _ZN3std2rt10lang_start28_$u7b$$u7b$closure$u7d$$u7d$17hb764b9c7e0decc7bE
+     5: 0000000000000000     5 FUNC    LOCAL  DEFAULT    9 _ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E
+     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    9 .text._ZN3std3sys9backtrace28__rust_begin_short_backtrace17hbd42e3f545df04a7E
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT   10 .text._ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE
+     8: 0000000000000000    19 FUNC    LOCAL  DEFAULT   10 _ZN44_$LT$$RF$T$u20$as$u20$core..fmt..Display$GT$3fmt17h84f239763959fcedE
+     9: 0000000000000000     0 SECTION LOCAL  DEFAULT   12 .text._ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E
+    10: 0000000000000000    13 FUNC    LOCAL  DEFAULT   12 _ZN4core3ops8function6FnOnce40call_once$u7b$$u7b$vtable.shim$u7d$$u7d$17h9e7f46232d862455E
+    11: 0000000000000000     0 SECTION LOCAL  DEFAULT   14 .text._ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE
+    12: 0000000000000000     9 FUNC    LOCAL  DEFAULT   14 _ZN52_$LT$$RF$mut$u20$T$u20$as$u20$core..fmt..Display$GT$3fmt17h39130a453e30f3adE
+    13: 0000000000000000     8 OBJECT  LOCAL  DEFAULT   43 _ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE
+    14: 0000000000000000     0 SECTION LOCAL  DEFAULT   18 .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E
+    15: 0000000000000000     7 FUNC    LOCAL  DEFAULT   18 _ZN14extended_pilot8rust_mul17h23452971b31aa446E
+    16: 0000000000000000     0 SECTION LOCAL  DEFAULT   19 .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E
+    17: 0000000000000000    24 FUNC    LOCAL  DEFAULT   19 _ZN14extended_pilot11rust_add12817h7f46eaca12712c06E
+    18: 0000000000000000     0 SECTION LOCAL  DEFAULT   20 .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE
+    19: 0000000000000000    22 FUNC    LOCAL  DEFAULT   20 _ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE
+    20: 0000000000000000     0 SECTION LOCAL  DEFAULT   21 .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E
+    21: 0000000000000000     7 FUNC    LOCAL  DEFAULT   21 _ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E
+    22: 0000000000000000     0 SECTION LOCAL  DEFAULT   22 .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E
+    23: 0000000000000000     4 FUNC    LOCAL  DEFAULT   22 _ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E
+    24: 0000000000000000     0 SECTION LOCAL  DEFAULT   23 .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E
+    25: 0000000000000000     7 FUNC    LOCAL  DEFAULT   23 _ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E
+    26: 0000000000000000     0 SECTION LOCAL  DEFAULT   24 .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E
+    27: 0000000000000000     5 FUNC    LOCAL  DEFAULT   24 _ZN14extended_pilot8rust_ptr17h749ef15fb3237769E
+    28: 0000000000000000     0 SECTION LOCAL  DEFAULT   25 .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E
+    29: 0000000000000000    18 FUNC    LOCAL  DEFAULT   25 _ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E
+    30: 0000000000000000     0 SECTION LOCAL  DEFAULT   26 .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE
+    31: 0000000000000000    17 FUNC    LOCAL  DEFAULT   26 _ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE
+    32: 0000000000000000     0 SECTION LOCAL  DEFAULT   27 .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E
+    33: 0000000000000000    11 FUNC    LOCAL  DEFAULT   27 _ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E
+    34: 0000000000000000     0 SECTION LOCAL  DEFAULT   29 .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE
+    35: 0000000000000000    18 FUNC    LOCAL  DEFAULT   29 _ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE
+    36: 0000000000000000     0 SECTION LOCAL  DEFAULT   30 .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE
+    37: 0000000000000000    22 FUNC    LOCAL  DEFAULT   30 _ZN14extended_pilot12inline_label17hce24d0f42a259affE
+    38: 0000000000000000     0 SECTION LOCAL  DEFAULT   31 .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE
+    39: 0000000000000000     4 FUNC    LOCAL  DEFAULT   31 _ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE
+    40: 0000000000000000     0 SECTION LOCAL  DEFAULT   32 .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E
+    41: 0000000000000000     4 FUNC    LOCAL  DEFAULT   32 _ZN14extended_pilot12inline_store17h07e83f398e5e13c5E
+    42: 0000000000000000     0 SECTION LOCAL  DEFAULT   33 .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E
+    43: 0000000000000000     7 FUNC    LOCAL  DEFAULT   33 _ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E
+    44: 0000000000000000     0 SECTION LOCAL  DEFAULT   34 .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E
+    45: 0000000000000000     7 FUNC    LOCAL  DEFAULT   34 _ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E
+    46: 0000000000000000     0 SECTION LOCAL  DEFAULT   35 .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E
+    47: 0000000000000000    26 FUNC    LOCAL  DEFAULT   35 _ZN14extended_pilot9zc_copy1617h333cef0da883ee38E
+    48: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   36 .LCPI24_0
+    49: 0000000000000010     0 NOTYPE  LOCAL  DEFAULT   36 .LCPI24_1
+    50: 0000000000000020     0 NOTYPE  LOCAL  DEFAULT   36 .LCPI24_2
+    51: 0000000000000000     0 SECTION LOCAL  DEFAULT   37 .text._ZN14extended_pilot4main17hca72231bfee5693fE
+    52: 0000000000000000  6275 FUNC    LOCAL  DEFAULT   37 _ZN14extended_pilot4main17hca72231bfee5693fE
+    53: 0000000000000010     8 OBJECT  LOCAL  DEFAULT   64 .Lalloc_ad3f71f8fadccdea3aae76bb9fc6967b
+    54: 0000000000000008     8 OBJECT  LOCAL  DEFAULT   64 .Lalloc_0d1d49781481982934645de3da0719d5
+    55: 0000000000000040    16 OBJECT  LOCAL  DEFAULT   36 .Lalloc_a3022215cbc4d93d75ff36ef0e45ea7d
+    56: 0000000000000000     0 SECTION LOCAL  DEFAULT   41 .data.rel.ro..Lvtable.0
+    57: 0000000000000000     0 SECTION LOCAL  DEFAULT   43 .bss._ZN14extended_pilot12HELPER_CALLS17hceaaa1dfa217d7abE
+    58: 0000000000000000     0 SECTION LOCAL  DEFAULT   44 .rodata.str1.1
+    59: 0000000000000000     0 SECTION LOCAL  DEFAULT   45 .rodata..Lalloc_808ad300ebb34afb9eceb74f85f1e6d3
+    60: 0000000000000000     0 SECTION LOCAL  DEFAULT   46 .rodata..Lalloc_2a9ce5f334b088ccf931185f4c3818c5
+    61: 0000000000000000     0 SECTION LOCAL  DEFAULT   47 .rodata..Lalloc_49a1e817e911805af64bbc7efb390101
+    62: 0000000000000000     0 SECTION LOCAL  DEFAULT   48 .data.rel.ro..Lalloc_81515a03d1756c347036b25cb9acf81a
+    63: 0000000000000000     0 SECTION LOCAL  DEFAULT   50 .data.rel.ro..Lalloc_87b55dc4e757b81e4ee925b5b00b364d
+    64: 0000000000000000     0 SECTION LOCAL  DEFAULT   52 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.0
+    65: 0000000000000000     0 SECTION LOCAL  DEFAULT   53 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.1
+    66: 0000000000000000     0 SECTION LOCAL  DEFAULT   54 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.2
+    67: 0000000000000000     0 SECTION LOCAL  DEFAULT   55 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.3
+    68: 0000000000000000     0 SECTION LOCAL  DEFAULT   56 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.4
+    69: 0000000000000000     0 SECTION LOCAL  DEFAULT   57 .rodata..Lalloc_df49633132bd0738f71b84ee1e58fda5
+    70: 0000000000000000     0 SECTION LOCAL  DEFAULT   58 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.5
+    71: 0000000000000000     0 SECTION LOCAL  DEFAULT   59 .rodata..Lanon.c68ad90a3a9dfb7a47f86997a7ce991b.6
+    72: 0000000000000000     0 SECTION LOCAL  DEFAULT   60 .rodata..Lalloc_4a29a4faa0904cd7ff982831f2813e90
+    73: 0000000000000000     0 SECTION LOCAL  DEFAULT   61 .data.rel.ro..Lalloc_c152a840973ba04895d1feffaffa964c
+    74: 0000000000000000     0 SECTION LOCAL  DEFAULT   63 .rodata..Lalloc_44315d594dbcf3e603348f4c43d7c5fc
+    75: 0000000000000000     0 SECTION LOCAL  DEFAULT   64 .rodata.cst8
+    76: 0000000000000000     0 SECTION LOCAL  DEFAULT   65 .rodata..Lalloc_d3ac12b0dd8a8f05e09b09405411ead2
+    77: 0000000000000000     0 SECTION LOCAL  DEFAULT   66 .data.rel.ro..Lalloc_919c696c65d381e392ab9e07a65fcc86
+    78: 0000000000000000     0 SECTION LOCAL  DEFAULT   68 .rodata..Lalloc_39fbebfa06d3949ee7666a8f08c17138
+    79: 0000000000000000     0 SECTION LOCAL  DEFAULT   69 .rodata..Lalloc_ba5c6512d8d7f8a9c3e50e6eeb52fba9
+    80: 0000000000000000     0 SECTION LOCAL  DEFAULT   70 .rodata..Lalloc_7fb6948253e08425011968cd1ab90324
+    81: 0000000000000000     0 SECTION LOCAL  DEFAULT   71 .rodata..Lalloc_065d390ec367a092c01bac2a3e88eda3
+    82: 0000000000000000     0 SECTION LOCAL  DEFAULT   72 .data.rel.ro..Lalloc_fe7b60ca705568a437d85786e99ed873
+    83: 0000000000000000     0 SECTION LOCAL  DEFAULT   74 .data.rel.ro..Lalloc_13818b644a22fbe6e3bb8eec05faecad
+    84: 0000000000000000     0 SECTION LOCAL  DEFAULT   76 .rodata..Lalloc_aff5e137726c4d2349c18b19090c6249
+    85: 0000000000000000     0 SECTION LOCAL  DEFAULT   77 .rodata..Lalloc_99f669e0aea23b6e9811243e2889d625
+    86: 0000000000000000     0 SECTION LOCAL  DEFAULT   78 .rodata..Lalloc_e2884dc8bff5c33bae7b2ab5a2e22eea
+    87: 0000000000000000     0 SECTION LOCAL  DEFAULT   79 .rodata..Lalloc_2dce8867486f99811029456ce360cb96
+    88: 0000000000000000     0 SECTION LOCAL  DEFAULT   80 .rodata..Lalloc_85fda77841ed425dbdbff2ea33376135
+    89: 0000000000000000     0 SECTION LOCAL  DEFAULT   81 .rodata..Lalloc_b110a08ed55610b06df9c62d38498d39
+    90: 0000000000000000     0 SECTION LOCAL  DEFAULT   82 .rodata..Lalloc_dbb2f02de7ffe024ec16cb240f78d280
+    91: 0000000000000000     0 SECTION LOCAL  DEFAULT   83 .rodata..Lalloc_d402f7413af788172cdb7d05f581a90e
+    92: 0000000000000000     0 SECTION LOCAL  DEFAULT   84 .rodata..Lalloc_82ec933a04e9adbc1c67d6f1c0ac3ada
+    93: 0000000000000000     0 SECTION LOCAL  DEFAULT   85 .rodata..Lalloc_2113db9752c8b12eb5687084ee02e22c
+    94: 0000000000000000     0 SECTION LOCAL  DEFAULT   86 .rodata..Lalloc_abf8626ad38cc02965dbd49aa14f61de
+    95: 0000000000000000     0 SECTION LOCAL  DEFAULT   87 .rodata..Lalloc_4d00ccfdfe200e5040c2e2fbfdf1aaf8
+    96: 0000000000000000     0 SECTION LOCAL  DEFAULT   88 .rodata..Lalloc_149d364d8349edfe71770e753c396aa0
+    97: 0000000000000000     0 SECTION LOCAL  DEFAULT   89 .rodata..Lalloc_b3cea492701bfda0e383697982d6e842
+    98: 0000000000000000     0 SECTION LOCAL  DEFAULT   90 .rodata..Lalloc_2c6e6fe2dd10fb5e3112086a381bbd92
+    99: 0000000000000000     0 SECTION LOCAL  DEFAULT   91 .rodata..Lalloc_02eca21413ccc32994161c12acef02d6
+   100: 0000000000000000     0 SECTION LOCAL  DEFAULT   92 .rodata..Lalloc_c168e215480fb2698effa558f0e4841f
+   101: 0000000000000000     0 SECTION LOCAL  DEFAULT   93 .rodata..Lalloc_46d4440e7a9abba00851fd9bc6521d38
+   102: 0000000000000000    17 FUNC    GLOBAL DEFAULT    2 pilot_mul
+   103: 0000000000000011    28 FUNC    GLOBAL DEFAULT    2 pilot_add128
+   104: 000000000000002d     7 FUNC    GLOBAL DEFAULT    2 pilot_bswap
+   105: 0000000000000034     4 FUNC    GLOBAL DEFAULT    2 pilot_load
+   106: 0000000000000038     4 FUNC    GLOBAL DEFAULT    2 pilot_store
+   107: 000000000000003c    15 FUNC    GLOBAL DEFAULT    2 pilot_copy16
+   108: 000000000000004b     5 FUNC    GLOBAL DEFAULT    2 pilot_ptr
+   109: 0000000000000050    18 FUNC    GLOBAL DEFAULT    2 pilot_call_helper
+   110: 0000000000000000    30 FUNC    GLOBAL DEFAULT   16 pilot_helper
+   111: 0000000000000062     9 FUNC    GLOBAL DEFAULT    2 pilot_simd_copy16
+   112: 000000000000006b    17 FUNC    GLOBAL DEFAULT    2 pilot_simd_add16
+   113: 0000000000000000    32 FUNC    GLOBAL HIDDEN     5 _ZN3std2rt10lang_start17hceb1b6aa47208e68E
+   114: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN3std2rt19lang_start_internal17h31bbb7f936fd6b5dE
+   115: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN42_$LT$str$u20$as$u20$core..fmt..Display$GT$3fmt17h9ae940ece0cd3177E
+   116: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN4core3fmt3num3imp52_$LT$impl$u20$core..fmt..Display$u20$for$u20$u64$GT$3fmt17h7601fb479c860baeE
+   117: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND memcpy
+   118: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN3std2io5stdio6_print17h86bf21ce6e231958E
+   119: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN4core9panicking11panic_const24panic_const_add_overflow17h371a9588e01a5f2aE
+   120: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN4core9panicking18panic_bounds_check17hfa2ac8420ad021dcE
+   121: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN3std2io5stdio7_eprint17h58458461bd19d139E
+   122: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _ZN3std7process4exit17h00460fefcf032948E
+   123: 0000000000000000    39 FUNC    GLOBAL DEFAULT   39 main

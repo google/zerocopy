@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/path/to/docker",
+    "exec",
+    "--workdir",
+    "/e46",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "/usr/bin/env",
+    "-i",
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL=C",
+    "TZ=UTC",
+    "/usr/bin/readelf",
+    "--debug-dump=frames",
+    "build/x86_64/O0/pilot.o"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.03583979100000001,
+  "stdout_bytes": 3304,
+  "stderr_bytes": 0,
+  "stdout_sha256": "5f5ebbe6c297bd2aca618062bcf0b02aeeeca23da7df8293e0efdce8e0d3b8a3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "target_executed": false
+}

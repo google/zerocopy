@@ -9,8 +9,8 @@
     },
     {
       "path": "REPORT.md",
-      "bytes": 12692,
-      "sha256": "bf373912334b400bc096d5f2bc19f5f621225d45b600f026b1792fe70294fc12"
+      "bytes": 12832,
+      "sha256": "acdfe86144d6e956ef9f3d506dfde1c3a321fc3658a98f02bec543f9fb2143c1"
     },
     {
       "path": "artifacts/leaf-O0",
@@ -254,13 +254,28 @@
     },
     {
       "path": "prerequisites.md",
-      "bytes": 5140,
-      "sha256": "bca6af5f47c27702e1b46abdb9e9fe5bc13792dde535af01e16fe48d0878e27d"
+      "bytes": 5496,
+      "sha256": "d8dc89feaffcc640728b458ecccc51a321529ce3d2489e7fe038705277505bb7"
+    },
+    {
+      "path": "primary-prerequisites/hol-light-Makefile",
+      "bytes": 15194,
+      "sha256": "eacd5fd94c546e6ff7e1f1eae1e29f98bba26d18956ac28aa6d7deb19fd9434d"
+    },
+    {
+      "path": "primary-prerequisites/s2n-ci.yml",
+      "bytes": 13102,
+      "sha256": "1c17a19337be6fd192cef9160df49f6ca16d0e4fd2b9341290b86ad4d84e7cc8"
+    },
+    {
+      "path": "publication-projection.json",
+      "bytes": 2655,
+      "sha256": "6ae9012a68611aa09b72510b531edee24d62de6bf4d8ff5583fc9a91fe3143bb"
     },
     {
       "path": "source-evidence.json",
-      "bytes": 19564,
-      "sha256": "fdea1038d1307fb09dc0d5f43d0b9792a3631eaf832a26f8f3a654dc4ab4ff9f"
+      "bytes": 20840,
+      "sha256": "050328d15e27821ea91ec5a2f979c04550886c66e750c3f2c063f935038861cd"
     },
     {
       "path": "support/Adapter.lean",
@@ -306,11 +321,6 @@
       "path": "support/validate.py",
       "bytes": 1371,
       "sha256": "5e3e72a4becd13d05e3b54629c378b892279f663ff32b554bb80a22689ad172f"
-    },
-    {
-      "path": "publication-projection.json",
-      "bytes": 2655,
-      "sha256": "6ae9012a68611aa09b72510b531edee24d62de6bf4d8ff5583fc9a91fe3143bb"
     }
   ]
 }

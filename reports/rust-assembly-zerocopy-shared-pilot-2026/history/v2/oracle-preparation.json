@@ -1,0 +1,19 @@
+{
+  "status": "preparation-data-only",
+  "subject_compiled": false,
+  "subject_executed": false,
+  "generator_sha256": "97677c511e70aca88b647a894b308a87cd27a9206db2e8f346ac15a6c2dd75e6",
+  "vectors_sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28",
+  "case_counts": {
+    "words": 17,
+    "multiply": 289,
+    "add128": 144,
+    "carry": 578,
+    "swap": 17,
+    "vectors16": 12,
+    "helper": 289,
+    "pointer_offsets": 17,
+    "simd_add": 144
+  },
+  "oracle": "unbounded integer arithmetic and explicit byte lists"
+}

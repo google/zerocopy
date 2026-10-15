@@ -1,0 +1,56 @@
+{
+  "role": "Data-only copies derived from the actual positive receipt; no execution",
+  "original_stdout_sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c",
+  "original_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "controls": [
+    {
+      "id": "wrong-count",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6161726368363420636865636b733d34363136206e61746976655f6f725f656d756c617465643d65787465726e616c5f726563656970740a",
+      "stderr_hex": "",
+      "candidate_exit": 0,
+      "mutated_process_or_image_executed": false
+    },
+    {
+      "id": "wrong-architecture",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6f7468657220636865636b733d34363137206e61746976655f6f725f656d756c617465643d65787465726e616c5f726563656970740a",
+      "stderr_hex": "",
+      "candidate_exit": 0,
+      "mutated_process_or_image_executed": false
+    },
+    {
+      "id": "missing-newline",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6161726368363420636865636b733d34363137206e61746976655f6f725f656d756c617465643d65787465726e616c5f72656365697074",
+      "stderr_hex": "",
+      "candidate_exit": 0,
+      "mutated_process_or_image_executed": false
+    },
+    {
+      "id": "trailing-stdout",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6161726368363420636865636b733d34363137206e61746976655f6f725f656d756c617465643d65787465726e616c5f726563656970740a646174612d6f6e6c79206d75746174696f6e0a",
+      "stderr_hex": "",
+      "candidate_exit": 0,
+      "mutated_process_or_image_executed": false
+    },
+    {
+      "id": "nonempty-stderr",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6161726368363420636865636b733d34363137206e61746976655f6f725f656d756c617465643d65787465726e616c5f726563656970740a",
+      "stderr_hex": "646174612d6f6e6c79206d75746174696f6e0a",
+      "candidate_exit": 0,
+      "mutated_process_or_image_executed": false
+    },
+    {
+      "id": "nonzero-status",
+      "rejected": true,
+      "stdout_hex": "4534365f4f4b20617263683d6161726368363420636865636b733d34363137206e61746976655f6f725f656d756c617465643d65787465726e616c5f726563656970740a",
+      "stderr_hex": "",
+      "candidate_exit": 1,
+      "mutated_process_or_image_executed": false
+    }
+  ],
+  "limit": "Receipt/status/one-line-output admission only; not injected wrong results, guards or ABI faults."
+}

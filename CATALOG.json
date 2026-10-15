@@ -23933,6 +23933,95 @@
         "assembly/artifact-binding"
       ]
     },
+    "rust-assembly-zerocopy-shared-pilot-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "compiler_sha256": "93c98482c1bdedf3789c2bd0a86ff82a7075a58528abbca2990066f4e8faedb7",
+            "llvm_version": "20.1.7",
+            "repository": "rust-lang/rust",
+            "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+            "version": "1.89.0"
+          },
+          "name": "Rust1.89 compiler and LLVM backend"
+        },
+        {
+          "identity": {
+            "crate_version": "0.8.63",
+            "repository": "google/zerocopy",
+            "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+            "selected_source_inventory_sha256": "45e956eb714c7f473cadd6f43d32424bccca7132c43915d4940f8cafb6a0ab0c"
+          },
+          "name": "zerocopy source selected for direct rustc compilation"
+        },
+        {
+          "identity": {
+            "aarch64_assembly_sha256": "ad1d035551286a22b0e189a3ba1aed427154258df6a4fac897a4e842e52aa895",
+            "artifact": "pilot.rs",
+            "oracle_vectors_sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28",
+            "sha256": "1b9466576e315530e54eea9622d102e59ae219177473440c2ebade46fd9e4616",
+            "x86_64_assembly_sha256": "f8a609d98c11518606547a7436f76a23a5f06a4058b898cba75143985c7c5e50"
+          },
+          "name": "Shared owned Rust and whole-assembly pilot"
+        },
+        {
+          "identity": {
+            "artifact": "runtime-results.json",
+            "function_body_inventory_sha256": "320f29c2145b584878667e1fe51bef2189bb9bc65defe60e7cdaa4e2151617a7",
+            "sha256": "2b7e3e1dbbc4637ee22dcbfc68ebc2960bcab1fdc6ddefc0859a33295d9ad1c3"
+          },
+          "name": "Actual four executable image and observation set"
+        },
+        {
+          "identity": {
+            "cpu_source_sha256": "31f0ea439552750647aeb50db6cd03453a38c14240d7b1fcacbb9393831c097c",
+            "debian_package_version": "1:7.2+dfsg-7+deb12u18+b3",
+            "installed_binary_sha256": "ca7b4d72cb2a1a36dd63e31ae989ec909d4c4a711981bc318ae64ed191e96167",
+            "repository": "qemu/qemu",
+            "revision": "30a68773a4de9960647aa82718e5b8dafea05e7a",
+            "selected_model": "qemu64-v1",
+            "version": "v7.2.22"
+          },
+          "name": "QEMU installed user emulator and selected upstream model source"
+        },
+        {
+          "identity": {
+            "path": "src/inline-assembly.md",
+            "repository": "rust-lang/reference",
+            "revision": "9571d4d38cc580bd9fe926f97fccd98f215564a9",
+            "sha256": "b0c3343b46e4fa198bf3ae16deb2e29dcde9dcad12c77b37a414b952ea8adb64"
+          },
+          "name": "Rust1.89 gitlinked Reference inline assembly contract"
+        },
+        {
+          "identity": {
+            "aapcs_repository": "ARM-software/abi-aa",
+            "aapcs_revision": "ec3e2fb69065768aa1caf298813a7808b50bc264",
+            "sysv_repository": "x86-psABIs/x86-64-ABI",
+            "sysv_revision": "e1ce098331da5dbd66e1ffc74162380bcc213236"
+          },
+          "name": "Selected external ABI specification snapshots"
+        },
+        {
+          "identity": {
+            "artifact": "compile-static/inspection/runtime-library-files-read-only.stdout",
+            "sha256": "0d0cbbddc3326b10fcafaabc147531bc7c7e094cc912f52d178cb0d9e6c53257"
+          },
+          "name": "Observed loader and runtime-library file set"
+        }
+      ],
+      "topics": [
+        "rust/inline-assembly",
+        "rust/ffi",
+        "assembly/aarch64",
+        "assembly/x86-64",
+        "zerocopy",
+        "assembly/abi",
+        "assembly/simd",
+        "assembly/experiments"
+      ]
+    },
     "rust-atomics-memory-orderings-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [

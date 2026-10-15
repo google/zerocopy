@@ -1,0 +1,11 @@
+{
+  "url": "https://gitlab.com/api/v4/projects/x86-psABIs%2Fx86-64-ABI/repository/files/x86-64-ABI%2Flow-level-sys-info.tex/raw?ref=e1ce098331da5dbd66e1ffc74162380bcc213236",
+  "final_url": "https://gitlab.com/api/v4/projects/x86-psABIs%2Fx86-64-ABI/repository/files/x86-64-ABI%2Flow-level-sys-info.tex/raw?ref=e1ce098331da5dbd66e1ffc74162380bcc213236",
+  "revision": "e1ce098331da5dbd66e1ffc74162380bcc213236",
+  "status": 200,
+  "content_type": "text/plain; charset=utf-8",
+  "bytes": 105138,
+  "sha256": "2d42f2ab76b99a3b8456e6bc07e18314e85991119f72db90ca1175328e27b705",
+  "elapsed_seconds": 0.290542166,
+  "next_page": null
+}

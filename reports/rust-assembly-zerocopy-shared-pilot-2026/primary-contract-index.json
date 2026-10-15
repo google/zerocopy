@@ -1,0 +1,316 @@
+{
+  "status": "preparation-primary-contract-review-only",
+  "compiler_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "rust189_reference": {
+    "repository": "https://github.com/rust-lang/reference",
+    "revision": "9571d4d38cc580bd9fe926f97fccd98f215564a9",
+    "path": "src/inline-assembly.md",
+    "input_label": "parent/e46-runtime-preflight/rust189-inline-assembly.response",
+    "sha256": "b0c3343b46e4fa198bf3ae16deb2e29dcde9dcad12c77b37a414b952ea8adb64",
+    "bytes": 70288,
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/9571d4d38cc580bd9fe926f97fccd98f215564a9/src/inline-assembly.md",
+    "applicability": "Parent-acquired Rust1.89 source gitlink receipt identifies this exact Reference commit; no backwards propagation from later docs.",
+    "gitlink_receipt_label": "parent/e46-runtime-preflight/rust189-reference-submodule.json",
+    "gitlink_receipt_sha256": "e77185120b37c9198aaae98874c5a6badfe91ab64c923436f18b57a2cba0f6a9",
+    "clauses": [
+      {
+        "id": "asm.scope.global_asm",
+        "start_line": 136,
+        "end_line": 145,
+        "consumed_proposition": "Whole function definitions outside Rust function scope.",
+        "source_consumers": [
+          "aarch64.s",
+          "x86_64.s"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.ts-args.llvm-syntax",
+        "start_line": 258,
+        "end_line": 268,
+        "consumed_proposition": "Default x86 syntax is Intel noprefix; use LLVM/GAS syntax.",
+        "source_consumers": [
+          "x86_64.s",
+          "pilot.rs inline asm"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.operand-type.supported-operands.in",
+        "start_line": 275,
+        "end_line": 288,
+        "consumed_proposition": "Input values present on entry; preserve input unless overlapping lateout.",
+        "source_consumers": [
+          "pilot.rs inline_carry/inline_load/inline_store/inline_label"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.operand-type.supported-operands.lateout",
+        "start_line": 305,
+        "end_line": 320,
+        "consumed_proposition": "Output may reuse an input register only after all input reads.",
+        "source_consumers": [
+          "pilot.rs inline_carry/inline_load"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.operand-type.supported-operands.inout",
+        "start_line": 321,
+        "end_line": 336,
+        "consumed_proposition": "Initialized input/output place and corresponding register value.",
+        "source_consumers": [
+          "pilot.rs inline_carry"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.operand-type.supported-operands.label",
+        "start_line": 408,
+        "end_line": 424,
+        "consumed_proposition": "Direct declared label target; unit/never block; returns after block; independent safety context.",
+        "source_consumers": [
+          "pilot.rs inline_label"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.operand-type.global_asm-restriction",
+        "start_line": 442,
+        "end_line": 462,
+        "consumed_proposition": "Global assembly accepts only symbol/constant operands; fixture has no register operands.",
+        "source_consumers": [
+          "pilot.rs global_asm includes"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.supported-options.nomem",
+        "start_line": 1053,
+        "end_line": 1100,
+        "consumed_proposition": "No externally accessible memory read/write or thread synchronization.",
+        "source_consumers": [
+          "pilot.rs inline_carry"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.supported-options.readonly",
+        "start_line": 1101,
+        "end_line": 1146,
+        "consumed_proposition": "No externally accessible memory write or thread synchronization.",
+        "source_consumers": [
+          "pilot.rs inline_load"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.supported-options.preserves_flags",
+        "start_line": 1147,
+        "end_line": 1150,
+        "consumed_proposition": "Restore named flags; load/store templates claim preservation.",
+        "source_consumers": [
+          "pilot.rs inline_load/inline_store"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.supported-options.nostack",
+        "start_line": 1183,
+        "end_line": 1194,
+        "consumed_proposition": "No pushing data or writing red zone.",
+        "source_consumers": [
+          "pilot.rs inline_carry/inline_load/inline_store"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.checks.label-with-outputs",
+        "start_line": 1259,
+        "end_line": 1261,
+        "consumed_proposition": "No label blocks combined with output operands.",
+        "source_consumers": [
+          "pilot.rs inline_label"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.options.global_asm-restriction",
+        "start_line": 1265,
+        "end_line": 1275,
+        "consumed_proposition": "Global assembly options only att_syntax/raw; fixture supplies neither.",
+        "source_consumers": [
+          "pilot.rs global_asm includes"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.reg-not-output",
+        "start_line": 1287,
+        "end_line": 1293,
+        "consumed_proposition": "Registers not declared outputs are restored on exit.",
+        "source_consumers": [
+          "pilot.rs inline assembly"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.unwind",
+        "start_line": 1294,
+        "end_line": 1297,
+        "consumed_proposition": "No unwinding out of ordinary asm, including a called function unwinding.",
+        "source_consumers": [
+          "pilot.rs inline assembly; no inline calls"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.mem-same-as-ffi",
+        "start_line": 1298,
+        "end_line": 1303,
+        "consumed_proposition": "Memory permissions follow FFI with readonly/nomem further restrictions.",
+        "source_consumers": [
+          "CONTRACTS.md span/lifetime inventory"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.black-box",
+        "start_line": 1304,
+        "end_line": 1309,
+        "consumed_proposition": "Instructions/interface are separate; no guaranteed source asm to unique object instance.",
+        "source_consumers": [
+          "PLAN.md artifact inspection and limits"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.preserved-registers",
+        "start_line": 1326,
+        "end_line": 1349,
+        "consumed_proposition": "Target-specific flag sets covered by preserves_flags.",
+        "source_consumers": [
+          "pilot.rs inline_load/inline_store"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.rules.x86-df",
+        "start_line": 1350,
+        "end_line": 1353,
+        "consumed_proposition": "DF clear on entry and exit.",
+        "source_consumers": [
+          "pilot.rs x86 inline assembly"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.directives.stateful",
+        "start_line": 1555,
+        "end_line": 1557,
+        "consumed_proposition": "Restore effects of directives that affect subsequent assembly processing.",
+        "source_consumers": [
+          "aarch64.s balanced push/pop",
+          "x86_64.s balanced push/pop"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      },
+      {
+        "id": "asm.directives.supported-directives",
+        "start_line": 1558,
+        "end_line": 1629,
+        "consumed_proposition": "Pushsection/popsection/type/size/global/align are listed; .cfi_* not listed, hence assembler-specific.",
+        "source_consumers": [
+          "aarch64.s",
+          "x86_64.s"
+        ],
+        "result": "inspected selected textual contract; not implementation proof"
+      }
+    ]
+  },
+  "sysv_psabi": {
+    "repository": "https://gitlab.com/x86-psABIs/x86-64-ABI",
+    "revision": "e1ce098331da5dbd66e1ffc74162380bcc213236",
+    "path": "x86-64-ABI/low-level-sys-info.tex",
+    "input_label": "parent/e46-runtime-preflight/sysv-psabi-low-level-pinned.response",
+    "sha256": "2d42f2ab76b99a3b8456e6bc07e18314e85991119f72db90ca1175328e27b705",
+    "bytes": 105138,
+    "url": "https://gitlab.com/api/v4/projects/x86-psABIs%2Fx86-64-ABI/repository/files/x86-64-ABI%2Flow-level-sys-info.tex/raw?ref=e1ce098331da5dbd66e1ffc74162380bcc213236",
+    "applicability": "Later selected external ABI snapshot, not a historical compiler conformance proof. Baseline LP64 selected, no aggregate/vector values/varargs passed.",
+    "clauses": [
+      {
+        "section": "Processor Architecture baseline feature table",
+        "start_line": 7,
+        "end_line": 30,
+        "consumed": "SSE2 is a baseline x86-64 feature; QEMU selected guest/actual artifact still require inspection."
+      },
+      {
+        "section": "Registers and the Stack Frame",
+        "start_line": 457,
+        "end_line": 480,
+        "consumed": "RBP/RBX/R12-R15 callee saves; DF clear entry/return; MXCSR control and x87 control word preserved; XMM0/1 caller-saved in Register Usage table."
+      },
+      {
+        "section": "The Stack Frame",
+        "start_line": 517,
+        "end_line": 541,
+        "consumed": "SP16 before CALL, return address at entry RSP with RSP+8 multiple16; red zone not used by selected assembly."
+      },
+      {
+        "section": "Parameter Passing / Classification",
+        "start_line": 572,
+        "end_line": 580,
+        "consumed": "Integer and pointer arguments in INTEGER class."
+      },
+      {
+        "section": "Parameter Passing / Passing and Register Usage",
+        "start_line": 688,
+        "end_line": 775,
+        "consumed": "INTEGER args RDI,RSI,RDX,RCX,R8,R9; selected scratch registers and XMM0/1 caller-saved."
+      },
+      {
+        "section": "Parameter Passing / Returning of Values",
+        "start_line": 806,
+        "end_line": 822,
+        "consumed": "INTEGER return starts in RAX; pointer return uses this class."
+      }
+    ]
+  },
+  "aapcs64": {
+    "repository": "https://github.com/ARM-software/abi-aa",
+    "revision": "ec3e2fb69065768aa1caf298813a7808b50bc264",
+    "path": "aapcs64/aapcs64.rst",
+    "sha256": "7f4e6a9c02bd88184f92d5309e062539babccc1fa90c4e4676d26b58df965dbd",
+    "inspected_ranges": [
+      {
+        "start_line": 838,
+        "end_line": 908,
+        "consumed": "Selected integer/vector caller/callee saves, LR/FP/platform register roles and flags."
+      },
+      {
+        "start_line": 1190,
+        "end_line": 1235,
+        "consumed": "Stack extent/SP16 at public interface and FP/LR frame record."
+      }
+    ]
+  },
+  "discrepancy": {
+    "id": "E46-PREP-SECTION-STATE",
+    "status": "parent-authorized-preparation-source-correction",
+    "rule": "asm.directives.stateful",
+    "original": "Both global-asm sources selected text then GNU-stack without restoring incoming section.",
+    "revision": "Balanced push/pop for text and separate GNU-stack marker, no other line changes.",
+    "prior_freeze_sha256": "562388809486a803a45a09e28d1a0ac65ee481556e2090de38028c96a0981e95",
+    "prior_exact_inputs": "history/v1/",
+    "no_compile_or_runtime_consequence_observed": true
+  },
+  "explicit_remaining_premises": [
+    "LLVM20/GNU-ELF interpretation of .cfi_* (not in guaranteed Rust1.89 subset), to inspect actual object/final metadata before runtime.",
+    "Selected ISA instruction effects and supported runtime features.",
+    "Rust1.89 C ABI/caller/assembly/artifact correspondence; finite runs cannot prove compiler implementation correct.",
+    "Resource/provenance/source adequacy and generic scalar/SIMD access-model completeness remain unproved."
+  ],
+  "subject_compiled": false,
+  "subject_executed": false
+}

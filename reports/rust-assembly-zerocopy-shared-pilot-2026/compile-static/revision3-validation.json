@@ -1,0 +1,266 @@
+{
+  "status": "source-only-parent-authorized-lifetime-correction",
+  "checks_passed": 63,
+  "checks": [
+    {
+      "id": "v2-freeze-identity",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-expected.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/PREPARATION-FREEZE.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/check_preparation.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/check_preparation.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/data-preparation-commands.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/expected.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-history/v1/zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-oracle-preparation.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-parent-input-identities.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-pilot.rs",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-preparation-checks.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-prepare_oracles.py.stderr",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-prepare_oracles.py.stdout",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-revision-validation.json",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "v2-retained-zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "exact-authorized-lifetime-fix-only",
+      "pass": true
+    },
+    {
+      "id": "unchanged-aarch64.s",
+      "pass": true
+    },
+    {
+      "id": "unchanged-x86_64.s",
+      "pass": true
+    },
+    {
+      "id": "unchanged-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "unchanged-expected.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-controls-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-commands-proposed.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-case-inventory.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-CONTRACTS.md",
+      "pass": true
+    },
+    {
+      "id": "unchanged-PLAN.md",
+      "pass": true
+    },
+    {
+      "id": "unchanged-primary-contract-index.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-zerocopy-selected-source.json",
+      "pass": true
+    },
+    {
+      "id": "unchanged-prepare_oracles.py",
+      "pass": true
+    },
+    {
+      "id": "unchanged-check_preparation.py",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-vectors.rs",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-expected.json",
+      "pass": true
+    },
+    {
+      "id": "regenerated-identical-controls-proposed.json",
+      "pass": true
+    }
+  ],
+  "corrected_harness_compiled": false,
+  "staged_container_source_changed_by_agent": false,
+  "previous_compiler_statuses": {
+    "aarch64-O0-zerocopy": 0,
+    "aarch64-O0-pilot": 1
+  },
+  "no_compiler_retry_or_runtime": true,
+  "underlying_dependency_asm_oracles_flags_unchanged": true
+}

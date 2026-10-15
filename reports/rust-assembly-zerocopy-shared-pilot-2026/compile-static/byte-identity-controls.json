@@ -1,0 +1,32 @@
+{
+  "status": "data-only",
+  "controls": [
+    {
+      "id": "aarch64-actual-load-byte-identity",
+      "expected_bound_hex": "000040f9c0035fd6",
+      "actual_image_slice_hex": "000040f9c0035fd6",
+      "original_sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369",
+      "candidate_changed_hex": "010040f9c0035fd6",
+      "changed_sha256": "5ce386b04ff693696bdbd71df16588487d928034fcb8933081c1a2a64007683b",
+      "byte_equality_accepts_original": true,
+      "byte_equality_rejects_changed": true,
+      "mutant_artifact_written": false,
+      "mutant_executed": false,
+      "claim": "Exact-byte identity data control only; no claim that this predicate validates instruction semantics or footprint."
+    },
+    {
+      "id": "x86_64-actual-load-byte-identity",
+      "expected_bound_hex": "488b07c3",
+      "actual_image_slice_hex": "488b07c3",
+      "original_sha256": "afae45c906d9e5d93a0612a2360b14d31fd758c9acf5c8f8787b5095927afc23",
+      "candidate_changed_hex": "498b07c3",
+      "changed_sha256": "ae1636d8c833dcadc8a2167d432806db7278de8ddaca10a370e33429c6f36b39",
+      "byte_equality_accepts_original": true,
+      "byte_equality_rejects_changed": true,
+      "mutant_artifact_written": false,
+      "mutant_executed": false,
+      "claim": "Exact-byte identity data control only; no claim that this predicate validates instruction semantics or footprint."
+    }
+  ],
+  "future_observed_result_control": "wrong-return/guard record control remains unperformed until an actual runtime record exists; preparation oracle-data distinguishability controls already ran separately."
+}

@@ -1,0 +1,175 @@
+{
+  "status": "prepared-not-compiled-not-run",
+  "milestone": "E46",
+  "compiler_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "zerocopy_revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+  "target_profile_runs_proposed": [
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "opt": 0,
+      "execution": "native Linux container on AArch64 host",
+      "expected_harness_checks": 4617,
+      "status": "unperformed"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "opt": 3,
+      "execution": "native Linux container on AArch64 host",
+      "expected_harness_checks": 4617,
+      "status": "unperformed"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "opt": 0,
+      "execution": "QEMU user-mode x86_64 on AArch64 host",
+      "expected_harness_checks": 4617,
+      "status": "unperformed"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "opt": 3,
+      "execution": "QEMU user-mode x86_64 on AArch64 host",
+      "expected_harness_checks": 4617,
+      "status": "unperformed"
+    }
+  ],
+  "cases": [
+    {
+      "id": "E46-01",
+      "topic": "multiply",
+      "case_count_per_profile": 289,
+      "rust": "rust_mul",
+      "assembly": "pilot_mul",
+      "value_oracle": "a*b split into low/high 64-bit limbs",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-02",
+      "topic": "add128",
+      "case_count_per_profile": 144,
+      "rust": "rust_add128",
+      "assembly": "pilot_add128",
+      "value_oracle": "little-limb sum modulo2^128 and carry beyond128",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-03",
+      "topic": "carry-in",
+      "case_count_per_profile": 578,
+      "rust": "rust_carry",
+      "assembly": "inline_carry",
+      "value_oracle": "a+b+cin modulo2^64 plus carry, cin0/1",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-04",
+      "topic": "byte-swap",
+      "case_count_per_profile": 17,
+      "rust": "rust_swap",
+      "assembly": "pilot_bswap",
+      "value_oracle": "reverse eight byte positions",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-05",
+      "topic": "load",
+      "case_count_per_profile": 17,
+      "rust": "rust_load",
+      "assembly": "pilot_load + inline_load",
+      "value_oracle": "initialized aligned8 u64 source value",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-06",
+      "topic": "store",
+      "case_count_per_profile": 17,
+      "rust": "rust_store",
+      "assembly": "pilot_store + inline_store",
+      "value_oracle": "initialized exclusive aligned8 u64 destination",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-07",
+      "topic": "copy16",
+      "case_count_per_profile": 12,
+      "rust": "rust_copy16 + zc_copy16",
+      "assembly": "pilot_copy16 + pilot_simd_copy16",
+      "value_oracle": "copy exactly16 initialized bytes to disjoint aligned16 destination",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-08",
+      "topic": "pointer-return",
+      "case_count_per_profile": 204,
+      "rust": "rust_ptr + bounded .add + zerocopy view",
+      "assembly": "pilot_ptr",
+      "value_oracle": "same live array pointer+offset0..16; no dereference of result",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-09",
+      "topic": "inline-label",
+      "case_count_per_profile": 17,
+      "rust": "rust_label",
+      "assembly": "inline_label",
+      "value_oracle": "zero selects17; nonzero selects41",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-10",
+      "topic": "C-ABI-helper",
+      "case_count_per_profile": 289,
+      "rust": "rust_call_helper",
+      "assembly": "pilot_call_helper",
+      "value_oracle": "same Rust C helper once; mathematical value+1 modulo2^64; counter separately reset/checked",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-11",
+      "topic": "SIMD16-add",
+      "case_count_per_profile": 144,
+      "rust": "rust_add16",
+      "assembly": "pilot_simd_add16",
+      "value_oracle": "sixteen independent byte additions modulo256",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-12",
+      "topic": "actual-zerocopy-byteorder",
+      "case_count_per_profile": 17,
+      "rust": "zc_encode + zc_decode + u64::read_from_bytes",
+      "assembly": "pilot_bswap relationship",
+      "value_oracle": "actual pinned U64 BE wire encoding/decoding vs byte-position oracle",
+      "status": "source-and-data-prepared"
+    },
+    {
+      "id": "E46-13",
+      "topic": "actual-zerocopy-valid-error-path",
+      "case_count_per_profile": 2,
+      "rust": "U64::read_from_bytes + IntoBytes::write_to",
+      "assembly": "none (short spans never go to assembly)",
+      "value_oracle": "safe API Err for lengths7/9, writes preserve whole destination",
+      "status": "source-and-data-prepared"
+    }
+  ],
+  "negative_controls": {
+    "current": "Data-only structural admission and arithmetic distinguishability controls; no native negative calls.",
+    "future_unperformed": "Changed object bytes and copied return/guard records require actual compiled/observed artifacts; these are marked pending.",
+    "limitation": "Declared footprint inequality does not detect actual hidden accesses or prove complete footprint production."
+  },
+  "unproved": [
+    "reference ISA/decoder correctness",
+    "Rust/MiniRust adequacy and compiler refinement",
+    "universal ABI/provenance/resource equivalence",
+    "generic scalar/SIMD complete access model",
+    "E29/E30/E34/E35/E36/E37 full goals"
+  ],
+  "stop_conditions": [
+    "unexpected panic/assertion/ICE",
+    "abnormal run status or timeout",
+    "changed source/image hash",
+    "mismatch/guard change/counter mismatch",
+    "feature/ABI/loader/metadata disagreement",
+    "owned artifact cap exceeded"
+  ]
+}

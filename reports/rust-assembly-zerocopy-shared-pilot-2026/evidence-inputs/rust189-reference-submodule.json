@@ -1,0 +1,22 @@
+{
+  "role": "Primary Rust 1.89 source gitlink observation",
+  "url": "https://api.github.com/repos/rust-lang/rust/contents/src/doc/reference?ref=29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "result": {
+    "name": "reference",
+    "path": "src/doc/reference",
+    "sha": "9571d4d38cc580bd9fe926f97fccd98f215564a9",
+    "size": 0,
+    "url": "https://api.github.com/repos/rust-lang/rust/contents/src/doc/reference?ref=29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+    "html_url": "https://github.com/rust-lang/reference/tree/9571d4d38cc580bd9fe926f97fccd98f215564a9",
+    "git_url": "https://api.github.com/repos/rust-lang/reference/git/trees/9571d4d38cc580bd9fe926f97fccd98f215564a9",
+    "download_url": null,
+    "type": "submodule",
+    "submodule_git_url": "https://github.com/rust-lang/reference.git",
+    "_links": {
+      "self": "https://api.github.com/repos/rust-lang/rust/contents/src/doc/reference?ref=29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+      "git": "https://api.github.com/repos/rust-lang/reference/git/trees/9571d4d38cc580bd9fe926f97fccd98f215564a9",
+      "html": "https://github.com/rust-lang/reference/tree/9571d4d38cc580bd9fe926f97fccd98f215564a9"
+    }
+  }
+}
+

@@ -1,0 +1,7 @@
+{
+  "role": "owned diagnosis, not original subprocess receipt",
+  "cause": "sandbox denied Docker API socket before snapshot; no compiler/container command started",
+  "source_or_tool_panic": false,
+  "subject_execution": false,
+  "next": "Narrow tool escalation for already authorized capture helper; original failed preflight retained."
+}

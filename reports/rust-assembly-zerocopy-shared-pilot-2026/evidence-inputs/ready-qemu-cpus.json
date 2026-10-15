@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "/usr/bin/qemu-x86_64",
+    "-cpu",
+    "help"
+  ],
+  "exit_code": 1,
+  "seconds": 0.04211204103194177
+}

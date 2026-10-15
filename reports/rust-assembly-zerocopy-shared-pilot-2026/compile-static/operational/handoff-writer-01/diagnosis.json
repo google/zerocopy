@@ -1,0 +1,9 @@
+{
+  "role": "Owned integration note transcribing actual tool result; not original subprocess capture",
+  "actual_exit": 1,
+  "actual_stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 33, in <module>\n  File \"<stdin>\", line 33, in <dictcomp>\nTypeError: 'NoneType' object is not subscriptable\n",
+  "cause": "Missing O3 rust_load body has object/image keys with null values; key-existence check admitted null to field extraction.",
+  "effect": "Only new primary source copies and static-input-identities.json were written before failure; no source/compiler/container/target action.",
+  "correction": "Require non-null object/image values before summarizing; keep missing_at_image true.",
+  "target_execution": false
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "gcc-12-x86-64-linux-gnu-base",
+    "version": "12.2.0-14cross1",
+    "sha256": "7c3f7dd786947e4782a20e1a1287c10cb2be1a03c10d7cbf14d8395e47df326c"
+  },
+  {
+    "name": "cpp-12-x86-64-linux-gnu",
+    "version": "12.2.0-14cross1",
+    "sha256": "920e889328a3165fcdbde222db0c2024adf66181d424941be6f8dd4eb66d59e7"
+  },
+  {
+    "name": "cpp-x86-64-linux-gnu",
+    "version": "4:12.2.0-3",
+    "sha256": "8d637d1c3b97ae5a77f7f56bee70610b52b0fcfcd9c1263d675f81992793cdc3"
+  },
+  {
+    "name": "binutils-x86-64-linux-gnu",
+    "version": "2.40-2",
+    "sha256": "01db01c3506e3d135c1ee3156e8ec6717a31f1986b8187fdae0b3533243e0e25"
+  },
+  {
+    "name": "libgcc-s1-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "b432ba4cfc37d81fc9efe03da3c706eaa64859513f496397c56d11c08262994f"
+  },
+  {
+    "name": "libgomp1-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "f3ae7df016ec6ed06f653635691ffeebdf1af327678faac9dc4142383f9eee68"
+  },
+  {
+    "name": "libitm1-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "ba3fea5b302e65e88e9c937fe231478d63dec9a46e3faa59ad1886145c21e400"
+  },
+  {
+    "name": "libatomic1-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "f27d207736a491041b4a5815e326eb0d7066a4b84742504656f40b18f5833cbc"
+  },
+  {
+    "name": "libasan8-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "876b20dd4d6e00475211156163629c0e14d1e09dcbc831220f29c1a115708129"
+  },
+  {
+    "name": "liblsan0-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "ffe358486c406f9134c74ebf6c6763a964f0b42c0bdecc6b1c5772beb5f5054a"
+  },
+  {
+    "name": "libtsan2-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "0eeef35ab003f38b71a28bced43028d02fb2c61405fdc73ddf6a94a197b6b0fd"
+  },
+  {
+    "name": "libc6-amd64-cross",
+    "version": "2.36-8cross1",
+    "sha256": "e410f3d2da35bccf757976d38e6a309d4d94d25c0dfde565a9662e3f75951b2c"
+  },
+  {
+    "name": "libstdc++6-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "ad91d29ea6b2a819fe6f79138fee2ce4c1a1dbe7fcd355c3a8f27e8c3d13dd88"
+  },
+  {
+    "name": "libubsan1-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "02503858cdd30e0adae9105259723779355fd16ff1ee119e67c6618496a461f6"
+  },
+  {
+    "name": "libquadmath0-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "e7a8f1f9b599ff3819b2f658fec8dfa773b0fad26afbd2e56ea49a36531b8b6b"
+  },
+  {
+    "name": "libgcc-12-dev-amd64-cross",
+    "version": "12.2.0-14cross1",
+    "sha256": "51934acb03f4345c98da94c6b759e6e3246b809f343f2d07795a132c072541ca"
+  },
+  {
+    "name": "gcc-12-x86-64-linux-gnu",
+    "version": "12.2.0-14cross1",
+    "sha256": "8ce1b9395390e513a0c1de952527e8ce362049eea58c5df25c39562868bf0172"
+  },
+  {
+    "name": "gcc-x86-64-linux-gnu",
+    "version": "4:12.2.0-3",
+    "sha256": "a688ffa97d9fc578959c37f4f1a1825b7f65f8306f3e4076bdb4eae549b02e63"
+  },
+  {
+    "name": "linux-libc-dev-amd64-cross",
+    "version": "6.1.4-1cross1",
+    "sha256": "b7ec9f95d20bd4669119201ec6a1ac372189fc222d35f21631bb79b723519293"
+  },
+  {
+    "name": "libc6-dev-amd64-cross",
+    "version": "2.36-8cross1",
+    "sha256": "197b497ed91056e6c4093b0972296199260424f24943d7108a8124cc7de750d6"
+  }
+]

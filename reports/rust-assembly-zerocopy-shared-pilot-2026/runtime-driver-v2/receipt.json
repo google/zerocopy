@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "capture_runtime_v2.py",
+    "--execute-positive-sequence-after-parent-grant",
+    "b21552ce821273cabb4f772549896f99abfe31c6458f5b3fa26182a1bed61d96"
+  ],
+  "cwd": "/path/to/anneal-workspace/work/execution/extended-pilot",
+  "exit": 0,
+  "outer_timeout": false,
+  "elapsed_seconds": 3.1410233329999997,
+  "helper_sha256_before": "1ff6f1010401509c6b2f9808eeec8e6167de08dad48f797e90c020f9f959bc37",
+  "helper_sha256_after": "1ff6f1010401509c6b2f9808eeec8e6167de08dad48f797e90c020f9f959bc37",
+  "reviewed_preparation_sha256": "b21552ce821273cabb4f772549896f99abfe31c6458f5b3fa26182a1bed61d96",
+  "stdout_sha256": "08b9778c3e90163123d7ff9ec49b346253c01702492bd53171dc31b58fe269b7",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Parent-granted exact corrected four-positive sequence; no target retry or source changes"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "aarch64-O3-positive",
+  "image_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+  "execution_kind": "native-AArch64-container",
+  "exit": 0,
+  "output_status_match": true,
+  "identities_resources_unchanged": true,
+  "expected_checks": 4617,
+  "no_mutant_executed": true
+}

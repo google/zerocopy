@@ -1,0 +1,190 @@
+{
+  "status": "existing-read-only-inputs",
+  "files": [
+    {
+      "label": "parent/e46-runtime-preflight/container.json",
+      "bytes": 181,
+      "sha256": "c996cc720bd61c6c2ba2ad6ecc3103dbc910ccb063c66615766dbb5f3b73f8df",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/container.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/container.stdout",
+      "bytes": 7997,
+      "sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/cross-packages.json",
+      "bytes": 265,
+      "sha256": "88c53eee5b91a4489ff15087a9b87d05fa6ae5a843aabd8075780661ba05bebb",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/cross-packages.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/cross-packages.stdout",
+      "bytes": 351,
+      "sha256": "aa766a31ef4b0948eb4bf3e5feabcf727fdff726f07f7bdeecdf9228ef22308c",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/linker.json",
+      "bytes": 239,
+      "sha256": "d8e0eb8169f25b0ab72061741b73b4d848f79b7efe3f358d743ac61b05fdfacc",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/linker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/linker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/qemu-x64.json",
+      "bytes": 214,
+      "sha256": "92a702ce930ccf07d282eb41cb4421d9421cad41256449043a8eed210cb30148",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/qemu-x64.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/qemu-x64.stdout",
+      "bytes": 133,
+      "sha256": "cb26b2b49d5112a847499b891d10bab7706ec26779a0dec608e5358ceb0534bc",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rust189-inline-assembly.json",
+      "bytes": 465,
+      "sha256": "d63108c01cff957390f0c80662695d25b5f57f1fccca3b479724c6ab36779e3f",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rust189-inline-assembly.response",
+      "bytes": 70288,
+      "sha256": "b0c3343b46e4fa198bf3ae16deb2e29dcde9dcad12c77b37a414b952ea8adb64",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rust189-reference-submodule.json",
+      "bytes": 1183,
+      "sha256": "e77185120b37c9198aaae98874c5a6badfe91ab64c923436f18b57a2cba0f6a9",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rustc.json",
+      "bytes": 201,
+      "sha256": "153792b60732bdddac883439a10aa0d6f82a2e93d094f7e9b6a2bf779a378428",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rustc.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/rustc.stdout",
+      "bytes": 197,
+      "sha256": "9ce08ed96edc149296cfe81a21a64ebe8941dee1a3977b360135f36284f5ee02",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-head.json",
+      "bytes": 445,
+      "sha256": "43c621cbbad163873921b6d97a0e3cd1829cfaf580d8e9f6d836ff759b30ea37",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-head.response",
+      "bytes": 1332,
+      "sha256": "fabbfde9a43eb3defb29d01f01e34d4abf86c0b768727a0fe84563583ae94291",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-low-level.json",
+      "bytes": 579,
+      "sha256": "e6c03d0890019a7bd2472a000eb59f835cb3b768b92c1771e853d69b1c0bc452",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-low-level.response",
+      "bytes": 32,
+      "sha256": "63f7f67ea6ef81dc7bf3bd7868cd068f6d025d70981a0f6685843007c3009a36",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-root-tree.json",
+      "bytes": 587,
+      "sha256": "abaf43f637584e3f2ef5aa840b9c0a9f669acb378f46288b99beb127c581208f",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/sysv-psabi-root-tree.response",
+      "bytes": 593,
+      "sha256": "333008308466060e55bd98f33830185a1731d7ddd305fbd23e07ac26dff60070",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/targets.json",
+      "bytes": 236,
+      "sha256": "b87b2a71842a997bf3e20c7413ca5a0804b58f2919e81a85cc2696ef40aaaa0a",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/targets.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/e46-runtime-preflight/targets.stdout",
+      "bytes": 50,
+      "sha256": "0e7dfb8a9de217107b4f0ae3e9bb784b46ab4692850f35179a47e0fea8522960",
+      "role": "Parent-produced actual read-only preflight; not a pilot compile/run."
+    },
+    {
+      "label": "parent/zerocopy-e46-source.json",
+      "bytes": 602076,
+      "sha256": "646d3b45cffdcdcaf496a37d7300fc1b55c6816c5f53fe128786e0ffa7df1f43",
+      "role": "Parent clean-source immutable-Git-blob/current-byte attestation; selected entries independently matched."
+    },
+    {
+      "label": "cached-primary/aapcs64.rst",
+      "bytes": 201396,
+      "sha256": "7f4e6a9c02bd88184f92d5309e062539babccc1fa90c4e4676d26b58df965dbd",
+      "role": "Primary abi-aa ec3e2fb69065768aa1caf298813a7808b50bc264, selected register/SIMD/stack rules inspected."
+    },
+    {
+      "label": "cached-primary/reference-inline-assembly.md",
+      "bytes": 74833,
+      "sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "role": "Reference2dafab96d919d6ab2884488e970bf95610ff83eb; later-than1.89 contract index only, not historical authority."
+    }
+  ],
+  "pending_primary_contracts": [
+    "Pinned SysV psABI selected entry/register/stack/DF rules",
+    "Version-applicable Rust1.89 inline-label/asm/FFI documentation or explicitly reviewed implementation trust"
+  ],
+  "no_parent_receipt_is_a_subject_execution": true
+}

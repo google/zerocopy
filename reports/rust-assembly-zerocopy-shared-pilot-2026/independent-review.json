@@ -1,0 +1,287 @@
+{
+  "schema": "bounded-independent-e46-review-v1",
+  "verdict": "APPROVE_BOUNDED_EXPERIMENT_AND_EXACT_PUBLIC_PROJECTION",
+  "independent_of_pilot_author": true,
+  "observed_at_UTC": "2026-10-15",
+  "package": "rust-assembly-zerocopy-shared-pilot-2026",
+  "reviewed_author": {
+    "RESULTS-FREEZE_sha256": "17efb32e043d40a49415c7c93bfd7962162ae3aa40b8b0716914e3a45eb02b0d",
+    "REPORT_sha256": "6b9b45fa8fe2cfd86df6d18a7760b33a9bab67c2fc9f8b8a7e7ee94cde99af85",
+    "REPORT_metadata_sha256": "4ab57a67021a09e34ea1fedd0f820ca08fc72779e614d9eb4863409ef2ff4073"
+  },
+  "reviewed_public_before_review_attachment": {
+    "REPORT.md": "a5f990a3d0893ada5d9b62d84df30b04a202df4954d08e33c726a56fa0fc1755",
+    "package-manifest.json": "cee6dbe16912b93ddd7ceab0bc7197b1ec6fc6e418c7777d809660cad7204a74",
+    "public-projection.json": "0a1eeb8415b55ecf52dbfac8a8ee68ff3a9cd0052037c29cdb31fd2050c51d57"
+  },
+  "review_attachment_or_status_amendment_requires_final_delta_review": true,
+  "primary_subjects": {
+    "rust_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+    "rust_version": "1.89.0",
+    "LLVM": "20.1.7",
+    "compiler_sha256": "93c98482c1bdedf3789c2bd0a86ff82a7075a58528abbca2990066f4e8faedb7",
+    "zerocopy_commit": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+    "zerocopy_version": "0.8.63",
+    "pilot_sha256": "1b9466576e315530e54eea9622d102e59ae219177473440c2ebade46fd9e4616",
+    "QEMU_sha256": "ca7b4d72cb2a1a36dd63e31ae989ec909d4c4a711981bc318ae64ed191e96167",
+    "QEMU_model": "qemu64-v1",
+    "runtime_capture_v2_sha256": "1ff6f1010401509c6b2f9808eeec8e6167de08dad48f797e90c020f9f959bc37",
+    "runtime_v2_preparation_sha256": "b21552ce821273cabb4f772549896f99abfe31c6458f5b3fa26182a1bed61d96",
+    "static_freeze_sha256": "e4de79c8b18cdb1f8735cef55e89c231eba4087c9da2065b31073fbb5ab50c3f"
+  },
+  "source_and_oracle_review": {
+    "all_explicit_source_and_assembly_contracts_inspected_before_review_runs": true,
+    "independent_fixed_corpus_recomputation": {
+      "words": 17,
+      "multiply": 289,
+      "add128": 144,
+      "carry": 578,
+      "swap": 17,
+      "vectors16": 12,
+      "helper": 289,
+      "pointer_offsets": 17,
+      "simd_add": 144
+    },
+    "actual_Rust_vector_constants_match": true,
+    "harness_count_terms": {
+      "guard_layout": 1,
+      "multiply": 578,
+      "add128": 288,
+      "carry": 1734,
+      "swap_and_wire": 85,
+      "load_store_label": 85,
+      "copy_and_pointer": 252,
+      "simd_add": 432,
+      "helper": 1156,
+      "safe_size_errors": 6
+    },
+    "harness_checks_per_profile": 4617,
+    "derived_whole_source_invocations": 1145,
+    "derived_inline_source_invocations": 629,
+    "source_invocation_counts_not_machine_call_trace": true,
+    "one_past_results_not_dereferenced": true,
+    "aligned_live_initialized_valid_spans_and_disjoint_destinations": true,
+    "alias_diagonals_shared_reads_only": true
+  },
+  "compiler_and_static_bindings": {
+    "accepted_compiler_receipts": 8,
+    "accepted_statuses_all_zero_and_streams_empty": true,
+    "initial_E0716_preserved_as_separate_failure": true,
+    "selected_function_records": 116,
+    "symbol_body_slices_reconciled": 228,
+    "optimized_absent_rust_load_records": 2,
+    "whole_object_image_pairs_equal": 36,
+    "helper_relocation_pairs_checked": 4,
+    "actual_call_sites_redecoded": 40,
+    "helper_FDE_CIE_pairs_inspected": 8,
+    "ELF_reader_and_DWARF_interpretation_unverified": true
+  },
+  "original_runtime_evidence": {
+    "runs": 4,
+    "profiles": [
+      "aarch64-O0",
+      "aarch64-O3",
+      "x86_64-O0",
+      "x86_64-O3"
+    ],
+    "checks_per_profile": 4617,
+    "reported_checks_total": 18468,
+    "exact_exit_stdout_stderr_match": true,
+    "raw_file_bindings_verified": true,
+    "data_only_receipt_mutants_recomputed_rejected": 24,
+    "header_data_regressions_recomputed": 28,
+    "v1_stopped_before_target_only_header18_vs20": true,
+    "not_injected_bad_machine_return_guard_or_ABI_faults": true
+  },
+  "independent_replays": [
+    {
+      "id": "aarch64-O0-positive",
+      "image_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "exit": 0,
+      "stdout_sha256": "3829b9a1977927beb4af0608d530be42a90ac27af8d1b64d80b51a9a9a67b59c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_seconds": 0.081084708,
+      "reported_harness_checks": 4617,
+      "before_after_identities_resources_equal": true,
+      "original_image_run_once_by_this_review": true,
+      "argv_after_host_docker_cli": [
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "build/aarch64/O0/pilot"
+      ],
+      "actual_stdout_utf8": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "actual_stderr_utf8": "",
+      "fresh_identity_domains": {
+        "inputs": {
+          "records": 28,
+          "same_before_and_after_sha256": "62066c8b5a356670e080cb3201917b68705d6a6cb7e7c68d54b7233832912d49"
+        },
+        "target_libraries": {
+          "records": 69,
+          "same_before_and_after_sha256": "b8dd20f06b61088e2f454478c978972256f2c64149f12278f6acef0cb04cf200"
+        },
+        "tools": {
+          "records": 12,
+          "same_before_and_after_sha256": "50c32dbd9aa66d8dd9ee168a706530d2fd4ab85798a67a2a3588caf90c01c4e5"
+        },
+        "outputs": {
+          "records": 20,
+          "same_before_and_after_sha256": "8c778193ae2fbbe7fee72937fb8aa2f195b235ee98b2825b437a9077e64d76b6"
+        },
+        "runtime_libraries": {
+          "records": 7,
+          "same_before_and_after_sha256": "030a2ffed7f85717174c395c1e2c3174a3b7284a7b005ca7dc1f7a6ff22c8d1e"
+        },
+        "metadata_tools": {
+          "records": 2,
+          "same_before_and_after_sha256": "6c3a3e8ff8bf02f74c603f7df63007e2f0b53403b36fe2c50ea1a45e05b7703a"
+        }
+      },
+      "metadata_native_machine": "aarch64",
+      "metadata_native_asimd": true,
+      "memory_event_counters_before_after_equal": true
+    },
+    {
+      "id": "x86_64-O3-positive",
+      "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "exit": 0,
+      "stdout_sha256": "ba9d9c596d0700f2e5404124661af97c59e94f34ed4b989933c0715d2aab96ac",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsed_seconds": 0.085832417,
+      "reported_harness_checks": 4617,
+      "before_after_identities_resources_equal": true,
+      "original_image_run_once_by_this_review": true,
+      "argv_after_host_docker_cli": [
+        "exec",
+        "--workdir",
+        "/e46",
+        "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+        "/usr/bin/env",
+        "-i",
+        "LC_ALL=C",
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "TZ=UTC",
+        "/usr/bin/timeout",
+        "--signal=KILL",
+        "30s",
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64-v1",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O3/pilot"
+      ],
+      "actual_stdout_utf8": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "actual_stderr_utf8": "",
+      "fresh_identity_domains": {
+        "inputs": {
+          "records": 28,
+          "same_before_and_after_sha256": "62066c8b5a356670e080cb3201917b68705d6a6cb7e7c68d54b7233832912d49"
+        },
+        "target_libraries": {
+          "records": 69,
+          "same_before_and_after_sha256": "b8dd20f06b61088e2f454478c978972256f2c64149f12278f6acef0cb04cf200"
+        },
+        "tools": {
+          "records": 12,
+          "same_before_and_after_sha256": "50c32dbd9aa66d8dd9ee168a706530d2fd4ab85798a67a2a3588caf90c01c4e5"
+        },
+        "outputs": {
+          "records": 20,
+          "same_before_and_after_sha256": "8c778193ae2fbbe7fee72937fb8aa2f195b235ee98b2825b437a9077e64d76b6"
+        },
+        "runtime_libraries": {
+          "records": 7,
+          "same_before_and_after_sha256": "030a2ffed7f85717174c395c1e2c3174a3b7284a7b005ca7dc1f7a6ff22c8d1e"
+        },
+        "metadata_tools": {
+          "records": 2,
+          "same_before_and_after_sha256": "6c3a3e8ff8bf02f74c603f7df63007e2f0b53403b36fe2c50ea1a45e05b7703a"
+        }
+      },
+      "metadata_native_machine": "aarch64",
+      "metadata_native_asimd": true,
+      "memory_event_counters_before_after_equal": true
+    }
+  ],
+  "independent_replay_scope": {
+    "runs": 2,
+    "additional_reported_checks": 9234,
+    "separate_from_original18468": true,
+    "no_new_input_domain": true,
+    "each_original_image_once": true,
+    "other_two_original_images_not_replayed": true,
+    "no_mutant_invalid_Rust_guest_probe_compile_install_or_container_file_write_command": true,
+    "timeout": [
+      "/usr/bin/timeout",
+      "--signal=KILL",
+      "30s"
+    ],
+    "clean_environment": {
+      "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LC_ALL": "C",
+      "TZ": "UTC"
+    },
+    "container_id": "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "resource_policy": {
+      "Memory": 1073741824,
+      "NanoCpus": 1000000000,
+      "PidsLimit": 256,
+      "Privileged": false,
+      "Binds": null,
+      "VolumesFrom": null,
+      "AutoRemove": false,
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "MemorySwap": 2147483648
+    },
+    "before_after_host_tools_resources_and_memory_events_unchanged": true,
+    "no_benchmark_inferred": true
+  },
+  "public_projection": {
+    "manifested_files": 602,
+    "manifested_bytes": 49281614,
+    "copied_original_files": 600,
+    "changed_support_files": 100,
+    "prefix_occurrences": 141,
+    "all100_exact_inverse_verified": true,
+    "additional_REPORT_representation_editorial_change": 1,
+    "other_original_files_exactly_unchanged": 499,
+    "all_actual_program_oracle_and16_artifact_bytes_unchanged": true,
+    "all_target_success_streams_unchanged": true,
+    "artifact_copies_nonexecutable": true,
+    "private_host_prefix_matches": 0,
+    "historical_raw_hashes_distinguished_from_public_manifest": true,
+    "two_projected_historical_helpers_not_executed": true
+  },
+  "eligibility": {
+    "E46": "Eligible for bounded finite shared-pilot assessment, with data-only negative control scope; parent owns checkbox/publication",
+    "E29": "Open: no reference-ISA correspondence",
+    "E30": "Open: no complete access/permission production",
+    "E34": "Open: no universal inline operand/options/continuation contract",
+    "E35": "Open: no MiniRust/machine ABI-resource relation",
+    "E36": "Open: no behavioral/contextual replacement theorem",
+    "E37": "Open: no verified final-byte/relocation/dispatch/host composition"
+  },
+  "critical_boundaries": [
+    "Optimized private zc_decode uses scalar fastcc, not its source-reference C ABI",
+    "Copy16 operand widths4@0,4@3,8@7,1@15 sum17/union16; byte3 repeated; no complete dynamic access trace",
+    "Final guards cannot exclude hidden reads or restored writes",
+    "Compiler/assembler/linker/reader/ABI/ISA/loader/runtime/kernel/Docker/QEMU remain trusted",
+    "No physical x86, general provenance/compiler refinement/SIMD/unwind/concurrency/side-channel theorem"
+  ],
+  "blocking_corrections": [],
+  "review_markdown_sha256": "b58f9de0bac6997bf25f7d1127c050a811838a978d66e9c774c2599ca973d96d",
+  "parent_effect_authority_retained": true
+}

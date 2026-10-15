@@ -1,0 +1,132 @@
+{
+  "status": "frozen-preparation-for-parent-review",
+  "subject_compiled": false,
+  "subject_assembled": false,
+  "subject_linked": false,
+  "subject_executed": false,
+  "compiler_or_container_commands_by_agent": 0,
+  "owned_data_preparation_commands": 2,
+  "data_checks_passed": 1475,
+  "future_harness_checks_per_proposed_run": 4617,
+  "proposed_positive_runs": 4,
+  "source_revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136",
+  "compiler_commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+  "physical_root_verified": true,
+  "root_device": 16777230,
+  "root_inode": 19385135,
+  "files": [
+    {
+      "path": "CONTRACTS.md",
+      "bytes": 10811,
+      "sha256": "58b3e07ae1f98d019518927f95d1e71234d2774d5d53e8bd1fe20d64181ec011"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 11769,
+      "sha256": "e6c012bbb771b753968e31025de2d63734d333c8675ef3b6e1e792065f607241"
+    },
+    {
+      "path": "aarch64.s",
+      "bytes": 2005,
+      "sha256": "10ced77786b04e29ac41810ee634026af2fc7c7bb0dfa63aad9cdbab4377dd79"
+    },
+    {
+      "path": "case-inventory.json",
+      "bytes": 5906,
+      "sha256": "23470be7a7ceb646252a2da10fcac79677056ebddd135ff086e122997c087bef"
+    },
+    {
+      "path": "check_preparation.py",
+      "bytes": 4819,
+      "sha256": "fbc3e3c38ac15af85fb5a0326d423e4e07814bdb4b339fd41e75a891e86ad56f"
+    },
+    {
+      "path": "check_preparation.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "check_preparation.py.stdout",
+      "bytes": 942,
+      "sha256": "6eea224a1a98dae6c29e64d44456cd086f9df44bf670c3e6d670a2b8b0ee27e0"
+    },
+    {
+      "path": "commands-proposed.json",
+      "bytes": 20592,
+      "sha256": "cd61eb1d84432583d3080a80fcc78954adb3300fac4da04f3684fe995e1207b0"
+    },
+    {
+      "path": "controls-proposed.json",
+      "bytes": 2262,
+      "sha256": "ce25f226dc183be555286428316adb4e4f4214561c12bc70f73136f0e98ab640"
+    },
+    {
+      "path": "data-preparation-commands.json",
+      "bytes": 1628,
+      "sha256": "2c3d02e8bcf226ee49a7fe2f0ac344005846ac1eae3debb012e6601fe6a1a234"
+    },
+    {
+      "path": "expected.json",
+      "bytes": 160785,
+      "sha256": "9d5d92d90fee1b40aeb944c1796df868f45edc6318e10766ffc5972338be0b74"
+    },
+    {
+      "path": "oracle-preparation.json",
+      "bytes": 546,
+      "sha256": "ffb16a661b24b8afafbd041781c9b4e2fe78dc07a4e58f7d4855775c2f9650c8"
+    },
+    {
+      "path": "parent-input-identities.json",
+      "bytes": 8457,
+      "sha256": "648fe5fab322e5623d413d7a8acc31252830a42c85c5bc5d0243d09050a46f19"
+    },
+    {
+      "path": "pilot.rs",
+      "bytes": 18769,
+      "sha256": "afa5db9fb83b2deedc716ed0cce90bdb3f40cb7b1e7d2c3b28751eaf379768c4"
+    },
+    {
+      "path": "preparation-checks.json",
+      "bytes": 105613,
+      "sha256": "9c8d52818283aaccf840444dbdcf908004ffa2d8fdb1aa6b0ed8098228313f85"
+    },
+    {
+      "path": "prepare_oracles.py",
+      "bytes": 6135,
+      "sha256": "97677c511e70aca88b647a894b308a87cd27a9206db2e8f346ac15a6c2dd75e6"
+    },
+    {
+      "path": "prepare_oracles.py.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "prepare_oracles.py.stdout",
+      "bytes": 490,
+      "sha256": "d5b614632f172825f86337ca3fb834d7082deaf279cae4ece73999720ba5c8e5"
+    },
+    {
+      "path": "vectors.rs",
+      "bytes": 140966,
+      "sha256": "4ef9cf1308e4ec9bd55daeb6f98320e1fa6fa24ac022857bd460a89231fbce28"
+    },
+    {
+      "path": "x86_64.s",
+      "bytes": 1995,
+      "sha256": "64bc9215898e22a4f5f8b724c18c8509a8d444a2f30894f32fe844dcac630c62"
+    },
+    {
+      "path": "zerocopy-selected-source.json",
+      "bytes": 7090,
+      "sha256": "45e956eb714c7f473cadd6f43d32424bccca7132c43915d4940f8cafb6a0ab0c"
+    }
+  ],
+  "bytes": 511580,
+  "pending": [
+    "Parent accepts exact source, ABI/oracle and commands plan.",
+    "Pinned primary SysV/version-applicable Rust1.89 contract review or explicit implementation/external TCB acceptance.",
+    "Parent acquires exact missing x86 std/linker/sysroot and records identities/resources.",
+    "Separate compile/metadata review and native/emulated runtime grants."
+  ],
+  "authority": "Parent owns milestone decisions, installations, publication and cleanup. No existing report was edited."
+}

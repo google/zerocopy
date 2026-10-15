@@ -1,0 +1,6 @@
+{
+  "phase": "host-import-before-container-operation",
+  "error": "default python3 lacks tomllib",
+  "effects": "none",
+  "resolution": "use existing Python3.14, no installation"
+}

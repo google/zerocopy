@@ -1,0 +1,65 @@
+[
+  {
+    "path": "/lib/ld-linux-aarch64.so.1",
+    "exists": true,
+    "symlink": true,
+    "resolved": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+    "bytes": 202912,
+    "sha256": "add9309ee6f1252a4d018de9db5ed39100f8128037f45e387e07e279824d05a4",
+    "ELF_identity": "7f454c460201010000000000000000000300b700"
+  },
+  {
+    "path": "/lib/aarch64-linux-gnu/libc.so.6",
+    "exists": true,
+    "symlink": false,
+    "resolved": "/usr/lib/aarch64-linux-gnu/libc.so.6",
+    "bytes": 1651408,
+    "sha256": "44b77ca3a741a38d3d0d855b293f5b9d50bac8368b717087cd7e76b3abccd6f9",
+    "ELF_identity": "7f454c460201010300000000000000000300b700"
+  },
+  {
+    "path": "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+    "exists": true,
+    "symlink": false,
+    "resolved": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1",
+    "bytes": 133448,
+    "sha256": "046856f95f4636f1fc7c3a12bf4f3cd5634c2fc5145c3fdf7395d4f349fa69c7",
+    "ELF_identity": "7f454c460201010000000000000000000300b700"
+  },
+  {
+    "path": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+    "exists": true,
+    "symlink": false,
+    "resolved": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+    "bytes": 210968,
+    "sha256": "0eae8509658fdb9310562b8814c198bff579f0314b1dcd4500d1556bf4cc7d0e",
+    "ELF_identity": "7f454c4602010103000000000000000003003e00"
+  },
+  {
+    "path": "/usr/x86_64-linux-gnu/lib64/ld-linux-x86-64.so.2",
+    "exists": true,
+    "symlink": true,
+    "resolved": "/usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2",
+    "bytes": 210968,
+    "sha256": "0eae8509658fdb9310562b8814c198bff579f0314b1dcd4500d1556bf4cc7d0e",
+    "ELF_identity": "7f454c4602010103000000000000000003003e00"
+  },
+  {
+    "path": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+    "exists": true,
+    "symlink": false,
+    "resolved": "/usr/x86_64-linux-gnu/lib/libc.so.6",
+    "bytes": 1922136,
+    "sha256": "e6c2bc323402cbc223e3326c674063bb90c5db61496ce5c38e07ac2265bb5b8f",
+    "ELF_identity": "7f454c4602010103000000000000000003003e00"
+  },
+  {
+    "path": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+    "exists": true,
+    "symlink": false,
+    "resolved": "/usr/x86_64-linux-gnu/lib/libgcc_s.so.1",
+    "bytes": 125176,
+    "sha256": "40f9add26ba9228136d3dd0da675055548fe194eb755241802199ef85e14ef56",
+    "ELF_identity": "7f454c4602010100000000000000000003003e00"
+  }
+]

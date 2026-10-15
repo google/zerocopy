@@ -1,0 +1,515 @@
+
+### object: pilot_mul
+0000000000000000 <pilot_mul>:
+   0:	9b017c03 	mul	x3, x0, x1
+   4:	9bc17c04 	umulh	x4, x0, x1
+   8:	a9001043 	stp	x3, x4, [x2]
+   c:	d65f03c0 	ret
+
+
+### image: pilot_mul
+0000000000009514 <pilot_mul>:
+    9514:	9b017c03 	mul	x3, x0, x1
+    9518:	9bc17c04 	umulh	x4, x0, x1
+    951c:	a9001043 	stp	x3, x4, [x2]
+    9520:	d65f03c0 	ret
+
+
+### object: pilot_add128
+0000000000000010 <pilot_add128>:
+  10:	a9401003 	ldp	x3, x4, [x0]
+  14:	a9401825 	ldp	x5, x6, [x1]
+  18:	ab050063 	adds	x3, x3, x5
+  1c:	ba060084 	adcs	x4, x4, x6
+  20:	9a9f37e0 	cset	x0, cs	// cs = hs, nlast
+  24:	a9001043 	stp	x3, x4, [x2]
+  28:	d65f03c0 	ret
+
+
+### image: pilot_add128
+0000000000009524 <pilot_add128>:
+    9524:	a9401003 	ldp	x3, x4, [x0]
+    9528:	a9401825 	ldp	x5, x6, [x1]
+    952c:	ab050063 	adds	x3, x3, x5
+    9530:	ba060084 	adcs	x4, x4, x6
+    9534:	9a9f37e0 	cset	x0, cs	// cs = hs, nlast
+    9538:	a9001043 	stp	x3, x4, [x2]
+    953c:	d65f03c0 	ret
+
+
+### object: pilot_bswap
+000000000000002c <pilot_bswap>:
+  2c:	dac00c00 	rev	x0, x0
+  30:	d65f03c0 	ret
+
+
+### image: pilot_bswap
+0000000000009540 <pilot_bswap>:
+    9540:	dac00c00 	rev	x0, x0
+    9544:	d65f03c0 	ret
+
+
+### object: pilot_load
+0000000000000034 <pilot_load>:
+  34:	f9400000 	ldr	x0, [x0]
+  38:	d65f03c0 	ret
+
+
+### image: pilot_load
+0000000000009548 <pilot_load>:
+    9548:	f9400000 	ldr	x0, [x0]
+    954c:	d65f03c0 	ret
+
+
+### object: pilot_store
+000000000000003c <pilot_store>:
+  3c:	f9000001 	str	x1, [x0]
+  40:	d65f03c0 	ret
+
+
+### image: pilot_store
+0000000000009550 <pilot_store>:
+    9550:	f9000001 	str	x1, [x0]
+    9554:	d65f03c0 	ret
+
+
+### object: pilot_copy16
+0000000000000044 <pilot_copy16>:
+  44:	a9400c22 	ldp	x2, x3, [x1]
+  48:	a9000c02 	stp	x2, x3, [x0]
+  4c:	d65f03c0 	ret
+
+
+### image: pilot_copy16
+0000000000009558 <pilot_copy16>:
+    9558:	a9400c22 	ldp	x2, x3, [x1]
+    955c:	a9000c02 	stp	x2, x3, [x0]
+    9560:	d65f03c0 	ret
+
+
+### object: pilot_ptr
+0000000000000050 <pilot_ptr>:
+  50:	8b010000 	add	x0, x0, x1
+  54:	d65f03c0 	ret
+
+
+### image: pilot_ptr
+0000000000009564 <pilot_ptr>:
+    9564:	8b010000 	add	x0, x0, x1
+    9568:	d65f03c0 	ret
+
+
+### object: pilot_call_helper
+0000000000000058 <pilot_call_helper>:
+  58:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+  5c:	910003fd 	mov	x29, sp
+  60:	94000000 	bl	0 <pilot_mul>
+			60: R_AARCH64_CALL26	pilot_helper
+  64:	91000400 	add	x0, x0, #0x1
+  68:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  6c:	d65f03c0 	ret
+
+
+### image: pilot_call_helper
+000000000000956c <pilot_call_helper>:
+    956c:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    9570:	910003fd 	mov	x29, sp
+    9574:	94000026 	bl	960c <pilot_helper>
+    9578:	91000400 	add	x0, x0, #0x1
+    957c:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    9580:	d65f03c0 	ret
+
+
+### object: pilot_simd_copy16
+0000000000000070 <pilot_simd_copy16>:
+  70:	3dc00020 	ldr	q0, [x1]
+  74:	3d800000 	str	q0, [x0]
+  78:	d65f03c0 	ret
+
+
+### image: pilot_simd_copy16
+0000000000009584 <pilot_simd_copy16>:
+    9584:	3dc00020 	ldr	q0, [x1]
+    9588:	3d800000 	str	q0, [x0]
+    958c:	d65f03c0 	ret
+
+
+### object: pilot_simd_add16
+000000000000007c <pilot_simd_add16>:
+  7c:	3dc00020 	ldr	q0, [x1]
+  80:	3dc00041 	ldr	q1, [x2]
+  84:	4e218400 	add	v0.16b, v0.16b, v1.16b
+  88:	3d800000 	str	q0, [x0]
+  8c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN3std2rt10lang_start17h6cd21e994dea3d23E:
+
+
+### image: pilot_simd_add16
+0000000000009590 <pilot_simd_add16>:
+    9590:	3dc00020 	ldr	q0, [x1]
+    9594:	3dc00041 	ldr	q1, [x2]
+    9598:	4e218400 	add	v0.16b, v0.16b, v1.16b
+    959c:	3d800000 	str	q0, [x0]
+    95a0:	d65f03c0 	ret
+
+
+### object: pilot_helper
+0000000000000000 <pilot_helper>:
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	a9014ff4 	stp	x20, x19, [sp, #16]
+   8:	aa0103f3 	mov	x19, x1
+   c:	aa0003f4 	mov	x20, x0
+  10:	90000001 	adrp	x1, 0 <pilot_helper>
+			10: R_AARCH64_ADR_PREL_PG_HI21	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+  14:	91000021 	add	x1, x1, #0x0
+			14: R_AARCH64_ADD_ABS_LO12_NC	.bss._ZN14extended_pilot12HELPER_CALLS17h931af35155c2524aE
+  18:	52800020 	mov	w0, #0x1                   	// #1
+  1c:	910003fd 	mov	x29, sp
+  20:	94000000 	bl	0 <__aarch64_ldadd8_relax>
+			20: R_AARCH64_CALL26	__aarch64_ldadd8_relax
+  24:	d29950e8 	mov	x8, #0xca87                	// #51847
+  28:	f2b0bd68 	movk	x8, #0x85eb, lsl #16
+  2c:	f2cf3628 	movk	x8, #0x79b1, lsl #32
+  30:	f2f3c6e8 	movk	x8, #0x9e37, lsl #48
+  34:	9b087e68 	mul	x8, x19, x8
+  38:	cad4cd00 	eor	x0, x8, x20, ror #51
+  3c:	a9414ff4 	ldp	x20, x19, [sp, #16]
+  40:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  44:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_mul17h23452971b31aa446E:
+
+
+### image: pilot_helper
+000000000000960c <pilot_helper>:
+    960c:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+    9610:	a9014ff4 	stp	x20, x19, [sp, #16]
+    9614:	aa0103f3 	mov	x19, x1
+    9618:	aa0003f4 	mov	x20, x0
+    961c:	f0000321 	adrp	x1, 70000 <__dso_handle>
+    9620:	9125e021 	add	x1, x1, #0x978
+    9624:	52800020 	mov	w0, #0x1                   	// #1
+    9628:	910003fd 	mov	x29, sp
+    962c:	9400d511 	bl	3ea70 <__aarch64_ldadd8_relax>
+    9630:	d29950e8 	mov	x8, #0xca87                	// #51847
+    9634:	f2b0bd68 	movk	x8, #0x85eb, lsl #16
+    9638:	f2cf3628 	movk	x8, #0x79b1, lsl #32
+    963c:	f2f3c6e8 	movk	x8, #0x9e37, lsl #48
+    9640:	9b087e68 	mul	x8, x19, x8
+    9644:	cad4cd00 	eor	x0, x8, x20, ror #51
+    9648:	a9414ff4 	ldp	x20, x19, [sp, #16]
+    964c:	a8c27bfd 	ldp	x29, x30, [sp], #32
+    9650:	d65f03c0 	ret
+
+
+### object: extended_pilot::inline_carry
+0000000000000000 <extended_pilot::inline_carry>:
+   0:	f100045f 	cmp	x2, #0x1
+   4:	ba010000 	adcs	x0, x0, x1
+   8:	9a9f37e1 	cset	x1, cs	// cs = hs, nlast
+   c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_label17hce24d0f42a259affE:
+
+
+### image: extended_pilot::inline_carry
+00000000000096f4 <extended_pilot::inline_carry>:
+    96f4:	f100045f 	cmp	x2, #0x1
+    96f8:	ba010000 	adcs	x0, x0, x1
+    96fc:	9a9f37e1 	cset	x1, cs	// cs = hs, nlast
+    9700:	d65f03c0 	ret
+
+
+### object: extended_pilot::inline_label
+0000000000000000 <extended_pilot::inline_label>:
+   0:	b4000060 	cbz	x0, c <extended_pilot::inline_label+0xc>
+   4:	52800520 	mov	w0, #0x29                  	// #41
+   8:	d65f03c0 	ret
+   c:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+  10:	910003fd 	mov	x29, sp
+  14:	52800220 	mov	w0, #0x11                  	// #17
+  18:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11inline_load17h9d5ac2614c7daabdE:
+
+
+### image: extended_pilot::inline_label
+0000000000009704 <extended_pilot::inline_label>:
+    9704:	b4000060 	cbz	x0, 9710 <extended_pilot::inline_label+0xc>
+    9708:	52800520 	mov	w0, #0x29                  	// #41
+    970c:	d65f03c0 	ret
+    9710:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    9714:	910003fd 	mov	x29, sp
+    9718:	52800220 	mov	w0, #0x11                  	// #17
+    971c:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    9720:	d65f03c0 	ret
+
+
+### object: extended_pilot::inline_load
+0000000000000000 <extended_pilot::inline_load>:
+   0:	f9400000 	ldr	x0, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_store17h07e83f398e5e13c5E:
+
+
+### image: extended_pilot::inline_load
+0000000000009724 <extended_pilot::inline_load>:
+    9724:	f9400000 	ldr	x0, [x0]
+    9728:	d65f03c0 	ret
+
+
+### object: extended_pilot::inline_store
+0000000000000000 <extended_pilot::inline_store>:
+   0:	f9000001 	str	x1, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_decode17hf5ef34b6dafe7c79E:
+
+
+### image: extended_pilot::inline_store
+000000000000972c <extended_pilot::inline_store>:
+    972c:	f9000001 	str	x1, [x0]
+    9730:	d65f03c0 	ret
+
+
+### object: extended_pilot::zc_decode
+0000000000000000 <extended_pilot::zc_decode>:
+   0:	dac00c00 	rev	x0, x0
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_encode17hd42c115e91ba9f69E:
+
+
+### image: extended_pilot::zc_decode
+0000000000009734 <extended_pilot::zc_decode>:
+    9734:	dac00c00 	rev	x0, x0
+    9738:	d65f03c0 	ret
+
+
+### object: extended_pilot::zc_encode
+0000000000000000 <extended_pilot::zc_encode>:
+   0:	dac00c08 	rev	x8, x0
+   4:	f9000028 	str	x8, [x1]
+   8:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9zc_copy1617h333cef0da883ee38E:
+
+
+### image: extended_pilot::zc_encode
+000000000000973c <extended_pilot::zc_encode>:
+    973c:	dac00c08 	rev	x8, x0
+    9740:	f9000028 	str	x8, [x1]
+    9744:	d65f03c0 	ret
+
+
+### object: extended_pilot::zc_copy16
+0000000000000000 <extended_pilot::zc_copy16>:
+   0:	b9400008 	ldr	w8, [x0]
+   4:	b8403009 	ldur	w9, [x0, #3]
+   8:	f840700a 	ldur	x10, [x0, #7]
+   c:	b9000028 	str	w8, [x1]
+  10:	39403c08 	ldrb	w8, [x0, #15]
+  14:	b8003029 	stur	w9, [x1, #3]
+  18:	f800702a 	stur	x10, [x1, #7]
+  1c:	39003c28 	strb	w8, [x1, #15]
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot4main17hca72231bfee5693fE:
+
+
+### image: extended_pilot::zc_copy16
+0000000000009748 <extended_pilot::zc_copy16>:
+    9748:	b9400008 	ldr	w8, [x0]
+    974c:	b8403009 	ldur	w9, [x0, #3]
+    9750:	f840700a 	ldur	x10, [x0, #7]
+    9754:	b9000028 	str	w8, [x1]
+    9758:	39403c08 	ldrb	w8, [x0, #15]
+    975c:	b8003029 	stur	w9, [x1, #3]
+    9760:	f800702a 	stur	x10, [x1, #7]
+    9764:	39003c28 	strb	w8, [x1, #15]
+    9768:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_mul
+0000000000000000 <extended_pilot::rust_mul>:
+   0:	9b007c28 	mul	x8, x1, x0
+   4:	9bc07c21 	umulh	x1, x1, x0
+   8:	aa0803e0 	mov	x0, x8
+   c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_add12817h7f46eaca12712c06E:
+
+
+### image: extended_pilot::rust_mul
+0000000000009654 <extended_pilot::rust_mul>:
+    9654:	9b007c28 	mul	x8, x1, x0
+    9658:	9bc07c21 	umulh	x1, x1, x0
+    965c:	aa0803e0 	mov	x0, x8
+    9660:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_add128
+0000000000000000 <extended_pilot::rust_add128>:
+   0:	ab030028 	adds	x8, x1, x3
+   4:	ba040049 	adcs	x9, x2, x4
+   8:	a9002408 	stp	x8, x9, [x0]
+   c:	1a9f37e8 	cset	w8, cs	// cs = hs, nlast
+  10:	f9000808 	str	x8, [x0, #16]
+  14:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_carry17hcd557fb1e0beef8aE:
+
+
+### image: extended_pilot::rust_add128
+0000000000009664 <extended_pilot::rust_add128>:
+    9664:	ab030028 	adds	x8, x1, x3
+    9668:	ba040049 	adcs	x9, x2, x4
+    966c:	a9002408 	stp	x8, x9, [x0]
+    9670:	1a9f37e8 	cset	w8, cs	// cs = hs, nlast
+    9674:	f9000808 	str	x8, [x0, #16]
+    9678:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_carry
+0000000000000000 <extended_pilot::rust_carry>:
+   0:	ab000028 	adds	x8, x1, x0
+   4:	1a9f37e9 	cset	w9, cs	// cs = hs, nlast
+   8:	ab020100 	adds	x0, x8, x2
+   c:	9a893521 	cinc	x1, x9, cs	// cs = hs, nlast
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot9rust_swap17hb3a8b149d95298c4E:
+
+
+### image: extended_pilot::rust_carry
+000000000000967c <extended_pilot::rust_carry>:
+    967c:	ab000028 	adds	x8, x1, x0
+    9680:	1a9f37e9 	cset	w9, cs	// cs = hs, nlast
+    9684:	ab020100 	adds	x0, x8, x2
+    9688:	9a893521 	cinc	x1, x9, cs	// cs = hs, nlast
+    968c:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_swap
+0000000000000000 <extended_pilot::rust_swap>:
+   0:	dac00c00 	rev	x0, x0
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_store17h8f7ecb3f0dbf5221E:
+
+
+### image: extended_pilot::rust_swap
+0000000000009690 <extended_pilot::rust_swap>:
+    9690:	dac00c00 	rev	x0, x0
+    9694:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_store
+0000000000000000 <extended_pilot::rust_store>:
+   0:	f9000001 	str	x1, [x0]
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot11rust_copy1617hf553a6eb2e70da00E:
+
+
+### image: extended_pilot::rust_store
+0000000000009698 <extended_pilot::rust_store>:
+    9698:	f9000001 	str	x1, [x0]
+    969c:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_copy16
+0000000000000000 <extended_pilot::rust_copy16>:
+   0:	3dc00000 	ldr	q0, [x0]
+   4:	3d800020 	str	q0, [x1]
+   8:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot8rust_ptr17h749ef15fb3237769E:
+
+
+### image: extended_pilot::rust_copy16
+00000000000096a0 <extended_pilot::rust_copy16>:
+    96a0:	3dc00000 	ldr	q0, [x0]
+    96a4:	3d800020 	str	q0, [x1]
+    96a8:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_ptr
+0000000000000000 <extended_pilot::rust_ptr>:
+   0:	8b010000 	add	x0, x0, x1
+   4:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_label17hb5450f348c5f2ff7E:
+
+
+### image: extended_pilot::rust_ptr
+00000000000096ac <extended_pilot::rust_ptr>:
+    96ac:	8b010000 	add	x0, x0, x1
+    96b0:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_label
+0000000000000000 <extended_pilot::rust_label>:
+   0:	52800528 	mov	w8, #0x29                  	// #41
+   4:	f100001f 	cmp	x0, #0x0
+   8:	52800229 	mov	w9, #0x11                  	// #17
+   c:	9a880120 	csel	x0, x9, x8, eq	// eq = none
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot10rust_add1617h0a68c57815c18a3eE:
+
+
+### image: extended_pilot::rust_label
+00000000000096b4 <extended_pilot::rust_label>:
+    96b4:	52800528 	mov	w8, #0x29                  	// #41
+    96b8:	f100001f 	cmp	x0, #0x0
+    96bc:	52800229 	mov	w9, #0x11                  	// #17
+    96c0:	9a880120 	csel	x0, x9, x8, eq	// eq = none
+    96c4:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_add16
+0000000000000000 <extended_pilot::rust_add16>:
+   0:	3dc00020 	ldr	q0, [x1]
+   4:	3dc00041 	ldr	q1, [x2]
+   8:	4e208420 	add	v0.16b, v1.16b, v0.16b
+   c:	3d800000 	str	q0, [x0]
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot16rust_call_helper17h4802fef1bbd0e865E:
+
+
+### image: extended_pilot::rust_add16
+00000000000096c8 <extended_pilot::rust_add16>:
+    96c8:	3dc00020 	ldr	q0, [x1]
+    96cc:	3dc00041 	ldr	q1, [x2]
+    96d0:	4e208420 	add	v0.16b, v1.16b, v0.16b
+    96d4:	3d800000 	str	q0, [x0]
+    96d8:	d65f03c0 	ret
+
+
+### object: extended_pilot::rust_call_helper
+0000000000000000 <extended_pilot::rust_call_helper>:
+   0:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+   4:	910003fd 	mov	x29, sp
+   8:	94000000 	bl	0 <extended_pilot::rust_call_helper>
+			8: R_AARCH64_CALL26	pilot_helper
+   c:	91000400 	add	x0, x0, #0x1
+  10:	a8c17bfd 	ldp	x29, x30, [sp], #16
+  14:	d65f03c0 	ret
+
+Disassembly of section .text._ZN14extended_pilot12inline_carry17h27e24da72dcbbd2aE:
+
+
+### image: extended_pilot::rust_call_helper
+00000000000096dc <extended_pilot::rust_call_helper>:
+    96dc:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+    96e0:	910003fd 	mov	x29, sp
+    96e4:	97ffffca 	bl	960c <pilot_helper>
+    96e8:	91000400 	add	x0, x0, #0x1
+    96ec:	a8c17bfd 	ldp	x29, x30, [sp], #16
+    96f0:	d65f03c0 	ret
+

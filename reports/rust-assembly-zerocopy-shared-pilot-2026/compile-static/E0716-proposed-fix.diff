@@ -1,0 +1,12 @@
+--- a/pilot.rs
++++ b/pilot.rs
+@@ -367,7 +367,8 @@
+         check(U64::<BigEndian>::read_from_bytes(&source[..len]).is_err(),
+               "zerocopy-size-rejection", &mut checks);
+         let mut dst = [0xa6; 9];
+-        let result = U64::<BigEndian>::new(0x1234).write_to(&mut dst[..len]);
++        let wire = U64::<BigEndian>::new(0x1234);
++        let result = wire.write_to(&mut dst[..len]);
+         check(result.is_err(), "zerocopy-write-size-rejection", &mut checks);
+         check(dst == [0xa6; 9], "zerocopy-rejected-write-frame", &mut checks);
+     }

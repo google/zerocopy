@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/path/to/docker",
+    "inspect",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5"
+  ],
+  "exit": 0,
+  "host_timeout": false,
+  "spawn_error": null,
+  "elapsed_seconds": 0.019148249999999978,
+  "stdout_bytes": 7997,
+  "stderr_bytes": 0,
+  "stdout_sha256": "ae0b0eb4cc3aeee14d360bf1a91863f53e3123c1513798a65c2f965f35b44632",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

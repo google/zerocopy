@@ -1,0 +1,136 @@
+{
+  "status": "pending-parent-review-and-separate-runtime-grant",
+  "target_execution_so_far": false,
+  "source_compiler_configuration_unchanged": true,
+  "preparation_freeze_sha256": "42a976cc612912f2729197658b28910e61dd931cd45fb80052e63143f3076df5",
+  "pilot_sha256": "1b9466576e315530e54eea9622d102e59ae219177473440c2ebade46fd9e4616",
+  "container_id": "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+  "cwd": "/e46",
+  "serialize": true,
+  "runs_per_image": 1,
+  "inherit_environment": false,
+  "base_environment": {
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "supervision": {
+    "timeout_argv_prefix": [
+      "/usr/bin/timeout",
+      "--signal=KILL",
+      "30s"
+    ],
+    "per_command_seconds": 30,
+    "container_cpu_limit": 1,
+    "container_memory_limit_bytes": 1073741824,
+    "no_mutants_or_unapproved_images": true,
+    "hard_timeout_seconds": 30,
+    "timeout_note": "Direct KILL deadline, no post-deadline grace or retry; abnormal timeout status stops dependent runs."
+  },
+  "narrow_runtime_argv_revision": {
+    "prior": "-cpu qemu64",
+    "proposed": "-cpu qemu64-v1",
+    "reason": "Explicit installed versioned model with pinned source SSE2 baseline; avoids machine-dependent alias. Does not alter compiler, source, oracle or image.",
+    "source_evidence": "static-input-identities.json"
+  },
+  "runs": [
+    {
+      "id": "aarch64-O0-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "build/aarch64/O0/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "native-AArch64-container",
+      "image_sha256": "adb86a7669598af8b9fa65d84bdea9b652fbc95171bff686fa3af85a24d10f20",
+      "expected_stderr": "",
+      "execution_authorized": false
+    },
+    {
+      "id": "aarch64-O3-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "build/aarch64/O3/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=aarch64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "native-AArch64-container",
+      "image_sha256": "b8047348558fdbc9fb7335e561dbb93f2983a9158f6604b26cfe8ae3d82f87f8",
+      "expected_stderr": "",
+      "execution_authorized": false
+    },
+    {
+      "id": "x86_64-O0-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64-v1",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O0/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "image_sha256": "ab6265e1c5333c11e971973b39b4cbc0a1ada16763c8c70515b8d881ce40ed4c",
+      "expected_stderr": "",
+      "execution_authorized": false
+    },
+    {
+      "id": "x86_64-O3-positive",
+      "stage": "run-after-separate-grant",
+      "status": "proposed-not-executed",
+      "cwd": "/e46",
+      "argv": [
+        "/usr/bin/qemu-x86_64",
+        "-cpu",
+        "qemu64-v1",
+        "-L",
+        "/usr/x86_64-linux-gnu",
+        "build/x86_64/O3/pilot"
+      ],
+      "environment": {},
+      "timeout_seconds": 30,
+      "expected_exit": 0,
+      "expected_stdout": "E46_OK arch=x86_64 checks=4617 native_or_emulated=external_receipt\n",
+      "execution_kind": "QEMU-user-x86_64-emulated",
+      "image_sha256": "64a1efa22c13b1b01e540193225fc50f7dd3911cd387a592165f7fe566c7a144",
+      "expected_stderr": "",
+      "execution_authorized": false
+    }
+  ],
+  "capture_requirements": [
+    "Read/review new owned capture helper before use.",
+    "Verify static freeze, exact four image hashes, 28 staged source files, 69 selected target libraries, compiler/driver/linker/emulator and matching loader/libc/libgcc identities before and after each run.",
+    "Capture full actual supervisor/Docker argv, clean environment, cwd, stdout, stderr, status and elapsed time; do not infer status from output.",
+    "Run only original positive container images once serially; host copies remain nonexecutable data.",
+    "No source changes, recompilation, feature probes, bad metadata, misannotated assembly, invalid-pointer/overlap calls or deliberate UB execution."
+  ],
+  "stop_conditions": [
+    "Unexpected panic/assertion/abort/signal/timeout/nonzero status.",
+    "Any stdout/stderr/oracle/count/guard/helper-counter mismatch.",
+    "Any source, library, tool, loader, image or frozen evidence identity mismatch.",
+    "Stop affected and dependent phases for diagnosis; no silent retry or source patch."
+  ],
+  "expected_finite_checks_per_run": 4617,
+  "expected_total_finite_checks_if_all_four_pass": 18468,
+  "limits": [
+    "No runtime result is claimed by this proposal.",
+    "AArch64 calls would be native Linux VM/container calls; x86_64 calls would be QEMU user-mode emulation.",
+    "Finite passes do not prove Rust/assembly refinement, complete access traces, reference ISA agreement, general ABI correctness or E29/E30/E34-E37."
+  ]
+}

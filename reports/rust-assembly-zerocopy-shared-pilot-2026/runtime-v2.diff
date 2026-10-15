@@ -1,0 +1,38 @@
+--- capture_runtime_v1.py
++++ capture_runtime_v2.py
+@@ -3,7 +3,7 @@
+ 
+ Only the fixed four original positive images can run, once, in this order.
+ No compilation, guest feature probe, mutant execution, shell or retry API.
+-All host writes are create-only and confined to runtime-captures-v1/.
++All host writes are create-only and confined to runtime-captures-v2/.
+ """
+ from pathlib import Path
+ import hashlib
+@@ -74,7 +74,7 @@
+  got={'path':e['path'],'exists':p.is_file(),'symlink':p.is_symlink()}
+  if p.is_file():
+   got.update({'resolved':str(p.resolve()),'bytes':p.stat().st_size,'sha256':digest(p)})
+-  with p.open('rb') as f:got['ELF_identity']=f.read(18).hex()
++  with p.open('rb') as f:got['ELF_identity']=f.read(20).hex()
+  out['runtime_libraries'].append(got)
+  if got!=e:out['errors'].append('runtime library identity '+str(p))
+ for e in request['metadata_tools']:
+@@ -137,7 +137,7 @@
+ 
+ def check_frozen_host(policy, reviewed_preparation_sha):
+     need(ROOT.resolve() == ROOT and not ROOT.is_symlink(), "Owned physical root changed")
+-    preparation = ROOT / "RUNTIME-CAPTURE-PREPARATION.json"
++    preparation = ROOT / "RUNTIME-CAPTURE-PREPARATION-v2.json"
+     need(digest(preparation) == reviewed_preparation_sha, "Reviewed capture preparation changed")
+     for entry in json.loads(preparation.read_text())["files"]:
+         path = ROOT / entry["path"]
+@@ -294,7 +294,7 @@
+              "E46_OK arch=" + arch + " checks=4617 native_or_emulated=external_receipt\n",
+              "Runtime scope or oracle changed")
+     docker, host_tools = check_frozen_host(policy, reviewed_preparation_sha)
+-    directory = ROOT / "runtime-captures-v1"
++    directory = ROOT / "runtime-captures-v2"
+     directory.mkdir(exist_ok=False)  # One attempt only, including failed preflights.
+     create_json(directory / "ATTEMPT.json", {"helper_sha256": digest(Path(__file__)),
+                 "policy_sha256": POLICY_SHA, "static_freeze_sha256": FREEZE_SHA,

@@ -1,0 +1,68 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x1ad00
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          201440 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         7
+  Size of section headers:           64 (bytes)
+  Number of section headers:         23
+  Section header string table index: 22
+
+Dynamic section at offset 0x2fe40 contains 20 entries:
+  Tag        Type                         Name/Value
+ 0x000000000000000e (SONAME)             Library soname: [ld-linux-aarch64.so.1]
+ 0x0000000000000019 (INIT_ARRAY)         0x3ece8
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x1f0
+ 0x0000000000000005 (STRTAB)             0x728
+ 0x0000000000000006 (SYMTAB)             0x350
+ 0x000000000000000a (STRSZ)              698 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x3ffe8
+ 0x0000000000000002 (PLTRELSZ)           120 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0xd08
+ 0x0000000000000007 (RELA)               0xae0
+ 0x0000000000000008 (RELASZ)             552 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffc (VERDEF)             0xa38
+ 0x000000006ffffffd (VERDEFNUM)          5
+ 0x000000006ffffff0 (VERSYM)             0x9e2
+ 0x000000006ffffff9 (RELACOUNT)          22
+ 0x0000000000000000 (NULL)               0x0
+
+Version symbols section '.gnu.version' contains 41 entries:
+ Addr: 0x00000000000009e2  Offset: 0x000009e2  Link: 3 (.dynsym)
+  000:   0 (*local*)       0 (*local*)       0 (*local*)       5 (GLIBC_PRIVATE)
+  004:   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   2 (GLIBC_2.17)    5 (GLIBC_PRIVATE)
+  008:   5 (GLIBC_PRIVATE)   4 (GLIBC_2.35)    5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)
+  00c:   2 (GLIBC_2.17)    2 (GLIBC_2.17)    5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)
+  010:   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   2 (GLIBC_2.17)    5 (GLIBC_PRIVATE)
+  014:   2 (GLIBC_2.17)    5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)
+  018:   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   4 (GLIBC_2.35)    3h(GLIBC_2.34) 
+  01c:   5 (GLIBC_PRIVATE)   4 (GLIBC_2.35)    5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)
+  020:   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   2 (GLIBC_2.17)    5 (GLIBC_PRIVATE)
+  024:   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   5 (GLIBC_PRIVATE)   3 (GLIBC_2.34) 
+  028:   4 (GLIBC_2.35) 
+
+Version definition section '.gnu.version_d' contains 5 entries:
+ Addr: 0x0000000000000a38  Offset: 0x00000a38  Link: 4 (.dynstr)
+  000000: Rev: 1  Flags: BASE  Index: 1  Cnt: 1  Name: ld-linux-aarch64.so.1
+  0x001c: Rev: 1  Flags: none  Index: 2  Cnt: 1  Name: GLIBC_2.17
+  0x0038: Rev: 1  Flags: none  Index: 3  Cnt: 2  Name: GLIBC_2.34
+  0x0054: Parent 1: GLIBC_2.17
+  0x005c: Rev: 1  Flags: none  Index: 4  Cnt: 2  Name: GLIBC_2.35
+  0x0078: Parent 1: GLIBC_2.34
+  0x0080: Rev: 1  Flags: none  Index: 5  Cnt: 2  Name: GLIBC_PRIVATE
+  0x009c: Parent 1: GLIBC_2.35

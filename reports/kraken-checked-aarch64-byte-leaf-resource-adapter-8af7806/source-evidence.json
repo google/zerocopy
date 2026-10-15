@@ -388,6 +388,28 @@
       "bytes": 958,
       "git_blob_verified": true,
       "public_preservation": "coordinates/hash; full acquisition cache excluded"
+    },
+    {
+      "repository": "awslabs/s2n-bignum",
+      "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "path": ".github/workflows/ci.yml",
+      "url": "https://github.com/awslabs/s2n-bignum/blob/4d1356a7470663c752660a59375dc3a9ef548428/.github/workflows/ci.yml",
+      "sha256": "1c17a19337be6fd192cef9160df49f6ca16d0e4fd2b9341290b86ad4d84e7cc8",
+      "bytes": 13102,
+      "git_blob": "2742b4572b9415e568f50de3815336ba22503071",
+      "preservation": "primary-prerequisites/s2n-ci.yml",
+      "role": "Same-subject prerequisite clarification: exact CI HOL pin and switch-5 compiler/parser combination; no additional proof replay"
+    },
+    {
+      "repository": "jrh13/hol-light",
+      "revision": "b19af6934759eed622d7aca25092367f81656eee",
+      "path": "Makefile",
+      "url": "https://github.com/jrh13/hol-light/blob/b19af6934759eed622d7aca25092367f81656eee/Makefile",
+      "sha256": "eacd5fd94c546e6ff7e1f1eae1e29f98bba26d18956ac28aa6d7deb19fd9434d",
+      "bytes": 15194,
+      "git_blob": "2ae14410866d770ddffe4c638d9d5fac8b98f103",
+      "preservation": "primary-prerequisites/hol-light-Makefile",
+      "role": "Same-subject prerequisite clarification: exact CI HOL pin and switch-5 compiler/parser combination; no additional proof replay"
     }
   ]
 }

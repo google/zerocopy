@@ -1,0 +1,13 @@
+{
+  "manifest_date": "2025-08-07",
+  "rust_version": "1.89.0 (29483883e 2025-08-04)",
+  "component": {
+    "available": true,
+    "url": "https://static.rust-lang.org/dist/2025-08-07/rust-std-1.89.0-x86_64-unknown-linux-gnu.tar.gz",
+    "hash": "9597f608085e0dcf48a010e9831dbb8eaf3b30c8b57e18605f02d3f40446c34f",
+    "xz_url": "https://static.rust-lang.org/dist/2025-08-07/rust-std-1.89.0-x86_64-unknown-linux-gnu.tar.xz",
+    "xz_hash": "2719470dcd78b3f97d78b978c8f85a1a58d84ff11b62558294621c01bca34d49",
+    "components": [],
+    "extensions": []
+  }
+}

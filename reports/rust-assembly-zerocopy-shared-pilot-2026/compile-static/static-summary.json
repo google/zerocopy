@@ -1,0 +1,36 @@
+{
+  "stage": "compile-and-static-inspection-complete-runtime-pending",
+  "preparation_freeze_sha256": "42a976cc612912f2729197658b28910e61dd931cd45fb80052e63143f3076df5",
+  "accepted_compiler_commands": 8,
+  "preserved_failed_harness_commands": 1,
+  "accepted_compiler_streams_empty": true,
+  "staged_source_files_checked": 28,
+  "selected_target_libraries_checked": 69,
+  "tool_files_checked": 12,
+  "owned_static_checks_passed": 330,
+  "whole_function_object_image_pairs": 40,
+  "exact_body_pairs_without_relocations": 36,
+  "checked_call_relocation_pairs": 4,
+  "function_records_including_absent": 116,
+  "absent_optimized_baseline_entries": 2,
+  "image_identities": "image-and-function-identities.json",
+  "static_checks": "static-checks.json",
+  "runtime_proposal": "runtime-proposal.json",
+  "target_executed": false,
+  "mutant_executed": false,
+  "compiler_configuration": {
+    "commit": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+    "version": "1.89.0",
+    "LLVM": "20.1.7",
+    "opt_levels": [
+      0,
+      3
+    ],
+    "codegen_units": 1,
+    "panic": "abort",
+    "overflow_checks": true
+  },
+  "container_build_output_bytes": 78400062,
+  "host_artifact_copies_bytes": 20303074,
+  "limits": "Finite compilation and selected unverified static inspection; no Rust/ISA/compiler/ABI/loader/unwinder/access-trace theorem, no runtime result or checkbox closure."
+}

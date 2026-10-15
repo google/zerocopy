@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/path/to/docker",
+    "exec",
+    "--workdir",
+    "/e46",
+    "c1bf0a443c09a62a7747793d9ce696edfea27dbdc58bbacc652a4d999212c2d5",
+    "/usr/bin/env",
+    "-i",
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL=C",
+    "TZ=UTC",
+    "/usr/bin/readelf",
+    "-h",
+    "-d",
+    "--version-info",
+    "/lib/aarch64-linux-gnu/libgcc_s.so.1"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.038554124999999995,
+  "stdout_bytes": 7643,
+  "stderr_bytes": 0,
+  "stdout_sha256": "c5a3d126d714a1ca65ef48ef7b3c7956ea4e5edf9fc03f8989c71ba60c5a27a1",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "target_executed": false
+}
