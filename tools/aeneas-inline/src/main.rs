@@ -244,6 +244,7 @@ impl Functions<'_> {
         let (bounds, bounds_supported) = trait_bounds_with_context(
             &sig.generics,
             if method { &self.impl_generics } else { &[] },
+            false,
         );
         supported &= bounds_supported;
         let mut generics = if method { self.impl_generics.clone() } else { Vec::new() };
@@ -304,23 +305,57 @@ fn declaration_start(
     }
 }
 
+// Trait argument spellings only gate the supported syntax. Native compiler
+// applications retain every identity; this is not a Rust type resolver.
+fn nominal_type_argument(ty: &syn::Type) -> bool {
+    matches!(ty, syn::Type::Path(ty) if ty.qself.is_none() && type_argument_path(&ty.path))
+}
+
+fn type_argument_path(path: &syn::Path) -> bool {
+    let last = path.segments.len().saturating_sub(1);
+    path.segments.iter().enumerate().all(|(index, segment)| {
+        match &segment.arguments {
+        syn::PathArguments::None => true,
+        syn::PathArguments::AngleBracketed(arguments) if index == last => {
+            !arguments.args.is_empty()
+                && arguments.args.iter().all(|argument| {
+                    matches!(argument, syn::GenericArgument::Type(ty) if nominal_type_argument(ty))
+                })
+        }
+        _ => false,
+    }
+    })
+}
+
 // These spellings propose source ownership only. The compiler's resolved
 // predicates, not names from syn, decide which trait dictionary is required.
 fn trait_bounds(generics: &syn::Generics) -> (Vec<Value>, bool) {
-    trait_bounds_with_context(generics, &[])
+    trait_bounds_with_context(generics, &[], true)
 }
 
-fn trait_bounds_with_context(generics: &syn::Generics, context: &[String]) -> (Vec<Value>, bool) {
-    fn bound(subject: &str, bound: &syn::TypeParamBound) -> Option<Value> {
+fn trait_bounds_with_context(
+    generics: &syn::Generics,
+    context: &[String],
+    nominal_subjects: bool,
+) -> (Vec<Value>, bool) {
+    fn bound(subject: Option<&str>, bound: &syn::TypeParamBound) -> Option<Value> {
         let syn::TypeParamBound::Trait(bound) = bound else { return None };
         if bound.lifetimes.is_some()
             || !matches!(bound.modifier, syn::TraitBoundModifier::None)
-            || bound.path.segments.iter().any(|s| !matches!(s.arguments, syn::PathArguments::None))
+            || !type_argument_path(&bound.path)
         {
             return None;
         }
-        Some(json!({"subject": subject,
-            "trait": bound.path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::")}))
+        let mut result = json!({"subject": subject,
+            "trait": bound.path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::")});
+        if let Some(syn::PathSegment {
+            arguments: syn::PathArguments::AngleBracketed(arguments),
+            ..
+        }) = bound.path.segments.last()
+        {
+            result["argument_count"] = json!(arguments.args.len());
+        }
+        Some(result)
     }
     let mut bounds = Vec::new();
     // Only usize const parameters have a supported native dictionary carrier.
@@ -330,8 +365,12 @@ fn trait_bounds_with_context(generics: &syn::Generics, context: &[String]) -> (V
         matches!(&parameter.ty, syn::Type::Path(ty) if ty.qself.is_none() && ty.path.is_ident("usize"))
     });
     for parameter in generics.type_params() {
+        supported &= parameter.default.is_none();
         for predicate in &parameter.bounds {
-            match bound(&parameter.ident.to_string(), predicate) {
+            if maybe_sized(predicate) {
+                continue;
+            }
+            match bound(Some(&parameter.ident.to_string()), predicate) {
                 Some(value) => bounds.push(value),
                 None => supported = false,
             }
@@ -343,19 +382,32 @@ fn trait_bounds_with_context(generics: &syn::Generics, context: &[String]) -> (V
                 supported = false;
                 continue;
             };
-            let syn::Type::Path(subject) = &predicate.bounded_ty else {
-                supported = false;
-                continue;
+            let subject = match &predicate.bounded_ty {
+                syn::Type::Path(subject) if subject.qself.is_none() => subject,
+                _ => {
+                    supported = false;
+                    continue;
+                }
             };
-            let Some(subject) = subject.path.get_ident().filter(|_| subject.qself.is_none()) else {
-                supported = false;
-                continue;
-            };
+            let variable = subject
+                .path
+                .get_ident()
+                .filter(|subject| {
+                    generics.type_params().any(|p| p.ident == **subject)
+                        || context.iter().any(|name| *subject == name)
+                })
+                .map(ToString::to_string);
+            // Conditional wrapper impls may constrain a nominal Self such as
+            // UnsafeCell<T>. Their exact compiler applications are compared by
+            // the impl binder, so null records no guessed source identity.
             supported &= predicate.lifetimes.is_none()
-                && (generics.type_params().any(|p| p.ident == *subject)
-                    || context.iter().any(|name| subject == name));
+                && (variable.is_some()
+                    || (nominal_subjects && nominal_type_argument(&predicate.bounded_ty)));
             for predicate in &predicate.bounds {
-                match bound(&subject.to_string(), predicate) {
+                if maybe_sized(predicate) {
+                    continue;
+                }
+                match bound(variable.as_deref(), predicate) {
                     Some(value) => bounds.push(value),
                     None => supported = false,
                 }
@@ -634,7 +686,9 @@ impl<'ast> Visit<'ast> for Functions<'_> {
                 "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
                 "include_str_docs": include_str_docs, "inputs": [],
                 "generics": item.generics.type_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
-                "supported": self.unsupported == 0 && supported && negative.is_none(),
+                "supported": self.unsupported == 0 && supported && negative.is_none()
+                    && item.generics.lifetimes().next().is_none()
+                    && type_argument_path(trait_path),
                 "const_generics": item.generics.const_params().map(|p| p.ident.to_string()).collect::<Vec<_>>(),
                 "trait_path": trait_path.segments.iter().map(|s| s.ident.to_string()).collect::<Vec<_>>().join("::"),
                 "trait_bounds": bounds,
@@ -725,6 +779,8 @@ impl<'ast> Visit<'ast> for Functions<'_> {
         let mut path = self.modules.clone();
         path.push(item.ident.to_string());
         let (computed_docs, include_str_docs) = doc_flags(&item.attrs);
+        let (bounds, bounds_supported) =
+            trait_bounds_with_context(&item.generics, &["Self".to_string()], false);
         self.traits.push(json!({
             "path": path.join("::"), "kind": "trait",
             "declaration_start": self.offset(declaration_start(&item.vis,
@@ -732,10 +788,12 @@ impl<'ast> Visit<'ast> for Functions<'_> {
             "start": self.offset(item.trait_token.span.start()),
             "close": self.offset(item.span().end()), "inputs": [],
             "docs": self.docs(&item.attrs), "computed_docs": computed_docs,
-            "include_str_docs": include_str_docs,
+            "include_str_docs": include_str_docs, "trait_bounds": bounds,
             "generics": std::iter::once("Self".to_string()).chain(item.generics.type_params().map(|p| p.ident.to_string())).collect::<Vec<_>>(),
-            "supported": self.unsupported == 0 && item.generics.params.is_empty()
-                && item.generics.where_clause.is_none(),
+            "supported": self.unsupported == 0
+                && item.generics.lifetimes().next().is_none()
+                && item.generics.const_params().next().is_none()
+                && bounds_supported,
         }));
         // A provided method owns a real function body. Its implicit Self type
         // and enclosing trait come from this item, not from a guessed path.
@@ -939,6 +997,104 @@ mod tests {
             "impl S { fn f(&mut self) {} }",
         ] {
             assert_eq!(inspect(source).unwrap()["functions"][0]["supported"], false);
+        }
+    }
+
+    #[test]
+    fn parameterized_traits_keep_type_parameters_and_optional_sized() {
+        let value = inspect("pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}").unwrap();
+        assert_eq!(value["traits"][0]["supported"], true);
+        assert_eq!(value["traits"][0]["generics"], json!(["Self", "Src", "SV", "DV"]));
+        let bounded =
+            inspect("pub unsafe trait TransmuteFrom<Src: ?Sized, SV: Validity, DV: Validity> {}")
+                .unwrap();
+        assert_eq!(bounded["traits"][0]["supported"], true);
+        assert_eq!(
+            bounded["traits"][0]["trait_bounds"],
+            json!([
+                {"subject": "SV", "trait": "Validity"},
+                {"subject": "DV", "trait": "Validity"},
+            ])
+        );
+        let conditional = inspect("trait Marker<T> where Self: Other<T>, T: Validity {}").unwrap();
+        assert_eq!(conditional["traits"][0]["supported"], true);
+        assert_eq!(
+            conditional["traits"][0]["trait_bounds"],
+            json!([
+                {"subject": "Self", "trait": "Other", "argument_count": 1},
+                {"subject": "T", "trait": "Validity"},
+            ])
+        );
+        for source in [
+            "trait Marker<'a, T> {}",
+            "trait Marker<const N: usize> {}",
+            "trait Marker<T: ?Other> {}",
+            "trait Marker<T = u8> {}",
+            "trait Marker<T> where Cell<T>: Other {}",
+        ] {
+            assert_eq!(inspect(source).unwrap()["traits"][0]["supported"], false, "{source}");
+        }
+    }
+
+    #[test]
+    fn parameterized_bounds_record_arity_without_resolving_argument_types() {
+        let value = inspect(
+            "fn f<Src: ?Sized, Dst: ?Sized, SV, DV>()
+             where Dst: crate::TransmuteFrom<Src, SV, DV> + Marker {}",
+        )
+        .unwrap();
+        assert_eq!(value["functions"][0]["supported"], true);
+        assert_eq!(
+            value["functions"][0]["trait_bounds"],
+            json!([
+                {"subject": "Dst", "trait": "crate::TransmuteFrom", "argument_count": 3},
+                {"subject": "Dst", "trait": "Marker"},
+            ])
+        );
+        let sized = inspect("fn f<T>() where T: ?Sized {}").unwrap();
+        assert_eq!(sized["functions"][0]["supported"], true);
+        assert_eq!(sized["functions"][0]["trait_bounds"], json!([]));
+        for bound in [
+            "Trait<'static>",
+            "Trait<Item = u8>",
+            "Trait<Item: Marker>",
+            "Trait<3>",
+            "Trait<&'static u8>",
+            "Trait<[T; 3]>",
+            "Trait<for<'a> fn(&'a T)>",
+            "for<'a> Trait<T>",
+            "?Other",
+        ] {
+            let source = format!("fn f<T>() where T: {bound} {{}}");
+            assert_eq!(inspect(&source).unwrap()["functions"][0]["supported"], false, "{bound}");
+        }
+    }
+
+    #[test]
+    fn only_impl_markers_accept_nominal_bound_subjects() {
+        let value = inspect(
+            "unsafe impl<T: ?Sized> TransmuteFrom<Cell<T>, Safe, Safe> for UnsafeCell<T>
+             where T: TransmuteFrom<Cell<T>, Safe, Safe>,
+                   UnsafeCell<T>: TransmuteFrom<T, Safe, Safe> {}",
+        )
+        .unwrap();
+        assert_eq!(value["trait_impls"][0]["supported"], true);
+        assert_eq!(
+            value["trait_impls"][0]["trait_bounds"],
+            json!([
+                {"subject": "T", "trait": "TransmuteFrom", "argument_count": 3},
+                {"subject": null, "trait": "TransmuteFrom", "argument_count": 3},
+            ])
+        );
+        for source in [
+            "fn f<T>() where UnsafeCell<T>: Trait<T> {}",
+            "unsafe impl<'a, T> Trait<T> for S<T> {}",
+            "unsafe impl<T> Trait<Item = T> for S<T> {}",
+            "unsafe impl<T> Trait<'static> for S<T> {}",
+        ] {
+            let report = inspect(source).unwrap();
+            let group = if source.starts_with("fn ") { "functions" } else { "trait_impls" };
+            assert_eq!(report[group][0]["supported"], false, "{source}");
         }
     }
 

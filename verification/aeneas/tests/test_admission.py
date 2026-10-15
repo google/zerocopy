@@ -84,7 +84,11 @@ class AdmissionTests(unittest.TestCase):
         params = {'types': [], 'regions': [], 'const_generics': [], 'trait_clauses': []}
         signature = {'abi': 'Rust', 'is_variadic': False, 'is_unsafe': False,
                      'inputs': [], 'output': {'Untagged': {'Scalar': 'Bool'}}}
-        trait = {'def_id': 0, 'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
+        trait_parameters = {'types': [{'index': 0, 'name': 'Self', 'variance': 'Unknown'}],
+            'regions': [], 'const_generics': [], 'trait_clauses': [],
+            'regions_outlive': [], 'types_outlive': [], 'trait_type_constraints': []}
+        trait = {'def_id': 0, 'generics': trait_parameters,
+            'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
             {'Ident': ['Codec', 0]}]}, 'methods': [{'params': params,
                 'kind': {'TraitMethod': [0, 0]}, 'skip_binder': {'signature': signature,
                     'item_meta': {'has_errors': False, 'is_extern': False}}}]}
@@ -137,7 +141,8 @@ class AdmissionTests(unittest.TestCase):
         checked.current_function['generics']['trait_clauses'][0]['trait_'] = child_reference['trait_decl_ref']
         parent_clause = {'clause_id': 6, 'trait_': copy.deepcopy(reference['trait_decl_ref'])}
         parent_clause['trait_']['skip_binder']['generics']['types'] = [{'TypeVar': {'Bound': [1, 0]}}]
-        child = {'def_id': 1, 'methods': [], 'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
+        child = {'def_id': 1, 'generics': copy.deepcopy(trait['generics']),
+                 'methods': [], 'item_meta': {'name': [{'Ident': ['zerocopy', 0]},
                  {'Ident': ['Child', 0]}]}, 'implied_clauses': [parent_clause]}
         checked.crate['trait_decls'].append(child)
         reference['kind'] = {'ParentClause': [child_reference, 6]}
