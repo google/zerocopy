@@ -142,6 +142,18 @@ def simple_type(value, crate, bound_depth=0):
     raise ValueError('Trait-law carrier erasure or associated types are unsupported')
 
 
+def type_only_trait_arguments(arguments, arity):
+    """Reject discarded argument kinds before comparing compiler applications."""
+    if (not isinstance(arguments, dict)
+            or set(arguments) != {'regions', 'types', 'const_generics', 'trait_refs'}
+            or not isinstance(arguments['types'], list)
+            or any(arguments[k] for k in ('regions', 'const_generics', 'trait_refs'))):
+        raise ValueError('Unsupported dependent trait-law arguments')
+    if len(arguments['types']) != arity:
+        raise ValueError('Trait-law application changed its declared type arity')
+    return arguments['types']
+
+
 def predicate(clause, crate):
     bound = clause.get('trait_', clause.get('trait'))
     if not isinstance(bound, dict) or bound.get('regions'):
@@ -150,13 +162,15 @@ def predicate(clause, crate):
     trait = declarations(crate, 'trait_decls').get(reference['id'])
     if trait is None:
         raise ValueError('Trait clause lacks its compiler declaration')
-    args = reference['generics']
-    if any(args.get(k) for k in ('regions', 'const_generics', 'trait_refs')):
+    if (trait['generics'].get('regions')
+            or trait['generics'].get('const_generics')
+            or trait['generics'].get('trait_type_constraints')):
         raise ValueError('Unsupported dependent trait-law arguments')
+    types = type_only_trait_arguments(reference['generics'], len(trait['generics']['types']))
     return {'rust': name(trait['item_meta']),
             # The original AST has an item binder outside the (empty)
             # RegionBinder. unbind_item_vars makes these Free in final LLBC.
-            'arguments': [simple_type(t, crate, 1) for t in args['types']],
+            'arguments': [simple_type(t, crate, 1) for t in types],
             'clause_id': clause['clause_id']}
 
 
@@ -275,6 +289,8 @@ def default_method_owner(annotation, function, final, before):
 
 def check_function_bounds(annotation, function, final, before, annotated_traits):
     """Compare semantic applications, never pre/post clause ordinals."""
+    if function['generics'].get('trait_type_constraints'):
+        raise ValueError('Associated-type constraints in trait roots are unsupported')
     after = retained_clauses(function, final, annotated_traits)
     owner = default_method_owner(annotation, function, final, before)
     if not after and not annotation.get('trait_bounds') and owner is None:
@@ -286,6 +302,8 @@ def check_function_bounds(annotation, function, final, before, annotated_traits)
     if len(originals) != 1:
         raise ValueError('Generic trait root lacks an unambiguous original compiler owner')
     original = originals[0]
+    if original['generics'].get('trait_type_constraints'):
+        raise ValueError('Associated-type constraints in original trait roots are unsupported')
     if original['item_meta']['span'] != function['item_meta']['span']:
         raise ValueError('Generic trait root changed its original compiler source owner')
     original_names = [p['name'] for p in original['generics']['types']]
@@ -309,21 +327,33 @@ def check_function_bounds(annotation, function, final, before, annotated_traits)
                    if p['rust'] in MARKERS and p['rust'] in annotated_traits]
     if erased_laws or Counter(map(key, expected)) != Counter(map(key, after)):
         raise ValueError('Trait normalization lost or changed a required source bound')
+    check_source_bounds(annotation, original_predicates)
+    return after
+
+
+def check_source_bounds(annotation, original_predicates):
+    """Resolve source bound subjects and arities through original native clauses."""
     # Source syntax is only a proposed location/name. The resolved pre-AST
     # applications must explain every written bound on an original type variable.
     for bound in annotation.get('trait_bounds', []):
+        if bound['subject'] not in annotation['generics']:
+            raise ValueError('Source trait bound requires an original type-variable subject')
         index = annotation['generics'].index(bound['subject'])
+        argument_count = bound.get('argument_count', 0)
+        if type(argument_count) is not int or argument_count < 0:
+            raise ValueError('Source trait bound has an invalid type argument count')
         candidates = [p for p in original_predicates
-                      if p['arguments'] == [['parameter', index]]
+                      if len(p['arguments']) == argument_count + 1
+                      and p['arguments'][0] == ['parameter', index]
                       and (p['rust'] == bound['trait']
                            or p['rust'].endswith('::' + bound['trait']))]
-        if not candidates and bound['trait'] in {'Sized', 'core::marker::Sized'}:
+        if (not candidates and argument_count == 0
+                and bound['trait'] in {'Sized', 'core::marker::Sized'}):
             # The admitted compiler preset hides this builtin marker. Any
             # same-spelled user trait still has a resolved dictionary above.
             continue
         if len(candidates) != 1:
             raise ValueError('Source trait bound lacks an exact resolved compiler application')
-    return after
 
 
 def read_translation(work, final):
@@ -387,14 +417,24 @@ def bind_laws(annotations, work, final, before):
         annotation = trait_annotations[rust]
         if ident not in native_traits:
             raise ValueError(f'Annotated trait lacks a native dictionary: {rust}')
-        if [p['name'] for p in trait['generics']['types']] != annotation['generics']:
-            raise ValueError('Trait invariant associated-type lifting is unsupported')
+        if (trait['generics'].get('regions') or trait['generics'].get('const_generics')
+                or trait['generics'].get('trait_type_constraints') or trait.get('types')
+                or [p['name'] for p in trait['generics']['types']] != annotation['generics']):
+            raise ValueError('Trait invariant requires original type-only parameters without associated types')
         original = declarations(before, 'trait_decls').get(ident) if before else None
         if (original is None or original['item_meta']['name'] != trait['item_meta']['name']
-                or original.get('types') or original['generics'].get('trait_type_constraints')):
+                or original.get('types') or original['generics'].get('trait_type_constraints')
+                or original['generics'].get('regions') or original['generics'].get('const_generics')
+                or [p['name'] for p in original['generics']['types']] != annotation['generics']):
             raise ValueError('Trait invariant requires an original trait without associated types')
+        original_bounds = retained_clauses(original, before, trait_annotations)
+        final_bounds = retained_clauses(trait, final, trait_annotations)
+        if Counter(map(key, original_bounds)) != Counter(map(key, final_bounds)):
+            raise ValueError('Trait generic normalization lost or changed a required dictionary law')
         original_parents = [predicate(c, before) for c in original.get('implied_clauses', [])]
         final_parents = [predicate(c, final) for c in trait.get('implied_clauses', [])]
+        check_source_bounds(annotation, [predicate(c, before)
+            for c in original['generics'].get('trait_clauses', [])] + original_parents)
         if (any(p['rust'] in MARKERS and p['rust'] in trait_annotations for p in original_parents)
                 or Counter(key(p) for p in original_parents if p['rust'] not in MARKERS)
                 != Counter(key(p) for p in final_parents if p['rust'] not in MARKERS)):
@@ -424,6 +464,8 @@ def bind_laws(annotations, work, final, before):
                 or name(declarations(before, 'trait_decls')[original['impl_trait']['id']]['item_meta'])
                    != law['rust']):
             raise ValueError('Trait implementation lacks its original compiler owner')
+        if original['generics'].get('regions') or original['generics'].get('trait_type_constraints'):
+            raise ValueError('Unsupported original generic trait-law implementation')
         const_parameters = usize_const_parameters(generics)
         if const_parameters != usize_const_parameters(original['generics']):
             raise ValueError('Trait implementation normalization changed its original const parameters')
@@ -432,9 +474,13 @@ def bind_laws(annotations, work, final, before):
                 or Counter(map(key, retained_clauses(original, before, trait_annotations)))
                 != Counter(map(key, retained_clauses(implementation, final, trait_annotations)))):
             raise ValueError('Trait implementation normalization changed its required dictionaries')
-        types = [simple_type(t, final) for t in implementation['impl_trait']['generics']['types']]
+        arguments = type_only_trait_arguments(
+            implementation['impl_trait']['generics'], law['generic_count'])
+        original_arguments = type_only_trait_arguments(
+            original['impl_trait']['generics'], law['generic_count'])
+        types = [simple_type(t, final) for t in arguments]
         original_types = [simple_type(lift_original_type(t, before, final), before)
-                          for t in original['impl_trait']['generics']['types']]
+                          for t in original_arguments]
         check_application_parameters(types, len(generics['types']), len(const_parameters))
         check_application_parameters(original_types, len(original['generics']['types']), len(const_parameters))
         if types != original_types:
