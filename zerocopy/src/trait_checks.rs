@@ -145,7 +145,7 @@ fn forwarded_byte_codec(byte: u8) -> u8 {
     byte_codec_roundtrip::<Forward<XorCodec>>(byte)
 }
 
-fn require_into_bytes<T: crate::IntoBytes>() {}
+fn require_into_bytes<T: crate::IntoBytes + ?Sized>() {}
 
 /// Forces extraction of the existing array IntoBytes implementation and its
 /// primitive and nested dependencies. CI checks the generic implementation law
@@ -168,6 +168,24 @@ fn check_array_into_bytes() {
     require_into_bytes::<[[bool; 2]; 3]>();
 }
 
+/// Exercise native slice and unsized-wrapper trait selection. The promise
+/// ranges over explicit element counts, including zero-sized elements; it does
+/// not grant permission to access a pointer or assert a Rust ABI identity.
+///
+/// ```aeneas
+/// spec slice_into_bytes_spec
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Slice Bool)
+///   ensures _ => AeneasSpecs.RustModel.realizableRepresentation (Aeneas.Std.Slice Bool)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Slice Unit)
+///   ensures _ => AeneasSpecs.RustModel.initializedRepresentation
+///     (core.mem.manually_drop.ManuallyDrop (Aeneas.Std.Slice U8))
+/// ```
+fn check_slice_into_bytes() {
+    require_into_bytes::<[bool]>();
+    require_into_bytes::<[()]>();
+    require_into_bytes::<core::mem::ManuallyDrop<[u8]>>();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -185,5 +203,6 @@ mod tests {
             assert_eq!(forwarded_byte_codec(byte), byte);
         }
         check_array_into_bytes();
+        check_slice_into_bytes();
     }
 }

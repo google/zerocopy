@@ -500,6 +500,9 @@ type and equality. Ordinary slices use `usize` element counts. Transparent
 wrappers retain those counts. `IntoBytes` initialization covers every accepted
 language representation, and realizability supplies bytes at each admitted raw
 value's actual metadata. Neither law reconstructs metadata from byte length.
+The native slice `IntoBytes` impl carries the same mandatory proof marker as
+its fixed-layout counterparts; the client harness exercises native slice and
+unsized-wrapper dictionary selection.
 
 Generic Lean providers are more general than Rust's `Sized` parameters. To keep
 array and wrapper laws valid for every supplied provider, indexed children also

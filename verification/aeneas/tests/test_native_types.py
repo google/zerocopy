@@ -71,7 +71,7 @@ class NativeAssociatedTypeTests(unittest.TestCase):
                     self.assertEqual(source, untouched)
                     self.assertEqual(traits.simple_type(lifted, before)[2][1][0], 'nominal')
 
-    def test_option_and_array_recurse_without_erasing_the_carrier(self):
+    def test_option_array_and_slice_recurse_without_erasing_the_carrier(self):
         before, final, source, expected = fixture()
         option = {'def_id': 4, 'item_meta': meta('core::option::Option'), 'generics': params(['T'])}
         before['type_decls'].append(option)
@@ -82,6 +82,9 @@ class NativeAssociatedTypeTests(unittest.TestCase):
         lifted = native.lift_original_type(array, before, final)
         self.assertEqual(lifted['Array'][0], expected)
         self.assertEqual(lifted['Array'][1:], array['Array'][1:])
+        sliced = {'Slice': [source, None]}
+        self.assertEqual(native.lift_original_type(sliced, before, final),
+                         {'Slice': [expected, None]})
 
     def test_rejects_changed_native_evidence(self):
         mutations = {
