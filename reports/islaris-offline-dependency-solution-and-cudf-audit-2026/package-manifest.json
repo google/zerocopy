@@ -1,0 +1,570 @@
+{
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 4316,
+      "sha256": "4201ac6afbe76c7a332587ff7ad5aaa85abaa127c02370dffc9ad15e867a7728"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 16743,
+      "sha256": "e58970551b4a426fd15e2ee7923a9a5fa825997d345903c2e3cdd68e38c6a144"
+    },
+    {
+      "path": "support/archive-index.json",
+      "bytes": 906,
+      "sha256": "daf1edd5700ca5c423adcb958ea5d078c60e81ce5b695fbbd1555c8a380c373e"
+    },
+    {
+      "path": "support/archive-members.json.gz",
+      "bytes": 963237,
+      "sha256": "978f4cf22ae56e3abbf3b5289b3452bb044c13333a2ed45de158842b21986bd1"
+    },
+    {
+      "path": "support/audit-attempt-1-diagnosis.json",
+      "bytes": 678,
+      "sha256": "4944c6f6c2bb4e367883882a492fd549604bbde2f6181b0aea282bf23aa4dee6"
+    },
+    {
+      "path": "support/audit-attempt-1.py",
+      "bytes": 5476,
+      "sha256": "512e048da0302591cbeef3664074d68d43ef109a296ae21f81b3ffdc287460b8"
+    },
+    {
+      "path": "support/audit_cudf.py",
+      "bytes": 5933,
+      "sha256": "027308fc624c821a47ffa287d7f53c19c54581ce7e85c6c44cf2b0e9abde2991"
+    },
+    {
+      "path": "support/cudf-audit.json",
+      "bytes": 73682,
+      "sha256": "d426cd221645ba502dcd7401a924e3b4a079f1ab00c12617d201a53e8f945119"
+    },
+    {
+      "path": "support/cudf-false-solution-control.json",
+      "bytes": 278,
+      "sha256": "8fcb7ec5937aded70062e43966beb5c3f5c7d8748288d2928e782ede7efb8b4b"
+    },
+    {
+      "path": "support/dry-solve.json",
+      "bytes": 2029,
+      "sha256": "21a33814b9d544e07fb2ba4d701cb5e82b3df975f3808dff8cbcbf1de57bfc83"
+    },
+    {
+      "path": "support/dry-solve.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/dry-solve.stdout",
+      "bytes": 4923,
+      "sha256": "763546f25665c26c3060cfdf89d41d919d8dee9fd3521db7daea770452b47f77"
+    },
+    {
+      "path": "support/earlier-operational-evidence.tar.gz",
+      "bytes": 1250078,
+      "sha256": "3deda86b1f4373e4717d6e81b644df017ce98fe21a97712433cd15ead64d2c80"
+    },
+    {
+      "path": "support/false_solution_control.py",
+      "bytes": 739,
+      "sha256": "ddb7ece5c41bbd5f3e955af9eaf54919ca1a9d2e45053e63e1c140c2aae7944e"
+    },
+    {
+      "path": "support/fatal-cleanup-disposition.md",
+      "bytes": 692,
+      "sha256": "ca3d2f93fb6d7e9ead5c8c32bdc5884199211228e3e63788eb29a94e2f9e7305"
+    },
+    {
+      "path": "support/globals-fixed.stdout",
+      "bytes": 1182,
+      "sha256": "2b167edb4f99aed301295855ed1e8614e5a12147f74b119500ba3d0fd4de3ad4"
+    },
+    {
+      "path": "support/independent-review/REVIEW.json",
+      "bytes": 543,
+      "sha256": "a465308bba834962997c0ffe7f28d69aeb4127d88bad21e0a6ad7426016343a4"
+    },
+    {
+      "path": "support/independent-review/REVIEW.md",
+      "bytes": 7049,
+      "sha256": "1935638698049ae96316b32e0f925cbfddf5afc0eb528b2d2e529ed94c2a2711"
+    },
+    {
+      "path": "support/independent-review/environment-metadata-audit.json",
+      "bytes": 581,
+      "sha256": "7f7136e2042cfa25a6c6b219b5f0900ccfc40ec9e549692175b1332c266f0e19"
+    },
+    {
+      "path": "support/independent-review/input-binding-audit.json",
+      "bytes": 341,
+      "sha256": "ae4d954358caba1a8eb511f8445d0d7bb53c3cf3a5804d43de3d3d316f238805"
+    },
+    {
+      "path": "support/independent-review/membership-audit.json",
+      "bytes": 1099,
+      "sha256": "c6bcc43ef4d1763092ab2fc2c9d17d8bba043ff63e7cbb0a56d9f89a9ef3e839"
+    },
+    {
+      "path": "support/independent-review/negative-control-result.json",
+      "bytes": 542,
+      "sha256": "135de94889a610a0230b83ce9a442d9498b5a24739005d8e86d163e1148b2dc2"
+    },
+    {
+      "path": "support/independent-review/negative-control.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/independent-review/negative-control.stdout",
+      "bytes": 124,
+      "sha256": "26a7d93ee0942ae8a21744be808f8fa7d8e0f2621e3019e1394fa3b4712467b2"
+    },
+    {
+      "path": "support/independent-review/rerun-cudf-audit.json",
+      "bytes": 73682,
+      "sha256": "d426cd221645ba502dcd7401a924e3b4a079f1ab00c12617d201a53e8f945119"
+    },
+    {
+      "path": "support/input-verification.json",
+      "bytes": 267,
+      "sha256": "2411fd03708a42969d351d43c48449a28e46b9599284a63f3ab1760198045805"
+    },
+    {
+      "path": "support/main-metadata.tar.gz",
+      "bytes": 3653274,
+      "sha256": "903a48252b80d31d111c231031f3ee1b27abdbdcd2425fa130db03a883ba9652"
+    },
+    {
+      "path": "support/native-dry-solve.json",
+      "bytes": 7166,
+      "sha256": "28b06d25be21c4d1e386b65a58e55baac4ac0e3f98a3c8692c09702a64b8b9af"
+    },
+    {
+      "path": "support/native-evidence.tar.gz",
+      "bytes": 9057548,
+      "sha256": "dcc5c6d9a3e49779fdae52e407daf94b7dc382800f6dbb354ade8ffe96e76aa1"
+    },
+    {
+      "path": "support/overlay-and-primary-inputs.tar.gz",
+      "bytes": 1800132,
+      "sha256": "e24a398c7ad65c1ff769ea89875f6ebd76fe3a1f3e0b5d61cd57e4edb1f15b86"
+    },
+    {
+      "path": "support/ownership-oracle-results.json",
+      "bytes": 3884,
+      "sha256": "36f008261fb96d78069b51ac487e5fd8fcd16357333c993358fac6b151d4c0f7"
+    },
+    {
+      "path": "support/post-installed.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/post-pins.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/prior-source-report.tar.gz",
+      "bytes": 30625,
+      "sha256": "fc398a45cdf4e7ae283eafaa8b090c6de6ef6c45dd168924d7ad2db53e6b4ab8"
+    },
+    {
+      "path": "support/root-requests.json",
+      "bytes": 1316,
+      "sha256": "7fc03c11fabab284bffdc6fff65cdb8f614f1e4aed0e2fe6f71c203987caf577"
+    },
+    {
+      "path": "support/runtime-spec-fixed.json",
+      "bytes": 1218,
+      "sha256": "bedd962ea575b20d9ae86a991fd84c38ffbbadc8d3577c204028708b7a964d3d"
+    },
+    {
+      "path": "support/selected-metadata/base-bigarray/base-bigarray.base.opam",
+      "bytes": 201,
+      "sha256": "d89c794cf4f46430b74478beb512c095728d0c50e2c52cd16a296b7bc5296e02"
+    },
+    {
+      "path": "support/selected-metadata/base-bytes/base-bytes.base.opam",
+      "bytes": 243,
+      "sha256": "47c839112ab180204d60082624253bf4272bc42c246bccce113af5dd79258735"
+    },
+    {
+      "path": "support/selected-metadata/base-threads/base-threads.base.opam",
+      "bytes": 199,
+      "sha256": "0a5b0ca49ac7c9323e3a8d13475c7ff599657c823f212ab918ca6e861109bdc8"
+    },
+    {
+      "path": "support/selected-metadata/base-unix/base-unix.base.opam",
+      "bytes": 193,
+      "sha256": "d9be5574ae09e7711bccd09fcbed23e2e579879d1d9b223b529ffd79aad126e7"
+    },
+    {
+      "path": "support/selected-metadata/base64/base64.3.5.2.opam",
+      "bytes": 1398,
+      "sha256": "5e0aa3602d5d884848d746295d30411839b0a1214a1a1a9b6cea341837cfb9cd"
+    },
+    {
+      "path": "support/selected-metadata/bisect_ppx/bisect_ppx.2.8.3.opam",
+      "bytes": 1547,
+      "sha256": "b6612fb6b1b114f83559f4d41bddcd13c63829bb0b2bfd6387daa3c9f96156b9"
+    },
+    {
+      "path": "support/selected-metadata/cmdliner/cmdliner.1.3.0.opam",
+      "bytes": 1706,
+      "sha256": "a784c99ed0ac1cb110309e65dbb7d6378d6dbe7673371b80a129467c3e3c06f7"
+    },
+    {
+      "path": "support/selected-metadata/conf-findutils/conf-findutils.1.opam",
+      "bytes": 1091,
+      "sha256": "bca912244ed20a5398e3b194b3a73b412c8fc0de42fe6024c45b3f881e6857c6"
+    },
+    {
+      "path": "support/selected-metadata/conf-gmp/conf-gmp.5.opam",
+      "bytes": 2228,
+      "sha256": "fa5a99aed98bc2fac1bfcc6faaeeb2dcf1ddc6f69288db82b46f5e55c72ab133"
+    },
+    {
+      "path": "support/selected-metadata/conf-linux-libc-dev/conf-linux-libc-dev.0.opam",
+      "bytes": 1049,
+      "sha256": "8eb737b9314a1e16ce2bdb18063cb105c2fb8a61086a88a1c282706ed11357a9"
+    },
+    {
+      "path": "support/selected-metadata/conf-pkg-config/conf-pkg-config.5.opam",
+      "bytes": 4052,
+      "sha256": "22d7749f8159cf3890aca86542453c21f8b4bb77d82263b16881b34f8dfeaf03"
+    },
+    {
+      "path": "support/selected-metadata/conf-zlib/conf-zlib.1.opam",
+      "bytes": 2081,
+      "sha256": "19f9b304630407c21c15d3f6c48f2b5120536cdaed3c22048b690452910430ae"
+    },
+    {
+      "path": "support/selected-metadata/coq/coq.8.19.0.opam",
+      "bytes": 1641,
+      "sha256": "538568638934b713af4e354f0e2781bed07d056f544368c96eab1936a5b0b5f9"
+    },
+    {
+      "path": "support/selected-metadata/coq-bbv/coq-bbv.1.5.opam",
+      "bytes": 901,
+      "sha256": "a43f7968699b32ab9521aa7335bc50bd3e0d357894d18233bc975e5061833076"
+    },
+    {
+      "path": "support/selected-metadata/coq-core/coq-core.8.19.0.opam",
+      "bytes": 2454,
+      "sha256": "8d20e526a594beb7481d7d55f47da867b8e56a154d0faf407b5dcf5ef87126ab"
+    },
+    {
+      "path": "support/selected-metadata/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b.opam",
+      "bytes": 1423,
+      "sha256": "eb45c0d8e293c29852264101aed7b6c5a8ac8742723edd2f9eb99b07f36a0005"
+    },
+    {
+      "path": "support/selected-metadata/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d.opam",
+      "bytes": 878,
+      "sha256": "8805ff41adee7f9b8c06e4d7c7c8bf5b545d4c978755950fd5fe1b10ad5dc7ac"
+    },
+    {
+      "path": "support/selected-metadata/coq-record-update/coq-record-update.0.3.3.opam",
+      "bytes": 1176,
+      "sha256": "3ba594a4c668ddf81216e9a460439f696d547b662914cc36d8eb6c8b6c8449d8"
+    },
+    {
+      "path": "support/selected-metadata/coq-sail/coq-sail.0.17.opam",
+      "bytes": 1675,
+      "sha256": "b9bead47aa142c9fe26045b5f397352bd2c9a309472b618b366e0498e4d176a6"
+    },
+    {
+      "path": "support/selected-metadata/coq-sail-riscv/coq-sail-riscv.0.5.opam",
+      "bytes": 942,
+      "sha256": "7cbd37a269191aa24fdacb32dbdca0fd6e584251fc6459dc58a64c1407d22ad7"
+    },
+    {
+      "path": "support/selected-metadata/coq-stdlib/coq-stdlib.8.19.0.opam",
+      "bytes": 1862,
+      "sha256": "74c3a0f372527d7c87d74dc89dd43fc949d43ea4402e4c70118bc20e206e24d2"
+    },
+    {
+      "path": "support/selected-metadata/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00.opam",
+      "bytes": 1873,
+      "sha256": "fce4c9547e0414cd4cb4d8ed4acc19091d140d25e4713c2a45febfc987a8e304"
+    },
+    {
+      "path": "support/selected-metadata/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00.opam",
+      "bytes": 999,
+      "sha256": "c66490a46ea940934a55e6eb8c3f7b4d3cf4fc38dc57adb5ea5603d24a6eee6e"
+    },
+    {
+      "path": "support/selected-metadata/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00.opam",
+      "bytes": 866,
+      "sha256": "97509fc0f31d9b2b396af48bfa63245e0cfa01f64be0d534472f61617b53b57d"
+    },
+    {
+      "path": "support/selected-metadata/coqide-server/coqide-server.8.19.0.opam",
+      "bytes": 1560,
+      "sha256": "4a67b236cc458d607eeaa4998be193c344dfff7cf873f1f73ae46f467dd0b8ab"
+    },
+    {
+      "path": "support/selected-metadata/csexp/csexp.1.5.2.opam",
+      "bytes": 1802,
+      "sha256": "06aeb45c7ebef91ebded5546153dc44b34a055eadb3dc66dab9759b6d034c62f"
+    },
+    {
+      "path": "support/selected-metadata/dune/dune.3.9.1.opam",
+      "bytes": 2128,
+      "sha256": "81b6e729c7bdcb0f24604ca26c77f88a90d2275795b8527bef9937f49ee9c155"
+    },
+    {
+      "path": "support/selected-metadata/dune-private-libs/dune-private-libs.3.9.1.opam",
+      "bytes": 1380,
+      "sha256": "46edf2a781493d72ac86d2d20e024d1a21b8981554e9c9e92f284dceb2e7b277"
+    },
+    {
+      "path": "support/selected-metadata/dune-site/dune-site.3.9.1.opam",
+      "bytes": 1079,
+      "sha256": "2b045ece80fa1d55984e3fa409c7359a6b7a545590a80ec4fd0fb4b8c6ca69ac"
+    },
+    {
+      "path": "support/selected-metadata/dyn/dyn.3.9.1.opam",
+      "bytes": 1089,
+      "sha256": "18a94a0d44d1f5af7146cdcb0cff2eafd8e7de0531cd29608b16b4f4c1c55498"
+    },
+    {
+      "path": "support/selected-metadata/integers/integers.0.8.0.opam",
+      "bytes": 901,
+      "sha256": "c6b452c1a9e6593b9dfed88a55eae239ad52fb4696096468b347876aef9ee2c6"
+    },
+    {
+      "path": "support/selected-metadata/isla-lang/isla-lang.dev.opam",
+      "bytes": 811,
+      "sha256": "0155efc4990e058aaf418fc1f15c38e253fb41ec845cf4abe0ab2d8242d04b19"
+    },
+    {
+      "path": "support/selected-metadata/islaris/islaris.dev.opam",
+      "bytes": 1058,
+      "sha256": "f42a2d95c88b906fe95cd0778aaac44d3b825fb4f312d19223d99cf4ea41b003"
+    },
+    {
+      "path": "support/selected-metadata/lem/lem.2026-05-01.opam",
+      "bytes": 1799,
+      "sha256": "aa8921999cfb02b623d953d2229495177a2801d34da6e13735b1d66745dd384a"
+    },
+    {
+      "path": "support/selected-metadata/libsail/libsail.0.17.opam",
+      "bytes": 1754,
+      "sha256": "d855a2d97045f2b1fd360ecd40391ffa5d24afa0389af67ac2f49c48aed91d9e"
+    },
+    {
+      "path": "support/selected-metadata/linenoise/linenoise.1.5.1.opam",
+      "bytes": 1076,
+      "sha256": "114596cedc9d088ea0b4d92eb4cc646c17b2bd7caa52c2ffef9ec94a068c9f47"
+    },
+    {
+      "path": "support/selected-metadata/linksem/linksem.0.8.opam",
+      "bytes": 1242,
+      "sha256": "7c4b964bfdba78403fe00fc44d666fc434cb925574cd7ce0ea338b3ebcdb1188"
+    },
+    {
+      "path": "support/selected-metadata/menhir/menhir.20260209.opam",
+      "bytes": 988,
+      "sha256": "eb862ab077cf137a2b6fcaf5fd76610b8a9604de26194a3c000ba43bbf80ebcf"
+    },
+    {
+      "path": "support/selected-metadata/menhirCST/menhirCST.20260209.opam",
+      "bytes": 932,
+      "sha256": "de19400fdccb30b824df5bb8d70a4b611b9ad79f269430e9a2d173258c1db635"
+    },
+    {
+      "path": "support/selected-metadata/menhirGLR/menhirGLR.20260209.opam",
+      "bytes": 934,
+      "sha256": "7734db0123820d0ffb8d9890ee1343fd0016419108c868989e35e938549551ea"
+    },
+    {
+      "path": "support/selected-metadata/menhirLib/menhirLib.20260209.opam",
+      "bytes": 991,
+      "sha256": "008379e8e7a143087f3c31f19294bfdbe8e1e898d0d1a1fa9ffd9a27fe8fc0a6"
+    },
+    {
+      "path": "support/selected-metadata/menhirSdk/menhirSdk.20260209.opam",
+      "bytes": 994,
+      "sha256": "cdbfc928a599fdd09413207398794145f5d16a56e587a1f18612b99e2e62864e"
+    },
+    {
+      "path": "support/selected-metadata/num/num.1.6.opam",
+      "bytes": 1085,
+      "sha256": "287b250b6421ddb8bd28e31b3dd6c79ab4a482b214d194133e059b41b602799c"
+    },
+    {
+      "path": "support/selected-metadata/ocaml/ocaml.4.14.0.opam",
+      "bytes": 1489,
+      "sha256": "b7b3b3e46465c2d999b17c98a9db17b39fff94aa09edc84ebded51ceb493410a"
+    },
+    {
+      "path": "support/selected-metadata/ocaml-compiler-libs/ocaml-compiler-libs.v0.12.4.opam",
+      "bytes": 1243,
+      "sha256": "0dfa7802a63f91bc055a64f5efbe9b243965b85ae1689401ed533c39e3ca536f"
+    },
+    {
+      "path": "support/selected-metadata/ocaml-config/ocaml-config.2.opam",
+      "bytes": 1237,
+      "sha256": "70e4abeb2f5cc7e0d117afc6c81d45050446c5d3de1301ed6e2faa706a0d38dc"
+    },
+    {
+      "path": "support/selected-metadata/ocaml-option-flambda/ocaml-option-flambda.1.opam",
+      "bytes": 401,
+      "sha256": "0225d9e738a95a20f3f211506ad7e2ff82837333ecbbcfd9fb1f7fae7cd3dfb5"
+    },
+    {
+      "path": "support/selected-metadata/ocaml-variants/ocaml-variants.4.14.0+options.opam",
+      "bytes": 4416,
+      "sha256": "b9a0349ffebf816b1e30f5789fd280aa947e87e5f29b9dfc6a1c595c641c3522"
+    },
+    {
+      "path": "support/selected-metadata/ocamlbuild/ocamlbuild.0.16.1.opam",
+      "bytes": 1292,
+      "sha256": "d1fe9fc86f3889692c4688cca824b9f7571e9b9aeb100fc039b295a57e602a9f"
+    },
+    {
+      "path": "support/selected-metadata/ocamlfind/ocamlfind.1.9.8.opam",
+      "bytes": 1587,
+      "sha256": "2e636364764594cb34e1cd45a82c7451c1d2fba8e39639f8a803210d143cf4d1"
+    },
+    {
+      "path": "support/selected-metadata/ocamlgraph/ocamlgraph.2.2.0.opam",
+      "bytes": 1351,
+      "sha256": "d1594d71c1c90404d00e426387da3decb1cc196c7c7e4b3c6860cd91971d864a"
+    },
+    {
+      "path": "support/selected-metadata/omd/omd.1.3.2.opam",
+      "bytes": 1569,
+      "sha256": "c99fdc9267f3ac9dce4eceaa0fa2cf676a868f0a8dc80c89460a6d1c7f963055"
+    },
+    {
+      "path": "support/selected-metadata/ordering/ordering.3.9.1.opam",
+      "bytes": 1057,
+      "sha256": "89b28e227c6236797f157be8f3c04b0c4b6668c37be80f4eab7edaf4eefb3f92"
+    },
+    {
+      "path": "support/selected-metadata/ott/ott.0.34.opam",
+      "bytes": 2036,
+      "sha256": "c26810da1757645f39597fe571542ed3255412894269bb4fd34d51cbdd336460"
+    },
+    {
+      "path": "support/selected-metadata/pp/pp.2.0.0.opam",
+      "bytes": 1967,
+      "sha256": "6094a14e19f4431a9e04b798b56fd447876123d4527214641e622d652de8320c"
+    },
+    {
+      "path": "support/selected-metadata/pprint/pprint.20230830.opam",
+      "bytes": 1193,
+      "sha256": "90da8a548a8f417d48ce5e05d8492816e4444a335d7d9652d1f8925e63c8e011"
+    },
+    {
+      "path": "support/selected-metadata/ppx_derivers/ppx_derivers.1.2.1.opam",
+      "bytes": 866,
+      "sha256": "19e14fd51829f50fe3b5f1935e7896d5c8fcbe04a417f70d628bcfa01e6dab06"
+    },
+    {
+      "path": "support/selected-metadata/ppxlib/ppxlib.0.35.0.opam",
+      "bytes": 2143,
+      "sha256": "35fb0efa7044c5d786691ed12b6e46e9b0777dc0507b7a3e813a519fb54f116a"
+    },
+    {
+      "path": "support/selected-metadata/sail/sail.0.17.opam",
+      "bytes": 1975,
+      "sha256": "50a46732fe6da69c6e1c58c1f455e274259fe751e452c61d9e2429bb68ca69c4"
+    },
+    {
+      "path": "support/selected-metadata/sail_c_backend/sail_c_backend.0.17.opam",
+      "bytes": 985,
+      "sha256": "03462a4c3605f2980c8ed7521e3f53a890ea38ecf1d4611158fdd90c8031fe92"
+    },
+    {
+      "path": "support/selected-metadata/sail_coq_backend/sail_coq_backend.0.17.opam",
+      "bytes": 989,
+      "sha256": "860d959f3f7e7452542612bb976b3ff86735a604cea22cda8eb112dcba86bb83"
+    },
+    {
+      "path": "support/selected-metadata/sail_doc_backend/sail_doc_backend.0.17.opam",
+      "bytes": 1051,
+      "sha256": "35812f1bfe7ec4178fb35bf0d425bbcb9e286d468b9eaab7aab1c6b73eac7dca"
+    },
+    {
+      "path": "support/selected-metadata/sail_latex_backend/sail_latex_backend.0.17.opam",
+      "bytes": 1025,
+      "sha256": "c1bb711f481eec80321c49681233bcf6d30590fb2e7937587b401ab648c5eeb9"
+    },
+    {
+      "path": "support/selected-metadata/sail_lem_backend/sail_lem_backend.0.17.opam",
+      "bytes": 989,
+      "sha256": "37046441bfee11801e40230c9c007ddcb2d04f8d3816ae535e0d3853387ba810"
+    },
+    {
+      "path": "support/selected-metadata/sail_manifest/sail_manifest.0.17.opam",
+      "bytes": 969,
+      "sha256": "77545c811f0e467d918f48e5dc23760d0f8c7401bdea61994cba320e001f8f66"
+    },
+    {
+      "path": "support/selected-metadata/sail_ocaml_backend/sail_ocaml_backend.0.17.opam",
+      "bytes": 1017,
+      "sha256": "21a243c97a77ca7ab2cbf4712b522cd3a74b9dbce3db0b11ae53efd95b13fb4e"
+    },
+    {
+      "path": "support/selected-metadata/sail_output/sail_output.0.17.opam",
+      "bytes": 987,
+      "sha256": "76f07448a4c2f886596124317711041b3be7cf524c003fd6196e8332646f35b4"
+    },
+    {
+      "path": "support/selected-metadata/sail_smt_backend/sail_smt_backend.0.17.opam",
+      "bytes": 987,
+      "sha256": "40a7057feb2f10c9c0aa0d02b384c5137095e76c8e1828774b052c13fd987b8b"
+    },
+    {
+      "path": "support/selected-metadata/sail_sv_backend/sail_sv_backend.0.17.opam",
+      "bytes": 998,
+      "sha256": "1df4a27cb98ec10df89e1817687750bcc6098e67f139e29279d98804241e538a"
+    },
+    {
+      "path": "support/selected-metadata/sexplib0/sexplib0.v0.16.0.opam",
+      "bytes": 994,
+      "sha256": "2e3dc7c394d532acabcfe72e85701546a9061462f135b40b98f41838bc7dd27b"
+    },
+    {
+      "path": "support/selected-metadata/stdlib-shims/stdlib-shims.0.3.0.opam",
+      "bytes": 1239,
+      "sha256": "f1ac3b7905dd5ff7f7f5fc78f3d7c040b68ad09ab2c6abf08278827d87e76f8e"
+    },
+    {
+      "path": "support/selected-metadata/stdune/stdune.3.9.1.opam",
+      "bytes": 1239,
+      "sha256": "d8c7526faa3677a263ab277e9e407542f9d8ce3b10800f7e4c629189e52516fb"
+    },
+    {
+      "path": "support/selected-metadata/yojson/yojson.3.0.0.opam",
+      "bytes": 1350,
+      "sha256": "a5bd2912c0ac30cb0c44bfece72a30f8dad639978ee38e7dbfb9f23fbd2406ac"
+    },
+    {
+      "path": "support/selected-metadata/zarith/zarith.1.14.opam",
+      "bytes": 1231,
+      "sha256": "afd6782f14483672c86d87fa4b64dd55744058f978ffee49631f7aa33b57bb81"
+    },
+    {
+      "path": "support/selected-package-origins.json",
+      "bytes": 111300,
+      "sha256": "bd2e862e36d7fb50335b5e66c5ae7e1d1f1e0c29eb67192f03fc92f7be7da059"
+    },
+    {
+      "path": "support/switch-vars.stdout",
+      "bytes": 475,
+      "sha256": "5fb66e33db6846d9659e6638eeaffdc4362cdae205fb9bc173d9b297e8974d79"
+    },
+    {
+      "path": "support/v3-repositories.stdout",
+      "bytes": 159,
+      "sha256": "6bc67fbd269c7434ccab4f392c064c4a09329ebad467f5b4adaf1a3a50f9fc39"
+    }
+  ],
+  "self_excluded": true
+}

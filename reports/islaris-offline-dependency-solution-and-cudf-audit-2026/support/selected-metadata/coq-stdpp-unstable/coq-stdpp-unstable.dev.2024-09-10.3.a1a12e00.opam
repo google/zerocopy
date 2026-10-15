@@ -1,0 +1,24 @@
+opam-version: "2.0"
+name: "coq-stdpp-unstable"
+version: "dev.2024-09-10.3.a1a12e00"
+synopsis: "Unfinished std++ libraries"
+description: """\
+This package contains libraries that have been proposed for inclusion in std++, but more
+work is needed before they are ready for this."""
+maintainer: "Ralf Jung <jung@mpi-sws.org>"
+authors: "The std++ team"
+license: "BSD-3-Clause"
+tags: "logpath:stdpp.unstable"
+homepage: "https://gitlab.mpi-sws.org/iris/stdpp"
+bug-reports: "https://gitlab.mpi-sws.org/iris/stdpp/issues"
+depends: [
+  "coq-stdpp" {= version}
+  "coq-stdpp-bitvector" {= version}
+]
+build: ["./make-package" "stdpp_unstable" "-j%{jobs}%"]
+install: ["./make-package" "stdpp_unstable" "install"]
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/stdpp.git"
+url {
+  src:
+    "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+}

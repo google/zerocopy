@@ -1,0 +1,37 @@
+opam-version: "2.0"
+name: "islaris"
+version: "dev"
+synopsis: "Islaris assembly verification tool"
+maintainer: "Michael Sammler <sammler@mpi-sws.org>"
+authors: "The Islaris Team"
+license: "BSD-3-Clause"
+homepage: "https://github.com/rems-project/islaris"
+bug-reports: "https://github.com/rems-project/islaris/issues"
+depends: [
+  "coq" {(= "8.19.0") | (= "dev")}
+  "coq-lithium" {(= "dev.2024-09-11.0.7945a29d") | (= "dev")}
+  "coq-stdpp-bitvector"
+  "coq-stdpp-unstable"
+  "coq-record-update" {(= "0.3.3") | (= "dev")}
+  "cmdliner" {>= "1.1.0"}
+  "pprint"
+  "integers"
+  "dune" {= "3.9.1"}
+  "pprint" {>= "20171003"}
+  "menhir" {build}
+  "ott" {>= "0.31" & build}
+  "isla-lang"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/rems-project/islaris.git"
+pin-depends: [
+  "isla-lang.dev"
+  "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+]
+url {
+  src:
+    "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+}

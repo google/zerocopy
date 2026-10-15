@@ -1,0 +1,29 @@
+opam-version: "2.0"
+name: "conf-linux-libc-dev"
+version: "0"
+synopsis:
+  "Virtual package relying on the installation of the Linux kernel headers files"
+description:
+  "This package can only install if the kernel headers for user space applications are installed on the system."
+maintainer: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
+authors: "Markus W. Weissmann <markus.weissmann@in.tum.de>"
+license: "GPL-2.0-only"
+homepage: "https://kernel.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+available: os = "linux"
+flags: conf
+build: [
+  ["sh" "-exc" "echo '#include <linux/stddef.h>' > test.c"]
+  ["cc" "-E" "test.c"]
+]
+depexts: [
+  ["linux-libc-dev"] {os-family = "debian"}
+  ["linux-libc-dev"] {os-family = "ubuntu"}
+  ["linux-glibc-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["kernel-headers"]
+    {os-family = "fedora" | os-distribution = "rhel" |
+     os-distribution = "centos" |
+     os-distribution = "ol"}
+  ["linux-headers"] {os-family = "alpine"}
+  ["linux-api-headers"] {os-family = "arch"}
+]

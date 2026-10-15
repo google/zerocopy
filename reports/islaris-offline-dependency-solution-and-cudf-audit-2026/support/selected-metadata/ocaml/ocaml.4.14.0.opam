@@ -1,0 +1,45 @@
+opam-version: "2.0"
+name: "ocaml"
+version: "4.14.0"
+synopsis: "The OCaml compiler (virtual package)"
+description: """\
+This package requires a matching implementation of OCaml,
+and polls it to initialise specific variables like `ocaml:native-dynlink`"""
+maintainer: "David Allsopp <dra27@dra27.uk>"
+authors: [
+  "Xavier Leroy"
+  "Damien Doligez"
+  "Alain Frisch"
+  "Jacques Garrigue"
+  "Didier Rémy"
+  "Jérôme Vouillon"
+]
+license: "LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception"
+homepage: "https://ocaml.org"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  "ocaml-config" {>= "2"}
+  "ocaml-base-compiler" {>= "4.14.0~" & < "4.14.1~"} |
+  "ocaml-variants" {>= "4.14.0~" & < "4.14.1~"} |
+  "ocaml-system" {>= "4.14.0" & < "4.14.1~"} |
+  "dkml-base-compiler" {>= "4.14.0~" & < "4.14.1~"}
+  ("ocaml-env-mingw64" {os = "win32"} | "ocaml-env-mingw32" {os = "win32"} |
+   "ocaml-env-msvc64" {os = "win32"} |
+   "ocaml-env-msvc32" {os = "win32"})
+]
+flags: conf
+setenv: [
+  [OCAMLTOP_INCLUDE_PATH += "%{toplevel}%"]
+  [CAML_LD_LIBRARY_PATH = "%{_:stubsdir}%"]
+  [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
+  [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
+]
+build: [
+  "ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name
+]
+build-env: CAML_LD_LIBRARY_PATH = ""
+x-env-path-rewrite: [
+  [CAML_LD_LIBRARY_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+  [OCAMLTOP_INCLUDE_PATH (";" {os = "win32"} ":" {os != "win32"}) "target"]
+]
+x-revision: "7"

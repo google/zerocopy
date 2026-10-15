@@ -17004,6 +17004,153 @@
         "sail/proof-bridges"
       ]
     },
+    "islaris-offline-dependency-solution-and-cudf-audit-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris"
+        },
+        {
+          "identity": {
+            "repository": "UIC-verif-group/refinedC",
+            "revision": "7945a29d1647970709a9b5ad2ffc53c757e130cc"
+          },
+          "name": "Lithium source, inspected through same-commit mirror coordinates declared by metadata"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa"
+          },
+          "name": "Iris source mirror coordinates declared by metadata"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/stdpp",
+            "revision": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+          },
+          "name": "stdpp source mirror coordinates declared by metadata"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/opam",
+            "revision": "3c21518b509d33676776c36e160de1d76835b801"
+          },
+          "name": "Iris opam repository mirror"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/opam",
+            "revision": "564ab90f5874c0c91cee746c4706bc2ba686a5a9"
+          },
+          "name": "Coq released opam metadata"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/opam-repository",
+            "revision": "56aefa37456aa263913289a4174daca01c4b9339"
+          },
+          "name": "Main OCaml opam metadata"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/opam-repository",
+            "revision": "0d269faa45d7a07cdd53bb713f56d453cf648218"
+          },
+          "name": "Historical Dune opam metadata"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/dune",
+            "revision": "3276f90725e4423790a43065cc51ddbbba61eb89"
+          },
+          "name": "Dune source metadata"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "b14f649845db850b3673696e2aa90565fa2a60ef"
+          },
+          "name": "Old Sail generator package metadata"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/coq-sail",
+            "revision": "169934e27ceafe393ed4d365985f7b12d974d56e"
+          },
+          "name": "Coq Sail support package metadata"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890"
+          },
+          "name": "Old Sail RISC-V Coq package metadata"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/isla-lang",
+            "revision": "bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+          },
+          "name": "Isla language package metadata"
+        },
+        {
+          "identity": {
+            "archive": "v1.5.tar.gz",
+            "repository": "mit-plv/bbv",
+            "revision": "c53d5b95c70839ae8e947010d85503bd1ada1120",
+            "sha512": "43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33"
+          },
+          "name": "bbv 1.5 released source selection coordinates declared by metadata"
+        },
+        {
+          "identity": {
+            "sha256": "8f42016825a9b10fd21802a18c22d37060c95e8c5a1d2be3df5135402c6a494d",
+            "version": "2.1.6 (263921263e1f745613e2882745114b7b08f3608b)"
+          },
+          "name": "Actual opam dry-solve executable"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/opam",
+            "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d"
+          },
+          "name": "Inspected opam 2.1.6 semantics"
+        },
+        {
+          "identity": {
+            "image": "ocaml/opam",
+            "sha256": "fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2"
+          },
+          "name": "Actual offline solver image"
+        },
+        {
+          "identity": {
+            "artifact": "overlay-and-primary-inputs.tar.gz",
+            "sha256": "e24a398c7ad65c1ff769ea89875f6ebd76fe3a1f3e0b5d61cd57e4edb1f15b86"
+          },
+          "name": "Exact overlay and primary metadata inputs"
+        },
+        {
+          "identity": {
+            "artifact": "native-islaris-1.cudf",
+            "sha256": "0e3995239ad41487f8c32722352370d89471bc5ed42fe00996f2002e17f9a5c4"
+          },
+          "name": "Actual exported CUDF solver instance"
+        }
+      ],
+      "topics": [
+        "islaris",
+        "coq/dependencies",
+        "opam/offline-solving",
+        "opam/reproducibility",
+        "sail/proof-bridges"
+      ]
+    },
     "jasmin-vale-s2n-artifact-and-access-boundaries": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -26507,6 +26654,77 @@
         "lean",
         "assembly/isa-models",
         "lean/termination",
+        "proof/assumption-closure"
+      ]
+    },
+    "sail-rv64d-word-decoding-domains-and-state-framing-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+            "version": "0.20.3"
+          },
+          "name": "Sail 0.20.3 Lean backend"
+        },
+        {
+          "identity": {
+            "configuration_sha256": "47ee55d4f147d79d95cbe1566982b4fe0adbb2a044adfabb102ff3f21b457c37",
+            "extern_patch_sha256": "bd7c48e9ea4f28e85f1c34cd55e80eb0c8def03ebe50876d4ac8655881f9cc82",
+            "repository": "riscv/sail-riscv",
+            "revision": "7d3c9c2568b77f516783aa2ac63bd9c0e0c6df86",
+            "termination_patch_sha256": "6cf5860e7d493bc224060c4508541a81db91d6e40b5d6421ee2ced2dff126236"
+          },
+          "name": "Official Sail RISC-V model with examined integration repairs"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "01bb54c7c8a69e52ba11863c67e7c403a6cd198a"
+          },
+          "name": "lean-sail support library"
+        },
+        {
+          "identity": {
+            "archive_sha256": "379047c81367a9f058a0f36b3574073b4c10f0ca126dd023e985053630f00b77",
+            "executable_sha256": "e215cbe9eab0914b49761e9e486d388e2e701cf876d1079d1ba733c48edb2d7b",
+            "platform": "aarch64-unknown-linux-gnu",
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "4.29.0"
+          },
+          "name": "Lean 4.29.0 official AArch64 Linux release"
+        },
+        {
+          "identity": {
+            "package": "reports/sail-rv64d-lean-integration-effects-and-framing-2026",
+            "report_sha256": "073fefe917df1cb87aef3b6e60ab22f6870bc91271aa1674337865ed7edaf25c",
+            "repository": "google/zerocopy",
+            "revision": "f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb"
+          },
+          "name": "Published configured integration subject and compiled imports"
+        },
+        {
+          "identity": {
+            "olean_sha256": "b0ace1a1595a984ae81b48d9c47b38c6769136597a529efaa8d13894375dc35e",
+            "source_sha256": "5a71c58874e82df4788df8e1f9489567f70e38d14d8b6dde112dfd5f0ae16446"
+          },
+          "name": "Accepted actual decoder diagnostic"
+        },
+        {
+          "identity": {
+            "olean_sha256": "c8401aabc472b3a5c367a32b5248f7a5310957aeec8be745002ca99f6d49bcae",
+            "source_sha256": "fe89f0f6f1bf36db7877a9848e9c68d81d8ed130c354a9f6f7e2c7dee6c96965"
+          },
+          "name": "Accepted Machine decoder and composition"
+        }
+      ],
+      "topics": [
+        "sail",
+        "lean",
+        "assembly/decoding",
+        "proof/state-framing",
         "proof/assumption-closure"
       ]
     },

@@ -1,0 +1,7 @@
+24: abbrev internal_pick {α : Type} : List α → SailM α := PreSail.internal_pick
+25: 
+26: abbrev writeReg (reg : Register) (v : RegisterType reg) : SailM PUnit := PreSail.writeReg reg v
+27: 
+28: abbrev readReg (reg : Register) : SailM (RegisterType reg) := PreSail.readReg reg
+29: 
+30: abbrev RegisterRef := @Sail.ArchSem.RegisterRef

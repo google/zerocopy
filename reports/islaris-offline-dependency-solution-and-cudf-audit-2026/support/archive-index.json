@@ -1,0 +1,32 @@
+[
+  {
+    "archive": "main-metadata.tar.gz",
+    "sha256": "903a48252b80d31d111c231031f3ee1b27abdbdcd2425fa130db03a883ba9652",
+    "bytes": 3653274,
+    "file_count": 19399
+  },
+  {
+    "archive": "overlay-and-primary-inputs.tar.gz",
+    "sha256": "e24a398c7ad65c1ff769ea89875f6ebd76fe3a1f3e0b5d61cd57e4edb1f15b86",
+    "bytes": 1800132,
+    "file_count": 94
+  },
+  {
+    "archive": "native-evidence.tar.gz",
+    "sha256": "dcc5c6d9a3e49779fdae52e407daf94b7dc382800f6dbb354ade8ffe96e76aa1",
+    "bytes": 9057548,
+    "file_count": 200
+  },
+  {
+    "archive": "earlier-operational-evidence.tar.gz",
+    "sha256": "3deda86b1f4373e4717d6e81b644df017ce98fe21a97712433cd15ead64d2c80",
+    "bytes": 1250078,
+    "file_count": 84
+  },
+  {
+    "archive": "prior-source-report.tar.gz",
+    "sha256": "fc398a45cdf4e7ae283eafaa8b090c6de6ef6c45dd168924d7ad2db53e6b4ab8",
+    "bytes": 30625,
+    "file_count": 16
+  }
+]

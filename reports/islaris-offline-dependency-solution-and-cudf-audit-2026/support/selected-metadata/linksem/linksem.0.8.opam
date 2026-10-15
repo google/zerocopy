@@ -1,0 +1,32 @@
+opam-version: "2.0"
+name: "linksem"
+version: "0.8"
+synopsis:
+  "A formalisation of the core ELF and DWARF file formats written in Lem"
+description: """\
+A formalisation of the core ELF and DWARF file format written in Lem.
+ELF is the de facto standard executable and linkable file format
+on Linux and related systems; DWARF is the associated debug information format.
+This formalisation has been tested against approximately 5,000 ELF binaries
+found "in the wild" on various different platforms."""
+maintainer: "Linksem Devs <cl-linksem-dev@lists.cam.ac.uk>"
+authors: ["Stephen Kell" "Dominic Mulligan" "Peter Sewell"]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/linksem"
+bug-reports: "https://github.com/rems-project/linksem/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "lem" {>= "2018-05-11"}
+]
+build: make
+install: [make "install"]
+dev-repo: "git+https://github.com/rems-project/linksem.git"
+url {
+  src: "https://github.com/rems-project/linksem/archive/0.8.tar.gz"
+  checksum: [
+    "md5=2075c56715539b3b8f54ae65cc808b8c"
+    "sha512=f7c16e4036a1440a6a8d13707a43f0f9f9db0c68489215f948cc300b6a164dba5bf852e58f89503e9d9f38180ee658d9478156ca1a1ef64d6861eec5f9cf43d2"
+  ]
+}

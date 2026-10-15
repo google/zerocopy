@@ -1,0 +1,125 @@
+298: noncomputable def encdec_backwards (arg_ : (BitVec 32)) : SailM instruction := do
+299:   let head_exp_ := arg_
+300:   match (← do
+301:     let v__1713 := head_exp_
+302:     if (((let mapping1_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1713 19 15)
+303:          let mapping0_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1713 24 20)
+304:          ((encdec_cbop_zicbop_backwards_matches mapping0_) && (encdec_reg_backwards_matches
+305:              mapping1_))) && ((Sail.BitVec.extractLsb v__1713 14 0) == (0b110000000010011#15 : (BitVec 15)))) : Bool)
+306:     then
+307:       (do
+308:         let offset11_5 : (BitVec 7) := (Sail.BitVec.extractLsb v__1713 31 25)
+309:         let offset11_5 : (BitVec 7) := (Sail.BitVec.extractLsb v__1713 31 25)
+310:         let mapping1_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1713 19 15)
+311:         let mapping0_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1713 24 20)
+312:         match ((← (encdec_cbop_zicbop_backwards mapping0_)), (← (encdec_reg_backwards mapping1_))) with
+313:         | (cbop, rs1) =>
+314:           (do
+315:             if ((← (currentlyEnabled Ext_Zicbop)) : Bool)
+316:             then (pure (some (ZICBOP (cbop, rs1, ((offset11_5 : (BitVec 7)) +++ 0b00000#5)))))
+317:             else (pure none)))
+318:     else (pure none)) with
+319:   | .some result => (pure result)
+320:   | none =>
+321:     (do
+322:       match (← do
+323:         let v__1707 := head_exp_
+324:         if (((let mapping2_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1707 24 20)
+325:              (encdec_ntl_backwards_matches mapping2_)) && (((Sail.BitVec.extractLsb v__1707 31 25) == (0b0000000#7 : (BitVec 7))) && ((Sail.BitVec.extractLsb
+326:                    v__1707 19 0) == (0x00033#20 : (BitVec 20))))) : Bool)
+327:         then
+328:           (do
+329:             let mapping2_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1707 24 20)
+330:             let op ← do (encdec_ntl_backwards mapping2_)
+331:             if ((← (currentlyEnabled Ext_Zihintntl)) : Bool)
+332:             then (pure (some (NTL op)))
+333:             else (pure none))
+334:         else (pure none)) with
+335:       | .some result => (pure result)
+336:       | none =>
+337:         (do
+338:           match (← do
+339:             let v__1695 := head_exp_
+340:             if (((← (currentlyEnabled Ext_Zihintpause)) && (v__1695 == (0x0100000F#32 : (BitVec 32)))) : Bool)
+341:             then (pure (some (PAUSE ())))
+342:             else
+343:               (do
+344:                 if (((← (currentlyEnabled Ext_Zicfilp)) && ((Sail.BitVec.extractLsb v__1695 11 0) == (0x017#12 : (BitVec 12)))) : Bool)
+345:                 then
+346:                   (let lpl : (BitVec 20) := (Sail.BitVec.extractLsb v__1695 31 12)
+347:                   let lpl : (BitVec 20) := (Sail.BitVec.extractLsb v__1695 31 12)
+348:                   (pure (some (LPAD lpl))))
+349:                 else
+350:                   (do
+351:                     if ((let mapping4_ : (BitVec 7) := (Sail.BitVec.extractLsb v__1695 6 0)
+352:                        let mapping3_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1695 11 7)
+353:                        ((encdec_reg_backwards_matches mapping3_) && (encdec_uop_backwards_matches
+354:                            mapping4_))) : Bool)
+355:                     then
+356:                       (do
+357:                         let imm : (BitVec 20) := (Sail.BitVec.extractLsb v__1695 31 12)
+358:                         let mapping4_ : (BitVec 7) := (Sail.BitVec.extractLsb v__1695 6 0)
+359:                         let mapping3_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1695 11 7)
+360:                         let imm : (BitVec 20) := (Sail.BitVec.extractLsb v__1695 31 12)
+361:                         match ((← (encdec_reg_backwards mapping3_)), (← (encdec_uop_backwards
+362:                             mapping4_))) with
+363:                         | (rd, op) => (pure (some (UTYPE (imm, rd, op)))))
+364:                     else (pure none)))) with
+365:           | .some result => (pure result)
+366:           | none =>
+367:             (do
+368:               match (← do
+369:                 let v__1693 := head_exp_
+370:                 if (((let mapping5_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1693 11 7)
+371:                      (encdec_reg_backwards_matches mapping5_)) && ((Sail.BitVec.extractLsb v__1693 6
+372:                          0) == (0b1101111#7 : (BitVec 7)))) : Bool)
+373:                 then
+374:                   (do
+375:                     let imm_19_19_ : (BitVec 1) := (Sail.BitVec.extractLsb v__1693 31 31)
+376:                     let mapping5_ : (BitVec 5) := (Sail.BitVec.extractLsb v__1693 11 7)
+377:                     let imm_9_0_ : (BitVec 10) := (Sail.BitVec.extractLsb v__1693 30 21)
+378:                     let imm_19_19_ : (BitVec 1) := (Sail.BitVec.extractLsb v__1693 31 31)
+379:                     let imm_18_11_ : (BitVec 8) := (Sail.BitVec.extractLsb v__1693 19 12)
+380:                     let imm_10_10_ : (BitVec 1) := (Sail.BitVec.extractLsb v__1693 20 20)
+
+540:                                               (Sail.BitVec.extractLsb v__1674 19 15)
+541:                                             match ((← (encdec_reg_backwards mapping18_)), (← (encdec_reg_backwards
+542:                                                 mapping19_))) with
+543:                                             | (rs1, rd) =>
+544:                                               (if (((xlen == 64) || ((BitVec.access shamt 5) == 0#1)) : Bool)
+545:                                               then (pure (some (SHIFTIOP (shamt, rs1, rd, SRAI))))
+546:                                               else (pure none)))
+547:                                         else (pure none)) with
+548:                                       | .some result => (pure result)
+549:                                       | none =>
+550:                                         (do
+551:                                           match (← do
+552:                                             let v__1670 := head_exp_
+553:                                             if (((let mapping22_ : (BitVec 5) :=
+554:                                                    (Sail.BitVec.extractLsb v__1670 11 7)
+555:                                                  let mapping21_ : (BitVec 5) :=
+556:                                                    (Sail.BitVec.extractLsb v__1670 19 15)
+557:                                                  let mapping20_ : (BitVec 5) :=
+558:                                                    (Sail.BitVec.extractLsb v__1670 24 20)
+559:                                                  ((encdec_reg_backwards_matches mapping20_) && ((encdec_reg_backwards_matches
+560:                                                        mapping21_) && (encdec_reg_backwards_matches
+561:                                                        mapping22_)))) && (((Sail.BitVec.extractLsb
+562:                                                        v__1670 31 25) == (0b0000000#7 : (BitVec 7))) && (((Sail.BitVec.extractLsb
+563:                                                          v__1670 14 12) == (0b000#3 : (BitVec 3))) && ((Sail.BitVec.extractLsb
+564:                                                          v__1670 6 0) == (0b0110011#7 : (BitVec 7)))))) : Bool)
+565:                                             then
+566:                                               (do
+567:                                                 let mapping22_ : (BitVec 5) :=
+568:                                                   (Sail.BitVec.extractLsb v__1670 11 7)
+569:                                                 let mapping21_ : (BitVec 5) :=
+570:                                                   (Sail.BitVec.extractLsb v__1670 19 15)
+571:                                                 let mapping20_ : (BitVec 5) :=
+572:                                                   (Sail.BitVec.extractLsb v__1670 24 20)
+573:                                                 match ((← (encdec_reg_backwards mapping20_)), (← (encdec_reg_backwards
+574:                                                     mapping21_)), (← (encdec_reg_backwards
+575:                                                     mapping22_))) with
+576:                                                 | (rs2, rs1, rd) =>
+577:                                                   (pure (some (RTYPE (rs2, rs1, rd, ADD)))))
+578:                                             else (pure none)) with
+579:                                           | .some result => (pure result)
+580:                                           | none =>

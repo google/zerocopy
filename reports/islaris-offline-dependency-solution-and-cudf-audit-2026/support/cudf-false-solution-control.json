@@ -1,0 +1,6 @@
+{
+  "status": "EXPECTED_REJECTION",
+  "changed_input": "remove coq-iris.dev.2024-09-10.1.6f24ed4b from proposed selected set; retain original CUDF/request/raw JSON",
+  "selected_count": 73,
+  "reason": "unsatisfied dependency ('coq-lithium', 2)  coq-iris = 2 | coq-iris = 1 "
+}

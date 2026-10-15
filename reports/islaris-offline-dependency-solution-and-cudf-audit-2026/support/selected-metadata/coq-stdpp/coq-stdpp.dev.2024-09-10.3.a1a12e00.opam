@@ -1,0 +1,39 @@
+opam-version: "2.0"
+name: "coq-stdpp"
+version: "dev.2024-09-10.3.a1a12e00"
+synopsis: "An extended \"Standard Library\" for Coq"
+description: """\
+The key features of this library are as follows:
+
+- It provides a great number of definitions and lemmas for common data
+  structures such as lists, finite maps, finite sets, and finite multisets.
+- It uses type classes for common notations (like `∅`, `∪`, and Haskell-style
+  monad notations) so that these can be overloaded for different data structures.
+- It uses type classes to keep track of common properties of types, like it
+  having decidable equality or being countable or finite.
+- Most data structures are represented in canonical ways so that Leibniz
+  equality can be used as much as possible (for example, for maps we have
+  `m1 = m2` iff `∀ i, m1 !! i = m2 !! i`). On top of that, the library provides
+  setoid instances for most types and operations.
+- It provides various tactics for common tasks, like an ssreflect inspired
+  `done` tactic for finishing trivial goals, a simple breadth-first solver
+  `naive_solver`, an equality simplifier `simplify_eq`, a solver `solve_proper`
+  for proving compatibility of functions with respect to relations, and a solver
+  `set_solver` for goals involving set operations.
+- It is entirely dependency- and axiom-free."""
+maintainer: "Ralf Jung <jung@mpi-sws.org>"
+authors: "The std++ team"
+license: "BSD-3-Clause"
+tags: "logpath:stdpp"
+homepage: "https://gitlab.mpi-sws.org/iris/stdpp"
+bug-reports: "https://gitlab.mpi-sws.org/iris/stdpp/issues"
+depends: [
+  "coq" {(>= "8.18" & < "8.20~") | (= "dev")}
+]
+build: ["./make-package" "stdpp" "-j%{jobs}%"]
+install: ["./make-package" "stdpp" "install"]
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/stdpp.git"
+url {
+  src:
+    "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+}

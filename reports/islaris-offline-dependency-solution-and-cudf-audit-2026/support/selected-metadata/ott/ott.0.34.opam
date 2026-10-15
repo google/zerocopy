@@ -1,0 +1,52 @@
+opam-version: "2.0"
+name: "ott"
+version: "0.34"
+synopsis:
+  "A tool for writing definitions of programming languages and calculi"
+description: """\
+Ott takes as input a definition of a language syntax and semantics, in a
+concise and readable ASCII notation that is close to what one would write in
+informal mathematics.  It generates output:
+- a LaTeX source file that defines commands to build a typeset version of the definition;
+- a Coq version of the definition;
+- a HOL version of the definition;
+- an Isabelle/HOL version of the definition;
+- a Lem version of the definition;
+- an OCaml version of the syntax of the definition.
+Additionally, it can be run as a filter, taking a
+LaTeX/Coq/Isabelle/HOL/Lem/OCaml source file
+with embedded (symbolic) terms of the defined language, parsing them and
+replacing them by typeset terms."""
+maintainer: "Thibaut Pérami <Thibaut.Perami@cl.cam.ac.uk>"
+authors: ["Peter Sewell" "Francesco Zappa Nardelli" "Scott Owens"]
+license: "BSD-3-Clause"
+homepage: "http://www.cl.cam.ac.uk/~pes20/ott/"
+bug-reports: "https://github.com/ott-lang/ott/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "ocamlbuild" {with-test}
+  "ocamlfind" {build | with-test}
+  "ocamlgraph"
+  "pprint" {with-test}
+  "menhir" {>= "20151112" & with-test}
+]
+build: [
+  [make "world"] {ocaml:native}
+  [make "world.byt"] {!ocaml:native}
+  ["rm" "src/ott"] {os = "win32"}
+  ["cp" "src/ott.opt" "src/ott"] {os = "win32" & ocaml:native}
+  ["cp" "src/ott.byte" "src/ott"] {os = "win32" & !ocaml:native}
+  [make "ott.install"]
+]
+run-test: [
+  [make "-C" "tests/menhir_tests/test_if"]
+  [make "-C" "tests/menhir_tests/test10menhir"]
+  [make "-C" "tests/menhir_tests/test10menhir_with_aux_args"]
+  [make "-C" "tests/menhir_tests/test10menhir_with_aux_rules"]
+]
+dev-repo: "git+https://github.com/ott-lang/ott.git"
+url {
+  src: "https://github.com/ott-lang/ott/archive/0.34.tar.gz"
+  checksum:
+    "sha512=371b59c0dc35207f8e85a939f03ae63fc654df50540ed5e656c5a40c5062ebfdfb1e02cfd499074f9d0b43afc165606b57dec4c96a4ca44ee91d1c1dcfa4deaf"
+}

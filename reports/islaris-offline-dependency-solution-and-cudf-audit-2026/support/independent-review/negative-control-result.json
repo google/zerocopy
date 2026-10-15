@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "work/execution/jasmin-execution-plan/islaris-final-review/false_solution_control.py",
+    "work/execution/jasmin-execution-plan/islaris-final-review/native-islaris-1.cudf",
+    "work/execution/jasmin-execution-plan/islaris-final-review/native-dry-solve.json"
+  ],
+  "status": 0,
+  "stdout_sha256": "26a7d93ee0942ae8a21744be808f8fa7d8e0f2621e3019e1394fa3b4712467b2",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

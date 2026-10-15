@@ -1,0 +1,65 @@
+opam-version: "2.0"
+name: "libsail"
+version: "0.17"
+synopsis:
+  "Sail is a language for describing the instruction semantics of processors"
+description: """\
+Sail is a language for describing the instruction-set
+architecture (ISA) semantics of processors. Sail aims to provide a
+engineer-friendly, vendor-pseudocode-like language for describing
+instruction semantics. It is essentially a first-order imperative
+language, but with lightweight dependent typing for numeric types and
+bitvector lengths, which are automatically checked using Z3. It has
+been used for several papers, available from
+http://www.cl.cam.ac.uk/~pes20/sail/."""
+maintainer: "Sail Devs <cl-sail-dev@lists.cam.ac.uk>"
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Kathy Gray"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+  "Mark Wassell"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/sail"
+bug-reports: "https://github.com/rems-project/sail/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "dune-site" {>= "3.0.2"}
+  "bisect_ppx" {dev & >= "2.5.0"}
+  "menhir" {>= "20180523" & build}
+  "ott" {>= "0.28" & build}
+  "lem" {>= "2018-12-14"}
+  "linksem" {>= "0.3"}
+  "conf-gmp"
+  "conf-zlib"
+  "yojson" {>= "1.6.0"}
+  "pprint" {>= "20220103"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/rems-project/sail.git"
+url {
+  src:
+    "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+}

@@ -1,0 +1,63 @@
+opam-version: "2.0"
+name: "conf-gmp"
+version: "5"
+synopsis: "Virtual package relying on a GMP lib system installation"
+description:
+  "This package can only install if the GMP lib is installed on the system."
+maintainer: "nbraud"
+authors: "nbraud"
+license: "GPL-1.0-or-later"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  "conf-pkg-config" {os = "macos"}
+  (("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-gmp-i686"
+      {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-gmp-x86_64"
+      {os = "win32" & os-distribution != "cygwinports"}))
+]
+flags: conf
+build: [
+  [
+    "sh"
+    "-c"
+    "pkg-config --print-errors --exists gmp || cc -c $CFLAGS -I/usr/local/include test.c"
+  ] {os != "win32"}
+  [
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+  ] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "%{host-arch-x86_64:installed?x86_64:}%%{host-arch-x86_32:installed?i686:}%-w64-mingw32-gcc -c $CFLAGS test.c"
+  ] {os = "win32" & os-distribution != "cygwinports"}
+]
+depexts: [
+  ["libgmp-dev"] {os-family = "debian"}
+  ["libgmp-dev"] {os-family = "ubuntu"}
+  ["gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["gmp"] {os-distribution = "macports" & os = "macos"}
+  ["gmp" "gmp-devel"] {os-distribution = "centos"}
+  ["gmp" "gmp-devel"] {os-family = "fedora" | os-family = "fedora"}
+  ["gmp" "gmp-devel"] {os-distribution = "ol"}
+  ["gmp"] {os = "openbsd"}
+  ["gmp"] {os = "freebsd"}
+  ["gmp"] {os-distribution = "arch"}
+  ["gmp-dev"] {os-distribution = "alpine"}
+  ["gmp-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gmp"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gmp"] {os-distribution = "nixos"}
+  ["libgmp-devel"] {os-family = "altlinux"}
+]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4"
+  checksum: [
+    "sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb"
+    "md5=2fd2970c293c36222a6d299ec155823f"
+  ]
+}

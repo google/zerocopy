@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "sail",
+    "lean",
+    "assembly/decoding",
+    "proof/state-framing",
+    "proof/assumption-closure"
+  ],
+  "subjects": [
+    {
+      "name": "Sail 0.20.3 Lean backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+        "version": "0.20.3"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V model with examined integration repairs",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "7d3c9c2568b77f516783aa2ac63bd9c0e0c6df86",
+        "termination_patch_sha256": "6cf5860e7d493bc224060c4508541a81db91d6e40b5d6421ee2ced2dff126236",
+        "extern_patch_sha256": "bd7c48e9ea4f28e85f1c34cd55e80eb0c8def03ebe50876d4ac8655881f9cc82",
+        "configuration_sha256": "47ee55d4f147d79d95cbe1566982b4fe0adbb2a044adfabb102ff3f21b457c37"
+      }
+    },
+    {
+      "name": "lean-sail support library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "01bb54c7c8a69e52ba11863c67e7c403a6cd198a"
+      }
+    },
+    {
+      "name": "Lean 4.29.0 official AArch64 Linux release",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "4.29.0",
+        "platform": "aarch64-unknown-linux-gnu",
+        "executable_sha256": "e215cbe9eab0914b49761e9e486d388e2e701cf876d1079d1ba733c48edb2d7b",
+        "archive_sha256": "379047c81367a9f058a0f36b3574073b4c10f0ca126dd023e985053630f00b77"
+      }
+    },
+    {
+      "name": "Published configured integration subject and compiled imports",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb",
+        "package": "reports/sail-rv64d-lean-integration-effects-and-framing-2026",
+        "report_sha256": "073fefe917df1cb87aef3b6e60ab22f6870bc91271aa1674337865ed7edaf25c"
+      }
+    },
+    {
+      "name": "Accepted actual decoder diagnostic",
+      "identity": {
+        "source_sha256": "5a71c58874e82df4788df8e1f9489567f70e38d14d8b6dde112dfd5f0ae16446",
+        "olean_sha256": "b0ace1a1595a984ae81b48d9c47b38c6769136597a529efaa8d13894375dc35e"
+      }
+    },
+    {
+      "name": "Accepted Machine decoder and composition",
+      "identity": {
+        "source_sha256": "fe89f0f6f1bf36db7877a9848e9c68d81d8ed130c354a9f6f7e2c7dee6c96965",
+        "olean_sha256": "c8401aabc472b3a5c367a32b5248f7a5310957aeec8be745002ca99f6d49bcae"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

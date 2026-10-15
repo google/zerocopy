@@ -1,0 +1,3949 @@
+{
+  "status": "PASS",
+  "role": "host-side satisfaction audit of exported CUDF; not opam-to-CUDF validation, optimality or build proof",
+  "native_json_sha256": "28b06d25be21c4d1e386b65a58e55baac4ac0e3f98a3c8692c09702a64b8b9af",
+  "cudf_sha256": "0e3995239ad41487f8c32722352370d89471bc5ed42fe00996f2002e17f9a5c4",
+  "raw_json_duplicate_keys": [
+    {
+      "key": "command-line",
+      "identical": true
+    }
+  ],
+  "universe_records": 18951,
+  "selected_count": 74,
+  "exact_roots": 35,
+  "request_atoms": 35,
+  "dependency_clauses": 240,
+  "conflict_atoms": 104,
+  "atom_evaluations": 447,
+  "initial_synthetic_invariant": {
+    "package": "%3dopam-invariant",
+    "version": "1",
+    "installed": "true",
+    "was-installed": "true",
+    "keep": "version",
+    "opam-name": "SWITCH_INVARIANT",
+    "opam-version": "NULL"
+  },
+  "real_initial_installed_and_keep_empty": true,
+  "selected_provides_absent": true,
+  "unsupported_syntax": false,
+  "evidence": [
+    {
+      "package": "menhir",
+      "version": "20260209",
+      "cudf": [
+        "menhir",
+        66
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 60",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhirLib = 29",
+            "matches": [
+              [
+                "menhirLib",
+                29
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhirSdk = 28",
+            "matches": [
+              [
+                "menhirSdk",
+                28
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhirCST = 7",
+            "matches": [
+              [
+                "menhirCST",
+                7
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhirGLR = 3",
+            "matches": [
+              [
+                "menhirGLR",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "menhir"
+      ]
+    },
+    {
+      "package": "stdlib-shims",
+      "version": "0.3.0",
+      "cudf": [
+        "stdlib-shims",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 38",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "stdlib-shims"
+      ]
+    },
+    {
+      "package": "integers",
+      "version": "0.8.0",
+      "cudf": [
+        "integers",
+        13
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 39",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 1",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "stdlib-shims",
+            "matches": [
+              [
+                "stdlib-shims",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "integers"
+      ]
+    },
+    {
+      "package": "coq-sail",
+      "version": "0.17",
+      "cudf": [
+        "coq-sail",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq >= 21",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-bbv >= 1",
+            "matches": [
+              [
+                "coq-bbv",
+                2
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail != 5",
+        "coq-sail"
+      ]
+    },
+    {
+      "package": "lem",
+      "version": "2026-05-01",
+      "cudf": [
+        "lem",
+        6
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 53",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind >= 7",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlbuild",
+            "matches": [
+              [
+                "ocamlbuild",
+                11
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-findutils",
+            "matches": [
+              [
+                "conf-findutils",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "zarith >= 1",
+            "matches": [
+              [
+                "zarith",
+                16
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "num",
+            "matches": [
+              [
+                "num",
+                6
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-option-bytecode-only",
+        "lem"
+      ]
+    },
+    {
+      "package": "sail",
+      "version": "0.17",
+      "cudf": [
+        "sail",
+        5
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fmanifest = 3",
+            "matches": [
+              [
+                "sail%5fmanifest",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5focaml%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5focaml%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fc%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5fc%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fsmt%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5fsmt%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fsv%5fbackend = 1",
+            "matches": [
+              [
+                "sail%5fsv%5fbackend",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5flem%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5flem%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fcoq%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5fcoq%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5flatex%5fbackend = 3",
+            "matches": [
+              [
+                "sail%5flatex%5fbackend",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5fdoc%5fbackend = 2",
+            "matches": [
+              [
+                "sail%5fdoc%5fbackend",
+                2
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail%5foutput = 3",
+            "matches": [
+              [
+                "sail%5foutput",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "linenoise >= 3",
+            "matches": [
+              [
+                "linenoise",
+                8
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail"
+      ]
+    },
+    {
+      "package": "sail_manifest",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fmanifest",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fmanifest"
+      ]
+    },
+    {
+      "package": "sail_ocaml_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5focaml%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base64 >= 11",
+            "matches": [
+              [
+                "base64",
+                20
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5focaml%5fbackend"
+      ]
+    },
+    {
+      "package": "dune-site",
+      "version": "3.9.1",
+      "cudf": [
+        "dune-site",
+        6
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 79",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune-private-libs = 2",
+            "matches": [
+              [
+                "dune-private-libs",
+                2
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "dune-site"
+      ]
+    },
+    {
+      "package": "coq-bbv",
+      "version": "1.5",
+      "cudf": [
+        "coq-bbv",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq >= 28",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq < 52",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-bbv"
+      ]
+    },
+    {
+      "package": "ppx_derivers",
+      "version": "1.2.1",
+      "cudf": [
+        "ppx%5fderivers",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ppx%5fderivers"
+      ]
+    },
+    {
+      "package": "zarith",
+      "version": "1.14",
+      "cudf": [
+        "zarith",
+        16
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 53",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-pkg-config",
+            "matches": [
+              [
+                "conf-pkg-config",
+                8
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-gmp",
+            "matches": [
+              [
+                "conf-gmp",
+                5
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "zarith"
+      ]
+    },
+    {
+      "package": "coq",
+      "version": "8.19.0",
+      "cudf": [
+        "coq",
+        38
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 62",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-core = 7",
+            "matches": [
+              [
+                "coq-core",
+                7
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdlib = 6",
+            "matches": [
+              [
+                "coq-stdlib",
+                6
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coqide-server = 4",
+            "matches": [
+              [
+                "coqide-server",
+                4
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq"
+      ]
+    },
+    {
+      "package": "ocamlfind",
+      "version": "1.9.8",
+      "cudf": [
+        "ocamlfind",
+        26
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 6",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml < 129",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "relocatable",
+        "ocamlfind"
+      ]
+    },
+    {
+      "package": "coq-record-update",
+      "version": "0.3.3",
+      "cudf": [
+        "coq-record-update",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq >= 20",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq < 41",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-record-update"
+      ]
+    },
+    {
+      "package": "ocaml-option-flambda",
+      "version": "1",
+      "cudf": [
+        "ocaml-option-flambda",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml-variants >= 143",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-option-flambda"
+      ]
+    },
+    {
+      "package": "libsail",
+      "version": "0.17",
+      "cudf": [
+        "libsail",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune-site >= 3",
+            "matches": [
+              [
+                "dune-site",
+                6
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "bisect%5fppx >= 17",
+            "matches": [
+              [
+                "bisect%5fppx",
+                24
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhir >= 24",
+            "matches": [
+              [
+                "menhir",
+                66
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ott >= 3",
+            "matches": [
+              [
+                "ott",
+                9
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "lem >= 2",
+            "matches": [
+              [
+                "lem",
+                6
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "linksem >= 1",
+            "matches": [
+              [
+                "linksem",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-gmp",
+            "matches": [
+              [
+                "conf-gmp",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-zlib",
+            "matches": [
+              [
+                "conf-zlib",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "yojson >= 11",
+            "matches": [
+              [
+                "yojson",
+                29
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pprint >= 8",
+            "matches": [
+              [
+                "pprint",
+                9
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "libsail"
+      ]
+    },
+    {
+      "package": "menhirSdk",
+      "version": "20260209",
+      "cudf": [
+        "menhirSdk",
+        28
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 60",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "menhir != 66",
+        "menhirSdk"
+      ]
+    },
+    {
+      "package": "dune",
+      "version": "3.9.1",
+      "cudf": [
+        "dune",
+        91
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml >= 34",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml < 55",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          },
+          {
+            "atom": "ocamlfind-secondary",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "base-unix",
+            "matches": [
+              [
+                "base-unix",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-threads",
+            "matches": [
+              [
+                "base-threads",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "jbuilder = 21",
+        "js%5fof%5focaml-compiler < 4",
+        "dune-release < 8",
+        "odoc < 9",
+        "dune-configurator < 7",
+        "ocaml-lsp-server < 1",
+        "merlin < 3",
+        "dune"
+      ]
+    },
+    {
+      "package": "sail_latex_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5flatex%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "omd >= 4",
+            "matches": [
+              [
+                "omd",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "omd < 6",
+            "matches": [
+              [
+                "omd",
+                5
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5flatex%5fbackend"
+      ]
+    },
+    {
+      "package": "base-threads",
+      "version": "base",
+      "cudf": [
+        "base-threads",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "base-threads"
+      ]
+    },
+    {
+      "package": "ppxlib",
+      "version": "0.35.0",
+      "cudf": [
+        "ppxlib",
+        52
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 87",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml < 124",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-compiler-libs >= 3",
+            "matches": [
+              [
+                "ocaml-compiler-libs",
+                7
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ppx%5fderivers >= 1",
+            "matches": [
+              [
+                "ppx%5fderivers",
+                2
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sexplib0 >= 3",
+            "matches": [
+              [
+                "sexplib0",
+                13
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "stdlib-shims",
+            "matches": [
+              [
+                "stdlib-shims",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-variants = 197",
+        "ocaml-base-compiler = 81",
+        "ocaml-migrate-parsetree < 21",
+        "ppxlib"
+      ]
+    },
+    {
+      "package": "conf-gmp",
+      "version": "5",
+      "cudf": [
+        "conf-gmp",
+        5
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "conf-gmp"
+      ]
+    },
+    {
+      "package": "omd",
+      "version": "1.3.2",
+      "cudf": [
+        "omd",
+        5
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 56",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 41",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-bigarray",
+            "matches": [
+              [
+                "base-bigarray",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-bytes",
+            "matches": [
+              [
+                "base-bytes",
+                2
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "omd"
+      ]
+    },
+    {
+      "package": "coq-sail-riscv",
+      "version": "0.5",
+      "cudf": [
+        "coq-sail-riscv",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 50",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlbuild",
+            "matches": [
+              [
+                "ocamlbuild",
+                11
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "sail",
+            "matches": [
+              [
+                "sail",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-sail",
+            "matches": [
+              [
+                "coq-sail",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-gmp",
+            "matches": [
+              [
+                "conf-gmp",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-zlib",
+            "matches": [
+              [
+                "conf-zlib",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-sail-riscv"
+      ]
+    },
+    {
+      "package": "coq-stdpp-bitvector",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "cudf": [
+        "coq-stdpp-bitvector",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq-stdpp = 2",
+            "matches": [
+              [
+                "coq-stdpp",
+                2
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-stdpp-bitvector"
+      ]
+    },
+    {
+      "package": "ocamlbuild",
+      "version": "0.16.1",
+      "cudf": [
+        "ocamlbuild",
+        11
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "relocatable",
+        "ocamlfind < 13",
+        "base-ocamlbuild",
+        "ocamlbuild"
+      ]
+    },
+    {
+      "package": "sail_output",
+      "version": "0.17",
+      "cudf": [
+        "sail%5foutput",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5foutput"
+      ]
+    },
+    {
+      "package": "base-unix",
+      "version": "base",
+      "cudf": [
+        "base-unix",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "base-unix"
+      ]
+    },
+    {
+      "package": "isla-lang",
+      "version": "dev",
+      "cudf": [
+        "isla-lang",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pprint >= 2",
+            "matches": [
+              [
+                "pprint",
+                9
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhir",
+            "matches": [
+              [
+                "menhir",
+                66
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ott >= 8",
+            "matches": [
+              [
+                "ott",
+                9
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "isla-lang"
+      ]
+    },
+    {
+      "package": "sexplib0",
+      "version": "v0.16.0",
+      "cudf": [
+        "sexplib0",
+        13
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 40",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sexplib0"
+      ]
+    },
+    {
+      "package": "ocamlgraph",
+      "version": "2.2.0",
+      "cudf": [
+        "ocamlgraph",
+        12
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 39",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocamlgraph"
+      ]
+    },
+    {
+      "package": "conf-zlib",
+      "version": "1",
+      "cudf": [
+        "conf-zlib",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "conf-pkg-config",
+            "matches": [
+              [
+                "conf-pkg-config",
+                8
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "conf-zlib"
+      ]
+    },
+    {
+      "package": "coq-stdpp-unstable",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "cudf": [
+        "coq-stdpp-unstable",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq-stdpp = 2",
+            "matches": [
+              [
+                "coq-stdpp",
+                2
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdpp-bitvector = 1",
+            "matches": [
+              [
+                "coq-stdpp-bitvector",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-stdpp-unstable"
+      ]
+    },
+    {
+      "package": "ocaml-variants",
+      "version": "4.14.0+options",
+      "cudf": [
+        "ocaml-variants",
+        163
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml = 90",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-unix",
+            "matches": [
+              [
+                "base-unix",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-bigarray",
+            "matches": [
+              [
+                "base-bigarray",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-threads",
+            "matches": [
+              [
+                "base-threads",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "system-mingw",
+            "matches": []
+          },
+          {
+            "atom": "system-msvc",
+            "matches": []
+          },
+          {
+            "atom": "system-mingw",
+            "matches": []
+          },
+          {
+            "atom": "system-msvc",
+            "matches": []
+          },
+          {
+            "atom": "base-unix",
+            "matches": [
+              [
+                "base-unix",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-system",
+        "ocaml-base-compiler",
+        "dkml-base-compiler",
+        "relocatable",
+        "ocaml-variants"
+      ]
+    },
+    {
+      "package": "linenoise",
+      "version": "1.5.1",
+      "cudf": [
+        "linenoise",
+        8
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 4",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 40",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "linenoise"
+      ]
+    },
+    {
+      "package": "stdune",
+      "version": "3.9.1",
+      "cudf": [
+        "stdune",
+        14
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 79",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base-unix",
+            "matches": [
+              [
+                "base-unix",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dyn = 14",
+            "matches": [
+              [
+                "dyn",
+                14
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ordering = 14",
+            "matches": [
+              [
+                "ordering",
+                14
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pp >= 2",
+            "matches": [
+              [
+                "pp",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "csexp >= 11",
+            "matches": [
+              [
+                "csexp",
+                13
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "stdune"
+      ]
+    },
+    {
+      "package": "cmdliner",
+      "version": "1.3.0",
+      "cudf": [
+        "cmdliner",
+        15
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "cmdliner"
+      ]
+    },
+    {
+      "package": "menhirGLR",
+      "version": "20260209",
+      "cudf": [
+        "menhirGLR",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 60",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "menhir != 66",
+        "menhirGLR"
+      ]
+    },
+    {
+      "package": "sail_c_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fc%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fc%5fbackend"
+      ]
+    },
+    {
+      "package": "sail_sv_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fsv%5fbackend",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fsv%5fbackend"
+      ]
+    },
+    {
+      "package": "sail_lem_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5flem%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5flem%5fbackend"
+      ]
+    },
+    {
+      "package": "bisect_ppx",
+      "version": "2.8.3",
+      "cudf": [
+        "bisect%5fppx",
+        24
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "base-unix",
+            "matches": [
+              [
+                "base-unix",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "cmdliner >= 6",
+            "matches": [
+              [
+                "cmdliner",
+                15
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "cmdliner < 18",
+            "matches": [
+              [
+                "cmdliner",
+                15
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 57",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 40",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ppxlib >= 39",
+            "matches": [
+              [
+                "ppxlib",
+                52
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ppxlib < 54",
+            "matches": [
+              [
+                "ppxlib",
+                52
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "bisect%5fppx"
+      ]
+    },
+    {
+      "package": "coq-core",
+      "version": "8.19.0",
+      "cudf": [
+        "coq-core",
+        7
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 62",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune < 131",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 62",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind >= 20",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "zarith >= 13",
+            "matches": [
+              [
+                "zarith",
+                16
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "conf-linux-libc-dev",
+            "matches": [
+              [
+                "conf-linux-libc-dev",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-compiler = 2",
+        "ocaml-variants = 200",
+        "ocaml-variants = 145",
+        "coq < 32",
+        "coq-core"
+      ]
+    },
+    {
+      "package": "conf-pkg-config",
+      "version": "5",
+      "cudf": [
+        "conf-pkg-config",
+        8
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "mingw-w64-shims < 1",
+        "conf-pkg-config"
+      ]
+    },
+    {
+      "package": "linksem",
+      "version": "0.8",
+      "cudf": [
+        "linksem",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 53",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlbuild",
+            "matches": [
+              [
+                "ocamlbuild",
+                11
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "lem >= 1",
+            "matches": [
+              [
+                "lem",
+                6
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "linksem"
+      ]
+    },
+    {
+      "package": "islaris",
+      "version": "dev",
+      "cudf": [
+        "islaris",
+        1
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq = 38",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq-lithium = 2",
+            "matches": [
+              [
+                "coq-lithium",
+                2
+              ]
+            ]
+          },
+          {
+            "atom": "coq-lithium = 1",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdpp-bitvector",
+            "matches": [
+              [
+                "coq-stdpp-bitvector",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdpp-unstable",
+            "matches": [
+              [
+                "coq-stdpp-unstable",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-record-update = 1",
+            "matches": [
+              [
+                "coq-record-update",
+                1
+              ]
+            ]
+          },
+          {
+            "atom": "coq-record-update = 2",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "cmdliner >= 11",
+            "matches": [
+              [
+                "cmdliner",
+                15
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pprint",
+            "matches": [
+              [
+                "pprint",
+                9
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "integers",
+            "matches": [
+              [
+                "integers",
+                13
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune = 91",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pprint >= 2",
+            "matches": [
+              [
+                "pprint",
+                9
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "menhir",
+            "matches": [
+              [
+                "menhir",
+                66
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ott >= 6",
+            "matches": [
+              [
+                "ott",
+                9
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "isla-lang",
+            "matches": [
+              [
+                "isla-lang",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "islaris"
+      ]
+    },
+    {
+      "package": "dyn",
+      "version": "3.9.1",
+      "cudf": [
+        "dyn",
+        14
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 79",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ordering = 14",
+            "matches": [
+              [
+                "ordering",
+                14
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pp >= 2",
+            "matches": [
+              [
+                "pp",
+                5
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "dyn"
+      ]
+    },
+    {
+      "package": "sail_doc_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fdoc%5fbackend",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "base64 >= 11",
+            "matches": [
+              [
+                "base64",
+                20
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "omd >= 4",
+            "matches": [
+              [
+                "omd",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "omd < 6",
+            "matches": [
+              [
+                "omd",
+                5
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fdoc%5fbackend"
+      ]
+    },
+    {
+      "package": "pprint",
+      "version": "20230830",
+      "cudf": [
+        "pprint",
+        9
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 39",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 10",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "pprint"
+      ]
+    },
+    {
+      "package": "base64",
+      "version": "3.5.2",
+      "cudf": [
+        "base64",
+        20
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 53",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 45",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "base64"
+      ]
+    },
+    {
+      "package": "dune-private-libs",
+      "version": "3.9.1",
+      "cudf": [
+        "dune-private-libs",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 79",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "csexp >= 11",
+            "matches": [
+              [
+                "csexp",
+                13
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "pp >= 2",
+            "matches": [
+              [
+                "pp",
+                5
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dyn = 14",
+            "matches": [
+              [
+                "dyn",
+                14
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "stdune = 14",
+            "matches": [
+              [
+                "stdune",
+                14
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "dune-private-libs"
+      ]
+    },
+    {
+      "package": "base-bytes",
+      "version": "base",
+      "cudf": [
+        "base-bytes",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 35",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind >= 9",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "base-bytes"
+      ]
+    },
+    {
+      "package": "base-bigarray",
+      "version": "base",
+      "cudf": [
+        "base-bigarray",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "base-bigarray"
+      ]
+    },
+    {
+      "package": "coqide-server",
+      "version": "8.19.0",
+      "cudf": [
+        "coqide-server",
+        4
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 62",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-core = 7",
+            "matches": [
+              [
+                "coq-core",
+                7
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coqide-server"
+      ]
+    },
+    {
+      "package": "csexp",
+      "version": "1.5.2",
+      "cudf": [
+        "csexp",
+        13
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 77",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 40",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "csexp"
+      ]
+    },
+    {
+      "package": "coq-stdlib",
+      "version": "8.19.0",
+      "cudf": [
+        "coq-stdlib",
+        6
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 62",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-core = 7",
+            "matches": [
+              [
+                "coq-core",
+                7
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-stdlib"
+      ]
+    },
+    {
+      "package": "ocaml",
+      "version": "4.14.0",
+      "cudf": [
+        "ocaml",
+        90
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml-config >= 3",
+            "matches": [
+              [
+                "ocaml-config",
+                3
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler >= 62",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 159",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 107",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler >= 4",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "ocaml-base-compiler < 64",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants < 164",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system < 108",
+            "matches": []
+          },
+          {
+            "atom": "dkml-base-compiler < 5",
+            "matches": []
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml"
+      ]
+    },
+    {
+      "package": "ordering",
+      "version": "3.9.1",
+      "cudf": [
+        "ordering",
+        14
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 79",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 58",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ordering"
+      ]
+    },
+    {
+      "package": "pp",
+      "version": "2.0.0",
+      "cudf": [
+        "pp",
+        5
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 59",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "pp"
+      ]
+    },
+    {
+      "package": "ocaml-config",
+      "version": "2",
+      "cudf": [
+        "ocaml-config",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml-base-compiler >= 50",
+            "matches": []
+          },
+          {
+            "atom": "ocaml-variants >= 143",
+            "matches": [
+              [
+                "ocaml-variants",
+                163
+              ]
+            ]
+          },
+          {
+            "atom": "ocaml-system >= 94",
+            "matches": []
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-config"
+      ]
+    },
+    {
+      "package": "menhirLib",
+      "version": "20260209",
+      "cudf": [
+        "menhirLib",
+        29
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 60",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "menhir != 66",
+        "menhirLib"
+      ]
+    },
+    {
+      "package": "num",
+      "version": "1.6",
+      "cudf": [
+        "num",
+        6
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 49",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "base-num",
+        "num"
+      ]
+    },
+    {
+      "package": "conf-findutils",
+      "version": "1",
+      "cudf": [
+        "conf-findutils",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "conf-findutils"
+      ]
+    },
+    {
+      "package": "conf-linux-libc-dev",
+      "version": "0",
+      "cudf": [
+        "conf-linux-libc-dev",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": [
+        "conf-linux-libc-dev"
+      ]
+    },
+    {
+      "package": "yojson",
+      "version": "3.0.0",
+      "cudf": [
+        "yojson",
+        29
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 56",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "yojson"
+      ]
+    },
+    {
+      "package": "sail_coq_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fcoq%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fcoq%5fbackend"
+      ]
+    },
+    {
+      "package": "coq-iris",
+      "version": "dev.2024-09-10.1.6f24ed4b",
+      "cudf": [
+        "coq-iris",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq >= 35",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq < 41",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdpp = 2",
+            "matches": [
+              [
+                "coq-stdpp",
+                2
+              ]
+            ]
+          },
+          {
+            "atom": "coq-stdpp = 1",
+            "matches": []
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-iris"
+      ]
+    },
+    {
+      "package": "menhirCST",
+      "version": "20260209",
+      "cudf": [
+        "menhirCST",
+        7
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 56",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 60",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "menhir != 66",
+        "menhirCST"
+      ]
+    },
+    {
+      "package": "coq-stdpp",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "cudf": [
+        "coq-stdpp",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq >= 35",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq < 41",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          },
+          {
+            "atom": "coq = 57",
+            "matches": []
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-stdpp"
+      ]
+    },
+    {
+      "package": "ocaml-compiler-libs",
+      "version": "v0.12.4",
+      "cudf": [
+        "ocaml-compiler-libs",
+        7
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 59",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml >= 43",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocaml < 114",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ocaml-compiler-libs"
+      ]
+    },
+    {
+      "package": "ott",
+      "version": "0.34",
+      "cudf": [
+        "ott",
+        9
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "ocaml >= 53",
+            "matches": [
+              [
+                "ocaml",
+                90
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlfind",
+            "matches": [
+              [
+                "ocamlfind",
+                26
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "ocamlgraph",
+            "matches": [
+              [
+                "ocamlgraph",
+                12
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "ott"
+      ]
+    },
+    {
+      "package": "coq-lithium",
+      "version": "dev.2024-09-11.0.7945a29d",
+      "cudf": [
+        "coq-lithium",
+        2
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "coq = 38",
+            "matches": [
+              [
+                "coq",
+                38
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-iris = 2",
+            "matches": [
+              [
+                "coq-iris",
+                2
+              ]
+            ]
+          },
+          {
+            "atom": "coq-iris = 1",
+            "matches": []
+          }
+        ],
+        [
+          {
+            "atom": "coq-stdpp-unstable",
+            "matches": [
+              [
+                "coq-stdpp-unstable",
+                1
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "dune >= 91",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "coq-record-update = 1",
+            "matches": [
+              [
+                "coq-record-update",
+                1
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "coq-lithium"
+      ]
+    },
+    {
+      "package": "sail_smt_backend",
+      "version": "0.17",
+      "cudf": [
+        "sail%5fsmt%5fbackend",
+        3
+      ],
+      "dependency_witnesses": [
+        [
+          {
+            "atom": "dune >= 67",
+            "matches": [
+              [
+                "dune",
+                91
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "atom": "libsail = 3",
+            "matches": [
+              [
+                "libsail",
+                3
+              ]
+            ]
+          }
+        ]
+      ],
+      "conflicts_checked": [
+        "sail%5fsmt%5fbackend"
+      ]
+    },
+    {
+      "package": "SWITCH_INVARIANT",
+      "version": "NULL",
+      "cudf": [
+        "%3dopam-invariant",
+        1
+      ],
+      "dependency_witnesses": [],
+      "conflicts_checked": []
+    }
+  ],
+  "request": {
+    "request": "opam",
+    "install": "sail%5foutput = 3 , sail%5fdoc%5fbackend = 2 , sail%5flatex%5fbackend = 3 , sail%5fcoq%5fbackend = 3 , sail%5flem%5fbackend = 3 , sail%5fsv%5fbackend = 1 , sail%5fsmt%5fbackend = 3 , sail%5fc%5fbackend = 3 , sail%5focaml%5fbackend = 3 , sail%5fmanifest = 3 , libsail = 3 , sail = 5 , coq-sail-riscv = 1 , coq-sail = 1 , islaris = 1 , isla-lang = 1 , coq-bbv = 2 , coq-record-update = 1 , coq-stdpp-unstable = 1 , coq-stdpp-bitvector = 1 , coq-stdpp = 2 , coq-iris = 2 , coq-lithium = 2 , ordering = 14 , stdune = 14 , dyn = 14 , dune-private-libs = 2 , dune-site = 6 , dune = 91 , coqide-server = 4 , coq-stdlib = 6 , coq-core = 7 , coq = 38 , ocaml-option-flambda = 1 , ocaml-variants = 163"
+  }
+}

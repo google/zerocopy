@@ -1,0 +1,66 @@
+[
+  {
+    "generated_file": "LeanRV64D/DecodeExt.lean",
+    "full_file_sha256": "0a58d94f0c0dd56ebc16c5b04b83e0e4ef17e7616e67e16dd8ba3927b159129b",
+    "ranges": [
+      [
+        228,
+        236
+      ]
+    ],
+    "fragment": "support/source-fragments/DecodeExt.lean.txt",
+    "subject": "published integration generated project; these files unchanged from termination generation"
+  },
+  {
+    "generated_file": "LeanRV64D/InstsEnd.lean",
+    "full_file_sha256": "a287813afb526ee63a03aba1c9fd1aed9bc6c149e66a127a3980ef1d9a6e8a1a",
+    "ranges": [
+      [
+        298,
+        380
+      ],
+      [
+        540,
+        580
+      ]
+    ],
+    "fragment": "support/source-fragments/InstsEnd.lean.txt",
+    "subject": "published integration generated project; these files unchanged from termination generation"
+  },
+  {
+    "generated_file": "LeanRV64D/PlatformConfig.lean",
+    "full_file_sha256": "54771816d74225fc2d377f98d2c375c5b0737ce1e367d8d993231a1b5a47b8e9",
+    "ranges": [
+      [
+        894,
+        905
+      ],
+      [
+        5655,
+        5658
+      ],
+      [
+        6063,
+        6072
+      ],
+      [
+        6206,
+        6223
+      ]
+    ],
+    "fragment": "support/source-fragments/PlatformConfig.lean.txt",
+    "subject": "published integration generated project; these files unchanged from termination generation"
+  },
+  {
+    "generated_file": "LeanRV64D/SpecializationArchSem.lean",
+    "full_file_sha256": "93852cd6cabfa25fc6641ad14a4fe2c66a67b3d447cce7c5c68379c377a9416d",
+    "ranges": [
+      [
+        24,
+        30
+      ]
+    ],
+    "fragment": "support/source-fragments/SpecializationArchSem.lean.txt",
+    "subject": "published integration generated project; these files unchanged from termination generation"
+  }
+]

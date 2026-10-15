@@ -1,0 +1,158 @@
+{
+  "readonly_source_ownership_oracle": "PASS",
+  "commands": [
+    {
+      "name": "oracle-copy",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "cp",
+        "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/islaris-offline-solve-copy-20261015/ownership-fixture/.",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a:/ownership-fixture"
+      ],
+      "status": 0,
+      "host_seconds": 0.21748220804147422
+    },
+    {
+      "name": "oracle-owner",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "chown",
+        "-R",
+        "0:0",
+        "/ownership-fixture"
+      ],
+      "status": 0,
+      "host_seconds": 0.056482041953131557
+    },
+    {
+      "name": "oracle-directories",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "find",
+        "/ownership-fixture",
+        "-type",
+        "d",
+        "-exec",
+        "chmod",
+        "755",
+        "{}",
+        "+"
+      ],
+      "status": 0,
+      "host_seconds": 0.04229362495243549
+    },
+    {
+      "name": "oracle-files",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "find",
+        "/ownership-fixture",
+        "-type",
+        "f",
+        "-exec",
+        "chmod",
+        "644",
+        "{}",
+        "+"
+      ],
+      "status": 0,
+      "host_seconds": 0.041505041997879744
+    },
+    {
+      "name": "oracle-input-readonly",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "--user=1000:1000",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "/usr/bin/env",
+        "-u",
+        "OPAMCONFIRMLEVEL",
+        "-u",
+        "OPAMERRLOGLEN",
+        "-u",
+        "OPAMPRECISETRACKING",
+        "-u",
+        "OPAMYES",
+        "OPAMWITHTEST=false",
+        "OPAMWITHDOC=false",
+        "test",
+        "!",
+        "-w",
+        "/ownership-fixture/repo"
+      ],
+      "status": 0,
+      "host_seconds": 0.04205204104073346
+    },
+    {
+      "name": "oracle-directory-readonly",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "--user=1000:1000",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "/usr/bin/env",
+        "-u",
+        "OPAMCONFIRMLEVEL",
+        "-u",
+        "OPAMERRLOGLEN",
+        "-u",
+        "OPAMPRECISETRACKING",
+        "-u",
+        "OPAMYES",
+        "OPAMWITHTEST=false",
+        "OPAMWITHDOC=false",
+        "test",
+        "!",
+        "-w",
+        "/ownership-fixture/packages/empty"
+      ],
+      "status": 0,
+      "host_seconds": 0.03882758296094835
+    },
+    {
+      "name": "oracle-init",
+      "argv": [
+        "/Users/codex/.orbstack/bin/docker",
+        "exec",
+        "--user=1000:1000",
+        "3c8f6fb5f58c42518ae423f5566eb0ba31b32819898eea78d898cb2e59a7080a",
+        "/usr/bin/env",
+        "-u",
+        "OPAMCONFIRMLEVEL",
+        "-u",
+        "OPAMERRLOGLEN",
+        "-u",
+        "OPAMPRECISETRACKING",
+        "-u",
+        "OPAMYES",
+        "OPAMWITHTEST=false",
+        "OPAMWITHDOC=false",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "60",
+        "/usr/bin/opam",
+        "init",
+        "--root=/solve/ownership-oracle",
+        "--use-internal-solver",
+        "--bare",
+        "--no-opamrc",
+        "--no-setup",
+        "--disable-sandboxing",
+        "--yes",
+        "fixture",
+        "file:///ownership-fixture"
+      ],
+      "status": 0,
+      "host_seconds": 0.05459670803975314
+    }
+  ],
+  "full_subject_run": false
+}

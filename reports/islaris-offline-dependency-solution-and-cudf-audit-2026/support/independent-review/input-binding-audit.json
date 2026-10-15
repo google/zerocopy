@@ -1,0 +1,9 @@
+{
+  "main_files_all_sha256_and_git_blob_match": 19399,
+  "preparation_manifest_files_sha256_match": 93,
+  "native_fixed_input_sha256_match": 19429,
+  "root_duplicate_native_bytes_match": true,
+  "empty_real_post_package_and_pin_stdout_status0": true,
+  "host_audit_exact_structured_match": true,
+  "negative_control": "EXPECTED_REJECTION"
+}

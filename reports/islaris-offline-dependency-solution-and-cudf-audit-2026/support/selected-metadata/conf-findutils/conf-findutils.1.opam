@@ -1,0 +1,28 @@
+opam-version: "2.0"
+name: "conf-findutils"
+version: "1"
+synopsis: "Virtual package relying on findutils"
+description:
+  "This package can only install if the findutils binary is installed on the system."
+maintainer: "Paolo G. Giarrusso <p.giarrusso@gmail.com>"
+authors: "GNU Project"
+license: "GPL-3.0-or-later"
+homepage: "https://www.gnu.org/software/findutils/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+flags: conf
+build: ["sh" "-exc" "find . -name ."]
+depexts: [
+  ["findutils"] {os-family = "debian"}
+  ["findutils"] {os-family = "ubuntu"}
+  ["findutils"] {os-family = "fedora"}
+  ["findutils"] {os-distribution = "rhel"}
+  ["findutils"] {os-distribution = "centos"}
+  ["findutils"] {os-distribution = "alpine"}
+  ["findutils"] {os-distribution = "nixos"}
+  ["findutils"] {os-family = "suse" | os-family = "opensuse"}
+  ["findutils"] {os-distribution = "ol"}
+  ["findutils"] {os-distribution = "arch"}
+  ["system:findutils"] {os = "win32" & os-distribution = "cygwinports"}
+  ["findutils"] {os-distribution = "cygwin"}
+  ["findutils"] {os-distribution = "msys2"}
+]

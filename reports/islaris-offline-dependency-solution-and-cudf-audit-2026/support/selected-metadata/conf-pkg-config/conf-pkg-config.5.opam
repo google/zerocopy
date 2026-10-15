@@ -1,0 +1,95 @@
+opam-version: "2.0"
+name: "conf-pkg-config"
+version: "5"
+synopsis:
+  "Check if pkg-config is installed and create an opam switch local pkgconfig folder"
+description: """\
+This package can only install if the pkg-config package is installed
+on the system."""
+maintainer: "David Allsopp <dra27@dra27.uk>"
+authors: ["James Henstridge" "Tim Janik" "Havoc Pennington" "Scott Remnant"]
+license: "GPL-2.0-or-later"
+homepage: "http://www.freedesktop.org/wiki/Software/pkg-config/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  ("host-arch-x86_64"
+     {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} &
+   "conf-mingw-w64-gcc-x86_64"
+     {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} &
+   "conf-mingw-w64-pkgconf-x86_64" {os = "win32" & os-distribution = "msys2"} |
+   "host-arch-x86_32"
+     {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} &
+   "conf-mingw-w64-gcc-i686"
+     {os = "win32" & (os-distribution = "cygwin" | os-distribution = "msys2")} &
+   "conf-mingw-w64-pkgconf-i686" {os = "win32" & os-distribution = "msys2"})
+]
+conflicts: [
+  "mingw-w64-shims" {< "1.0.0"}
+]
+build: [
+  ["pkg-config" "--help"]
+    {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--version"]
+    {os = "win32" & os-distribution != "msys2" |
+     os = "macos" & os-distribution = "homebrew"}
+  [
+    "sh"
+    "./write-config.sh"
+    name
+    "-v"
+    "command:list"
+    "EOL"
+    "pkg-config"
+      {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+    "pkgconf"
+      {os = "win32" & os-distribution != "msys2" |
+       os = "macos" & os-distribution = "homebrew"}
+    "i686-w64-mingw32-pkgconf"
+      {os = "win32" & os-distribution = "msys2" & host-arch-x86_32:installed}
+    "--personality=i686-w64-mingw32"
+      {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+    "x86_64-w64-mingw32-pkgconf"
+      {os = "win32" & os-distribution = "msys2" & host-arch-x86_64:installed}
+    "--personality=x86_64-w64-mingw32"
+      {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+    "EOL"
+  ]
+  ["sh" "./install-shim.sh" name "pkgconf" bin]
+    {os = "win32" & os-distribution = "cygwin"}
+]
+depexts: [
+  ["pkg-config"] {os-family = "debian" | os-family = "ubuntu"}
+  ["pkgconf"] {os-distribution = "arch"}
+  ["pkgconf-pkg-config"] {os-family = "fedora"}
+  ["pkgconfig"] {os-distribution = "centos" & os-version <= "7"}
+  ["pkgconf-pkg-config"] {os-distribution = "mageia"}
+  ["pkgconfig"] {os-distribution = "rhel" & os-version <= "7"}
+  ["pkgconfig"] {os-distribution = "ol" & os-version <= "7"}
+  ["pkgconf"] {os-distribution = "alpine"}
+  ["pkg-config"] {os-distribution = "nixos"}
+  ["pkgconf"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkgconfig"] {os = "macos" & os-distribution = "macports"}
+  ["pkgconf"] {os = "freebsd"}
+  ["pkgconf-pkg-config"] {os-distribution = "rhel" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "centos" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "ol" & os-version >= "8"}
+  ["system:pkgconf"] {os = "win32" & os-distribution = "cygwinports"}
+  ["pkgconf"] {os-distribution = "cygwin"}
+]
+dev-repo: "git+https://github.com/dra27/mingw-w64-shims.git"
+extra-source "install-shim.sh" {
+  src:
+    "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh"
+  checksum: [
+    "sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961"
+    "sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c"
+  ]
+}
+extra-source "write-config.sh" {
+  src:
+    "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh"
+  checksum: [
+    "sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a"
+    "sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71"
+  ]
+}

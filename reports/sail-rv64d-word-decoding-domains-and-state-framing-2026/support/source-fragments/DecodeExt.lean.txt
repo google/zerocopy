@@ -1,0 +1,9 @@
+228: open Architecture
+229: open AmocasOddRegisterReservedBehavior
+230: 
+231: def ext_decode_compressed (bv : (BitVec 16)) : SailM instruction := do
+232:   (encdec_compressed_backwards bv)
+233: 
+234: def ext_decode (bv : (BitVec 32)) : SailM instruction := do
+235:   (encdec_backwards bv)
+236: 

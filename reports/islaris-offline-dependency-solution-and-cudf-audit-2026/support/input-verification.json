@@ -1,0 +1,8 @@
+{
+  "main_files": 19399,
+  "native_main_plus_overlay_files": 19429,
+  "main_hashes_match_prepared_manifest": true,
+  "all_19429_match_native_input_hashes": true,
+  "all_preparation_files_match_original_manifest": true,
+  "source_tree_or_archive_acquisition": false
+}

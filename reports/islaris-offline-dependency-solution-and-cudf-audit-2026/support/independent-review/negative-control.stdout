@@ -1,0 +1,4 @@
+{
+  "status": "EXPECTED_REJECTION",
+  "reason": "unsatisfied dependency ('coq-lithium', 2)  coq-iris = 2 | coq-iris = 1 "
+}

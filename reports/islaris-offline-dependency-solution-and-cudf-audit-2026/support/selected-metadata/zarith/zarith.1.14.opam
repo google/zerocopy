@@ -1,0 +1,35 @@
+opam-version: "2.0"
+name: "zarith"
+version: "1.14"
+synopsis:
+  "Implements arithmetic and logical operations over arbitrary-precision integers"
+description: """\
+The Zarith library implements arithmetic and logical operations over
+arbitrary-precision integers. It uses GMP to efficiently implement
+arithmetic over big integers. Small integers are represented as Caml
+unboxed integers, for speed and space economy."""
+maintainer: "Xavier Leroy <xavier.leroy@inria.fr>"
+authors: ["Antoine Miné" "Xavier Leroy" "Pascal Cuoq"]
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/ocaml/Zarith"
+bug-reports: "https://github.com/ocaml/Zarith/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "ocamlfind"
+  "conf-pkg-config"
+  "conf-gmp"
+]
+build: [
+  ["./configure"]
+  [make]
+]
+install: [make "install"]
+dev-repo: "git+https://github.com/ocaml/Zarith.git"
+url {
+  src: "https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz"
+  checksum: [
+    "sha256=5db9dcbd939153942a08581fabd846d0f3f2b8c67fe68b855127e0472d4d1859"
+    "sha512=8a7f3e82dfa5699c8dda54dd5398c712f3ac4fe04f5208d43d8ba198fb8152de5f91cbb59c15c0a4ba010d4dfcc79f52e405bdd0abbf2798167e9e4216bcb3dd"
+  ]
+}
+x-maintenance-intent: ["(latest)"]

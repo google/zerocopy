@@ -1,0 +1,12 @@
+prefix   /solve/opam-fixed/islaris-dry
+lib      /solve/opam-fixed/islaris-dry/lib
+bin      /solve/opam-fixed/islaris-dry/bin
+sbin     /solve/opam-fixed/islaris-dry/sbin
+share    /solve/opam-fixed/islaris-dry/share
+doc      /solve/opam-fixed/islaris-dry/doc
+etc      /solve/opam-fixed/islaris-dry/etc
+man      /solve/opam-fixed/islaris-dry/man
+toplevel /solve/opam-fixed/islaris-dry/lib/toplevel
+stublibs /solve/opam-fixed/islaris-dry/lib/stublibs
+user     opam
+group    opam

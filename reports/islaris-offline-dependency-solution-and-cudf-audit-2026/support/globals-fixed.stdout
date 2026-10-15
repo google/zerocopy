@@ -1,0 +1,15 @@
+arch              arm64             # Inferred from system
+exe                                 # Suffix needed for executable filenames (Windows)
+jobs              11                # The number of parallel jobs set up in opam configuration
+make              make              # The 'make' command to use
+opam-version      2.1.6             # The currently running opam version
+os                linux             # Inferred from system
+os-distribution   debian            # Inferred from system
+os-family         debian            # Inferred from system
+os-version        12                # Inferred from system
+root              /solve/opam-fixed # The current opam root directory
+switch            islaris-dry       # The identifier of the current switch
+sys-ocaml-arch                      # Target architecture of the OCaml compiler present on your system
+sys-ocaml-cc                        # Host C Compiler type of the OCaml compiler present on your system
+sys-ocaml-libc                      # Host C Runtime Library type of the OCaml compiler present on your system
+sys-ocaml-version                   # OCaml version present on your system independently of opam, if any

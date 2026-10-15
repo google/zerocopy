@@ -1,0 +1,349 @@
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:61:29: warning: This simp argument is unused:
+  Functions.encdec_reg_backwards
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.e̵n̵c̵d̵e̵c̵_̵r̵e̵g̵_̵bac̵k̵w̵a̵r̵d̵s,̵
+  ̵ ̵ ̵ ̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵b̵a̵s̵e_E_enabled, Functions.regidx_bit_width,
+      Functions.encdec_reg_backwards_matches,
+  ̵  ̵ ̵ ̵interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, get, getThe, MonadStateOf.get, hp, hc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:62:4: warning: This simp argument is unused:
+  Functions.base_E_enabled
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.b̵a̵s̵e̵_̵E̵_̵e̵n̵a̵b̵l̵e̵d̵,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵regidx_bit_width,
+      Functions.encdec_reg_backwards_matches,
+  ̵  ̵ ̵ ̵interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, get, getThe, MonadStateOf.get, hp, hc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:62:30: warning: This simp argument is unused:
+  Functions.regidx_bit_width
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.base_E_enabled, ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵r̵e̵g̵i̵d̵x̵_̵b̵i̵t̵_̵w̵i̵d̵t̵h̵,̵
+      Functions.encdec_reg_backwards_matches,
+  ̵  ̵ ̵ ̵interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, get, getThe, MonadStateOf.get, hp, hc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:63:4: warning: This simp argument is unused:
+  Functions.encdec_reg_backwards_matches
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵e̵n̵c̵d̵e̵c̵_̵r̵e̵g̵_̵b̵a̵c̵k̵w̵a̵r̵d̵s̵_̵m̵a̵t̵c̵h̵e̵s̵,̵interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, Bind.bind,
+      Pure.pure, get, getThe, MonadStateOf.get, hp, hc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:85:29: warning: This simp argument is unused:
+  Functions.encdec_reg_backwards
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.e̵n̵c̵d̵e̵c̵_̵r̵e̵g̵_̵bac̵k̵w̵a̵r̵d̵s,̵
+  ̵ ̵ ̵ ̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵b̵a̵s̵e_E_enabled, Functions.regidx_bit_width,
+      Functions.encdec_reg_backwards_matches, AnnealSail.execute_add_effects,
+  ̵  ̵ ̵ ̵interpretSailEffects,
+  ̲  ̲ ̲ ̲FreeM.liftM, FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure,
+  ̲  ̲ ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:86:4: warning: This simp argument is unused:
+  Functions.base_E_enabled
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.b̵a̵s̵e̵_̵E̵_̵e̵n̵a̵b̵l̵e̵d̵,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵regidx_bit_width,
+      Functions.encdec_reg_backwards_matches, AnnealSail.execute_add_effects,
+  ̵  ̵ ̵ ̵interpretSailEffects,
+  ̲  ̲ ̲ ̲FreeM.liftM, FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure,
+  ̲  ̲ ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:86:30: warning: This simp argument is unused:
+  Functions.regidx_bit_width
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.base_E_enabled, ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵r̵e̵g̵i̵d̵x̵_̵b̵i̵t̵_̵w̵i̵d̵t̵h̵,̵
+      Functions.encdec_reg_backwards_matches, AnnealSail.execute_add_effects,
+  ̵  ̵ ̵ ̵interpretSailEffects,
+  ̲  ̲ ̲ ̲FreeM.liftM, FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure,
+  ̲  ̲ ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:87:4: warning: This simp argument is unused:
+  Functions.encdec_reg_backwards_matches
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.base_E_enabled, ̵F̵u̵n̵c̵t̵i̵o̵n̵s̵.̵r̵e̵g̵i̵d̵x̵_̵b̵i̵t̵_̵w̵i̵d̵t̵h̵,̵
+      Functions.e̵n̵c̵d̵e̵c̵_̵regi̲d̲x̲_ba̵c̵k̵i̲t̲_̲wa̵r̵i̲ds̵_̵m̵a̵tc̵he̵s̵, AnnealSail.execute_add_effects,
+  ̵  ̵ ̵ ̵interpretSailEffects, FreeM.liftM,
+  ̲  ̲ ̲ ̲FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure, EStateM.get,
+      EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc,
+  ̲  ̲ ̲ ̲h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:87:44: warning: This simp argument is unused:
+  AnnealSail.execute_add_effects
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards,
+  ̵  ̵ ̵ ̵Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width,
+  ̵  ̵ ̵ ̵Functions.encdec_reg_backwards_matches, A̵n̵n̵e̵a̵l̵S̵a̵il̵.̵e̵x̵e̵c̵u̵t̵e̵_̵a̵d̵d̵_̵e̵f̵f̵e̵c̵t̵s̵,̵
+  ̵ ̵ ̵ ̵ ̵i̵nterpretSailEffects,
+  ̲  ̲ ̲ ̲FreeM.liftM, FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind, EStateM.pure,
+  ̲  ̲ ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:90:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get,
+      E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵t̵,̵ ̵EStateM.modifyGet, EStateM.map, EStateM.seqRight, Bind.bind, Pure.pure, Functor.map, get,
+  ̲  ̲ ̲ ̲getThe, modifyGet, MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:90:17: warning: This simp argument is unused:
+  EStateM.modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲E̵S̵t̵a̵t̵e̵M̵.̵m̵o̵d̵i̵f̵y̵G̵e̵t̵,̵ ̵EStateM.map, EStateM.seqRight, Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+      MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:90:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲EStateM.modifyGet, E̵S̵t̵a̵t̵e̵M̵.̵m̵a̵p̵,̵ ̵EStateM.seqRight, Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+      MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:90:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̲  ̲ ̲ ̲MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:91:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲EStateM.modifyGet, EStateM.map, EStateM.seqRight, Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet,
+      MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:92:62: warning: This simp argument is unused:
+  h1
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲EStateM.modifyGet, EStateM.map, EStateM.seqRight, Bind.bind, Pure.pure, Functor.map, get,
+  ̲  ̲ ̲ ̲getThe, modifyGet, MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h̵1̵,̵ ̵h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean:92:66: warning: This simp argument is unused:
+  h2
+
+Hint: Omit it from the simp argument list.
+  simp [hm, PreSail.readReg, Functions.encdec_reg_backwards, Functions.base_E_enabled,
+  ̲  ̲ ̲ ̲Functions.regidx_bit_width, Functions.encdec_reg_backwards_matches,
+  ̲  ̲ ̲ ̲AnnealSail.execute_add_effects, interpretSailEffects, FreeM.liftM, FreeM.bind,
+  ̲  ̲ ̲ ̲interpretInstructionEffect, EStateM.run, EStateM.bind, EStateM.pure, EStateM.get, EStateM.set,
+  ̲  ̲ ̲ ̲EStateM.modifyGet, EStateM.map, EStateM.seqRight, Bind.bind, Pure.pure, Functor.map, get,
+  ̲  ̲ ̲ ̲getThe, modifyGet, MonadStateOf.get, MonadStateOf.modifyGet, modify, hp, hc, h̵1̵,̵ ̵h̵2̵]̵h̲1̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AnnealSail.MachineDecode.decode_add_machine (csr : BitVec 64) (s : SequentialState RegisterType)
+  (hp : s.regs.get? Register.cur_privilege = some Privilege.Machine) (hc : s.regs.get? Register.mseccfg = some csr) :
+  EStateM.run (interpretSailEffects (Functions.ext_decode 2130355)) s =
+    EStateM.Result.ok (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD)) s
+'AnnealSail.MachineDecode.decode_add_machine' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.MachineDecode.decode_execute_add_machine (a b csr : BitVec 64) (s : SequentialState RegisterType)
+  (h1 : s.regs.get? Register.x1 = some a) (h2 : s.regs.get? Register.x2 = some b)
+  (hp : s.regs.get? Register.cur_privilege = some Privilege.Machine) (hc : s.regs.get? Register.mseccfg = some csr) :
+  EStateM.run
+      (interpretSailEffects
+        (have this := do
+          let inst ← Functions.ext_decode 2130355
+          Functions.execute inst;
+        this))
+      s =
+    EStateM.Result.ok (ExecutionResult.Retire_Success ())
+      { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+        sailOutput := s.sailOutput }
+'AnnealSail.MachineDecode.decode_execute_add_machine' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.MachineDecode.decoder_machine_effects :
+  ∃ k,
+    Functions.ext_decode 2130355 =
+        FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.cur_privilege none))) k ∧
+      k Privilege.Machine =
+        have this := do
+          let __discr ← readReg Register.mseccfg
+          have x : RegisterType Register.mseccfg := __discr
+          pure (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD));
+        this
+'AnnealSail.MachineDecode.decoder_machine_effects' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.MachineDecode.machine_lpe_reads_seccfg :
+  Functions.get_xLPE Privilege.Machine =
+    have this := do
+      let csr ← readReg Register.mseccfg
+      pure (Functions.bool_bit_backwards (Functions._get_Seccfg_MLPE csr));
+    this
+'AnnealSail.MachineDecode.machine_lpe_reads_seccfg' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
