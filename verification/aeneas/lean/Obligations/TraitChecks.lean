@@ -104,4 +104,25 @@ def forwarded_byte_codec_spec_contract (byte : U8) (run : Result U8) : Prop :=
 def forwarded_byte_codec_spec : Prop :=
   ∀ (byte : U8), forwarded_byte_codec_spec_contract byte (trait_checks.forwarded_byte_codec byte)
 
+/-- Explicit count-indexed expectation, independent of provider selection. -/
+def sliceBytesInitialized (element : Rust.Storage.BitDecoder Raw) : Prop :=
+  ∀ (count : Usize) bytes raw,
+    (AeneasSpecs.RustModel.sliceStorageDecoder element).run count bytes = some raw →
+      Rust.Storage.Initialized bytes
+
+def slice_into_bytes_spec_contract (run : Result Unit) : Prop :=
+  run ⦃ _ =>
+    sliceBytesInitialized Rust.Storage.boolDecoder ∧
+    (∀ raw : Aeneas.Std.Slice Bool, ∃ bytes,
+      (AeneasSpecs.RustModel.sliceStorageDecoder Rust.Storage.boolDecoder).run raw.len bytes = some raw) ∧
+    sliceBytesInitialized Rust.Storage.unitDecoder ∧
+    (∀ (count : Usize) bytes raw,
+      ((AeneasSpecs.RustModel.sliceStorageDecoder AeneasSpecs.u8BitDecoder).map
+        core.mem.manually_drop.ManuallyDrop.mk
+        (fun wrapped => wrapped.value.len) (fun _ => rfl)).run count bytes = some raw →
+      Rust.Storage.Initialized bytes) ⦄
+
+def slice_into_bytes_spec : Prop :=
+  slice_into_bytes_spec_contract trait_checks.check_slice_into_bytes
+
 end Zerocopy.Obligations

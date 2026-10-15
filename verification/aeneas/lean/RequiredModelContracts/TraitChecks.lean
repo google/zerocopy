@@ -10,6 +10,7 @@ module
 public import Specs
 public import Obligations.TraitChecks
 public import MathViews
+public import RustRealizability
 @[expose] public section
 
 /-!
@@ -28,6 +29,15 @@ namespace Zerocopy.Proofs
   apply WP.spec_mono provided
   rintro _ ⟨_, _, boolean, byte, unit, empty, nested⟩
   exact ⟨boolean, byte, unit, empty, nested⟩
+
+@[contract_simps] theorem required_slice_into_bytes (run : Result Unit)
+    (provided : Specs.slice_into_bytes_spec_contract run) :
+    Obligations.slice_into_bytes_spec_contract run := by
+  apply WP.spec_mono provided
+  rintro _ ⟨_, _, boolean, realizable, unit, wrapped⟩
+  refine ⟨boolean, ?_, unit, wrapped⟩
+  intro raw
+  exact realizable raw (RustModel.valid_slice raw (fun item _ => ⟨item, rfl⟩))
 
 @[contract_simps] theorem required_unaligned_alignment (T : Type) (dictionary : Unaligned T)
     (run : Result Usize)

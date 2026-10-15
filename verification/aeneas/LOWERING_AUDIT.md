@@ -143,7 +143,7 @@ translation premises already recorded in [SEMANTICS.md](SEMANTICS.md).
 
 ### Exact authored implementation scope
 
-The default-feature library extraction has 59 nameless `invariant_proof`
+The default-feature library extraction has 60 nameless `invariant_proof`
 markers, each attached through invocation arguments to one native positive
 `IntoBytes` impl. This count inventories authored claims; the native binding
 manifest and checked implementation-law witnesses establish which compiled
@@ -157,6 +157,7 @@ owners fulfill them.
 | Niche option | `Option<N>` for each of the preceding 12 nonzero carriers | 12 |
 | Empty marker | `PhantomData<T>` for `T: ?Sized`, without `T: IntoBytes` | 1 |
 | Array | `[T; N]` for `T: IntoBytes`, every `const N: usize` | 1 |
+| Slice | `[T]` for `T: IntoBytes`, every explicit `usize` element count | 1 |
 | Sized wrapper | `Wrapping<T>`, `Unalign<T>` for `T: IntoBytes` | 2 |
 | Possibly unsized wrapper | `ManuallyDrop<T>`, `Cell<T>`, `UnsafeCell<T>`, `ReadOnly<T>` for `T: ?Sized + IntoBytes` | 4 |
 | Byteorder | `U16<O>`, `U32<O>`, `U64<O>`, `U128<O>`, `Usize<O>`, `I16<O>`, `I32<O>`, `I64<O>`, `I128<O>`, `Isize<O>`, `F32<O>`, `F64<O>` for every `O`, without `O: ByteOrder` | 12 |
@@ -176,7 +177,7 @@ Byteorder markers are concrete invocation arguments, not a fence duplicated by
 `define_type!`. `F32` and `F64` store `[u8; 4]` and `[u8; 8]`; their laws depend
 on those byte arrays, not native floating-point bit semantics.
 
-Deferred implementations are `[T]`, `str`, native `f32`/`f64` and feature-gated
+Deferred implementations are `str`, native `f32`/`f64` and feature-gated
 `f16`/`f128`, atomics under their target/version cfgs, SIMD under its
 feature/target/version cfgs, procedural derives, and the generated struct/union
 impls of `cryptocorrosion_derive_traits!`. These remain ordinary Rust impls;
@@ -184,7 +185,7 @@ this inventory makes no initialization-law certification for them. Neither
 core nor zerocopy `MaybeUninit`, non-unit tuples, raw pointers, references,
 `NonNull`, nor arbitrary `Option<T>` has an `IntoBytes` impl in this snapshot.
 Incoming downstream dictionaries still require their own conditional law
-premises; these 59 local markers do not certify future external implementations.
+premises; these 60 local markers do not certify future external implementations.
 
 ### Decoder correspondence premises
 

@@ -88,10 +88,11 @@ def lift_original_type(value, before, final):
         current = _plain(current)
         if not isinstance(current, dict) or len(current) != 1:
             return current
-        if 'Array' in current:
-            array = deepcopy(current['Array'])
-            array[0] = lift(array[0])
-            return {'Array': array}
+        if 'Array' in current or 'Slice' in current:
+            kind = 'Array' if 'Array' in current else 'Slice'
+            sequence = deepcopy(current[kind])
+            sequence[0] = lift(sequence[0])
+            return {kind: sequence}
         if 'Adt' not in current:
             return current
         body = deepcopy(current['Adt'])

@@ -56,6 +56,18 @@ allocator admission additionally needs the outer alignment and the signed
 metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
 separate Rust obligations.
 
+The native `[T]: IntoBytes` implementation has an `invariant_proof` marker.
+Its proof consumes the element's actual trait dictionary and retained model,
+then establishes initialization and realizability at explicit slice counts.
+`trait_checks::check_slice_into_bytes` also exercises concrete slice and
+`ManuallyDrop<[u8]>` dictionary selection. Zero-sized elements keep their count;
+an empty slice of an uninhabited type does not manufacture an element.
+
+The shared `Rust.Pointer.Geometry` library proves bounded projections and cast
+composition, including empty destinations and slice splitting. These are
+mathematical foundations. Native pointer operations remain rejected by admission
+because the unchanged Aeneas pointer carrier cannot preserve their geometry.
+
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
 Every present specification must have its corresponding proof in both CI builds.
@@ -738,15 +750,15 @@ satisfy it vacuously. The reusable proofs in
 array, slice, and wrapper families. No default source value, unique encoder, or
 inhabitedness assumption is introduced.
 
-There are 59 authored implementation markers: `()`, `bool`, `char`; all twelve
+There are 60 authored implementation markers: `()`, `bool`, `char`; all twelve
 signed/unsigned integer carriers; all twelve corresponding `NonZero` carriers
-and their `Option` forms; `PhantomData`; arrays; `Wrapping`, `ManuallyDrop`,
+and their `Option` forms; `PhantomData`; arrays and slices; `Wrapping`, `ManuallyDrop`,
 `Cell`, `UnsafeCell`, `ReadOnly`, `Unalign`; and all twelve byteorder wrappers.
 [The scope inventory](LOWERING_AUDIT.md#exact-authored-implementation-scope)
 retains their exact generic bounds, configuration branches, and deferred impls.
 The default library build selects the handwritten `Unalign` and byteorder
 implementations; their derive/test alternatives remain deferred. Native floats,
-slices, `str`, atomics, SIMD, and other derive-generated impls remain outside
+`str`, atomics, SIMD, and other derive-generated impls remain outside
 this implementation-law scope.
 
 Integer physical decoders assemble initialized bytes in the extraction target's

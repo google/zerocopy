@@ -752,6 +752,18 @@ spec array_into_bytes_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.array_into_bytes_spec for Zerocopy.trait_checks.check_array_into_bytes with 0
 
+check_model_inputs Zerocopy.trait_checks.check_slice_into_bytes with 0 type parameters
+aeneas_spec_begin
+spec slice_into_bytes_spec
+  for @Zerocopy.trait_checks.check_slice_into_bytes with 0 type parameters
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Slice Bool)
+  ensures _ => AeneasSpecs.RustModel.realizableRepresentation (Aeneas.Std.Slice Bool)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation (Aeneas.Std.Slice Unit)
+  ensures _ => AeneasSpecs.RustModel.initializedRepresentation
+    (core.mem.manually_drop.ManuallyDrop (Aeneas.Std.Slice U8))
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.slice_into_bytes_spec for Zerocopy.trait_checks.check_slice_into_bytes with 0
+
 check_model_inputs Zerocopy.util.allocation.prepare with 0 type parameters
 aeneas_spec_begin
 spec allocation_prepare_spec

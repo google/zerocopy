@@ -3358,7 +3358,7 @@ def pointer.invariant.CastableFromDTSTInitializedInitialized.Blanket (ST :
 }
 
 /-- [zerocopy::pointer::cast::cast_unsized_layouts_match]:
-    Source: 'src/pointer/mod.rs', lines 196:4-208:5 -/
+    Source: 'src/pointer/mod.rs', lines 205:4-217:5 -/
 def pointer.cast.cast_unsized_layouts_match
   (src : layout.DstLayout) (dst : layout.DstLayout) : Result Bool := do
   match src.size_info with
@@ -3388,7 +3388,7 @@ def pointer.cast.cast_unsized_layouts_match
       else ok false
 
 /-- [zerocopy::pointer::cast::checks::witness_matches]:
-    Source: 'src/pointer/mod.rs', lines 219:8-226:9 -/
+    Source: 'src/pointer/mod.rs', lines 228:8-235:9 -/
 def pointer.cast.checks.witness_matches
   (runtime_layout : layout.DstLayout)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -3401,7 +3401,7 @@ def pointer.cast.checks.witness_matches
     layout.tail_transform_checks.witness_matches tail align phase
 
 /-- [zerocopy::pointer::cast::checks::reference_size]:
-    Source: 'src/pointer/mod.rs', lines 228:8-240:9 -/
+    Source: 'src/pointer/mod.rs', lines 237:8-249:9 -/
 def pointer.cast.checks.reference_size
   (runtime_layout : layout.DstLayout)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -3415,7 +3415,7 @@ def pointer.cast.checks.reference_size
     layout.tail_checks.reference_size tail align phase metadata
 
 /-- [zerocopy::pointer::cast::checks::assert_cast_unsized]:
-    Source: 'src/pointer/mod.rs', lines 252:8-277:9 -/
+    Source: 'src/pointer/mod.rs', lines 261:8-286:9 -/
 def pointer.cast.checks.assert_cast_unsized
   (src : layout.DstLayout) (dst : layout.DstLayout)
   (src_align : core.num.nonzero.NonZero Std.Usize
@@ -3461,7 +3461,7 @@ def pointer.cast.checks.assert_cast_unsized
   else ok ()
 
 /-- [zerocopy::pointer::referent_checks::require_transfer]:
-    Source: 'src/pointer/referent_checks.rs', lines 27:0-31:1 -/
+    Source: 'src/pointer/referent_checks.rs', lines 28:0-32:1 -/
 def pointer.referent_checks.require_transfer
   {Src : Type} {Dst : Type} {SV : Type} {DV : Type} (transmuteTransmuteFromInst
   : pointer.transmute.TransmuteFrom Dst Src SV DV) :
@@ -3470,7 +3470,7 @@ def pointer.referent_checks.require_transfer
   ok ()
 
 /-- [zerocopy::pointer::referent_checks::require_type_independent]:
-    Source: 'src/pointer/referent_checks.rs', lines 37:0-41:1 -/
+    Source: 'src/pointer/referent_checks.rs', lines 38:0-42:1 -/
 def pointer.referent_checks.require_type_independent
   {Src : Type} {Dst : Type} {SV : Type} {DV : Type} (invariantCastableFromInst
   : pointer.invariant.CastableFrom Dst Src SV DV) :
@@ -3479,7 +3479,7 @@ def pointer.referent_checks.require_type_independent
   ok ()
 
 /-- [zerocopy::pointer::referent_checks::compose_safe_transfers]:
-    Source: 'src/pointer/referent_checks.rs', lines 52:0-57:1 -/
+    Source: 'src/pointer/referent_checks.rs', lines 53:0-58:1 -/
 def pointer.referent_checks.compose_safe_transfers
   {Src : Type} {Mid : Type} {Dst : Type}
   (transmuteTransmuteFromMidSrcSafeSafeInst : pointer.transmute.TransmuteFrom
@@ -3592,7 +3592,7 @@ def pointer.transmute.TransmuteFromDstSrcSafeInitialized.Blanket {Src : Type}
 }
 
 /-- [zerocopy::pointer::referent_checks::concrete_transfers]:
-    Source: 'src/pointer/referent_checks.rs', lines 72:0-79:1 -/
+    Source: 'src/pointer/referent_checks.rs', lines 73:0-80:1 -/
 def pointer.referent_checks.concrete_transfers : Result Unit := do
   pointer.referent_checks.require_transfer
     (pointer.transmute.TransmuteFromDstSrcSafeInitialized.Blanket Std.U8
@@ -3941,7 +3941,7 @@ def trait_checks.forwarded_byte_codec (byte : Std.U8) : Result Std.U8 := do
     trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec) byte
 
 /-- [zerocopy::trait_checks::require_into_bytes]:
-    Source: 'src/trait_checks.rs', lines 148:0-148:47 -/
+    Source: 'src/trait_checks.rs', lines 148:0-148:56 -/
 def trait_checks.require_into_bytes
   {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
   ok ()
@@ -4008,6 +4008,54 @@ def trait_checks.check_array_into_bytes : Result Unit := do
     Bool.Insts.ZerocopyIntoBytes)
   trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
     (Array.Insts.ZerocopyIntoBytes 2#usize Bool.Insts.ZerocopyIntoBytes))
+
+/-- [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 204:16-221:17
+    Visibility: public -/
+def
+  core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}]
+    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
+@[reducible]
+def core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes {T : Type}
+  (IntoBytesInst : IntoBytes T) : IntoBytes
+  (core.mem.manually_drop.ManuallyDrop T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::impls::_#23::{impl zerocopy::IntoBytes for [T]}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Slice.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#23::{impl zerocopy::IntoBytes for [T]}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def Slice.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst : IntoBytes T) :
+  IntoBytes (Slice T) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Slice.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+    IntoBytesInst
+}
+
+/-- [zerocopy::trait_checks::check_slice_into_bytes]:
+    Source: 'src/trait_checks.rs', lines 183:0-187:1 -/
+def trait_checks.check_slice_into_bytes : Result Unit := do
+  trait_checks.require_into_bytes (Slice.Insts.ZerocopyIntoBytes
+    Bool.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes (Slice.Insts.ZerocopyIntoBytes
+    Tuple.Insts.ZerocopyIntoBytes)
+  trait_checks.require_into_bytes
+    (core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes
+    (Slice.Insts.ZerocopyIntoBytes U8.Insts.ZerocopyIntoBytes))
 
 /-- [zerocopy::util::allocation::prepare]:
     Source: 'src/util/allocation.rs', lines 33:0-38:1 -/
@@ -5324,25 +5372,6 @@ def core.num.wrapping.Wrapping.Insts.ZerocopyIntoBytes {T : Type}
   (IntoBytesInst : IntoBytes T) : IntoBytes (core.num.wrapping.Wrapping T) := {
   only_derive_is_allowed_to_implement_this_trait :=
     core.num.wrapping.Wrapping.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
-    IntoBytesInst
-}
-
-/-- [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}::only_derive_is_allowed_to_implement_this_trait]:
-    Source: 'src/util/macros.rs', lines 204:16-221:17
-    Visibility: public -/
-def
-  core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
-  {T : Type} (IntoBytesInst : IntoBytes T) : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [zerocopy::impls::_#35::{impl zerocopy::IntoBytes for core::mem::manually_drop::ManuallyDrop<T>}]
-    Source: 'src/util/macros.rs', lines 201:12-228:13 -/
-@[reducible]
-def core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes {T : Type}
-  (IntoBytesInst : IntoBytes T) : IntoBytes
-  (core.mem.manually_drop.ManuallyDrop T) := {
-  only_derive_is_allowed_to_implement_this_trait :=
-    core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
     IntoBytesInst
 }
 

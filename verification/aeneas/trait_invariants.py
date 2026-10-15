@@ -128,6 +128,8 @@ def simple_type(value, crate, bound_depth=0):
     elif tag == 'Array' and isinstance(body, list) and len(body) == 3 and body[2] is None:
         return ['array', simple_type(body[0], crate, bound_depth),
                 simple_const(body[1], bound_depth)]
+    elif tag == 'Slice' and isinstance(body, list) and len(body) == 2 and body[1] is None:
+        return ['slice', simple_type(body[0], crate, bound_depth)]
     elif tag == 'Adt' and body.get('builtin') == 'Tuple':
         if body.get('generics') == {'regions': [], 'types': [],
                                    'const_generics': [], 'trait_refs': []}:

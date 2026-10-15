@@ -365,4 +365,34 @@ namespace Zerocopy.Proofs
     (fun raw => Zerocopy.byteorder.F64.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderF64 O⟩⟩
 
+-- The native slice dictionary retains the element's exact provider and law.
+-- Its result uses explicit count metadata; it never recovers a count from bytes.
+@[instance] theorem Slice.Insts.ZerocopyIntoBytes_law
+    {T : Type} (dictionary : IntoBytes T)
+    [meaning : RustModel T] [law : TraitLaws.into_bytes_initialized T dictionary] :
+    TraitLaws.into_bytes_initialized (Aeneas.Std.Slice T)
+      (Zerocopy.Slice.Insts.ZerocopyIntoBytes dictionary) :=
+  ⟨⟨RustModel.initialized_slice T
+      (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).1,
+    RustModel.realizable_slice T
+      (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).2⟩⟩
+
+theorem slice_into_bytes_spec : Specs.slice_into_bytes_spec := by
+  simp only [Specs.slice_into_bytes_spec, Zerocopy.trait_checks.check_slice_into_bytes,
+    Zerocopy.trait_checks.require_into_bytes, bind_ok, WP.spec_ok]
+  refine ⟨(), rfl, ?_, ?_, ?_, ?_⟩
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Slice.Insts.ZerocopyIntoBytes Zerocopy.Bool.Insts.ZerocopyIntoBytes)
+      _ inferInstance).1
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Slice.Insts.ZerocopyIntoBytes Zerocopy.Bool.Insts.ZerocopyIntoBytes)
+      _ inferInstance).2
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.Slice.Insts.ZerocopyIntoBytes Zerocopy.Tuple.Insts.ZerocopyIntoBytes)
+      _ inferInstance).1
+  · exact (@TraitLaws.into_bytes_initialized.holds _
+      (Zerocopy.core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyIntoBytes
+        (Zerocopy.Slice.Insts.ZerocopyIntoBytes Zerocopy.U8.Insts.ZerocopyIntoBytes))
+      _ inferInstance).1
+
 end Zerocopy.Proofs

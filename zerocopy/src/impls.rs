@@ -1255,7 +1255,12 @@ const _: () = unsafe {
     });
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
-    unsafe_impl!(T: IntoBytes => IntoBytes for [T]);
+    unsafe_impl!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        T: IntoBytes => IntoBytes for [T]
+    );
     unsafe_impl!(T: Unaligned => Unaligned for [T]);
 };
 

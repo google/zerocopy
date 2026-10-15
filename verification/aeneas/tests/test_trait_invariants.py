@@ -85,6 +85,51 @@ class TraitBindingsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'carrier erasure'):
             traits.simple_type(unit, self.final)
 
+    def test_slice_retains_element_identity_and_rejects_unknown_metadata(self):
+        element = {'TypeVar': {'Free': 0}}
+        self.assertEqual(traits.simple_type({'Slice': [element, None]}, self.final),
+                         ['slice', ['parameter', 0]])
+        for ty in ({'Slice': [element]}, {'Slice': [element, {'unknown': 0}]},
+                   {'Slice': [{'RawPtr': [element, 'Shared']}, None]},
+                   {'Ref': [None, {'Slice': [element, None]}, 'Mut']}):
+            with self.assertRaisesRegex(ValueError, 'carrier erasure'):
+                traits.simple_type(ty, self.final)
+
+    def test_slice_impl_rejects_changed_element_and_reference_carrier(self):
+        annotations = inline.Annotations()
+        annotations['zerocopy::Marker'] = {'kind': 'trait', 'rust': 'zerocopy::Marker',
+            'generics': ['Self'], 'theorem': 'marker', 'predicate': 'Self = Self'}
+        sliced = {'Untagged': {'Slice': [{'TypeVar': {'Free': 0}}, None]}}
+        implementation = {'def_id': 2, 'item_meta': meta('zerocopy::SliceMarkerImpl'),
+            'impl_trait': {'id': 0, 'generics': args([sliced])},
+            'generics': generics()}
+        self.final['trait_impls'] = [implementation]
+        self.before['trait_impls'] = [copy.deepcopy(implementation)]
+        original = self.before['trait_impls'][0]
+        original['impl_trait']['generics']['types'][0]['Untagged']['Slice'][0] = {
+            'TypeVar': {'Bound': [0, 0]}}
+        location = {'file': 'src/lib.rs', 'begin_line': 1, 'end_line': 4}
+        native = {'crate': 'zerocopy', 'charon_version': '0.1.276',
+            'aeneas_version': 'nightly-2026.10.01-ca282ec+nominal-tuple-structs.1',
+            'trait_decls': [{'def_id': 0, 'lean_name': 'Zerocopy.Marker',
+                'rust_name': 'zerocopy::Marker', 'is_local': True, 'source': location}],
+            'trait_impls': [{'def_id': 2, 'lean_name': 'Zerocopy.Slice.Insts.Marker',
+                'impl_trait_def_id': 0, 'impl_trait_rust_name': 'zerocopy::Marker',
+                'is_local': True, 'source': location}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp); (work / 'Zerocopy').mkdir()
+            (work / 'Zerocopy/translation.json').write_text(json.dumps(native))
+            def bind():
+                return traits.bind_laws(annotations, work, self.final, self.before)
+            self.assertEqual(bind()[1][0]['rust_type'], [['slice', ['parameter', 0]]])
+            for changed in (
+                    {'Untagged': {'Slice': [{'Scalar': 'Bool'}, None]}},
+                    {'Untagged': {'Ref': [None, sliced, 'Mut']}}):
+                with self.subTest(carrier=changed):
+                    implementation['impl_trait']['generics']['types'] = [changed]
+                    with self.assertRaises(ValueError):
+                        bind()
+
     def test_native_mapping_requires_complete_exact_dictionary_identity(self):
         annotations = inline.Annotations()
         annotations['zerocopy::Marker'] = {'kind': 'trait', 'rust': 'zerocopy::Marker',
