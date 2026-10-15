@@ -1,0 +1,44 @@
+Lean (version 4.29.0, aarch64-unknown-linux-gnu, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740, Release)
+Miscellaneous
+  -h, --help             display this message
+      --features         display features compiler provides (eg. LLVM support)
+  -v, --version          display version information
+  -V, --short-version    display short version number
+  -g, --githash          display the git commit hash number used to build this binary
+      --run <file>       call the 'main' definition in the given file with the remaining arguments
+  -o, --o=oname          create olean file
+  -i, --i=iname          create ilean file
+  -c, --c=fname          name of the C output file
+  -b, --bc=fname         name of the LLVM bitcode file
+      --stdin            take input from stdin
+  -R, --root=dir         set package root directory from which the module name
+
+                         of the input file is calculated
+
+                         (default: current working directory)
+
+  -t, --trust=num        trust level (default: max) 0 means do not trust any macro,
+
+                         and type check all imported modules
+
+  -q, --quiet            do not print verbose messages
+  -M, --memory=num       maximum amount of memory that should be used by Lean
+                         (in megabytes)
+  -T, --timeout=num      maximum number of memory allocations per task
+                         this is a deterministic way of interrupting long running tasks
+  -j, --threads=num      number of threads used to process lean files
+  -s, --tstack=num       thread stack size in Kb
+      --server           start lean in server mode
+      --worker           start lean in server-worker mode
+      --plugin=file      load and initialize Lean shared library for registering linters etc.
+      --load-dynlib=file load shared library to make its symbols available to the interpreter
+      --setup=file       JSON file with module setup data (supersedes the file's header)
+      --json             report Lean output (e.g., messages) as JSON (one per line)
+  -E, --error=kind       report Lean messages of kind as errors
+      --deps             just print dependencies of a Lean input
+      --src-deps         just print dependency sources of a Lean input
+      --print-prefix     print the installation prefix for Lean and exit
+      --print-libdir     print the installation directory for Lean's built-in libraries and exit
+      --profile          display elaboration/type checking time for each definition/theorem
+      --stats            display environment statistics
+      -D name=value      set a configuration option (see set_option command)

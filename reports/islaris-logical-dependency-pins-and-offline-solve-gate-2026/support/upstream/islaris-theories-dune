@@ -1,0 +1,15 @@
+(coq.theory
+ (name isla)
+ (package islaris)
+ (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
+ (synopsis "Coq Isla")
+ (theories lithium iris stdpp RecordUpdate Ltac2))
+
+(rule
+ (target isla-lang.share)
+ (action (with-stdout-to %{target} (system "opam var isla-lang:share"))))
+
+(rule
+ (target isla_lang.v)
+ (action
+  (copy "%{read-lines:isla-lang.share}/isla_lang.v" %{target})))

@@ -1,0 +1,1009 @@
+--- original/LeanRV64D/BaseInsts.lean
++++ repaired/LeanRV64D/BaseInsts.lean
+@@ -509,7 +509,7 @@
+   | "sra" => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1833413_ : Bool, k_n : Nat, k_n ≥ 0, 0 < k_n ∧ k_n ≤ xlen -/
++/-- Type quantifiers: k_ex1833437_ : Bool, k_n : Nat, k_n ≥ 0, 0 < k_n ∧ k_n ≤ xlen -/
+ def extend_value (is_unsigned : Bool) (value : (BitVec k_n)) : (BitVec 64) :=
+   if (is_unsigned : Bool)
+   then (zero_extend (m := 64) value)
+@@ -524,7 +524,7 @@
+       sail_assert false "Pattern match failure at unknown location"
+       throw Error.Exit)
+ 
+-/-- Type quantifiers: k_ex1833414_ : Bool -/
++/-- Type quantifiers: k_ex1833438_ : Bool -/
+ def maybe_u_forwards_matches (arg_ : Bool) : Bool :=
+   match arg_ with
+   | true => true
+@@ -588,7 +588,7 @@
+   | "sraiw" => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1833415_ : Bool -/
++/-- Type quantifiers: k_ex1833439_ : Bool -/
+ def effective_fence_set (set : (BitVec 4)) (fiom : Bool) : (BitVec 4) :=
+   if (fiom : Bool)
+   then
+--- original/LeanRV64D/Callbacks.lean
++++ repaired/LeanRV64D/Callbacks.lean
+@@ -260,11 +260,11 @@
+ def redirect_callback (x_0 : (BitVec 64)) : Unit :=
+   ()
+ 
+-/-- Type quantifiers: k_ex1832908_ : Bool -/
++/-- Type quantifiers: k_ex1832932_ : Bool -/
+ def trap_callback (x_0 : Bool) (x_1 : (BitVec 6)) : Unit :=
+   ()
+ 
+-/-- Type quantifiers: k_ex1832909_ : Bool -/
++/-- Type quantifiers: k_ex1832933_ : Bool -/
+ def xret_callback (x_0 : Bool) : Unit :=
+   ()
+ 
+--- original/LeanRV64D/Classify.lean
++++ repaired/LeanRV64D/Classify.lean
+@@ -263,8 +263,8 @@
+   | .float_class_snan => 8
+   | .float_class_qnan => 9
+ 
+-/-- Type quantifiers: k_ex1829830_ : Nat, List.elem k_ex1829830_ [16, 32, 64, 128] -/
+-def float_classify (f : (BitVec k_ex1829830_)) : SailM float_class := do
++/-- Type quantifiers: k_ex1829851_ : Nat, List.elem k_ex1829851_ [16, 32, 64, 128] -/
++def float_classify (f : (BitVec k_ex1829851_)) : SailM float_class := do
+   if ((float_is_snan f) : Bool)
+   then (pure float_class_snan)
+   else
+--- original/LeanRV64D/DextInsts.lean
++++ repaired/LeanRV64D/DextInsts.lean
+@@ -301,7 +301,7 @@
+     else (zeros (n := 5))
+   (result, fflags)
+ 
+-/-- Type quantifiers: k_ex1833418_ : Bool -/
++/-- Type quantifiers: k_ex1833442_ : Bool -/
+ def flt_D (v1 : (BitVec 64)) (v2 : (BitVec 64)) (is_quiet : Bool) : (Bool × (BitVec 5)) :=
+   let (s1, e1, m1) := (fsplit_D v1)
+   let (s2, e2, m2) := (fsplit_D v2)
+@@ -333,7 +333,7 @@
+       else (zeros (n := 5)))
+   (result, fflags)
+ 
+-/-- Type quantifiers: k_ex1833419_ : Bool -/
++/-- Type quantifiers: k_ex1833443_ : Bool -/
+ def fle_D (v1 : (BitVec 64)) (v2 : (BitVec 64)) (is_quiet : Bool) : (Bool × (BitVec 5)) :=
+   let (s1, e1, m1) := (fsplit_D v1)
+   let (s2, e2, m2) := (fsplit_D v2)
+--- original/LeanRV64D/FextInsts.lean
++++ repaired/LeanRV64D/FextInsts.lean
+@@ -403,7 +403,7 @@
+     else (zeros (n := 5))
+   (result, fflags)
+ 
+-/-- Type quantifiers: k_ex1833416_ : Bool -/
++/-- Type quantifiers: k_ex1833440_ : Bool -/
+ def flt_S (v1 : (BitVec 32)) (v2 : (BitVec 32)) (is_quiet : Bool) : (Bool × (BitVec 5)) :=
+   let (s1, e1, m1) := (fsplit_S v1)
+   let (s2, e2, m2) := (fsplit_S v2)
+@@ -435,7 +435,7 @@
+       else (zeros (n := 5)))
+   (result, fflags)
+ 
+-/-- Type quantifiers: k_ex1833417_ : Bool -/
++/-- Type quantifiers: k_ex1833441_ : Bool -/
+ def fle_S (v1 : (BitVec 32)) (v2 : (BitVec 32)) (is_quiet : Bool) : (Bool × (BitVec 5)) :=
+   let (s1, e1, m1) := (fsplit_S v1)
+   let (s2, e2, m2) := (fsplit_S v2)
+--- original/LeanRV64D/Flow.lean
++++ repaired/LeanRV64D/Flow.lean
+@@ -232,7 +232,7 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829655_ : Bool, k_ex1829654_ : Bool -/
++/-- Type quantifiers: k_ex1829676_ : Bool, k_ex1829675_ : Bool -/
+ def neq_bool (x : Bool) (y : Bool) : Bool :=
+   (! (x == y))
+ 
+--- original/LeanRV64D/Inf.lean
++++ repaired/LeanRV64D/Inf.lean
+@@ -228,8 +228,8 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829738_ : Nat, List.elem k_ex1829738_ [16, 32, 64, 128] -/
+-def float_is_inf (op : (BitVec k_ex1829738_)) : Bool :=
++/-- Type quantifiers: k_ex1829759_ : Nat, List.elem k_ex1829759_ [16, 32, 64, 128] -/
++def float_is_inf (op : (BitVec k_ex1829759_)) : Bool :=
+   let { exp := exp, mantissa := mantissa, sign := _ } := (float_decompose op)
+   ((is_all_ones exp) && (is_all_zeros mantissa))
+ 
+--- original/LeanRV64D/InstsEnd.lean
++++ repaired/LeanRV64D/InstsEnd.lean
+@@ -63880,7 +63880,7 @@
+   (wX_bits rd (zeros (n := 64)))
+   (pure RETIRE_SUCCESS)
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833524_ : Bool, List.elem width [1, 2, 4, 8] -/
++/-- Type quantifiers: width : Nat, k_ex1833548_ : Bool, List.elem width [1, 2, 4, 8] -/
+ def execute_ZILX_LOAD (mode : zilx_mode) (rs2 : regidx) (rs1 : regidx) (is_unsigned : Bool) (width : Nat) (rd : regidx) : SailM ExecutionResult := do
+   sail_assert (width ≤b xlen_bytes) "extensions/Zilx/zilx_insts.sail:31.28-31.29"
+   let index ← (( do
+@@ -68871,7 +68871,7 @@
+     (internal_error "extensions/FD/fext_insts.sail" 324 "store got false from vmem_write")
+   | .Err e => (pure e)
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833538_ : Bool, k_ex1833537_ : Bool, List.elem width
++/-- Type quantifiers: width : Nat, k_ex1833562_ : Bool, k_ex1833561_ : Bool, List.elem width
+   [1, 2, 4, 8] -/
+ def execute_STORECON (aq : Bool) (rl : Bool) (rs2 : regidx) (rs1 : regidx) (width : Nat) (rd : regidx) : SailM ExecutionResult := do
+   sail_assert (width ≤b xlen_bytes) "extensions/A/zalrsc_insts.sail:68.28-68.29"
+@@ -68948,7 +68948,7 @@
+                   (pure RETIRE_SUCCESS)))
+           | .Err e => (pure e)))
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833542_ : Bool, k_ex1833541_ : Bool, List.elem width
++/-- Type quantifiers: width : Nat, k_ex1833566_ : Bool, k_ex1833565_ : Bool, List.elem width
+   [1, 2, 4, 8] -/
+ def execute_SSAMOSWAP (aq : Bool) (rl : Bool) (rs2 : regidx) (rs1 : regidx) (width : Nat) (rd : regidx) : SailM ExecutionResult := SailME.run do
+   match (← readReg cur_privilege) with
+@@ -69603,7 +69603,7 @@
+   (wX_bits rd (rev8 (← (rX_bits rs1))))
+   (pure RETIRE_SUCCESS)
+ 
+-/-- Type quantifiers: k_ex1833544_ : Bool -/
++/-- Type quantifiers: k_ex1833568_ : Bool -/
+ def execute_REMW (rs2 : regidx) (rs1 : regidx) (rd : regidx) (is_unsigned : Bool) : SailM ExecutionResult := do
+   let rs1_bits ← do (pure (Sail.BitVec.extractLsb (← (rX_bits rs1)) 31 0))
+   let rs2_bits ← do (pure (Sail.BitVec.extractLsb (← (rX_bits rs2)) 31 0))
+@@ -69622,7 +69622,7 @@
+   (wX_bits rd (sign_extend (m := 64) (to_bits_truncate (l := 32) remainder)))
+   (pure RETIRE_SUCCESS)
+ 
+-/-- Type quantifiers: k_ex1833545_ : Bool -/
++/-- Type quantifiers: k_ex1833569_ : Bool -/
+ def execute_REM (rs2 : regidx) (rs1 : regidx) (rd : regidx) (is_unsigned : Bool) : SailM ExecutionResult := do
+   let rs1_bits ← do (rX_bits rs1)
+   let rs2_bits ← do (rX_bits rs2)
+@@ -70825,7 +70825,7 @@
+       (pure RETIRE_SUCCESS))
+   | .Err e => (pure e)
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833548_ : Bool, k_ex1833547_ : Bool, List.elem width
++/-- Type quantifiers: width : Nat, k_ex1833572_ : Bool, k_ex1833571_ : Bool, List.elem width
+   [1, 2, 4, 8] -/
+ def execute_LOADRES (aq : Bool) (rl : Bool) (rs1 : regidx) (width : Nat) (rd : regidx) : SailM ExecutionResult := do
+   sail_assert (width ≤b xlen_bytes) "extensions/A/zalrsc_insts.sail:43.28-43.29"
+@@ -70836,7 +70836,7 @@
+       (pure RETIRE_SUCCESS))
+   | .Err e => (pure e)
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833550_ : Bool, List.elem width [1, 2, 4, 8] -/
++/-- Type quantifiers: width : Nat, k_ex1833574_ : Bool, List.elem width [1, 2, 4, 8] -/
+ def execute_LOAD (imm : (BitVec 12)) (rs1 : regidx) (rd : regidx) (is_unsigned : Bool) (width : Nat) : SailM ExecutionResult := do
+   let offset : xlenbits := (sign_extend (m := 64) imm)
+   sail_assert (width ≤b xlen_bytes) "extensions/I/base_insts.sail:289.28-289.29"
+@@ -70913,7 +70913,7 @@
+               "HSV got false from vmem_write_explicit")
+           | .Err e => (pure e)))
+ 
+-/-- Type quantifiers: k_ex1833554_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
++/-- Type quantifiers: k_ex1833578_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
+ def execute_HLVTYPE (width : Nat) (op : hlvop) (is_unsigned : Bool) (rs1 : regidx) (rd : regidx) : SailM ExecutionResult := do
+   if ((← (inVirtualPrivilege ())) : Bool)
+   then (pure (Virtual_Instruction ()))
+@@ -73133,7 +73133,7 @@
+ def execute_EBREAK (_ : Unit) : SailM ExecutionResult := do
+   (trap (← (exception_context (E_Breakpoint Brk_Software) (← readReg PC))))
+ 
+-/-- Type quantifiers: k_ex1833555_ : Bool -/
++/-- Type quantifiers: k_ex1833579_ : Bool -/
+ def execute_DIVW (rs2 : regidx) (rs1 : regidx) (rd : regidx) (is_unsigned : Bool) : SailM ExecutionResult := do
+   let rs1_bits ← do (pure (Sail.BitVec.extractLsb (← (rX_bits rs1)) 31 0))
+   let rs2_bits ← do (pure (Sail.BitVec.extractLsb (← (rX_bits rs2)) 31 0))
+@@ -73156,7 +73156,7 @@
+   (wX_bits rd (sign_extend (m := 64) (to_bits_truncate (l := 32) quotient)))
+   (pure RETIRE_SUCCESS)
+ 
+-/-- Type quantifiers: k_ex1833556_ : Bool -/
++/-- Type quantifiers: k_ex1833580_ : Bool -/
+ def execute_DIV (rs2 : regidx) (rs1 : regidx) (rd : regidx) (is_unsigned : Bool) : SailM ExecutionResult := do
+   let rs1_bits ← do (rX_bits rs1)
+   let rs2_bits ← do (rX_bits rs2)
+@@ -73514,7 +73514,7 @@
+   then (jump_to ((← readReg PC) + (sign_extend (m := 64) imm)))
+   else (pure RETIRE_SUCCESS)
+ 
+-/-- Type quantifiers: width : Nat, k_ex1833558_ : Bool, k_ex1833557_ : Bool, List.elem width
++/-- Type quantifiers: width : Nat, k_ex1833582_ : Bool, k_ex1833581_ : Bool, List.elem width
+   [1, 2, 4, 8, 16] -/
+ def execute_AMO (op : amoop) (aq : Bool) (rl : Bool) (rs2 : regidx) (rs1 : regidx) (width : Nat) (rd : regidx) : SailM ExecutionResult := SailME.run do
+   let width := width
+--- original/LeanRV64D/Mem.lean
++++ repaired/LeanRV64D/Mem.lean
+@@ -244,7 +244,7 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1833189_ : Bool, k_ex1833188_ : Bool, k_ex1833187_ : Bool -/
++/-- Type quantifiers: k_ex1833213_ : Bool, k_ex1833212_ : Bool, k_ex1833211_ : Bool -/
+ def read_kind_of_flags (aq : Bool) (rl : Bool) (res : Bool) : SailM read_kind := do
+   match (aq, rl, res) with
+   | (false, false, false) => (pure Read_plain)
+@@ -261,7 +261,7 @@
+   | (false, true, true) =>
+     (internal_error "sys/mem.sail" 45 "Load-reserved with release semantics should be unreachable")
+ 
+-/-- Type quantifiers: k_ex1833192_ : Bool, k_ex1833191_ : Bool, k_ex1833190_ : Bool -/
++/-- Type quantifiers: k_ex1833216_ : Bool, k_ex1833215_ : Bool, k_ex1833214_ : Bool -/
+ def write_kind_of_flags (aq : Bool) (rl : Bool) (con : Bool) : SailM write_kind := do
+   match (aq, rl, con) with
+   | (false, false, false) => (pure Write_plain)
+@@ -285,7 +285,7 @@
+   (pure { splittable := ← (undefined_Splittability ())
+           granule_size_exp := ← (undefined_range 0 12) })
+ 
+-/-- Type quantifiers: k_ex1833193_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
++/-- Type quantifiers: k_ex1833217_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
+ def pmaCheck (paddr : physaddr) (width : Nat) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (res_or_con : Bool) : SailM (Result Phys_Mem_Access_Info ExceptionType) := SailME.run do
+   let attributes ← (( do
+     match (matching_pma_region (← readReg pma_regions) paddr width) with
+@@ -424,13 +424,13 @@
+           | .AccessFault => (pure (Err (← (accessFaultFromAccessType access))))
+           | .AlignmentException => (pure (Err (← (alignmentFaultFromAccessType access))))))
+ 
+-/-- Type quantifiers: k_ex1833194_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
++/-- Type quantifiers: k_ex1833218_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
+ def phys_access_check (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (paddr : physaddr) (width : Nat) (res_or_con : Bool) : SailM (Result Phys_Mem_Access_Info ExceptionType) := do
+   match (← (pmpCheck paddr width access priv)) with
+   | .some e => (pure (Err e))
+   | none => (pmaCheck paddr width access pbmt res_or_con)
+ 
+-/-- Type quantifiers: k_ex1833195_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
++/-- Type quantifiers: k_ex1833219_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
+ def check_pma_with_pmp_priority (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (paddr : physaddr) (width : Nat) (res_or_con : Bool) : SailM (Result Phys_Mem_Access_Info ExceptionType) := do
+   match (← (pmaCheck paddr width access pbmt res_or_con)) with
+   | .Ok access_info => (pure (Ok access_info))
+@@ -440,7 +440,7 @@
+       | .some pmpExc => (pure (Err pmpExc))
+       | none => (pure (Err pmaExc)))
+ 
+-/-- Type quantifiers: k_ex1833199_ : Bool, k_ex1833198_ : Bool, k_ex1833197_ : Bool, k_ex1833196_ :
++/-- Type quantifiers: k_ex1833223_ : Bool, k_ex1833222_ : Bool, k_ex1833221_ : Bool, k_ex1833220_ :
+   Bool, width : Nat, width ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def checked_mem_read (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (paddr : physaddr) (width : Nat) (aq : Bool) (rl : Bool) (res : Bool) (meta' : Bool) : SailM (Result ((BitVec (8 * width)) × Unit) (physaddr × ExceptionType)) := SailME.run do
+   let access_info ← (( do
+@@ -496,7 +496,7 @@
+     ((BitVec (8 * N * split_width)) × Bool × Nat) )
+   (pure (Ok (data, default_meta)))
+ 
+-/-- Type quantifiers: k_ex1833203_ : Bool, k_ex1833202_ : Bool, k_ex1833201_ : Bool, k_ex1833200_ :
++/-- Type quantifiers: k_ex1833227_ : Bool, k_ex1833226_ : Bool, k_ex1833225_ : Bool, k_ex1833224_ :
+   Bool, width : Nat, width ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_read_priv_meta (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (paddr : physaddr) (width : Nat) (aq : Bool) (rl : Bool) (res : Bool) (meta' : Bool) : SailM (Result ((BitVec (8 * width)) × Unit) (physaddr × ExceptionType)) := do
+   let result ← (( do
+@@ -513,18 +513,18 @@
+       (mem_exception_callback (bits_of_physaddr addr) (exceptionType_bits_forwards e))
+   (pure result)
+ 
+-/-- Type quantifiers: k_ex1833207_ : Bool, k_ex1833206_ : Bool, k_ex1833205_ : Bool, k_ex1833204_ :
++/-- Type quantifiers: k_ex1833231_ : Bool, k_ex1833230_ : Bool, k_ex1833229_ : Bool, k_ex1833228_ :
+   Bool, width : Nat, width ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_read_meta (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (eff_priv : Privilege) (paddr : physaddr) (width : Nat) (aq : Bool) (rl : Bool) (res : Bool) (meta' : Bool) : SailM (Result ((BitVec (8 * width)) × Unit) (physaddr × ExceptionType)) := do
+   (mem_read_priv_meta access pbmt eff_priv paddr width aq rl res meta')
+ 
+-/-- Type quantifiers: k_ex1833210_ : Bool, k_ex1833209_ : Bool, k_ex1833208_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833234_ : Bool, k_ex1833233_ : Bool, k_ex1833232_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_read (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (eff_priv : Privilege) (paddr : physaddr) (width : Nat) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result (BitVec (8 * width)) (physaddr × ExceptionType)) := do
+   (pure (MemoryOpResult_drop_meta
+       (← (mem_read_priv_meta access pbmt eff_priv paddr width aq rl res false))))
+ 
+-/-- Type quantifiers: k_ex1833213_ : Bool, k_ex1833212_ : Bool, k_ex1833211_ : Bool, width : Nat, 0
++/-- Type quantifiers: k_ex1833237_ : Bool, k_ex1833236_ : Bool, k_ex1833235_ : Bool, width : Nat, 0
+   < width ∧ width ≤ max_mem_access -/
+ def mem_write_ea (paddr : physaddr) (width : Nat) (priv : Privilege) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (aq : Bool) (rl : Bool) (con : Bool) : SailM (Result Unit (physaddr × ExceptionType)) := SailME.run do
+   let access_info ← (( do
+@@ -564,7 +564,7 @@
+     (pure loop_vars) ) : SailME (Result Unit (physaddr × ExceptionType)) (Bool × Nat) )
+   (pure (Ok ()))
+ 
+-/-- Type quantifiers: k_ex1833216_ : Bool, k_ex1833215_ : Bool, k_ex1833214_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833240_ : Bool, k_ex1833239_ : Bool, k_ex1833238_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def checked_mem_write (paddr : physaddr) (width : Nat) (data : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (meta' : Unit) (aq : Bool) (rl : Bool) (con : Bool) : SailM (Result Bool (physaddr × ExceptionType)) := SailME.run do
+   let access_info ← (( do
+@@ -616,7 +616,7 @@
+     (pure loop_vars) ) : SailME (Result Bool (physaddr × ExceptionType)) (Bool × Nat × Bool) )
+   (pure (Ok write_success))
+ 
+-/-- Type quantifiers: k_ex1833219_ : Bool, k_ex1833218_ : Bool, k_ex1833217_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833243_ : Bool, k_ex1833242_ : Bool, k_ex1833241_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_write_value_priv_meta (paddr : physaddr) (width : Nat) (value : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (priv : Privilege) (meta' : Unit) (aq : Bool) (rl : Bool) (con : Bool) : SailM (Result Bool (physaddr × ExceptionType)) := do
+   let result ← do (checked_mem_write paddr width value access pbmt priv meta' aq rl con)
+@@ -627,12 +627,12 @@
+       (mem_exception_callback (bits_of_physaddr addr) (exceptionType_bits_forwards e))
+   (pure result)
+ 
+-/-- Type quantifiers: k_ex1833222_ : Bool, k_ex1833221_ : Bool, k_ex1833220_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833246_ : Bool, k_ex1833245_ : Bool, k_ex1833244_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_write_value (paddr : physaddr) (width : Nat) (value : (BitVec (8 * width))) (priv : Privilege) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (aq : Bool) (rl : Bool) (con : Bool) : SailM (Result Bool (physaddr × ExceptionType)) := do
+   (mem_write_value_priv_meta paddr width value access pbmt priv default_meta aq rl con)
+ 
+-/-- Type quantifiers: k_ex1833225_ : Bool, k_ex1833224_ : Bool, k_ex1833223_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833249_ : Bool, k_ex1833248_ : Bool, k_ex1833247_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def mem_write_value_meta (paddr : physaddr) (width : Nat) (value : (BitVec (8 * width))) (eff_priv : Privilege) (access : (MemoryAccessType mem_payload)) (pbmt : page_based_mem_type) (meta' : Unit) (aq : Bool) (rl : Bool) (con : Bool) : SailM (Result Bool (physaddr × ExceptionType)) := do
+   (mem_write_value_priv_meta paddr width value access pbmt eff_priv meta' aq rl con)
+--- original/LeanRV64D/Nan.lean
++++ repaired/LeanRV64D/Nan.lean
+@@ -228,18 +228,18 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829732_ : Nat, List.elem k_ex1829732_ [16, 32, 64, 128] -/
+-def float_is_nan (op : (BitVec k_ex1829732_)) : Bool :=
++/-- Type quantifiers: k_ex1829753_ : Nat, List.elem k_ex1829753_ [16, 32, 64, 128] -/
++def float_is_nan (op : (BitVec k_ex1829753_)) : Bool :=
+   let { exp := exp, mantissa := mantissa, sign := _ } := (float_decompose op)
+   ((is_all_ones exp) && (! (is_all_zeros mantissa)))
+ 
+-/-- Type quantifiers: k_ex1829734_ : Nat, List.elem k_ex1829734_ [16, 32, 64, 128] -/
+-def float_is_snan (op : (BitVec k_ex1829734_)) : Bool :=
++/-- Type quantifiers: k_ex1829755_ : Nat, List.elem k_ex1829755_ [16, 32, 64, 128] -/
++def float_is_snan (op : (BitVec k_ex1829755_)) : Bool :=
+   let { mantissa := mantissa, sign := _, exp := _ } := (float_decompose op)
+   ((float_is_nan op) && (is_highest_zero mantissa))
+ 
+-/-- Type quantifiers: k_ex1829736_ : Nat, List.elem k_ex1829736_ [16, 32, 64, 128] -/
+-def float_is_qnan (op : (BitVec k_ex1829736_)) : Bool :=
++/-- Type quantifiers: k_ex1829757_ : Nat, List.elem k_ex1829757_ [16, 32, 64, 128] -/
++def float_is_qnan (op : (BitVec k_ex1829757_)) : Bool :=
+   let { mantissa := mantissa, sign := _, exp := _ } := (float_decompose op)
+   ((float_is_nan op) && (is_highest_one mantissa))
+ 
+--- original/LeanRV64D/Normal.lean
++++ repaired/LeanRV64D/Normal.lean
+@@ -228,13 +228,13 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829746_ : Nat, List.elem k_ex1829746_ [16, 32, 64, 128] -/
+-def float_is_normal (op : (BitVec k_ex1829746_)) : Bool :=
++/-- Type quantifiers: k_ex1829767_ : Nat, List.elem k_ex1829767_ [16, 32, 64, 128] -/
++def float_is_normal (op : (BitVec k_ex1829767_)) : Bool :=
+   let { exp := exp, sign := _, mantissa := _ } := (float_decompose op)
+   ((! (is_all_ones exp)) && (! (is_all_zeros exp)))
+ 
+-/-- Type quantifiers: k_ex1829748_ : Nat, List.elem k_ex1829748_ [16, 32, 64, 128] -/
+-def float_is_subnormal (op : (BitVec k_ex1829748_)) : Bool :=
++/-- Type quantifiers: k_ex1829769_ : Nat, List.elem k_ex1829769_ [16, 32, 64, 128] -/
++def float_is_subnormal (op : (BitVec k_ex1829769_)) : Bool :=
+   let { exp := exp, mantissa := mantissa, sign := _ } := (float_decompose op)
+   ((is_all_zeros exp) && (! (is_all_zeros mantissa)))
+ 
+--- original/LeanRV64D/PhysMemInterface.lean
++++ repaired/LeanRV64D/PhysMemInterface.lean
+@@ -353,7 +353,7 @@
+             num_tag := 0 }) ) : SailM (Mem_request width 0 physaddrbits_len Unit access_kind) )
+   (sail_mem_address_announce request)
+ 
+-/-- Type quantifiers: k_ex1832907_ : Bool, width : Nat, width ≥ 0, 0 < width ∧
++/-- Type quantifiers: k_ex1832931_ : Bool, width : Nat, width ≥ 0, 0 < width ∧
+   width ≤ max_mem_access -/
+ def read_ram (rk : read_kind) (access : (MemoryAccessType mem_payload)) (app_2 : physaddr) (width : Nat) (read_meta : Bool) : SailM ((BitVec (8 * width)) × Unit) := do
+   let .Physaddr addr := app_2
+--- original/LeanRV64D/PlatformConfig.lean
++++ repaired/LeanRV64D/PlatformConfig.lean
+@@ -1529,7 +1529,7 @@
+   | .HLV => ""
+   | .HLVX => "x"
+ 
+-/-- Type quantifiers: k_ex1829910_ : Bool -/
++/-- Type quantifiers: k_ex1829931_ : Bool -/
+ def maybe_u_forwards (arg_ : Bool) : String :=
+   match arg_ with
+   | true => "u"
+@@ -2232,11 +2232,11 @@
+   | .CZERO_EQZ => "czero.eqz"
+   | .CZERO_NEZ => "czero.nez"
+ 
+-/-- Type quantifiers: k_ex1829917_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
++/-- Type quantifiers: k_ex1829938_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
+ def valid_load_encdec (width : Nat) (is_unsigned : Bool) : Bool :=
+   ((width <b xlen_bytes) || ((not is_unsigned) && (width ≤b xlen_bytes)))
+ 
+-/-- Type quantifiers: k_ex1829919_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
++/-- Type quantifiers: k_ex1829940_ : Bool, width : Nat, List.elem width [1, 2, 4, 8] -/
+ def zilx_encoding_valid (mode : zilx_mode) (width : Nat) (is_unsigned : Bool) : Bool :=
+   ((valid_load_encdec width is_unsigned) && (((bne mode ZILX_UNSCALED) || (width != 1)) && ((bne
+           mode ZILX_SCALED_UW) || (xlen == 64))))
+@@ -5644,10 +5644,10 @@
+   | .Ext_V => 5
+   | .Ext_Zvfhmin => 5
+   | .Ext_Sha => 6
+-  | .Ext_Zfinx => 9
+-  | .Ext_Zdinx => 10
+-  | .Ext_Zhinx => 10
+-  | .Ext_Zhinxmin => 11
++  | .Ext_Zfinx => 10
++  | .Ext_Zdinx => 11
++  | .Ext_Zhinx => 11
++  | .Ext_Zhinxmin => 12
+   | _ => 2
+ 
+ def Mk_Seccfg (v : (BitVec 64)) : (BitVec 64) :=
+@@ -5872,7 +5872,7 @@
+ def _update_Mstateen0_SRMCFG (v : (BitVec 64)) (x : (BitVec 1)) : (BitVec 64) :=
+   (Sail.BitVec.updateSubrange v 55 55 x)
+ 
+-/-- Type quantifiers: k_ex1830302_ : Bool -/
++/-- Type quantifiers: k_ex1830323_ : Bool -/
+ def legalize_csr_bit (c : CSRBitConfig) (feature_enabled : Bool) (v : (BitVec 1)) : (BitVec 1) :=
+   if ((not feature_enabled) : Bool)
+   then 0#1
+@@ -5958,7 +5958,7 @@
+                 stateen_reg))))) ) : SailM (BitVec 64) )
+   (pure ((BitVec.access mask (stateen_bit_index_forwards bit_idx)) == 1#1))
+ termination_by (let (_, _, _) := (priv, bit_idx, stateen_reg)
+-7).toNat
++8).toNat
+ def currentlyEnabled (merge_var : extension) : SailM Bool := do
+   match merge_var with
+   | .Ext_Shcounterenw => (pure ((hartSupports Ext_Shcounterenw) && (← (currentlyEnabled Ext_H))))
+@@ -6189,6 +6189,8 @@
+       | 1 => readReg mstateen1
+       | 2 => readReg mstateen2
+       | _ => readReg mstateen3)
++termination_by (let _ := idx
++7).toNat
+ /-- Type quantifiers: idx : Nat, 0 ≤ idx ∧ idx ≤ 3 -/
+ def get_sstateen (idx : Nat) : SailM (BitVec 64) := do
+   (pure (0xFFFFFFFF#32 +++ (← do
+@@ -6229,7 +6231,7 @@
+ def is_zfinx_enabled_by_stateen (_ : Unit) : SailM Bool := do
+   (check_stateen_bit (← readReg cur_privilege) STATEEN_FCSR 0)
+ termination_by (let () := ()
+-8).toNat
++9).toNat
+ def legalize_mstateen0 (m : (BitVec 64)) (v : (BitVec 64)) : SailM (BitVec 64) := do
+   let v := (Mk_Mstateen0 v)
+   (pure (_update_Mstateen0_C
+@@ -6253,8 +6255,12 @@
+         (legalize_csr_bit mstateen0_fcsr
+           ((hartSupports Ext_Zfinx) && ((_get_Misa_F (← readReg misa)) == 0#1))
+           (_get_Mstateen0_FCSR v))) (legalize_csr_bit mstateen0_c true (_get_Mstateen0_C v))))
++termination_by (let (_, _) := (m, v)
++5).toNat
+ def read_mstateen0 (_ : Unit) : SailM (BitVec 64) := do
+   (legalize_mstateen0 (← readReg mstateen0) (← readReg mstateen0))
++termination_by (let () := ()
++6).toNat
+ end
+ 
+ def legalize_henvcfg (h : (BitVec 64)) (v : (BitVec 64)) : SailM (BitVec 64) := do
+--- original/LeanRV64D/Pma.lean
++++ repaired/LeanRV64D/Pma.lean
+@@ -415,7 +415,7 @@
+       (HAppend.hAppend "Invalid payload ("
+         (HAppend.hAppend (mem_payload_name_forwards p) ") for LoadExecute.")))
+ 
+-/-- Type quantifiers: k_ex1833184_ : Bool -/
++/-- Type quantifiers: k_ex1833208_ : Bool -/
+ def mag_of_pma (pma : PMA) (is_vector : Bool) : (Option Nat) :=
+   let mag :=
+     if (is_vector : Bool)
+@@ -425,7 +425,7 @@
+   then none
+   else (some mag)
+ 
+-/-- Type quantifiers: k_ex1833185_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
++/-- Type quantifiers: k_ex1833209_ : Bool, width : Nat, 0 < width ∧ width ≤ max_mem_access -/
+ def within_pma_mag (pma : PMA) (typ_1 : physaddr) (width : Nat) (is_vector : Bool) : Bool :=
+   let .Physaddr addr : physaddr := typ_1
+   match (mag_of_pma pma is_vector) with
+--- original/LeanRV64D/PmpRegs.lean
++++ repaired/LeanRV64D/PmpRegs.lean
+@@ -375,7 +375,7 @@
+       else (pure ())
+   (pure loop_vars)
+ 
+-/-- Type quantifiers: k_ex1833038_ : Bool, k_ex1833037_ : Bool -/
++/-- Type quantifiers: k_ex1833062_ : Bool, k_ex1833061_ : Bool -/
+ def pmpWriteAddr (locked : Bool) (tor_locked : Bool) (reg : (BitVec 64)) (v : (BitVec 64)) : (BitVec 64) :=
+   if ((locked || tor_locked) : Bool)
+   then reg
+--- original/LeanRV64D/Prelude.lean
++++ repaired/LeanRV64D/Prelude.lean
+@@ -290,7 +290,7 @@
+ def trunc {m : _} (v : (BitVec k_n)) : (BitVec m) :=
+   (Sail.BitVec.truncate v m)
+ 
+-/-- Type quantifiers: k_ex1829833_ : Bool -/
++/-- Type quantifiers: k_ex1829854_ : Bool -/
+ def bool_bit_forwards (arg_ : Bool) : (BitVec 1) :=
+   match arg_ with
+   | true => 1#1
+@@ -301,7 +301,7 @@
+   | 1 => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1829834_ : Bool -/
++/-- Type quantifiers: k_ex1829855_ : Bool -/
+ def bool_bit_forwards_matches (arg_ : Bool) : Bool :=
+   match arg_ with
+   | true => true
+@@ -313,7 +313,7 @@
+   | 0 => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1829835_ : Bool -/
++/-- Type quantifiers: k_ex1829856_ : Bool -/
+ def bool_int_forwards (arg_ : Bool) : Int :=
+   match arg_ with
+   | false => 0
+@@ -325,7 +325,7 @@
+   | 0 => false
+   | _ => true
+ 
+-/-- Type quantifiers: k_ex1829837_ : Bool -/
++/-- Type quantifiers: k_ex1829858_ : Bool -/
+ def bool_int_forwards_matches (arg_ : Bool) : Bool :=
+   match arg_ with
+   | false => true
+@@ -338,7 +338,7 @@
+   | 1 => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1829839_ : Bool -/
++/-- Type quantifiers: k_ex1829860_ : Bool -/
+ def bool_to_bit (x : Bool) : (BitVec 1) :=
+   (bool_bit_forwards x)
+ 
+@@ -425,7 +425,7 @@
+ def zopz0zKzJ_u (x : (BitVec k_n)) (y : (BitVec k_n)) : Bool :=
+   ((BitVec.toNatInt x) ≥b (BitVec.toNatInt y))
+ 
+-/-- Type quantifiers: k_ex1829844_ : Bool, k_ex1829843_ : Bool -/
++/-- Type quantifiers: k_ex1829865_ : Bool, k_ex1829864_ : Bool -/
+ def zopz0zJzJzK (x : Bool) (y : Bool) : Bool :=
+   ((not x) || y)
+ 
+--- original/LeanRV64D/SdtrigControl.lean
++++ repaired/LeanRV64D/SdtrigControl.lean
+@@ -293,7 +293,7 @@
+ def textra_match (t : TExtra) (priv : Privilege) : SailM Bool := do
+   (pure ((← (mhselect_match t)) && (← (sselect_match t priv))))
+ 
+-/-- Type quantifiers: k_ex1833146_ : Bool -/
++/-- Type quantifiers: k_ex1833170_ : Bool -/
+ def icount_match (t : ICount) (priv : Privilege) (reentrance : Bool) : SailM Bool := do
+   (pure ((not ((t.action == TA_Breakpoint) && reentrance)) && ((← (textra_match t.textra priv)) && (match priv with
+         | .Machine => t.m
+@@ -302,7 +302,7 @@
+         | .VirtualSupervisor => t.vs
+         | .VirtualUser => t.vu : Bool))))
+ 
+-/-- Type quantifiers: k_ex1833147_ : Bool -/
++/-- Type quantifiers: k_ex1833171_ : Bool -/
+ def match_icount_triggers (priv : Privilege) (reentrance : Bool) : SailM Unit := do
+   if ((not (← (currentlyEnabled Ext_Sdtrig))) : Bool)
+   then (pure ())
+--- original/LeanRV64D/Sign.lean
++++ repaired/LeanRV64D/Sign.lean
+@@ -228,11 +228,11 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829740_ : Nat, List.elem k_ex1829740_ [16, 32, 64, 128] -/
+-def float_is_positive (op : (BitVec k_ex1829740_)) : Bool :=
++/-- Type quantifiers: k_ex1829761_ : Nat, List.elem k_ex1829761_ [16, 32, 64, 128] -/
++def float_is_positive (op : (BitVec k_ex1829761_)) : Bool :=
+   (is_highest_zero op)
+ 
+-/-- Type quantifiers: k_ex1829742_ : Nat, List.elem k_ex1829742_ [16, 32, 64, 128] -/
+-def float_is_negative (op : (BitVec k_ex1829742_)) : Bool :=
++/-- Type quantifiers: k_ex1829763_ : Nat, List.elem k_ex1829763_ [16, 32, 64, 128] -/
++def float_is_negative (op : (BitVec k_ex1829763_)) : Bool :=
+   (is_highest_one op)
+ 
+--- original/LeanRV64D/Step.lean
++++ repaired/LeanRV64D/Step.lean
+@@ -257,7 +257,7 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1833563_ : Bool, _step_no : Nat, 0 ≤ _step_no -/
++/-- Type quantifiers: k_ex1833587_ : Bool, _step_no : Nat, 0 ≤ _step_no -/
+ def run_hart_waiting (_step_no : Nat) (wr : WaitReason) (instr_info : instr_info) (exit_wait : Bool) : SailM Step := do
+   if ((← (shouldWakeForInterrupt ())) : Bool)
+   then
+@@ -498,7 +498,7 @@
+   | .WAIT_WRS_STO => false
+   | .WAIT_WRS_NTO => false
+ 
+-/-- Type quantifiers: k_ex1833566_ : Bool, step_no : Nat, 0 ≤ step_no -/
++/-- Type quantifiers: k_ex1833590_ : Bool, step_no : Nat, 0 ≤ step_no -/
+ def try_step (step_no : Nat) (exit_wait : Bool) : SailM Bool := do
+   let _ : Unit := (ext_pre_step_hook ())
+   (update_mip ())
+--- original/LeanRV64D/SyncException.lean
++++ repaired/LeanRV64D/SyncException.lean
+@@ -238,7 +238,7 @@
+           excinst_offset := (zeros (n := 5))
+           ext := none })
+ 
+-/-- Type quantifiers: k_ex1833027_ : Bool -/
++/-- Type quantifiers: k_ex1833051_ : Bool -/
+ def make_exception_context (trap : ExceptionType) (excinfo : (BitVec 64)) (excinfo_is_gva : Bool) (excinfo2 : (Option (BitVec 64))) : ExceptionContext :=
+   { trap := trap
+     excinfo_is_gva := excinfo_is_gva
+--- original/LeanRV64D/SysControl.lean
++++ repaired/LeanRV64D/SysControl.lean
+@@ -1378,7 +1378,7 @@
+   | .some e => e
+   | none => (zeros (n := 64))
+ 
+-/-- Type quantifiers: k_ex1833153_ : Bool -/
++/-- Type quantifiers: k_ex1833177_ : Bool -/
+ def track_trap (p : Privilege) (is_interrupt : Bool) (cause : (BitVec 6)) : SailM Unit := do
+   (long_csr_write_callback "mstatus" "mstatush" (← (read_mstatus ())))
+   match p with
+--- original/LeanRV64D/SysRegs.lean
++++ repaired/LeanRV64D/SysRegs.lean
+@@ -1588,7 +1588,7 @@
+   let r ← do (reg_deref r_ref)
+   writeRegRef r_ref (_update_Satp64_Mode r v)
+ 
+-/-- Type quantifiers: vectored_alignment_exp : Nat, k_ex1832956_ : Bool, direct_alignment_exp : Nat, k_ex1832954_
++/-- Type quantifiers: vectored_alignment_exp : Nat, k_ex1832980_ : Bool, direct_alignment_exp : Nat, k_ex1832978_
+   : Bool, 2 ≤ direct_alignment_exp ∧ direct_alignment_exp ≤ 24, 2 ≤ vectored_alignment_exp
+   ∧ vectored_alignment_exp ≤ 24 -/
+ def legalize_tvec (o : (BitVec 64)) (v : (BitVec 64)) (direct_supported : Bool) (direct_alignment_exp : Nat) (vectored_supported : Bool) (vectored_alignment_exp : Nat) : SailM (BitVec 64) := do
+@@ -1651,7 +1651,7 @@
+   let r ← do (reg_deref r_ref)
+   writeRegRef r_ref (_update_Mcause_IsInterrupt r v)
+ 
+-/-- Type quantifiers: k_ex1832958_ : Bool -/
++/-- Type quantifiers: k_ex1832982_ : Bool -/
+ def legalize_cause (o : (BitVec 64)) (v : (BitVec 64)) (is_scause : Bool) : SailM (BitVec 64) := SailME.run do
+   let v := (Mk_Mcause v)
+   let code := (_get_Mcause_Cause v)
+@@ -1841,7 +1841,7 @@
+ def Mk_Sstatus (v : (BitVec 64)) : (BitVec 64) :=
+   v
+ 
+-/-- Type quantifiers: k_ex1832984_ : Bool -/
++/-- Type quantifiers: k_ex1833008_ : Bool -/
+ def lower_mstatus (m : (BitVec 64)) (virt : Bool) : SailM (BitVec 64) := do
+   let s := (Mk_Sstatus (zeros (n := 64)))
+   (pure (_update_Sstatus_SIE
+@@ -1884,7 +1884,7 @@
+             (_get_Sstatus_FS s)) (_get_Sstatus_VS s)) (_get_Sstatus_SPP s)) (_get_Sstatus_SPIE s))
+     (_get_Sstatus_SIE s))
+ 
+-/-- Type quantifiers: k_ex1832985_ : Bool -/
++/-- Type quantifiers: k_ex1833009_ : Bool -/
+ def legalize_sstatus (m : (BitVec 64)) (v : (BitVec 64)) (virt : Bool) : SailM (BitVec 64) := do
+   let s := (Mk_Sstatus (zero_extend (m := 64) v))
+   let s ← do
+@@ -2042,7 +2042,7 @@
+   then (pure (zeros (n := 14)))
+   else (pure (_get_Hgatp64_VMID (Mk_Hgatp64 (← readReg hgatp))))
+ 
+-/-- Type quantifiers: k_ex1832986_ : Bool -/
++/-- Type quantifiers: k_ex1833010_ : Bool -/
+ def legalize_satp (arch : Architecture) (is_vsatp : Bool) (prev_value : (BitVec 64)) (written_value : (BitVec 64)) : SailM (BitVec 64) := do
+   let s := (Mk_Satp64 written_value)
+   let s :=
+--- original/LeanRV64D/ValidateConfig.lean
++++ repaired/LeanRV64D/ValidateConfig.lean
+@@ -343,7 +343,7 @@
+     false)
+   else true
+ 
+-/-- Type quantifiers: k_ex1833567_ : Bool -/
++/-- Type quantifiers: k_ex1833591_ : Bool -/
+ def check_sha_dependency (name : String) (supported : Bool) : Bool :=
+   if ((not supported) : Bool)
+   then
+@@ -355,7 +355,7 @@
+     false)
+   else true
+ 
+-/-- Type quantifiers: k_ex1833569_ : Bool, k_ex1833568_ : Bool -/
++/-- Type quantifiers: k_ex1833593_ : Bool, k_ex1833592_ : Bool -/
+ def check_shgatpa_mode (sv_name : String) (satp_supported : Bool) (hgatp_supported : Bool) : Bool :=
+   if ((satp_supported && (not hgatp_supported)) : Bool)
+   then
+@@ -368,7 +368,7 @@
+     false)
+   else true
+ 
+-/-- Type quantifiers: k_ex1833571_ : Bool, k_ex1833570_ : Bool -/
++/-- Type quantifiers: k_ex1833595_ : Bool, k_ex1833594_ : Bool -/
+ def check_shvsatpa_mode (sv_name : String) (satp_supported : Bool) (vsatp_supported : Bool) : Bool :=
+   if ((satp_supported && (not vsatp_supported)) : Bool)
+   then
+@@ -803,7 +803,7 @@
+           ssccptr := ← (undefined_bool ())
+           svadu := ← (undefined_bool ()) })
+ 
+-/-- Type quantifiers: k_ex1833572_ : Bool -/
++/-- Type quantifiers: k_ex1833596_ : Bool -/
+ def check_pma_regions (regions : (List PMA_Region)) (prev_base : (BitVec 64)) (prev_size : (BitVec 64)) (check_opts : pma_check_opts) (found_valid_svadu_pma : Bool) : Bool := ExceptM.run do
+   match regions with
+   | [] =>
+@@ -1046,7 +1046,7 @@
+     valid)
+   else valid
+ 
+-/-- Type quantifiers: k_ex1833573_ : Bool -/
++/-- Type quantifiers: k_ex1833597_ : Bool -/
+ def check_required_xtval_option (ext_name : String) (name : String) (value : Bool) : Bool :=
+   if ((not value) : Bool)
+   then
+@@ -1847,7 +1847,7 @@
+     else valid)
+   else valid
+ 
+-/-- Type quantifiers: k_ex1833574_ : Bool -/
++/-- Type quantifiers: k_ex1833598_ : Bool -/
+ def check_stateen_bit_feature (name : String) (c : CSRBitConfig) (feature_supported : Bool) : Bool :=
+   if (((bne c CSRBit_ReadOnlyZero) && (not feature_supported)) : Bool)
+   then
+--- original/LeanRV64D/VextFpUtilsInsts.lean
++++ repaired/LeanRV64D/VextFpUtilsInsts.lean
+@@ -620,7 +620,7 @@
+   then ((nvFlag ()), (ones (n := 16)))
+   else (flag, (Sail.BitVec.extractLsb sig32 15 0))
+ 
+-/-- Type quantifiers: k_ex1833507_ : Bool, k_m : Nat, k_m ≥ 0, List.elem k_m [16, 32, 64] -/
++/-- Type quantifiers: k_ex1833531_ : Bool, k_m : Nat, k_m ≥ 0, List.elem k_m [16, 32, 64] -/
+ def rsqrt7 (v : (BitVec k_m)) (sub : Bool) : SailM (BitVec 64) := do
+   let (sig, exp, sign, e, s) : ((BitVec 64) × (BitVec 64) × (BitVec 1) × Int × Int) :=
+     match (Sail.BitVec.length v) with
+@@ -710,7 +710,7 @@
+   | .float_class_positive_normal =>
+     (pure ((zeros (n := 5)), (Sail.BitVec.extractLsb (← (rsqrt7 v false)) 63 0)))
+ 
+-/-- Type quantifiers: k_ex1833508_ : Bool, k_m : Nat, k_m ≥ 0, List.elem k_m [16, 32, 64] -/
++/-- Type quantifiers: k_ex1833532_ : Bool, k_m : Nat, k_m ≥ 0, List.elem k_m [16, 32, 64] -/
+ def recip7 (v : (BitVec k_m)) (rm_3b : (BitVec 3)) (sub : Bool) : SailM (Bool × (BitVec 64)) := do
+   let (sig, exp, sign, e, s) : ((BitVec 64) × (BitVec 64) × (BitVec 1) × Int × Int) :=
+     match (Sail.BitVec.length v) with
+--- original/LeanRV64D/VextVsetInsts.lean
++++ repaired/LeanRV64D/VextVsetInsts.lean
+@@ -356,7 +356,7 @@
+       else VLMAX)
+     else VLMAX)
+ 
+-/-- Type quantifiers: k_ex1833512_ : Bool -/
++/-- Type quantifiers: k_ex1833536_ : Bool -/
+ def execute_vsetvl_type (ma : (BitVec 1)) (ta : (BitVec 1)) (sew : (BitVec 3)) (lmul : (BitVec 3)) (avl : (BitVec 64)) (requires_fixed_vlmax : Bool) (rd : regidx) : SailM ExecutionResult := do
+   if (((is_invalid_lmul_pow lmul) || (is_invalid_sew_pow sew)) : Bool)
+   then (handle_illegal_vtype rd)
+--- original/LeanRV64D/Vmem.lean
++++ repaired/LeanRV64D/Vmem.lean
+@@ -339,7 +339,7 @@
+           | .Err _ => (pure (Err (PTW_No_Access ()))))
+       else (pure (Err (PTW_PTE_Needs_Update ()))))
+ 
+-/-- Type quantifiers: k_ex826981_ : Bool, k_ex826982_ : Bool, tlb_index : Nat, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex826993_ : Bool, k_ex826994_ : Bool, tlb_index : Nat, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width), 0 ≤ tlb_index ∧ tlb_index ≤ (2 ^ 6 - 1) -/
+ def translate_TLB_hit_mutrec_vvvvv_zUservvvv_zG_Stagev (sv_width : Nat) (_asid : (BitVec (if ( 64 =
+   32  : Bool) then 9 else 16))) (_vmid : (BitVec (if ( 64 = 32  : Bool) then 7 else 14))) (vpn : (BitVec (sv_width - 12))) (access : (MemoryAccessType mem_payload)) (mxr : Bool) (do_sum : Bool) (tlb_index : Nat) (ent : TLB_Entry) (ext_ptw : Unit) : SailM (Result ((BitVec (if ( sv_width
+@@ -367,7 +367,7 @@
+       | .Err (.PTW_PTE_Needs_Update ()) => (pure (Err ((PTW_PTE_Needs_Update ()), ext_ptw)))
+       | .Err e => (pure (Err (e, ext_ptw))))
+ 
+-/-- Type quantifiers: k_ex826971_ : Bool, k_ex826972_ : Bool, level : Nat, k_ex826974_ : Bool, sv_width
++/-- Type quantifiers: k_ex826983_ : Bool, k_ex826984_ : Bool, level : Nat, k_ex826986_ : Bool, sv_width
+   : Nat, (is_sv_or_svx4_mode sv_width), 0 ≤ level ∧
+   level ≤
+   (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 1 else (if ( sv_width = 39 ∨ sv_width = 41  : Bool) then 2 else (if ( sv_width
+@@ -499,7 +499,7 @@
+   (sv_width, vpn, access, mxr, do_sum, pt_base, level, global, ext_ptw)
+ level).toNat
+ 
+-/-- Type quantifiers: k_ex826971_ : Bool, k_ex826972_ : Bool, level : Nat, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex826983_ : Bool, k_ex826984_ : Bool, level : Nat, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width), 0 ≤ level ∧
+   level ≤
+   (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 1 else (if ( sv_width = 39 ∨ sv_width = 41  : Bool) then 2 else (if ( sv_width
+@@ -631,7 +631,7 @@
+   (sv_width, vpn, access, mxr, do_sum, pt_base, level, ext_ptw)
+ level).toNat
+ 
+-/-- Type quantifiers: k_ex826989_ : Bool, k_ex826990_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex827001_ : Bool, k_ex827002_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width) -/
+ def translate_TLB_miss_mutrec_vvvvvv_zUservv_zG_Stagev (sv_width : Nat) (asid : (BitVec (if ( 64 =
+   32  : Bool) then 9 else 16))) (vmid : (BitVec (if ( 64 = 32  : Bool) then 7 else 14))) (base_ppn : (BitVec (if ( sv_width
+@@ -661,7 +661,7 @@
+           (pure (Ok (ppn, pbmt, ext_ptw))))
+       | .Err e => (pure (Err (e, ext_ptw))))
+ 
+-/-- Type quantifiers: k_ex827000_ : Bool, k_ex827001_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex827012_ : Bool, k_ex827013_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width) -/
+ def translate_mutrec_vvvvvv_zUservv_zG_Stagev (sv_width : Nat) (asid : (BitVec (if ( 64 = 32  : Bool) then 9 else 16))) (vmid : (BitVec (if ( 64
+   = 32  : Bool) then 7 else 14))) (base_ppn : (BitVec (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 22 else 44))) (vpn : (BitVec (sv_width - 12))) (access : (MemoryAccessType mem_payload)) (mxr : Bool) (do_sum : Bool) (ext_ptw : Unit) : SailM (Result ((BitVec (if ( sv_width
+@@ -719,7 +719,7 @@
+       | .Err (f, ext_ptw) => (pure (Err (f, ext_ptw))))
+   else (pure (Ok ((Physaddr pte_addr), PBMT_PMA, ext_ptw)))
+ 
+-/-- Type quantifiers: k_ex1833322_ : Bool, level : Nat, k_ex1833320_ : Bool, k_ex1833319_ : Bool, sv_width
++/-- Type quantifiers: k_ex1833346_ : Bool, level : Nat, k_ex1833344_ : Bool, k_ex1833343_ : Bool, sv_width
+   : Nat, (is_sv_or_svx4_mode sv_width), 0 ≤ level ∧
+   level ≤
+   (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 1 else (if ( sv_width = 39 ∨ sv_width = 41  : Bool) then 2 else (if ( sv_width
+@@ -877,7 +877,7 @@
+           | .Err _ => (pure (Err (PTW_No_Access ()))))
+       else (pure (Err (PTW_PTE_Needs_Update ()))))
+ 
+-/-- Type quantifiers: tlb_index : Nat, k_ex1833330_ : Bool, k_ex1833329_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: tlb_index : Nat, k_ex1833354_ : Bool, k_ex1833353_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width), 0 ≤ tlb_index ∧ tlb_index ≤ (2 ^ 6 - 1) -/
+ def translate_TLB_hit (sv_width : Nat) (_asid : (BitVec (if ( 64 = 32  : Bool) then 9 else 16))) (_vmid : (BitVec (if ( 64
+   = 32  : Bool) then 7 else 14))) (vpn : (BitVec (sv_width - 12))) (access : (MemoryAccessType mem_payload)) (priv : Privilege) (mxr : Bool) (do_sum : Bool) (tlb_index : Nat) (ent : TLB_Entry) (stage : TranslationStage) (ext_ptw : Unit) : SailM (Result ((BitVec (if ( sv_width
+@@ -904,7 +904,7 @@
+       | .Err (.PTW_PTE_Needs_Update ()) => (pure (Err ((PTW_PTE_Needs_Update ()), ext_ptw)))
+       | .Err e => (pure (Err (e, ext_ptw))))
+ 
+-/-- Type quantifiers: k_ex1833338_ : Bool, k_ex1833337_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex1833362_ : Bool, k_ex1833361_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width) -/
+ def translate_TLB_miss (sv_width : Nat) (asid : (BitVec (if ( 64 = 32  : Bool) then 9 else 16))) (vmid : (BitVec (if ( 64
+   = 32  : Bool) then 7 else 14))) (base_ppn : (BitVec (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 22 else 44))) (vpn : (BitVec (sv_width - 12))) (access : (MemoryAccessType mem_payload)) (priv : Privilege) (mxr : Bool) (do_sum : Bool) (stage : TranslationStage) (ext_ptw : Unit) : SailM (Result ((BitVec (if ( sv_width
+@@ -932,7 +932,7 @@
+           (pure (Ok (ppn, pbmt, ext_ptw))))
+       | .Err e => (pure (Err (e, ext_ptw))))
+ 
+-/-- Type quantifiers: k_ex1833345_ : Bool, k_ex1833344_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
++/-- Type quantifiers: k_ex1833369_ : Bool, k_ex1833368_ : Bool, sv_width : Nat, (is_sv_or_svx4_mode
+   sv_width) -/
+ def translate (sv_width : Nat) (asid : (BitVec (if ( 64 = 32  : Bool) then 9 else 16))) (vmid : (BitVec (if ( 64
+   = 32  : Bool) then 7 else 14))) (base_ppn : (BitVec (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 22 else 44))) (vpn : (BitVec (sv_width - 12))) (access : (MemoryAccessType mem_payload)) (priv : Privilege) (mxr : Bool) (do_sum : Bool) (stage : TranslationStage) (ext_ptw : Unit) : SailM (Result ((BitVec (if ( sv_width
+--- original/LeanRV64D/VmemPte.lean
++++ repaired/LeanRV64D/VmemPte.lean
+@@ -312,7 +312,7 @@
+                           (← (currentlyEnabled Ext_Svrsw60t59b)))) || ((_get_PTE_Ext_reserved
+                           pte_ext) != (zeros (n := 5)))))))))))))
+ 
+-/-- Type quantifiers: k_ex1833229_ : Bool, k_ex1833228_ : Bool -/
++/-- Type quantifiers: k_ex1833253_ : Bool, k_ex1833252_ : Bool -/
+ def check_PTE_permission (access : (MemoryAccessType mem_payload)) (priv : Privilege) (stage : TranslationStage) (mxr : Bool) (do_sum : Bool) (pte_flags : (BitVec 8)) (_ext : (BitVec 10)) (_ext_ptw : Unit) : SailM PTE_Check := SailME.run do
+   let pte_U := (bit_to_bool (_get_PTE_Flags_U pte_flags))
+   let pte_R := (bit_to_bool (_get_PTE_Flags_R pte_flags))
+--- original/LeanRV64D/VmemTlb.lean
++++ repaired/LeanRV64D/VmemTlb.lean
+@@ -340,7 +340,7 @@
+     then (pure (some (index, entry)))
+     else (pure none))
+ 
+-/-- Type quantifiers: k_ex1833260_ : Bool, level : Nat, sv_width : Nat, (is_sv_or_svx4_mode sv_width), 0
++/-- Type quantifiers: k_ex1833284_ : Bool, level : Nat, sv_width : Nat, (is_sv_or_svx4_mode sv_width), 0
+   ≤ level ∧
+   level ≤
+   (if ( sv_width = 32 ∨ sv_width = 34  : Bool) then 1 else (if ( sv_width = 39 ∨ sv_width = 41  : Bool) then 2 else (if ( sv_width
+--- original/LeanRV64D/VmemUtils.lean
++++ repaired/LeanRV64D/VmemUtils.lean
+@@ -242,7 +242,7 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1833357_ : Bool -/
++/-- Type quantifiers: k_ex1833381_ : Bool -/
+ def plat_misaligned_exception (access : (MemoryAccessType mem_payload)) (res : Bool) : (Option misaligned_exception) :=
+   if ((is_amo_access access) : Bool)
+   then plat_misaligned_access.amo
+@@ -297,7 +297,7 @@
+ def memory_exception (e : ExceptionType) (excinfo : (BitVec 64)) (access_info : AccessInfo) : SailM ExecutionResult := do
+   (trap (mem_exception_context e excinfo access_info))
+ 
+-/-- Type quantifiers: k_ex1833360_ : Bool, k_ex1833359_ : Bool, k_ex1833358_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833384_ : Bool, k_ex1833383_ : Bool, k_ex1833382_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def translate_and_read_value (vaddr : virtaddr) (width : Nat) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result (physaddr × (BitVec (8 * width))) ExecutionResult) := do
+   let eff_priv := access_info.eff_privilege
+@@ -312,7 +312,7 @@
+           (pure (Err (← (memory_exception e (bits_of_virtaddr exc_vaddr) access_info)))))
+       | .Ok v => (pure (Ok (paddr, v))))
+ 
+-/-- Type quantifiers: k_ex1833366_ : Bool, k_ex1833365_ : Bool, k_ex1833364_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833390_ : Bool, k_ex1833389_ : Bool, k_ex1833388_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_read_addr (vaddr : virtaddr) (width : Nat) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result (BitVec (8 * width)) ExecutionResult) := SailME.run do
+   sail_assert (res == (is_load_reserved access)) "sys/vmem_utils.sail:143.40-143.41"
+@@ -381,7 +381,7 @@
+     else (pure data) ) : SailME (Result (BitVec (8 * width)) ExecutionResult) (BitVec (8 * width)) )
+   (pure (Ok data))
+ 
+-/-- Type quantifiers: k_ex1833371_ : Bool, k_ex1833370_ : Bool, k_ex1833369_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833395_ : Bool, k_ex1833394_ : Bool, k_ex1833393_ : Bool, width : Nat, width
+   ≥ 0, 0 < width ∧ width ≤ max_mem_access -/
+ def translate_and_write_value (vaddr : virtaddr) (width : Nat) (value : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result Bool ExecutionResult) := do
+   let eff_priv := access_info.eff_privilege
+@@ -403,7 +403,7 @@
+               (pure (Err (← (memory_exception e (bits_of_virtaddr exc_vaddr) access_info)))))
+           | .Ok s => (pure (Ok s))))
+ 
+-/-- Type quantifiers: k_ex1833377_ : Bool, k_ex1833376_ : Bool, k_ex1833375_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833401_ : Bool, k_ex1833400_ : Bool, k_ex1833399_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_write_addr (vaddr : virtaddr) (width : Nat) (data : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result Bool ExecutionResult) := SailME.run do
+   sail_assert (res == (is_store_conditional access)) "sys/vmem_utils.sail:245.44-245.45"
+@@ -502,7 +502,7 @@
+       let vaddr ← do (transform_effective_address vaddr access_info)
+       (pure (Ext_DataAddr_OK vaddr)))
+ 
+-/-- Type quantifiers: k_ex1833386_ : Bool, k_ex1833385_ : Bool, k_ex1833384_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833410_ : Bool, k_ex1833409_ : Bool, k_ex1833408_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_read_explicit (rs : regidx) (offset : (BitVec 64)) (width : Nat) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result (BitVec (8 * width)) ExecutionResult) := SailME.run do
+   let vaddr ← (( do
+@@ -515,12 +515,12 @@
+   | .Ok data => (pure (Ok data))
+   | .Err e => (pure (Err (with_excinst_offset e vaddr)))
+ 
+-/-- Type quantifiers: k_ex1833394_ : Bool, k_ex1833393_ : Bool, k_ex1833392_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833418_ : Bool, k_ex1833417_ : Bool, k_ex1833416_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_read (rs : regidx) (offset : (BitVec 64)) (width : Nat) (access : (MemoryAccessType mem_payload)) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result (BitVec (8 * width)) ExecutionResult) := do
+   (vmem_read_explicit rs offset width access (← (default_access_info access)) aq rl res)
+ 
+-/-- Type quantifiers: k_ex1833402_ : Bool, k_ex1833401_ : Bool, k_ex1833400_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833426_ : Bool, k_ex1833425_ : Bool, k_ex1833424_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_write_explicit (rs_addr : regidx) (offset : (BitVec 64)) (width : Nat) (data : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (access_info : AccessInfo) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result Bool ExecutionResult) := SailME.run do
+   let vaddr ← (( do
+@@ -533,7 +533,7 @@
+   | .Ok s => (pure (Ok s))
+   | .Err e => (pure (Err (with_excinst_offset e vaddr)))
+ 
+-/-- Type quantifiers: k_ex1833410_ : Bool, k_ex1833409_ : Bool, k_ex1833408_ : Bool, width : Nat, width
++/-- Type quantifiers: k_ex1833434_ : Bool, k_ex1833433_ : Bool, k_ex1833432_ : Bool, width : Nat, width
+   ≥ 0, (is_mem_width width) -/
+ def vmem_write (rs_addr : regidx) (offset : (BitVec 64)) (width : Nat) (data : (BitVec (8 * width))) (access : (MemoryAccessType mem_payload)) (aq : Bool) (rl : Bool) (res : Bool) : SailM (Result Bool ExecutionResult) := do
+   (vmem_write_explicit rs_addr offset width data access (← (default_access_info access)) aq rl res)
+--- original/LeanRV64D/Zero.lean
++++ repaired/LeanRV64D/Zero.lean
+@@ -228,8 +228,8 @@
+ open Architecture
+ open AmocasOddRegisterReservedBehavior
+ 
+-/-- Type quantifiers: k_ex1829744_ : Nat, List.elem k_ex1829744_ [16, 32, 64, 128] -/
+-def float_is_zero (op : (BitVec k_ex1829744_)) : Bool :=
++/-- Type quantifiers: k_ex1829765_ : Nat, List.elem k_ex1829765_ [16, 32, 64, 128] -/
++def float_is_zero (op : (BitVec k_ex1829765_)) : Bool :=
+   let { exp := exp, mantissa := mantissa, sign := _ } := (float_decompose op)
+   ((is_all_zeros exp) && (is_all_zeros mantissa))
+ 
+--- original/LeanRV64D/ZfhInsts.lean
++++ repaired/LeanRV64D/ZfhInsts.lean
+@@ -289,7 +289,7 @@
+   let (sign, exp, mant) := (fsplit_H xf16)
+   ((exp == (ones (n := 5))) && (mant != (zeros (n := 10))))
+ 
+-/-- Type quantifiers: k_ex1833420_ : Bool -/
++/-- Type quantifiers: k_ex1833444_ : Bool -/
+ def fle_H (v1 : (BitVec 16)) (v2 : (BitVec 16)) (is_quiet : Bool) : (Bool × (BitVec 5)) :=
+   let (s1, e1, m1) := (fsplit_H v1)
+   let (s2, e2, m2) := (fsplit_H v2)
+--- original/LeanRV64D/ZicsrInsts.lean
++++ repaired/LeanRV64D/ZicsrInsts.lean
+@@ -273,7 +273,7 @@
+   | 0b11 => true
+   | _ => false
+ 
+-/-- Type quantifiers: k_ex1833518_ : Bool, k_ex1833517_ : Bool -/
++/-- Type quantifiers: k_ex1833542_ : Bool, k_ex1833541_ : Bool -/
+ def csr_access_type (op : csrop) (rd_is_x0 : Bool) (rs1_imm_is_zero : Bool) : CSRAccessType :=
+   match (op, rd_is_x0, rs1_imm_is_zero) with
+   | (.CSRRW, true, _) => CSRWrite

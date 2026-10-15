@@ -1,0 +1,83 @@
+{
+  "algorithm": "sha256",
+  "excludes": [
+    "package-manifest.json"
+  ],
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 3052,
+      "sha256": "39f073b0ee29f9009e1a2d128c9333461a67a9f488155cae6a047f54114ee09d"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 19645,
+      "sha256": "1a70d82b3a2d23b5836baf6ff291f4faff72d48a73764600fd767c2ed2098704"
+    },
+    {
+      "path": "support/ISLARIS-primary-files.json",
+      "bytes": 50842,
+      "sha256": "0a3e3782f2aab33ed25fcd60cf39fa7f120069a57aa51a35e8a9783c2578734e"
+    },
+    {
+      "path": "support/ISLARIS-source-manifest.json",
+      "bytes": 20628,
+      "sha256": "ccf9a603984ee3571b09647d5a87886b9174b7583146a1ded2a6a67b6993e3e1"
+    },
+    {
+      "path": "support/root-requests.json",
+      "bytes": 1603,
+      "sha256": "12f1f10c44bcb96677226744db18e2c5551638a245115bdb7e4700c7bc64fe88"
+    },
+    {
+      "path": "support/source-selections.json",
+      "bytes": 1729,
+      "sha256": "9aa57ed068e3fe5320fe4ebccd452bea02c4c4dee3a61108bbfa2e266f6bfb77"
+    },
+    {
+      "path": "support/upstream/README.md",
+      "bytes": 850,
+      "sha256": "9ea57030ceb2357f8c7a9a3f7c49c8becffc0d7bdabc446e0a03c9d99c267d21"
+    },
+    {
+      "path": "support/upstream/coq-sail-riscv.opam",
+      "bytes": 836,
+      "sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8"
+    },
+    {
+      "path": "support/upstream/coq-sail.opam",
+      "bytes": 1639,
+      "sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89"
+    },
+    {
+      "path": "support/upstream/islaris-deps-Makefile",
+      "bytes": 925,
+      "sha256": "fac5f21a338267dc9da4fea4cf2c3d8baf1cdc9942230075c007217aa2468609"
+    },
+    {
+      "path": "support/upstream/islaris-sail-riscv-README.md",
+      "bytes": 805,
+      "sha256": "69a31fca4dee47b57e07835047e6125d57fbd2e7c838fe875aa0576ea3292d53"
+    },
+    {
+      "path": "support/upstream/islaris-sail-riscv-test-fragment.v",
+      "bytes": 7226,
+      "sha256": "ddb3e93c0c8da8aa64c8f763be24c654597386cd70adae9cd461e59fa2b00153"
+    },
+    {
+      "path": "support/upstream/islaris-theories-dune",
+      "bytes": 406,
+      "sha256": "c00da9e0925ce40756bf889abb75a2facc0e696eacf4a9a45e9f23fd238814af"
+    },
+    {
+      "path": "support/upstream/islaris-trace-test-fragment.v",
+      "bytes": 7667,
+      "sha256": "6ba92c352b7282113cdeeb2a353d98520240a075dc13e0de8b1581ff90b05900"
+    },
+    {
+      "path": "support/upstream-fragments-manifest.json",
+      "bytes": 4631,
+      "sha256": "b317cd0d3d450d1779bae8d55b1a5cffb7acd97e9a70cd0ec504c4821f3af663"
+    }
+  ]
+}

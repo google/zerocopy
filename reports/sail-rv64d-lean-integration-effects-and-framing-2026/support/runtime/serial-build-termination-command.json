@@ -1,0 +1,13 @@
+[
+  "/Users/codex/.orbstack/bin/docker",
+  "exec",
+  "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+  "timeout",
+  "--signal=TERM",
+  "--kill-after=10",
+  "1800",
+  "python3",
+  "-B",
+  "/home/opam/anneal-sail-output/serial-build-termination.py",
+  "execute"
+]

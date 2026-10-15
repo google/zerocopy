@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "-i",
+    "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+    "sha256sum",
+    "--check",
+    "--quiet"
+  ],
+  "exit_code": 1,
+  "locked_archives": 23,
+  "locked_bytes": 26043904,
+  "check_input_sha256": "54bbef58261a3dd2a9e5b267af167ad16fae50729bf2482ab44f1f8ef6da8af2"
+}

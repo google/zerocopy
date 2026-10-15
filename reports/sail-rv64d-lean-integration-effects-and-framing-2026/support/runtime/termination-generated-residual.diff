@@ -1,0 +1,57 @@
+--- original-with-recorded-fresh-renaming/LeanRV64D/PlatformConfig.lean
++++ repaired/LeanRV64D/PlatformConfig.lean
+@@ -5644,10 +5644,10 @@
+   | .Ext_V => 5
+   | .Ext_Zvfhmin => 5
+   | .Ext_Sha => 6
+-  | .Ext_Zfinx => 9
+-  | .Ext_Zdinx => 10
+-  | .Ext_Zhinx => 10
+-  | .Ext_Zhinxmin => 11
++  | .Ext_Zfinx => 10
++  | .Ext_Zdinx => 11
++  | .Ext_Zhinx => 11
++  | .Ext_Zhinxmin => 12
+   | _ => 2
+ 
+ def Mk_Seccfg (v : (BitVec 64)) : (BitVec 64) :=
+@@ -5958,7 +5958,7 @@
+                 stateen_reg))))) ) : SailM (BitVec 64) )
+   (pure ((BitVec.access mask (stateen_bit_index_forwards bit_idx)) == 1#1))
+ termination_by (let (_, _, _) := (priv, bit_idx, stateen_reg)
+-7).toNat
++8).toNat
+ def currentlyEnabled (merge_var : extension) : SailM Bool := do
+   match merge_var with
+   | .Ext_Shcounterenw => (pure ((hartSupports Ext_Shcounterenw) && (← (currentlyEnabled Ext_H))))
+@@ -6189,6 +6189,8 @@
+       | 1 => readReg mstateen1
+       | 2 => readReg mstateen2
+       | _ => readReg mstateen3)
++termination_by (let _ := idx
++7).toNat
+ /-- Type quantifiers: idx : Nat, 0 ≤ idx ∧ idx ≤ 3 -/
+ def get_sstateen (idx : Nat) : SailM (BitVec 64) := do
+   (pure (0xFFFFFFFF#32 +++ (← do
+@@ -6229,7 +6231,7 @@
+ def is_zfinx_enabled_by_stateen (_ : Unit) : SailM Bool := do
+   (check_stateen_bit (← readReg cur_privilege) STATEEN_FCSR 0)
+ termination_by (let () := ()
+-8).toNat
++9).toNat
+ def legalize_mstateen0 (m : (BitVec 64)) (v : (BitVec 64)) : SailM (BitVec 64) := do
+   let v := (Mk_Mstateen0 v)
+   (pure (_update_Mstateen0_C
+@@ -6253,8 +6255,12 @@
+         (legalize_csr_bit mstateen0_fcsr
+           ((hartSupports Ext_Zfinx) && ((_get_Misa_F (← readReg misa)) == 0#1))
+           (_get_Mstateen0_FCSR v))) (legalize_csr_bit mstateen0_c true (_get_Mstateen0_C v))))
++termination_by (let (_, _) := (m, v)
++5).toNat
+ def read_mstateen0 (_ : Unit) : SailM (BitVec 64) := do
+   (legalize_mstateen0 (← readReg mstateen0) (← readReg mstateen0))
++termination_by (let () := ()
++6).toNat
+ end
+ 
+ def legalize_henvcfg (h : (BitVec 64)) (v : (BitVec 64)) : SailM (BitVec 64) := do

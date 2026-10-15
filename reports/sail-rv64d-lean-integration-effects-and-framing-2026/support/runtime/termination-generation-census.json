@@ -1,0 +1,965 @@
+{
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 6,
+      "sha256": "402cd9adbd7d9cba72ad6335679b567edac021cb855d6cffb6e8bc0df9e8e532"
+    },
+    {
+      "path": "LeanRV64D/AddrChecks.lean",
+      "bytes": 4646,
+      "sha256": "1da701d931e3106039e8314fc5f679950e89abdf5bdf519feb73995a29d46bc3"
+    },
+    {
+      "path": "LeanRV64D/AextTypes.lean",
+      "bytes": 7002,
+      "sha256": "51c194f0ac1f1b303628f2c7f76f7a1a2a18867b1b3c72811ea5dc8f5671b5ef"
+    },
+    {
+      "path": "LeanRV64D/Arith.lean",
+      "bytes": 5601,
+      "sha256": "6b9fa8e80654934c5e5565ecbd6b6a776b8659cc402ad8d352f61f7d36df30db"
+    },
+    {
+      "path": "LeanRV64D/ArithInternal.lean",
+      "bytes": 15453,
+      "sha256": "8dfb4f9cbc6f94823b6b032813547135a3719ffda732d91b4a3b52bdf278d70b"
+    },
+    {
+      "path": "LeanRV64D/Arithmetic.lean",
+      "bytes": 8033,
+      "sha256": "11e9bea0a1fcbe1c3c763fc61596d051592e309982ef8cda71d656c7e985c7f3"
+    },
+    {
+      "path": "LeanRV64D/BaseInsts.lean",
+      "bytes": 16629,
+      "sha256": "815a31411bc7dcfca57b33cc6c5127ab75bbee0af6a793151fbc51d235d10c5c"
+    },
+    {
+      "path": "LeanRV64D/BaseTypes.lean",
+      "bytes": 6960,
+      "sha256": "f23525e08f1fe51fc7caa0ac8ba91faad1e74f6af1f049789059c120114cc15d"
+    },
+    {
+      "path": "LeanRV64D/BextTypes.lean",
+      "bytes": 6561,
+      "sha256": "5d5495a3751931ba0015c921833f4765576441fcf6270dc4d567b6cd5dea28c2"
+    },
+    {
+      "path": "LeanRV64D/Callbacks.lean",
+      "bytes": 23891,
+      "sha256": "41c2552629372b1938a594657f3f207595d7e9645a0876c13cd2e1313cb021cd"
+    },
+    {
+      "path": "LeanRV64D/Callbacks0.lean",
+      "bytes": 4905,
+      "sha256": "c0debde75d401cf5748ad9ce9733cd1dbae90fc1d513f0cf54634d5ab9a630b6"
+    },
+    {
+      "path": "LeanRV64D/CfiTypes.lean",
+      "bytes": 5516,
+      "sha256": "f3185b8265ef8c90be7bcdcc85c7911cb91f41f968f51ac445e95bf1bc0141c3"
+    },
+    {
+      "path": "LeanRV64D/Classify.lean",
+      "bytes": 6885,
+      "sha256": "308b730acbef7720e3636d63359e62169c8df174b97a6969046aaa43d461cfc2"
+    },
+    {
+      "path": "LeanRV64D/Common.lean",
+      "bytes": 7827,
+      "sha256": "48553b9b3a781576d56e7b31a5fc5f1c764d29c32348cc86c34262c9937c3aca"
+    },
+    {
+      "path": "LeanRV64D/Common0.lean",
+      "bytes": 5265,
+      "sha256": "d9675bd0823bb11186cc24c32bfbf3035e71b81333999beeb78ae5e36c23282d"
+    },
+    {
+      "path": "LeanRV64D/Counters.lean",
+      "bytes": 17046,
+      "sha256": "8fa6f1c15c4486c3b9229625e91a919f39bd5c4f7d12e24ea5d70755d27dfe34"
+    },
+    {
+      "path": "LeanRV64D/CsrEnd.lean",
+      "bytes": 26750,
+      "sha256": "3124fcf406c49cbc7143564fadb22fbf07e1a6780a13bd6781f71d41b691efa7"
+    },
+    {
+      "path": "LeanRV64D/DecBits.lean",
+      "bytes": 16726,
+      "sha256": "a5d00869f27637d551e49c41c3e132fae507cb19af7a71e81eef551090620e4e"
+    },
+    {
+      "path": "LeanRV64D/DecodeExt.lean",
+      "bytes": 4152,
+      "sha256": "0a58d94f0c0dd56ebc16c5b04b83e0e4ef17e7616e67e16dd8ba3927b159129b"
+    },
+    {
+      "path": "LeanRV64D/Defs.lean",
+      "bytes": 79613,
+      "sha256": "a321e51ce1c87ae0ad16fb603f0cc72817b544d28f6df76f8acee2a7258c6f62"
+    },
+    {
+      "path": "LeanRV64D/DeviceTree.lean",
+      "bytes": 21763,
+      "sha256": "c1171a04b65c18e91ddb7c66ac37734a117ec0046725c546b724c71506a4c4c8"
+    },
+    {
+      "path": "LeanRV64D/DextInsts.lean",
+      "bytes": 15194,
+      "sha256": "676fd24b4e711410976d864d8e829b024c08c657da548912558695ca07408eb1"
+    },
+    {
+      "path": "LeanRV64D/Eq.lean",
+      "bytes": 4455,
+      "sha256": "25c2bdf209837bb4e644314d4c201a9bf7ce5455635acdbca767498a803b5148"
+    },
+    {
+      "path": "LeanRV64D/Errors.lean",
+      "bytes": 4923,
+      "sha256": "1b4f561b86d0902da36bdda74735d7af5f65298fc5f90da94a7385c178b73cf5"
+    },
+    {
+      "path": "LeanRV64D/Events.lean",
+      "bytes": 7489,
+      "sha256": "fd780e57b4004d8c7eb3382a1569e523ff7d3e2adc3617dabad8a52b09bdeaf9"
+    },
+    {
+      "path": "LeanRV64D/ExtRegs.lean",
+      "bytes": 4219,
+      "sha256": "64ec3082f524fb8496252c61029dd491c77fd64c2e1c5b6b286d1d80f07ddb5b"
+    },
+    {
+      "path": "LeanRV64D/Extensions.lean",
+      "bytes": 20497,
+      "sha256": "da244d21c06c31b6af8c69456b4e5c7d0121dde0651928455843954cbe0aa6db"
+    },
+    {
+      "path": "LeanRV64D/FakeReal.lean",
+      "bytes": 1823,
+      "sha256": "a142fdf76faeb3c3550c695eb35c974a8b9dd43d4b9a223f1419229569a2104e"
+    },
+    {
+      "path": "LeanRV64D/FdextRegs.lean",
+      "bytes": 27103,
+      "sha256": "cf8446d4eb1cdaf4d1f7967e7bfb9a78903b5aa270200369926c9316f2571bf4"
+    },
+    {
+      "path": "LeanRV64D/Fetch.lean",
+      "bytes": 7413,
+      "sha256": "102eb2b43acfebe0c90a76abec996372510279c6c386b026a5f5f60ed5cee65d"
+    },
+    {
+      "path": "LeanRV64D/FetchRvfi.lean",
+      "bytes": 6439,
+      "sha256": "f3f8db233a1e77359e9afbe749b55eb701ac0e2d5a4afb694294bcd4f4122b49"
+    },
+    {
+      "path": "LeanRV64D/FextInsts.lean",
+      "bytes": 17275,
+      "sha256": "cfe133e5a3fd6d71e002de8252fd4db0aa727e9b7171e85809ee9ae38b80b522"
+    },
+    {
+      "path": "LeanRV64D/Flen.lean",
+      "bytes": 4105,
+      "sha256": "1fb386f6630cfdb932d4cc41e093cf83e9a07a897640abc69e7100c3e9f4f3a7"
+    },
+    {
+      "path": "LeanRV64D/FloatClassify.lean",
+      "bytes": 7565,
+      "sha256": "fc5c64ec7a9609f8ad4972c1f72ad54b293ee9647c654f5bcf2c7613d079f476"
+    },
+    {
+      "path": "LeanRV64D/Flow.lean",
+      "bytes": 6552,
+      "sha256": "1fbc9b3e3b0318750e7338df8c2185aaf59d7a8771b2b20efabc58c93499dfea"
+    },
+    {
+      "path": "LeanRV64D/FregType.lean",
+      "bytes": 17073,
+      "sha256": "49e0e5eb22e38264e994152d09b94d4acef9b8a0c6be7096f7f73a5060f44a5e"
+    },
+    {
+      "path": "LeanRV64D/Ge.lean",
+      "bytes": 4390,
+      "sha256": "5eea885ec89dc3b7f299b9528745db6e9691a51eb69e50a7af4fb62bae2b9dcd"
+    },
+    {
+      "path": "LeanRV64D/GeQuiet.lean",
+      "bytes": 4461,
+      "sha256": "3a5f3d7f5c4a686db93a38912baa37ae4f0a78b0e6cae78a3eaa0e738c63875e"
+    },
+    {
+      "path": "LeanRV64D/Gt.lean",
+      "bytes": 4390,
+      "sha256": "bdea9bc4d1434d1e834abbd873ed2f4997dd9f34d1931e6ff44cc22217a6052e"
+    },
+    {
+      "path": "LeanRV64D/GtQuiet.lean",
+      "bytes": 4461,
+      "sha256": "de1d115c9ad31fd53fbacf3b7a864ceed3ebf173de8eabff19a327bb3beffbf7"
+    },
+    {
+      "path": "LeanRV64D/HexBits.lean",
+      "bytes": 89517,
+      "sha256": "f425c6af6b551b0d4962d83630d2353635ea0cdde1821ec7ade5dfacf90b04dc"
+    },
+    {
+      "path": "LeanRV64D/HexBitsSigned.lean",
+      "bytes": 95154,
+      "sha256": "dea210601d6d028470628a11054472d42dbcfd52eef07c7266728c1455c1d211"
+    },
+    {
+      "path": "LeanRV64D/HextInsts.lean",
+      "bytes": 4530,
+      "sha256": "9069438f5388718c156ffafeecb7bbd29bc9b2e02dde2cb77baa1da26e5d785c"
+    },
+    {
+      "path": "LeanRV64D/HextTypes.lean",
+      "bytes": 4383,
+      "sha256": "3bed138e5e59c48127a9283d974109a657566bc9454a3ff1a9340b8a3475d41f"
+    },
+    {
+      "path": "LeanRV64D/Inf.lean",
+      "bytes": 4228,
+      "sha256": "7216429b84334f0ab262cff02aae0e27c41a7bab12f5d57af0b28379949aa212"
+    },
+    {
+      "path": "LeanRV64D/InstsBegin.lean",
+      "bytes": 4257,
+      "sha256": "c0f97d6dbac644f58ebff110bf5b34800268f8a12cdb7ec2473a6e93e09e4a3b"
+    },
+    {
+      "path": "LeanRV64D/InstsEnd.lean",
+      "bytes": 47991033,
+      "sha256": "a287813afb526ee63a03aba1c9fd1aed9bc6c149e66a127a3980ef1d9a6e8a1a"
+    },
+    {
+      "path": "LeanRV64D/InterruptImplementation.lean",
+      "bytes": 4030,
+      "sha256": "442cd16ea2f08f17416ba71e876261b1d190031844c612d442a9469c1547ec6d"
+    },
+    {
+      "path": "LeanRV64D/InterruptInterface.lean",
+      "bytes": 11360,
+      "sha256": "702c075d602a81d8b9aba4b77fb204004ca7fc950a92442c9464a9fc91db8c10"
+    },
+    {
+      "path": "LeanRV64D/InterruptRegs.lean",
+      "bytes": 36352,
+      "sha256": "ec52f2de6d46a84dd1e3199e985417989ddc7325d2aeb445616ac9d667f31491"
+    },
+    {
+      "path": "LeanRV64D/IsaVersion.lean",
+      "bytes": 5956,
+      "sha256": "1884cd9ddac020844ca723c8c28bad30951ffad58a8a6cd882ea273dc47976fa"
+    },
+    {
+      "path": "LeanRV64D/Le.lean",
+      "bytes": 4390,
+      "sha256": "340d6f743d37e126c3acf42a07a549884c094b8fa8cf8a42fe7155114da2dc66"
+    },
+    {
+      "path": "LeanRV64D/LeQuiet.lean",
+      "bytes": 4461,
+      "sha256": "233be36c3e791a384e1ddc67e1ec312de2dbe976a2aaad14a24012f5fbfa78bd"
+    },
+    {
+      "path": "LeanRV64D/LeanRV64D.lean",
+      "bytes": 4128,
+      "sha256": "dd67df93f4873c73b821f5941290ce5ad42d8dff4e0a9883436aab53f8a6c8df"
+    },
+    {
+      "path": "LeanRV64D/Lt.lean",
+      "bytes": 4390,
+      "sha256": "0a83fb85ae905318cacb0764a9ffe062579dbc4cc946b2eeb5d66d4f3cc31ed7"
+    },
+    {
+      "path": "LeanRV64D/LtQuiet.lean",
+      "bytes": 4461,
+      "sha256": "f11c83aa2623161a3212e593e22815419ba6df828854353577b09068d01a1d70"
+    },
+    {
+      "path": "LeanRV64D/Main.lean",
+      "bytes": 4530,
+      "sha256": "378a59704940f167cdaabf7abd6ffde2538c4c6906c834b53ef891941b7dfeb0"
+    },
+    {
+      "path": "LeanRV64D/Mapping.lean",
+      "bytes": 5344,
+      "sha256": "d8d2749fc68a8ab1febcbea98d6b0f17483d59eebe0f5de77df7c65383f949ae"
+    },
+    {
+      "path": "LeanRV64D/Mem.lean",
+      "bytes": 26169,
+      "sha256": "ab486be69aa0bc259fef62b5e559ce4a39fd941b894ef2263d55a6d891ec983f"
+    },
+    {
+      "path": "LeanRV64D/MemAddrtype.lean",
+      "bytes": 4346,
+      "sha256": "57f94dddd86604055f66c590949d04a83b336d000ec6c81b914e8c8d6c38d008"
+    },
+    {
+      "path": "LeanRV64D/MemMetadata.lean",
+      "bytes": 4485,
+      "sha256": "c42f5b1865f13fcb3f14ed2e47fc9fb19860ce4a7a05745fa2835a2dccdf2fd3"
+    },
+    {
+      "path": "LeanRV64D/MemTypeUtils.lean",
+      "bytes": 8434,
+      "sha256": "b4cd38669521d118f89a674e56746cc118d274e91ea9a860ca8ab8b2bfc5f2e9"
+    },
+    {
+      "path": "LeanRV64D/MemUtils.lean",
+      "bytes": 5248,
+      "sha256": "323bbebf3f4c37ca7eefb28c1617c369a31c3e8bf23d100d0198d7798d8d7c32"
+    },
+    {
+      "path": "LeanRV64D/MextInsts.lean",
+      "bytes": 6587,
+      "sha256": "e71240fcbd1517c8fb7d1f04445802c08abf7b72b97175ec91336d80b44a1a21"
+    },
+    {
+      "path": "LeanRV64D/MextTypes.lean",
+      "bytes": 4179,
+      "sha256": "eb3a6ed7455f2cf73918ca548698a23565854a0f3b8cb3c0913fde4f674fb099"
+    },
+    {
+      "path": "LeanRV64D/Model.lean",
+      "bytes": 4776,
+      "sha256": "18d2823863e1ea7256db4f9d43f6e454787222ccd5e237c3a89c3288b179e90a"
+    },
+    {
+      "path": "LeanRV64D/Nan.lean",
+      "bytes": 4775,
+      "sha256": "3e86b2a681ea42fca360d82ca9ace0c4824628a52306e483ca79ea77b0eda523"
+    },
+    {
+      "path": "LeanRV64D/Ne.lean",
+      "bytes": 4455,
+      "sha256": "126b074f6ad2b013ba8c58083ca3f92807788ecd2217d03966e01cf0dff8eb50"
+    },
+    {
+      "path": "LeanRV64D/Normal.lean",
+      "bytes": 4508,
+      "sha256": "d1eff30ce3d09f00e8c50366fcfcb8d3c412ca32680d98ac56df996b9d95f53e"
+    },
+    {
+      "path": "LeanRV64D/Option.lean",
+      "bytes": 4332,
+      "sha256": "a6d7487dffff136c803564888e8777300c83b8ec4d80c74f20401a8e5e2ccc86"
+    },
+    {
+      "path": "LeanRV64D/PcAccess.lean",
+      "bytes": 4427,
+      "sha256": "32609143cadcf44cdaca96da1db14e09746b502c8b86338841e9b846437227d8"
+    },
+    {
+      "path": "LeanRV64D/PhysMemInterface.lean",
+      "bytes": 10155,
+      "sha256": "420dc36e7674a76ccfd70160d444065935b1cf2359424f24988bbf1dc01bbba0"
+    },
+    {
+      "path": "LeanRV64D/Platform.lean",
+      "bytes": 27989,
+      "sha256": "15339fecb413641655aa20be7588e5e2e3b903828aebfa3f03b8fb6d2c548cf0"
+    },
+    {
+      "path": "LeanRV64D/PlatformConfig.lean",
+      "bytes": 504912,
+      "sha256": "54771816d74225fc2d377f98d2c375c5b0737ce1e367d8d993231a1b5a47b8e9"
+    },
+    {
+      "path": "LeanRV64D/PmTypes.lean",
+      "bytes": 6151,
+      "sha256": "4e327b4bd48bfe9f4c3777a8f4035cf9c48d8e1801e2d285bae6c73b9630bc2c"
+    },
+    {
+      "path": "LeanRV64D/PmUtils.lean",
+      "bytes": 7216,
+      "sha256": "7b34cd12ab79477e2346d119f932aff691a4c43673776b57e1265b966bc68da6"
+    },
+    {
+      "path": "LeanRV64D/Pma.lean",
+      "bytes": 13319,
+      "sha256": "c6bd0f0446cf174c5c19385c27134f7eae2c24cfb6696ff8ed341493419a9350"
+    },
+    {
+      "path": "LeanRV64D/PmpControl.lean",
+      "bytes": 12465,
+      "sha256": "d9e75283905eef168f64a6488ceb92a7f5b8f58c3c613b6f87c6ab472a015618"
+    },
+    {
+      "path": "LeanRV64D/PmpRegs.lean",
+      "bytes": 9950,
+      "sha256": "1e592c742963eeb5bb4d14084e15aa04025c311d6c44e3b1d12a5d8c4b090264"
+    },
+    {
+      "path": "LeanRV64D/Prelude.lean",
+      "bytes": 11721,
+      "sha256": "ca699e27a3640107848fba6fa72feb2b40a6edd8a548f2aa4d22fbaa0f262d48"
+    },
+    {
+      "path": "LeanRV64D/RangeUtil.lean",
+      "bytes": 5998,
+      "sha256": "96aef1d3bfcfad895b992d74a9353e48604acb062369bf9c78445e6c7705e889"
+    },
+    {
+      "path": "LeanRV64D/ReadWriteV2.lean",
+      "bytes": 4292,
+      "sha256": "cbbc74d977240ac9267e92433837db2f60b4b723d71fd20c23b1ecf7e6e23b7b"
+    },
+    {
+      "path": "LeanRV64D/RegType.lean",
+      "bytes": 4191,
+      "sha256": "33e6eec0e417ca19e521923d4ee3c34a38fcc9114b93d802cc6bf0f7522cd9e1"
+    },
+    {
+      "path": "LeanRV64D/Regs.lean",
+      "bytes": 17670,
+      "sha256": "f685022fccd7019415016d4e8e6efbcdfc898e8d6fb4ebc752e50c5a3d0e3d54"
+    },
+    {
+      "path": "LeanRV64D/Result.lean",
+      "bytes": 4829,
+      "sha256": "c50e367bc37fdc7c843a17c62b8381e6b2a640ec053ffa35bd54bb894fed9f61"
+    },
+    {
+      "path": "LeanRV64D/RiscvExtras.lean",
+      "bytes": 6700,
+      "sha256": "ce7b1b838b018dfc19addf4c1209102cf09cf3ff53ab9685aae6b9330c4228ee"
+    },
+    {
+      "path": "LeanRV64D/Rounding.lean",
+      "bytes": 4245,
+      "sha256": "8de88adc8d918845efcff8568947cae5d5a2824062fb2f005a103f9c45ec010e"
+    },
+    {
+      "path": "LeanRV64D/RvfiDii.lean",
+      "bytes": 61011,
+      "sha256": "63ca65f55ac12a387ba4d1d2e25f7ba2a90d6786d2813b33125c2f386f682dca"
+    },
+    {
+      "path": "LeanRV64D/RvfiDiiV1.lean",
+      "bytes": 8926,
+      "sha256": "62e6bd4bf6b53d8f67755d8cdd23e3496f2a874afddc8b07e57d087a2eb58c60"
+    },
+    {
+      "path": "LeanRV64D/RvfiDiiV2.lean",
+      "bytes": 11721,
+      "sha256": "95d0e70269293dcb28cd6a8ca70793de8266576aeb4f0fa98923d8e38609e2a4"
+    },
+    {
+      "path": "LeanRV64D/SdtrigControl.lean",
+      "bytes": 20474,
+      "sha256": "525e6d46033e2d8337d2d444f151285173cd7d435f0485d02de94dcaab55c993"
+    },
+    {
+      "path": "LeanRV64D/SdtrigRegs.lean",
+      "bytes": 4715,
+      "sha256": "2c99f6be9598e3dab805be255bd758d965048e3017053550a01893ef65b9eacd"
+    },
+    {
+      "path": "LeanRV64D/SdtrigTypeUtils.lean",
+      "bytes": 4372,
+      "sha256": "9c837a94a10de160d1829bacdea52d2268dc8822097960ce74be2efdad2a6474"
+    },
+    {
+      "path": "LeanRV64D/SdtrigTypes.lean",
+      "bytes": 73206,
+      "sha256": "4cc94a787b6017607daa9e19968d1ce198cff200f2a1cabd7dc74206808e752f"
+    },
+    {
+      "path": "LeanRV64D/Sign.lean",
+      "bytes": 4299,
+      "sha256": "62a1b17de4902b349e35986d3f709a87c01d085a90ab19ab59598708744405ef"
+    },
+    {
+      "path": "LeanRV64D/SimpleInterruptGenerator.lean",
+      "bytes": 8438,
+      "sha256": "935127563caefb07a1504968b02e236d880903e3a6480c35c4a55b18a6fe7a8f"
+    },
+    {
+      "path": "LeanRV64D/Smcntrpmf.lean",
+      "bytes": 5450,
+      "sha256": "a48550a68ac5a4899e7880fa0871c51515294cccb0519b5d26357e2729f6452e"
+    },
+    {
+      "path": "LeanRV64D/SpecializationArchSem.lean",
+      "bytes": 4010,
+      "sha256": "93852cd6cabfa25fc6641ad14a4fe2c66a67b3d447cce7c5c68379c377a9416d"
+    },
+    {
+      "path": "LeanRV64D/SplitAccessUtils.lean",
+      "bytes": 8669,
+      "sha256": "87948c9eef0901fea478afa42da44591032ca4365dbcbd71e3db20e83834385d"
+    },
+    {
+      "path": "LeanRV64D/Ssqosid.lean",
+      "bytes": 4396,
+      "sha256": "9ae1df36212ee0a128f0b09fc9022c00072a22c68092b564eff23e71f50836ba"
+    },
+    {
+      "path": "LeanRV64D/StateenAccessChecks.lean",
+      "bytes": 5728,
+      "sha256": "d26ef039f88245ca1953f065284ddb843a991666dbb72c85f39192ff2651bfaf"
+    },
+    {
+      "path": "LeanRV64D/StateenRegs.lean",
+      "bytes": 20189,
+      "sha256": "5bbec87928d683d86bf387346e3a51d31e197f0ba1e16fc1823b69abe2af5929"
+    },
+    {
+      "path": "LeanRV64D/Step.lean",
+      "bytes": 22204,
+      "sha256": "a582a92629904e8a58791e41156e4c97bdadda009be1167de370142afd24f318"
+    },
+    {
+      "path": "LeanRV64D/StepCommon.lean",
+      "bytes": 4299,
+      "sha256": "4609a1f5d1393ae6ab761604597f5552073bace73bd98a0c2a3c04f910978c2e"
+    },
+    {
+      "path": "LeanRV64D/StepExt.lean",
+      "bytes": 4261,
+      "sha256": "8d411b0fd37ef1d98b82a3d9e9133bc192a2150a70792de38426ae3d0a8859b8"
+    },
+    {
+      "path": "LeanRV64D/String.lean",
+      "bytes": 4349,
+      "sha256": "2673d38df709efb51b733f80af6cde4e86c662cbcebd0b1aca689640abd14a61"
+    },
+    {
+      "path": "LeanRV64D/SyncException.lean",
+      "bytes": 4965,
+      "sha256": "ba17b84ce726552d6280f2f9b7ac88af3c4f876116015dd77b87b07e2c0a4e55"
+    },
+    {
+      "path": "LeanRV64D/SysControl.lean",
+      "bytes": 322129,
+      "sha256": "d24a29330c6e97077710f0dff725f7c2fa851d7bfe0e57db27dfc201e5463680"
+    },
+    {
+      "path": "LeanRV64D/SysExceptions.lean",
+      "bytes": 8068,
+      "sha256": "8255b972d6e3de48dfdb93a2e02a945068c365cc76a6e96cbeb25a050b2f3999"
+    },
+    {
+      "path": "LeanRV64D/SysRegs.lean",
+      "bytes": 80308,
+      "sha256": "d8c2d9dc15e8f79ddb26ff8ae1aec13b46b00abc58e5ba443e1ffbf5363b4b7d"
+    },
+    {
+      "path": "LeanRV64D/TestMstatus.lean",
+      "bytes": 4724,
+      "sha256": "4e0526c50545d8b7303535e215b9a61b5f27200a70e5cad7da8a7fc27b52bcca"
+    },
+    {
+      "path": "LeanRV64D/TransformedInst.lean",
+      "bytes": 6983,
+      "sha256": "f0608c84278caa2cdaa20aac2642ef16722d842f4167dbabc8f4499d61e57425"
+    },
+    {
+      "path": "LeanRV64D/Types.lean",
+      "bytes": 26975,
+      "sha256": "b506e481240f5c7451b65f9ccd74a32a0fbf91d031fc7fc98afa0460a45997f6"
+    },
+    {
+      "path": "LeanRV64D/TypesExt.lean",
+      "bytes": 4698,
+      "sha256": "5f10f2d75648950f8ec532a7b46c1852a67209be23e3f5cb51012f071f2404cb"
+    },
+    {
+      "path": "LeanRV64D/TypesKext.lean",
+      "bytes": 19704,
+      "sha256": "f94d4686cee34e7e0e04a75a2f9de5324539fa28b762364ce9e418f7bc1b7a65"
+    },
+    {
+      "path": "LeanRV64D/ValidateConfig.lean",
+      "bytes": 80905,
+      "sha256": "c617c675e397570522286ca948e892c85e24b3c2575f62d6a1360ced7c3ac5ae"
+    },
+    {
+      "path": "LeanRV64D/Vector.lean",
+      "bytes": 5538,
+      "sha256": "f5c5c6a3837b07bdc600fd63625c5a155dfb1b9dd5d25756176f77865083cbdd"
+    },
+    {
+      "path": "LeanRV64D/VextArithInsts.lean",
+      "bytes": 44600,
+      "sha256": "5e68ac75d702481eaff43f0d0c87dc2d3a859b545f70cd4ecdd1a773acc60c4c"
+    },
+    {
+      "path": "LeanRV64D/VextControl.lean",
+      "bytes": 9950,
+      "sha256": "cd5ddbd6d8b84249ac6c5c8ced483c92a9b13b5890aced8d2a2f27daa5bc9c59"
+    },
+    {
+      "path": "LeanRV64D/VextFpInsts.lean",
+      "bytes": 28530,
+      "sha256": "b460e8aed3277c3caae40d51b2a328011d625cb099a719a049e937dd7312b37c"
+    },
+    {
+      "path": "LeanRV64D/VextFpRedInsts.lean",
+      "bytes": 6736,
+      "sha256": "63028ec8cf6d30a1125f0100fe6ebbfb544bfe3fadddcd82ff941ce2296e0e6a"
+    },
+    {
+      "path": "LeanRV64D/VextFpUtilsInsts.lean",
+      "bytes": 33389,
+      "sha256": "764da90f2e9ece9d199a178448ba488eb656e3438b2f9e8e82de8fb29fae45a5"
+    },
+    {
+      "path": "LeanRV64D/VextFpVmInsts.lean",
+      "bytes": 7230,
+      "sha256": "746717504cb22ec74af7fc3b0d91fcafb0dc37fb0efb2e373f5424f678c1ad26"
+    },
+    {
+      "path": "LeanRV64D/VextMaskInsts.lean",
+      "bytes": 6072,
+      "sha256": "e09a9d4a2381d2b8a90a7b8b36da45584d78764a78dc42a8f8e574fa707f7a0c"
+    },
+    {
+      "path": "LeanRV64D/VextMemInsts.lean",
+      "bytes": 8041,
+      "sha256": "6bbe741580b25795515ba9f218e63e3ce7e369559125d09200dcabc504c8865f"
+    },
+    {
+      "path": "LeanRV64D/VextRedInsts.lean",
+      "bytes": 7358,
+      "sha256": "b720f90293e0c2aed0e508c759aed74c3652ad8ae09e890b49f12f9e6d23e234"
+    },
+    {
+      "path": "LeanRV64D/VextRegs.lean",
+      "bytes": 17652,
+      "sha256": "3d5315f17d516d9545eee84649427fe7d935a37c1aec78a8ee0cbfec007d67c5"
+    },
+    {
+      "path": "LeanRV64D/VextTypes.lean",
+      "bytes": 6992,
+      "sha256": "4223c03007133b962e73c3bfa373c062cd3dca81e3ed9924039dd631f94b25a9"
+    },
+    {
+      "path": "LeanRV64D/VextUtilsInsts.lean",
+      "bytes": 32915,
+      "sha256": "a7ad2e942aa2a636143f4abbac6104f103329ca7855bebd5d350f10b781f8a7a"
+    },
+    {
+      "path": "LeanRV64D/VextVmInsts.lean",
+      "bytes": 19256,
+      "sha256": "78a71c5562a429906447a25511a55c26834b90b8fc088bfc83f422dc798a9877"
+    },
+    {
+      "path": "LeanRV64D/VextVsetInsts.lean",
+      "bytes": 9171,
+      "sha256": "25c8adbd506fbe7463de5e6ca15c058c79c8dfca7eb79042a5010007f9709a7f"
+    },
+    {
+      "path": "LeanRV64D/Vlen.lean",
+      "bytes": 4571,
+      "sha256": "290131a564de3b8ccc4b595b4c37561cbfeea20c2a9d47981df195e502f54dd4"
+    },
+    {
+      "path": "LeanRV64D/Vmem.lean",
+      "bytes": 53310,
+      "sha256": "33a39eb08f2f3dc590fd98e0c1b0aa6ee06ebffcea3e86cb88a7866cd209b2e7"
+    },
+    {
+      "path": "LeanRV64D/VmemPte.lean",
+      "bytes": 15328,
+      "sha256": "841ae5b14a5303adf5b0152638028bcd3856bfb01a6c6d845792d7b3206a94ea"
+    },
+    {
+      "path": "LeanRV64D/VmemPtw.lean",
+      "bytes": 8820,
+      "sha256": "f75a14fe905f94e7884d50c30f233565166c31f56fc083448d59aad4ccd2a638"
+    },
+    {
+      "path": "LeanRV64D/VmemTlb.lean",
+      "bytes": 11528,
+      "sha256": "43afa29b7f93a57e745be77ab5017e3fc7ea48aeefbf286bb6da74c71c28da4b"
+    },
+    {
+      "path": "LeanRV64D/VmemTypes.lean",
+      "bytes": 10297,
+      "sha256": "c43972a54f7d5680265a84c0ecaeee7492281bf8f05519c1968ac35fe75b06cf"
+    },
+    {
+      "path": "LeanRV64D/VmemUtils.lean",
+      "bytes": 20411,
+      "sha256": "aa4e2b7def7566bce0a01b358499e1fa3e96ffa5339e9c71fac1d2a1bdf54960"
+    },
+    {
+      "path": "LeanRV64D/VregType.lean",
+      "bytes": 36804,
+      "sha256": "0b0d1e9392982ed7e74d32c7a139f597f16492ce198d988568db29394d511d5a"
+    },
+    {
+      "path": "LeanRV64D/Xlen.lean",
+      "bytes": 4231,
+      "sha256": "60725d54cc139594714a5b13a6f34f12574f58ddb70f97734a126d5592a4693b"
+    },
+    {
+      "path": "LeanRV64D/ZaamoInsts.lean",
+      "bytes": 5128,
+      "sha256": "11a513e001c93274b28a81c2d9d39a9b71b62412961ba26ce135de17e50a1c9e"
+    },
+    {
+      "path": "LeanRV64D/ZawrsInsts.lean",
+      "bytes": 4606,
+      "sha256": "0984510442bacaa88af48f285d42bbc4f160898773a46af2a06c579bd5cfabe0"
+    },
+    {
+      "path": "LeanRV64D/ZawrsTypes.lean",
+      "bytes": 4404,
+      "sha256": "d447ac062a82bab3be7f80e1e91ee8f7c03bfa7aa956f2db52271182cbbf38c8"
+    },
+    {
+      "path": "LeanRV64D/ZbaInsts.lean",
+      "bytes": 5376,
+      "sha256": "299a3bf0a2c5cef108d11f24717124dac2d36d84c50631ff8b722f2dce082eb9"
+    },
+    {
+      "path": "LeanRV64D/ZbbInsts.lean",
+      "bytes": 6113,
+      "sha256": "4caccc088296335ad594bc788baf7a4ff14f23cbc54649963d8bce017ab936b9"
+    },
+    {
+      "path": "LeanRV64D/ZbkbInsts.lean",
+      "bytes": 4585,
+      "sha256": "61d73b83365769503af3a4433a0c4176358e57e123b51005f39436f905d85cd4"
+    },
+    {
+      "path": "LeanRV64D/ZbsInsts.lean",
+      "bytes": 5352,
+      "sha256": "b7b116de12337f0227ae7f9258eb528eb3b3b4e453910d5b5ae0ba36d0888eba"
+    },
+    {
+      "path": "LeanRV64D/Zero.lean",
+      "bytes": 4230,
+      "sha256": "a4e474802d2685198b2ede2481ab44e842a0e986f870dc9a2da2981a2e256b28"
+    },
+    {
+      "path": "LeanRV64D/ZfaInsts.lean",
+      "bytes": 5967,
+      "sha256": "c32b3524486252ed90a23be7480aba483f282ebd3e22234461c8a0ef079e491a"
+    },
+    {
+      "path": "LeanRV64D/ZfbfminUtils.lean",
+      "bytes": 5121,
+      "sha256": "4e09169ecfa493699a9995811c29475ad870c7f8a1d97969aed48282fb191c63"
+    },
+    {
+      "path": "LeanRV64D/ZfhInsts.lean",
+      "bytes": 13842,
+      "sha256": "382e0d88c4d142f7e857677e6bfd2d625bd9843b4a56e7798b233ccfbb881d21"
+    },
+    {
+      "path": "LeanRV64D/ZibiInsts.lean",
+      "bytes": 5048,
+      "sha256": "835830166d9ce8e8faac5cf9388c4adbf66063bd83b71fc12fadd567f61855e2"
+    },
+    {
+      "path": "LeanRV64D/ZibiTypes.lean",
+      "bytes": 4380,
+      "sha256": "7854c5448d5c439b3e50e3c9c769f8f5844b48436146d938caab2fcd95c4ed59"
+    },
+    {
+      "path": "LeanRV64D/ZicbomInsts.lean",
+      "bytes": 9817,
+      "sha256": "aacb172031328ab7b3ef987800b6977c49fe55594c97968f4ac5dc827608ccc7"
+    },
+    {
+      "path": "LeanRV64D/ZicbomTypes.lean",
+      "bytes": 4502,
+      "sha256": "606340b2deebf308d7175bdc90096e1690b2da17ed8c53dde81ad62f78cf6431"
+    },
+    {
+      "path": "LeanRV64D/ZicbopInsts.lean",
+      "bytes": 5347,
+      "sha256": "6b577fa3b7c1cf7931763b7efb91bc0dda5ab69a3ada7b9de6b5eb510cad99d5"
+    },
+    {
+      "path": "LeanRV64D/ZicbopTypes.lean",
+      "bytes": 4511,
+      "sha256": "27e91d2b85546a1b0731d80bdd5477b4cf2e6eee0a790650ac33f373e0147c73"
+    },
+    {
+      "path": "LeanRV64D/ZicfilpInsts.lean",
+      "bytes": 4321,
+      "sha256": "417c2ed125c470ea78daa59db5dad20967f37bcd634c27acbad15ce31f87fc3e"
+    },
+    {
+      "path": "LeanRV64D/ZicfilpRegs.lean",
+      "bytes": 7626,
+      "sha256": "501cec60e279954c5e70a7d91cd9c52a2b0f19d24638da40cbb0fd3f17321f6e"
+    },
+    {
+      "path": "LeanRV64D/ZicfissInsts.lean",
+      "bytes": 4220,
+      "sha256": "7b4ec00e1d598c4b4deb72b4560015341aa8c1bb25b9d56733726af32a701c26"
+    },
+    {
+      "path": "LeanRV64D/ZicondInsts.lean",
+      "bytes": 5136,
+      "sha256": "e021625dafad89ae9286939202a8f06299828de55e411b4c002d0ae12d73ef50"
+    },
+    {
+      "path": "LeanRV64D/ZicondTypes.lean",
+      "bytes": 4434,
+      "sha256": "0741b5f33a5a57641d4907bc54ac1f0cbced396383fe8b1501e194818f524ba2"
+    },
+    {
+      "path": "LeanRV64D/ZicsrInsts.lean",
+      "bytes": 1012433,
+      "sha256": "9e2428d0780bafb9788ad5c11b8b70bfc3ffbbd73ed6480716b12a0d956067fc"
+    },
+    {
+      "path": "LeanRV64D/ZicsrTypes.lean",
+      "bytes": 4430,
+      "sha256": "21ce6c9a2738c4651c383f9150d05fff11d6378afb999e5318d4b01b80ae3e88"
+    },
+    {
+      "path": "LeanRV64D/ZihintntlTypes.lean",
+      "bytes": 5783,
+      "sha256": "e02608a9d925dbf510ab1a30bbf239fb63742b3795a67dd53536807ea16c3ecd"
+    },
+    {
+      "path": "LeanRV64D/ZilxInsts.lean",
+      "bytes": 5328,
+      "sha256": "888a232cbea88069e625c6e40f7bb2b58ba82a533f4ceba2dae6982118e46533"
+    },
+    {
+      "path": "LeanRV64D/ZilxTypes.lean",
+      "bytes": 4523,
+      "sha256": "4d084936c938c6337ac0970fa0d294d92bc271aaf21d98f41ff7fa0f68ce86f0"
+    },
+    {
+      "path": "LeanRV64D/ZkrControl.lean",
+      "bytes": 5387,
+      "sha256": "6212bdbbfe85feba28d03928bcc39951d16bfed82c62e0e6c59ceed8402d5fb9"
+    },
+    {
+      "path": "LeanRV64D/ZvabdInsts.lean",
+      "bytes": 7418,
+      "sha256": "2a16f536a807c78a1e3c30fe61a2d07c12b345ad5ca668a31dca53772761c137"
+    },
+    {
+      "path": "LeanRV64D/ZvabdTypes.lean",
+      "bytes": 4872,
+      "sha256": "def6e278b004972ba98ef5f047e86ef8d73c33a1d7484851e969ebc3218583a3"
+    },
+    {
+      "path": "LeanRV64D/ZvkUtils.lean",
+      "bytes": 11887,
+      "sha256": "60c0469a1c8b11af85defcbba364b9b5d3714e69389af5ab359c8a7f8977ded6"
+    },
+    {
+      "path": "LeanRV64D/ZvknedInsts.lean",
+      "bytes": 8654,
+      "sha256": "de3871ec34922028cf57e258025904b8741452ae7bdaa790e76f561ace61275d"
+    },
+    {
+      "path": "LeanRV64D/ZvknhabInsts.lean",
+      "bytes": 5212,
+      "sha256": "28947bd6c42002dfee60179c23456a96aed79748c0c579b0949ffe18118cca6e"
+    },
+    {
+      "path": "LeanRV64D/ZvksedInsts.lean",
+      "bytes": 4628,
+      "sha256": "a142a76f1897ea5eae512d3eade731d7a28b468077c60b4a8e34eea3aa6ddc35"
+    },
+    {
+      "path": "LeanRV64D.lean",
+      "bytes": 23152,
+      "sha256": "5379c3d073b33876d3ff757900f72c6ba0eedf9ac89f2bd86cde2d72a50d67ae"
+    },
+    {
+      "path": "lake-manifest.json",
+      "bytes": 116,
+      "sha256": "0c611122a8be4dfaeb68ebf4aa0362acc882d2daaf2cce4063caa2491e848e95"
+    },
+    {
+      "path": "lakefile.toml",
+      "bytes": 283,
+      "sha256": "e6473c6fa1c4ceaa9a87f88ed90f71afb1769cb97abeb30a93d29ea19c89ea2f"
+    },
+    {
+      "path": "lean-toolchain",
+      "bytes": 24,
+      "sha256": "85b71aa934e019c03eac6ec5ed97526956b4dff51b54c5d558fca8a5b34703e6"
+    }
+  ],
+  "result": {
+    "status": 0,
+    "seconds": 160.68886101897806,
+    "child_user_seconds": 123.836514,
+    "child_system_seconds": 39.110948,
+    "child_maxrss_kib": 500848,
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10",
+      "1200",
+      "sail",
+      "--strict-var",
+      "--strict-bitvector",
+      "--strict-exponentials",
+      "--require-version",
+      "0.20.3",
+      "--memo-z3-path",
+      "/home/opam/anneal-sail-output/termination-generated/sail_smt_cache",
+      "--config",
+      "/home/opam/anneal-sail-output/model-config/config/rv64d_v256_e64.json",
+      "--lean",
+      "--memo-z3",
+      "--lean-output-dir",
+      "/home/opam/anneal-sail-output/termination-generated",
+      "--lean-non-beq-type",
+      "instruction",
+      "--lean-non-beq-type",
+      "instr_info",
+      "--lean-non-beq-type",
+      "HartState",
+      "--lean-non-beq-type",
+      "ExecutionResult",
+      "--lean-non-beq-type",
+      "Step",
+      "--lean-noncomputable",
+      "--lean-noncomputable-function",
+      "encdec_forwards",
+      "--lean-noncomputable-function",
+      "encdec_backwards",
+      "--lean-noncomputable-function",
+      "encdec_forwards_matches",
+      "--lean-noncomputable-function",
+      "encdec_backwards_matches",
+      "--lean-noncomputable-function",
+      "encdec_compressed_forwards",
+      "--lean-noncomputable-function",
+      "encdec_compressed_backwards",
+      "--lean-noncomputable-function",
+      "encdec_compressed_forwards_matches",
+      "--lean-noncomputable-function",
+      "encdec_compressed_backwards_matches",
+      "--lean-import-file",
+      "../handwritten_support/RiscvExtras.lean",
+      "--lean-lib-path",
+      "/home/opam/anneal-sail-sources/lean-sail",
+      "-o",
+      "Lean_RV64D",
+      "--all-modules",
+      "riscv.sail_project"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/termination-source/model",
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

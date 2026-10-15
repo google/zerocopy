@@ -1,0 +1,47 @@
+{
+  "role": "read-only GitHub primary repository resolution; no archive acquired",
+  "bbv": {
+    "repository": "mit-plv/bbv",
+    "requested_ref": "v1.5",
+    "resolved_revision": "c53d5b95c70839ae8e947010d85503bd1ada1120",
+    "root_entries": [
+      {
+        "mode": "100644",
+        "path": "Makefile",
+        "sha": "51a3284750b4f8be0ee019c3957024e6138891f4",
+        "size": 497,
+        "type": "blob"
+      },
+      {
+        "mode": "100644",
+        "path": "_CoqProject",
+        "sha": "6685125fb5188dccef1d22e465c504e18dd2281a",
+        "size": 142,
+        "type": "blob"
+      }
+    ],
+    "coq_project": "-Q src/bbv bbv\n-arg -w -arg -deprecated-hint-rewrite-without-locality,+deprecated-hint-without-locality,+deprecated-instance-without-locality\n"
+  },
+  "dune": {
+    "repository": "ocaml/dune",
+    "requested_ref": "3.9.1",
+    "resolved_revision": "3276f90725e4423790a43065cc51ddbbba61eb89",
+    "metadata_x_commit_hash": "3276f90725e4423790a43065cc51ddbbba61eb89"
+  },
+  "iris_opam": {
+    "repository": "rocq-iris/opam",
+    "requested_ref": "master",
+    "resolved_revision": "3c21518b509d33676776c36e160de1d76835b801",
+    "scope": "Discovery only used moving ref; subsequent file reads pinned this revision."
+  },
+  "released_opam": {
+    "repository": "rocq-prover/opam",
+    "requested_ref": "master",
+    "resolved_revision": "564ab90f5874c0c91cee746c4706bc2ba686a5a9"
+  },
+  "historical_dune_metadata": {
+    "repository": "ocaml/opam-repository",
+    "revision": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+    "discovery": "Last path-specific commit returned before 2024-09-11 for packages/dune/dune.3.9.1/opam; inspected file x-commit-hash independently matches resolved Dune source."
+  }
+}

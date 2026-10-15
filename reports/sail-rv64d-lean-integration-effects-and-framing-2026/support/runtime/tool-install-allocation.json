@@ -1,0 +1,10 @@
+{
+  "owner": "parent",
+  "scope": "Exact existing officialLean4.29A64+Z34.15.3 archives only",
+  "new_root": "/home/opam/anneal-sail-tools",
+  "installed_regular_bytes": 2991414023,
+  "archive_bytes": 586662424,
+  "allocation_bytes": 4294967296,
+  "model_generation_not_granted": true,
+  "dependency_root_deviation": "Earlier dependency install peaked5021424KiB over4GiB; finished0beforestopprocesscheck, no signal sent; final3511832KiB. Retain honest overshoot separately."
+}

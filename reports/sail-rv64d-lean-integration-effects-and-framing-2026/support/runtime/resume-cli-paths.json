@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+    "bash",
+    "-c",
+    "set -euo pipefail\nprintf 'SELECTED_ENV\\n'\nfor n in PATH OPAMROOT OPAMSWITCH SAIL_DIR SAIL_PLUGIN_DIR LEAN_PATH LEAN_SYSROOT LAKE_HOME LD_LIBRARY_PATH LD_PRELOAD; do printf '%s=%s\\n' \"$n\" \"${!n-}\"; done\nprintf 'PLUGINS\\n'\nfind /home/opam/anneal-sail-opam/sail414 -type f -name '*.cmxs' -print\nprintf 'EXECUTABLES\\n'\nfor f in /home/opam/anneal-sail-opam/sail414/bin/sail /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lake /home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin/z3; do readlink -f \"$f\"; sha256sum \"$f\"; ldd \"$f\"; done\n"
+  ],
+  "status": 0,
+  "seconds": 0.48848133289720863
+}

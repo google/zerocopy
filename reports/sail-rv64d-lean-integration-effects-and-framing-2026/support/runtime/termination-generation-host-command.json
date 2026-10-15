@@ -1,0 +1,17 @@
+[
+  "/Users/codex/.orbstack/bin/docker",
+  "exec",
+  "-i",
+  "-e",
+  "OPAMROOT=/home/opam/anneal-sail-opam",
+  "-e",
+  "OPAMSWITCH=sail414",
+  "-e",
+  "SAIL_PLUGIN_DIR=/home/opam/anneal-sail-opam/sail414/share/libsail/plugins",
+  "-e",
+  "PATH=/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin:/home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin:/home/opam/anneal-sail-opam/sail414/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+  "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+  "python3",
+  "-c",
+  "from pathlib import Path\nimport sys,json,subprocess,time,resource,hashlib\ns=json.load(sys.stdin);root=Path(s['output_root']);run=root/'termination-run';run.mkdir()\n(run/'generation-spec.json').write_text(json.dumps(s,indent=2)+'\\n')\nt=time.monotonic()\nwith (run/'generation.stdout').open('xb') as so,(run/'generation.stderr').open('xb') as se:\n r=subprocess.run(s['argv'],cwd=s['cwd'],stdout=so,stderr=se)\nu=resource.getrusage(resource.RUSAGE_CHILDREN)\nrow={'status':r.returncode,'seconds':time.monotonic()-t,'child_user_seconds':u.ru_utime,'child_system_seconds':u.ru_stime,'child_maxrss_kib':u.ru_maxrss,'argv':s['argv'],'cwd':s['cwd']}\nfor n in ['stdout','stderr']:\n b=(run/('generation.'+n)).read_bytes();row[n]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}\n(run/'generation-result.json').write_text(json.dumps(row,indent=2)+'\\n');print(json.dumps(row),flush=True)\n"
+]

@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "islaris",
+    "coq/dependencies",
+    "opam/reproducibility",
+    "sail/proof-bridges"
+  ],
+  "subjects": [
+    {
+      "name": "Islaris",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "Lithium source, inspected through same-commit mirror",
+      "identity": {
+        "repository": "UIC-verif-group/refinedC",
+        "revision": "7945a29d1647970709a9b5ad2ffc53c757e130cc"
+      }
+    },
+    {
+      "name": "Iris source mirror",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa"
+      }
+    },
+    {
+      "name": "stdpp source mirror",
+      "identity": {
+        "repository": "rocq-iris/stdpp",
+        "revision": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+      }
+    },
+    {
+      "name": "Iris opam repository mirror",
+      "identity": {
+        "repository": "rocq-iris/opam",
+        "revision": "3c21518b509d33676776c36e160de1d76835b801"
+      }
+    },
+    {
+      "name": "Coq released opam metadata",
+      "identity": {
+        "repository": "rocq-prover/opam",
+        "revision": "564ab90f5874c0c91cee746c4706bc2ba686a5a9"
+      }
+    },
+    {
+      "name": "Main OCaml opam metadata",
+      "identity": {
+        "repository": "ocaml/opam-repository",
+        "revision": "56aefa37456aa263913289a4174daca01c4b9339"
+      }
+    },
+    {
+      "name": "Historical Dune opam metadata",
+      "identity": {
+        "repository": "ocaml/opam-repository",
+        "revision": "0d269faa45d7a07cdd53bb713f56d453cf648218"
+      }
+    },
+    {
+      "name": "Dune source metadata",
+      "identity": {
+        "repository": "ocaml/dune",
+        "revision": "3276f90725e4423790a43065cc51ddbbba61eb89"
+      }
+    },
+    {
+      "name": "Old Sail generator package metadata",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "b14f649845db850b3673696e2aa90565fa2a60ef"
+      }
+    },
+    {
+      "name": "Coq Sail support package metadata",
+      "identity": {
+        "repository": "rems-project/coq-sail",
+        "revision": "169934e27ceafe393ed4d365985f7b12d974d56e"
+      }
+    },
+    {
+      "name": "Old Sail RISC-V Coq package metadata",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890"
+      }
+    },
+    {
+      "name": "Isla language package metadata",
+      "identity": {
+        "repository": "rems-project/isla-lang",
+        "revision": "bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+      }
+    },
+    {
+      "name": "bbv 1.5 released source selection",
+      "identity": {
+        "repository": "mit-plv/bbv",
+        "revision": "c53d5b95c70839ae8e947010d85503bd1ada1120",
+        "archive": "v1.5.tar.gz",
+        "sha512": "43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

@@ -1,0 +1,250 @@
+[
+  {
+    "name": "Controls",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/Controls.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/Controls.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 0,
+    "seconds": 2.14486133295577,
+    "maxrss_kib": 1555444,
+    "user_seconds": 1.676228,
+    "system_seconds": 0.470917,
+    "files": {
+      "Controls.lean": {
+        "bytes": 9930,
+        "sha256": "7c9301d8c6080cd8cd1cf1a4ae356532b92de8378e416fd7ed48f35945d5635b"
+      },
+      "Controls.olean": {
+        "bytes": 254400,
+        "sha256": "b2fbb76b44f7eb0ad57ca724d959a62dc0ddd7594df0db0a4b26b129fe9aa0b7"
+      },
+      "Controls.stdout": {
+        "bytes": 35704,
+        "sha256": "55c9d0c35728687fa73398188fd7561e5410075cfa9ac6cf94bf5bcf1096466c"
+      },
+      "Controls.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  {
+    "name": "SemanticAudit",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 1,
+    "seconds": 3.3832007329910994,
+    "maxrss_kib": 1541284,
+    "user_seconds": 3.144569,
+    "system_seconds": 0.252401,
+    "files": {
+      "SemanticAudit.lean": {
+        "bytes": 3265,
+        "sha256": "a5d1e29b94171ef207ae82cf4853d1639a3ecec35171a15fa1a6deafc3bb8d46"
+      },
+      "SemanticAudit.stdout": {
+        "bytes": 55926,
+        "sha256": "421cc4c4c26c30cde77c3ac5ff10760d945ca1b3e27cbc8df4d8368c6a11a338"
+      },
+      "SemanticAudit.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  {
+    "name": "SemanticAudit2",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit2.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit2.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 1,
+    "seconds": 3.3876773740630597,
+    "maxrss_kib": 1536124,
+    "user_seconds": 2.905545,
+    "system_seconds": 0.48401,
+    "files": {
+      "SemanticAudit2.lean": {
+        "bytes": 3320,
+        "sha256": "733b5487e4e3266cf1a35a16b4ca828e81af1234607196ec5f942cdf2a5119cc"
+      },
+      "SemanticAudit2.stdout": {
+        "bytes": 56231,
+        "sha256": "4a89c765ee75670433450832a5ae81ac215361c0e729a49882f7bde3fd58936e"
+      },
+      "SemanticAudit2.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  {
+    "name": "SemanticAudit3",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit3.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/SemanticAudit3.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 0,
+    "seconds": 3.1449519629823044,
+    "maxrss_kib": 1546496,
+    "user_seconds": 2.9390169999999998,
+    "system_seconds": 0.20762799999999998,
+    "files": {
+      "SemanticAudit3.lean": {
+        "bytes": 3334,
+        "sha256": "7c646b5e5a9cee3e4e501e5d2e0fb6bb203c5d80675423133f8b260f1299826c"
+      },
+      "SemanticAudit3.olean": {
+        "bytes": 52304,
+        "sha256": "ea702e19e7212551f47def3a1dc4cdd769603b74bac7fe706550a5e74814c97a"
+      },
+      "SemanticAudit3.stdout": {
+        "bytes": 55979,
+        "sha256": "143312f257babb1be65a61fd117788ebaed5b97e3cff7320a320e4049c5c41bd"
+      },
+      "SemanticAudit3.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  {
+    "name": "FalsePair1",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/FalsePair1.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/FalsePair1.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 1,
+    "seconds": 0.44241051306016743,
+    "maxrss_kib": 1518804,
+    "user_seconds": 0.32612199999999997,
+    "system_seconds": 0.11688499999999999,
+    "files": {
+      "FalsePair1.lean": {
+        "bytes": 1111,
+        "sha256": "1eff7bb8c3cff267706e6df38cdd771e0be4f849e7d59f3667320d18511a1e1b"
+      },
+      "FalsePair1.stdout": {
+        "bytes": 327,
+        "sha256": "8981e92f7256944f4b9b893468b20f6797f6dbabfba100373221c58898b3086a"
+      },
+      "FalsePair1.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  {
+    "name": "FalsePair2",
+    "argv": [
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "120",
+      "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+      "-j1",
+      "-M4500",
+      "--tstack=400000",
+      "-t0",
+      "-R",
+      "/home/opam/anneal-sail-output/independent-controls-v4",
+      "-o",
+      "/home/opam/anneal-sail-output/independent-controls-v4/FalsePair2.olean",
+      "/home/opam/anneal-sail-output/independent-controls-v4/FalsePair2.lean"
+    ],
+    "cwd": "/home/opam/anneal-sail-output/independent-controls-v4",
+    "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/independent-controls-v4",
+    "status": 1,
+    "seconds": 0.42946613498497754,
+    "maxrss_kib": 1519544,
+    "user_seconds": 0.30755099999999996,
+    "system_seconds": 0.12438099999999999,
+    "files": {
+      "FalsePair2.lean": {
+        "bytes": 1249,
+        "sha256": "bcff78e956d0ba7a4b0320662431dfcccd86c789fd570298aa97103a05e737f9"
+      },
+      "FalsePair2.stdout": {
+        "bytes": 1000,
+        "sha256": "f48728afa25bec476c2095816a70636db6628adcf6690995a1e8153035d45e4f"
+      },
+      "FalsePair2.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  }
+]

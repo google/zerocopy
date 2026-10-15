@@ -1,0 +1,82 @@
+[
+  {
+    "name": "output-create",
+    "argv": [
+      "/Users/codex/.orbstack/bin/docker",
+      "exec",
+      "-i",
+      "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+      "python3",
+      "-c",
+      "from pathlib import Path\nimport sys,json\np=Path('/home/opam/anneal-sail-output')\nif p.exists() or p.is_symlink(): raise SystemExit('STOP: output already exists')\np.mkdir(); (p/'configure').mkdir(); (p/'generated').mkdir()\n(p/'configure'/'CMakeLists.txt').write_text(sys.stdin.read())\nprint(json.dumps({'created':str(p)}))\n"
+    ],
+    "input_sha256": "bcac32ef4f799651bb838aab03a9d405185c658bee1b47e20502fcefbacf7fa5",
+    "status": 0,
+    "seconds": 0.1727528340416029,
+    "stdout_bytes": 45,
+    "stderr_bytes": 0
+  },
+  {
+    "name": "model-config",
+    "argv": [
+      "/Users/codex/.orbstack/bin/docker",
+      "exec",
+      "-e",
+      "OPAMROOT=/home/opam/anneal-sail-opam",
+      "-e",
+      "OPAMSWITCH=sail414",
+      "-e",
+      "SAIL_PLUGIN_DIR=/home/opam/anneal-sail-opam/sail414/share/libsail/plugins",
+      "-e",
+      "PATH=/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin:/home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin:/home/opam/anneal-sail-opam/sail414/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+      "timeout",
+      "--kill-after=5",
+      "30",
+      "cmake",
+      "-S",
+      "/home/opam/anneal-sail-output/configure",
+      "-B",
+      "/home/opam/anneal-sail-output/model-config",
+      "-DANNEAL_MODEL_SOURCE=/home/opam/anneal-sail-sources/sail-riscv"
+    ],
+    "input_sha256": null,
+    "status": 0,
+    "seconds": 0.11824204097501934,
+    "stdout_bytes": 119,
+    "stderr_bytes": 0
+  },
+  {
+    "name": "model-file-order",
+    "argv": [
+      "/Users/codex/.orbstack/bin/docker",
+      "exec",
+      "-e",
+      "OPAMROOT=/home/opam/anneal-sail-opam",
+      "-e",
+      "OPAMSWITCH=sail414",
+      "-e",
+      "SAIL_PLUGIN_DIR=/home/opam/anneal-sail-opam/sail414/share/libsail/plugins",
+      "-e",
+      "PATH=/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin:/home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin:/home/opam/anneal-sail-opam/sail414/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "-w",
+      "/home/opam/anneal-sail-sources/sail-riscv/model",
+      "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+      "timeout",
+      "--kill-after=5",
+      "30",
+      "sail",
+      "riscv.sail_project",
+      "--require-version",
+      "0.20.3",
+      "--all-modules",
+      "--list-files-separated",
+      ";"
+    ],
+    "input_sha256": null,
+    "status": 0,
+    "seconds": 0.1434498749440536,
+    "stdout_bytes": 5073,
+    "stderr_bytes": 0
+  }
+]

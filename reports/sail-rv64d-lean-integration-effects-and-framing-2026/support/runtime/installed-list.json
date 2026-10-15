@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-sail-opam",
+    "--env",
+    "LC_ALL=C",
+    "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+    "opam",
+    "list",
+    "--switch=sail414",
+    "--installed",
+    "--columns=name,version",
+    "--short"
+  ],
+  "returncode": 0
+}

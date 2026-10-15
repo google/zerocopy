@@ -1,0 +1,546 @@
+PACKAGES conf-pkg-config.5
+build: [
+  ["pkg-config" "--help"] {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+  ["pkgconf" "--version"] {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+  ["sh" "./write-config.sh" name "-v" "command:list" "EOL"
+     "pkg-config" {os != "win32" & !(os = "macos" & os-distribution = "homebrew")}
+     "pkgconf" {(os = "win32" & os-distribution != "msys2") | (os = "macos" & os-distribution = "homebrew")}
+     "i686-w64-mingw32-pkgconf" {os = "win32" & os-distribution = "msys2" & host-arch-x86_32:installed}
+     "--personality=i686-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_32:installed}
+     "x86_64-w64-mingw32-pkgconf" {os = "win32" & os-distribution = "msys2" & host-arch-x86_64:installed}
+     "--personality=x86_64-w64-mingw32" {os = "win32" & os-distribution = "cygwin" & host-arch-x86_64:installed}
+     "EOL"]
+  ["sh" "./install-shim.sh" name "pkgconf" bin] {os = "win32" & os-distribution = "cygwin"}
+]
+depexts: [
+  ["pkg-config"] {os-family = "debian" | os-family = "ubuntu"}
+  ["pkgconf"] {os-distribution = "arch"}
+  ["pkgconf-pkg-config"] {os-family = "fedora"}
+  ["pkgconfig"] {os-distribution = "centos" & os-version <= "7"}
+  ["pkgconf-pkg-config"] {os-distribution = "mageia"}
+  ["pkgconfig"] {os-distribution = "rhel" & os-version <= "7"}
+  ["pkgconfig"] {os-distribution = "ol" & os-version <= "7"}
+  ["pkgconf"] {os-distribution = "alpine"}
+  ["pkg-config"] {os-distribution = "nixos"}
+  ["pkgconf"] {os = "macos" & os-distribution = "homebrew"}
+  ["pkgconfig"] {os = "macos" & os-distribution = "macports"}
+  ["pkgconf"] {os = "freebsd"}
+  ["pkgconf-pkg-config"] {os-distribution = "rhel" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "centos" & os-version >= "8"}
+  ["pkgconf-pkg-config"] {os-distribution = "ol" & os-version >= "8"}
+  ["system:pkgconf"] {os = "win32" & os-distribution = "cygwinports"}
+  ["pkgconf"] {os-distribution = "cygwin"}
+]
+extra-source "install-shim.sh" {
+  src: "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh"
+  checksum: [
+    "sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961"
+    "sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c"
+  ]
+}
+extra-source "write-config.sh" {
+  src: "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh"
+  checksum: [
+    "sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a"
+    "sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71"
+  ]
+}
+
+PACKAGES base-threads.base, base-unix.base, base-bigarray.base, ocaml-options-vanilla.1, base-bytes.base
+
+
+PACKAGES ocaml-base-compiler.4.14.4
+build-env: MSYS2_ARG_CONV_EXCL = "*"
+setenv: CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"
+build: [
+  [
+    "./configure"
+    "--host=x86_64-pc-windows"  {system-msvc:installed & arch-x86_64:installed}
+    "--host=x86_64-w64-mingw32" {os-distribution = "cygwin" & system-mingw:installed & arch-x86_64:installed}
+    "--host=i686-pc-windows"    {system-msvc:installed & arch-x86_32:installed}
+    "--host=i686-w64-mingw32"   {os-distribution = "cygwin" & system-mingw:installed & arch-x86_32:installed}
+    "--prefix=%{prefix}%"
+    "--docdir=%{doc}%/ocaml"
+    "--with-flexdll=%{flexdll:share}%" {os = "win32" & flexdll:installed}
+    "-C"
+    "CC=cc" {os = "openbsd" | os = "macos"}
+    "ASPP=cc -c" {os = "openbsd" | os = "macos"}
+  ]
+  [make "-j%{jobs}%"]
+]
+install: [make "install"]
+url {
+  src: "https://github.com/ocaml/ocaml/releases/download/4.14.4/ocaml_4.14.4.tar.gz"
+  checksum: "sha256=71415c000ebfce604defafaa584ab5ed10ad81ff180897db4e6fea8dac6e4b0d"
+}
+extra-source "ocaml-base-compiler.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install"
+  checksum: [
+    "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678"
+    "md5=3e969b841df1f51ca448e6e6295cb451"
+  ]
+}
+
+PACKAGES conf-findutils.1
+build: [["sh" "-exc" "find . -name ."]]
+depexts: [
+  ["findutils"] {os-family = "debian"}
+  ["findutils"] {os-family = "ubuntu"}
+  ["findutils"] {os-family = "fedora"}
+  ["findutils"] {os-distribution = "rhel"}
+  ["findutils"] {os-distribution = "centos"}
+  ["findutils"] {os-distribution = "alpine"}
+  ["findutils"] {os-distribution = "nixos"}
+  ["findutils"] {os-family = "suse" | os-family = "opensuse"}
+  ["findutils"] {os-distribution = "ol"}
+  ["findutils"] {os-distribution = "arch"}
+  ["system:findutils"] {os = "win32" & os-distribution = "cygwinports"}
+  ["findutils"] {os-distribution = "cygwin"}
+  ["findutils"] {os-distribution = "msys2"}
+  # ["findutils"] {os = "freebsd"} # this installs g* packges, e.g., gfind. Unless code looks for those specific names, it is not necessary to install on freebsd
+]
+
+PACKAGES conf-gmp.5
+build: [
+  ["sh" "-c" "pkg-config --print-errors --exists gmp || cc -c $CFLAGS -I/usr/local/include test.c"] { os != "win32" }
+  [
+    "sh"
+    "-exc"
+    "$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c"
+  ] {os = "win32" & os-distribution = "cygwinports"}
+  [
+    "sh"
+    "-exc"
+    "%{host-arch-x86_64:installed?x86_64:}%%{host-arch-x86_32:installed?i686:}%-w64-mingw32-gcc -c $CFLAGS test.c"
+  ] {os = "win32" & os-distribution != "cygwinports"}
+]
+depexts: [
+  ["libgmp-dev"] {os-family = "debian"}
+  ["libgmp-dev"] {os-family = "ubuntu"}
+  ["gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["gmp"] {os-distribution = "macports" & os = "macos"}
+  ["gmp" "gmp-devel"] {os-distribution = "centos"}
+  ["gmp" "gmp-devel"] {os-family = "fedora" | os-family = "fedora"}
+  ["gmp" "gmp-devel"] {os-distribution = "ol"}
+  ["gmp"] {os = "openbsd"}
+  ["gmp"] {os = "freebsd"}
+  ["gmp"] {os-distribution = "arch"}
+  ["gmp-dev"] {os-distribution = "alpine"}
+  ["gmp-devel"] {os-family = "suse" | os-family = "opensuse"}
+  ["gmp"] {os = "win32" & os-distribution = "cygwinports"}
+  ["gmp"] {os-distribution = "nixos"}
+  ["libgmp-devel"] {os-family = "altlinux"}
+]
+extra-source "test.c" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4"
+  checksum: [
+    "sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb"
+    "md5=2fd2970c293c36222a6d299ec155823f"
+  ]
+}
+
+PACKAGES ocaml-config.2
+substs: "gen_ocaml_config.ml"
+extra-source "ocaml-config.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install"
+  checksum: [
+    "sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051"
+    "md5=8e50c5e2517d3463b3aad649748cafd7"
+  ]
+}
+extra-source "gen_ocaml_config.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in"
+  checksum: [
+    "sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29"
+    "md5=a4b41e3236593d8271295b84b0969172"
+  ]
+}
+
+PACKAGES ocaml.4.14.4
+setenv: [
+  [OCAMLTOP_INCLUDE_PATH += "%{toplevel}%"]
+  [CAML_LD_LIBRARY_PATH = "%{_:stubsdir}%"]
+  [CAML_LD_LIBRARY_PATH += "%{lib}%/stublibs"]
+  # Legacy opam variable
+  [OCAML_TOPLEVEL_PATH = "%{toplevel}%"]
+]
+build: ["ocaml" "%{ocaml-config:share}%/gen_ocaml_config.ml" _:version _:name]
+build-env: CAML_LD_LIBRARY_PATH = ""
+
+PACKAGES ocamlfind.1.9.8
+build: [
+  [
+    "./configure"
+    "-bindir"
+    bin
+    "-sitelib"
+    lib
+    "-mandir"
+    man
+    "-config"
+    "%{lib}%/findlib.conf"
+    "-no-custom"
+    "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
+    "-no-topfind" {ocaml:preinstalled}
+  ]
+  [make "all"]
+  [make "opt"] {ocaml:native}
+]
+install: [
+  [make "install"]
+  ["install" "-m" "0755" "ocaml-stub" "%{bin}%/ocaml"] {ocaml:preinstalled}
+]
+url {
+  src:
+    "https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz"
+  checksum: [
+    "md5=ca770e5806032a96131b670f6e07f146"
+    "sha512=8967986de2ab4ec5993f437b0a4206742adf37aa7a292a3bba0a04438d78539b84d001191e60b2d5bde98a695b38cba2593b7051f7749adbdb964a0df3c4b661"
+  ]
+}
+
+PACKAGES ocamlbuild.0.16.1
+build: [
+  [
+    make
+    "-f"
+    "configure.make"
+    "all"
+    "OCAMLBUILD_PREFIX=%{prefix}%"
+    "OCAMLBUILD_BINDIR=%{bin}%"
+    "OCAMLBUILD_LIBDIR=%{lib}%"
+    "OCAMLBUILD_MANDIR=%{man}%"
+    "OCAML_NATIVE=%{ocaml:native}%"
+    "OCAML_NATIVE_TOOLS=%{ocaml:native}%"
+  ]
+  [make "check-if-preinstalled" "all" "opam-install"]
+]
+
+url {
+  src: "https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz"
+  checksum: [
+    "sha512=e918b9a0081f271e507c7a4f4d5d5a7cdf818ca51c52acec1bac85ddad5f6cad078cb3c568252fbcf5401c2d75323ed8f50fdd881bda1c9632840320408393ae"
+  ]
+}
+
+PACKAGES num.1.6
+build: [
+  [make "PROFILE=release"
+        "opam-legacy" {!ocaml:preinstalled & ocaml:version < "5.0.0~~"}
+        "opam-modern" {ocaml:preinstalled | ocaml:version >= "5.0.0~~"}]
+  [make "test"] {with-test}
+]
+url {
+  src: "https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz"
+  checksum: [
+    "sha256=b5cce325449aac746d5ca963d84688a627cca5b38d41e636cf71c68b60495b3e"
+    "sha512=5cb32dfa9a9f0ad375bfd89079e9b1422979f3c089f61ef2300ad9cc64fb1fc25ed1f86b0267eb017f12ae41a574a959df5bfa39ab22c2be2f1ac84c3c671bdf"
+  ]
+}
+
+PACKAGES dune.3.21.1
+build: [
+  ["ocaml" "boot/bootstrap.ml" "-j" jobs]
+  ["./_boot/dune.exe" "build" "dune.install" "--release" "--profile" "dune-bootstrap" "-j" jobs]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.21.1/dune-3.21.1.tbz"
+  checksum: [
+    "sha256=84f7a82c6d80a7124f3847e9a489e80cfbeafb7bed3573ac01286ef56fd08d94"
+    "sha512=d9fa44e24036d2593adfe59e52e0ad64f3e7e973d23f84af57fc79e38fa210630b0cb55590f314d6ef455333b96a8e0ce188c2720eaae44576222541ba78efb3"
+  ]
+}
+
+PACKAGES zarith.1.14
+build: [
+  ["./configure"]
+  [make]
+]
+install: [
+  [make "install"]
+]
+url {
+  src: "https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz"
+  checksum: [
+    "sha256=5db9dcbd939153942a08581fabd846d0f3f2b8c67fe68b855127e0472d4d1859"
+    "sha512=8a7f3e82dfa5699c8dda54dd5398c712f3ac4fe04f5208d43d8ba198fb8152de5f91cbb59c15c0a4ba010d4dfcc79f52e405bdd0abbf2798167e9e4216bcb3dd"
+  ]
+}
+
+PACKAGES yojson.3.0.0
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz"
+  checksum: [
+    "sha256=99414da7609b92a02474ef4b49ecda15edc8cbba5229341b124e7e4695c39610"
+    "sha512=896d0ea829a36ccadba6628800369c1a3ab9e7c64dbda8b76331889c9db481cd64e137f467481ae80a8dd5fca45d748bfa71f58641806cc1bb1a007f8291789f"
+  ]
+}
+
+PACKAGES top-closure.3.21.1, ordering.3.21.1, fs-io.3.21.1, dyn.3.21.1, stdune.3.21.1, dune-private-libs.3.21.1, dune-site.3.21.1
+build: [
+  ["dune" "subst"] {dev}
+  ["rm" "-rf" "vendor/csexp"]
+  ["rm" "-rf" "vendor/pp"]
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml/dune/releases/download/3.21.1/dune-3.21.1.tbz"
+  checksum: [
+    "sha256=84f7a82c6d80a7124f3847e9a489e80cfbeafb7bed3573ac01286ef56fd08d94"
+    "sha512=d9fa44e24036d2593adfe59e52e0ad64f3e7e973d23f84af57fc79e38fa210630b0cb55590f314d6ef455333b96a8e0ce188c2720eaae44576222541ba78efb3"
+  ]
+}
+
+PACKAGES pprint.20220103
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src: "https://github.com/fpottier/pprint/archive/20220103.tar.gz"
+  checksum: [
+    "md5=6ace8d5113f937aa65873f6c9985fea4"
+    "sha512=1c4d85e529414dc2d52602fae7e44ca036d2d35e9ce1906fd88b0f8a8d0ba1527042b0e5117fdeb51237b2311020a711065a917cc158b63e2ac932c97fa28406"
+  ]
+}
+
+PACKAGES pp.2.0.0
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz"
+  checksum: [
+    "sha256=8651351518b092b4a2def4e08171c276152f92fb6a84a8b19b6b929ccdb44419"
+    "sha512=78cb68f35c0b975dd1e91bd83d5e33bcec1ee642431585d55864c483c70a032755dfcf21ec5697691e7e7554381ddb580639fd149e28ba6f74d04d2ee43d360d"
+  ]
+}
+
+PACKAGES ocamlgraph.2.2.0
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz"
+  checksum: [
+    "sha256=b0956210863cc24f480203ba3c2ef06dfae5579536a05744364e7de58822b230"
+    "sha512=257cdd5fb90337b3e3682cade1269c1d181f3124e569a731909f49bbfbe581ab529ac401472fb9ef57166ac34d8ebadfa6a32c93665f38f5a335982d5e5dc0e1"
+  ]
+}
+
+PACKAGES menhirSdk.20240715, menhirLib.20240715, menhirCST.20240715, menhir.20240715
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src:
+    "https://gitlab.inria.fr/fpottier/menhir/-/archive/20240715/archive.tar.gz"
+  checksum: [
+    "md5=d39a8943fe1be28199e5ec1f4133504c"
+    "sha512=4f933cfc9026f5f2ffda9b0e626862560a233c35ecf097d179edd926d9009bdf46b6611294aea02b63c34427348568f37376a033fbe8cf98a7746fa6f1354dbd"
+  ]
+}
+
+PACKAGES linenoise.1.5.1
+build: [
+  ["dune" "build" "@install" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+]
+url {
+  src:
+    "https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz"
+  checksum: [
+    "sha256=eef172cb98282b7a8be182f3493f4687ed3a3f833d3c2707d07d188bf9dede37"
+    "sha512=b316b034ba712f13c8727a890c5356a52119d6f5e7040273259109bfac6813c383670295942d39441b9b9e792f3b53250400da000bbe0c6848df5643e27018ac"
+  ]
+}
+
+PACKAGES csexp.1.5.2
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+#   "@runtest" {with-test & ocaml:version >= "4.04"}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src:
+    "https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz"
+  checksum: [
+    "sha256=1a14dd04bb4379a41990248550628c77913a9c07f3c35c1370b6960e697787ff"
+    "sha512=be281018bcfc20d4db14894ef51c4b836d6338d2fdfe22e63d46f405f8dea7349e16f1c0ecd65f73d4c85a2a80e618cdbb8c9dafcbb9f229f04f1adca5b1973c"
+  ]
+}
+
+PACKAGES base64.3.5.2
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz"
+  checksum: [
+    "sha256=b3f5ce301aa72c7032ef90be2332d72ff3962922c00ee2aec6bcade187a2f59b"
+    "sha512=82148a1fefec9493aaeac032c8d46b9548369d7fd90a57865e009a32c8a0eef950f0f8dbb52b74bb46880a590a0b49f2daa7ab4857233734aee8e383f5a164ec"
+  ]
+}
+
+PACKAGES lem.2022-12-10
+build: [make "INSTALL_DIR=%{prefix}%"]
+install: [make "INSTALL_DIR=%{prefix}%" "install"]
+remove: [make "INSTALL_DIR=%{prefix}%" "uninstall"]
+url {
+  src: "https://github.com/rems-project/lem/archive/2022-12-10.tar.gz"
+  checksum: [
+    "md5=d5e167df4aaefc3b64ef2dc28436130d"
+    "sha512=09b4fc9bdcd3ad95432bb8fbadef9025d3dece6a8d66c390eafc33d6c02ede5044d60291c2b46558905a5941df54a6f8cccf8be7865cbf028f4d9de3042f120e"
+  ]
+}
+
+PACKAGES omd.1.3.2
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+url {
+  src: "https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz"
+  checksum: [
+    "sha256=6023e1642631f08f678eb5725820879ed7bb5a3ffee777cdedebc28c1f85fadb"
+    "sha512=fa2070a5f5d30b2cc422937ac4158bb087134a69d47fa15df403afb1c0c60a73dd436c949faa8d44e0b65bdee039779d86191b55085b717253f91ef20a69ef98"
+  ]
+}
+
+PACKAGES sail_maker.0.20.3, libsail.0.20.3, sail_sv_backend.0.20.3, sail_smt_backend.0.20.3, sail_output.0.20.3, sail_ocaml_backend.0.20.3, sail_lem_backend.0.20.3, sail_lean_backend.0.20.3, sail_latex_backend.0.20.3, sail_doc_backend.0.20.3, sail_coq_backend.0.20.3, sail_c_backend.0.20.3
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+
+PACKAGES ott.0.34
+build: [
+  [make "world"] { ocaml:native }
+  [make "world.byt"] { !ocaml:native }
+  ["rm" "src/ott"] {os = "win32"}
+  ["cp" "src/ott.opt" "src/ott"] {os = "win32" & ocaml:native}
+  ["cp" "src/ott.byte" "src/ott"] {os = "win32" & !ocaml:native}
+  [make "ott.install"]
+]
+url {
+  src: "https://github.com/ott-lang/ott/archive/0.34.tar.gz"
+  checksum: "sha512=371b59c0dc35207f8e85a939f03ae63fc654df50540ed5e656c5a40c5062ebfdfb1e02cfd499074f9d0b43afc165606b57dec4c96a4ca44ee91d1c1dcfa4deaf"
+}
+
+PACKAGES linksem.0.8
+build: [make]
+install: [make "install"]
+url {
+  src: "https://github.com/rems-project/linksem/archive/0.8.tar.gz"
+  checksum: [
+    "md5=2075c56715539b3b8f54ae65cc808b8c"
+    "sha512=f7c16e4036a1440a6a8d13707a43f0f9f9db0c68489215f948cc300b6a164dba5bf852e58f89503e9d9f38180ee658d9478156ca1a1ef64d6861eec5f9cf43d2"
+  ]
+}
+
+PACKAGES sail.0.20.3
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+substs: [ "src/bin/manifest.ml" ]

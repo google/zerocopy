@@ -1,0 +1,37 @@
+[
+  {
+    "source": "work/execution/sail-runtime/resume-installed-tool-census.stdout",
+    "package_path": "support/runtime/resume-installed-tool-census.stdout.gz",
+    "source_bytes": 2801871,
+    "source_sha256": "8d09b53b71e5f380121cda00100b1cb5c037389fab94ed7a5c277daf67e98f6d",
+    "compression": "gzip, exact unmodified source bytes"
+  },
+  {
+    "source": "work/execution/sail-runtime/resume-official-tool-expected.json",
+    "package_path": "support/runtime/resume-official-tool-expected.json.gz",
+    "source_bytes": 3101669,
+    "source_sha256": "6ae3e1b12e0515d8531b400506941c3a1fd9ea9af23510ab0d6d203f2a9ce375",
+    "compression": "gzip, exact unmodified source bytes"
+  },
+  {
+    "source": "work/execution/sail-runtime/resume-opam-installed.stdout",
+    "package_path": "support/runtime/resume-opam-installed.stdout.gz",
+    "source_bytes": 867101,
+    "source_sha256": "c555b2908c66a9ffa62316dd221e45df52e71e40fed9c359bec3b1abf836dc18",
+    "compression": "gzip, exact unmodified source bytes"
+  },
+  {
+    "source": "work/execution/sail-runtime/lean-archive-inventory.json",
+    "package_path": "support/runtime/lean-archive-inventory.json.gz",
+    "source_bytes": 2549252,
+    "source_sha256": "7f29e507439e91f8da1a5331b1bde97204043a91a4eee5c71531a3d6977881b4",
+    "compression": "gzip, exact unmodified source bytes"
+  },
+  {
+    "source": "work/execution/sail-runtime/z3-archive-inventory.json",
+    "package_path": "support/runtime/z3-archive-inventory.json.gz",
+    "source_bytes": 6587,
+    "source_sha256": "70d6ba12c609159b6711b7a83e65a84bff0fd25fc0720ceeef6e5df9adb9490e",
+    "compression": "gzip, exact unmodified source bytes"
+  }
+]

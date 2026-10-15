@@ -1,0 +1,1060 @@
+{
+  "ordered_sources": [
+    {
+      "input": "prelude/prelude.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/prelude/prelude.sail",
+      "bytes": 11397,
+      "sha256": "852739a36c902f939bba44673a88eb6e96a284483d290fa7228244cb5cf176c9"
+    },
+    {
+      "input": "prelude/errors.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/prelude/errors.sail",
+      "bytes": 1258,
+      "sha256": "2d848d05bd6b20ccfeb054d639aef4c2e03692aa1dfb5d356544e99ecae97d3a"
+    },
+    {
+      "input": "extensions/A/aext_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/A/aext_types.sail",
+      "bytes": 1098,
+      "sha256": "62c9782b3b6e2c3cbc389543f1c7653f45ef938b07b4402e9835dd2322370d80"
+    },
+    {
+      "input": "extensions/Zicbom/zicbom_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicbom/zicbom_types.sail",
+      "bytes": 451,
+      "sha256": "19957abe30dd74bc6c27ecf1464e8e5a0f38d5f5236a02edeb8dc564e7c426ef"
+    },
+    {
+      "input": "extensions/Zicbop/zicbop_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicbop/zicbop_types.sail",
+      "bytes": 462,
+      "sha256": "fbbdf988ccd23b0f2aec8507862a71b0d42626ff849ee3ce7d65490b3c6a2091"
+    },
+    {
+      "input": "extensions/Zibi/zibi_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zibi/zibi_types.sail",
+      "bytes": 423,
+      "sha256": "ad8a715ec3b974e418152a23c0b90d89ff0adf3b7790982df7eafef1ccf93241"
+    },
+    {
+      "input": "extensions/pointer_masking/pm_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/pointer_masking/pm_types.sail",
+      "bytes": 1424,
+      "sha256": "cac1a91a038e58ff335fe0b1dbce00d92dd2218a51c7214f937731b3ce77a3c0"
+    },
+    {
+      "input": "core/isa_version.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/isa_version.sail",
+      "bytes": 3713,
+      "sha256": "6499020944ce4f82ff19022a5df3bc1901910c957df53d2a63b83b2ef0436528"
+    },
+    {
+      "input": "core/xlen.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/xlen.sail",
+      "bytes": 3074,
+      "sha256": "cdb0c29104dbf0899914480d3f30d126015c3eefa713a36ae2588ce9c5d3790a"
+    },
+    {
+      "input": "core/flen.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/flen.sail",
+      "bytes": 986,
+      "sha256": "a4064983a16764246f1e0296938fe1be8de4ae760c1b798b4795b5bf13a82618"
+    },
+    {
+      "input": "core/vlen.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/vlen.sail",
+      "bytes": 1951,
+      "sha256": "32fc53b900207ccd7892678c7dd2731a93ecca6a43fdaf9f0276193ef94bcf88"
+    },
+    {
+      "input": "core/mem_addrtype.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/mem_addrtype.sail",
+      "bytes": 1592,
+      "sha256": "cc7a353ee4c37e6cd1258f6cabbcd1801ae75399147e39633669e00a7759d417"
+    },
+    {
+      "input": "core/mem_metadata.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/mem_metadata.sail",
+      "bytes": 750,
+      "sha256": "d56479e88150f4941af5535bcf04bafb1df21e0480f4b8a62cc652cb3d79d985"
+    },
+    {
+      "input": "core/arithmetic.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/arithmetic.sail",
+      "bytes": 2812,
+      "sha256": "e96d68eadd62816e02e5bed6ff428aa2098df37294675f066284370eb21dfcde"
+    },
+    {
+      "input": "core/range_util.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/range_util.sail",
+      "bytes": 2366,
+      "sha256": "cc2433a7c2a05d29fe89bf64d3f9c6bdaefb2a7029334a04e87d6f496e1843f9"
+    },
+    {
+      "input": "core/float_classify.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/float_classify.sail",
+      "bytes": 2184,
+      "sha256": "0331aaccb2003c810a1d2786bd00a6c6d89ca9b5a04dc6d7d0534a413d2fb3b0"
+    },
+    {
+      "input": "core/rvfi_dii.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/rvfi_dii.sail",
+      "bytes": 11531,
+      "sha256": "d52a8d1f8c597afdad1fcfe7fd5282d30e8bcf51c9783f220701acafe3704a26"
+    },
+    {
+      "input": "core/rvfi_dii_v1.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/rvfi_dii_v1.sail",
+      "bytes": 4401,
+      "sha256": "cc2c197cac975a6f7e0d3b056607985467ba0de2b74989896a17ec6d39d5acad"
+    },
+    {
+      "input": "core/rvfi_dii_v2.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/rvfi_dii_v2.sail",
+      "bytes": 3227,
+      "sha256": "5c6bacf921756654e0b36881aaa570522e892fa00c950f763df0235688e3d34d"
+    },
+    {
+      "input": "core/platform_config.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/platform_config.sail",
+      "bytes": 15192,
+      "sha256": "9759129b6135af83e71567bea6c68ad1de105eb449c74e086b718c2cb6369669"
+    },
+    {
+      "input": "core/extensions.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/extensions.sail",
+      "bytes": 40402,
+      "sha256": "723ce4349033bdecbf8c33932aff35b8b6f28e2b62572e64845ecfa528c5b906"
+    },
+    {
+      "input": "core/types_common.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/types_common.sail",
+      "bytes": 759,
+      "sha256": "8aecb1cfa1646ef8babedcf1a1785475c36f16dd00637c61992538f2c5fdfeeb"
+    },
+    {
+      "input": "core/types_ext.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/types_ext.sail",
+      "bytes": 2842,
+      "sha256": "c23b8fdec84f5a9082944797f77c309548f2de351e58e2f2e4ac2883766fc480"
+    },
+    {
+      "input": "core/types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/types.sail",
+      "bytes": 16595,
+      "sha256": "85600edbb47420cf944f5122d34a09aa2ca758eab39b47a34868fc38d5c3254b"
+    },
+    {
+      "input": "core/vmem_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/vmem_types.sail",
+      "bytes": 6651,
+      "sha256": "cec18ca13ead152a8ca16bf78b6f1546cebd3b13c528d6c022ac4d582636852d"
+    },
+    {
+      "input": "core/phys_mem_interface.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/phys_mem_interface.sail",
+      "bytes": 8356,
+      "sha256": "e85fbfc8454f2790f32a26357f05cc439d6603c70aec8b77800d546d7463da24"
+    },
+    {
+      "input": "core/mem_type_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/mem_type_utils.sail",
+      "bytes": 5502,
+      "sha256": "c4b415fe514077f9d9011eeb13bc7544719a5e791d41cea0e05388215a0081ab"
+    },
+    {
+      "input": "core/csr_begin.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/csr_begin.sail",
+      "bytes": 1247,
+      "sha256": "84c714b5e00646ebc943a9f21e4e183b96a347eacbb678d48f245edfb2b04576"
+    },
+    {
+      "input": "core/callbacks.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/callbacks.sail",
+      "bytes": 4606,
+      "sha256": "10a0eea032b1943f48ae4101b132649bd46230e57039695b554373821c69aec7"
+    },
+    {
+      "input": "core/reg_type.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/reg_type.sail",
+      "bytes": 714,
+      "sha256": "8115b2d4e0804323bd511cad8ee17cd6edcf647d117390ba2e123445236c2d49"
+    },
+    {
+      "input": "core/regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/regs.sail",
+      "bytes": 6015,
+      "sha256": "e6f0ac2cac40355285fb7c5bb942eb27bfe0a61c6642b61ae003431c66a6b463"
+    },
+    {
+      "input": "core/pc_access.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/pc_access.sail",
+      "bytes": 1022,
+      "sha256": "355d650e0da14d8f0900d605cdf1ec6c550a907410a671b13c9a761fbb849db6"
+    },
+    {
+      "input": "core/sys_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/sys_regs.sail",
+      "bytes": 54758,
+      "sha256": "eeba3d8aacceb56849d964ed48ca33b0dd4e72f8a6311b80dd2c6737544f807b"
+    },
+    {
+      "input": "core/events.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/events.sail",
+      "bytes": 2206,
+      "sha256": "7fffef7da4518669c1485943b994545f794c269e2ecfe56acd750709f7609f71"
+    },
+    {
+      "input": "core/ext_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/ext_regs.sail",
+      "bytes": 891,
+      "sha256": "6080057a394646845feb19564e3b3db5c128c76ec082c4a3454b219cafdd0bf0"
+    },
+    {
+      "input": "core/interrupt_interface.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/interrupt_interface.sail",
+      "bytes": 2236,
+      "sha256": "ffbfb3e85f7b5150333ec5f7336c13791b87035d3cb0435a4af777f56e8064db"
+    },
+    {
+      "input": "core/interrupt_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/interrupt_regs.sail",
+      "bytes": 24568,
+      "sha256": "7e60fe5d30389b22a0a1d03d019e435a384c213f276b71d2ad6f1dc3c7916c26"
+    },
+    {
+      "input": "core/counters.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/counters.sail",
+      "bytes": 15247,
+      "sha256": "48b06d9e15be48dac405493961025ce95fb61a4779e6e9e704378eab2d02b4fd"
+    },
+    {
+      "input": "core/addr_checks_common.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/addr_checks_common.sail",
+      "bytes": 910,
+      "sha256": "7089db8f9641d448872104951d9b6249ca4467bf5b4c280d51240b851f9685a5"
+    },
+    {
+      "input": "core/addr_checks.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/addr_checks.sail",
+      "bytes": 2019,
+      "sha256": "d6c6007073665e86daa614334a8ca3086b8eba6da39010bf6283c8124d5b4b0a"
+    },
+    {
+      "input": "core/misa_ext.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/misa_ext.sail",
+      "bytes": 437,
+      "sha256": "d77a26434e7532ae81c92961d61d81a6abe5912280e1cb0568e2a82e5d1e955c"
+    },
+    {
+      "input": "core/softfloat_interface.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/core/softfloat_interface.sail",
+      "bytes": 10638,
+      "sha256": "9f7c9ec1734baf3cdd0b1154642e606c555f3489d1e8a6dbe0c5378a0f9dbee3"
+    },
+    {
+      "input": "exceptions/sys_exceptions.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/exceptions/sys_exceptions.sail",
+      "bytes": 6129,
+      "sha256": "90d1eb8c52f9d8d8e4819a3504f5021139c7379776ed627cee82c4874914a3ec"
+    },
+    {
+      "input": "exceptions/sync_exception.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/exceptions/sync_exception.sail",
+      "bytes": 2042,
+      "sha256": "02833f59d5ed8d2c50842b6a90cce54a8a3abf67c5ed4ae2a46fe9405e18296a"
+    },
+    {
+      "input": "pmp/pmp_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/pmp/pmp_regs.sail",
+      "bytes": 11584,
+      "sha256": "5ba0581f25b6bb92956086c17b07304f8b5361c9416d2a31afb4f315be5d25d3"
+    },
+    {
+      "input": "pmp/pmp_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/pmp/pmp_control.sail",
+      "bytes": 7614,
+      "sha256": "f3da23cdd783ad84e7d40c82a28e61db20cbf78fcfd093e9e76d0c194ead085a"
+    },
+    {
+      "input": "extensions/I/base_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/I/base_types.sail",
+      "bytes": 912,
+      "sha256": "0446e25572148fa80fc7125985625520c9191396eeca09b065e5b66474aa2da0"
+    },
+    {
+      "input": "extensions/M/mext_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/M/mext_types.sail",
+      "bytes": 501,
+      "sha256": "f85cefe5cdfd593d4479000a1c32a7345f2febd151dab57a229c6391de6636df"
+    },
+    {
+      "input": "extensions/B/bext_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/B/bext_types.sail",
+      "bytes": 681,
+      "sha256": "e7bcd96423cabd745d3f185d43a648aebcf49b903363c35337c18d209efa7982"
+    },
+    {
+      "input": "extensions/H/hext_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/H/hext_types.sail",
+      "bytes": 423,
+      "sha256": "06e8ae777bb24f824ca0cc8151d78c50d737a04693e45b14d15c3bbbdac91e23"
+    },
+    {
+      "input": "extensions/Stateen/stateen_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Stateen/stateen_regs.sail",
+      "bytes": 8460,
+      "sha256": "c430ab2e36986589d92e72a2fde4e30671fbac277bef2be3bb6f5828f95dd1bb"
+    },
+    {
+      "input": "extensions/FD/freg_type.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/freg_type.sail",
+      "bytes": 2923,
+      "sha256": "27f8138a53154ade9f4ce2ea3c0cd146b5f57d1d03a72b5d61f293eccc242590"
+    },
+    {
+      "input": "extensions/FD/fdext_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/fdext_regs.sail",
+      "bytes": 12989,
+      "sha256": "944b39fbffc48fc92fa951d44170559caf80900b2aa96c680b95a72d410b179a"
+    },
+    {
+      "input": "extensions/FD/fdext_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/fdext_control.sail",
+      "bytes": 2615,
+      "sha256": "07b30730ba2f05cdd8f638ed3e1ca0e30906cb756c27b68a27920e6a6a47da57"
+    },
+    {
+      "input": "extensions/V/vext_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_types.sail",
+      "bytes": 1440,
+      "sha256": "eeaab9ad850708059ac794bbb24ceba4605a153d8d70bbabead092cb879ef1e6"
+    },
+    {
+      "input": "extensions/V/vreg_type.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vreg_type.sail",
+      "bytes": 5787,
+      "sha256": "da5fd64798b2a5e203fc9e8159b8aaf395fad01aa49c128ae2b2a6aaf3d74e5c"
+    },
+    {
+      "input": "extensions/V/vext_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_regs.sail",
+      "bytes": 10338,
+      "sha256": "6cce9a19301ec10d9f9db3dd3eeca87d451a38990d4cd718b6218684d6417496"
+    },
+    {
+      "input": "extensions/V/vext_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_control.sail",
+      "bytes": 8328,
+      "sha256": "610dc59de8000d3e89bce648e1f685328f943071ecd5698f5e26aeafb61f4d67"
+    },
+    {
+      "input": "extensions/K/types_kext.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/types_kext.sail",
+      "bytes": 14792,
+      "sha256": "51281682c4f8ebf7a1077f8d0e1c833bdbdbac3a2c9933dc91eaec00c72f955c"
+    },
+    {
+      "input": "extensions/vector_crypto/zvk_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvk_utils.sail",
+      "bytes": 6084,
+      "sha256": "5b2632d191bf669f5d31b0b195c1642fa55333298ba4afaa2d6bb84097f2a888"
+    },
+    {
+      "input": "extensions/Zvabd/zvabd_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zvabd/zvabd_types.sail",
+      "bytes": 480,
+      "sha256": "ffa330a1b861a17e2dd9daa66f921129877c1c3824d3665c816a820125a75e37"
+    },
+    {
+      "input": "extensions/Zicsr/zicsr_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicsr/zicsr_types.sail",
+      "bytes": 433,
+      "sha256": "3408aeeb94f158564c7a070d395bcc490641ad7c76cf627f75cc9c2eacad36a9"
+    },
+    {
+      "input": "extensions/Smcntrpmf/smcntrpmf.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Smcntrpmf/smcntrpmf.sail",
+      "bytes": 3074,
+      "sha256": "37cfd344220980bdbae669d6c32d59ff5cea5500874510cd9512ea07985a500e"
+    },
+    {
+      "input": "extensions/Sdtrig/sdtrig_type_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sdtrig/sdtrig_type_utils.sail",
+      "bytes": 703,
+      "sha256": "928f397196c01860ba3be8b771b63b51acbb6fbf2082aea2d95aa833ee67bae3"
+    },
+    {
+      "input": "extensions/Sdtrig/sdtrig_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sdtrig/sdtrig_types.sail",
+      "bytes": 24475,
+      "sha256": "14b4a54fccaf41dc621a9e4dc56ce59e43e599858defd9dc650a446cb4e5ed53"
+    },
+    {
+      "input": "extensions/Sdtrig/sdtrig_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sdtrig/sdtrig_regs.sail",
+      "bytes": 5631,
+      "sha256": "1abb0c4b4541bc3ce76455bf6855e3f0baea6c4aa5e711b6395d1b0bce596a6c"
+    },
+    {
+      "input": "extensions/Sdtrig/sdtrig_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sdtrig/sdtrig_control.sail",
+      "bytes": 11386,
+      "sha256": "b92734c3592177e56d4e6f592cc050d8157adbf340e892657e6870e28d264299"
+    },
+    {
+      "input": "extensions/Zawrs/zawrs_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zawrs/zawrs_types.sail",
+      "bytes": 430,
+      "sha256": "dc350866676f85edca3f680941883d0ab354462e17c82be7a765516bba3b97d7"
+    },
+    {
+      "input": "extensions/Zicond/zicond_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicond/zicond_types.sail",
+      "bytes": 437,
+      "sha256": "55fac731ccaf118dbe48191a479ce474ede4c64ee8fa30beef0f8f5816ee79d4"
+    },
+    {
+      "input": "extensions/Zihintntl/zihintntl_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zihintntl/zihintntl_types.sail",
+      "bytes": 728,
+      "sha256": "dc6e8245765847a6bdda4f8fdacbcea5a17a23a45071eded9ef54e160c79320f"
+    },
+    {
+      "input": "extensions/Zilx/zilx_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zilx/zilx_types.sail",
+      "bytes": 460,
+      "sha256": "8678ce9198708985f56e17f65f670e9878e1876b6a95300dbc712676a2f7ff8b"
+    },
+    {
+      "input": "extensions/cfi/cfi_types.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/cfi/cfi_types.sail",
+      "bytes": 705,
+      "sha256": "59319e5213a443c873e3f3d513252f3936f2319d81ab4a82dfdf3403ee85900f"
+    },
+    {
+      "input": "extensions/cfi/zicfilp_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/cfi/zicfilp_regs.sail",
+      "bytes": 3960,
+      "sha256": "3cae8ed948b10e67a6d334ca378b4bf1a3d358f065ee4b33f50205464366e7aa"
+    },
+    {
+      "input": "extensions/Stateen/stateen_csrs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Stateen/stateen_csrs.sail",
+      "bytes": 9085,
+      "sha256": "9aa96d016a35ceb6ea673f0c800e70b63957521eedc4beec28f749f156ce3b5a"
+    },
+    {
+      "input": "extensions/Stateen/stateen_access_checks.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Stateen/stateen_access_checks.sail",
+      "bytes": 3104,
+      "sha256": "291eae56589e22667b442f61231b9249d7449e345467e43f86f2e69fdd245670"
+    },
+    {
+      "input": "extensions/pointer_masking/pm_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/pointer_masking/pm_utils.sail",
+      "bytes": 4088,
+      "sha256": "ed91e739d73fec761c2806ac008625f5cd6ed4963331c420c88a51f2105c8984"
+    },
+    {
+      "input": "sys/sys_reservation.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/sys_reservation.sail",
+      "bytes": 1638,
+      "sha256": "6bc97b0e9fe4d6b11308b77152188ac4f32aec16c09040f08ad21ac2cd45896c"
+    },
+    {
+      "input": "sys/simple_interrupt_generator_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/simple_interrupt_generator_regs.sail",
+      "bytes": 1352,
+      "sha256": "a72bc0bb95305801b6cc3d8396038d1d61fee6aae33df4c4343a2962b096044a"
+    },
+    {
+      "input": "sys/sys_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/sys_control.sail",
+      "bytes": 25193,
+      "sha256": "6d6089f458f01f17e8350eb25d66dc62f4a03014659041f3265237a672c62b78"
+    },
+    {
+      "input": "sys/simple_interrupt_generator.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/simple_interrupt_generator.sail",
+      "bytes": 3132,
+      "sha256": "44b5141a81c7374c1c184ced260c3f5d6667ad04e776c879cff4b6e9f180b7eb"
+    },
+    {
+      "input": "sys/platform.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/platform.sail",
+      "bytes": 16643,
+      "sha256": "8bcec11147d417aab7766a1c64b11969486bb561b40611eecbafb5244e6b0856"
+    },
+    {
+      "input": "sys/interrupt_implementation.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/interrupt_implementation.sail",
+      "bytes": 1419,
+      "sha256": "b4d7b3641d7937b95e5e307f56d810381c516b78ecff7a4fc8447ea18002e414"
+    },
+    {
+      "input": "sys/mem_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/mem_utils.sail",
+      "bytes": 1782,
+      "sha256": "9c0ccdc07a1e5c76afd5ae982e937c283ebc808d8d639830764ccb840701925c"
+    },
+    {
+      "input": "sys/split_access_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/split_access_utils.sail",
+      "bytes": 5906,
+      "sha256": "c39b5afb8e2e160507da3c22359a359b085e3fc0c980d9cbf19f8568968af208"
+    },
+    {
+      "input": "sys/pma.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/pma.sail",
+      "bytes": 15059,
+      "sha256": "352f3bd9a3584998040c501fe1bfc19ba863787577ed73bf1d798b2aa53122ac"
+    },
+    {
+      "input": "sys/mem.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/mem.sail",
+      "bytes": 23021,
+      "sha256": "35ba5620cd4ab16e6eb5dbbceb5b0de700eec57e2885af12096d7b9403b89e2f"
+    },
+    {
+      "input": "sys/vmem_pte.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/vmem_pte.sail",
+      "bytes": 17939,
+      "sha256": "e104323e1138c7e27e5fdd3a7c8cfc1c1d6458f4035a1800c6cb63891f07098d"
+    },
+    {
+      "input": "sys/vmem_ptw.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/vmem_ptw.sail",
+      "bytes": 7187,
+      "sha256": "6b768636055cbfdf1aad9b35d8be826e4039daa80d07272005a0a16e6028d1ea"
+    },
+    {
+      "input": "sys/callbacks.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/callbacks.sail",
+      "bytes": 1801,
+      "sha256": "b005048f4a742be376b662fffb777660f7676a664037799eb213ad3832c72650"
+    },
+    {
+      "input": "sys/vmem_tlb.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/vmem_tlb.sail",
+      "bytes": 9479,
+      "sha256": "a4d09af9fe4d9ec80e30e12dec2bb26f9c9652eb56120c5515042fefc7c6598c"
+    },
+    {
+      "input": "sys/vmem.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/vmem.sail",
+      "bytes": 31460,
+      "sha256": "439c38474a876f2b06c6c668f0201f406b4717cfbb13896ab1b027b379e79d39"
+    },
+    {
+      "input": "sys/insts_begin.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/insts_begin.sail",
+      "bytes": 2938,
+      "sha256": "f27064ea3bb3cd6bfcf9cc3433d7933e8179bc91b14606619133b791f178137b"
+    },
+    {
+      "input": "sys/vmem_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/sys/vmem_utils.sail",
+      "bytes": 17226,
+      "sha256": "d3dacf100358bdd229130584240008fa912bffa3384e46d9c1e6fe69baf3a3aa"
+    },
+    {
+      "input": "extensions/Zicbop/zicbop_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicbop/zicbop_insts.sail",
+      "bytes": 2732,
+      "sha256": "1f2e01678256691d1528ea397194c6b1648b04157c8ce1d39a500247b8b86e53"
+    },
+    {
+      "input": "extensions/Zihintntl/zihintntl_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zihintntl/zihintntl_insts.sail",
+      "bytes": 1336,
+      "sha256": "1d39beed4f2a0f2ca2d58238b67eb9ffe18bb3660978236ec9cee2cb9f71f944"
+    },
+    {
+      "input": "extensions/Zihintpause/zihintpause_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zihintpause/zihintpause_insts.sail",
+      "bytes": 813,
+      "sha256": "efe8a44b5ab2f5572f57ba203c75e2067fadbfc5baaa2848b55b22621af17b6f"
+    },
+    {
+      "input": "extensions/cfi/zicfilp_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/cfi/zicfilp_insts.sail",
+      "bytes": 1595,
+      "sha256": "2db86f0f40486b1d5d5bc9bd569107e7f9c2d9515b17086c5fe904cffaf0fdde"
+    },
+    {
+      "input": "extensions/I/base_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/I/base_insts.sail",
+      "bytes": 29011,
+      "sha256": "07ce0b099023b6e9ce9aeedb0be15a800f2cec8dd7382a076853391537b5add3"
+    },
+    {
+      "input": "extensions/I/jalr_seq.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/I/jalr_seq.sail",
+      "bytes": 1093,
+      "sha256": "5bbb143f7020c930c8ce3922df427c16aaba4317f30b2c2e02fb1244de53faec"
+    },
+    {
+      "input": "extensions/A/zaamo_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/A/zaamo_insts.sail",
+      "bytes": 7051,
+      "sha256": "a79e349c23c88f006bf9b9fa94d12f9ca8d813e763e215618b1cf9126ce47977"
+    },
+    {
+      "input": "extensions/A/zalrsc_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/A/zalrsc_insts.sail",
+      "bytes": 3674,
+      "sha256": "dce15f78cb91b0d7ed73ad8d0b267023e5853fe16983614a6037f0e726db075f"
+    },
+    {
+      "input": "extensions/M/mext_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/M/mext_insts.sail",
+      "bytes": 7236,
+      "sha256": "f439cf260459ac1dd6031bf208c7444400b31bfa73dba5cec867d0edffa152f6"
+    },
+    {
+      "input": "extensions/B/zba_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/B/zba_insts.sail",
+      "bytes": 3002,
+      "sha256": "3e00db7e450e7ab30d3b429573e77b20f4127cade244d89b9955aa88b7c26fcb"
+    },
+    {
+      "input": "extensions/B/zbb_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/B/zbb_insts.sail",
+      "bytes": 12467,
+      "sha256": "f1da764702541715c7f381cae59e56ac9b0011eb0726ecf7ffe5ecbb216ebbbe"
+    },
+    {
+      "input": "extensions/B/zbc_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/B/zbc_insts.sail",
+      "bytes": 2418,
+      "sha256": "f6392032c44f9ddbf5bbacadba5d98e0392345d589c3dd8b3d42a33843784fb6"
+    },
+    {
+      "input": "extensions/B/zbs_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/B/zbs_insts.sail",
+      "bytes": 4185,
+      "sha256": "f50483e9792fdc8ca95f546194b993df353f53b9835447e1254ed053228479b7"
+    },
+    {
+      "input": "extensions/C/zca_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/C/zca_insts.sail",
+      "bytes": 20006,
+      "sha256": "b6dee98f5fa917dfcf37452f3f475eefd59215f949c21dda541c54f14a5de039"
+    },
+    {
+      "input": "extensions/C/zcb_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/C/zcb_insts.sail",
+      "bytes": 8019,
+      "sha256": "eaf5dd5d4fdcf54b0c8fadbf05b4fb7c60cca6c036a5ff5c26b27777cb6e3069"
+    },
+    {
+      "input": "extensions/H/hext_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/H/hext_insts.sail",
+      "bytes": 6335,
+      "sha256": "51847480aded70d74bc7ba3f63a27573e37184b6da15f301e4ff010fc22c0561"
+    },
+    {
+      "input": "extensions/FD/fext_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/fext_insts.sail",
+      "bytes": 32682,
+      "sha256": "05800b11a134971369ec4a9d06ba9b471b8a1cf46d74f0f68ad5e9a635b2c4a1"
+    },
+    {
+      "input": "extensions/FD/zcf_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/zcf_insts.sail",
+      "bytes": 3064,
+      "sha256": "b22120128b48d229844cafc8e524f1f23575a2f4928436cdb941d2ace6cd0ced"
+    },
+    {
+      "input": "extensions/FD/dext_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/dext_insts.sail",
+      "bytes": 31503,
+      "sha256": "4e8252ecb019d1af118e5d72637714b76b6f0659d96489955bf00059d4f6d104"
+    },
+    {
+      "input": "extensions/FD/zcd_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/zcd_insts.sail",
+      "bytes": 2990,
+      "sha256": "7e8288e1521dad66bec762546f837f95da4df54d005458576fbf647710478802"
+    },
+    {
+      "input": "extensions/FD/zfh_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/zfh_insts.sail",
+      "bytes": 29577,
+      "sha256": "cf7b46524e20c32f206c48813fe06150fea243f45442fb158a07e1299eb25126"
+    },
+    {
+      "input": "extensions/FD/zfa_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/FD/zfa_insts.sail",
+      "bytes": 27378,
+      "sha256": "7759b83d7c3597949b7672a33a495a956a5ab0c80dd84d79e9187a60c5f297a9"
+    },
+    {
+      "input": "extensions/V/vext_utils_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_utils_insts.sail",
+      "bytes": 28874,
+      "sha256": "09d1fd1217060eabbad8d207c5ed7c318b1ee0b9bfda60e164a1b87076d994db"
+    },
+    {
+      "input": "extensions/V/vext_fp_utils_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_fp_utils_insts.sail",
+      "bytes": 23789,
+      "sha256": "e0eac3157e5daaf9dd92d6b5853c3c7b4a33e0953ac076e5d9daffb1764d72c3"
+    },
+    {
+      "input": "extensions/V/vext_vset_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_vset_insts.sail",
+      "bytes": 7481,
+      "sha256": "f984e6f5d9485d37adbe0cf18816baaeb450ce42399770c3b348c48738a9581f"
+    },
+    {
+      "input": "extensions/V/vext_arith_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_arith_insts.sail",
+      "bytes": 102723,
+      "sha256": "4c0255bbc2dde0da80891983fa2bf80c42b12d4a3aea9c61a72298d8a4b6620d"
+    },
+    {
+      "input": "extensions/V/vext_fp_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_fp_insts.sail",
+      "bytes": 59672,
+      "sha256": "feb3a2a1e162a6091d12acd264c9bc598dabede463a8d9eb30e479499a1b7d54"
+    },
+    {
+      "input": "extensions/V/vext_mem_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_mem_insts.sail",
+      "bytes": 29232,
+      "sha256": "b5126ae6b0d6c5eaecf4bb2e99dffc0618ad74474f4bcf5f12a67df237a58600"
+    },
+    {
+      "input": "extensions/V/vext_mask_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_mask_insts.sail",
+      "bytes": 12253,
+      "sha256": "e4eea34a32fe0237c46a359bae2b6cfc571503912ef05425ef64429b6462b05a"
+    },
+    {
+      "input": "extensions/V/vext_vm_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_vm_insts.sail",
+      "bytes": 30609,
+      "sha256": "8179c04c91ed40e1eb10fef083110a1158cedb7ba46da06df34a9968d8476889"
+    },
+    {
+      "input": "extensions/V/vext_fp_vm_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_fp_vm_insts.sail",
+      "bytes": 6013,
+      "sha256": "847b48049222aa344733ad690a4059f86bc6ae2d6b973e184bb78de88e991a42"
+    },
+    {
+      "input": "extensions/V/vext_red_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_red_insts.sail",
+      "bytes": 6515,
+      "sha256": "5a40f9d4553ebf070c8d84099dcddddab28788a1ab15ab24ba8d8be7b52d4cb6"
+    },
+    {
+      "input": "extensions/V/vext_fp_red_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/V/vext_fp_red_insts.sail",
+      "bytes": 6452,
+      "sha256": "cff4a0e03b3781a5e45b04aa76c745a03f91c3cbcd54dbfaac71556c82aef5d8"
+    },
+    {
+      "input": "extensions/K/zkn_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/zkn_insts.sail",
+      "bytes": 18541,
+      "sha256": "deaf7d582de1b58587a0bc33d98853b19becec51e10529aa7d23daf9de7678e6"
+    },
+    {
+      "input": "extensions/K/zks_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/zks_insts.sail",
+      "bytes": 3866,
+      "sha256": "4626c1b38509cf6670a765b2554dcdbb88dcc2399bab132b6b4ef73c21306b8b"
+    },
+    {
+      "input": "extensions/K/zkr_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/zkr_control.sail",
+      "bytes": 2078,
+      "sha256": "a4661e26aaa68c6a3b89917be175abb9ef0e899c31c76214e72d60122a78c988"
+    },
+    {
+      "input": "extensions/K/zbkb_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/zbkb_insts.sail",
+      "bytes": 4175,
+      "sha256": "f95616ce2ea119ccc36e5d2d2051a0edd597f6d503e0b041ece2e440e5bf2e06"
+    },
+    {
+      "input": "extensions/K/zbkx_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/K/zbkx_insts.sail",
+      "bytes": 2162,
+      "sha256": "18c576c27692d70ee1df2cd3773dfd9f6ccc7d3d34bb0e8396785588af4a4025"
+    },
+    {
+      "input": "extensions/vector_crypto/zvbb_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvbb_insts.sail",
+      "bytes": 28170,
+      "sha256": "705d8a224c43b601bb9c44af8bc993e595d3bd2554e9f0c2ad2b0bb2d7118a9f"
+    },
+    {
+      "input": "extensions/vector_crypto/zvbc_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvbc_insts.sail",
+      "bytes": 7139,
+      "sha256": "73682fc98a7bf68f7f03d18987c21dbf3e4cdfa7a9d1044960ed5a1b25de8586"
+    },
+    {
+      "input": "extensions/vector_crypto/zvkg_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvkg_insts.sail",
+      "bytes": 3555,
+      "sha256": "161765a66dd9be1647f1bb00704439b5c4a5c747f127b3bc6d1b154c928489fc"
+    },
+    {
+      "input": "extensions/vector_crypto/zvkned_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvkned_insts.sail",
+      "bytes": 12350,
+      "sha256": "9b11567b3058c2c9e51981d000f5084723b7af05a195193d2df6c6982c558992"
+    },
+    {
+      "input": "extensions/vector_crypto/zvksed_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvksed_insts.sail",
+      "bytes": 4645,
+      "sha256": "a6ba48d9c74383e2629726e06e4dceca48e2607b4c6b464aeade653cefade518"
+    },
+    {
+      "input": "extensions/vector_crypto/zvknhab_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvknhab_insts.sail",
+      "bytes": 5376,
+      "sha256": "af4f8c10429a62c0d9545c6e43d2b03a8a12c40b3d73637527c2498f633f64af"
+    },
+    {
+      "input": "extensions/vector_crypto/zvksh_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/vector_crypto/zvksh_insts.sail",
+      "bytes": 3703,
+      "sha256": "909ba30422bd102e87b11860505c965f350b57ff9cb4ceff5963e2274c64a7b4"
+    },
+    {
+      "input": "extensions/Zvabd/zvabd_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zvabd/zvabd_insts.sail",
+      "bytes": 11102,
+      "sha256": "6c6528e5fa5d20311a8d2ee010548f24fb4e59880e2019c905278e89fe9a2d1e"
+    },
+    {
+      "input": "extensions/Zicsr/zicsr_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicsr/zicsr_insts.sail",
+      "bytes": 4678,
+      "sha256": "137441624950ab9b17258fae874a6484d81b39fc5e641267f5c68a325f212e6e"
+    },
+    {
+      "input": "extensions/Svinval/svinval_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Svinval/svinval_insts.sail",
+      "bytes": 3194,
+      "sha256": "bae55671e7a2974532599983f2079e3e583e34b0d31bd02771ff9e6afacea8e5"
+    },
+    {
+      "input": "extensions/Zihpm/zihpm.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zihpm/zihpm.sail",
+      "bytes": 4603,
+      "sha256": "5f00874662dc135b0e0aaf4c1cd8eb8c86be7e356431fe9a5b218fe21eaa812c"
+    },
+    {
+      "input": "extensions/Sscofpmf/sscofpmf.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sscofpmf/sscofpmf.sail",
+      "bytes": 3921,
+      "sha256": "a3d43499f31468898989016ec79ddbf4eecd8dcae33bf6a518bf2974b5f34487"
+    },
+    {
+      "input": "extensions/Sstc/sstc.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Sstc/sstc.sail",
+      "bytes": 3120,
+      "sha256": "a12c13599a2f4a26ae3bce9ba238a4b909c84c4f77d57466a39e4a760f4b5205"
+    },
+    {
+      "input": "extensions/Zawrs/zawrs_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zawrs/zawrs_insts.sail",
+      "bytes": 1127,
+      "sha256": "990d7ccecf1485aa92736738837053c693530c074e852b8944390fa62510fbc3"
+    },
+    {
+      "input": "extensions/cfi/zicfiss_regs.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/cfi/zicfiss_regs.sail",
+      "bytes": 2755,
+      "sha256": "6baa0414b0949a963fa2d8e235ec9b4def6b300ea1ccd170493117946ee06389"
+    },
+    {
+      "input": "extensions/cfi/zicfiss_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/cfi/zicfiss_insts.sail",
+      "bytes": 10132,
+      "sha256": "1f02229f05d2d26f40288579b0d7f48dc08a1be4e72884c51d15f095d4b8a0bb"
+    },
+    {
+      "input": "extensions/Zicond/zicond_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicond/zicond_insts.sail",
+      "bytes": 1411,
+      "sha256": "86ea235572d08792921a264756e195c0e8d4cc728199a26476f87586297193ce"
+    },
+    {
+      "input": "extensions/Zicntr/zicntr_control.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicntr/zicntr_control.sail",
+      "bytes": 2095,
+      "sha256": "a3129d235a261c52203c6aa2e6a270120204bdb2ca4420a50b9c136e3530447f"
+    },
+    {
+      "input": "extensions/Zicbom/zicbom_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicbom/zicbom_insts.sail",
+      "bytes": 5846,
+      "sha256": "7677951e7f21ecd8ba6b18582a9d816c0030b5e8b2184ae2752beb2e6836dcac"
+    },
+    {
+      "input": "extensions/Zibi/zibi_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zibi/zibi_insts.sail",
+      "bytes": 1762,
+      "sha256": "2004b81234ef82e115a7a4fc3e5ff2249cda5b6bc72620a1aaf92ed0b86883ff"
+    },
+    {
+      "input": "extensions/Zicboz/zicboz_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zicboz/zicboz_insts.sail",
+      "bytes": 3476,
+      "sha256": "242295fcfd443768f11b32ff043fe751717ce01b7896cdf1e87fcbed5e5a1494"
+    },
+    {
+      "input": "extensions/Zifencei/zifencei_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zifencei/zifencei_insts.sail",
+      "bytes": 1753,
+      "sha256": "3c7355f5a8f30b6935bf1181955b9182a252cd9fbc9e41b2c79effcc6dc97a5e"
+    },
+    {
+      "input": "extensions/Zilx/zilx_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Zilx/zilx_insts.sail",
+      "bytes": 2322,
+      "sha256": "9a5c596177671badb0e624d74ea22ef171bae648ec3bcf52b5df3df049c3658e"
+    },
+    {
+      "input": "extensions/Ssqosid/ssqosid.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/Ssqosid/ssqosid.sail",
+      "bytes": 1411,
+      "sha256": "182a5d9fcac5a8578e907cec91f59d816bd3814429af3b14146659259945d045"
+    },
+    {
+      "input": "extensions/bfloat16/zfbfmin_utils.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/bfloat16/zfbfmin_utils.sail",
+      "bytes": 1198,
+      "sha256": "dfca369c084414ccf6da8b26d483befab8de70edc43205e0c47a3148d7bc1fde"
+    },
+    {
+      "input": "extensions/bfloat16/zfbfmin_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/bfloat16/zfbfmin_insts.sail",
+      "bytes": 2163,
+      "sha256": "2cd483db1f59379ac46efd3d7a165ed3ec8e24c89f283df90acaf6834530b82b"
+    },
+    {
+      "input": "extensions/bfloat16/zvfbfmin_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/bfloat16/zvfbfmin_insts.sail",
+      "bytes": 4152,
+      "sha256": "285ee4ad983a1176bf57aa674d65df12f64852b1b6a068e98d03832c312c6370"
+    },
+    {
+      "input": "extensions/bfloat16/zvfbfwma_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/extensions/bfloat16/zvfbfwma_insts.sail",
+      "bytes": 4870,
+      "sha256": "a764d51927678985e0fb3400164631689a2dcb0fa290075d77d70d51b3390a12"
+    },
+    {
+      "input": "mops/Zimop/zimop_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/mops/Zimop/zimop_insts.sail",
+      "bytes": 1707,
+      "sha256": "4559573d4f809c022af1702249a9ffd844e2a4063367e05afb66da9e212e9c02"
+    },
+    {
+      "input": "mops/Zcmop/zcmop_insts.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/mops/Zcmop/zcmop_insts.sail",
+      "bytes": 809,
+      "sha256": "9b21efede9d59eada700e8a758085c8f2ed25ed6f45ae1f3547b385fbf67087a"
+    },
+    {
+      "input": "postlude/insts_end.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/insts_end.sail",
+      "bytes": 1505,
+      "sha256": "816cd874d6f475a797f2eabd5e88d467ea22b66eb8ab44164253751d4aabf324"
+    },
+    {
+      "input": "postlude/csr_end.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/csr_end.sail",
+      "bytes": 1430,
+      "sha256": "5c4b9b1a1a9d66b571f1d081ee0ce083270ea55936113627a2ac6e047357a98e"
+    },
+    {
+      "input": "postlude/step_common.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/step_common.sail",
+      "bytes": 2365,
+      "sha256": "e00af3776887ab97412cf801b1921aa3bf5283668e0efb57fc63825d18777344"
+    },
+    {
+      "input": "postlude/step_ext.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/step_ext.sail",
+      "bytes": 657,
+      "sha256": "283b6f3e21cacadef056fd5b6ae6de037374ea94f7430a7415f30261fa0a92ac"
+    },
+    {
+      "input": "postlude/decode_ext.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/decode_ext.sail",
+      "bytes": 759,
+      "sha256": "2f37d7ff1b7584cda350e41fb58085712c8985585fd755ecd2d20b173d20949a"
+    },
+    {
+      "input": "postlude/fetch_rvfi.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/fetch_rvfi.sail",
+      "bytes": 1722,
+      "sha256": "40b569f21963531b76895aadad57a9bfa2addb035f965d982367351a8266ee35"
+    },
+    {
+      "input": "postlude/fetch.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/fetch.sail",
+      "bytes": 5147,
+      "sha256": "0b340c26c8a3bfaa0eaae37656f219709b8cd88c763a90ee63de427149e1f016"
+    },
+    {
+      "input": "postlude/transformed_inst.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/transformed_inst.sail",
+      "bytes": 3457,
+      "sha256": "d4a61aac3fc975ece8674eaf2fc1d714e61f72fe1f390b00930d40c62a601f82"
+    },
+    {
+      "input": "postlude/step.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/step.sail",
+      "bytes": 17580,
+      "sha256": "f8d719bea01fee568c2482c348274c236fa7b0d7bdf27209eaf8c535a3e50476"
+    },
+    {
+      "input": "postlude/validate_config.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/validate_config.sail",
+      "bytes": 64292,
+      "sha256": "c17106b4ac6a01fd0b4ed63f5b39bd0ca547a0101f6541452680b5fcab2ef1e9"
+    },
+    {
+      "input": "postlude/device_tree.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/device_tree.sail",
+      "bytes": 9395,
+      "sha256": "6a1bffae8f8072387543e5f2ccefad5f921aa383985b92c26b081d2b199b7bbd"
+    },
+    {
+      "input": "postlude/model.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/postlude/model.sail",
+      "bytes": 1497,
+      "sha256": "d4766886012ca8d29e92db6ac733e25e592b4141b30bc7f7bce87c1e3876f90d"
+    },
+    {
+      "input": "unit_tests/test_mstatus.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/unit_tests/test_mstatus.sail",
+      "bytes": 755,
+      "sha256": "fe275a5aa5660fffc88e395f5f8180f99a4229da8bb6f0b779ff14811bd43cbc"
+    },
+    {
+      "input": "main/main.sail",
+      "resolved": "/home/opam/anneal-sail-sources/sail-riscv/model/main/main.sail",
+      "bytes": 1669,
+      "sha256": "30527c8e554c895dcc8a21757643b00f0b37361124e99d7de2ea6a2dd8d5f6bc"
+    }
+  ],
+  "config": {
+    "path": "/home/opam/anneal-sail-output/model-config/config/rv64d_v256_e64.json",
+    "bytes": 42392,
+    "sha256": "47ee55d4f147d79d95cbe1566982b4fe0adbb2a044adfabb102ff3f21b457c37",
+    "raw_text": "// This is a configuration file for the Sail RISC-V emulator.\n//\n// You can copy and then modify it to create a new configuration file,\n// and then use the `--config` option to use it with the\n// `sail_riscv_sim` emulator.  If any CMake  placeholders\n// are present in this file, they will need to be replaced with valid\n// values.\n//\n// This file has an associated JSON Schema, which is generated by the\n// Sail compiler as a build artifact.  See the documentation (e.g. the\n// top-level README) on how to get the associated schema.\n{\n  \"base\": {\n    \"xlen\": 64,\n    // Whether the base ISA is E, in which case accessing\n    // x16-31 is reserved and in this implementation will\n    // raise an illegal instruction exception.\n    \"E\": false,\n    \"writable_fiom\": true,\n    // The top 29 bits in this value control whether the corresponding\n    // HPM counters (hpmcounter31 .. hpmcounter3) are supported\n    // (i.e. are not read-only zero). A set bit specifies that the\n    // corresponding counter is supported. The lowest 3 bits\n    // (writable_hpm_counters[2 .. 0]) are ignored.\n    \"writable_hpm_counters\": {\n      \"len\": 32,\n      \"value\": \"0xFFFF_FFFF\"\n    },\n    // The precision of the HPM counter, upto 64 bits.\n    \"hpmcounter_width_bits\" : 64,\n    // The width of the `mhpmevent` CSRs, upto 64 bits, if Sscofpmf is\n    // not supported.  On RV32 without Sscofpmf, this can be upto 32,\n    // since the `mhpmeventh` CSRs are not accessible.\n    // If Sscofpmf is supported, the `mhpmevent` CSRs are always 64\n    // bits; this value then defines the number, upto 56, of the lowest\n    // bits of the CSRs that are used as the event selector.\n    \"hpmevent_width_bits\" : 56,\n    // Whether a `mhpmcounter` increments if the event it is counting\n    // was generated during a write to its corresponding `mhpmevent`\n    // CSR (which could change the monitored event).\n    \"hpmcounter_increments_in_self_hpmevent_write\" : false,\n    // The bits in this value control whether the corresponding bits\n    // of the `scounteren` CSR that control access to HPM counters,\n    // and `cycle`, `time` and `instret` registers, are read-only\n    // zero. A set bit specifies that the corresponding bit of\n    // `scounteren` is writable, otherwise the bit is read-only zero.\n    // If Sscounterenw is supported the top 29 bits must be a superset of\n    // the top 29 bits of `writable_hpm_counters`.\n    \"scounteren_writable_bits\": {\n      \"len\": 32,\n      \"value\": \"0xFFFF_FFFF\"\n    },\n    // The bits in this value control whether the corresponding bits\n    // of the `mcounteren` CSR that control access to HPM counters,\n    // and `cycle`, `time` and `instret` registers at lower privilege\n    // modes, are read-only zero. A set bit specifies that the\n    // corresponding bit of `mcounteren` is writable, otherwise the\n    // bit is read-only zero.\n    \"mcounteren_writable_bits\": {\n      \"len\": 32,\n      \"value\": \"0xFFFF_FFFF\"\n    },\n    // The bits in this value control whether the corresponding bits\n    // of the `hcounteren` CSR that control access to HPM counters,\n    // and `cycle`, `time` and `instret` registers from VS/VU-mode,\n    // are read-only zero. A set bit specifies that the corresponding\n    // bit of `hcounteren` is writable, otherwise the bit is read-only\n    // zero. Same layout as `mcounteren`. If Shcounterenw is supported the\n    // top 29 bits must be a superset of the top 29 bits of\n    // `writable_hpm_counters`.\n    \"hcounteren_writable_bits\": {\n      \"len\": 32,\n      \"value\": \"0xFFFF_FFFF\"\n    },\n    \"mcountinhibit\" : {\n      // Whether the `mcountinhibit` CSR is implemented.\n      \"supported\": true,\n      // This bits in this value control whether the corresponding\n      // bits of the CSR are writable.  Note that bit 1 cannot be  written to\n      // as it is read-only zero.\n      \"writable_bits\": {\n        \"len\": 32,\n        \"value\": \"0xFFFF_FFFD\"\n      }\n    },\n    // `mtvec.{direct,vectored}.supported` indicates whether the\n    // corresponding mode is supported for `mtvec`.  At least one mode\n    // should be supported.  If both modes are supported, the mode on\n    // reset is unspecified.\n    // The `mtvec.{direct,vectored}.base_alignment` parameters control the alignment\n    // of the trap vector base for each mode.  The alignment is\n    // specified as the power of 2 of the desired byte alignment, and\n    // can range from a minimum of 2 upto a maximum of 24. If\n    // unaligned values are written to these CSRs, the lowest bits\n    // will be zeroed to respect the specified alignment.\n    \"mtvec\": {\n      \"direct\": {\n        \"supported\": true,\n        \"base_alignment\": 2\n      },\n      \"vectored\": {\n        \"supported\": true,\n        \"base_alignment\": 2\n      }\n    },\n    // Similar to `mtvec` above. If `S` mode is not supported, these\n    // values need to be present and legal but are ignored.\n    \"stvec\": {\n      // The spec requires `base_alignment` for `stvec.direct` to be 2\n      // (i.e. 4-byte alignment), hence there is no configuration\n      // parameter for it.\n      \"direct\": {\n        \"supported\": true\n      },\n      \"vectored\": {\n        \"supported\": true,\n        \"base_alignment\": 2\n      }\n    },\n    // Similar to `stvec` above. If the `H` extension is not supported,\n    // these values need to be present and legal but are ignored.\n    \"vstvec\": {\n      // The spec requires `base_alignment` for `vstvec.direct` to be 2\n      // (i.e. 4-byte alignment), hence there is no configuration\n      // parameter for it.\n      \"direct\": {\n        \"supported\": true\n      },\n      \"vectored\": {\n        \"supported\": true,\n        \"base_alignment\": 2\n      }\n    },\n    \"medeleg\": {\n      // A bit set to 1 in this value specifies that the corresponding\n      // bit of `medeleg` can be set to 1. It represents the subset of\n      // delegatable traps of the implementation. Bits should not be\n      // set for traps that cannot be delegated as per the\n      // specification, and delegation of reserved traps is not\n      // supported.\n      // Bit 18 (software check) must not be set for privileged ISA\n      // versions before 1.13, where that exception code is reserved,\n      // unless Zicfilp or Zicfiss is supported.\n      // Bit 19 (hardware error) must not be set for\n      // privileged ISA versions before 1.13, since that exception\n      // code is reserved there.\n      // This value is ignored when the `medeleg` CSR does\n      // not exist.\n      \"delegatable_bits\": {\n        \"len\": 64,\n        \"value\": \"0x0000_0000_00fc_b7FF\"\n      }\n    },\n    \"mideleg\": {\n      // A bit set to 1 in this value specifies that the corresponding\n      // bit of `mideleg` can be set to 1. It represents the subset of\n      // delegatable interrupts of the implementation. Bits should not\n      // be set for interrupts that cannot be delegated as per the\n      // specification, and delegation of reserved interrupts is not\n      // supported. Bits set for interrupts designated for platform\n      // use are ignored. This value is ignored when the `mideleg` CSR\n      // does not exist.\n      \"delegatable_bits\": {\n        \"len\": \"xlen\",\n        \"value\": \"0x0000_0000_0000_2222\"\n      }\n    },\n    // These settings control whether the specified exceptions\n    // cause information to be written into the appropriate\n    // `xtval` registers.\n    \"xtval_nonzero\": {\n      \"illegal_instruction\": true,\n      \"virtual_instruction\": true,\n      \"software_breakpoint\": true,\n      \"hardware_breakpoint\": true,\n      \"load_address_misaligned\": true,\n      \"load_access_fault\": true,\n      \"load_page_fault\": true,\n      \"load_guest_page_fault\": true,\n      \"samo_address_misaligned\": true,\n      \"samo_access_fault\": true,\n      \"samo_page_fault\": true,\n      \"samo_guest_page_fault\": true,\n      \"fetch_address_misaligned\": true,\n      \"fetch_access_fault\": true,\n      \"fetch_page_fault\": true,\n      \"fetch_guest_page_fault\": true,\n      \"software_check\": true,\n      \"hardware_error\": true,\n      \"reserved_exceptions\": false\n    },\n    \"reserved_behavior\": {\n      // This option determines how to handle AMOCAS.{D,Q} instructions that specify\n      // a reserved register pair.\n      // \"AMOCAS_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"AMOCAS_Illegal\" \u2013 treat it as an illegal instruction.\n      \"amocas_odd_register\": \"AMOCAS_Illegal\",\n      // This option determines how to handle execution of a floating-point\n      // instruction with DYN (dynamic) rounding mode when `fcsr.FRM` contains a\n      // reserved value (0b101, 0b110, 0b111).\n      // This does not affect the execution of floating-point instructions that have a\n      // reserved rounding mode statically encoded in the instruction.\n      // \"Fcsr_RM_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"Fcsr_RM_Illegal\" \u2013 treat it as an illegal instruction.\n      \"fcsr_rm\": \"Fcsr_RM_Illegal\",\n      // This option determines how to handle writes to a `pmpcfg` register of a reserved\n      // combination with `R=0` and `W=1`.\n      // \"PMP_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"PMP_ClearPermissions\" \u2013 convert a PMP entry with R=0, W=1 to R=0, W=0, X=0.\n      // \"PMP_Ignore\" - preserve the previous value.\n      \"pmpcfg_write_only\": \"PMP_ClearPermissions\",\n      // This option determines how to handle writes of the reserved value of 0b10 to `xenvcfg.CBIE`.\n      // \"Xenvcfg_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"Xenvcfg_ClearPermissions\" \u2013 write 0b00 to CBIE instead.\n      // \"Xenvcfg_Ignore\" - preserve the previous value of the field.\n      \"xenvcfg_cbie\": \"Xenvcfg_ClearPermissions\",\n      // This option determines how to handle writes of reserved values (>=2) to the `xtvec.Mode`.\n      // \"Xtvec_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"Xtvec_Ignore\" \u2013 use old Mode of xtvec.\n      \"xtvec_mode\": \"Xtvec_Ignore\",\n      // This option determines how to handle the reserved behavior: Odd-numbered registers for RV32Zdinx.\n      // \"Zdinx_Fatal\"  \u2013 raise a Sail exception, stopping execution.\n      // \"Zdinx_Illegal\" \u2013 treat it as an illegal instruction.\n      \"rv32zdinx_odd_register\": \"Zdinx_Illegal\"\n    },\n    \"mstatus\": {\n      // The legal values for the FS and VS fields in this CSR are\n      // specified by the two fields below.  Their values can be one\n      // of:\n      // - \"ExtContext_FourState\" allows all values {Off, Initial, Clean, Dirty}.\n      // - \"ExtContext_TwoState\" allows {Off, Dirty}, and writes of Initial and Clean get written as Dirty.\n      // - \"ExtContext_Off\" allows only {Off}.  This makes the field read-only zero.\n      \"fs_legal_states\": \"ExtContext_FourState\",\n      \"vs_legal_states\": \"ExtContext_FourState\"\n    },\n    // Set the version of the privileged ISA. `\"Privileged_ISA_1_13\"`\n    // is the latest that the Sail model supports.  The other\n    // supported value for this field is:\n    // - `\"Privileged_ISA_1_12\"`\n    // - `\"Privileged_ISA_1_11\"`\n    // Note that currently, not all functionality for these versions\n    // is available currently, and not all versions of the privileged\n    // ISA can be specified.\n    \"privileged_isa_version\": \"Privileged_ISA_1_13\"\n  },\n  \"memory\": {\n    // This specifies the number of implemented physical address bits.\n    // This is less than or equal to: 32 for RV32 without Sv32, 34 for\n    // RV32 with Sv32, and 64 for RV64. Architectural bits higher than\n    // `physaddr_bits` in physical addresses are effectively read-only zero.\n    // This is required to be 13 or higher to avoid representing empty\n    // bitvectors in the model and since it is unlikely real implementations\n    // will have lower values.\n    \"physaddr_bits\": 56,\n    // This specifies the number of implemented ASID bits (ASIDLEN) in\n    // the `satp` register.  If ASIDLEN > 0, ASID[ASIDLEN-1:0] is writable and bits above that are\n    // read-only zero. The maximal value (ASIDMAX) is 9 for Sv32 or 16 for\n    // Sv39, Sv48, and Sv57. A value of 0 means no ASID bits are\n    // implemented (all ASID bits read as zero).\n    \"asidlen\": 16,\n    // This specifies the number of implemented VMID bits (VMIDLEN) in\n    // the `hgatp` register.  If VMIDLEN > 0, VMID[VMIDLEN-1:0] is\n    // writable and bits above that are read-only zero. The maximal\n    // value (VMIDMAX) is 7 for Sv32x4 and 14 for Sv39x4, Sv48x4, and\n    // Sv57x4. A value of 0 means no VMID bits are implemented (all\n    // VMID bits read as zero).\n    \"vmidlen\": 14,\n    \"pmp\": {\n      \"grain\": 0,\n      // This specifies the number of PMP entries present.\n      // The value must be one of 0, 16, or 64.\n      \"count\": 16,\n      // This specifies the number of usable PMP entries.\n      // Entries higher than this are read-only-zero.\n      // The value must be less than or equal to `count`.\n      \"usable_count\": 16,\n      \"tor_supported\": true,\n      \"na4_supported\": true,\n      \"napot_supported\": true\n    },\n    // These settings control global support for misaligned access so they are\n    // checked before address translation. `misaligned_fault` in\n    // `regions` is checked after address translation.\n    \"misaligned\": {\n      // `exceptions` specifies the treatment of misaligned accesses\n      // before address translation.  If a fault is specified for an access,\n      // it will have a higher priority than memory-protection faults arising from\n      // that access if it were allowed to proceed.\n      \"exceptions\": {\n        // A misaligned scalar or vector load/store, or an AMO, can either proceed\n        // without a fault (use `{\"None\" : null}`), or raise an access fault\n        // (use `{\"Some\": \"AccessFault\"}`) or a misaligned exception\n        // (use `{\"Some\": \"AlignmentException\"}`).\n        // This option controls scalar loads/stores.\n        \"load_store\": {\n          \"None\" : null\n        },\n        // A misaligned vector load/store can be configured\n        // independently of the scalar case above, but uses the same\n        // option values.\n        \"vector\": {\n          \"None\": null\n        },\n        // Similarly, a misaligned AMO and LR/SC can be configured with the same\n        // option values.\n        \"amo\": {\n          \"None\": null\n        },\n        \"lrsc\": {\n          \"Some\": \"AccessFault\"\n        }\n      },\n      // If multiple memory operations are needed (e.g. when an access\n      // straddles a page boundary), this controls whether they are\n      // done in increasing or decreasing address order. This is\n      // architecturally observable because some store operations may\n      // succeed, and even for loads the resulting `xtval` may depend\n      // on this setting.\n      \"order_decreasing\": false,\n      // If a misaligned access was specified to have no fault in\n      // `exceptions` above, the PMAs for the access, including the\n      // optional Misaligned Atomicity Granule (MAG) PMA, specify how\n      // it is handled.  If no MAG PMA is specified, or the MAG does\n      // not apply to the access, the `default_allowed_within_exp`\n      // value below specifies this handling.\n      //\n      // Memory accesses that span multiple naturally aligned\n      // 2^default_allowed_within_exp sized regions will be split into\n      // multiple memory operations. 0 means all misaligned accesses\n      // will be split.  The maximum value is 12 (one page).\n      \"default_allowed_within_exp\": 0,\n      // If the access gets split due to `default_allowed_within_exp`\n      // then the size of the operations will be one byte if\n      // `byte_by_byte` is set, otherwise they will be the maximum\n      // size possible based on the alignment. For example a 4-byte\n      // access to address 0x2 will use two 2-byte operations.\n      \"byte_by_byte\": false\n    },\n    // Address to write DTB to (if provided). This must be in a suitable memory\n    // region (see `memory.regions`).\n    \"dtb_address\": {\n      \"len\": 64,\n      \"value\": \"0x1000\"\n    },\n    // The locations and sizes of memory regions and their PMAs.  These regions\n    // are required to be aligned to 4K (page) boundaries.  To specify\n    // the `misaligned` PMA attribute for a region, see the comments for\n    // `memory.misaligned.exceptions` above.\n    // The optional misaligned atomicity granule (MAG) can be specified as a\n    // power of 2, upto a maximum of a page size (i.e. 12). For\n    // Zama16b, for e.g., the specified value should be 4. A value of\n    // 0 indicates that the MAG attribute is not present.\n    \"regions\": [\n      // ROM\n      {\n        \"base\": {\n          \"len\": 64,\n          \"value\": \"0x1000\"\n        },\n        \"size\": {\n          \"len\": 64,\n          \"value\": \"0x1000\"\n        },\n        \"attributes\": {\n          \"mem_type\" : \"IOMemory\",\n          \"cacheable\": true,\n          \"coherent\": false,\n          \"executable\": false,\n          \"readable\": true,\n          \"writable\": false,\n          \"read_idempotent\": true,\n          \"write_idempotent\": true,\n          \"misaligned_exceptions\": {\n            \"load_store\": {\n              \"None\" : null\n            },\n            \"vector\": {\n              \"None\" : null\n            },\n            \"amo\": \"AccessFault\",\n            \"lrsc\": \"AccessFault\"\n          },\n          \"atomic_support\": \"AMONone\",\n          \"misaligned_atomicity_granule_size_exp\": 0,\n          \"vector_misaligned_atomicity_granule_size_exp\": 0,\n          \"reservability\": \"RsrvNone\",\n          \"supports_cbo_zero\": false,\n          \"supports_pte_read\": false,\n          \"supports_pte_write\": false\n        },\n        \"include_in_device_tree\": false\n      },\n      // MMIO\n      {\n        \"base\": {\n          \"len\": 64,\n          \"value\": \"0x2000000\"\n        },\n        \"size\": {\n          \"len\": 64,\n          \"value\": \"0x10000000\"\n        },\n        \"attributes\": {\n          \"mem_type\": \"IOMemory\",\n          \"cacheable\": false,\n          \"coherent\": true,\n          \"executable\": false,\n          \"readable\": true,\n          \"writable\": true,\n          \"read_idempotent\": false,\n          \"write_idempotent\": false,\n          \"misaligned_exceptions\": {\n            \"load_store\": {\n              \"None\" : null\n            },\n            \"vector\": {\n              \"None\" : null\n            },\n            \"amo\": \"AccessFault\",\n            \"lrsc\": \"AccessFault\"\n          },\n          \"atomic_support\": \"AMONone\",\n          \"misaligned_atomicity_granule_size_exp\": 0,\n          \"vector_misaligned_atomicity_granule_size_exp\": 0,\n          \"reservability\": \"RsrvNone\",\n          \"supports_cbo_zero\": false,\n          \"supports_pte_read\": false,\n          \"supports_pte_write\": false\n        },\n        \"include_in_device_tree\": false\n      },\n      // RAM\n      {\n        \"base\": {\n          \"len\": 64,\n          \"value\": \"0x80000000\"\n        },\n        \"size\": {\n          \"len\": 64,\n          \"value\": \"0x80000000\"\n        },\n        \"attributes\": {\n          \"mem_type\": \"MainMemory\",\n          \"cacheable\": true,\n          \"coherent\": true,\n          \"executable\": true,\n          \"readable\": true,\n          \"writable\": true,\n          \"read_idempotent\": true,\n          \"write_idempotent\": true,\n          \"misaligned_exceptions\": {\n            \"load_store\": {\n              \"None\" : null\n            },\n            \"vector\": {\n              \"None\" : null\n            },\n            \"amo\": \"AccessFault\",\n            \"lrsc\": \"AccessFault\"\n          },\n          \"atomic_support\": \"AMOCASQ\",\n          \"misaligned_atomicity_granule_size_exp\": 4,\n          \"vector_misaligned_atomicity_granule_size_exp\": 4,\n          \"reservability\": \"RsrvEventual\",\n          \"supports_cbo_zero\": true,\n          \"supports_pte_read\": true,\n          \"supports_pte_write\": true\n        },\n        \"include_in_device_tree\": true\n      }\n    ]\n  },\n  \"platform\": {\n    \"vendorid\": 0,\n    \"archid\": 0,\n    \"impid\": 0,\n    \"hartid\": 0,\n    // Cache block size, specified as a power of 2.\n    \"cache_block_size_exp\": 6,\n    \"reservation\": {\n      // This specifies both the size and alignment of the reservation set, specified as a power of 2.\n      // It must be at least 2 on RV32 and 3 on RV64 to support Zalrsc.  It must not be more than\n      // 6 for Za64rs and 7 for Za128rs.  In all cases, it must be less than or equal to 12.\n      \"reservation_set_size_exp\": 3,\n      // Some implementations (e.g. Spike) require the Store-Conditional to provide the same\n      // address as the matching Load-Reserve in order to succeed, regardless of the\n      // configured reservation set size.  This controls whether such an exact address\n      // match is required for a Store-Conditional to succeed.\n      \"require_exact_reservation_addr\": false,\n      // Some implementations (e.g. SiFive U74) also invalidate the\n      // reservation on stores from the same hart.  If this is set to `true`, the\n      // model invalidates the reservation if a store from the same hart lies within\n      // the reservation set.\n      \"invalidate_on_same_hart_store\": false\n    },\n    \"interrupts\": {\n      \"machine\": {\n        \"software\" : {\n          \"supported\" : true\n        },\n        \"external\" : {\n          \"supported\" : true\n        },\n        \"timer\" : {\n          \"supported\" : true\n        }\n      }\n    },\n    \"clint\": {\n      // Whether the platform contains a CLINT.\n      \"supported\": true,\n      // If supported, this must be in a suitable IO memory region (see `memory.regions`).\n      // Otherwise, these values can be left as 0.\n      \"base\": 33554432,\n      \"size\": 49152\n    },\n    // Very simple MMIO device to generate interrupts for testing\n    // purposes. See docs/SimpleInterruptGenerator.md for details.\n    \"simple_interrupt_generator\": {\n      // Whether the platform contains this device.\n      \"supported\": true,\n      // If supported, this must be in a suitable IO memory region (see `memory.regions`)\n      // and 4-byte aligned. The size is always 0x20.  If not supported, this can be left\n      // as 0.\n      \"base\": 201326592\n    },\n    \"clock_frequency\": 1000000000,\n    \"instructions_per_tick\": 2,\n    \"wfi_is_nop\": false,\n    // WFI is optionally available to User mode.  Note that even if\n    // `wfi_is_nop` is set to `true` above, it will still not be\n    // available to User mode unless `wfi_available_to_user_mode` is\n    // also `true`.\n    \"wfi_available_to_user_mode\": false,\n    // The maximum increment in the time CSR before a wait instruction\n    // (e.g. WFI, WRS.NTO, WRS.STO) that is not a NOP expires its\n    // wait. It is not possible to wait indefinitely.\n    //\n    // If WFI or WRS.STO (Short TimeOut) exceed this limit in\n    // non-machine privilege with mstatus.TW set, an illegal\n    // instruction is raised. Otherwise they retire successfully.\n    //\n    // Note: it is also legal for these instructions to spuriously\n    // retire successfully at any point, but there is currently no\n    // configuration option for this behaviour.\n    \"max_time_to_wait\": 10,\n\n    // The model can generate the following events that can be tracked\n    // using the HPM counters:\n    // - EV_FENCE\n    // - EV_MISALIGNED_LOAD_EXCEPTION\n    // - EV_MISALIGNED_STORE_EXCEPTION\n    // - EV_TLB_MISS\n    //\n    // An event can be mapped to a selector value, that when written\n    // to the event field of an `mhpmeventNN` CSR, will increment the\n    // corresponding `mhpmcounterNN` CSR as per the specification\n    // (e.g. the `Sscofpmf` extension).\n    //\n    // The selector values need to fit into the event field of an\n    // `mhpmeventNN` CSR. When Sscofpmf is not supported, this field\n    // is `base.hpmevent_width_bits` wide; with Sscofpmf, this field\n    // is the lowest 56 bits of the 64-bit `mhpeventNN` CSR.\n    //\n    // The `event_selectors` list can contain any subset of these\n    // supported events.  Events cannot be repeated in the list, and\n    // the selector values should be unique.  These selector values\n    // are always specified as 64-bit, but their values must fit the\n    // width restrictions mentioned above.\n    \"event_selectors\": [\n      {\n        \"event\": \"EV_FENCE\",\n        \"selector\": {\n          \"len\": 64,\n          \"value\": \"0x1\"\n        }\n      },\n      {\n        \"event\": \"EV_MISALIGNED_LOAD_EXCEPTION\",\n        \"selector\": {\n          \"len\": 64,\n          \"value\": \"0x2\"\n        }\n      },\n      {\n        \"event\": \"EV_MISALIGNED_STORE_EXCEPTION\",\n        \"selector\": {\n          \"len\": 64,\n          \"value\": \"0x3\"\n        }\n      }\n    ]\n  },\n  \"extensions\": {\n    \"M\": {\n      \"supported\": true,\n      \"mutable_misa\": true\n    },\n    \"A\": {\n      \"supported\": true,\n      \"mutable_misa\": true\n    },\n    \"F\": {\n      \"supported\": true,\n      \"mutable_misa\": true,\n      // When to set mstatus.FS and mstatus.SD to 1, as a result of fflags\n      // being set. There are three options:\n      //\n      // - Fflags_Dirty_Precise: Only set FS/SD when absolutely required, because\n      //                         fflags has actually changed value.\n      // - Fflags_Dirty_Flag: Set FS/SD when the instruction sets a flag, even\n      //                      if that flag is already set.\n      // - Fflags_Dirty_Instruction: Set FS/SD when we execute an instruction that\n      //                             might set a flag, even if it actually doesn't.\n      \"fflags_dirty_policy\": \"Fflags_Dirty_Precise\"\n    },\n    \"D\": {\n      \"supported\": true,\n      \"mutable_misa\": true\n    },\n    \"C\": {\n      // There is no supported option for C. It is automatically\n      // marked as supported based on Zca, Zcf, and Zcd\n      \"mutable_misa\": true\n    },\n    \"V\": {\n      // `support_level` must be one of the below strings:\n      // . \"Disabled\" for no vector extension support\n      // . \"Integer\" for Zve*x support\n      // . \"Float_single\" for Zve*f support\n      // . \"Float_double\" for Zve*d support\n      // . \"Full\" for the full V extension\n      // Note that `support_level` requires compatible\n      // values for `vlen_exp` and `elen_exp` below.\n      // For e.g. Zve32x and Zve32f require `elen_exp` >= 5,\n      // Zve64x, Zve64f, and Zve64d require `elen_exp` >= 6,\n      // and V requires `elen_exp` >= 6 and `vlen_exp` >= 7.\n      \"support_level\": \"Full\",\n      // mutable_misa only applies if support_level is set to Full\n      \"mutable_misa\": true,\n      // `vlen_exp` and `elen_exp` should be between 3 and 16,\n      // inclusive.  If `support_level` is `\"Disabled\"`, then these\n      // should be left as 3 (or any other legal value).\n      \"vlen_exp\": 8,\n      \"elen_exp\": 6,\n      \"reserved_behavior\": {\n        // This determines how to handle attempts by vsetvli, vsetivli,\n        // and vsetvl to set an unsupported or reserved vtype.\n        // \"IllegalVtype_SetVill\" - set vtype.vill, set vl to zero, clear vstart, and write rd.\n        // \"IllegalVtype_Illegal\" - treat it as an illegal instruction.\n        // \"IllegalVtype_Fatal\"   - raise a Sail exception, stopping execution.\n        \"illegal_vtype\": \"IllegalVtype_SetVill\",\n        // This determines how to handle an out-of-bounds vstart (vstart >= VLMAX), which the\n        // vector spec marks reserved and recommends, but does not require, trapping.\n        // \"Vstart_Illegal\" - raise an illegal instruction exception.\n        // \"Vstart_Ignore\"  - treat as a no-op, the instruction writes nothing.\n        \"vstart_out_of_bounds\": \"Vstart_Illegal\"\n      },\n      \"vl_use_ceil\": false,\n      // The maximum index EEW for indexed vector addressing mode, as\n      // a power of 2.  This must be at least 3 but must not exceed\n      // the supported ELEN.\n      \"max_index_eew_exp\": 6,\n      \"vstart\": {\n        // The vector specification permits implementations to raise an\n        // illegal instruction exception when `vstart` is non-zero for\n        // instructions that cannot produce such a `vstart` value through\n        // normal execution.\n        \"zero_required\": {\n          // Whether vector arithmetic instructions raise an illegal instruction\n          // exception when `vstart` is non-zero. This also governs instructions\n          // from the Zvbb, Zvbc, Zvabd, Zvfbfmin, and Zvfbfwma extensions.\n          \"arith\": true,\n          // Whether the vector scalar move instructions (vmv.x.s, vmv.s.x,\n          // vfmv.f.s and vfmv.s.f) raise an illegal instruction exception when\n          // `vstart` is non-zero.\n          \"scalar_move\": true\n        }\n      }\n    },\n    \"B\": {\n      \"supported\": true,\n      \"mutable_misa\": true\n    },\n    \"S\": {\n      \"supported\": true,\n      \"mutable_misa\": true,\n      \"interrupts\": {\n        \"software\" : {\n          \"supported\" : true\n        },\n        \"external\" : {\n          \"supported\" : true\n        },\n        // This should be set to true if the Sstc extension is supported.\n        \"timer\" : {\n          \"supported\" : true\n        }\n      }\n    },\n    \"U\": {\n      \"supported\": true,\n      \"mutable_misa\": true\n    },\n    \"H\": {\n      \"supported\": true,\n      \"mutable_misa\": true,\n      // GEILEN, the number of guest external interrupts. The maximum is XLEN-1.\n      \"geilen\": 63,\n      // Whether an implicit access to a VS-stage PTE sets the D bit of a writable G-stage PTE\n      \"implicit_vs_pte_access_sets_gstage_d\": false,\n      // Whether a trap into M or HS mode caused by the specified exception\n      // writes the transformed trapping instruction to `mtinst`/`htinst`.\n      // This applies to integer and floating-point loads and stores\n      // (including compressed forms), LR/SC, AMOs, HLV/HLVX/HSV and CBOs.\n      // If false, zero is written instead.\n      \"transformed_instruction\": {\n        \"load_address_misaligned\": true,\n        \"load_access_fault\": true,\n        \"load_page_fault\": true,\n        \"load_guest_page_fault\": true,\n        \"samo_address_misaligned\": true,\n        \"samo_access_fault\": true,\n        \"samo_page_fault\": true,\n        \"samo_guest_page_fault\": true\n      },\n      // Whether a guest-page fault writes the faulting guest physical address\n      // to `htval`/`mtval2`. If false, `htval`/`mtval2` is written as zero.\n      // Enabling Shtvala requires this option to be enabled.\n      \"guest_page_fault_writes_htval\": true,\n      // Which G-stage translation modes `hgatp` supports. Bare is always\n      // supported.\n      \"hgatp_modes\": {\n        \"Sv32x4\": false,\n        \"Sv39x4\": true,\n        \"Sv48x4\": true,\n        \"Sv57x4\": true\n      },\n      // Which VS-stage translation modes `vsatp` supports. Bare is always\n      // supported.\n      \"vsatp_modes\": {\n        \"Sv32\": false,\n        \"Sv39\": true,\n        \"Sv48\": true,\n        \"Sv57\": true\n      }\n    },\n    \"Zibi\": {\n      \"supported\": true\n    },\n    // This extension just asserts that the cache block size is 64 bytes.\n    // If you enable this you also need to ensure `platform.cache_block_size_exp`\n    // is 6, otherwise you will get a config validation error.\n    \"Zic64b\": {\n      \"supported\": true\n    },\n    \"Zicbom\": {\n      \"supported\": true\n    },\n    \"Zicbop\": {\n      \"supported\": true\n    },\n    \"Zicboz\": {\n      \"supported\": true\n    },\n    \"Ziccamoa\": {\n      \"supported\": true\n    },\n    \"Ziccamoc\": {\n      \"supported\": true\n    },\n    \"Ziccif\": {\n      \"supported\": true\n    },\n    \"Zicclsm\": {\n      \"supported\": true\n    },\n    \"Ziccrse\": {\n      \"supported\": true\n    },\n    \"Zicfilp\": {\n      \"supported\": true\n    },\n    \"Zicfiss\": {\n      \"supported\": true\n    },\n    \"Zicond\": {\n      \"supported\": true\n    },\n    \"Zicntr\": {\n      \"supported\": true\n    },\n    \"Zicsr\": {\n      \"supported\": true\n    },\n    \"Zifencei\": {\n      \"supported\": true\n    },\n    \"Zihintntl\": {\n      \"supported\": true\n    },\n    \"Zihintpause\": {\n      \"supported\": true\n    },\n    \"Zihpm\": {\n      \"supported\": true\n    },\n    \"Zilx\": {\n      \"supported\": true\n    },\n    \"Zimop\": {\n      \"supported\": true\n    },\n    \"Zmmul\": {\n      \"supported\": false\n    },\n    \"Zaamo\": {\n      \"supported\": false\n    },\n    \"Zabha\": {\n      \"supported\": true\n    },\n    \"Zacas\": {\n      \"supported\": true\n    },\n    \"Zalrsc\": {\n      \"supported\": false\n    },\n    // This extension just asserts that each memory region has a MAG\n    // PMA of 16 bytes.  If you enable this you also need to ensure\n    // `misaligned_atomicity_granule_size_exp` for each coherent and\n    // cacheable main memory region is 4, otherwise you will get a\n    // config validation error.\n    \"Zama16b\": {\n      \"supported\": true\n    },\n    \"Zawrs\": {\n      \"supported\": true,\n      // Whether `WRS.NTO` and `WRS.STO` behave as NOPS.  If they do\n      // not, see above note for `platform.max_time_to_wait`.  If\n      // Zawrs is not supported, these `is_nop` fields need to be\n      // present but their boolean values are ignored.\n      \"nto\": {\n        \"is_nop\": false\n      },\n      \"sto\": {\n        \"is_nop\": false\n      }\n    },\n    \"Zfa\": {\n      \"supported\": true\n    },\n    \"Zfbfmin\": {\n      \"supported\": true\n    },\n    \"Zfh\": {\n      \"supported\": true\n    },\n    \"Zfhmin\": {\n      \"supported\": true\n    },\n    \"Zfinx\": {\n      \"supported\": false\n    },\n    \"Zdinx\": {\n      \"supported\": false\n    },\n    \"Zca\": {\n      \"supported\": true\n    },\n    \"Zcf\": {\n      \"supported\": false\n    },\n    \"Zcd\": {\n      \"supported\": true\n    },\n    \"Zcb\": {\n      \"supported\": true\n    },\n    \"Zcmop\": {\n      \"supported\": true\n    },\n    \"Zba\": {\n      \"supported\": false\n    },\n    \"Zbb\": {\n      \"supported\": false\n    },\n    \"Zbs\": {\n      \"supported\": false\n    },\n    \"Zbc\": {\n      \"supported\": true\n    },\n    \"Zbkb\": {\n      \"supported\": true\n    },\n    \"Zbkc\": {\n      \"supported\": true\n    },\n    \"Zbkx\": {\n      \"supported\": true\n    },\n    \"Zknd\": {\n      \"supported\": true\n    },\n    \"Zkne\": {\n      \"supported\": true\n    },\n    \"Zknh\": {\n      \"supported\": true\n    },\n    \"Zkr\": {\n      \"supported\": true,\n      // If Zkr is not supported, these fields need to be present but\n      // their boolean values are ignored.\n      \"sseed_reset_value\": false,\n      \"useed_reset_value\": false,\n      \"sseed_read_only_zero\": false,\n      \"useed_read_only_zero\": false\n    },\n    \"Zksed\": {\n      \"supported\": true\n    },\n    \"Zksh\": {\n      \"supported\": true\n    },\n    \"Zkt\": {\n      \"supported\": true\n    },\n    \"Zhinx\": {\n      \"supported\": false\n    },\n    \"Zhinxmin\": {\n      \"supported\": false\n    },\n    \"Zvabd\": {\n      \"supported\": true\n    },\n    \"Zvfbfmin\": {\n      \"supported\": true\n    },\n    \"Zvfbfwma\": {\n      \"supported\": true\n    },\n    \"Zvfh\": {\n      \"supported\": true\n    },\n    \"Zvfhmin\": {\n      \"supported\": true\n    },\n    \"Zvbb\": {\n      \"supported\": true\n    },\n    \"Zvbc\": {\n      \"supported\": true\n    },\n    \"Zvkb\": {\n      \"supported\": false\n    },\n    \"Zvkg\": {\n      \"supported\": true\n    },\n    \"Zvkned\": {\n      \"supported\": true\n    },\n    \"Zvknha\": {\n      \"supported\": true\n    },\n    \"Zvknhb\": {\n      \"supported\": true\n    },\n    \"Zvksed\": {\n      \"supported\": true\n    },\n    \"Zvksh\": {\n      \"supported\": true\n    },\n    \"Zvkt\": {\n      \"supported\": true\n    },\n    \"Ssccptr\": {\n      \"supported\": true\n    },\n    \"Sdtrig\": {\n      \"supported\": true,\n      // The number of supported triggers.  This has to be\n      // non-negative, and greater than 0 if Sdtrig is supported.  The\n      // model does not support more than 16 triggers.\n      \"num_triggers\": 16,\n      // `breakpoint_reentrancy` must be one of the below strings:\n      // . `Use_tcontrol`: use the `mte` and `mpte` bits in the `tcontrol` CSR (this also makes the `tcontrol` CSR available)\n      // . `Use_interrupt_enables`: use `mstatus.MIE` and the `SIE` bits in `sstatus` and `vsstatus`\n      // . `No_reentrancy_support`: no specific support for reentrancy\n      \"breakpoint_reentrancy\": \"Use_interrupt_enables\",\n      // CSRs\n      \"mcontext\": {\n        \"supported\": true\n      },\n      \"hcontext\": {\n        \"supported\": true\n      },\n      \"scontext\": {\n        \"supported\": true\n      },\n      // Triggers\n      \"icount\": {\n        \"supported\": true,\n        \"count_hardwired_one\": false,\n        // Whether a `tdata1` write to an `icount` trigger with `count`=1 also makes it\n        // pending when that write's instruction matches the trigger.\n        \"self_write_sets_pending\": true\n      },\n      \"etrigger\": {\n        \"supported\": true,\n        // A bit set to 1 in this value specifies that the\n        // corresponding exception is supported by the trigger.\n        // Triggers for reserved exceptions are not supported.  This\n        // value is ignored when `etrigger` is not supported.\n        \"supported_exceptions\": {\n          \"len\": \"xlen\",\n          \"value\": \"0x0000_0000_00fd_bfff\"\n        }\n      },\n      \"itrigger\": {\n        \"supported\": true,\n        // A bit set to 1 in this value specifies that the\n        // corresponding interrupt is supported by the trigger.\n        // Triggers for reserved interrupts are not supported.  This\n        // value is ignored when `itrigger` is not supported.\n        \"supported_interrupts\": {\n          \"len\": \"xlen\",\n          \"value\": \"0x0000_0000_0000_3eee\"\n        }\n      },\n      \"textra\": {\n        // Which context matches are supported. Writes of unsupported\n        // `mhselect` and `sselect` values are legalized to 0 (ignore).\n        \"mhselect\": {\n          // Values 1, 4 and 5, match on `mcontext`. Requires the\n          // `mcontext` CSR. Values 1 and 5 also require H.\n          \"mcontext_match\": true,\n          // Values 2 and 6, match on the VMID in `hgatp`. Requires H.\n          \"vmid_match\": true\n        },\n        \"sselect\": {\n          // Value 1, match on `scontext`. Requires S and the `scontext`\n          // CSR.\n          \"scontext_match\": true,\n          // Value 2, match on the ASID in `satp` or `vsatp`. Requires S.\n          \"asid_match\": true\n        },\n        // The number of implemented `mhvalue` and `svalue` bits. Bits\n        // above these are read only zero. At most 6 and 16 on RV32,\n        // 13 and 32 on RV64.\n        \"mhvalue_len\": 13,\n        \"svalue_len\": 32\n      }\n    },\n    \"Sscofpmf\": {\n      \"supported\": true\n    },\n    // Enabling Sha requires H, Ssstateen, Shcounterenw, Shgatpa, Shtvala,\n    // Shvsatpa, Shvstvala and Shvstvecd.\n    \"Sha\": {\n      \"supported\": true\n    },\n    \"Shcounterenw\": {\n      \"supported\": true\n    },\n    \"Sscounterenw\": {\n      \"supported\": true\n    },\n    // Enabling Shvsatpa requires that every mode supported in `satp` is also\n    // supported in `vsatp` (under `extensions.H.vsatp_modes`).\n    \"Shvsatpa\": {\n      \"supported\": true\n    },\n    // Enabling Shvstvala requires that the exceptions specified in the\n    // extension have their appropriate settings under `base.xtval_nonzero`.\n    \"Shvstvala\": {\n      \"supported\": true\n    },\n    \"Shvstvecd\": {\n      \"supported\": true\n    },\n    \"Ssstrict\": {\n      \"supported\": true\n    },\n    \"Sstc\": {\n      \"supported\": true\n    },\n    // Enabling Shgatpa requires an `hgatp` SvNNx4 mode (under\n    // `extensions.H.hgatp_modes`) for every SvNN mode supported in `satp`.\n    \"Shgatpa\": {\n      \"supported\": true\n    },\n    \"Shtvala\": {\n      \"supported\": true\n    },\n    // Enabling Sstvala requires that the exceptions specified in the extension\n    // have their appropriate settings under `base.xtval_nonzero`.\n    \"Sstvala\": {\n      \"supported\": true\n    },\n    // Enabling Sstvecd requires that `stvec` supports the `direct` mode,\n    // see `base.stvec.direct.supported`.\n    \"Sstvecd\": {\n      \"supported\": true\n    },\n    \"Svade\": {\n      \"supported\": true\n    },\n    \"Svadu\": {\n      \"supported\": true\n    },\n    \"Svinval\": {\n      \"supported\": true\n    },\n    \"Svrsw60t59b\": {\n      \"supported\": true\n    },\n    \"Svnapot\": {\n      \"supported\": true\n    },\n    \"Svukte\": {\n      \"supported\": true\n    },\n    \"Ssnpm\": {\n      \"supported\": true,\n      \"supported_pmlen_7\": true,\n      \"supported_pmlen_16\": true\n    },\n    \"Smnpm\": {\n      \"supported\": true,\n      \"supported_pmlen_7\": true,\n      \"supported_pmlen_16\": true\n    },\n    \"Smmpm\": {\n      \"supported\": true,\n      \"supported_pmlen_7\": true,\n      \"supported_pmlen_16\": true\n    },\n    \"Smcntrpmf\": {\n      \"supported\": true\n    },\n    // The double trap extensions are not enabled by default because\n    // mstatus[MDT] is reset to 1. Unless the boot code clears it, the\n    // first trap taken will result in an unexpected double trap.\n    \"Smdbltrp\": {\n      \"supported\": false\n    },\n    \"Ssdbltrp\": {\n      \"supported\": false\n    },\n    \"Svbare\": {\n      \"supported\": true,\n      \"sfence_vma_illegal_if_svbare_only\": true\n    },\n    \"Sv32\": {\n      \"supported\": false\n    },\n    \"Sv39\": {\n      \"supported\": true\n    },\n    \"Sv48\": {\n      \"supported\": true\n    },\n    \"Sv57\": {\n      \"supported\": true\n    },\n    \"Stateen\": {\n      \"Smstateen\": {\n        \"supported\": true\n      },\n      \"Ssstateen\": {\n        \"supported\": true\n      },\n      // Each stateen bit is one of CSRBit_Writable,\n      // CSRBit_ReadOnlyZero or CSRBit_ReadOnlyOne.\n      // Bits for features the hart does not support must be\n      // CSRBit_ReadOnlyZero. Bits that depend on misa (ENVCFG\n      // on misa.S, P1P13 on misa.H) also read as zero while that\n      // extension is disabled at run time.\n      \"mstateen0\": {\n        \"SE0\": \"CSRBit_Writable\",\n        \"ENVCFG\": \"CSRBit_Writable\",\n        \"CONTEXT\": \"CSRBit_Writable\",\n        \"P1P13\": \"CSRBit_ReadOnlyZero\",\n        \"SRMCFG\": \"CSRBit_Writable\",\n        \"FCSR\": \"CSRBit_ReadOnlyZero\",\n        \"C\": \"CSRBit_ReadOnlyZero\"\n      },\n      // Bit 63 of mstateen1, mstateen2 and mstateen3. These can only be\n      // read-only zero if H is not supported.\n      \"mstateen1\": {\n        \"SE1\": \"CSRBit_Writable\"\n      },\n      \"mstateen2\": {\n        \"SE2\": \"CSRBit_Writable\"\n      },\n      \"mstateen3\": {\n        \"SE3\": \"CSRBit_Writable\"\n      },\n      // hstateen0.SE0 is always writable.\n      \"hstateen0\": {\n        \"ENVCFG\": \"CSRBit_Writable\",\n        \"CONTEXT\": \"CSRBit_Writable\",\n        \"FCSR\": \"CSRBit_ReadOnlyZero\",\n        \"C\": \"CSRBit_ReadOnlyZero\"\n      },\n      \"sstateen0\": {\n        \"FCSR\": \"CSRBit_ReadOnlyZero\",\n        \"C\": \"CSRBit_ReadOnlyZero\"\n      }\n    },\n    \"Ssqosid\": {\n      \"supported\": true,\n      // These lengths should be between 1 and 12, inclusive.\n      // If Ssqosid is not supported, this should be left as 1\n      // (or any other legal value).\n      \"rcid_length\": 12,\n      \"mcid_length\": 12\n    },\n    \"Svpbmt\": {\n      \"supported\": true\n    },\n    \"Svvptc\": {\n      \"supported\": true\n    }\n  }\n}\n"
+  }
+}

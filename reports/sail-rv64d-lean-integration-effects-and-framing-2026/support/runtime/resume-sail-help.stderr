@@ -1,0 +1,237 @@
+Sail 0.20.3
+usage: sail <options> <file1.sail> ... <fileN.sail>
+
+  -o <prefix>                               select output filename prefix
+  --dir                                     show current Sail library directory
+  -i                                        start interactive interpreter
+  --is <filename>                           start interactive interpreter and execute commands in script
+  --iout <filename>                         print interpreter output to file. Can be passed multiple times, see :output_select command.
+  --interact-custom                         drop to an interactive session after running Sail. Differs from -i in that it does not set up the interpreter in the interactive shell.
+  --project <file>                          sail project file defining module structure
+  --variable <variable=value>               assign a module variable to a value
+  --instantiate                             <type variable=value> instantiate an abstract type variable
+  --all-modules                             use all modules in project file
+  --list-files                              list files used in all project files
+  --list-files-separated                    list files used in all project files, with a provided separator
+  --tool <name>                             run a builtin utility
+  --config <file>                           model configuration file
+  --sail-config <file>                      sail configuration file
+  --output-schema <file>                    output configuration schema
+  --fmt                                     format input source code
+  --slice-instantiation-types               (experimental) produce a Sail file containing all of the types that are used in instantiations
+  -D <symbol>                               define a symbol for the preprocessor, as $define does in the source code
+  --no-warn                                 do not print warnings
+  --all-warnings                            print all warning messages
+  --warn-error                              promote warnings to errors, if below the required version
+  --strict-var                              require var expressions for variable declarations
+  --strict-bitvector                        require bitvectors to be indexed by naturals
+  --strict-exponentials                     type level exponentials must have a non-negative argument
+  --plugin <file>                           load a Sail plugin
+  --just-check                              terminate immediately after typechecking
+  --no-core                                 do not use any core definitions
+  --memo-z3                                 memoize calls to z3, improving performance when typechecking repeatedly (default)
+  --no-memo-z3                              do not memoize calls to z3
+  --memo-z3-path path                       to cache z3 results (default 'sail_smt_cache')
+  --have-feature <symbol>                   check if a feature symbol is set by default
+  --no-color                                do not use terminal color codes in output
+  --string-literal-type                     use a separate string_literal type for string literals
+  --grouped-regstate                        group registers with same type together in generated register state record
+  --non-lexical-flow                        allow non-lexical flow typing
+  --no-lexp-bounds-check                    turn off bounds checking for vector assignments in l-expressions
+  --auto-mono                               automatically infer how to monomorphise code
+  --mono-rewrites                           turn on rewrites for combining bitvector operations
+  --mono-split <filename>:<line>:<variable> manually gives a case split for monomorphisation
+  --splice <filename>                       add functions from file, replacing existing definitions where necessary
+  --smt-solver <solver>                     choose SMT solver. Supported solvers are z3 (default), alt-ergo, cvc4, mathsat, vampire and yices.
+  --smt-linearize                           (experimental) force linearization for constraints involving exponentials
+  --Oconstant-fold                          apply constant folding optimizations
+  --Oaarch64-fast                           apply ARMv8.5 specific optimizations (potentially unsound in general)
+  --Ofast-undefined                         turn on fast-undefined mode
+  --const-prop-mutrec                       unroll function in a set of mutually recursive functions
+  --ddump-project-depgraph                  (debug) dump module dependency graph to a file
+  --ddump-project-depgraph-reduced          (debug) dump reduced depgraph
+  --ddump-project-depgraph-skip-deps        (debug) skip dependencies in depgraph
+  --ddump-project-depgraph-skip-reqs        (debug) skip requires in depgraph
+  --ddump-initial-ast                       (debug) dump the initial ast to stdout
+  --ddump-tc-ast                            (debug) dump the typechecked ast to stdout
+  --ddump-side-effect                       (debug) dump side effect info
+  --dtc-verbose <verbosity>                 (debug) verbose typechecker output: 0 is silent
+  --dsmt-verbose                            (debug) print SMTLIB constraints sent to SMT solver
+  --dcallgraph <file>                       (debug) dump callgraph to file
+  --dallow-internal                         (debug) allow special character # in identifiers
+  --dno-error-filenames                     (debug) do not print filenames in errors
+  --dprofile                                (debug) provide basic profiling information for rewriting passes within Sail
+  --unroll-loops                            turn on rewrites for unrolling loops with constant bounds.
+  --unroll-loops-max-iter <nb_iter>         Don't unroll loops if they have more than <nb_iter> iterations.
+  --ddump-rewrite-ast <prefix>              (debug) dump the ast after each rewriting step to <prefix>_<i>.lem
+  --dmono-all-split-errors                  (debug) display all case split errors from monomorphisation, rather than one
+  --dmono-analysis <verbosity>              (debug) dump information about monomorphisation analysis: 0 silent, 3 max
+  --dmono-continue                          (debug) continue despite monomorphisation errors
+  --dmono-limit                             (debug) adjust maximum size of split allowed
+  --dsequential                             (debug) Run without any internal parallelism
+  --dbacktrace <length>                     (debug) length of backtrace to show when reporting unreachable code
+  --infer-effects                           (deprecated) ignored for compatibility with older versions; effects are always inferred now
+  --undefined-gen                           (deprecated) ignored as undefined generation is now always the same for all Sail backends
+  -v                                        print version
+  --version                                 print version
+  --require-version <min_version>           exit with non-zero status if Sail version requirement is not met
+  --verbose <verbosity>                     produce verbose output
+  --explain-all-variables                   explain all type variables in type error messages
+  --explain-constraints                     explain constraints in type error messages
+  --explain-all-overloads                   explain all possible overloading failures in type errors
+  --explain-verbose                         add the maximum amount of explanation to type errors
+  -h                                        display this list of options. Also available as -help or --help
+  -help                                     display this list of options
+  --help                                    display this list of options 
+
+Options for targets c, cpp
+  -c                            invoke the Sail c target
+  --c-build                     build the generated C/C++ output automatically
+  --c-include <filename>        provide additional include for C/C++ implementation output
+  --c-header-include <filename> provide additional include for C/C++ header output
+  --c-no-mangle                 produce readable names
+  --c-no-main                   do not generate the main() function
+  --c-no-rts                    do not include the Sail runtime
+  --c-no-lib                    do not include the Sail runtime or library
+  --c-prefix <prefix>           prefix generated C/C++ functions
+  --c-generate-header           
+  --c-extra-params <parameters> generate C/C++ functions with additional parameters
+  --c-extra-args <arguments>    supply extra argument to every generated C/C++ function call
+  --c-specialize                specialize integer arguments in C/C++ output
+  --c-preserve                  make sure the provided function identifier is preserved in C/C++ output
+  --c-assert-to-exception       turn assertions into exceptions
+  --c-preserve-type             make sure the provided type identifier is preserved in the C/C++ output
+  --c-fold-unit                 remove comma separated list of functions from C/C++ output, replacing them with unit
+  --c-coverage <file>           Turn on coverage tracking and output information about all branches and functions to a file
+  -O                            turn on optimizations for C/C++ compilation
+  --Ofixed-int                  assume fixed size integers rather than GMP arbitrary precision integers
+  --Ofixed-bits                 assume fixed size bitvectors rather than arbitrary precision bitvectors
+  --static                      
+  --cpp                         invoke the Sail cpp target
+  --cpp-class-name <identifier> C++ class name (default 'Model')
+  --cpp-namespace <identifier>  C++ namespace name (default 'model')
+  --cpp-derive-from <list>      List of classes/structs to derive the model class from, e.g. 'public foo, private bar' 
+
+Options for targets rocq, coq
+  --coq                           invoke the Sail coq target
+  --rocq                          invoke the Sail rocq target
+  --rocq-output-dir <directory>   set a custom directory to output generated Rocq
+  --rocq-lib <filename>           provide additional library to open in Rocq output
+  --rocq-alt-modules <filename>   provide alternative modules to open in Rocq output
+  --rocq-alt-modules2 <filename>  provide additional alternative modules to open only in main (non-_types) Rocq output, and suppress default definitions of MR and M monads
+  --rocq-extern-type <typename>   do not generate a definition for the type
+  --rocq-generate-extern-types    generate only extern types rather than suppressing them
+  --rocq-isla <filename>          generate Rocq code for decoding Isla trace values
+  --rocq-record-update            use coq-record-update package's syntax for record updates
+  --rocq-lib-style {bbv|stdpp}               select which style of Rocq library to use (default: stdpp when the concurrency interfaces is used, bbv otherwise)
+  --rocq-undef-axioms             generate axioms for functions that are declared but not defined
+  --rocq-minimal-eq-dec            generate decidable equality instances only when necessary
+  --drocq-debug-on <function>     (debug) produce debug messages for Rocq output on given function
+  --rocq-separate-interface-file  create separate file for concurrency interface definitions
+  --rocq-generic-value            generate conversions to a generic value type (requires --rocq-record-update) 
+
+Options for targets doc, html
+  --doc                       invoke the Sail doc target
+  --doc-format <format>       Output documentation in the chosen format, either latex or asciidoc (default asciidoc)
+  --doc-file <file>           Document only the provided files
+  --doc-embed <plain|base64>  Embed all documentation contents into the documentation bundle rather than referencing it
+  --doc-embed-with-location   When used with --doc-embed, include both the contents and locations
+  --doc-compact               Use compact documentation format
+  --doc-bundle <file>         Name for documentation bundle file
+  --html                      invoke the Sail html target
+  --html-css <file>           CSS file for html output
+  --html-link-prefix <string> Prefix links in HTML output with string 
+
+Options for target latex
+  --latex                 invoke the Sail latex target
+  --latex-prefix <prefix> set a custom prefix for generated LaTeX labels and macro commands (default sail)
+  --latex-full-valspecs   print full valspecs in LaTeX output
+  --latex-abbrevs         semicolon-separated list of abbreviations to fix spacing for in LaTeX output (default 'e.g.;i.e.') 
+
+Options for target lean
+  --lean                                    invoke the Sail lean target
+  --lean-output-dir <directory>             set a custom directory to output generated Lean
+  --lean-force-output                       removes the content of the output directory if it is non-empty
+  --lean-single-file                        puts the entire output in a single .lean file
+  --lean-matchbv                            use matchbv in the Lean output
+  --lean-line-width <width>                 maximum line length of the generated Lean code
+  --lean-noncomputable                      add a 'noncomputable section' at the beginning of the output
+  --lean-real-numbers                       enable real numbers (in particular, depend on mathlib)
+  --lean-extern-type <typename>             do not generate a definition for the type
+  --lean-import-file <file>                 import this file in the generated model
+  --lean-noncomputable-function <func-name> do not generate executable code for this function
+  --lean-partial-function <func-name>       disable the totality check for this function
+  --lean-non-beq-type <func-name>           disable deriving a BEq instance for this type
+  --lean-executable                         generate an executable if there is a main function in the Sail program
+  --lean-lib-path                           (local) path of the Lean support library, for development
+  --lean-lib-repo                           url of the git repository of the Lean support library
+  --lean-lib-rev                            revision of the Lean support library 
+
+Options for target lem
+  --lem                        invoke the Sail lem target
+  --lem-output-dir <directory> set a custom directory to output generated Lem
+  --isa-output-dir <directory> set a custom directory to output generated Isabelle auxiliary theories
+  --lem-split-files            split output into multiple files, one per input file
+  --lem-lib <filename>         provide additional library to open in Lem output
+  --lem-sequential             use sequential state monad for Lem output
+  --lem-mwords                 use native machine word library for Lem output
+  --lem-extern-type <typename> do not generate a definition for the type 
+
+Options for target ocaml
+  --ocaml                       invoke the Sail ocaml target
+  --ocaml-nobuild               do not build generated OCaml
+  --ocaml-trace                 output an OCaml translated version of the input with tracing instrumentation, implies -ocaml
+  --ocaml-build-dir <directory> set a custom directory to build generated OCaml
+  --ocaml-generators <types>    produce random generators for the given types 
+
+Options for target sail
+  --output-sail  print Sail code after type checking and initial rewriting 
+
+Options for target smt
+  --smt                            invoke the Sail smt target
+  --smt-auto                       automatically call the smt solver on generated SMT
+  --smt-auto-solver <cvc4/cvc5/z3> set the solver to use for counterexample checks (default cvc5)
+  --smt-ignore-overflow            ignore integer overflow in generated SMT
+  --smt-int-size <n>               set a bound of n on the maximum integer bitwidth for generated SMT (default 128)
+  --smt-propagate-vars             (deprecated) propgate variables through generated SMT
+  --smt-bits-size <n>              set a size bound of n for unknown-length bitvectors in generated SMT (default 64)
+  --smt-vector-size <n>            set a bound of 2 ^ n for generic vectors in generated SMT (default 5)
+  --smt-include <filename>         insert additional file in SMT output
+  --smt-disable-specialization     Disable generic specialization when generating SMT 
+
+Options for target systemverilog
+  --sv                             invoke the Sail systemverilog target
+  --sv-output-dir <path>           set the output directory for generated SystemVerilog files
+  --sv-include <file>              add include directive to generated SystemVerilog file
+  --sv-toplevel <id>               Sail function to use as toplevel module
+  --sv-global-prefix               declare global signals in a named module instead of toplevel
+  --sv-verilate <compile|run>      Invoke verilator on generated output
+  --sv-verilate-args <string>      Extra arguments to pass to verilator
+  --sv-verilate-cflags <string>    Verilator CFLAGS argument
+  --sv-verilate-ldflags <string>   Verilator LDFLAGS argument
+  --sv-verilate-link-sail-runtime  Link the Sail C runtime with the generated verilator C++
+  --sv-verilate-jobs <n>           Provide the -j option to verilator
+  --sv-lines                       output `line directives
+  --sv-comb                        output an always_comb block instead of initial block
+  --sv-no-write-flush              don't emit potentially unsupported sail_write_flush() in main module.
+  --sv-inregs                      take register values from inputs
+  --sv-outregs                     output register values
+  --sv-recursion-depth <n>         set the depth of recursive SV modules
+  --sv-int-size <n>                set the maximum width for unknown integers
+  --sv-bits-size <n>               set the maximum width for bitvectors with unknown width
+  --sv-no-unions                    don't emit any union, instead emit struct
+  --sv-no-strings                  don't emit any strings, instead emit units
+  --sv-no-packed                   don't emit packed datastructures
+  --sv-no-assertions               ignore all Sail asserts
+  --sv-never-pack-unions           never emit a packed union
+  --sv-unreachable <functionname>  Mark function as unreachable.
+  --sv-assert-to-exception         turn assertions into exceptions
+  --sv-skip-cyclic                 skip generation for cyclic definitions
+  --sv-nomem                       don't emit a dynamic memory implementation
+  --sv-fun2wires <functionname>    <slots>:<functionname> Use input/output ports instead of emitting a function call
+  --sv-specialize <n>              Run n specialization passes on Sail Int-kinded type variables
+  --sv-disable-optimizations       disable SystemVerilog specific optimizations
+  --sv-dpi <set>                   Use SystemVerilog DPI-C for a set of primitives (e.g. memory)
+  --sv-no-assert-fatal             Do not generate '$fatal' code for assertions
+  --sv-assert-as-property          Generate SV properties for assertions
+

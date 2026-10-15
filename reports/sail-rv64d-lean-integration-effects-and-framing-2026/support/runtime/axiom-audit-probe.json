@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "-w",
+    "/home/opam/anneal-sail-output/axiom-audit-probe",
+    "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5",
+    "60",
+    "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+    "-j1",
+    "-M1000",
+    "AxiomAuditProbe.lean"
+  ],
+  "status": 1,
+  "seconds": 0.28016395901795477,
+  "source_sha256": "3a04e5adb921fcc38265840867511ba38e8b69bbf097ddfc780eea7a01740c5e"
+}
