@@ -80,6 +80,45 @@ fn check_empty_layout(repr_align: Option<NonZeroUsize>) {
     assert!(empty.statically_shallow_unpadded);
 }
 
+/// Checks the actual built-in `[u32]` descriptor and every element count.
+///
+/// The ABI guard makes the primitive-read premises visible in the extracted
+/// model. The comparison retains overflow: both computations must return
+/// `None` when the mathematical byte length does not fit in `usize`.
+/// This checks one associated constant, not the complete `KnownLayout` trait.
+///
+/// ```aeneas
+/// spec u32_slice_known_layout_checks_spec
+///   ensures _ => True
+/// ```
+#[allow(clippy::arithmetic_side_effects)]
+fn check_u32_slice_known_layout(elems: usize) {
+    let size = mem::size_of::<u32>();
+    let align = mem::align_of::<u32>();
+    if !align.is_power_of_two() {
+        return;
+    }
+    if size % align != 0 {
+        return;
+    }
+
+    let slice = <[u32] as crate::KnownLayout>::LAYOUT;
+    assert!(slice.align.get() == align);
+    assert!(slice.statically_shallow_unpadded);
+    match slice.size_info {
+        SizeInfo::SliceDst(tail) => {
+            assert!(tail.offset == 0);
+            assert!(tail.elem_size == size);
+            assert!(tail.size_base == 0);
+            assert!(tail.size_rounding_align_and_phase.0.get() == align);
+            let actual = tail.size_for_elems(elems);
+            let expected = elems.checked_mul(size);
+            assert!(super::tail_checks::same_optional_usize(actual, expected));
+        }
+        SizeInfo::Sized { .. } => panic!("slice descriptor returned a sized layout"),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -92,6 +131,9 @@ mod tests {
         check_primitive_layouts::<(u8, u64)>();
         check_primitive_layouts::<[u64; 3]>();
         check_empty_layout(None);
+        for elems in [0, 1, usize::MAX / 4, usize::MAX / 4 + 1, usize::MAX] {
+            check_u32_slice_known_layout(elems);
+        }
         for align in [1, 2, 8, 3] {
             check_empty_layout(NonZeroUsize::new(align));
         }
