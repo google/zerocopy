@@ -117,7 +117,7 @@ class Admission:
             if options[key] != expected:
                 raise ValueError(f'Unreviewed extraction option {key}: {options[key]!r}')
         stages = {variant(f['body'])[0] for f in self.functions.values()
-                  if f['body'] != 'Opaque'}
+                  if f['body'] != 'Opaque' and variant(f['body'])[0] != 'Intrinsic'}
         if len(stages) != 1 or not stages <= {'Unstructured', 'Structured'}:
             raise ValueError('Missing or mixed admission body stages')
         self.before = stages == {'Unstructured'}
@@ -263,6 +263,10 @@ class Admission:
                 continue
             if kind == 'Builtin':
                 tag, _ = variant(detail)
+                if tag == 'RustcIntrinsic' and name == 'core::intrinsics::transmute':
+                    if function['body'] != {'Intrinsic': {'name': 'transmute', 'arg_names': ['src']}}:
+                        raise ValueError('Standard transmute intrinsic body changed')
+                    continue
                 if tag in {'Inline', 'TrackCaller'}:
                     continue
             elif kind == 'Unknown':
@@ -279,6 +283,17 @@ class Admission:
         if matches:
             if len(matches) != 1:
                 raise ValueError(f'External interpretation signature changed: {name}')
+            if name == 'core::intrinsics::transmute':
+                expected_providers = {
+                    'u32->[u8;4]': 'Zerocopy.stdTransmuteU32ToBytes',
+                    '[u8;4]->u32': 'Zerocopy.stdTransmuteBytesToU32',
+                    'u8->bool': 'Zerocopy.stdTransmuteU8ToBool',
+                }
+                if (matches[0].get('interpretation_extension') != 'closed-implicit-owned-provider-v1'
+                        or matches[0].get('providers') != expected_providers
+                        or meta['is_local'] or function['body'] != {
+                            'Intrinsic': {'name': 'transmute', 'arg_names': ['src']}}):
+                    raise ValueError('Standard transmute reviewed boundary extension changed')
             # A builtin may replace a visible Rust body. Always select the
             # interpretation first, rather than approving the unused body.
             self.visited[index] = {'rust': name, 'origin': 'interpretation',
@@ -721,7 +736,22 @@ class Admission:
                         'usize', 'core::num::niche_types::NonZeroUsizeInner']
                     if actual != expected:
                         raise ValueError(f'Unsupported NonZero::new_unchecked instantiation {actual}')
-                self.calls.append({'caller': self.current, 'callee': name})
+                call_evidence = {'caller': self.current, 'callee': name}
+                if name == 'core::intrinsics::transmute':
+                    actual = [self.ty_name(ty) for ty in fn['generics']['types']]
+                    providers = {
+                        ('u32', '[u8;4]'): 'Zerocopy.stdTransmuteU32ToBytes',
+                        ('[u8;4]', 'u32'): 'Zerocopy.stdTransmuteBytesToU32',
+                        ('u8', 'bool'): 'Zerocopy.stdTransmuteU8ToBool',
+                    }
+                    if tuple(actual) not in providers:
+                        raise ValueError(f'Unsupported standard transmute instantiation {actual}')
+                    if fn['generics']['regions'] or fn['generics']['const_generics'] or fn['generics']['trait_refs']:
+                        raise ValueError('Standard transmute acquired additional generic arguments')
+                    call_evidence.update(type_arguments=actual,
+                                         provider=providers[tuple(actual)],
+                                         caller_def_id=self.current_function['def_id'])
+                self.calls.append(call_evidence)
                 self.visit(callee)
                 self.block(body['on_unwind'], True)
             elif tag == 'Assert':
@@ -837,7 +867,7 @@ def input_identity(root):
     for name, value in os.environ.items():
         if value and (name in {'RUSTFLAGS', 'CARGO_ENCODED_RUSTFLAGS',
                 'CARGO_BUILD_RUSTFLAGS', 'RUSTC', 'RUSTC_WRAPPER',
-                'RUSTC_WORKSPACE_WRAPPER', 'CHARON_ARGS'} or
+                'RUSTC_WORKSPACE_WRAPPER', 'CHARON_ARGS', 'CARGO_BUILD_TARGET'} or
                 re.fullmatch(r'CARGO_TARGET_.*_RUSTFLAGS', name)):
             raise ValueError(f'Unreviewed compiler override {name}')
     configs = []
@@ -856,7 +886,7 @@ def input_identity(root):
         # Conservative lexical check avoids implementing Cargo's precedence
         # rules. Even a dormant override is rejected, rather than guessed safe.
         text = '\n'.join(line.split('#', 1)[0] for line in path.read_text().splitlines())
-        if re.search(r'\b(rustflags|rustc|rustc-wrapper|rustc-workspace-wrapper)\b', text):
+        if re.search(r'\b(rustflags|rustc|rustc-wrapper|rustc-workspace-wrapper)\b|\b(?:build\.)?target\s*=', text):
             raise ValueError(f'Unreviewed Cargo compiler configuration: {path}')
     # Discovery and freshness use the same unconditional source inventory.
     # Cache-like names under src cannot hide newly added Rust specifications.
@@ -909,7 +939,7 @@ def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
     guarded = {row['rust'] for row in registry
                if row.get('opaque') or row['signature']['unsafe']}
     def guarded_calls(stage):
-        return Counter((call['caller'], call['callee']) for call in stage['calls']
+        return Counter((call['caller'], call['callee'], tuple(call.get('type_arguments', []))) for call in stage['calls']
                        if call.get('callee') in guarded)
     missing = guarded_calls(reports['before']) - guarded_calls(reports['llbc'])
     if missing:
@@ -932,6 +962,8 @@ def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
 def check_translation(work, evidence):
     text = (work / 'Zerocopy/FunsExternal_Template.lean').read_text()
     signatures = {
+        'core.intrinsics.transmute':
+            'axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst',
         'util.transmute_unchecked':
             'axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst',
         'util.copy_unchecked':

@@ -240,6 +240,18 @@ class AdmissionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'compiler override RUSTFLAGS'):
                 admission.input_identity(ROOT)
 
+    def test_target_override_is_rejected_before_compilation(self):
+        with mock.patch.dict(os.environ, {'CARGO_BUILD_TARGET': 'aarch64-apple-darwin'}, clear=True):
+            with self.assertRaisesRegex(ValueError, 'compiler override CARGO_BUILD_TARGET'):
+                admission.input_identity(ROOT)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.cargo').mkdir()
+            (root / '.cargo/config.toml').write_text('[build]\ntarget = "powerpc64-unknown-linux-gnu"\n')
+            with mock.patch.dict(os.environ, {'CARGO_HOME': str(root / 'cargo')}, clear=True):
+                with self.assertRaisesRegex(ValueError, 'Cargo compiler configuration'):
+                    admission.input_identity(root)
+
     def test_nonzero_constructor_template_preserves_guarded_result_and_dictionary(self):
         leaf = 'core.num.nonzero.NonZero.new_unchecked'
         evidence = {'stages': {'llbc': {'executions': [{'rust': 'std constructor', 'lean': leaf}]}}}
