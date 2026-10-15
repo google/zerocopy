@@ -651,7 +651,7 @@ def byteorder.verification.set_u32_be
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 269:0-287:1 -/
+    Source: 'src/util/mod.rs', lines 272:0-290:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -752,7 +752,7 @@ def layout.TrailingSliceLayoutUsize.advance
       { self with elem_size, size_base, size_rounding_align_and_phase := raap })
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 177:0-237:1 -/
+    Source: 'src/util/mod.rs', lines 180:0-240:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1684,7 +1684,7 @@ def layout.composition_checks.reference_constructor
   else ok none
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 313:0-319:1 -/
+    Source: 'src/util/mod.rs', lines 316:0-322:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -1704,7 +1704,7 @@ def util.min
   else ok a
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 297:0-303:1 -/
+    Source: 'src/util/mod.rs', lines 300:0-306:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -3818,6 +3818,42 @@ def util.checks.check_arithmetic
     massert (i3 = i4)
   else ok ()
 
+/-- [zerocopy::util::macro_util::transmute_copy::{impl zerocopy::util::macro_util::transmute_copy::StaticAssert for (core::marker::PhantomData<Src>, core::marker::PhantomData<Dst>)}::ASSERT]
+    Source: 'src/util/macros.rs', lines 685:12-688:14 -/
+@[global_simps, irreducible]
+def
+  PairPhantomDataPhantomData.Insts.ZerocopyUtilMacro_utilTransmute_copyStaticAssert.ASSERT
+  (Src : Type) (Dst : Type) : Result Bool := do
+  let i ← core.mem.size_of Src
+  let i1 ← core.mem.size_of Dst
+  massert (i = i1)
+  ok (i = i1)
+
+/-- [zerocopy::util::macro_util::transmute_copy]:
+    Source: 'src/util/macro_util.rs', lines 557:0-576:1
+    Visibility: public -/
+native_models def util.macro_util.transmute_copy
+  {Src : Type} {Dst : Type} (IntoBytesInst : IntoBytes Src) (FromBytesInst :
+  FromBytes Dst) (src : Src) :
+  Result Dst
+  := do
+  let b ←
+    PairPhantomDataPhantomData.Insts.ZerocopyUtilMacro_utilTransmute_copyStaticAssert.ASSERT
+      Src
+      Dst
+  massert b
+  let src1 ← core.mem.manually_drop.ManuallyDrop.new src
+  core.mem.transmute_copy Dst src1
+
+/-- [zerocopy::util::generic_transmute::transmute_copy_caller]:
+    Source: 'src/util/generic_transmute.rs', lines 22:0-24:1 -/
+native_models def util.generic_transmute.transmute_copy_caller
+  {Src : Type} {Dst : Type} (IntoBytesInst : IntoBytes Src) (FromBytesInst :
+  FromBytes Dst) (src : Src) :
+  Result Dst
+  := do
+  util.macro_util.transmute_copy IntoBytesInst FromBytesInst src
+
 /-- [zerocopy::impls::_::{impl zerocopy::FromZeros for ()}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
@@ -5031,6 +5067,18 @@ def core.cell.UnsafeCell.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
   only_derive_is_allowed_to_implement_this_trait :=
     core.cell.UnsafeCell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
     IntoBytesInst
+}
+
+/-- Trait implementation: [zerocopy::util::macro_util::transmute_copy::{impl zerocopy::util::macro_util::transmute_copy::StaticAssert for (core::marker::PhantomData<Src>, core::marker::PhantomData<Dst>)}]
+    Source: 'src/util/macros.rs', lines 684:8-689:9 -/
+@[reducible]
+def
+  PairPhantomDataPhantomData.Insts.ZerocopyUtilMacro_utilTransmute_copyStaticAssert
+  (Src : Type) (Dst : Type) : util.macro_util.transmute_copy.StaticAssert
+  ((core.marker.PhantomData Src) × (core.marker.PhantomData Dst)) := {
+  ASSERT :=
+    PairPhantomDataPhantomData.Insts.ZerocopyUtilMacro_utilTransmute_copyStaticAssert.ASSERT
+    Src Dst
 }
 
 /-- [zerocopy::util::move_checks::forward]:

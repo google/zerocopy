@@ -65,6 +65,7 @@ theorem initializedWrapperRepresentation {A B : Type} [ma : RustModel A]
   Model := ma.Model
   decode raw := ma.decode raw.value
   representation := wrapperRepresentation core.mem.manually_drop.ManuallyDrop.mk
+  representationChoice raw := ma.representationChoice raw.value
 
 @[reducible] instance modelCell (T : Type) [ma : RustModel T] :
     RustModel (core.cell.Cell T) where

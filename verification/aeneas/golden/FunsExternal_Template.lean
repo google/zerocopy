@@ -35,6 +35,15 @@ open Zerocopy
 @[rust_fun "core::intrinsics::transmute"]
 axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst
 
+/-- [core::mem::manually_drop::{core::mem::manually_drop::ManuallyDrop<T>}::new]:
+    Source: '/rustc/library/core/src/mem/manually_drop.rs', lines 180:4-180:49
+    Name pattern: [core::mem::manually_drop::{core::mem::manually_drop::ManuallyDrop<@T>}::new]
+    Visibility: public -/
+@[rust_fun
+  "core::mem::manually_drop::{core::mem::manually_drop::ManuallyDrop<@T>}::new"]
+axiom core.mem.manually_drop.ManuallyDrop.new
+  {T : Type} : T → Result (core.mem.manually_drop.ManuallyDrop T)
+
 /-- [core::mem::size_of]:
     Source: '/rustc/library/core/src/mem/mod.rs', lines 375:0-375:34
     Name pattern: [core::mem::size_of]
@@ -54,6 +63,13 @@ axiom core.mem.align_of (T : Type) : Result Std.Usize
     Name pattern: [core::mem::zeroed]
     Visibility: public -/
 @[rust_fun "core::mem::zeroed"] axiom core.mem.zeroed (T : Type) : Result T
+
+/-- [core::mem::transmute_copy]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 1145:0-1145:70
+    Name pattern: [core::mem::transmute_copy]
+    Visibility: public -/
+@[rust_fun "core::mem::transmute_copy"]
+axiom core.mem.transmute_copy {Src : Type} (Dst : Type) : Src → Result Dst
 
 /-- [core::num::niche_types::{impl core::clone::Clone for core::num::niche_types::NonZeroUsizeInner}::clone]:
     Source: '/rustc/library/core/src/num/niche_types.rs', lines 17:17-17:22
@@ -116,12 +132,12 @@ axiom core.num.Usize.unchecked_mul
   : Std.Usize → Std.Usize → Result Std.Usize
 
 /-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 331:0-346:1 -/
+    Source: 'src/util/mod.rs', lines 334:0-349:1 -/
 axiom util.copy_unchecked
   : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
 
 /-- [zerocopy::util::copy_unchecked_at]:
-    Source: 'src/util/mod.rs', lines 360:0-371:1 -/
+    Source: 'src/util/mod.rs', lines 363:0-374:1 -/
 axiom util.copy_unchecked_at
   : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)
 
@@ -182,7 +198,7 @@ axiom Array.Insts.ZerocopyTryFromBytes.is_safe
     Bool
 
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 383:0-412:1 -/
+    Source: 'src/util/mod.rs', lines 386:0-415:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
 
 /-- [zerocopy::util::validity::read_byte]:
