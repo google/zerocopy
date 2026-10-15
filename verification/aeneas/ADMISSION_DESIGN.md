@@ -46,6 +46,16 @@ normalization must not lose a guarded call. Pinned builtin mapping and backend
 semantics remain trusted correspondence premises, rather than a translation
 certificate established by the report.
 
+The `Unaligned` trial admits only the standard-library `NonZeroUsize`
+constructor boundary. Before and after lowering, admission checks its exact
+unsafe signature and original `usize` instantiation. The native model guards
+zero before constructing a wrapper and leaves it forbidden even if discarded.
+The generic caller's extracted alignment read and both checked divisions remain
+visible; its exact trait law establishes alignment one and the nonzero argument.
+Kernel controls reject zero under total and partial `True` contracts and show
+that an alignment-two model cannot establish either execution contract without
+the law. No body of the new Rust caller is made opaque.
+
 The production `IntoBytes` methods delegate their write selection to
 `util::bytewrite::{exact,prefix,suffix}`. Their contracts prove exact byte
 contents, preservation of untouched destination regions, and unchanged
