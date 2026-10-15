@@ -11,6 +11,7 @@ import Rust.Memory
 import Rust.Pointer
 import Rust.Bytes
 import Rust.Storage
+import Rust.Referent
 import Rust.Arithmetic
 
 /-!
