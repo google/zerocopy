@@ -7,6 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 import Required
+import ZeroedAudit
 open Lean Elab Command
 
 /-!
@@ -216,6 +217,10 @@ run_elab do
       | throwError "Missing pinned opaque carrier {carrier}"
     unless info.levelParams.isEmpty && (← Meta.isDefEq info.type expectedCarrier) do
       throwError "Opaque carrier {carrier} changed its type-only signature"
+  -- The interface audit below independently checks Ptr's exact data signature
+  -- and all uncallable validator stubs before this axiom list is used.
+  let opaqueCarriers := if env.contains `Zerocopy.pointer.ptr.def.Ptr then
+    opaqueCarriers.push `Zerocopy.pointer.ptr.def.Ptr else opaqueCarriers
   -- ABI inputs are functions returning data, with no proposition asserting
   -- alignment, size, or correctness. A changed type could smuggle a theorem
   -- into the allowed axiom list, so check their exact compiled signatures.
@@ -428,6 +433,7 @@ run_elab do
       unless roots.size == rootNames.size && rootNames.all roots.contains do
         throwError "Execution admission roots disagree with the function binding table"
   auditStdTransmute bindings
+  auditZeroed bindings
   let some typesModule := env.getModuleIdx? `Zerocopy.Types
     | throwError "Raw extracted types must be imported"
   let some shapesModule := env.getModuleIdx? `ModelShapes
@@ -437,6 +443,7 @@ run_elab do
   let mut expectedTypes : Array Name := #[]
   let mut expectedLocalRust : Array String := #[]
   let mut expectedModels : Array Name := #[]
+  let mut expectedDefaults : Array Name := #[]
   for (rustName, entry) in entries.toArray do
     let .ok kind := entry.getObjValAs? String "kind"
       | throwError "Binding for {rustName} must name its owner kind"
@@ -457,6 +464,38 @@ run_elab do
       let .ok sourceInputs := entry.getObjValAs? (Array String) "inputs"
         | throwError "Function binding for {rustName} must name its original value inputs"
       let specName := (`Zerocopy.Specs).str sourceSpec
+      -- A provided method may lose its unused Self dictionary during lowering.
+      -- The source/compiler binder records that exact bound; the compiled
+      -- registry must add precisely that trait as a specification premise.
+      let .ok erased := entry.getObjVal? "erased_self_bound"
+        | throwError "Function binding must record its enclosing-bound disposition"
+      let registeredDefault ← AeneasSpecs.defaultTraitBody? rawName
+      if erased == Json.null then
+        unless registeredDefault.isNone do
+          throwError "Unexpected enclosing trait premise on {rawName}"
+      else
+        let .ok traitRust := erased.getObjValAs? String "rust"
+          | throwError "Erased Self bound must name its original Rust trait"
+        let .ok traitId := erased.getObjValAs? Nat "trait_def_id"
+          | throwError "Erased Self bound must retain its compiler trait identity"
+        let .ok arguments := erased.getObjValAs? (Array Json) "arguments"
+          | throwError "Erased Self bound must retain its original type arguments"
+        unless arguments == (Array.range generics.size).map
+            (fun index => toJson #[toJson "parameter", toJson index]) do
+          throwError "Unsupported enclosing trait instantiation on {rawName}"
+        let .ok dictionaries := bindings.getObjValAs? (Array Json) "trait_dictionaries"
+          | throwError "Missing native trait dictionary inventory"
+        let owners := dictionaries.filter fun row =>
+          row.getObjValAs? String "rust" == .ok traitRust &&
+          row.getObjValAs? Nat "def_id" == .ok traitId
+        unless owners.size == 1 do throwError "Erased Self bound lost its exact native owner"
+        let .ok traitRaw := owners[0]!.getObjValAs? String "raw"
+          | throwError "Missing enclosing trait's compiled dictionary"
+        let some owner := registeredDefault
+          | throwError "Missing compiled enclosing trait premise for {rawName}"
+        unless owner.trait == traitRaw.toName && owner.parameterCount == arguments.size do
+          throwError "Compiled enclosing trait premise changed its Rust owner on {rawName}"
+        expectedDefaults := expectedDefaults.push rawName
       unless env.getModuleIdxFor? specName == some specsModule do
         throwError "Function binding for {rustName} does not name a compiled inline specification"
       let (boundModel, boundInputs) ← AeneasSpecs.specBinding specName
@@ -464,8 +503,11 @@ run_elab do
       -- specBinding already checked each argument's original variable identity.
       let .ok dictionaryCount := entry.getObjValAs? Nat "dictionary_count"
         | throwError "Function binding for {rustName} must count its original trait dictionaries"
+      let semanticCount ← Meta.forallTelescope (← getConstInfo rawName).type fun native _ => do
+        let (_, models) ← AeneasSpecs.splitNativeModels native
+        pure models.size
       unless boundModel == rawName &&
-          boundInputs == generics.size + dictionaryCount + sourceInputs.size do
+          boundInputs == generics.size + dictionaryCount + sourceInputs.size + semanticCount do
         throwError "Compiled specification {specName} changed its source model or original input prefix"
     else if kind == "type" then
       if expectedTypes.contains rawName then
@@ -505,6 +547,10 @@ run_elab do
         throwError "Unannotated model must use its nominal Fields carrier: {rawName}"
     else
       throwError "Unsupported binding kind {kind} for {rustName}"
+  let defaults ← AeneasSpecs.defaultTraitBodies
+  unless defaults.size == expectedDefaults.size &&
+      defaults.all (fun owner => expectedDefaults.contains owner.function) do
+    throwError "Compiled enclosing trait premises disagree with source bindings"
   -- This image is classified from LLBC type and trait declarations in live
   -- mode. Every compiled raw inductive must belong to exactly one class;
   -- local nominals must also have the source-bound model/provider entry above.

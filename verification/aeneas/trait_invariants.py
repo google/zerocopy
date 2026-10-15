@@ -176,10 +176,108 @@ def retained_clauses(function, crate, annotated_traits):
     return result
 
 
+def default_type_arguments(arguments, crate, bound_depth):
+    """Read the restricted type application without discarding other arguments."""
+    if (not isinstance(arguments, dict)
+            or set(arguments) != {'regions', 'types', 'const_generics', 'trait_refs'}
+            or arguments['regions'] or arguments['const_generics']):
+        raise ValueError('Unsupported default-method type application')
+    return [simple_type(t, crate, bound_depth) for t in arguments['types']]
+
+
+def default_trait_application(reference, crate, bound_depth):
+    if (not isinstance(reference, dict) or set(reference) != {'regions', 'skip_binder'}
+            or reference['regions']):
+        raise ValueError('Unsupported default-method dictionary binder')
+    reference = reference['skip_binder']
+    if not isinstance(reference, dict) or set(reference) != {'id', 'generics'}:
+        raise ValueError('Missing default-method dictionary application')
+    arguments = reference['generics']
+    if arguments['trait_refs']:
+        raise ValueError('Unsupported default-method nested dictionary')
+    return {'id': reference['id'],
+            'arguments': default_type_arguments(arguments, crate, bound_depth)}
+
+
+def default_method_owner(annotation, function, final, before):
+    """Recover only the enclosing trait's compiler-identified default bound.
+
+    Charon can remove an unused Self dictionary from a provided method. The
+    body then remains independent of the dictionary's operations, but its
+    specification still needs the trait's promise. Preserve that promise as a
+    specification parameter; never add it to the extracted Rust input prefix.
+    """
+    source = function.get('src')
+    source = source.get('TraitDefault') if isinstance(source, dict) else None
+    proposed = annotation.get('default_trait')
+    if source is None:
+        if proposed:
+            raise ValueError('Source default method lacks its compiler trait owner')
+        return None
+    if not proposed or before is None:
+        raise ValueError('Default method requires source and original compiler ownership')
+    if (not isinstance(source, dict) or set(source) != {'trait_ref', 'item_id'}
+            or not isinstance(source['trait_ref'], dict)
+            or set(source['trait_ref']) != {'id', 'generics'}):
+        raise ValueError('Default method lacks its compiler trait application')
+    originals = declarations(before, 'fun_decls')
+    original = originals.get(function['def_id'])
+    old_source = original.get('src') if original else None
+    old_source = old_source.get('TraitDefault') if isinstance(old_source, dict) else None
+    trait = declarations(final, 'trait_decls').get(source['trait_ref']['id'])
+    old_trait = declarations(before, 'trait_decls').get(source['trait_ref']['id'])
+    if (not isinstance(old_source, dict) or set(old_source) != {'trait_ref', 'item_id'}
+            or not isinstance(old_source['trait_ref'], dict)
+            or set(old_source['trait_ref']) != {'id', 'generics'}
+            or trait is None or old_trait is None
+            or original['item_meta']['name'] != function['item_meta']['name']
+            or old_source['item_id'] != source['item_id']
+            or old_source['trait_ref']['id'] != source['trait_ref']['id']
+            or name(trait['item_meta']) != 'zerocopy::' + proposed
+            or old_trait['item_meta']['name'] != trait['item_meta']['name']):
+        raise ValueError('Default method changed its enclosing Rust trait')
+    source_args = source['trait_ref']['generics']
+    old_args = old_source['trait_ref']['generics']
+    arguments = default_type_arguments(source_args, final, 0)
+    old_arguments = default_type_arguments(old_args, before, 0)
+    if (source_args['trait_refs'] or old_args['trait_refs']
+            or arguments != old_arguments
+            or arguments != [['parameter', i] for i in range(len(trait['generics']['types']))]):
+        raise ValueError('Unsupported default-method trait instantiation')
+    for owner, crate_function, crate in ((trait, function, final), (old_trait, original, before)):
+        index = source['item_id']
+        methods = owner['methods']
+        if not isinstance(index, int) or not 0 <= index < len(methods) or methods[index] is None:
+            raise ValueError('Default method lacks its original trait method slot')
+        method = methods[index]
+        declared = method['skip_binder'].get('default')
+        if (method['kind'] != {'TraitMethod': [owner['def_id'], index]}
+                or declared is None or declared.get('id') != crate_function['def_id']
+                or method['skip_binder']['item_meta']['name'] != crate_function['item_meta']['name']):
+            raise ValueError('Default method does not implement its declared trait slot')
+        application = declared['generics']
+        if default_type_arguments(application, crate, 1) != arguments:
+            raise ValueError('Default method slot changed its original type application')
+        self_clauses = [c for c in crate_function['generics']['trait_clauses']
+                        if c.get('origin') == 'TraitSelf']
+        references = application['trait_refs']
+        if self_clauses:
+            reference = unwrap(references[0]) if len(references) == 1 else {}
+            if (reference.get('kind') != 'SelfId'
+                    or default_trait_application(reference['trait_decl_ref'], crate, 2)
+                       != {'id': owner['def_id'], 'arguments': arguments}):
+                raise ValueError('Default method slot lost its original Self dictionary')
+        elif references:
+            raise ValueError('Default method slot gained a Self dictionary')
+    return {'rust': name(trait['item_meta']), 'arguments': arguments,
+            'trait_def_id': trait['def_id'], 'method_id': source['item_id']}
+
+
 def check_function_bounds(annotation, function, final, before, annotated_traits):
     """Compare semantic applications, never pre/post clause ordinals."""
     after = retained_clauses(function, final, annotated_traits)
-    if not after and not annotation.get('trait_bounds'):
+    owner = default_method_owner(annotation, function, final, before)
+    if not after and not annotation.get('trait_bounds') and owner is None:
         return []
     if before is None:
         raise ValueError('Generic trait roots require the original admission AST')
@@ -197,6 +295,16 @@ def check_function_bounds(annotation, function, final, before, annotated_traits)
     original_predicates = [predicate(c, before)
                            for c in original['generics'].get('trait_clauses', [])]
     expected = [p for p in original_predicates if p['rust'] not in MARKERS]
+    if owner:
+        self_clauses = [predicate(c, before) for c in original['generics']['trait_clauses']
+                        if c.get('origin') == 'TraitSelf']
+        if len(self_clauses) != 1 or key(self_clauses[0]) != key(owner):
+            raise ValueError('Default method lacks its original enclosing Self bound')
+        # Only this exact, unused Self clause may disappear. All other bounds
+        # must survive the normal semantic-application comparison below.
+        if not any(key(p) == key(owner) for p in after):
+            expected.remove(self_clauses[0])
+            annotation['erased_self_bound'] = owner
     erased_laws = [p for p in original_predicates
                    if p['rust'] in MARKERS and p['rust'] in annotated_traits]
     if erased_laws or Counter(map(key, expected)) != Counter(map(key, after)):
@@ -209,6 +317,10 @@ def check_function_bounds(annotation, function, final, before, annotated_traits)
                       if p['arguments'] == [['parameter', index]]
                       and (p['rust'] == bound['trait']
                            or p['rust'].endswith('::' + bound['trait']))]
+        if not candidates and bound['trait'] in {'Sized', 'core::marker::Sized'}:
+            # The admitted compiler preset hides this builtin marker. Any
+            # same-spelled user trait still has a resolved dictionary above.
+            continue
         if len(candidates) != 1:
             raise ValueError('Source trait bound lacks an exact resolved compiler application')
     return after

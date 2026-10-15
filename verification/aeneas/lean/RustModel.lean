@@ -63,6 +63,37 @@ def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Pro
   | none => False
   | some decoder => decoder.Initialized
 
+/-- Every initialized representation of the physical width admits a language
+value and a mathematical value through this same provider. Missing physical
+semantics fail closed. This law does not establish Rust layout correspondence,
+resource ownership, or the other obligations of a FromBytes implementation. -/
+def RustModel.completeRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.representation with
+  | none => False
+  | some decoder => ∀ bytes, bytes.length = decoder.byteSize →
+      Rust.Storage.Initialized bytes →
+      ∃ raw value, decoder.run bytes = some raw ∧ m.decode raw = some value
+
+/-- The all-zero initialized representation admits both decoding stages of the
+same provider. Returning its value makes no claim that output padding retains
+the initialized input bytes. -/
+def RustModel.zeroRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.representation with
+  | none => False
+  | some decoder => ∃ raw value,
+      decoder.run (List.replicate decoder.byteSize (Rust.Storage.AMByte.init 0)) = some raw ∧
+      m.decode raw = some value
+
+/-- Completeness includes the fully initialized all-zero representation. -/
+theorem RustModel.completeRepresentation_zeroRepresentation (Raw : Type u) [m : RustModel Raw]
+    (complete : RustModel.completeRepresentation Raw) : RustModel.zeroRepresentation Raw := by
+  cases available : m.representation with
+  | none => simp [RustModel.completeRepresentation, available] at complete
+  | some decoder =>
+    simp only [RustModel.completeRepresentation, available] at complete
+    simp only [RustModel.zeroRepresentation, available]
+    exact complete _ (by simp) (by simp [Rust.Storage.Initialized])
+
 /-- Constructing a typed value from bytes requires language-level decoding.
 The unsupported-model case also fails closed. No invalid Raw is produced. -/
 def RustModel.decodeBitsResult {Raw : Type u} (m : RustModel Raw)
@@ -86,6 +117,71 @@ Failure at either stage is preserved, rather than supplying a default value. -/
 def RustModel.decodeBytesResult {Raw : Type u} (m : RustModel Raw)
     (bytes : List Rust.Storage.AMByte) : Result m.Model :=
   m.decodeResult (m.decodeBitsResult bytes)
+
+/-- Zero initialization returns a raw value only after both the physical and
+mathematical decoders accept it. Neither a default value nor a failed model
+check can create a successful result. Input bytes are not retained in Raw. -/
+def RustModel.zeroedResult {Raw : Type u} (m : RustModel Raw) : Result Raw :=
+  match m.representation with
+  | none => .fail .undef
+  | some decoder => do
+      let raw ← Result.ofOption
+        (decoder.run (List.replicate decoder.byteSize (Rust.Storage.AMByte.init 0))) .undef
+      let _ ← Result.ofOption (m.decode raw) .undef
+      .ok raw
+
+/-- Inline contracts can retain the inferred provider while naming the exact
+raw value produced by guarded zero initialization. -/
+def RustModel.zeroedValue {Raw : Type u} [m : RustModel Raw] (raw : Raw) : Prop :=
+  m.zeroedResult = .ok raw
+
+/-- Observe zero initialization through the same retained provider. -/
+def RustModel.zeroedModel {Raw : Type u} (m : RustModel Raw) : Result m.Model :=
+  m.decodeResult m.zeroedResult
+
+/-- A zero-initialization success records physical decoding and model admission;
+no fact about the initialized state of padding in the returned Raw is inferred. -/
+theorem RustModel.zeroedResult_eq_ok_iff {Raw : Type u} (m : RustModel Raw) (raw : Raw) :
+    m.zeroedResult = .ok raw ↔ ∃ decoder, m.representation = some decoder ∧
+      decoder.run (List.replicate decoder.byteSize (Rust.Storage.AMByte.init 0)) = some raw ∧
+      ∃ value, m.decode raw = some value := by
+  cases available : m.representation with
+  | none => simp [RustModel.zeroedResult, available]
+  | some decoder =>
+    simp only [RustModel.zeroedResult, available]
+    cases language : decoder.run
+        (List.replicate decoder.byteSize (Rust.Storage.AMByte.init 0)) with
+    | none => simp_all
+    | some output =>
+      cases model : m.decode output <;> simp_all <;> rintro rfl <;> simp_all
+
+/-- The guarded zero operation fails exactly when this provider cannot admit
+its zero representation. This is model admission failure, not a claim that
+an optional mathematical rejection must cause undefined behavior in Rust. -/
+theorem RustModel.zeroedResult_eq_fail_iff {Raw : Type u} (m : RustModel Raw) :
+    m.zeroedResult = .fail .undef ↔ ¬ @RustModel.zeroRepresentation Raw m := by
+  cases available : m.representation with
+  | none => simp [RustModel.zeroedResult, RustModel.zeroRepresentation, available]
+  | some decoder =>
+    cases language : decoder.run
+        (List.replicate decoder.byteSize (Rust.Storage.AMByte.init 0)) with
+    | none => simp_all [RustModel.zeroedResult, RustModel.zeroRepresentation]
+    | some raw =>
+      cases model : m.decode raw <;>
+        simp_all [RustModel.zeroedResult, RustModel.zeroRepresentation]
+
+/-- The zero law supplies a successful guarded construction with its admitted
+mathematical witness, retaining the provider used to state the law. -/
+theorem RustModel.zeroedResult_admitted {Raw : Type u} (m : RustModel Raw)
+    (zero : @RustModel.zeroRepresentation Raw m) :
+    ∃ raw value, m.zeroedResult = .ok raw ∧ m.decode raw = some value := by
+  cases available : m.representation with
+  | none => simp [RustModel.zeroRepresentation, available] at zero
+  | some decoder =>
+    simp only [RustModel.zeroRepresentation, available] at zero
+    obtain ⟨raw, value, language, model⟩ := zero
+    exact ⟨raw, value,
+      (m.zeroedResult_eq_ok_iff raw).mpr ⟨decoder, available, language, value, model⟩, model⟩
 
 /-- Explicit metadata-indexed language decoding. No metadata is guessed from
 byte length, and every rejected width, representation, or metadata returns undef. -/

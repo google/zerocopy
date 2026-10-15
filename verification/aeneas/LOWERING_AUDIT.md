@@ -224,6 +224,35 @@ trait objects. A missing child representation remains unavailable through its
 wrapper; an available child decoder must carry its actual correspondence and
 initialization premise.
 
+### Zero construction and construction-trait laws
+
+`FromBytes` and `FromZeros` consume the same decoder-correspondence premises
+above. Their additional mathematical decoding condition records library
+validity, rather than treating bit validity as sufficient for every invariant.
+The selected nine impl proofs cover unit, u8, u32, Boolean zero construction,
+and generic arrays. They do not certify the other construction-trait impls.
+
+The `core::mem::zeroed` interpretation uses the selected provider's physical
+width, all initialized zero bytes, and that provider's mathematical decoder.
+Applying it to Rust additionally assumes the selected physical interpretation
+has the actual Rust width and represents the resulting Rust value. The existing
+primitive and array premises supply that connection for the concrete proofs;
+compiler assertions challenge unit, Boolean, byte, u32, and representative array
+widths. A successful construction does not assert that initialized padding
+survives a typed move. The current resource-free scope adds no claim about
+provenance, ownership, destruction, or external-state constructor permission.
+
+A checked semantic provider suffix extends generic native definitions that use
+this boundary. It does not replace their extracted computation or Rust input
+prefix. Both the native call audit and the independently written outcome family
+retain that provider before choosing an outcome. The exact enclosing trait
+bound, if Charon removes it from a default body's computational arguments, is
+recovered as a specification premise from original trait/method ownership.
+Required pointer-based validators are signature-only dictionary fields: their
+whole Lean stubs return undef, and admission rejects every execution of them.
+Their opaque Ptr carrier is an audited type constructor, not a value, spatial
+model, or proof axiom about pointers.
+
 ### Empty construction and external invariants
 
 Size zero does not imply that a value exists, that a Rust constructor may be

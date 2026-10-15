@@ -42,3 +42,9 @@ structure core.cell.Cell (T : Type) where
 
 structure core.cell.UnsafeCell (T : Type) where
   value : T
+
+-- Required TryFromBytes validator signatures mention Ptr even when no
+-- validator is executed. Keep that carrier abstract: it grants no construction,
+-- memory access, or provenance facts. Admission rejects Ptr as a value-domain
+-- execution carrier, and Check audits this exact type-only signature.
+axiom Zerocopy.pointer.ptr.def.Ptr (T I Aliasing Alignment Validity : Type) : Type

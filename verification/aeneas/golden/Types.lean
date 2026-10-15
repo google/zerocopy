@@ -177,8 +177,91 @@ structure byteorder.F64 (O : Type) where
   _0 : Array Std.U8 8#usize
   _1 : core.marker.PhantomData O
 
+/-- [zerocopy::wrappers::read_only_def::ReadOnly]
+    Source: 'src/wrappers.rs', lines 630:4-634:5
+    Visibility: public -/
+structure wrappers.read_only_def.ReadOnly (T : Type) where
+  inner : T
+
+/-- [zerocopy::pointer::invariant::Initialized]
+    Source: 'src/pointer/invariant.rs', lines 227:0-227:23
+    Visibility: public -/
+inductive pointer.invariant.Initialized where
+
+/-- [zerocopy::pointer::invariant::Shared]
+    Source: 'src/pointer/invariant.rs', lines 133:0-133:18
+    Visibility: public -/
+inductive pointer.invariant.Shared where
+
+/-- Trait declaration: [zerocopy::pointer::invariant::sealed::Sealed]
+    Source: 'src/pointer/invariant.rs', lines 296:4-296:23
+    Visibility: public -/
+structure pointer.invariant.sealed.Sealed (Self : Type) where
+
+/-- Trait declaration: [zerocopy::pointer::invariant::Aliasing]
+    Source: 'src/pointer/invariant.rs', lines 37:0-41:1
+    Visibility: public -/
+structure pointer.invariant.Aliasing (Self : Type) where
+  IS_EXCLUSIVE : Result Bool
+  sealedSealedInst : pointer.invariant.sealed.Sealed Self
+
+/-- Trait declaration: [zerocopy::pointer::invariant::Read]
+    Source: 'src/pointer/invariant.rs', lines 277:0-277:33
+    Visibility: public -/
+structure pointer.invariant.Read (Self : Type) (A : Type) (R : Type) where
+  AliasingInst : pointer.invariant.Aliasing A
+
+/-- [zerocopy::pointer::invariant::Safe]
+    Source: 'src/pointer/invariant.rs', lines 238:0-238:16
+    Visibility: public -/
+inductive pointer.invariant.Safe where
+
+/-- Trait declaration: [zerocopy::pointer::invariant::Reference]
+    Source: 'src/pointer/invariant.rs', lines 121:0-121:41
+    Visibility: public -/
+structure pointer.invariant.Reference (Self : Type) where
+  AliasingInst : pointer.invariant.Aliasing Self
+  sealedSealedInst : pointer.invariant.sealed.Sealed Self
+
+/-- Trait declaration: [zerocopy::pointer::invariant::Alignment]
+    Source: 'src/pointer/invariant.rs', lines 44:0-56:1
+    Visibility: public -/
+structure pointer.invariant.Alignment (Self : Type) where
+  sealedSealedInst : pointer.invariant.sealed.Sealed Self
+  read : forall {T : Type} {A : Type} {R : Type} (coremarkerCopyInst :
+    core.marker.Copy T) (ReadInst : pointer.invariant.Read T A R)
+    (ReferenceInst : pointer.invariant.Reference A), pointer.ptr.def.Ptr T (A
+    × Self × pointer.invariant.Safe) A Self pointer.invariant.Safe → Result
+    T
+
+/-- Trait declaration: [zerocopy::TryFromBytes]
+    Source: 'src/lib.rs', lines 1901:0-3451:1
+    Visibility: public -/
+structure TryFromBytes (Self : Type) where
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+  is_safe : forall {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A), pointer.ptr.def.Ptr
+    (wrappers.read_only_def.ReadOnly Self) (pointer.invariant.Shared × A ×
+    pointer.invariant.Initialized) pointer.invariant.Shared A
+    pointer.invariant.Initialized → Result Bool
+
+/-- Trait declaration: [zerocopy::FromZeros]
+    Source: 'src/lib.rs', lines 3708:0-4070:1
+    Visibility: public -/
+structure FromZeros (Self : Type) where
+  TryFromBytesInst : TryFromBytes Self
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+  new_zeroed : Result Self
+
+/-- Trait declaration: [zerocopy::FromBytes]
+    Source: 'src/lib.rs', lines 4298:0-5710:1
+    Visibility: public -/
+structure FromBytes (Self : Type) where
+  FromZerosInst : FromZeros Self
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 5941:0-6446:1
+    Source: 'src/lib.rs', lines 5949:0-6454:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
@@ -203,11 +286,5 @@ structure trait_checks.Forward (C : Type) where
     Visibility: public -/
 structure wrappers.Unalign (T : Type) where
   _0 : T
-
-/-- [zerocopy::wrappers::read_only_def::ReadOnly]
-    Source: 'src/wrappers.rs', lines 630:4-634:5
-    Visibility: public -/
-structure wrappers.read_only_def.ReadOnly (T : Type) where
-  inner : T
 
 end Zerocopy

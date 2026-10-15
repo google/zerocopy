@@ -138,3 +138,9 @@ axiom core.num.niche_types.NonZeroIsizeInner : Type
 @[rust_type "core::num::nonzero::NonZero"]
 axiom core.num.nonzero.NonZero (T : Type) (Clause0_NonZeroInner : Type) : Type
 
+/-- [zerocopy::pointer::ptr::def::Ptr]
+    Source: 'src/pointer/ptr.rs', lines 57:4-73:5
+    Visibility: public -/
+axiom pointer.ptr.def.Ptr (T : Type) (I : Type) (Clause0_Aliasing : Type)
+  (Clause0_Alignment : Type) (Clause0_Validity : Type) : Type
+
