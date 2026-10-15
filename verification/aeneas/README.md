@@ -90,8 +90,11 @@ each tool answers a different question:
    Before Aeneas runs, `admission.py` follows every executable dependency from
    every discovered specification in two snapshots: original promoted MIR as
    imported by Charon, and final LLBC. Annotation status never exempts a callee.
-   Unsupported drops, raw pointers, arbitrary indirect calls, foreign code,
-   and unknown effects reject extraction. Calls through original trait
+   Conditional drops require a kernel-checked empty-slot proof in each
+   snapshot; other drops reject extraction. The narrow rule and its compiler
+   premises are documented in [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md#conditional-drops-of-empty-whole-locals).
+   Raw pointers, arbitrary indirect calls, foreign code, and unknown effects
+   also reject extraction. Calls through original trait
    dictionaries are admitted only through the checked trait-law boundary
    described below. This prevents an operation from being accepted
    simply because a later lowering forgets it. The small Charon snapshot patch

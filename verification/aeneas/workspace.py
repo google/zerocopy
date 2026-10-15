@@ -247,6 +247,7 @@ def check(root, work, *, require_admission=False):
                 set(evidence.get('stages', {})) != {'before', 'llbc'} or
                 any(stage.get('roots') != roots for stage in evidence['stages'].values())):
             raise ValueError('Missing or stale mandatory admission evidence; run fresh extraction')
+        admission.recheck(root, work, manifest)
     # --old preserves the archive's read-only dependency caches, but ignores
     # changed imports. A persistent editor project could therefore reuse a proof
     # checked against an earlier model. Even the direct axiom audit would accept

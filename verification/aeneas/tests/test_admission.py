@@ -179,7 +179,7 @@ class AdmissionTests(unittest.TestCase):
             with self.subTest(block=index):
                 previous = self.body()[index]['terminator']['kind']
                 self.body()[index]['terminator']['kind'] = {'Drop': {}}
-                with self.assertRaisesRegex(ValueError, 'original terminator Drop'):
+                with self.assertRaisesRegex(ValueError, 'Drop requires a kernel-checked compiler body'):
                     self.check()
                 self.body()[index]['terminator']['kind'] = previous
 
@@ -217,9 +217,14 @@ class AdmissionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Unreviewed cast Transmute'):
             self.check()
 
-    def test_ub_abort_must_not_become_unwind_termination(self):
+    def test_known_termination_abort_retains_a_failure_obligation(self):
+        # Pinned Aeneas lowers every Abort to panic, which both contracts
+        # reject even for True. Admission is not a proof that execution avoids
+        # this terminator. Unknown failure forms remain unreviewed.
         self.body()[0]['terminator']['kind'] = {'Abort': 'UnwindTerminate'}
-        with self.assertRaisesRegex(ValueError, 'Unreviewed abort UnwindTerminate'):
+        self.assertEqual(self.check()['roots'], [self.root])
+        self.body()[0]['terminator']['kind'] = {'Abort': 'UnreviewedTermination'}
+        with self.assertRaisesRegex(ValueError, 'Unreviewed abort UnreviewedTermination'):
             self.check()
 
     def test_guarded_translation_must_remain_failure_capable(self):

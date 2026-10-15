@@ -116,12 +116,12 @@ axiom core.num.Usize.unchecked_mul
   : Std.Usize → Std.Usize → Result Std.Usize
 
 /-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 330:0-345:1 -/
+    Source: 'src/util/mod.rs', lines 331:0-346:1 -/
 axiom util.copy_unchecked
   : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
 
 /-- [zerocopy::util::copy_unchecked_at]:
-    Source: 'src/util/mod.rs', lines 359:0-370:1 -/
+    Source: 'src/util/mod.rs', lines 360:0-371:1 -/
 axiom util.copy_unchecked_at
   : Slice Std.U8 → Slice Std.U8 → Std.Usize → Result (Slice Std.U8)
 
@@ -182,7 +182,7 @@ axiom Array.Insts.ZerocopyTryFromBytes.is_safe
     Bool
 
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 382:0-411:1 -/
+    Source: 'src/util/mod.rs', lines 383:0-412:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
 
 /-- [zerocopy::util::validity::read_byte]:

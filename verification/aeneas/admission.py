@@ -16,8 +16,9 @@ premises; neither is inferred from a list of bytes. Storage-producing operations
 are exact registered leaves with guards, rather than unchecked carrier casts.
 
 The traversal starts at every bound specification. Annotation status never
-exempts a callee. Unknown constructors, indirect calls, drops, and raw storage
-observations fail closed. The report identifies the inspected LLBC and selected
+exempts a callee. Unknown constructors, indirect calls, executable destruction,
+and raw storage observations fail closed. Only a kernel-checked empty-slot
+proof permits ignoring a conditional drop. The report identifies the inspected LLBC and selected
 interpretations; it is evidence of this inspection, not a proof of rustc.
 """
 
@@ -29,6 +30,7 @@ import re
 from pathlib import Path
 
 import source_inventory
+import drop_ownership
 
 
 # These provided methods require memory or I/O semantics outside our admitted
@@ -118,7 +120,7 @@ def fields(value, expected):
 
 
 class Admission:
-    def __init__(self, data, registry, law_traits=()):
+    def __init__(self, data, registry, law_traits=(), *, certify_drops=None):
         if data.get('has_errors') is not False or data.get('charon_version') != '0.1.276':
             raise ValueError('Admission requires successful LLBC from the reviewed Charon schema')
         self.crate = data['translated']
@@ -133,6 +135,8 @@ class Admission:
         self.law_traits = set(law_traits)
         self.locals = {}
         self.checked_types = set()
+        self.certify_drops = certify_drops
+        self.empty_drops = {}
         options = self.crate['options']
         targets = self.crate['target_information']
         if (len(targets) != 1 or targets[0]['value']['target_pointer_size'] != 8 or
@@ -373,6 +377,17 @@ class Admission:
             if local['drop_flag_for'] is not None:
                 raise ValueError(f'Conditional drop flag in {name}')
         try:
+            if drop_ownership.contains_drop(function['body']):
+                # A failed or absent kernel check must leave the old rejection
+                # intact. This checks the complete body, including cleanup and
+                # disconnected blocks, before any Drop receives an exemption.
+                if self.certify_drops is None:
+                    raise ValueError('Drop requires a kernel-checked compiler body')
+                proof = self.certify_drops(function)
+                if (proof.get('function_def_id') != index or
+                        proof.get('body_sha256') != drop_ownership.body_digest(function['body'])):
+                    raise ValueError('Drop proof does not identify this exact compiler body')
+                self.empty_drops[index] = proof
             if stage == 'Structured':
                 self.block(body['body'])
             else:
@@ -429,10 +444,13 @@ class Admission:
 
     def abort(self, abort):
         tag, _ = variant(abort)
-        # The pinned interpreter collapses source UB aborts into panic. Both
-        # remain rejected by every admitted contract. No recovery or failure
+        # The pinned interpreter maps every Abort (including UB and unwind
+        # termination) to panic: InterpStatements.ml's `Abort _` case. All
+        # remain rejected by every admitted contract, even on a normal path.
+        # ContractTests checks total/partial rejection with postcondition True.
+        # No recovery or failure
         # handler is admitted; adding one requires preserving this distinction.
-        if tag not in {'Panic', 'UndefinedBehavior'}:
+        if tag not in {'Panic', 'UndefinedBehavior', 'UnwindTerminate'}:
             raise ValueError(f'Unreviewed abort {tag}')
 
     def place(self, place, indexed=False):
@@ -807,7 +825,10 @@ class Admission:
         for statement in block['statements']:
             fields(statement, 'span id kind comments_before')
             tag, body = variant(statement['kind'])
-            if unwind and tag not in {'StorageDead', 'UnwindResume', 'Abort', 'Nop'}:
+            certified = (self.current_function is not None and
+                         self.current_function.get('def_id') in self.empty_drops)
+            if unwind and tag not in {'StorageDead', 'UnwindResume', 'Abort', 'Nop'} and not (
+                    tag == 'Drop' and certified):
                 raise ValueError(f'Unclassified unwind effect {tag}')
             if tag in {'StorageLive', 'StorageDead', 'Nop', 'Return', 'Break', 'Continue'}:
                 continue
@@ -818,6 +839,16 @@ class Admission:
                 self.place(body[0]); self.rvalue(body[1])
             elif tag == 'PlaceMention':
                 self.place(body)
+            elif tag == 'Drop':
+                fields(body, 'place fn_ptr kind on_unwind')
+                if (not certified or body['kind'] != 'Conditional' or
+                        variant(body['place']['kind'])[0] != 'Local'):
+                    raise ValueError('Only kernel-checked empty conditional Drop is supported')
+                self.place(body['place'])
+                # The proof makes this glue call unreachable. Its cleanup is
+                # still structurally audited; it is not an execution exemption
+                # for other unsupported operations hidden in an unwind block.
+                self.block(body['on_unwind'], True)
             elif tag == 'Borrowck':
                 kind, place = variant(body)
                 if kind != 'FakeRead':
@@ -939,6 +970,10 @@ class Admission:
                 fields(body, 'call target on_unwind')
                 body = {'call': body['call'], 'on_unwind':
                         {'span': term['span'], 'id': 0, 'statements': []}}
+            elif tag == 'Drop':
+                fields(body, 'kind place fn_ptr target on_unwind')
+                body = {key: body[key] for key in ('kind', 'place', 'fn_ptr')}
+                body['on_unwind'] = {'span': term['span'], 'id': 0, 'statements': []}
             elif tag == 'Assert':
                 fields(body, 'assert target on_unwind')
                 self.assertion(body['assert'])
@@ -985,7 +1020,7 @@ class Admission:
                 continue
             self.audit_implementation(implementation, trait)
         return {'roots': sorted(roots), 'executions': list(self.visited.values()),
-                'calls': self.calls}
+                'calls': self.calls, 'empty_drops': list(self.empty_drops.values())}
 
 
 def input_identity(root):
@@ -1045,19 +1080,71 @@ def input_identity(root):
             'runtime': digest(tools / 'aeneas-build.json')}
 
 
-def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
+def inspect_stages(root, work, roots, law_traits):
+    """Audit both complete snapshots, obtaining new drop proofs each time."""
+    roots = sorted(roots)
     registry_path = root / 'verification/aeneas/external.json'
     registry = json.loads(registry_path.read_text())
     reports = {}
+    drops = drop_ownership.KernelDrops(root, work)
     for stage, filename in [('before', 'zerocopy.before.ullbc'), ('llbc', 'zerocopy.llbc')]:
         path = work / filename
         if not path.is_file():
             raise ValueError(f'Missing mandatory {stage} admission snapshot: {path}')
-        checked = Admission(json.loads(path.read_text()), registry, law_traits)
+        contents = path.read_bytes()
+        drops.freeze(stage, contents)
+        checked = Admission(json.loads(contents), registry, law_traits,
+                            certify_drops=lambda function, stage=stage: drops.certify(stage, function))
         if checked.before != (stage == 'before'):
             raise ValueError(f'Wrong AST stage for mandatory {stage} snapshot')
         reports[stage] = checked.audit(roots)
-        reports[stage]['sha256'] = digest(path)
+        reports[stage]['sha256'] = hashlib.sha256(contents).hexdigest()
+        if digest(path) != reports[stage]['sha256']:
+            raise ValueError('Compiler snapshot changed during execution admission')
+    return reports
+
+
+def recheck(root, work, manifest):
+    """Replay admission before checking either model's final proofs.
+
+    The saved report describes what must be checked; it cannot authorize an
+    erased effect by itself. In particular, rerun the kernel on the snapshots
+    even when an earlier phase recorded a successful empty-drop proof. Proof
+    artifacts may have different hashes in a fresh build, so compare their
+    source identities rather than treating an old compiled witness as authority.
+    """
+    roots = sorted(name for name, binding in manifest['bindings'].items()
+                   if binding['kind'] == 'function')
+    saved = manifest['admission']['stages']
+    for stage, filename in [('before', 'zerocopy.before.ullbc'), ('llbc', 'zerocopy.llbc')]:
+        if digest(work / filename) != saved[stage].get('sha256'):
+            raise ValueError(f'Stale {stage} admission snapshot; run fresh extraction')
+    actual = inspect_stages(root, work, roots,
+                            [law['rust'] for law in manifest.get('trait_laws', [])])
+
+    def source_records(report):
+        # Deliberately require the key even when there are no candidates. A
+        # missing list is not an alternative spelling of successful admission.
+        try:
+            records = report['empty_drops']
+            if not isinstance(records, list):
+                raise ValueError('Invalid empty-drop proof records')
+            normalized = [{key: row[key] for key in
+                           ('function_def_id', 'body_sha256', 'snapshot_sha256')}
+                          for row in records]
+            return dict(report, empty_drops=normalized)
+        except (KeyError, TypeError) as error:
+            raise ValueError('Missing or invalid empty-drop proof records') from error
+
+    for stage in actual:
+        if source_records(saved[stage]) != source_records(actual[stage]):
+            raise ValueError(f'Stale or incomplete {stage} admission evidence; run fresh extraction')
+
+
+def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
+    registry_path = root / 'verification/aeneas/external.json'
+    registry = json.loads(registry_path.read_text())
+    reports = inspect_stages(root, work, roots, law_traits)
     for entry in registry:
         if entry.get('opaque') and any(row['rust'] == entry['rust']
                 for row in reports['llbc']['executions']):
