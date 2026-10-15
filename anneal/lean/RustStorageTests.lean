@@ -7,6 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
+import Rust.ReferentTests
 import Rust.Storage
 
 namespace Rust.Storage.Tests
