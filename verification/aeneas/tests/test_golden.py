@@ -32,7 +32,7 @@ class GoldenTests(unittest.TestCase):
             for name in golden.PROJECTIONS:
                 (work / name).write_text('def claim := True\n')
             # A proof project contains other modules; the review snapshot must
-            # contain exactly the three projections, without those modules.
+            # contain exactly the common projection roster, without those modules.
             (work / 'Proofs.lean').write_text('theorem proof : True := by trivial\n')
             golden.write_snapshot(golden.projections(work), snapshot)
             self.assertEqual(golden.compare_projections(work, snapshot), [])
@@ -53,6 +53,20 @@ class GoldenTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 golden.write_snapshot(golden.projections(work), snapshot)
             self.assertEqual(before, {p.name: p.read_bytes() for p in snapshot.iterdir()})
+
+    def test_trait_law_projection_is_required_and_compared_exactly(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            work, snapshot = Path(tmp) / 'work', Path(tmp) / 'snapshot'
+            work.mkdir()
+            for name in golden.PROJECTIONS:
+                (work / name).write_text('module\n')
+            golden.write_snapshot(golden.projections(work), snapshot)
+            (work / 'TraitLaws.lean').write_text('module\n-- changed law\n')
+            self.assertIn('Annotation projection differs: TraitLaws.lean',
+                          golden.compare_projections(work, snapshot))
+            (snapshot / 'TraitLaws.lean').unlink()
+            with self.assertRaises(ValueError):
+                golden.compare_projections(work, snapshot)
 
     def test_accepts_comments_blank_lines_and_trailing_whitespace(self):
         before = 'def min := do\n  if x > y\n  then ok y\n  else ok x\n'

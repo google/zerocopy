@@ -163,9 +163,12 @@ elab "check_contract " expected:ident " using " candidate:term : command => do
     (fun i => mkIdent (Name.mkSimple s!"_contractInput{i}"))
   let dictionaries := (List.range dictionaryCount).toArray.map
     (fun i => mkIdent (Name.mkSimple s!"_contractDictionary{i}"))
-  -- Source type parameters contribute original model dictionaries after run.
-  -- Specialize the authored premise with those same dictionaries before proving
-  -- the independent implication; ghost instances cannot select new meanings.
+  -- Try an explicit domain adapter before aligning decoder dictionaries.
+  -- An independent expectation may omit a RustModel parameter for a type that
+  -- occurs only in a trait dictionary, while retaining that dictionary's law.
+  -- Positional introduction would confuse the law with the model dictionary.
+  -- The fallback below aligns the original model dictionaries when both
+  -- families retain them; ghost instances cannot select new meanings.
   let introduceDictionaries ← if dictionaries.isEmpty then `(tactic| skip) else
     `(tactic| (intro $dictionaries:ident*; specialize @provided $dictionaries:ident*))
   -- These tactics produce an ordinary theorem, not a trusted comparison
@@ -175,22 +178,25 @@ elab "check_contract " expected:ident " using " candidate:term : command => do
   Elab.Command.elabCommand (← `(theorem $adequate :
       contract_adequacy% $source implies $expected := by
     intro $arguments:ident* provided
-    $introduceDictionaries:tactic
     first
     | exact provided
     | (simp (disch := assumption) only [contract_simps]; done)
-    | try unfold $family
-      try unfold $sourceFamily at provided
-      convert provided using 1 <;>
-        (simp only [WP.spec_equiv_exists]
-         all_goals simp (config := { index := false, contextual := true }) only [contract_simps])
-      all_goals
-        (congr! 2
-         all_goals first | rfl | (split <;> simp_all only [contract_simps]) | skip)
-      all_goals
-        (congr! 4
-         all_goals first | rfl | (split <;> simp_all only [contract_simps]) | grind)
-      all_goals rfl))
+    | $introduceDictionaries:tactic
+      first
+      | exact provided
+      | (simp (disch := assumption) only [contract_simps]; done)
+      | try unfold $family
+        try unfold $sourceFamily at provided
+        convert provided using 1 <;>
+          (simp only [WP.spec_equiv_exists]
+           all_goals simp (config := { index := false, contextual := true }) only [contract_simps])
+        all_goals
+          (congr! 2
+           all_goals first | rfl | (split <;> simp_all only [contract_simps]) | skip)
+        all_goals
+          (congr! 4
+           all_goals first | rfl | (split <;> simp_all only [contract_simps]) | grind)
+        all_goals rfl))
   if ← MonadLog.hasErrors then return
   Elab.Command.elabCommand (← `(theorem $witness : $expected :=
     required_contract_instance% $candidateId with $adequate))
