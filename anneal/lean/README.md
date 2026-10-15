@@ -15,6 +15,12 @@ pins.
   optional provenance, and unit or count metadata. Its casts preserve exact
   provenance; non-nullness and provenance presence confer no access permission.
   It has no pointer byte encoding or dereference operation.
+- `Rust.Pointer.Geometry` relates pointer values by byte-range projection,
+  address-preserving cast, and equal-extent cast. Metadata may change, and the
+  consumer supplies the corresponding byte extents. Empty destinations have
+  bounded starts, including one-past endpoints; target-word no-wrap conclusions
+  require explicit numerical bounds. These predicates confer no permissions or
+  referent validity and do not implement Rust pointer operations.
 - `Rust.Bytes` gives positional little- and big-endian integer encodings,
   including exact-length, bound, truncation, and round-trip theorems.
 - `Rust.Storage` distinguishes initialized bytes from uninitialized bytes and
@@ -77,7 +83,10 @@ lake env lean -DwarningAsError=true RustTests.lean
 `RustTests`, `RustBytesTests`, `RustStorageTests`, and `RustPointerTests` check
 concrete boundary cases and use the universal theorems independently of any
 frontend. `RustTests` also audits every compiled library declaration, including
-unused helpers, and rejects assumptions beyond Lean's standard logical axioms.
+unused helpers, plus declarations in the imported shared test modules, and
+rejects assumptions beyond Lean's standard logical axioms. It selects every
+imported `Rust` submodule by its defining module, so adding an import does not
+require extending a manual audit roster.
 The second command reruns that audit even when Lake can reuse its compiled test
 module.
 

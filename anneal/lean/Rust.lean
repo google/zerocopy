@@ -9,6 +9,7 @@ those terms. -/
 import Rust.Layout
 import Rust.Memory
 import Rust.Pointer
+import Rust.Pointer.Geometry
 import Rust.Bytes
 import Rust.Storage
 import Rust.Referent
