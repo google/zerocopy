@@ -1,0 +1,81 @@
+{
+  "repository": "ocaml/opam",
+  "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+  "entries": [
+    {
+      "path": "src/repository/opamGit.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "563c3a7660cb1e716a86f1c2b5567f8bedb845a8",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/repository/opamGit.ml",
+      "characters": 13639,
+      "bytes": 13639,
+      "sha256": "9821d9398af8d0dc06e431f4295f869ac46aff2326e7f7a448408235894a59d1",
+      "local_path": "primary/src--repository--opamGit.ml"
+    },
+    {
+      "path": "src/repository/opamRepository.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "0dce42652d6908c72f5b8ba579dab8c5b7d17a52",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/repository/opamRepository.ml",
+      "characters": 19110,
+      "bytes": 19110,
+      "sha256": "ee288272cfaf4da7c30534694dee566ffe874ef6a78a45e70702ae6134044812",
+      "local_path": "primary/src--repository--opamRepository.ml"
+    },
+    {
+      "path": "src/client/opamAction.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "159b17175d99aba1008f426af75648f62ab1fea8",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/client/opamAction.ml",
+      "characters": 38441,
+      "bytes": 38441,
+      "sha256": "d8ea3545c5990530f678d9adeee4ca950cfeb06d4ea86f732aee5f0031b2da0f",
+      "local_path": "primary/src--client--opamAction.ml"
+    },
+    {
+      "path": "src/client/opamSolution.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "ac7e61a8e07e756b55bbf42cce20f5c5704f3140",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/client/opamSolution.ml",
+      "characters": 49076,
+      "bytes": 49076,
+      "sha256": "a792e26be49ff4069ef43734d7b59a607d4a42336df2e11b45c8c175a7986ad9",
+      "local_path": "primary/src--client--opamSolution.ml"
+    },
+    {
+      "path": "src/repository/opamVCS.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "3fd822ede6a40965ee815f915195480bbcecc4e4",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/repository/opamVCS.ml",
+      "characters": 7275,
+      "bytes": 7275,
+      "sha256": "b2b9fbfb9e6604a1dd199d2da91240af04036b2bc440a1605f2a91ca38503cd8",
+      "local_path": "primary/src--repository--opamVCS.ml"
+    },
+    {
+      "path": "src/repository/opamRepositoryPath.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "ccc79df1bbb86c40b0f73ec971057382ae20f674",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/repository/opamRepositoryPath.ml",
+      "characters": 2254,
+      "bytes": 2254,
+      "sha256": "569d845389a621deb47ee4277a9e03837e2b1d679b38a401acf26de5e0328415",
+      "local_path": "primary/src--repository--opamRepositoryPath.ml"
+    },
+    {
+      "path": "src/state/opamUpdate.ml",
+      "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d",
+      "git_blob": "51e13b3a3aa50861a35b35a12eec77d7bd30a12a",
+      "display_url": "https://github.com/ocaml/opam/blob/dfbe6a0b3a386376780bf68d35e4ce107072079d/src/state/opamUpdate.ml",
+      "characters": 21829,
+      "bytes": 21829,
+      "sha256": "b39893f195e60f11b84fd85748eff2de1bb132a4dcab99fe9860124f152957db",
+      "local_path": "primary/src--state--opamUpdate.ml"
+    }
+  ],
+  "failed_lookup": {
+    "path": "src/client/opamUpdate.ml",
+    "status": 404,
+    "diagnosis": "Module is at src/state/opamUpdate.ml; successful immutable read retained."
+  }
+}

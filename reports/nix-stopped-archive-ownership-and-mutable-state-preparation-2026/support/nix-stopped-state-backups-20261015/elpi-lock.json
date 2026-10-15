@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/nix/store/zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7.lock",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.04611550003755838,
+  "stdout_bytes": 1536,
+  "stdout_sha256": "848e25118beef37a46523a98fb7eea78c114a93564191e1bed17b52688b5e02b"
+}

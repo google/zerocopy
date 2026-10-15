@@ -1,0 +1,1522 @@
+[
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/before-inspect.json",
+    "original_bytes": 346,
+    "original_sha256": "c5599d147951b54f2b03fb43714fbbbaf9e912ff041d8f012da1b53129d1d361",
+    "public": "support/nix-archive-ownership-smoke-20261015/before-inspect.json",
+    "public_sha256": "9af0ae8abb649ca67f14272623cdb5a4f4fa6e697f6806b470b43cfc43f8f2d1",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/before-inspect.stdout",
+    "original_bytes": 7574,
+    "original_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "public": "support/nix-archive-ownership-smoke-20261015/before-inspect.stdout",
+    "public_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/fixture-0.tar",
+    "original_bytes": 10240,
+    "original_sha256": "a13ccf78507f267740df9e85cfa592c04778bb7961395e15c60a9c47bba9a141",
+    "public": "support/nix-archive-ownership-smoke-20261015/fixture-0.tar.headers.json",
+    "public_sha256": "78eda836a2d12464b275e3c4f7535fdf62e766bc48e1df7419dac02356526ac8",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/fixture-1000.tar",
+    "original_bytes": 10240,
+    "original_sha256": "183c0d02437a4fd64fe7944569034e7c7334cf2879f903486c7796581b16643f",
+    "public": "support/nix-archive-ownership-smoke-20261015/fixture-1000.tar.headers.json",
+    "public_sha256": "5cfa62cdc7285d9a90b14c6f36246c506a5a084feb863c108c8da0f21375c618",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-0.json",
+    "original_bytes": 417,
+    "original_sha256": "f797f9c2527b908a1117224260e49f1fd536801a183c71453d9b638e838e363c",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-0.json",
+    "public_sha256": "000949a282440ccb8fec155b3451e771a1eb11110157bf2911cfbae91bb269cc",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-0.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-0.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-0.stdout",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-0.stdout",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-1000.json",
+    "original_bytes": 417,
+    "original_sha256": "d63a41c4fa70c5a73dc71d713b153a0b82afc74b0df0985a071fd4a11fc7439b",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-1000.json",
+    "public_sha256": "482a5c076c04ff3a1a59e85276984f4af33f5d936ed074c97b404b0b0c42cb32",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-1000.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-1000.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/put-1000.stdout",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/put-1000.stdout",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-0.json",
+    "original_bytes": 372,
+    "original_sha256": "7235dbe80f76707629bb170a36c9315e6d34849da62ae60bcf3f6d965f5a5426",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-0.json",
+    "public_sha256": "bcee687059630d62ebc5f5cae776b54a76419011582544da1da3cf3f1fb46ae0",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-0.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-0.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-0.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "dfcaac7d9897875c4418e86afb50ec257d2c4ca31e0d43ceabe2b78980e199f9",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-0.stdout.headers.json",
+    "public_sha256": "813bb3b389af48d71dff6a5efac847dd6546ed5f381d029842c970d41626d2ab",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-1000.json",
+    "original_bytes": 373,
+    "original_sha256": "e358e43fd2504b73e4b6ddb1dcb1070e0998930478ee80a9da4e88642446df22",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-1000.json",
+    "public_sha256": "7658b34a506aca1b4b6b61dfe7e84385dfb71a357c47808a7fedecb701997373",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-1000.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-1000.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/readback-1000.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "dfcaac7d9897875c4418e86afb50ec257d2c4ca31e0d43ceabe2b78980e199f9",
+    "public": "support/nix-archive-ownership-smoke-20261015/readback-1000.stdout.headers.json",
+    "public_sha256": "813bb3b389af48d71dff6a5efac847dd6546ed5f381d029842c970d41626d2ab",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/work-backup.json",
+    "original_bytes": 344,
+    "original_sha256": "ee886ee5a74e96a16c76c741f254c36947113a2d7d775c6a6e3ac999aa6745bb",
+    "public": "support/nix-archive-ownership-smoke-20261015/work-backup.json",
+    "public_sha256": "c1842380db2d08aeee6e4b755da37fea7fabc1ae112232ce419caebdf07aa766",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-smoke-20261015/work-backup.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-smoke-20261015/work-backup.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/RESULTS.json",
+    "original_bytes": 1392,
+    "original_sha256": "aed2954e5841b2b7fc51d27005e6bb9599ceb9e50063ae334ad96c5a461bd891",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/RESULTS.json",
+    "public_sha256": "aed2954e5841b2b7fc51d27005e6bb9599ceb9e50063ae334ad96c5a461bd891",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-fixture.json",
+    "original_bytes": 349,
+    "original_sha256": "0c38356590f12515b1d2f07f1512576b3a42192b97d7865dc810e6fb37866332",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-fixture.json",
+    "public_sha256": "0cfafaf553218b43bde4a0342550a23e409219b297c2ca54892dd4871d6897a2",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-fixture.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-fixture.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-fixture.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "02d82c1dab21974734a544fa5f7e2601ae8e07f1f1c4dbf9aae3cb00e832c293",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-fixture.stdout.headers.json",
+    "public_sha256": "727291f5f7a02c8a05f7cfa6fb12f908d361ed21eda5720cc0824b5f3441f8e0",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-inspect.json",
+    "original_bytes": 308,
+    "original_sha256": "bf7255ecb455d3706cdbf3b2d2fe10a760ba3850e81e80fac2eb8531bf7628fb",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-inspect.json",
+    "public_sha256": "a2f4eb00b8fa574cc94a0afd3d199a408279c93152d112fd70613fe3b4344cf9",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/after-inspect.stdout",
+    "original_bytes": 7574,
+    "original_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/after-inspect.stdout",
+    "public_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-fixture.json",
+    "original_bytes": 349,
+    "original_sha256": "aef737438a3b27972035a501254d1368e4c71efe4637738ce8518c2070887414",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-fixture.json",
+    "public_sha256": "0689d56a5fc44ba9bffd9a546c2be554d8dcfcee275581ea63b6d1322cd6c6e9",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-fixture.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-fixture.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-fixture.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "dfcaac7d9897875c4418e86afb50ec257d2c4ca31e0d43ceabe2b78980e199f9",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-fixture.stdout.headers.json",
+    "public_sha256": "813bb3b389af48d71dff6a5efac847dd6546ed5f381d029842c970d41626d2ab",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-inspect.json",
+    "original_bytes": 306,
+    "original_sha256": "660c4cc477ebcd423bf20917cba5ffca27e7a8d141a5053e4cd7009b94556181",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-inspect.json",
+    "public_sha256": "70e2b50aa8715da33d46ce1e904d9a60a86b99c9fb0e406cf2a449e2033b5152",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/before-inspect.stdout",
+    "original_bytes": 7574,
+    "original_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/before-inspect.stdout",
+    "public_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.json",
+    "original_bytes": 379,
+    "original_sha256": "24098e7417bbf9c01fbedab14722728d696cbcb7b2032a8f70aaf1fee208b1a1",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.json",
+    "public_sha256": "3f3fa03fe50cb92ee362618efae109bc44316639846382055b520fe33cec10c5",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.stdout",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-archive-ownership-corrected-fixture-20261015/put-1000-preserve-tar-ids.stdout",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/RESULTS.json",
+    "original_bytes": 504,
+    "original_sha256": "dfe66d66e8d85d3a62f3af22a4e30e663ca0c5fc1686a15b4ea8fd9451199f22",
+    "public": "support/nix-directory-header-fixture-20261015/RESULTS.json",
+    "public_sha256": "dfe66d66e8d85d3a62f3af22a4e30e663ca0c5fc1686a15b4ea8fd9451199f22",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1000.json",
+    "original_bytes": 315,
+    "original_sha256": "f39113b2c032753e6e26e823d881f0f0a5d49316c0a7cb8e8b6a5631c401d6e1",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1000.json",
+    "public_sha256": "8cb1f3173a56e8829c218bf9bf32809ca20705f6cd979de04e5e7a9726c71436",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1000.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1000.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1000.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "02d82c1dab21974734a544fa5f7e2601ae8e07f1f1c4dbf9aae3cb00e832c293",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1000.stdout.headers.json",
+    "public_sha256": "727291f5f7a02c8a05f7cfa6fb12f908d361ed21eda5720cc0824b5f3441f8e0",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1001.json",
+    "original_bytes": 315,
+    "original_sha256": "45315dbacfef419f0a1d08fdb2dd2f95ba697b126e4a26818dd582004eec5a1f",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1001.json",
+    "public_sha256": "9a74ca4b9743f9f3462d9e40aee71172ed961e4261420795f2d910db3b9d1373",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1001.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1001.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-header-1001.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "943e04c9685f0554a026f6d35b5c8cd80f6604783b27e1419c64a52bd5407cef",
+    "public": "support/nix-directory-header-fixture-20261015/after-header-1001.stdout.headers.json",
+    "public_sha256": "7966b1d07ce31cc9dc099184ed80b92dbe1a5cf202f717965b23004ffabb08a1",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-inspect.json",
+    "original_bytes": 273,
+    "original_sha256": "78ed6ec7d478811f3c572f67442171109b224afce2e0156b5d4ee0f5127690f5",
+    "public": "support/nix-directory-header-fixture-20261015/after-inspect.json",
+    "public_sha256": "e4481eaeeef9d07f740693db981329f410a215783ab2abc8d5ead384d9e36fe7",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/after-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/after-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "public": "support/nix-directory-header-fixture-20261015/after-inspect.stdout",
+    "public_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-fixture.json",
+    "original_bytes": 315,
+    "original_sha256": "f39113b2c032753e6e26e823d881f0f0a5d49316c0a7cb8e8b6a5631c401d6e1",
+    "public": "support/nix-directory-header-fixture-20261015/before-fixture.json",
+    "public_sha256": "8cb1f3173a56e8829c218bf9bf32809ca20705f6cd979de04e5e7a9726c71436",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-fixture.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/before-fixture.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-fixture.stdout",
+    "original_bytes": 3584,
+    "original_sha256": "02d82c1dab21974734a544fa5f7e2601ae8e07f1f1c4dbf9aae3cb00e832c293",
+    "public": "support/nix-directory-header-fixture-20261015/before-fixture.stdout.headers.json",
+    "public_sha256": "727291f5f7a02c8a05f7cfa6fb12f908d361ed21eda5720cc0824b5f3441f8e0",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-inspect.json",
+    "original_bytes": 273,
+    "original_sha256": "78ed6ec7d478811f3c572f67442171109b224afce2e0156b5d4ee0f5127690f5",
+    "public": "support/nix-directory-header-fixture-20261015/before-inspect.json",
+    "public_sha256": "e4481eaeeef9d07f740693db981329f410a215783ab2abc8d5ead384d9e36fe7",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/before-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "public": "support/nix-directory-header-fixture-20261015/before-inspect.stdout",
+    "public_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/header-1000.tar",
+    "original_bytes": 10240,
+    "original_sha256": "46fa43a0b495cac1df6b63c3d91ade5df290e103e1de4c8ade2220048c279a16",
+    "public": "support/nix-directory-header-fixture-20261015/header-1000.tar.headers.json",
+    "public_sha256": "3549f8bcb101a799d6161c2f5be8956dc2072c8ab3129cc4e15e889a3918007c",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/header-1001.tar",
+    "original_bytes": 10240,
+    "original_sha256": "4e6205a29f06c0bf57ced0440e02439844a974b81fe1add5f86f1794a1e674d7",
+    "public": "support/nix-directory-header-fixture-20261015/header-1001.tar.headers.json",
+    "public_sha256": "de6603ed8475a028add496888e311c9bdbffd845396b3c354eee27eea3432330",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1000.json",
+    "original_bytes": 345,
+    "original_sha256": "d799da5d71fcc56afa6531bc5b89c2eca4ced9981d518a7e0049bac02abbc9c9",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1000.json",
+    "public_sha256": "cd988fb515655dacd8b169b096c5bbe034aa35e9cb57b1d780dc9f95c06440e7",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1000.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1000.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1000.stdout",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1000.stdout",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1001.json",
+    "original_bytes": 345,
+    "original_sha256": "5fe24f684a7c8c3b7e6bfc1f4db37c4ca6f4db940377aefc43496d7884b1231a",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1001.json",
+    "public_sha256": "f41fd5d2782b40ff00632cf5057e8b63c13adcd214e3dece89a90ef0c61c90f2",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1001.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1001.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-directory-header-fixture-20261015/put-header-1001.stdout",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-directory-header-fixture-20261015/put-header-1001.stdout",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/DIAGNOSIS.json",
+    "original_bytes": 1027,
+    "original_sha256": "111f629e911fdb9dac58d25cabadc9c08b0d9e252016c7f3c6e85119a6096bba",
+    "public": "support/nix-preparation-metadata-20261015/DIAGNOSIS.json",
+    "public_sha256": "111f629e911fdb9dac58d25cabadc9c08b0d9e252016c7f3c6e85119a6096bba",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/FAILURE.json",
+    "original_bytes": 89,
+    "original_sha256": "04db32c5346d3ee3b874bb6e42fe0e25a934ff9fffbb9f00bc4c54e092d5cb43",
+    "public": "support/nix-preparation-metadata-20261015/FAILURE.json",
+    "public_sha256": "04db32c5346d3ee3b874bb6e42fe0e25a934ff9fffbb9f00bc4c54e092d5cb43",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/before-inspect.json",
+    "original_bytes": 306,
+    "original_sha256": "9b394fe74eba07622b493375d9b1be2988ec19cd0d1e889d371054144e00dea6",
+    "public": "support/nix-preparation-metadata-20261015/before-inspect.json",
+    "public_sha256": "2237ae94ccd324bc970b971e5389512c1fc725b306819dc5111e3049cb26e7ba",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/before-inspect.stdout",
+    "original_bytes": 7574,
+    "original_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "public": "support/nix-preparation-metadata-20261015/before-inspect.stdout",
+    "public_sha256": "787a8e46793884b6073f8d844867fe3756d53c96db458585928744d6b05374fc",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/idle-inspect.json",
+    "original_bytes": 308,
+    "original_sha256": "a6d1622eda8e5b19aabe251f8c37fa473ba98507a1aaf1dde807633a91e15dcd",
+    "public": "support/nix-preparation-metadata-20261015/idle-inspect.json",
+    "public_sha256": "57aea4c9d30e1a35299508da8237dc38f5c3c2568ed59d34ae0228e828c0627b",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/idle-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015/idle-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/idle-inspect.stdout",
+    "original_bytes": 7677,
+    "original_sha256": "9eeb76d95d55e726bfeb4a9fc2a14677afd30540ee89874235a494cbcf04fb23",
+    "public": "support/nix-preparation-metadata-20261015/idle-inspect.stdout",
+    "public_sha256": "9eeb76d95d55e726bfeb4a9fc2a14677afd30540ee89874235a494cbcf04fb23",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/preparation-tree-sizes.json",
+    "original_bytes": 750,
+    "original_sha256": "e0a2b8de242e67b6ce30b01caae56c41b654bfbdd6ced97ce160cd7141af3008",
+    "public": "support/nix-preparation-metadata-20261015/preparation-tree-sizes.json",
+    "public_sha256": "1ac3625d1c4074e5d87023d7862c3a4a9ab406c36833a824129c029a255170a5",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/preparation-tree-sizes.stderr",
+    "original_bytes": 85,
+    "original_sha256": "2982ed8419f88f81ef9de5eaa70d8876bdc540745e7f473602a3479695306fff",
+    "public": "support/nix-preparation-metadata-20261015/preparation-tree-sizes.stderr",
+    "public_sha256": "2982ed8419f88f81ef9de5eaa70d8876bdc540745e7f473602a3479695306fff",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/preparation-tree-sizes.stdout",
+    "original_bytes": 78,
+    "original_sha256": "c6e8b248b836f932be58e96e5c7f038575c3240ac97ad708a7070bb95522f21b",
+    "public": "support/nix-preparation-metadata-20261015/preparation-tree-sizes.stdout",
+    "public_sha256": "c6e8b248b836f932be58e96e5c7f038575c3240ac97ad708a7070bb95522f21b",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/start-idle.json",
+    "original_bytes": 303,
+    "original_sha256": "3ea58ce661b4d05a0a15209508cf4392469edd3ce214f390dba457a240ca4982",
+    "public": "support/nix-preparation-metadata-20261015/start-idle.json",
+    "public_sha256": "2f10178d5bc99c0b291a821869185622553179ef41095d21c58e045fe82fbdd9",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/start-idle.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015/start-idle.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/start-idle.stdout",
+    "original_bytes": 65,
+    "original_sha256": "91c94d7fea55afb2f5ee331b72aef89d1fa975c963417bbfb1473bb154a2619e",
+    "public": "support/nix-preparation-metadata-20261015/start-idle.stdout",
+    "public_sha256": "91c94d7fea55afb2f5ee331b72aef89d1fa975c963417bbfb1473bb154a2619e",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/stop.json",
+    "original_bytes": 14,
+    "original_sha256": "ba5906e888adc2bc8d9ff519df92c9b1416aff0db6621746f978bf45514259eb",
+    "public": "support/nix-preparation-metadata-20261015/stop.json",
+    "public_sha256": "ba5906e888adc2bc8d9ff519df92c9b1416aff0db6621746f978bf45514259eb",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/stop.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015/stop.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/stop.stdout",
+    "original_bytes": 120,
+    "original_sha256": "27a42e41a7fe3dd8b7d372e3842bf9254d5594ac0b0d58608d0ceb2ca64c0a3a",
+    "public": "support/nix-preparation-metadata-20261015/stop.stdout",
+    "public_sha256": "27a42e41a7fe3dd8b7d372e3842bf9254d5594ac0b0d58608d0ceb2ca64c0a3a",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/utility-hashes.json",
+    "original_bytes": 1111,
+    "original_sha256": "68956e658a653c4ccc8489afc62f4a4c7f98faa8e962bd3c31504fe646dc2661",
+    "public": "support/nix-preparation-metadata-20261015/utility-hashes.json",
+    "public_sha256": "95b3276b36ea43feb0806ada61a752bd07ed9739bff3f28b084790eba31eb07f",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/utility-hashes.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015/utility-hashes.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015/utility-hashes.stdout",
+    "original_bytes": 833,
+    "original_sha256": "363af957e8425e4f49a348da5a7d44d456ac82479007265d2eb7f5293251fc03",
+    "public": "support/nix-preparation-metadata-20261015/utility-hashes.stdout",
+    "public_sha256": "363af957e8425e4f49a348da5a7d44d456ac82479007265d2eb7f5293251fc03",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/RESULTS.json",
+    "original_bytes": 501,
+    "original_sha256": "5220366e15de3cdfa990ef246e63834c8eba89f35fda0d0feabe85adad5e210e",
+    "public": "support/nix-preparation-metadata-20261015-v2/RESULTS.json",
+    "public_sha256": "5220366e15de3cdfa990ef246e63834c8eba89f35fda0d0feabe85adad5e210e",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/after-inspect.json",
+    "original_bytes": 307,
+    "original_sha256": "21a823e7849905eed14512f3546e567e349a01f067cbe0f4cad9a7cdea888d5a",
+    "public": "support/nix-preparation-metadata-20261015-v2/after-inspect.json",
+    "public_sha256": "dd347f021233762bfd996dce64adb7b8f2021a6c749b0ca894ec12ba38e07479",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/after-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/after-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/after-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "public": "support/nix-preparation-metadata-20261015-v2/after-inspect.stdout",
+    "public_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/before-inspect.json",
+    "original_bytes": 307,
+    "original_sha256": "e2d9a8279ebe15221d2c401ea102993f8799d5305b8c0585da5372a861c6b8e4",
+    "public": "support/nix-preparation-metadata-20261015-v2/before-inspect.json",
+    "public_sha256": "3ecab7d5a58f20a0bf7fe77d6e3dc4178e4dcc3ae6284d6d640e75059da41864",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/before-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "2cd738654000a2116521703e1724ac64032faa4991dbdf5a1149fbaa651a4be2",
+    "public": "support/nix-preparation-metadata-20261015-v2/before-inspect.stdout",
+    "public_sha256": "2cd738654000a2116521703e1724ac64032faa4991dbdf5a1149fbaa651a4be2",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/idle-inspect.json",
+    "original_bytes": 308,
+    "original_sha256": "f45e989d77e3992a1a1bdb62d543426d9b2d255e0ea5defbb4bfba71ac16c13a",
+    "public": "support/nix-preparation-metadata-20261015-v2/idle-inspect.json",
+    "public_sha256": "03b8cbcad68d3551e9907fe52de1d88acd42de26863488eebe870e69e6e3c796",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/idle-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/idle-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/idle-inspect.stdout",
+    "original_bytes": 7677,
+    "original_sha256": "de42391cf4786ba0a83f6e6d4fd027300f26cb50c019106d291b38716dbf1dca",
+    "public": "support/nix-preparation-metadata-20261015-v2/idle-inspect.stdout",
+    "public_sha256": "de42391cf4786ba0a83f6e6d4fd027300f26cb50c019106d291b38716dbf1dca",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.json",
+    "original_bytes": 737,
+    "original_sha256": "7e97b527b6b1cf4cb06b7008de8b8ed0fe4052d018f67582e8d5d3a268809140",
+    "public": "support/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.json",
+    "public_sha256": "d1e01b0ee7d4c54d2b4f09af06cd7569fb7c8f77d38a9b77e62139f84c5d8ee7",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.stdout",
+    "original_bytes": 64,
+    "original_sha256": "637cada5366e2706ec4d6cfab94c1a1e2a7d092d6654c811417c5d6ea9360052",
+    "public": "support/nix-preparation-metadata-20261015-v2/preparation-tree-sizes.stdout",
+    "public_sha256": "637cada5366e2706ec4d6cfab94c1a1e2a7d092d6654c811417c5d6ea9360052",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/start-idle.json",
+    "original_bytes": 303,
+    "original_sha256": "4352a025ca3ee65519bf5d25983d0e416168b6f5507a2fb012620772e7a93861",
+    "public": "support/nix-preparation-metadata-20261015-v2/start-idle.json",
+    "public_sha256": "3dae3cd49ced2b79ae00b68abd3abda4c03894fdad4ca1bd3e7aafc569c9433b",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/start-idle.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/start-idle.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/start-idle.stdout",
+    "original_bytes": 65,
+    "original_sha256": "91c94d7fea55afb2f5ee331b72aef89d1fa975c963417bbfb1473bb154a2619e",
+    "public": "support/nix-preparation-metadata-20261015-v2/start-idle.stdout",
+    "public_sha256": "91c94d7fea55afb2f5ee331b72aef89d1fa975c963417bbfb1473bb154a2619e",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-000.json",
+    "original_bytes": 9969,
+    "original_sha256": "06cd0718342c51bfd986ab3c3fbe5400c17dbcb9d844bb2fcaf73c1af8f00688",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-000.json",
+    "public_sha256": "d5789346f1b49697fa529731abb74416d06c06d889c2523196785f06fa5ce57f",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-000.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-000.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-000.stdout",
+    "original_bytes": 12210,
+    "original_sha256": "d15559079dd66b58bf73472a9f13b1ef9b5eae8e18b077ae362037db1dd4ed7b",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-000.stdout",
+    "public_sha256": "d15559079dd66b58bf73472a9f13b1ef9b5eae8e18b077ae362037db1dd4ed7b",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-001.json",
+    "original_bytes": 10373,
+    "original_sha256": "88adaa69e202c7e59c23c2c4b2e6847f4baf107a9dd51396e3eefbd124e42a29",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-001.json",
+    "public_sha256": "9e7e9bc4fcb28681688106340bf86fbf57009da2c121cefbb94b2472e0ae0ef1",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-001.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-001.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-001.stdout",
+    "original_bytes": 12559,
+    "original_sha256": "7abf7ad8c853e01d123478e619d77cee87fbab045af77ba0776ad00b7840a7a1",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-001.stdout",
+    "public_sha256": "7abf7ad8c853e01d123478e619d77cee87fbab045af77ba0776ad00b7840a7a1",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-002.json",
+    "original_bytes": 10165,
+    "original_sha256": "6bc548d733e59a23124458eca3d2a69915c99405bb9291e3538aead040b512bc",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-002.json",
+    "public_sha256": "05f39de95ade97a229607679607acf5eefa81d228f9adaee5aea1aaaf7255abb",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-002.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-002.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-002.stdout",
+    "original_bytes": 12346,
+    "original_sha256": "2a0d6ead348dde733f57a0e3084db9d66c357a11eb0d160216dc63a83d0f1fb1",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-002.stdout",
+    "public_sha256": "2a0d6ead348dde733f57a0e3084db9d66c357a11eb0d160216dc63a83d0f1fb1",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-003.json",
+    "original_bytes": 10178,
+    "original_sha256": "32e036f1664ea142e09e98497bdf1df297a3a1bd79da47d159a301e14abf29da",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-003.json",
+    "public_sha256": "a6276f027a6b2b2b2af6047dce167d93360ff849358352e39646f097dffc33c1",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-003.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-003.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-003.stdout",
+    "original_bytes": 12365,
+    "original_sha256": "859e95c5243abff27a7094f43540466392ef417be20ac256bd876d54245c6a6f",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-003.stdout",
+    "public_sha256": "859e95c5243abff27a7094f43540466392ef417be20ac256bd876d54245c6a6f",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-004.json",
+    "original_bytes": 10306,
+    "original_sha256": "122268411129cb2c229cecc82bfcda116750daf3635f7005d21c13cb48e4cc73",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-004.json",
+    "public_sha256": "ec8180e0b80ddba072983ce90ad69234b02643393aedc7dba3bb12e55bc94677",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-004.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-004.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-004.stdout",
+    "original_bytes": 12488,
+    "original_sha256": "5e3f51cf829fc31a710dab28e4a38f01dd27026e6ff0d69a63aae16fa5f365cf",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-004.stdout",
+    "public_sha256": "5e3f51cf829fc31a710dab28e4a38f01dd27026e6ff0d69a63aae16fa5f365cf",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-005.json",
+    "original_bytes": 10180,
+    "original_sha256": "953d6c4198603d328a88ae01c6a4ea7451f92634c8ac2526645dbd9e47d18634",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-005.json",
+    "public_sha256": "f566384e2d92636eee35cf7908ea3e355a381d41b1ed6953b0ec6809cbd4f593",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-005.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-005.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-005.stdout",
+    "original_bytes": 12383,
+    "original_sha256": "3ae6b871861a1f5c493f2d75168e0e17d0d80bb7e3aed095dcc30a8b18fcf65b",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-005.stdout",
+    "public_sha256": "3ae6b871861a1f5c493f2d75168e0e17d0d80bb7e3aed095dcc30a8b18fcf65b",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-006.json",
+    "original_bytes": 10248,
+    "original_sha256": "360326f39e83987b712d781682132604780ea9f54557139c6eac7046cfae015f",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-006.json",
+    "public_sha256": "722e86550fc2f3e0c699e593333754755feac4c60a90207b683c6bf7ab7b4410",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-006.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-006.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-006.stdout",
+    "original_bytes": 12426,
+    "original_sha256": "31d37cd1b6323d369f2e71a6f0af6db6ccccd5f6448efc1a60430a919d54e756",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-006.stdout",
+    "public_sha256": "31d37cd1b6323d369f2e71a6f0af6db6ccccd5f6448efc1a60430a919d54e756",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-007.json",
+    "original_bytes": 10304,
+    "original_sha256": "36196b9a8630bb8db9233ff2ad842c6127451a0d4f48b72847b1d6cddfe65371",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-007.json",
+    "public_sha256": "4f54faef8a6575f8d6c81f7f53376b2757a0005ee6c349e1755174b082d39d2a",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-007.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-007.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-007.stdout",
+    "original_bytes": 12508,
+    "original_sha256": "b77851afbf21fa53161a3f53a4a044a3c2d4127c97bce778b1bcd8ae5f901eb3",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-007.stdout",
+    "public_sha256": "b77851afbf21fa53161a3f53a4a044a3c2d4127c97bce778b1bcd8ae5f901eb3",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-008.json",
+    "original_bytes": 10371,
+    "original_sha256": "a544ca22324f8e9f308cd283a2d4e47902b3f0b5f087098674df3f7d409f3b96",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-008.json",
+    "public_sha256": "bea42ff662bb0173a0194fb0341dd41878b079aec4862d0f1c4346666432a4b3",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-008.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-008.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-008.stdout",
+    "original_bytes": 12575,
+    "original_sha256": "51dcb6fdb11b5924f1585c2588fdeec160b3d42c773e5ad9a8397b66ab921511",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-008.stdout",
+    "public_sha256": "51dcb6fdb11b5924f1585c2588fdeec160b3d42c773e5ad9a8397b66ab921511",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-009.json",
+    "original_bytes": 10387,
+    "original_sha256": "d9482ef60d02ffd7b2fd05aa1e4a13bd8e3d3353518844a3b0a7d8f19ada73fc",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-009.json",
+    "public_sha256": "c3cd2d021649cc45b3f85b34ae692786c67cd40f0fd16991fff89c3179998990",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-009.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-009.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-009.stdout",
+    "original_bytes": 12591,
+    "original_sha256": "bfd8cc417d7bf950beaf1c92a886c795efdffb41ea465a038bae88d8bfc7a1c9",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-009.stdout",
+    "public_sha256": "bfd8cc417d7bf950beaf1c92a886c795efdffb41ea465a038bae88d8bfc7a1c9",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-010.json",
+    "original_bytes": 10198,
+    "original_sha256": "c705e7986240fee83c0713209d427b731a4b3bbb5beeb715ebcbaf22386786ed",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-010.json",
+    "public_sha256": "3a8150783c33891872cb72ee4ceb24f3b7f7d2efd0a04600d0fa487be28354a4",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-010.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-010.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-010.stdout",
+    "original_bytes": 12389,
+    "original_sha256": "91dde319e4ea520e87faabd33da025c3a78424b3ad116fb28b41fd73cb1a746d",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-010.stdout",
+    "public_sha256": "91dde319e4ea520e87faabd33da025c3a78424b3ad116fb28b41fd73cb1a746d",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-011.json",
+    "original_bytes": 10105,
+    "original_sha256": "46a6ce3e1a7bab512b4bcfc6c822f0c9a0c237c9849d46bcbd8d0c493920d501",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-011.json",
+    "public_sha256": "d8ad2ac409dcf71e5f8f2e087eecb1b080b2cbcb478b2976dfaa9a32817922aa",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-011.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-011.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-011.stdout",
+    "original_bytes": 12294,
+    "original_sha256": "2588b9586b931386091e32a61f8eb78f9d407177577bf8afdf4ccf31105e0191",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-011.stdout",
+    "public_sha256": "2588b9586b931386091e32a61f8eb78f9d407177577bf8afdf4ccf31105e0191",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-012.json",
+    "original_bytes": 10310,
+    "original_sha256": "5aab9c4e57fe1b0cf76c9bd906397d3ea02258d96e349defef3ade273dbd024a",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-012.json",
+    "public_sha256": "638bc14bd665f680d67edf8d2a8660e9444c3647561fee126b6e778d82946256",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-012.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-012.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-012.stdout",
+    "original_bytes": 12512,
+    "original_sha256": "f70e0bf3be6578bf9b5fa7212345118f5ed30ca6400f676668e49e8c1869cab0",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-012.stdout",
+    "public_sha256": "f70e0bf3be6578bf9b5fa7212345118f5ed30ca6400f676668e49e8c1869cab0",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-013.json",
+    "original_bytes": 10199,
+    "original_sha256": "1e9fc917c28b4ba6a2b44731982d548c2667a21dc5b4dcb731786559957e09b0",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-013.json",
+    "public_sha256": "3a95725ef0ed2c5ffbb622dc9c55d4f9fb97e723c8cf7043091b3f886814d311",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-013.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-013.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-013.stdout",
+    "original_bytes": 12388,
+    "original_sha256": "410798a26d48f0e3ce709c92cbddc210de71e34538446469a6bda25b54226ee4",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-013.stdout",
+    "public_sha256": "410798a26d48f0e3ce709c92cbddc210de71e34538446469a6bda25b54226ee4",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-014.json",
+    "original_bytes": 10117,
+    "original_sha256": "146abd8643db7296ed9ccd2b0b41a4485903cee3df6566f4683baacb9257d370",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-014.json",
+    "public_sha256": "ef32443120d2ab4cf59409931ccf02bcddb85a4c5d8af36ac747bb7c7370210f",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-014.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-014.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-014.stdout",
+    "original_bytes": 12307,
+    "original_sha256": "ca6017815b99c8a8d0b0698d6448a7b9547ffb677aa0568e6b7f03ac669497c3",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-014.stdout",
+    "public_sha256": "ca6017815b99c8a8d0b0698d6448a7b9547ffb677aa0568e6b7f03ac669497c3",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-015.json",
+    "original_bytes": 10317,
+    "original_sha256": "584ea7f59030e2b1d0aee01499b746822ce23657f94f8ac4205f327174a7518b",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-015.json",
+    "public_sha256": "c51864b5d3722201bb324a8d230606de3043feef9c3af7e4279e869792f58ef0",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-015.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-015.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-015.stdout",
+    "original_bytes": 12505,
+    "original_sha256": "57359f32dbc7ce3742024a697b6201d8d70619a1ab98a2f0fba06e1b52a4990c",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-015.stdout",
+    "public_sha256": "57359f32dbc7ce3742024a697b6201d8d70619a1ab98a2f0fba06e1b52a4990c",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-016.json",
+    "original_bytes": 10185,
+    "original_sha256": "e0f79319c99c6fa6e2ed7481b980c3a4d8d6269601bf3e2048b25dd58a4864eb",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-016.json",
+    "public_sha256": "1b375ad5adcfbe734d76e42ed92edc505fb650b1b2017e69fc7071dc41067b06",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-016.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-016.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-016.stdout",
+    "original_bytes": 12378,
+    "original_sha256": "417b92ac9a462d53bbc23f054a3a9d7edc9750647430f8f6e9a08309c3c99ca5",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-016.stdout",
+    "public_sha256": "417b92ac9a462d53bbc23f054a3a9d7edc9750647430f8f6e9a08309c3c99ca5",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-017.json",
+    "original_bytes": 10391,
+    "original_sha256": "c6161777a191c1ef1c0228e7ee8ffb8adb1190a3784612f3f7642040d5f562c0",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-017.json",
+    "public_sha256": "e7a53d649ae0c1624586939648045d4af3dc35066dc10c3845d3f51cd5be5780",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-017.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-017.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-017.stdout",
+    "original_bytes": 12582,
+    "original_sha256": "0693a65fb73948d74e577a09b2508ba621ece15393e0962af9b9377c12ef9d03",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-017.stdout",
+    "public_sha256": "0693a65fb73948d74e577a09b2508ba621ece15393e0962af9b9377c12ef9d03",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-018.json",
+    "original_bytes": 3747,
+    "original_sha256": "122e226c51f2e74b72c29ea1cecd12776ef4bc892a8be4aba077bd39eb39a8be",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-018.json",
+    "public_sha256": "a470f41b02350eb7060815c7f283fb8c9b3f02231cb52ca6f37d3d0e3e521902",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-018.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-018.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stat-018.stdout",
+    "original_bytes": 3984,
+    "original_sha256": "ac3176652ab3f31bd11a912fbb3951499a17acb24f9524e20a6195061d72530e",
+    "public": "support/nix-preparation-metadata-20261015-v2/stat-018.stdout",
+    "public_sha256": "ac3176652ab3f31bd11a912fbb3951499a17acb24f9524e20a6195061d72530e",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stop.json",
+    "original_bytes": 14,
+    "original_sha256": "ba5906e888adc2bc8d9ff519df92c9b1416aff0db6621746f978bf45514259eb",
+    "public": "support/nix-preparation-metadata-20261015-v2/stop.json",
+    "public_sha256": "ba5906e888adc2bc8d9ff519df92c9b1416aff0db6621746f978bf45514259eb",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stop.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/stop.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/stop.stdout",
+    "original_bytes": 120,
+    "original_sha256": "27a42e41a7fe3dd8b7d372e3842bf9254d5594ac0b0d58608d0ceb2ca64c0a3a",
+    "public": "support/nix-preparation-metadata-20261015-v2/stop.stdout",
+    "public_sha256": "27a42e41a7fe3dd8b7d372e3842bf9254d5594ac0b0d58608d0ceb2ca64c0a3a",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/store-top-names.json",
+    "original_bytes": 680,
+    "original_sha256": "5350c474c53408708f9b2572b47888aad43a0c519cdce1c479d04c6c182a2b15",
+    "public": "support/nix-preparation-metadata-20261015-v2/store-top-names.json",
+    "public_sha256": "b269651fdfe28af778ec27de799cb6f2195099db958db4c37d02344b17cf7ae0",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/store-top-names.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/store-top-names.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/store-top-names.stdout",
+    "original_bytes": 132526,
+    "original_sha256": "90e014fb7a57167a5c399ccc8748056f33f5d116197db36575f5c3eb97c59192",
+    "public": "support/nix-preparation-metadata-20261015-v2/store-top-names.stdout",
+    "public_sha256": "90e014fb7a57167a5c399ccc8748056f33f5d116197db36575f5c3eb97c59192",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/utility-hashes.json",
+    "original_bytes": 1110,
+    "original_sha256": "f786fa18ccbbe50edd73323bc13c176ba01e7a6bf7744a5e79a07fee99012528",
+    "public": "support/nix-preparation-metadata-20261015-v2/utility-hashes.json",
+    "public_sha256": "8f97bb627ffefbfe85c4923bf7747f3182db6c0f7f10eed09050c97d6062b0e5",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/utility-hashes.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-preparation-metadata-20261015-v2/utility-hashes.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-preparation-metadata-20261015-v2/utility-hashes.stdout",
+    "original_bytes": 833,
+    "original_sha256": "363af957e8425e4f49a348da5a7d44d456ac82479007265d2eb7f5293251fc03",
+    "public": "support/nix-preparation-metadata-20261015-v2/utility-hashes.stdout",
+    "public_sha256": "363af957e8425e4f49a348da5a7d44d456ac82479007265d2eb7f5293251fc03",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/RESULTS.json",
+    "original_bytes": 2211,
+    "original_sha256": "f2ce78224d4859e65a12692914fa31eae6f239eb5b5506cbed83613d994fef75",
+    "public": "support/nix-stopped-state-backups-20261015/RESULTS.json",
+    "public_sha256": "f2ce78224d4859e65a12692914fa31eae6f239eb5b5506cbed83613d994fef75",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/after-inspect.json",
+    "original_bytes": 306,
+    "original_sha256": "b558f70fe06cc0b7640c3c1aad7955e50595b1a457d37665bb7c33da8fb0bb73",
+    "public": "support/nix-stopped-state-backups-20261015/after-inspect.json",
+    "public_sha256": "ec08651ffe8d1d8f7408ce628bc9fb28da2695c296f89fb6654660c3eb64c696",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/after-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/after-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/after-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "public": "support/nix-stopped-state-backups-20261015/after-inspect.stdout",
+    "public_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/before-inspect.json",
+    "original_bytes": 307,
+    "original_sha256": "4bf08011c3e069d68dfabdadf943170f361b3592bc6a67a47ca56030c375f020",
+    "public": "support/nix-stopped-state-backups-20261015/before-inspect.json",
+    "public_sha256": "59219bd4d84f77e254d642ffba0e15771886eba86e3d5345f6365f9a8056e764",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/before-inspect.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/before-inspect.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/before-inspect.stdout",
+    "original_bytes": 7575,
+    "original_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "public": "support/nix-stopped-state-backups-20261015/before-inspect.stdout",
+    "public_sha256": "40269bc43d5f7dcc509a573a4409b26d1a20cbbee3632e03fe9e1eea1222c051",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/elpi-lock.json",
+    "original_bytes": 383,
+    "original_sha256": "9058d7606675a4eb4036abea5c7680876713b23cf139a9025a50c3c1ce61a43d",
+    "public": "support/nix-stopped-state-backups-20261015/elpi-lock.json",
+    "public_sha256": "e173d7c59c577e9e1f4cf2d98c7bea50dd5c03c29a5578cb9cd04deca63102d8",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/elpi-lock.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/elpi-lock.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/elpi-lock.stdout",
+    "original_bytes": 1536,
+    "original_sha256": "848e25118beef37a46523a98fb7eea78c114a93564191e1bed17b52688b5e02b",
+    "public": "support/nix-stopped-state-backups-20261015/elpi-lock.stdout.headers.json",
+    "public_sha256": "7320d78da6d15b1dfe3032e0a3ed114917a738b45cd169dcea1f446da66bf169",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/home.json",
+    "original_bytes": 330,
+    "original_sha256": "5d8da7f3a32c5c2292024e2da789c4fc37d5978b976c6808b27d19e36434c941",
+    "public": "support/nix-stopped-state-backups-20261015/home.json",
+    "public_sha256": "ca49a770bc174483334cbe9d8a0ebcb10ed6f25f9f2796ec4a59ce603b282540",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/home.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/home.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/home.stdout",
+    "original_bytes": 6656,
+    "original_sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856",
+    "public": "support/nix-stopped-state-backups-20261015/home.stdout.headers.json",
+    "public_sha256": "ffc86b1273cd07e0d5adb1dd61289230da9835df9cd21af881882dc200e8c068",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/log.json",
+    "original_bytes": 328,
+    "original_sha256": "c284bd1d157ef9f1e84ce7a87f5cfed7b68bdfdc1b887938307aac770064b031",
+    "public": "support/nix-stopped-state-backups-20261015/log.json",
+    "public_sha256": "5b93ee4bfb92c4f7510459b63f4af6bbdafccc2e31c680eaa842fa0e8e00b418",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/log.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/log.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/log.stdout",
+    "original_bytes": 7680,
+    "original_sha256": "12d9d2416e30b3efcf9060f5a6c49674f23d08c3113cb9fd365bd906db296ef2",
+    "public": "support/nix-stopped-state-backups-20261015/log.stdout.headers.json",
+    "public_sha256": "879e5b171dad097f703084a38b8be8dfecbc616af76931d414907b4b82f23bb3",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/rocq-lock.json",
+    "original_bytes": 387,
+    "original_sha256": "466261dcc602c07eaa8d9cd1a030ed6675efb55d11c56be080fd70fd05904980",
+    "public": "support/nix-stopped-state-backups-20261015/rocq-lock.json",
+    "public_sha256": "217c14b3118db99dba99264bd18aa950c0e4a0020d4b4d1ed98e3c8338761186",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/rocq-lock.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/rocq-lock.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/rocq-lock.stdout",
+    "original_bytes": 1536,
+    "original_sha256": "340db0e3ad0afe685574a9ea31d4e6829b01ffd76b4f03036804fe026c69db2c",
+    "public": "support/nix-stopped-state-backups-20261015/rocq-lock.stdout.headers.json",
+    "public_sha256": "e66551c449da7f72661d7ff7856247e5cd210794b62a858e9806ea607f5e8d89",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/setup-lock.json",
+    "original_bytes": 374,
+    "original_sha256": "c6b46b912064245a9868a9af3c0ed44f477fd0d083727c60a65aa44b6980d286",
+    "public": "support/nix-stopped-state-backups-20261015/setup-lock.json",
+    "public_sha256": "0b3928d126462de6d517144fe9274bb6f6438be1f67ce4378c22fe8c717a8515",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/setup-lock.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/setup-lock.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/setup-lock.stdout",
+    "original_bytes": 1536,
+    "original_sha256": "0c7e72896062b5b240e01b82e55937fcf8efd8c102055104774f9e339ada7239",
+    "public": "support/nix-stopped-state-backups-20261015/setup-lock.stdout.headers.json",
+    "public_sha256": "782783cca753fb5a6224c80d2eb012546b15176d90374c94831313e7a185febb",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/state.json",
+    "original_bytes": 327,
+    "original_sha256": "f7a171269496050e4d2b2c88a56801146bd845641613618a450cbff19a3e017f",
+    "public": "support/nix-stopped-state-backups-20261015/state.json",
+    "public_sha256": "2099d8b76dc20660d6041fad74cd703950df36e9a6d486a891705908227d6527",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/state.stderr",
+    "original_bytes": 0,
+    "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public": "support/nix-stopped-state-backups-20261015/state.stderr",
+    "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "transformation": "UTF-8; host Docker executable prefix => <DOCKER_CLI>; host home-directory prefix => <HOST_HOME>/"
+  },
+  {
+    "original": "work/execution/parent/nix-stopped-state-backups-20261015/state.stdout",
+    "original_bytes": 10974720,
+    "original_sha256": "6d18421b8a85dad598206f1b663f675a05a140ade7b2e77d923c3e6bd6fd5f34",
+    "public": "support/nix-stopped-state-backups-20261015/state.stdout.headers.json",
+    "public_sha256": "41952d6d42f05a7d7bc12b6d8f9eb1451d216aed15a9ba1b758c29d1476bd2f4",
+    "transformation": "tar header projection; no payload bytes"
+  },
+  {
+    "original": "work/execution/nix-nonroot-runtime-plan/MINIMAL-OWNERSHIP-DELTA.md",
+    "original_sha256": "03030689a3dcbb7c05e6174bec54b5273dab69f426d02239e3b0dc128be63244",
+    "original_bytes": 9481,
+    "public": "support/proposal/MINIMAL-OWNERSHIP-DELTA.md",
+    "public_sha256": "03030689a3dcbb7c05e6174bec54b5273dab69f426d02239e3b0dc128be63244",
+    "transformation": "none; source-only proposal/identity manifest, not execution evidence"
+  },
+  {
+    "original": "work/execution/nix-nonroot-runtime-plan/stopped-archive-method/METHOD.md",
+    "original_sha256": "8a8a82db5bc7e52854af9040d74a5daecd26e30bd0c95cc250ad9d106bde1111",
+    "original_bytes": 10720,
+    "public": "support/proposal/stopped-archive-method/METHOD.md",
+    "public_sha256": "8a8a82db5bc7e52854af9040d74a5daecd26e30bd0c95cc250ad9d106bde1111",
+    "transformation": "none; source-only proposal/identity manifest, not execution evidence"
+  },
+  {
+    "original": "work/execution/nix-nonroot-runtime-plan/verified-primary-manifest.json",
+    "original_sha256": "bd967022365f7cb35ff3bb5de4259e472c0e91a4603064566243931f93fb48af",
+    "original_bytes": 10286,
+    "public": "support/proposal/verified-primary-manifest.json",
+    "public_sha256": "bd967022365f7cb35ff3bb5de4259e472c0e91a4603064566243931f93fb48af",
+    "transformation": "none; source-only proposal/identity manifest, not execution evidence"
+  },
+  {
+    "original": "work/execution/nix-nonroot-runtime-plan/delta-primary-verified.json",
+    "original_sha256": "a958ca6eda85a757b3090bec410eb40b8e0d94a7326004e1b1cd0a2331a58b6d",
+    "original_bytes": 903,
+    "public": "support/proposal/delta-primary-verified.json",
+    "public_sha256": "a958ca6eda85a757b3090bec410eb40b8e0d94a7326004e1b1cd0a2331a58b6d",
+    "transformation": "none; source-only proposal/identity manifest, not execution evidence"
+  }
+]

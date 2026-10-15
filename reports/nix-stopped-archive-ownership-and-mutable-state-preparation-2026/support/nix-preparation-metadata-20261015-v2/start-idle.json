@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "start",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5"
+  ],
+  "status": 0,
+  "seconds": 0.13907733303494751,
+  "stdout_bytes": 65,
+  "stdout_sha256": "91c94d7fea55afb2f5ee331b72aef89d1fa975c963417bbfb1473bb154a2619e"
+}

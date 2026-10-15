@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<HOST_TOOLS>/docker",
+    "stop",
+    "--time",
+    "5",
+    "47b9311b0cfb478fead61c0dea4c10f41cf6082c3567f3bc889225eb160eb397"
+  ],
+  "status": 0,
+  "seconds": 5.117333833011799,
+  "reason": "download gate stopped before retry: host native-run artifact threshold"
+}

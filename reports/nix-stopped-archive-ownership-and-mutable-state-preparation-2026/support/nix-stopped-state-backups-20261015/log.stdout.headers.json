@@ -1,0 +1,73 @@
+{
+  "original_sha256": "12d9d2416e30b3efcf9060f5a6c49674f23d08c3113cb9fd365bd906db296ef2",
+  "original_bytes": 7680,
+  "members": [
+    {
+      "name": "nix",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078101,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "nix/drvs",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "nix/drvs/bg",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "nix/drvs/bg/cg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv.bz2",
+      "type": "0",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "size": 2803,
+      "mtime": 1792078742,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "nix/drvs/z5",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078101,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "nix/drvs/z5/pir11sfylhnw6gfqdb3dkh3cl63zv5-anneal-owned-offline-sandbox-probe.drv.bz2",
+      "type": "0",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "size": 14,
+      "mtime": 1792078101,
+      "linkname": "",
+      "pax_headers": {}
+    }
+  ],
+  "payloads": "omitted; private archive retained separately"
+}

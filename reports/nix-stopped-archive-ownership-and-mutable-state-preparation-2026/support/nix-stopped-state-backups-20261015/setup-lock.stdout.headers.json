@@ -1,0 +1,18 @@
+{
+  "original_sha256": "0c7e72896062b5b240e01b82e55937fcf8efd8c102055104774f9e339ada7239",
+  "original_bytes": 1536,
+  "members": [
+    {
+      "name": "1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh.lock",
+      "type": "0",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    }
+  ],
+  "payloads": "omitted; private archive retained separately"
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/homeless-shelter",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.043302582926116884,
+  "stdout_bytes": 6656,
+  "stdout_sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856"
+}

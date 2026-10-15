@@ -1,0 +1,8 @@
+{
+  "source": "GitHub primary repository commit API through approved github fetch_commit",
+  "requested": "docker/cli@9d7ad9f",
+  "resolved": "9d7ad9ff180b43ae5577d048a7bac1159ce7bacf",
+  "url": "https://api.github.com/repos/docker/cli/commits/9d7ad9ff180b43ae5577d048a7bac1159ce7bacf",
+  "observation_date": "2026-10-15",
+  "scope": "revision identity only; no source or executable attestation"
+}

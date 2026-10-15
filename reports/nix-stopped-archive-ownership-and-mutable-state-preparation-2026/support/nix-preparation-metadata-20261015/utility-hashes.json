@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "exec",
+    "--user=0:0",
+    "--env",
+    "PATH=/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=2",
+    "30",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sha256sum",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sleep",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/ls",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/stat",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/du",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/timeout",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sha256sum"
+  ],
+  "status": 0,
+  "seconds": 0.08539949997793883,
+  "stdout_bytes": 833,
+  "stdout_sha256": "363af957e8425e4f49a348da5a7d44d456ac82479007265d2eb7f5293251fc03"
+}

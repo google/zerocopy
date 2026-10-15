@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "nix/ownership",
+    "nix/mutable-state",
+    "docker/archive",
+    "linux/capabilities"
+  ],
+  "subjects": [
+    {
+      "name": "Stopped Nix preparation subject",
+      "identity": {
+        "container_id": "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+        "image_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "nix_version": "2.34.8"
+      }
+    },
+    {
+      "name": "Docker CLI implementation inspected",
+      "identity": {
+        "repository": "docker/cli",
+        "revision": "9d7ad9ff180b43ae5577d048a7bac1159ce7bacf"
+      }
+    },
+    {
+      "name": "Docker Engine implementation inspected",
+      "identity": {
+        "repository": "moby/moby",
+        "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7"
+      }
+    },
+    {
+      "name": "Nix implementation used for preparation proposal",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

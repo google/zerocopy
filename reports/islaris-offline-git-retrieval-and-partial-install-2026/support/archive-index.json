@@ -1,0 +1,42 @@
+{
+  "archives": [
+    {
+      "path": "support/download-evidence.tar.gz",
+      "members": 914,
+      "uncompressed_regular_bytes": 47471687,
+      "bytes": 11636875,
+      "sha256": "3dd4c6cf44739320014d510de14f9ce594b6a15f616b87bbbb1cbd8cd758df54"
+    },
+    {
+      "path": "support/transport-evidence.tar.gz",
+      "members": 764,
+      "uncompressed_regular_bytes": 28977995,
+      "bytes": 7297870,
+      "sha256": "68ad67e2e08b3fdf0183448d1844569aff4aff8534f77eeb312381c64d5a8222"
+    },
+    {
+      "path": "support/partial-install-evidence.tar.gz",
+      "members": 24,
+      "uncompressed_regular_bytes": 96589,
+      "bytes": 14099,
+      "sha256": "2e85cc55bd337c12ddb5732824bc02222ad404b0b5c350db9181d68f6ff83f82"
+    },
+    {
+      "path": "support/host-fan-in.tar.gz",
+      "members": 5,
+      "uncompressed_regular_bytes": 34300,
+      "bytes": 5765,
+      "sha256": "986f712ffdcead2ae9bfd910d2c38d1f75af242d79bec3c60341d74e1932ec66"
+    },
+    {
+      "path": "support/independent-review.tar.gz",
+      "members": 10,
+      "uncompressed_regular_bytes": 209953,
+      "bytes": 45802,
+      "sha256": "97875c69baa2a09909ee5cf0e6a1a237cb5b93d93f6d14af5c36575ab60668fa"
+    }
+  ],
+  "original_files_considered": 1735,
+  "retained_members": 1717,
+  "omitted_records": 18
+}

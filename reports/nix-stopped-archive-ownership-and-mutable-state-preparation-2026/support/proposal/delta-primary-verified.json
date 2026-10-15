@@ -1,0 +1,20 @@
+[
+  {
+    "path": "src/libstore/optimise-store.cc",
+    "sha": "7d37dbf9d4a2da943613738ee8b68019055290ed",
+    "url": "https://github.com/NixOS/nix/blob/f3f1c3c5b8ad91850e0f7c590cf177f7ab022024/src/libstore/optimise-store.cc",
+    "commit": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+    "status": "GitHub fetch_file success; blob SHA1 verified",
+    "bytes": 11354,
+    "sha256": "9d17f6a0f48ae95cd178773a90a863c9f59f76f6a604c7c44cfa747108a39bcd"
+  },
+  {
+    "path": "src/libstore/build/worker.cc",
+    "sha": "ffb1027b42c52276d85790a2f89acb6803005807",
+    "url": "https://github.com/NixOS/nix/blob/f3f1c3c5b8ad91850e0f7c590cf177f7ab022024/src/libstore/build/worker.cc",
+    "commit": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+    "status": "GitHub fetch_file success; blob SHA1 verified",
+    "bytes": 19123,
+    "sha256": "54ed472a3a408e333bd1a205a0bce669e3329fdbefd04000abecd47e0cb05912"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "original_sha256": "a13ccf78507f267740df9e85cfa592c04778bb7961395e15c60a9c47bba9a141",
+  "original_bytes": 10240,
+  "members": [
+    {
+      "name": "anneal-ownership-probe-20261015",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o700",
+      "size": 0,
+      "mtime": 1700000000,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "anneal-ownership-probe-20261015/owner-token",
+      "type": "0",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600",
+      "size": 7,
+      "mtime": 1700000000,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "anneal-ownership-probe-20261015/relative-link",
+      "type": "2",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o777",
+      "size": 0,
+      "mtime": 1700000000,
+      "linkname": "owner-token",
+      "pax_headers": {}
+    },
+    {
+      "name": "anneal-ownership-probe-20261015/hardlink-token",
+      "type": "1",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600",
+      "size": 0,
+      "mtime": 1700000000,
+      "linkname": "anneal-ownership-probe-20261015/owner-token",
+      "pax_headers": {}
+    }
+  ],
+  "payloads": "omitted; private archive retained separately"
+}

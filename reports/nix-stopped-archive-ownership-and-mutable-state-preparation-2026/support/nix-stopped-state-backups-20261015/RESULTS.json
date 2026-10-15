@@ -1,0 +1,61 @@
+{
+  "status": "PASS_STOPPED_ARCHIVE_ACQUISITION",
+  "archives": [
+    {
+      "label": "state",
+      "source": "/nix/var/nix",
+      "tar_bytes": 10974720,
+      "tar_sha256": "6d18421b8a85dad598206f1b663f675a05a140ade7b2e77d923c3e6bd6fd5f34",
+      "members": 27,
+      "regular_bytes": 10958666,
+      "pax_keys": []
+    },
+    {
+      "label": "log",
+      "source": "/nix/var/log/nix",
+      "tar_bytes": 7680,
+      "tar_sha256": "12d9d2416e30b3efcf9060f5a6c49674f23d08c3113cb9fd365bd906db296ef2",
+      "members": 6,
+      "regular_bytes": 2817,
+      "pax_keys": []
+    },
+    {
+      "label": "home",
+      "source": "/homeless-shelter",
+      "tar_bytes": 6656,
+      "tar_sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856",
+      "members": 11,
+      "regular_bytes": 0,
+      "pax_keys": []
+    },
+    {
+      "label": "setup-lock",
+      "source": "/nix/store/1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh.lock",
+      "tar_bytes": 1536,
+      "tar_sha256": "0c7e72896062b5b240e01b82e55937fcf8efd8c102055104774f9e339ada7239",
+      "members": 1,
+      "regular_bytes": 0,
+      "pax_keys": []
+    },
+    {
+      "label": "rocq-lock",
+      "source": "/nix/store/hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0.lock",
+      "tar_bytes": 1536,
+      "tar_sha256": "340db0e3ad0afe685574a9ea31d4e6829b01ffd76b4f03036804fe026c69db2c",
+      "members": 1,
+      "regular_bytes": 0,
+      "pax_keys": []
+    },
+    {
+      "label": "elpi-lock",
+      "source": "/nix/store/zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7.lock",
+      "tar_bytes": 1536,
+      "tar_sha256": "848e25118beef37a46523a98fb7eea78c114a93564191e1bed17b52688b5e02b",
+      "members": 1,
+      "regular_bytes": 0,
+      "pax_keys": []
+    }
+  ],
+  "effects": "Only complete stopped archive readbacks and host backup files; no native program/start, Nix, store/state/HOME ownership mutation or build.",
+  "limits": "Archives captured coherently with container stopped. Native inode/nlink/xattr census and cross-archive hardlink reconciliation still required before archive preparation; this is not an assertion of literal inode/ctime rollback. Whole mutable-state archives stay private."
+}

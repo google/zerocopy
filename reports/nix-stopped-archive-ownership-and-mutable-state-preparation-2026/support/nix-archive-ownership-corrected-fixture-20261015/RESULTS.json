@@ -1,0 +1,45 @@
+{
+  "status": "PASS_CORRECTED_ARCHIVE_FIXTURE",
+  "container": "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+  "members": [
+    {
+      "path": "anneal-ownership-probe-20261015",
+      "type": "5",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0o700",
+      "link": "",
+      "size": 0
+    },
+    {
+      "path": "anneal-ownership-probe-20261015/hardlink-token",
+      "type": "0",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0o600",
+      "link": "",
+      "size": 7
+    },
+    {
+      "path": "anneal-ownership-probe-20261015/owner-token",
+      "type": "1",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0o600",
+      "link": "anneal-ownership-probe-20261015/hardlink-token",
+      "size": 0
+    },
+    {
+      "path": "anneal-ownership-probe-20261015/relative-link",
+      "type": "2",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0o777",
+      "link": "owner-token",
+      "size": 0
+    }
+  ],
+  "historical_wrong_UID_rejected": true,
+  "effects": "Only the same four-member /work fixture updated to UID/GID1000; no Nix state/store/HOME/source change, native execution, container start, image operation or build. Original failed evidence preserved.",
+  "scope": "Finite fixture validates this corrected stdin-tar path. Actual Nix preparation needs separate full affected-state backups and exact content/mode/link/ownership checks."
+}

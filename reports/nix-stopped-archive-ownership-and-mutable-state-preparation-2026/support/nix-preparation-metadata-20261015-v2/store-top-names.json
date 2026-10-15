@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "exec",
+    "--user=0:0",
+    "--env",
+    "PATH=/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=2",
+    "30",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/ls",
+    "-A",
+    "--zero",
+    "--",
+    "/nix/store"
+  ],
+  "status": 0,
+  "seconds": 0.14560925005935133,
+  "stdout_bytes": 132526,
+  "stdout_sha256": "90e014fb7a57167a5c399ccc8748056f33f5d116197db36575f5c3eb97c59192"
+}

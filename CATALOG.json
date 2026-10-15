@@ -17253,6 +17253,115 @@
         "sail/proof-bridges"
       ]
     },
+    "islaris-offline-git-retrieval-and-partial-install-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/sail.git",
+            "revision": "b14f649845db850b3673696e2aa90565fa2a60ef"
+          },
+          "name": "Acquired sail_manifest.0.17 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/isla-lang.git",
+            "revision": "bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+          },
+          "name": "Acquired isla-lang.dev source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/stdpp.git",
+            "revision": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+          },
+          "name": "Acquired coq-stdpp.dev.2024-09-10.3.a1a12e00 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/iris.git",
+            "revision": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa"
+          },
+          "name": "Acquired coq-iris.dev.2024-09-10.1.6f24ed4b source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/coq-sail.git",
+            "revision": "169934e27ceafe393ed4d365985f7b12d974d56e"
+          },
+          "name": "Acquired coq-sail.0.17 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+            "revision": "7945a29d1647970709a9b5ad2ffc53c757e130cc"
+          },
+          "name": "Acquired coq-lithium.dev.2024-09-11.0.7945a29d source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/riscv/sail-riscv.git",
+            "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890"
+          },
+          "name": "Acquired coq-sail-riscv.0.5 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/islaris.git",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Acquired islaris.dev source"
+        },
+        {
+          "identity": {
+            "sha256": "8f42016825a9b10fd21802a18c22d37060c95e8c5a1d2be3df5135402c6a494d",
+            "version": "2.1.6 (263921263e1f745613e2882745114b7b08f3608b)"
+          },
+          "name": "Actual opam acquisition executable"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/opam",
+            "revision": "dfbe6a0b3a386376780bf68d35e4ce107072079d"
+          },
+          "name": "Inspected official opam implementation"
+        },
+        {
+          "identity": {
+            "sha256": "54af380ba6ca1b36305358e99427a31ae4b0af5dc5cb6d0198c6f2f16e97651d",
+            "version": "2.39.5"
+          },
+          "name": "Actual Git transport executable"
+        },
+        {
+          "identity": {
+            "image_sha256": "4a38115e6be661e04182a12c41f0e827477cf703b749a097f96344bbd56ef7b6"
+          },
+          "name": "Recovery runtime image"
+        },
+        {
+          "identity": {
+            "artifact": "controller.py",
+            "sha256": "b15143a46bf125d6363bc5c91d1dcdea0893ec0bed2790f88248b7e5030d4065"
+          },
+          "name": "Executed v3 recovery controller"
+        },
+        {
+          "identity": {
+            "artifact": "transport_helpers.py",
+            "sha256": "a9195eb129a734c8a53519832839b1fbfd69d062eb10c8d9778700fc820cbb5f"
+          },
+          "name": "Executed resource helper"
+        }
+      ],
+      "topics": [
+        "islaris",
+        "opam/offline-install",
+        "git/source-cache",
+        "opam/source-acquisition",
+        "experiments/resource-boundaries"
+      ]
+    },
     "jasmin-native-aarch64-evaluation-and-verified-build-inputs-2026": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -22165,6 +22274,46 @@
         "nix/derivations",
         "nix/garbage-collection",
         "nix/profiles"
+      ]
+    },
+    "nix-stopped-archive-ownership-and-mutable-state-preparation-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "container_id": "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+            "image_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+            "nix_version": "2.34.8"
+          },
+          "name": "Stopped Nix preparation subject"
+        },
+        {
+          "identity": {
+            "repository": "docker/cli",
+            "revision": "9d7ad9ff180b43ae5577d048a7bac1159ce7bacf"
+          },
+          "name": "Docker CLI implementation inspected"
+        },
+        {
+          "identity": {
+            "repository": "moby/moby",
+            "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7"
+          },
+          "name": "Docker Engine implementation inspected"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024"
+          },
+          "name": "Nix implementation used for preparation proposal"
+        }
+      ],
+      "topics": [
+        "nix/ownership",
+        "nix/mutable-state",
+        "docker/archive",
+        "linux/capabilities"
       ]
     },
     "open-rust-library-certificate-obligations-cce761ad": {

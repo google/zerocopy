@@ -1,0 +1,110 @@
+{
+  "scope": "All public report files except this manifest; explicit archive projection is described in support/projection-ledger.json.",
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 3313,
+      "sha256": "6c2b00d2a0ef6c4a85b438a3d2f1b0c579bbba576e3bd3a6ea46ad0d2e8c934f"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 19738,
+      "sha256": "5a70c30a4bb3509ba10895cd05e9a7eda6fa05cc1fbbce235e200471ff5472db"
+    },
+    {
+      "path": "support/DOWNLOAD-GATE.json",
+      "bytes": 11918,
+      "sha256": "c475632bef8922d3f80bb254deaa47eb652a44da7c7deaf60740c18c32abd1d8"
+    },
+    {
+      "path": "support/DRY-GATE.json",
+      "bytes": 8119,
+      "sha256": "9817bb09b01829f59df68648fb4cfeb49ca30f94eebdb3ca0eca7d52b0dc1b88"
+    },
+    {
+      "path": "support/FAILURE.json",
+      "bytes": 84,
+      "sha256": "08f9d2a913da14c623b19fc574bb552c744466f2ce79f1fe4c7fe53b4b2439ad"
+    },
+    {
+      "path": "support/FILTER-CONTEXT.json",
+      "bytes": 3297,
+      "sha256": "f138e314c7cf221b085e0af61d56793c22d1dff186001bb0b7b28efb756e9cef"
+    },
+    {
+      "path": "support/GIT-BOOKKEEPING-DELTA.json",
+      "bytes": 6115,
+      "sha256": "30e43d4b33d6235af3682e03817f9ad3a4be8935300dac77956a90d54f23f593"
+    },
+    {
+      "path": "support/GIT-PRIMARY.json",
+      "bytes": 1706,
+      "sha256": "256276a9cd4a9a1950895444f1918104b25ef4c7e3e80f4d304ee696837d5f68"
+    },
+    {
+      "path": "support/PRIMARY.json",
+      "bytes": 3811,
+      "sha256": "9484868aa4304885941399e809407fbe1b2f1b7dc87a5ad64e726f3e14bffc48"
+    },
+    {
+      "path": "support/archive-index.json",
+      "bytes": 1288,
+      "sha256": "75dde906be31aa3db96cf85bfd3ccabfcb96c879768dcfd8c94b52e747830494"
+    },
+    {
+      "path": "support/context.json",
+      "bytes": 6670,
+      "sha256": "039d4747e97d895ff02835fc04fc1615ec0844648033ee2abd1b7d61dfde018e"
+    },
+    {
+      "path": "support/download-evidence.tar.gz",
+      "bytes": 11636875,
+      "sha256": "3dd4c6cf44739320014d510de14f9ce594b6a15f616b87bbbb1cbd8cd758df54"
+    },
+    {
+      "path": "support/fan-in-results.json",
+      "bytes": 8491,
+      "sha256": "dde04fabce8ac574c183101d8dd220b604c2990062f0a0af983036bd16f8fc58"
+    },
+    {
+      "path": "support/host-fan-in.tar.gz",
+      "bytes": 5765,
+      "sha256": "986f712ffdcead2ae9bfd910d2c38d1f75af242d79bec3c60341d74e1932ec66"
+    },
+    {
+      "path": "support/independent-review.tar.gz",
+      "bytes": 45802,
+      "sha256": "97875c69baa2a09909ee5cf0e6a1a237cb5b93d93f6d14af5c36575ab60668fa"
+    },
+    {
+      "path": "support/limit-or-failure-stop.json",
+      "bytes": 286,
+      "sha256": "456d211c167a051c5033e9e6da03fa2cad9ff009cf1140bd45ee808184b242ce"
+    },
+    {
+      "path": "support/partial-install-analysis.json",
+      "bytes": 10262,
+      "sha256": "753da99d181969b5b8cab14eeb08a599507f3463a4dcabec8a5c4452c5c5e355"
+    },
+    {
+      "path": "support/partial-install-evidence.tar.gz",
+      "bytes": 14099,
+      "sha256": "2e85cc55bd337c12ddb5732824bc02222ad404b0b5c350db9181d68f6ff83f82"
+    },
+    {
+      "path": "support/projection-ledger.json",
+      "bytes": 808234,
+      "sha256": "9fe137de646e553d39d5d5ad3bce1f214d7b0a8f04cc81f16de560a6ae75134b"
+    },
+    {
+      "path": "support/transport-evidence.tar.gz",
+      "bytes": 7297870,
+      "sha256": "68ad67e2e08b3fdf0183448d1844569aff4aff8534f77eeb312381c64d5a8222"
+    },
+    {
+      "path": "support/transport-review.json",
+      "bytes": 2356,
+      "sha256": "be257d6cf8b6cf7a2a4329364da6de323428803c6892e8dd983fc47f596ace7c"
+    }
+  ]
+}

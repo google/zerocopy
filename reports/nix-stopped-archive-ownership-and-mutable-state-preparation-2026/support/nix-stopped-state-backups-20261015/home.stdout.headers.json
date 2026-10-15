@@ -1,0 +1,128 @@
+{
+  "original_sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856",
+  "original_bytes": 6656,
+  "members": [
+    {
+      "name": "homeless-shelter",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/files",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/files/v4",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/meta",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/meta/v5",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/temp",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/values",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    },
+    {
+      "name": "homeless-shelter/.cache/dune/db/values/v3",
+      "type": "5",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o755",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    }
+  ],
+  "payloads": "omitted; private archive retained separately"
+}

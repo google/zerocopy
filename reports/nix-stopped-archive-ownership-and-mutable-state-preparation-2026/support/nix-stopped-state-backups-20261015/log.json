@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/nix/var/log/nix",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.04087887506466359,
+  "stdout_bytes": 7680,
+  "stdout_sha256": "12d9d2416e30b3efcf9060f5a6c49674f23d08c3113cb9fd365bd906db296ef2"
+}

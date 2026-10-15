@@ -1,0 +1,357 @@
+{
+  "status": 40,
+  "native_json_sha256": "2892f00b6a3003f4fdad39cd23e965ec92af12ed1079e9f9e4d83417b357fb0b",
+  "duplicate_keys": [
+    {
+      "key": "command-line",
+      "identical": true
+    }
+  ],
+  "solution_count": 74,
+  "roots_count": 35,
+  "successful_install_actions": [
+    {
+      "name": "base-threads",
+      "version": "base"
+    },
+    {
+      "name": "conf-findutils",
+      "version": "1"
+    },
+    {
+      "name": "base-unix",
+      "version": "base"
+    },
+    {
+      "name": "conf-pkg-config",
+      "version": "5"
+    },
+    {
+      "name": "base-bigarray",
+      "version": "base"
+    },
+    {
+      "name": "conf-gmp",
+      "version": "5"
+    },
+    {
+      "name": "conf-linux-libc-dev",
+      "version": "0"
+    },
+    {
+      "name": "ocaml-option-flambda",
+      "version": "1"
+    },
+    {
+      "name": "conf-zlib",
+      "version": "1"
+    },
+    {
+      "name": "ocaml-variants",
+      "version": "4.14.0+options"
+    },
+    {
+      "name": "ocaml-config",
+      "version": "2"
+    },
+    {
+      "name": "ocaml",
+      "version": "4.14.0"
+    },
+    {
+      "name": "ocamlfind",
+      "version": "1.9.8"
+    },
+    {
+      "name": "ocamlbuild",
+      "version": "0.16.1"
+    },
+    {
+      "name": "num",
+      "version": "1.6"
+    },
+    {
+      "name": "dune",
+      "version": "3.9.1"
+    },
+    {
+      "name": "cmdliner",
+      "version": "1.3.0"
+    },
+    {
+      "name": "zarith",
+      "version": "1.14"
+    },
+    {
+      "name": "base-bytes",
+      "version": "base"
+    },
+    {
+      "name": "yojson",
+      "version": "3.0.0"
+    },
+    {
+      "name": "stdlib-shims",
+      "version": "0.3.0"
+    },
+    {
+      "name": "sexplib0",
+      "version": "v0.16.0"
+    },
+    {
+      "name": "ppx_derivers",
+      "version": "1.2.1"
+    },
+    {
+      "name": "pprint",
+      "version": "20230830"
+    },
+    {
+      "name": "pp",
+      "version": "2.0.0"
+    },
+    {
+      "name": "ordering",
+      "version": "3.9.1"
+    },
+    {
+      "name": "ocamlgraph",
+      "version": "2.2.0"
+    },
+    {
+      "name": "ocaml-compiler-libs",
+      "version": "v0.12.4"
+    },
+    {
+      "name": "menhirSdk",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirLib",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirGLR",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirCST",
+      "version": "20260209"
+    },
+    {
+      "name": "linenoise",
+      "version": "1.5.1"
+    },
+    {
+      "name": "csexp",
+      "version": "1.5.2"
+    },
+    {
+      "name": "base64",
+      "version": "3.5.2"
+    },
+    {
+      "name": "lem",
+      "version": "2026-05-01"
+    },
+    {
+      "name": "coq-core",
+      "version": "8.19.0"
+    },
+    {
+      "name": "omd",
+      "version": "1.3.2"
+    },
+    {
+      "name": "integers",
+      "version": "0.8.0"
+    },
+    {
+      "name": "dyn",
+      "version": "3.9.1"
+    },
+    {
+      "name": "ott",
+      "version": "0.34"
+    },
+    {
+      "name": "ppxlib",
+      "version": "0.35.0"
+    },
+    {
+      "name": "menhir",
+      "version": "20260209"
+    },
+    {
+      "name": "linksem",
+      "version": "0.8"
+    },
+    {
+      "name": "coqide-server",
+      "version": "8.19.0"
+    },
+    {
+      "name": "coq-stdlib",
+      "version": "8.19.0"
+    },
+    {
+      "name": "stdune",
+      "version": "3.9.1"
+    },
+    {
+      "name": "bisect_ppx",
+      "version": "2.8.3"
+    },
+    {
+      "name": "coq",
+      "version": "8.19.0"
+    },
+    {
+      "name": "dune-private-libs",
+      "version": "3.9.1"
+    },
+    {
+      "name": "coq-record-update",
+      "version": "0.3.3"
+    },
+    {
+      "name": "coq-bbv",
+      "version": "1.5"
+    },
+    {
+      "name": "dune-site",
+      "version": "3.9.1"
+    }
+  ],
+  "successful_install_count": 53,
+  "download_failures": {
+    "coq-iris.dev.2024-09-10.1.6f24ed4b": "git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "coq-lithium.dev.2024-09-11.0.7945a29d": "git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc",
+    "coq-sail.0.17": "git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e",
+    "coq-sail-riscv.0.5": "git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "coq-stdpp.dev.2024-09-10.3.a1a12e00": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "isla-lang.dev": "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+    "islaris.dev": "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "libsail.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_c_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_coq_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_doc_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_latex_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_lem_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_manifest.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_ocaml_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_output.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_smt_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+    "sail_sv_backend.0.17": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+  },
+  "download_failure_count": 21,
+  "all_failed_packages_are_explicit_roots": true,
+  "successful_plus_failed_equals_exact_solution": true,
+  "failed_artifacts": [
+    {
+      "artifact": "A17",
+      "declared_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+      "transport_base_url": "https://github.com/rems-project/sail.git",
+      "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+      "consumers": [
+        "libsail.0.17",
+        "sail.0.17",
+        "sail_c_backend.0.17",
+        "sail_coq_backend.0.17",
+        "sail_doc_backend.0.17",
+        "sail_latex_backend.0.17",
+        "sail_lem_backend.0.17",
+        "sail_manifest.0.17",
+        "sail_ocaml_backend.0.17",
+        "sail_output.0.17",
+        "sail_smt_backend.0.17",
+        "sail_sv_backend.0.17"
+      ],
+      "fetch_failures": 12
+    },
+    {
+      "artifact": "A35",
+      "declared_url": "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "transport_base_url": "https://github.com/rems-project/isla-lang.git",
+      "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "consumers": [
+        "isla-lang.dev"
+      ],
+      "fetch_failures": 1
+    },
+    {
+      "artifact": "A36",
+      "declared_url": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "transport_base_url": "https://gitlab.mpi-sws.org/iris/stdpp.git",
+      "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "consumers": [
+        "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+        "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+        "coq-stdpp.dev.2024-09-10.3.a1a12e00"
+      ],
+      "fetch_failures": 3
+    },
+    {
+      "artifact": "A39",
+      "declared_url": "git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "transport_base_url": "https://gitlab.mpi-sws.org/iris/iris.git",
+      "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "consumers": [
+        "coq-iris.dev.2024-09-10.1.6f24ed4b"
+      ],
+      "fetch_failures": 1
+    },
+    {
+      "artifact": "A40",
+      "declared_url": "git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e",
+      "transport_base_url": "https://github.com/rems-project/coq-sail.git",
+      "commit": "169934e27ceafe393ed4d365985f7b12d974d56e",
+      "consumers": [
+        "coq-sail.0.17"
+      ],
+      "fetch_failures": 1
+    },
+    {
+      "artifact": "A41",
+      "declared_url": "git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "transport_base_url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+      "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "consumers": [
+        "coq-lithium.dev.2024-09-11.0.7945a29d"
+      ],
+      "fetch_failures": 1
+    },
+    {
+      "artifact": "A42",
+      "declared_url": "git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890",
+      "transport_base_url": "https://github.com/riscv/sail-riscv.git",
+      "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+      "consumers": [
+        "coq-sail-riscv.0.5"
+      ],
+      "fetch_failures": 1
+    },
+    {
+      "artifact": "A43",
+      "declared_url": "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "transport_base_url": "https://github.com/rems-project/islaris.git",
+      "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "consumers": [
+        "islaris.dev"
+      ],
+      "fetch_failures": 1
+    }
+  ],
+  "scope": "Actual JSON install-action OK records, not an independent opam installed-state observation or theorem result",
+  "phase_seconds": 771.3017104159808,
+  "elapsed_seconds": 760.2379227499478,
+  "final": {
+    "running": false,
+    "oom_killed": false,
+    "size_rw": 7450951680,
+    "host_free": 36256595968
+  }
+}
