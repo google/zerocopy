@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Specs
 public import TraitLaws
+public import RustRealizability
 @[expose] public section
 
 /-!
@@ -50,15 +51,15 @@ namespace Zerocopy.Proofs
 -- library decoder's (possibly smaller) admission domain.
 @[instance] theorem Bool.Insts.ZerocopyIntoBytes_law :
     TraitLaws.into_bytes_initialized Bool Zerocopy.Bool.Insts.ZerocopyIntoBytes :=
-  ⟨Rust.Storage.boolDecoder_initialized⟩
+  ⟨⟨Rust.Storage.boolDecoder_initialized, realizableBool⟩⟩
 
 @[instance] theorem U8.Insts.ZerocopyIntoBytes_law :
     TraitLaws.into_bytes_initialized U8 Zerocopy.U8.Insts.ZerocopyIntoBytes :=
-  ⟨initializedUScalar .U8⟩
+  ⟨⟨initializedUScalar .U8, realizableUScalar .U8⟩⟩
 
 @[instance] theorem Tuple.Insts.ZerocopyIntoBytes_law :
     TraitLaws.into_bytes_initialized Unit Zerocopy.Tuple.Insts.ZerocopyIntoBytes :=
-  ⟨Rust.Storage.unitDecoder_initialized⟩
+  ⟨⟨Rust.Storage.unitDecoder_initialized, realizableUnit⟩⟩
 
 -- The original type, const length, and computational dictionary remain the
 -- native implementation's prefix. Only the element's provider and law are
@@ -68,7 +69,10 @@ namespace Zerocopy.Proofs
     [meaning : RustModel T] [law : TraitLaws.into_bytes_initialized T dictionary] :
     TraitLaws.into_bytes_initialized (Aeneas.Std.Array T N)
       (Zerocopy.Array.Insts.ZerocopyIntoBytes N dictionary) :=
-  ⟨RustModel.initialized_array T N (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law)⟩
+  ⟨⟨RustModel.initialized_array T N
+      (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).1,
+    RustModel.realizable_array T N
+      (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).2⟩⟩
 
 -- Calling the real Rust helper selects the existing unsafe impls in Charon.
 -- The generic impl law proves all lengths; these concrete cases additionally
@@ -79,20 +83,20 @@ theorem array_into_bytes_spec : Specs.array_into_bytes_spec := by
   refine ⟨(), rfl, ?_, ?_, ?_, ?_, ?_⟩
   · exact (@TraitLaws.into_bytes_initialized.holds _
       (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes)
-      _ inferInstance)
+      _ inferInstance).1
   · exact (@TraitLaws.into_bytes_initialized.holds _
       (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.U8.Insts.ZerocopyIntoBytes)
-      _ inferInstance)
+      _ inferInstance).1
   · exact (@TraitLaws.into_bytes_initialized.holds _
       (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Tuple.Insts.ZerocopyIntoBytes)
-      _ inferInstance)
+      _ inferInstance).1
   · exact (@TraitLaws.into_bytes_initialized.holds _
       (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes)
-      _ inferInstance)
+      _ inferInstance).1
   · exact (@TraitLaws.into_bytes_initialized.holds _
       (Zerocopy.Array.Insts.ZerocopyIntoBytes _
         (Zerocopy.Array.Insts.ZerocopyIntoBytes _ Zerocopy.Bool.Insts.ZerocopyIntoBytes))
-      _ inferInstance)
+      _ inferInstance).1
 
 theorem unaligned_alignment_spec : Specs.unaligned_alignment_spec := by
   intro T dictionary _ law
