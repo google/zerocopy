@@ -29,7 +29,7 @@ import time
 FAMILIES = ('producers', 'authoring', 'trait-rounding', 'unsafe', 'coverage', 'abi',
             'contracts', 'dependencies', 'admission', 'semantics', 'owned-std')
 MODELS = ('golden-verification', 'verification')
-FIXTURES = ('StdTransmuteAuditProbe.lean', 'NegativeControl.lean', 'WeakOutcome.lean',
+FIXTURES = ('StdTransmuteAuditProbe.lean', 'ZeroedAuditProbe.lean', 'NegativeControl.lean', 'WeakOutcome.lean',
             'RoundingConstructorControl.lean', 'RoundingDomainControl.lean',
             'Zerocopy/ScopeControl.lean', 'Zerocopy/ShapeControl.lean',
             'Zerocopy/ModelControl.lean', 'Proofs/WitnessOwnerControl.lean',
