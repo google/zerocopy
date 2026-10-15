@@ -246,7 +246,7 @@ structure TryFromBytes (Self : Type) where
     pointer.invariant.Initialized → Result Bool
 
 /-- Trait declaration: [zerocopy::FromZeros]
-    Source: 'src/lib.rs', lines 3708:0-4070:1
+    Source: 'src/lib.rs', lines 3708:0-4074:1
     Visibility: public -/
 structure FromZeros (Self : Type) where
   TryFromBytesInst : TryFromBytes Self
@@ -254,14 +254,14 @@ structure FromZeros (Self : Type) where
   new_zeroed : Result Self
 
 /-- Trait declaration: [zerocopy::FromBytes]
-    Source: 'src/lib.rs', lines 4298:0-5710:1
+    Source: 'src/lib.rs', lines 4302:0-5714:1
     Visibility: public -/
 structure FromBytes (Self : Type) where
   FromZerosInst : FromZeros Self
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 5949:0-6454:1
+    Source: 'src/lib.rs', lines 5953:0-6458:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit

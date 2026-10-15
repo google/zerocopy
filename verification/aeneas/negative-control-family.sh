@@ -24,7 +24,7 @@ echo "Testing failure controls in $1"
 # suite starts and is removed on exit. Use the same roster for both decisions
 # so cleanup cannot delete a source that belonged to an earlier editor session.
 control_files=(
-    StdTransmuteAuditProbe.lean NegativeControl.lean WeakOutcome.lean
+    StdTransmuteAuditProbe.lean ZeroedAuditProbe.lean NegativeControl.lean WeakOutcome.lean
     RoundingConstructorControl.lean RoundingDomainControl.lean
     Zerocopy/ScopeControl.lean Zerocopy/ShapeControl.lean Zerocopy/ModelControl.lean
     Proofs/WitnessOwnerControl.lean Proofs/PaddingDependencyControl.lean
@@ -310,6 +310,12 @@ restore_build() {
 }
 
 if [[ $AENEAS_CONTROL_FAMILY == unsafe ]]; then
+# Exercise the new constructor's execution guard and exact retained decoder,
+# separately from its proof on valid inputs and its enclosing trait premise.
+if has_model FromZeros.new_zeroed.default; then
+    python3 -B "$repo/verification/aeneas/tests/zeroed_audit_controls.py" \
+        --work "$PWD" --runtime "$tools_dir" --evidence "$backup/zeroed"
+fi
 # Successful-input proofs cannot detect changing UB into an ordinary panic.
 # Check the independent primitive interpretation, then directly compile the
 # rejection examples so --old cannot replay a test from the unchanged model.
