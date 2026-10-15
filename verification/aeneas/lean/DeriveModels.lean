@@ -509,8 +509,13 @@ private meta def deriveProvider (raw : Name) (count : Nat)
                   (ty.getAppArgs.map some))
             mkLambdaFVars #[value] (mkAppN ctor values)
           mkAppOptM ``wrapperRepresentation #[some fieldTy, some rawTy, some child, some wrap]
+    -- Constructor application does not insert the defaults used by structure
+    -- syntax. Supply the empty preference explicitly so generated providers
+    -- contain no unresolved choice metavariable.
+    let choice := mkLambda `_raw .default rawTy
+      (mkApp (mkConst ``List.nil [.zero]) (mkConst ``Rust.Storage.AMByte))
     let provider ← mkAppOptM ``RustModel.mk #[some rawTy, some modelTy,
-      some (mkAppN (mkConst b.decoder levels) all), some representation]
+      some (mkAppN (mkConst b.decoder levels) all), some representation, some choice]
     addDefinition b.provider info.levelParams (← mkLambdaFVars all provider)
   setReducibilityStatus b.provider .reducible
   addInstance b.provider .global 1000

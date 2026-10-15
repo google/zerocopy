@@ -28,6 +28,7 @@ trait_dictionary @Zerocopy.FromBytes
 trait_dictionary @Zerocopy.IntoBytes
 trait_dictionary @Zerocopy.Unaligned
 trait_dictionary @Zerocopy.trait_checks.ByteCodec
+trait_dictionary @Zerocopy.util.macro_util.transmute_copy.StaticAssert
 trait_invariant from_zeros_valid for @Zerocopy.FromZeros with 1 type parameters where self =>
   AeneasSpecs.RustModel.zeroRepresentation Self
 

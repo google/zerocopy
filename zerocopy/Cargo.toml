@@ -57,6 +57,13 @@ exclude = [".*"]
 # `stdarch_x86_avx512` feature).
 no-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
 
+# From 1.83.0, const functions may borrow values with interior mutability.
+# The generic source of our `transmute_copy` helper may have interior mutability:
+# `IntoBytes` guarantees initialization, but does not require `Immutable`. The
+# helper therefore needs `const_refs_to_cell`, even though the standard-library
+# `transmute_copy` operation has been const since 1.74.0.
+no-zerocopy-const-refs-to-cell-1-83-0 = "1.83.0"
+
 # From 1.81.0, Rust supports the `core::error::Error` trait.
 no-zerocopy-core-error-1-81-0 = "1.81.0"
 

@@ -14,13 +14,13 @@ help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:871:14
+   --> src/util/macro_util.rs:936:14
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
 ...
-871 |         Dst: TryFromBytes + IntoBytes,
+936 |         Dst: TryFromBytes + IntoBytes,
     |              ^^^^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: the full name for the type has been written to '/long-type-HASH.txt'
     = note: consider using `--verbose` to print the full type name to the console
@@ -42,13 +42,13 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:871:29
+   --> src/util/macro_util.rs:936:29
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
 ...
-871 |         Dst: TryFromBytes + IntoBytes,
+936 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -139,13 +139,13 @@ help: the trait `FromBytes` is not implemented for `SrcA`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:870:14
+   --> src/util/macro_util.rs:935:14
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-869 |     where
-870 |         Src: FromBytes + IntoBytes,
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+934 |     where
+935 |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -165,13 +165,13 @@ help: the trait `IntoBytes` is not implemented for `DstA`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:871:29
+   --> src/util/macro_util.rs:936:29
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
 ...
-871 |         Dst: TryFromBytes + IntoBytes,
+936 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -191,13 +191,13 @@ help: the trait `IntoBytes` is not implemented for `SrcB`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:870:26
+   --> src/util/macro_util.rs:935:26
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-869 |     where
-870 |         Src: FromBytes + IntoBytes,
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+934 |     where
+935 |         Src: FromBytes + IntoBytes,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -217,13 +217,13 @@ help: the trait `IntoBytes` is not implemented for `DstB`
               $IMPLEMENTATION_SAMPLES
             and $OTHER_TYPES others
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
-   --> src/util/macro_util.rs:871:29
+   --> src/util/macro_util.rs:936:29
     |
-834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+899 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
 ...
-868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+933 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
 ...
-871 |         Dst: TryFromBytes + IntoBytes,
+936 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 

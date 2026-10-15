@@ -786,6 +786,24 @@ spec arithmetic_checks_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.arithmetic_checks_spec for Zerocopy.util.checks.check_arithmetic with 2
 
+check_model_inputs Zerocopy.util.generic_transmute.transmute_copy_caller with 2 type parameters
+aeneas_spec_begin
+spec transmute_copy_caller_spec
+  for @Zerocopy.util.generic_transmute.transmute_copy_caller with 2 type parameters
+  requires(raw) same_size : AeneasSpecs.RustModel.sameSize Src Dst
+  ensures(raw) result => AeneasSpecs.RustModel.byteCast src result
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.transmute_copy_caller_spec for Zerocopy.util.generic_transmute.transmute_copy_caller with 5
+
+check_model_inputs Zerocopy.util.macro_util.transmute_copy with 2 type parameters
+aeneas_spec_begin
+spec transmute_copy_spec
+  for @Zerocopy.util.macro_util.transmute_copy with 2 type parameters
+  requires(raw) same_size : AeneasSpecs.RustModel.sameSize Src Dst
+  ensures(raw) result => AeneasSpecs.RustModel.byteCast src result
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.transmute_copy_spec for Zerocopy.util.macro_util.transmute_copy with 5
+
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin
 spec padding_lt_alignment

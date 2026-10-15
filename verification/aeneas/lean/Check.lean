@@ -8,6 +8,7 @@ those terms. -/
 
 import Required
 import ZeroedAudit
+import NativeProviderAudit
 open Lean Elab Command
 
 /-!
@@ -434,6 +435,7 @@ run_elab do
         throwError "Execution admission roots disagree with the function binding table"
   auditStdTransmute bindings
   auditZeroed bindings
+  auditNativeProviders bindings
   let some typesModule := env.getModuleIdx? `Zerocopy.Types
     | throwError "Raw extracted types must be imported"
   let some shapesModule := env.getModuleIdx? `ModelShapes
