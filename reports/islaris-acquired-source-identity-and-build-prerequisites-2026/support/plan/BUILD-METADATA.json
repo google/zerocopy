@@ -1,0 +1,609 @@
+[
+  {
+    "package": "conf-pkg-config.5",
+    "exact_root": false,
+    "metadata_sha256": "22d7749f8159cf3890aca86542453c21f8b4bb77d82263b16881b34f8dfeaf03",
+    "fields": {
+      "build": "build: [\n  [\"pkg-config\" \"--help\"]\n    {os != \"win32\" & !(os = \"macos\" & os-distribution = \"homebrew\")}\n  [\"pkgconf\" \"--version\"]\n    {os = \"win32\" & os-distribution != \"msys2\" |\n     os = \"macos\" & os-distribution = \"homebrew\"}\n  [\n    \"sh\"\n    \"./write-config.sh\"\n    name\n    \"-v\"\n    \"command:list\"\n    \"EOL\"\n    \"pkg-config\"\n      {os != \"win32\" & !(os = \"macos\" & os-distribution = \"homebrew\")}\n    \"pkgconf\"\n      {os = \"win32\" & os-distribution != \"msys2\" |\n       os = \"macos\" & os-distribution = \"homebrew\"}\n    \"i686-w64-mingw32-pkgconf\"\n      {os = \"win32\" & os-distribution = \"msys2\" & host-arch-x86_32:installed}\n    \"--personality=i686-w64-mingw32\"\n      {os = \"win32\" & os-distribution = \"cygwin\" & host-arch-x86_32:installed}\n    \"x86_64-w64-mingw32-pkgconf\"\n      {os = \"win32\" & os-distribution = \"msys2\" & host-arch-x86_64:installed}\n    \"--personality=x86_64-w64-mingw32\"\n      {os = \"win32\" & os-distribution = \"cygwin\" & host-arch-x86_64:installed}\n    \"EOL\"\n  ]\n  [\"sh\" \"./install-shim.sh\" name \"pkgconf\" bin]\n    {os = \"win32\" & os-distribution = \"cygwin\"}\n]",
+      "depexts": "depexts: [\n  [\"pkg-config\"] {os-family = \"debian\" | os-family = \"ubuntu\"}\n  [\"pkgconf\"] {os-distribution = \"arch\"}\n  [\"pkgconf-pkg-config\"] {os-family = \"fedora\"}\n  [\"pkgconfig\"] {os-distribution = \"centos\" & os-version <= \"7\"}\n  [\"pkgconf-pkg-config\"] {os-distribution = \"mageia\"}\n  [\"pkgconfig\"] {os-distribution = \"rhel\" & os-version <= \"7\"}\n  [\"pkgconfig\"] {os-distribution = \"ol\" & os-version <= \"7\"}\n  [\"pkgconf\"] {os-distribution = \"alpine\"}\n  [\"pkg-config\"] {os-distribution = \"nixos\"}\n  [\"pkgconf\"] {os = \"macos\" & os-distribution = \"homebrew\"}\n  [\"pkgconfig\"] {os = \"macos\" & os-distribution = \"macports\"}\n  [\"pkgconf\"] {os = \"freebsd\"}\n  [\"pkgconf-pkg-config\"] {os-distribution = \"rhel\" & os-version >= \"8\"}\n  [\"pkgconf-pkg-config\"] {os-distribution = \"centos\" & os-version >= \"8\"}\n  [\"pkgconf-pkg-config\"] {os-distribution = \"ol\" & os-version >= \"8\"}\n  [\"system:pkgconf\"] {os = \"win32\" & os-distribution = \"cygwinports\"}\n  [\"pkgconf\"] {os-distribution = \"cygwin\"}\n]"
+    }
+  },
+  {
+    "package": "base-threads.base",
+    "exact_root": false,
+    "metadata_sha256": "0a5b0ca49ac7c9323e3a8d13475c7ff599657c823f212ab918ca6e861109bdc8",
+    "fields": {}
+  },
+  {
+    "package": "conf-findutils.1",
+    "exact_root": false,
+    "metadata_sha256": "bca912244ed20a5398e3b194b3a73b412c8fc0de42fe6024c45b3f881e6857c6",
+    "fields": {
+      "build": "build: [\"sh\" \"-exc\" \"find . -name .\"]",
+      "depexts": "depexts: [\n  [\"findutils\"] {os-family = \"debian\"}\n  [\"findutils\"] {os-family = \"ubuntu\"}\n  [\"findutils\"] {os-family = \"fedora\"}\n  [\"findutils\"] {os-distribution = \"rhel\"}\n  [\"findutils\"] {os-distribution = \"centos\"}\n  [\"findutils\"] {os-distribution = \"alpine\"}\n  [\"findutils\"] {os-distribution = \"nixos\"}\n  [\"findutils\"] {os-family = \"suse\" | os-family = \"opensuse\"}\n  [\"findutils\"] {os-distribution = \"ol\"}\n  [\"findutils\"] {os-distribution = \"arch\"}\n  [\"system:findutils\"] {os = \"win32\" & os-distribution = \"cygwinports\"}\n  [\"findutils\"] {os-distribution = \"cygwin\"}\n  [\"findutils\"] {os-distribution = \"msys2\"}\n]"
+    }
+  },
+  {
+    "package": "base-unix.base",
+    "exact_root": false,
+    "metadata_sha256": "d9be5574ae09e7711bccd09fcbed23e2e579879d1d9b223b529ffd79aad126e7",
+    "fields": {}
+  },
+  {
+    "package": "base-bigarray.base",
+    "exact_root": false,
+    "metadata_sha256": "d89c794cf4f46430b74478beb512c095728d0c50e2c52cd16a296b7bc5296e02",
+    "fields": {}
+  },
+  {
+    "package": "ocaml-option-flambda.1",
+    "exact_root": true,
+    "metadata_sha256": "0225d9e738a95a20f3f211506ad7e2ff82837333ecbbcfd9fb1f7fae7cd3dfb5",
+    "fields": {}
+  },
+  {
+    "package": "conf-gmp.5",
+    "exact_root": false,
+    "metadata_sha256": "fa5a99aed98bc2fac1bfcc6faaeeb2dcf1ddc6f69288db82b46f5e55c72ab133",
+    "fields": {
+      "build": "build: [\n  [\n    \"sh\"\n    \"-c\"\n    \"pkg-config --print-errors --exists gmp || cc -c $CFLAGS -I/usr/local/include test.c\"\n  ] {os != \"win32\"}\n  [\n    \"sh\"\n    \"-exc\"\n    \"$(ocamlc -config-var c_compiler) -c $CFLAGS -I/usr/local/include test.c\"\n  ] {os = \"win32\" & os-distribution = \"cygwinports\"}\n  [\n    \"sh\"\n    \"-exc\"\n    \"%{host-arch-x86_64:installed?x86_64:}%%{host-arch-x86_32:installed?i686:}%-w64-mingw32-gcc -c $CFLAGS test.c\"\n  ] {os = \"win32\" & os-distribution != \"cygwinports\"}\n]",
+      "depexts": "depexts: [\n  [\"libgmp-dev\"] {os-family = \"debian\"}\n  [\"libgmp-dev\"] {os-family = \"ubuntu\"}\n  [\"gmp\"] {os = \"macos\" & os-distribution = \"homebrew\"}\n  [\"gmp\"] {os-distribution = \"macports\" & os = \"macos\"}\n  [\"gmp\" \"gmp-devel\"] {os-distribution = \"centos\"}\n  [\"gmp\" \"gmp-devel\"] {os-family = \"fedora\" | os-family = \"fedora\"}\n  [\"gmp\" \"gmp-devel\"] {os-distribution = \"ol\"}\n  [\"gmp\"] {os = \"openbsd\"}\n  [\"gmp\"] {os = \"freebsd\"}\n  [\"gmp\"] {os-distribution = \"arch\"}\n  [\"gmp-dev\"] {os-distribution = \"alpine\"}\n  [\"gmp-devel\"] {os-family = \"suse\" | os-family = \"opensuse\"}\n  [\"gmp\"] {os = \"win32\" & os-distribution = \"cygwinports\"}\n  [\"gmp\"] {os-distribution = \"nixos\"}\n  [\"libgmp-devel\"] {os-family = \"altlinux\"}\n]"
+    }
+  },
+  {
+    "package": "conf-linux-libc-dev.0",
+    "exact_root": false,
+    "metadata_sha256": "8eb737b9314a1e16ce2bdb18063cb105c2fb8a61086a88a1c282706ed11357a9",
+    "fields": {
+      "build": "build: [\n  [\"sh\" \"-exc\" \"echo '#include <linux/stddef.h>' > test.c\"]\n  [\"cc\" \"-E\" \"test.c\"]\n]",
+      "depexts": "depexts: [\n  [\"linux-libc-dev\"] {os-family = \"debian\"}\n  [\"linux-libc-dev\"] {os-family = \"ubuntu\"}\n  [\"linux-glibc-devel\"] {os-family = \"suse\" | os-family = \"opensuse\"}\n  [\"kernel-headers\"]\n    {os-family = \"fedora\" | os-distribution = \"rhel\" |\n     os-distribution = \"centos\" |\n     os-distribution = \"ol\"}\n  [\"linux-headers\"] {os-family = \"alpine\"}\n  [\"linux-api-headers\"] {os-family = \"arch\"}\n]"
+    }
+  },
+  {
+    "package": "conf-zlib.1",
+    "exact_root": false,
+    "metadata_sha256": "19f9b304630407c21c15d3f6c48f2b5120536cdaed3c22048b690452910430ae",
+    "fields": {
+      "build": "build: [\n  \"pkgconf\" {os = \"win32\" & os-distribution != \"cygwinports\"}\n  \"pkg-config\" {os != \"win32\" | os-distribution = \"cygwinports\"}\n  \"--personality=i686-w64-mingw32\"\n    {os = \"win32\" & os-distribution != \"cygwinports\" &\n     host-arch-x86_32:installed}\n  \"--personality=x86_64-w64-mingw32\"\n    {os = \"win32\" & os-distribution != \"cygwinports\" &\n     host-arch-x86_64:installed}\n  \"zlib\"\n]",
+      "depexts": "depexts: [\n  [\"zlib-dev\"] {os-distribution = \"alpine\"}\n  [\"zlib1g-dev\"] {os-family = \"debian\"}\n  [\"zlib1g-dev\"] {os-family = \"ubuntu\"}\n  [\"zlib-devel\" \"zlib-static\"]\n    {os-distribution = \"centos\" & os-version < \"10\"}\n  [\"zlib-ng-compat-devel\" \"zlib-ng-compat-static\"]\n    {os-distribution = \"centos\" & os-version >= \"10\"}\n  [\"zlib-devel\"] {os-family = \"fedora\" & os-version < \"40\"}\n  [\"zlib-ng-compat-devel\" \"zlib-ng-compat-static\"]\n    {os-family = \"fedora\" & os-version >= \"40\"}\n  [\"zlib-devel\"] {os-distribution = \"ol\"}\n  [\"zlib\"] {os-distribution = \"nixos\"}\n  [\"zlib\"] {os-distribution = \"homebrew\" & os = \"macos\"}\n  [\"zlib\"] {os-family = \"arch\"}\n  [\"zlib\"] {os = \"win32\" & os-distribution = \"cygwinports\"}\n  [\"zlib-devel\"] {os = \"cygwin\"}\n  [\"zlib-ng-compat-devel\"] {os-family = \"opensuse\"}\n  [\"zlib-devel\"] {os-family = \"suse\" & os-version < \"16\"}\n  [\"zlib-ng-compat-devel\"] {os-family = \"suse\" & os-version >= \"16\"}\n]"
+    }
+  },
+  {
+    "package": "ocaml-variants.4.14.0+options",
+    "exact_root": true,
+    "metadata_sha256": "b9a0349ffebf816b1e30f5789fd280aa947e87e5f29b9dfc6a1c595c641c3522",
+    "fields": {
+      "setenv": "setenv: CAML_LD_LIBRARY_PATH = \"%{lib}%/stublibs\"",
+      "build": "build: [\n  [\n    \"./configure\"\n    \"--host=x86_64-pc-windows\"\n      {system-msvc:installed & arch-x86_64:installed}\n    \"--host=x86_64-w64-mingw32\"\n      {os-distribution = \"cygwin\" & system-mingw:installed &\n       arch-x86_64:installed}\n    \"--host=i686-pc-windows\" {system-msvc:installed & arch-x86_32:installed}\n    \"--host=i686-w64-mingw32\"\n      {os-distribution = \"cygwin\" & system-mingw:installed &\n       arch-x86_32:installed}\n    \"--prefix=%{prefix}%\"\n    \"--docdir=%{doc}%/ocaml\"\n    \"--with-flexdll=%{flexdll:share}%\" {os = \"win32\" & flexdll:installed}\n    \"-C\"\n    \"--with-afl\" {ocaml-option-afl:installed}\n    \"--disable-native-compiler\" {ocaml-option-bytecode-only:installed}\n    \"--disable-force-safe-string\"\n      {ocaml-option-default-unsafe-string:installed}\n    \"DEFAULT_STRING=unsafe\" {ocaml-option-default-unsafe-string:installed}\n    \"--disable-flat-float-array\" {ocaml-option-no-flat-float-array:installed}\n    \"--enable-flambda\" {ocaml-option-flambda:installed}\n    \"--enable-frame-pointers\" {ocaml-option-fp:installed}\n    \"--disable-naked-pointers\" {ocaml-option-nnp:installed}\n    \"--enable-naked-pointers-checker\" {ocaml-option-nnpchecker:installed}\n    \"CC=cc\"\n      {!ocaml-option-32bit:installed & !ocaml-option-musl:installed &\n       (os = \"openbsd\" | os = \"macos\")}\n    \"CC=musl-gcc\" {ocaml-option-musl:installed & os-distribution != \"alpine\"}\n    \"CFLAGS=-Os\" {ocaml-option-musl:installed}\n    \"CC=gcc -m32\" {ocaml-option-32bit:installed & os = \"linux\"}\n    \"CC=gcc -Wl,-read_only_relocs,suppress -arch i386 -m32\"\n      {ocaml-option-32bit:installed & os = \"macos\"}\n    \"ASPP=cc -c\"\n      {!ocaml-option-32bit:installed & !ocaml-option-musl:installed &\n       (os = \"openbsd\" | os = \"macos\")}\n    \"ASPP=musl-gcc -c\"\n      {ocaml-option-musl:installed & os-distribution != \"alpine\"}\n    \"ASPP=gcc -m32 -c\" {ocaml-option-32bit:installed & os = \"linux\"}\n    \"ASPP=gcc -arch i386 -m32 -c\"\n      {ocaml-option-32bit:installed & os = \"macos\"}\n    \"AS=as --32\" {ocaml-option-32bit:installed & os = \"linux\"}\n    \"AS=as -arch i386\" {ocaml-option-32bit:installed & os = \"macos\"}\n    \"--host=i386-linux\" {ocaml-option-32bit:installed & os = \"linux\"}\n    \"--host=i386-apple-darwin13.2.0\"\n      {ocaml-option-32bit:installed & os = \"macos\"}\n    \"PARTIALLD=ld -r -melf_i386\"\n      {ocaml-option-32bit:installed & os = \"linux\"}\n    \"LIBS=-static\" {ocaml-option-static:installed}\n  ]\n  [make \"-j%{jobs}%\"]\n]",
+      "install": "install: [make \"install\"]",
+      "build-env": "build-env: MSYS2_ARG_CONV_EXCL = \"*\""
+    }
+  },
+  {
+    "package": "ocaml-config.2",
+    "exact_root": false,
+    "metadata_sha256": "70e4abeb2f5cc7e0d117afc6c81d45050446c5d3de1301ed6e2faa706a0d38dc",
+    "fields": {
+      "substs": "substs: \"gen_ocaml_config.ml\""
+    }
+  },
+  {
+    "package": "ocaml.4.14.0",
+    "exact_root": false,
+    "metadata_sha256": "b7b3b3e46465c2d999b17c98a9db17b39fff94aa09edc84ebded51ceb493410a",
+    "fields": {
+      "setenv": "setenv: [\n  [OCAMLTOP_INCLUDE_PATH += \"%{toplevel}%\"]\n  [CAML_LD_LIBRARY_PATH = \"%{_:stubsdir}%\"]\n  [CAML_LD_LIBRARY_PATH += \"%{lib}%/stublibs\"]\n  [OCAML_TOPLEVEL_PATH = \"%{toplevel}%\"]\n]",
+      "build": "build: [\n  \"ocaml\" \"%{ocaml-config:share}%/gen_ocaml_config.ml\" _:version _:name\n]",
+      "build-env": "build-env: CAML_LD_LIBRARY_PATH = \"\""
+    }
+  },
+  {
+    "package": "ocamlfind.1.9.8",
+    "exact_root": false,
+    "metadata_sha256": "2e636364764594cb34e1cd45a82c7451c1d2fba8e39639f8a803210d143cf4d1",
+    "fields": {
+      "build": "build: [\n  [\n    \"./configure\"\n    \"-bindir\"\n    bin\n    \"-sitelib\"\n    lib\n    \"-mandir\"\n    man\n    \"-config\"\n    \"%{lib}%/findlib.conf\"\n    \"-no-custom\"\n    \"-no-camlp4\" {!ocaml:preinstalled & ocaml:version >= \"4.02.0\"}\n    \"-no-topfind\" {ocaml:preinstalled}\n  ]\n  [make \"all\"]\n  [make \"opt\"] {ocaml:native}\n]",
+      "install": "install: [\n  [make \"install\"]\n  [\"install\" \"-m\" \"0755\" \"ocaml-stub\" \"%{bin}%/ocaml\"] {ocaml:preinstalled}\n]"
+    }
+  },
+  {
+    "package": "ocamlbuild.0.16.1",
+    "exact_root": false,
+    "metadata_sha256": "d1fe9fc86f3889692c4688cca824b9f7571e9b9aeb100fc039b295a57e602a9f",
+    "fields": {
+      "build": "build: [\n  [\n    make\n    \"-f\"\n    \"configure.make\"\n    \"all\"\n    \"OCAMLBUILD_PREFIX=%{prefix}%\"\n    \"OCAMLBUILD_BINDIR=%{bin}%\"\n    \"OCAMLBUILD_LIBDIR=%{lib}%\"\n    \"OCAMLBUILD_MANDIR=%{man}%\"\n    \"OCAML_NATIVE=%{ocaml:native}%\"\n    \"OCAML_NATIVE_TOOLS=%{ocaml:native}%\"\n  ]\n  [make \"check-if-preinstalled\" \"all\" \"opam-install\"]\n]"
+    }
+  },
+  {
+    "package": "num.1.6",
+    "exact_root": false,
+    "metadata_sha256": "287b250b6421ddb8bd28e31b3dd6c79ab4a482b214d194133e059b41b602799c",
+    "fields": {
+      "build": "build: [\n  [\n    make\n    \"PROFILE=release\"\n    \"opam-legacy\" {!ocaml:preinstalled & ocaml:version < \"5.0.0~~\"}\n    \"opam-modern\" {ocaml:preinstalled | ocaml:version >= \"5.0.0~~\"}\n  ]\n  [make \"test\"] {with-test}\n]"
+    }
+  },
+  {
+    "package": "dune.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "81b6e729c7bdcb0f24604ca26c77f88a90d2275795b8527bef9937f49ee9c155",
+    "fields": {
+      "build": "build: [\n  [\"ocaml\" \"boot/bootstrap.ml\" \"-j\" jobs]\n  [\n    \"./_boot/dune.exe\"\n    \"build\"\n    \"dune.install\"\n    \"--release\"\n    \"--profile\"\n    \"dune-bootstrap\"\n    \"-j\"\n    jobs\n  ]\n]"
+    }
+  },
+  {
+    "package": "cmdliner.1.3.0",
+    "exact_root": false,
+    "metadata_sha256": "a784c99ed0ac1cb110309e65dbb7d6378d6dbe7673371b80a129467c3e3c06f7",
+    "fields": {
+      "build": "build: [make \"all\" \"PREFIX=%{prefix}%\"]",
+      "install": "install: [\n  [make \"install\" \"LIBDIR=%{_:lib}%\" \"DOCDIR=%{_:doc}%\"]\n  [make \"install-doc\" \"LIBDIR=%{_:lib}%\" \"DOCDIR=%{_:doc}%\"]\n]"
+    }
+  },
+  {
+    "package": "zarith.1.14",
+    "exact_root": false,
+    "metadata_sha256": "afd6782f14483672c86d87fa4b64dd55744058f978ffee49631f7aa33b57bb81",
+    "fields": {
+      "build": "build: [\n  [\"./configure\"]\n  [make]\n]",
+      "install": "install: [make \"install\"]"
+    }
+  },
+  {
+    "package": "base-bytes.base",
+    "exact_root": false,
+    "metadata_sha256": "47c839112ab180204d60082624253bf4272bc42c246bccce113af5dd79258735",
+    "fields": {}
+  },
+  {
+    "package": "yojson.3.0.0",
+    "exact_root": false,
+    "metadata_sha256": "a5bd2912c0ac30cb0c44bfece72a30f8dad639978ee38e7dbfb9f23fbd2406ac",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "stdlib-shims.0.3.0",
+    "exact_root": false,
+    "metadata_sha256": "f1ac3b7905dd5ff7f7f5fc78f3d7c040b68ad09ab2c6abf08278827d87e76f8e",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "sexplib0.v0.16.0",
+    "exact_root": false,
+    "metadata_sha256": "2e3dc7c394d532acabcfe72e85701546a9061462f135b40b98f41838bc7dd27b",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "sail_manifest.0.17",
+    "exact_root": true,
+    "metadata_sha256": "77545c811f0e467d918f48e5dc23760d0f8c7401bdea61994cba320e001f8f66",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "ppx_derivers.1.2.1",
+    "exact_root": false,
+    "metadata_sha256": "19e14fd51829f50fe3b5f1935e7896d5c8fcbe04a417f70d628bcfa01e6dab06",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "pprint.20230830",
+    "exact_root": false,
+    "metadata_sha256": "90da8a548a8f417d48ce5e05d8492816e4444a335d7d9652d1f8925e63c8e011",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "pp.2.0.0",
+    "exact_root": false,
+    "metadata_sha256": "6094a14e19f4431a9e04b798b56fd447876123d4527214641e622d652de8320c",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "ordering.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "89b28e227c6236797f157be8f3c04b0c4b6668c37be80f4eab7edaf4eefb3f92",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"rm\" \"-rf\" \"vendor/csexp\"]\n  [\"rm\" \"-rf\" \"vendor/pp\"]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "ocamlgraph.2.2.0",
+    "exact_root": false,
+    "metadata_sha256": "d1594d71c1c90404d00e426387da3decb1cc196c7c7e4b3c6860cd91971d864a",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "ocaml-compiler-libs.v0.12.4",
+    "exact_root": false,
+    "metadata_sha256": "0dfa7802a63f91bc055a64f5efbe9b243965b85ae1689401ed533c39e3ca536f",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "menhirSdk.20260209",
+    "exact_root": false,
+    "metadata_sha256": "cdbfc928a599fdd09413207398794145f5d16a56e587a1f18612b99e2e62864e",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "menhirLib.20260209",
+    "exact_root": false,
+    "metadata_sha256": "008379e8e7a143087f3c31f19294bfdbe8e1e898d0d1a1fa9ffd9a27fe8fc0a6",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "menhirGLR.20260209",
+    "exact_root": false,
+    "metadata_sha256": "7734db0123820d0ffb8d9890ee1343fd0016419108c868989e35e938549551ea",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "menhirCST.20260209",
+    "exact_root": false,
+    "metadata_sha256": "de19400fdccb30b824df5bb8d70a4b611b9ad79f269430e9a2d173258c1db635",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "linenoise.1.5.1",
+    "exact_root": false,
+    "metadata_sha256": "114596cedc9d088ea0b4d92eb4cc646c17b2bd7caa52c2ffef9ec94a068c9f47",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"build\" \"@install\" \"-p\" name \"-j\" jobs]\n  [\"dune\" \"runtest\" \"-p\" name] {with-test}\n  [\"dune\" \"build\" \"@doc\" \"-p\" name] {with-doc}\n]"
+    }
+  },
+  {
+    "package": "csexp.1.5.2",
+    "exact_root": false,
+    "metadata_sha256": "06aeb45c7ebef91ebded5546153dc44b34a055eadb3dc66dab9759b6d034c62f",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "base64.3.5.2",
+    "exact_root": false,
+    "metadata_sha256": "5e0aa3602d5d884848d746295d30411839b0a1214a1a1a9b6cea341837cfb9cd",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs]\n  [\"dune\" \"runtest\" \"-p\" name \"-j\" jobs] {with-test}\n]"
+    }
+  },
+  {
+    "package": "lem.2026-05-01",
+    "exact_root": false,
+    "metadata_sha256": "aa8921999cfb02b623d953d2229495177a2801d34da6e13735b1d66745dd384a",
+    "fields": {
+      "build": "build: [make \"INSTALL_DIR=%{prefix}%\"]",
+      "install": "install: [make \"INSTALL_DIR=%{prefix}%\" \"install\"]"
+    }
+  },
+  {
+    "package": "coq-core.8.19.0",
+    "exact_root": true,
+    "metadata_sha256": "8d20e526a594beb7481d7d55f47da867b8e56a154d0faf407b5dcf5ef87126ab",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"./configure\"\n    \"-prefix\"\n    prefix\n    \"-mandir\"\n    man\n    \"-libdir\"\n    \"%{lib}%/coq\"\n    \"-native-compiler\"\n    \"yes\" {coq-native:installed}\n    \"no\" {!coq-native:installed}\n  ]\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]",
+      "build-env": "build-env: OCAMLPARAM = \"_,w=-46,warn-error=-a,keywords=5.2\""
+    }
+  },
+  {
+    "package": "omd.1.3.2",
+    "exact_root": false,
+    "metadata_sha256": "c99fdc9267f3ac9dce4eceaa0fa2cf676a868f0a8dc80c89460a6d1c7f963055",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "integers.0.8.0",
+    "exact_root": false,
+    "metadata_sha256": "c6b452c1a9e6593b9dfed88a55eae239ad52fb4696096468b347876aef9ee2c6",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs]\n  [\"dune\" \"runtest\" \"-p\" name \"-j\" jobs] {with-test}\n]"
+    }
+  },
+  {
+    "package": "dyn.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "18a94a0d44d1f5af7146cdcb0cff2eafd8e7de0531cd29608b16b4f4c1c55498",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"rm\" \"-rf\" \"vendor/csexp\"]\n  [\"rm\" \"-rf\" \"vendor/pp\"]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "ott.0.34",
+    "exact_root": false,
+    "metadata_sha256": "c26810da1757645f39597fe571542ed3255412894269bb4fd34d51cbdd336460",
+    "fields": {
+      "build": "build: [\n  [make \"world\"] {ocaml:native}\n  [make \"world.byt\"] {!ocaml:native}\n  [\"rm\" \"src/ott\"] {os = \"win32\"}\n  [\"cp\" \"src/ott.opt\" \"src/ott\"] {os = \"win32\" & ocaml:native}\n  [\"cp\" \"src/ott.byte\" \"src/ott\"] {os = \"win32\" & !ocaml:native}\n  [make \"ott.install\"]\n]"
+    }
+  },
+  {
+    "package": "ppxlib.0.35.0",
+    "exact_root": false,
+    "metadata_sha256": "35fb0efa7044c5d786691ed12b6e46e9b0777dc0507b7a3e813a519fb54f116a",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "menhir.20260209",
+    "exact_root": false,
+    "metadata_sha256": "eb862ab077cf137a2b6fcaf5fd76610b8a9604de26194a3c000ba43bbf80ebcf",
+    "fields": {
+      "build": "build: [\"dune\" \"build\" \"-p\" name \"-j\" jobs]"
+    }
+  },
+  {
+    "package": "linksem.0.8",
+    "exact_root": false,
+    "metadata_sha256": "7c4b964bfdba78403fe00fc44d666fc434cb925574cd7ce0ea338b3ebcdb1188",
+    "fields": {
+      "build": "build: make",
+      "install": "install: [make \"install\"]"
+    }
+  },
+  {
+    "package": "coqide-server.8.19.0",
+    "exact_root": true,
+    "metadata_sha256": "4a67b236cc458d607eeaa4998be193c344dfff7cf873f1f73ae46f467dd0b8ab",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "coq-stdlib.8.19.0",
+    "exact_root": true,
+    "metadata_sha256": "74c3a0f372527d7c87d74dc89dd43fc949d43ea4402e4c70118bc20e206e24d2",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [make \"dunestrap\" \"COQ_DUNE_EXTRA_OPT=-split\" \"DUNESTRAPOPT=-p coq-stdlib\"]\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "stdune.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "d8c7526faa3677a263ab277e9e407542f9d8ce3b10800f7e4c629189e52516fb",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"rm\" \"-rf\" \"vendor/csexp\"]\n  [\"rm\" \"-rf\" \"vendor/pp\"]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "bisect_ppx.2.8.3",
+    "exact_root": false,
+    "metadata_sha256": "b6612fb6b1b114f83559f4d41bddcd13c63829bb0b2bfd6387daa3c9f96156b9",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@compatible\"] {with-test}\n]"
+    }
+  },
+  {
+    "package": "isla-lang.dev",
+    "exact_root": true,
+    "metadata_sha256": "0155efc4990e058aaf418fc1f15c38e253fb41ec845cf4abe0ab2d8242d04b19",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n]"
+    }
+  },
+  {
+    "package": "coq.8.19.0",
+    "exact_root": true,
+    "metadata_sha256": "538568638934b713af4e354f0e2781bed07d056f544368c96eab1936a5b0b5f9",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "dune-private-libs.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "46edf2a781493d72ac86d2d20e024d1a21b8981554e9c9e92f284dceb2e7b277",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"rm\" \"-rf\" \"vendor/csexp\"]\n  [\"rm\" \"-rf\" \"vendor/pp\"]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "exact_root": true,
+    "metadata_sha256": "fce4c9547e0414cd4cb4d8ed4acc19091d140d25e4713c2a45febfc987a8e304",
+    "fields": {
+      "build": "build: [\"./make-package\" \"stdpp\" \"-j%{jobs}%\"]",
+      "install": "install: [\"./make-package\" \"stdpp\" \"install\"]"
+    }
+  },
+  {
+    "package": "coq-record-update.0.3.3",
+    "exact_root": true,
+    "metadata_sha256": "3ba594a4c668ddf81216e9a460439f696d547b662914cc36d8eb6c8b6c8449d8",
+    "fields": {
+      "build": "build: [make \"-j%{jobs}%\" \"NO_TEST=1\"]",
+      "install": "install: [make \"install\"]"
+    }
+  },
+  {
+    "package": "coq-bbv.1.5",
+    "exact_root": true,
+    "metadata_sha256": "a43f7968699b32ab9521aa7335bc50bd3e0d357894d18233bc975e5061833076",
+    "fields": {
+      "build": "build: [make \"-j%{jobs}%\"]",
+      "install": "install: [make \"install\"]"
+    }
+  },
+  {
+    "package": "dune-site.3.9.1",
+    "exact_root": true,
+    "metadata_sha256": "2b045ece80fa1d55984e3fa409c7359a6b7a545590a80ec4fd0fb4b8c6ca69ac",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\"rm\" \"-rf\" \"vendor/csexp\"]\n  [\"rm\" \"-rf\" \"vendor/pp\"]\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs \"@install\" \"@doc\" {with-doc}]\n]"
+    }
+  },
+  {
+    "package": "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "exact_root": true,
+    "metadata_sha256": "c66490a46ea940934a55e6eb8c3f7b4d3cf4fc38dc57adb5ea5603d24a6eee6e",
+    "fields": {
+      "build": "build: [\"./make-package\" \"stdpp_bitvector\" \"-j%{jobs}%\"]",
+      "install": "install: [\"./make-package\" \"stdpp_bitvector\" \"install\"]"
+    }
+  },
+  {
+    "package": "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "exact_root": true,
+    "metadata_sha256": "eb45c0d8e293c29852264101aed7b6c5a8ac8742723edd2f9eb99b07f36a0005",
+    "fields": {
+      "build": "build: [\"./make-package\" \"iris\" \"-j%{jobs}%\"]",
+      "install": "install: [\"./make-package\" \"iris\" \"install\"]"
+    }
+  },
+  {
+    "package": "coq-sail.0.17",
+    "exact_root": true,
+    "metadata_sha256": "b9bead47aa142c9fe26045b5f397352bd2c9a309472b618b366e0498e4d176a6",
+    "fields": {
+      "build": "build: [make \"-C\" \"src\" \"HAVE_OPAM_BBV=yes\"]",
+      "install": "install: [make \"-C\" \"src\" \"install\"]"
+    }
+  },
+  {
+    "package": "libsail.0.17",
+    "exact_root": true,
+    "metadata_sha256": "d855a2d97045f2b1fd360ecd40391ffa5d24afa0389af67ac2f49c48aed91d9e",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "exact_root": true,
+    "metadata_sha256": "97509fc0f31d9b2b396af48bfa63245e0cfa01f64be0d534472f61617b53b57d",
+    "fields": {
+      "build": "build: [\"./make-package\" \"stdpp_unstable\" \"-j%{jobs}%\"]",
+      "install": "install: [\"./make-package\" \"stdpp_unstable\" \"install\"]"
+    }
+  },
+  {
+    "package": "sail_sv_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "1df4a27cb98ec10df89e1817687750bcc6098e67f139e29279d98804241e538a",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_smt_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "40a7057feb2f10c9c0aa0d02b384c5137095e76c8e1828774b052c13fd987b8b",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_output.0.17",
+    "exact_root": true,
+    "metadata_sha256": "76f07448a4c2f886596124317711041b3be7cf524c003fd6196e8332646f35b4",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_ocaml_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "21a243c97a77ca7ab2cbf4712b522cd3a74b9dbce3db0b11ae53efd95b13fb4e",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_lem_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "37046441bfee11801e40230c9c007ddcb2d04f8d3816ae535e0d3853387ba810",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_latex_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "c1bb711f481eec80321c49681233bcf6d30590fb2e7937587b401ab648c5eeb9",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_doc_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "35812f1bfe7ec4178fb35bf0d425bbcb9e286d468b9eaab7aab1c6b73eac7dca",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_coq_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "860d959f3f7e7452542612bb976b3ff86735a604cea22cda8eb112dcba86bb83",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail_c_backend.0.17",
+    "exact_root": true,
+    "metadata_sha256": "03462a4c3605f2980c8ed7521e3f53a890ea38ecf1d4611158fdd90c8031fe92",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]"
+    }
+  },
+  {
+    "package": "sail.0.17",
+    "exact_root": true,
+    "metadata_sha256": "50a46732fe6da69c6e1c58c1f455e274259fe751e452c61d9e2429bb68ca69c4",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {dev}\n  [\n    \"dune\"\n    \"build\"\n    \"-p\"\n    name\n    \"-j\"\n    jobs\n    \"--promote-install-files=false\"\n    \"@install\"\n    \"@runtest\" {with-test}\n    \"@doc\" {with-doc}\n  ]\n  [\"dune\" \"install\" \"-p\" name \"--create-install-files\" name]\n]",
+      "substs": "substs: \"src/bin/manifest.ml\""
+    }
+  },
+  {
+    "package": "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "exact_root": true,
+    "metadata_sha256": "8805ff41adee7f9b8c06e4d7c7c8bf5b545d4c978755950fd5fe1b10ad5dc7ac",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {pinned}\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs]\n]"
+    }
+  },
+  {
+    "package": "coq-sail-riscv.0.5",
+    "exact_root": true,
+    "metadata_sha256": "7cbd37a269191aa24fdacb32dbdca0fd6e584251fc6459dc58a64c1407d22ad7",
+    "fields": {
+      "build": "build: [\n  [make \"ARCH=RV64\" \"riscv_coq_build\"]\n  [make \"ARCH=RV32\" \"riscv_coq_build\"]\n]",
+      "install": "install: [make \"riscv_coq_install\"]"
+    }
+  },
+  {
+    "package": "islaris.dev",
+    "exact_root": true,
+    "metadata_sha256": "f42a2d95c88b906fe95cd0778aaac44d3b825fb4f312d19223d99cf4ea41b003",
+    "fields": {
+      "build": "build: [\n  [\"dune\" \"subst\"] {pinned}\n  [\"dune\" \"build\" \"-p\" name \"-j\" jobs]\n]"
+    }
+  }
+]

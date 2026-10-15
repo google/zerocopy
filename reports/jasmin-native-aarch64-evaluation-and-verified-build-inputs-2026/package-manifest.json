@@ -1,0 +1,260 @@
+{
+  "scope": "All package regular files except package-manifest.json itself; complete receipt-archive member identities in support/archive-members.json.gz.",
+  "files": [
+    {
+      "path": "ATTRIBUTION.md",
+      "bytes": 3258,
+      "sha256": "b22db22de15bc3e36137aa1ee407362736ca11ca96795da09ee6919ccbe22ec3"
+    },
+    {
+      "path": "REPORT.json",
+      "bytes": 2957,
+      "sha256": "d1c6639e649763c92ab1db7818ca88114330b08b86fe7d59a3d96497eb17e5b3"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 16314,
+      "sha256": "7bdd5edee0c512100ac0f7a42023be9de36c58eddf3958866c5d8c3e9282856e"
+    },
+    {
+      "path": "REVALIDATION.md",
+      "bytes": 3905,
+      "sha256": "5e20a5b9bc2c5b2bf6c0dc8de26fc2e8e706f3e80fa027c7efe17ec03d878a61"
+    },
+    {
+      "path": "check_bootstrap.py",
+      "bytes": 1398,
+      "sha256": "defffaeada44e76afea78b9a89a404192bd2ea107377bc76077528156aef8eda"
+    },
+    {
+      "path": "check_evidence.py",
+      "bytes": 4808,
+      "sha256": "1c0f15ed4b6f7b2602a40eb87b5d6a2dfdd15b888f4ad49ed92bf201073e4f4d"
+    },
+    {
+      "path": "support/archive-index.json",
+      "bytes": 1094,
+      "sha256": "cc45e06c3e94650ec7d72b40533243c1f3f56ab4aaf95ee1522b14ae49e99e4e"
+    },
+    {
+      "path": "support/archive-members.json.gz",
+      "bytes": 10875,
+      "sha256": "432a86cedeb8846abd309aea1af1f17bd48c31c59e25470cd10f5b213c2a4127"
+    },
+    {
+      "path": "support/bootstrap-receipts.tar.gz",
+      "bytes": 19794,
+      "sha256": "5aa54a1c49af75ac78643a7030cee5f6b6f4bcd7f5259279344d600a3a5ba08c"
+    },
+    {
+      "path": "support/bootstrap/bootstrap-program-paths.json",
+      "bytes": 975,
+      "sha256": "b4910ad75f53770311d45a17b31072f4ed705c416f859451980d40384a7e0a8e"
+    },
+    {
+      "path": "support/bootstrap/identity-binding-verification.json",
+      "bytes": 20490,
+      "sha256": "47492755e0697d591c387f890577c4dd26321828fd23d88ed32ec1f37baad60c"
+    },
+    {
+      "path": "support/bootstrap/image-inspect.json",
+      "bytes": 7567,
+      "sha256": "44e2bf92ad8602792ecacb46aca3053ebd03b4a1400d2d7750656b1e013e7149"
+    },
+    {
+      "path": "support/bootstrap/verified-config.json",
+      "bytes": 23004,
+      "sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87"
+    },
+    {
+      "path": "support/bootstrap/verified-platform-manifest.json",
+      "bytes": 14828,
+      "sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558"
+    },
+    {
+      "path": "support/cache-acquisition-receipts.tar.gz",
+      "bytes": 1241031,
+      "sha256": "0194db3112c082fc04bf31c977470f233cc07ba1c03ec7bebce7dd7d2138b948"
+    },
+    {
+      "path": "support/coqword-data-gate-receipts.tar.gz",
+      "bytes": 1028351,
+      "sha256": "c3e02b4873b04bb1b2190d0ffaed6055cca1984acabea078362653d4de16d5a5"
+    },
+    {
+      "path": "support/evaluation-policy.txt",
+      "bytes": 408,
+      "sha256": "6ba464a11732a00247e90a954cef1d630529245eb81f27c040a73502a565bfb0"
+    },
+    {
+      "path": "support/host-consistency-checks.json",
+      "bytes": 1231,
+      "sha256": "54129032c32cce0ff597decec275c40d4e7a6da31f34d8b503cb818712c28428"
+    },
+    {
+      "path": "support/jasmin-source-manifest.json",
+      "bytes": 444306,
+      "sha256": "64acc476a06c1150553f2a126f9952086eb2dd03d25bc7fc0c472dce4de7796b"
+    },
+    {
+      "path": "support/key/cache-acquisition/census-comparison.json",
+      "bytes": 1538,
+      "sha256": "a0438d4bcaff975548b2704efbee9b8c665a5e87f631416ba00bc03cf7d8b6ef"
+    },
+    {
+      "path": "support/key/cache-acquisition/observer-parser-regressions.json",
+      "bytes": 327,
+      "sha256": "78dbec6aa92d75c361a5a0444feaa783e7ff7e4de7b036a6452466a3f76aae8b"
+    },
+    {
+      "path": "support/key/cache-acquisition/preexisting-14-diagnosis.json",
+      "bytes": 4904,
+      "sha256": "590af7e9012e7c1260411a7afeef7572fe9d7502bac148625aef6e9c6ffe9ccc"
+    },
+    {
+      "path": "support/key/coqword-data-gate/coqword-file-manifest.json",
+      "bytes": 3335,
+      "sha256": "384e0d4f4ff75104decea26e781da2d8e9bbea34929bf21b42932637ac598c5e"
+    },
+    {
+      "path": "support/key/coqword-data-gate/postflight-PASS.json",
+      "bytes": 792,
+      "sha256": "ce20d5788e7e28cef5c4c07a09a971d67147dbb160dc2a32c7fa4316f928f2a6"
+    },
+    {
+      "path": "support/key/native-eval-gate/cache-fetch-191.json",
+      "bytes": 13487,
+      "sha256": "94f52a3b0ad9038c84cac5397d2f1b6455c9234cd88098e9cf7943f76dbe2dff"
+    },
+    {
+      "path": "support/key/native-eval-gate/nixpkgs-default.stdout",
+      "bytes": 1123,
+      "sha256": "bf7db4f5caee7f45d609a9c7b7e3fadb070d9d98b00f6647bde9a3a0f303b1f1"
+    },
+    {
+      "path": "support/key/native-eval-gate/nixpkgs-minfeatures.stdout",
+      "bytes": 466,
+      "sha256": "0a7fe8f7692c22361b3b039ea4e8081224a05ebde6a91d887fb232dd31429f13"
+    },
+    {
+      "path": "support/key/native-eval-gate/uncached-19.json",
+      "bytes": 18555,
+      "sha256": "ec31b41d3789a683981344250c6fd06b959af197969cbb55227c473c4b9d9dee"
+    },
+    {
+      "path": "support/native-eval-gate-receipts.tar.gz",
+      "bytes": 1036248,
+      "sha256": "4004120d8ae67dbf5b19ba1139f522bc21e5b467bbba290add590007cddd34c1"
+    },
+    {
+      "path": "support/notices/nix-COPYING",
+      "bytes": 26419,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+    },
+    {
+      "path": "support/notices/nixpkgs-COPYING",
+      "bytes": 1097,
+      "sha256": "c9cf0650a6820b589f96a92060e0eb937102b808f48cd5e3f35dcba449ea0a41"
+    },
+    {
+      "path": "support/notices/nixpkgs-COPYING.json",
+      "bytes": 491,
+      "sha256": "56977613363bc14dcd7b98ac6a6232ff123ebf08b73f5c7ad8b1c9d1922ba6d2"
+    },
+    {
+      "path": "support/notices/nixpkgs-COPYING.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "support/notices/notice-api-observations.json",
+      "bytes": 38023,
+      "sha256": "564ce68def092d778b35e1bd43e5f15bd67bfa887b1e4328773ee32f495f6b02"
+    },
+    {
+      "path": "support/notices/notice-byte-verification.json",
+      "bytes": 406,
+      "sha256": "4d1ec3fc25baf68fa1df250329ccc388d9139885b8b292ad39e49de030fc4ad0"
+    },
+    {
+      "path": "support/offline-probe-receipts.tar.gz",
+      "bytes": 4907,
+      "sha256": "a0a1e358219c03585a90ebefc61c355059e3a081a46192d36e471a493087eac2"
+    },
+    {
+      "path": "support/omitted-bulk-artifacts.json",
+      "bytes": 2614,
+      "sha256": "819750a092de62336ff07fff8ac5fdfcbd83fc1e1f28233563c6e247449ad6e4"
+    },
+    {
+      "path": "support/provisioning-receipts.tar.gz",
+      "bytes": 53700,
+      "sha256": "ac55999656ea0186b9a00be177b325013164ee389a0f73504d05a6fc3ab83caf"
+    },
+    {
+      "path": "support/upstream/coqword/AUTHORS",
+      "bytes": 41,
+      "sha256": "e0b23509cf478905d97aedf1d49750533e085ecc402377adc928ef66f57903b0"
+    },
+    {
+      "path": "support/upstream/coqword/LICENSE",
+      "bytes": 1074,
+      "sha256": "948c4a4e5bbc8c6e4278b8c82167089074be59a2958767bfa7985a68170b03a5"
+    },
+    {
+      "path": "support/upstream/jasmin/.gitlab-ci.yml",
+      "bytes": 8733,
+      "sha256": "bf797edcc5a7963a3cbe3fef7e8b7cca0287be3413edba9235c030ef83dd8a2c"
+    },
+    {
+      "path": "support/upstream/jasmin/AUTHORS",
+      "bytes": 902,
+      "sha256": "9cbf6c1c88cefda1c4c977dafedac067e73f4926a89cb331ea8c11b67d644a02"
+    },
+    {
+      "path": "support/upstream/jasmin/LICENSE",
+      "bytes": 1342,
+      "sha256": "c7232c2cda11e4270104f2fd4bfbc7b368f536ad58271a9ad2775d1000aefc05"
+    },
+    {
+      "path": "support/upstream/jasmin/compiler/Makefile",
+      "bytes": 2462,
+      "sha256": "62bf681f2e8489494b5e43b173bc019978f759b5c19540e6831dc1d7a0cdb11b"
+    },
+    {
+      "path": "support/upstream/jasmin/compiler/src/dune",
+      "bytes": 521,
+      "sha256": "866bfc6bc21281680dfc4fe49b4ce4e72204e1030cbd8452325cb6cf5d724e8f"
+    },
+    {
+      "path": "support/upstream/jasmin/compiler/src/glob_options.ml",
+      "bytes": 11785,
+      "sha256": "9455485099f89d99b4f7355090a6164bd63e4429f2f7005f235c0f93c73d6103"
+    },
+    {
+      "path": "support/upstream/jasmin/default.nix",
+      "bytes": 3565,
+      "sha256": "fb50e40bbb899deeb7b1d14668703f71c52810ac812bc8cb9ec6717e94493578"
+    },
+    {
+      "path": "support/upstream/jasmin/scripts/easycrypt.nix",
+      "bytes": 1455,
+      "sha256": "432b85285d2effe35afa90af4e546d99cd29725b8b014114eb913bead85225f0"
+    },
+    {
+      "path": "support/upstream/jasmin/scripts/mathcomp-word.nix",
+      "bytes": 383,
+      "sha256": "0b3fd9d86f7b0a858b10c25f9e3ecdb332256559a70af93b9e6815b86af55c5d"
+    },
+    {
+      "path": "support/upstream/jasmin/scripts/nixpkgs.nix",
+      "bytes": 200,
+      "sha256": "96ecc4e0370c7cd7a3d6b3f67f00dbb92a7472189d60d9363e17df7436a56d77"
+    },
+    {
+      "path": "support/upstream/jasmin/scripts/z3.nix",
+      "bytes": 243,
+      "sha256": "906ccf906ff325ba712fdcac439e2ba626108a884471847b89229747a6209114"
+    }
+  ]
+}

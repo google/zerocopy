@@ -1,0 +1,24 @@
+(include_subdirs unqualified)
+
+(ocamllex
+ (modules lexer))
+
+(menhir
+ (flags "--table" "--explain" "--inspection" "--strict")
+ (modules parser))
+
+(rule
+  (target config.ml)
+  (action (write-file %{target} "let target_system = \"%{ocaml-config:system}\"")))
+
+(library
+ (name jasmin)
+ (public_name jasmin.jasmin)
+ (flags (:standard -w -9))
+ (modules :standard \ main_compiler)
+ (libraries angstrom batteries.unthreaded zarith menhirLib uint63))
+
+(library
+ (name jasminc)
+ (modules main_compiler)
+ (libraries jasmin linter))

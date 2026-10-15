@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "jasmin",
+    "nix/reproducibility",
+    "nix/offline-inputs",
+    "proof/toolchain-boundaries",
+    "assembly/isa-models"
+  ],
+  "subjects": [
+    {
+      "name": "Jasmin fresh source and Nix environment",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "source_manifest_sha256": "64acc476a06c1150553f2a126f9952086eb2dd03d25bc7fc0c472dce4de7796b"
+      }
+    },
+    {
+      "name": "Pinned nixpkgs evaluated source",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "652efddd59a21783edff64959252ec1cfce09041",
+        "fetchTarball_sha256": "11vxn2zqblkxfl6m20x4qd4b90sn7wmnmngi4c6mydhdr2kbhvj2"
+      }
+    },
+    {
+      "name": "Nix 2.34.8 native AArch64 runtime",
+      "identity": {
+        "image": "nixos/nix",
+        "platform_manifest_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "config_sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87",
+        "executable_sha256": "20d14cac461d9a879b9058ed1e5b5ce8112afb05dcee8f33ece9181f7e265842",
+        "version": "2.34.8",
+        "platform": "aarch64-linux"
+      }
+    },
+    {
+      "name": "EasyCrypt selected release source and native derivation",
+      "identity": {
+        "repository": "easycrypt/easycrypt",
+        "release": "r2026.09",
+        "normalized_source_sha256": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+        "derivation": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv"
+      }
+    },
+    {
+      "name": "Coqword source data",
+      "identity": {
+        "repository": "jasmin-lang/coqword",
+        "revision": "86ed49aeca65a8d32e81bb386778f49b45ee505b",
+        "normalized_source_sha256": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+        "store_path": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source"
+      }
+    },
+    {
+      "name": "Exact cache acquisition roots",
+      "identity": {
+        "artifact": "cache-fetch-191.json",
+        "sha256": "94f52a3b0ad9038c84cac5397d2f1b6455c9234cd88098e9cf7943f76dbe2dff"
+      }
+    },
+    {
+      "name": "Nix release license source, not established binary-build provenance",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+        "version": "2.34.8",
+        "COPYING_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+      }
+    },
+    {
+      "name": "Parent-owned offline Bash-printf environment probe",
+      "identity": {
+        "source_sha256": "1e72ecac59cd12866728b52d57e06073a767daca87d8a541ba160d9370dd8f4a",
+        "derivation": "/nix/store/z5pir11sfylhnw6gfqdb3dkh3cl63zv5-anneal-owned-offline-sandbox-probe.drv",
+        "output_sha256": "ec2420b37aa9a5c9f66acba9f5488c9c403a96962e9a2736017a1c6599fc7b6a"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "archive": "bootstrap-receipts.tar.gz",
+    "bytes": 19794,
+    "sha256": "5aa54a1c49af75ac78643a7030cee5f6b6f4bcd7f5259279344d600a3a5ba08c",
+    "file_count": 19
+  },
+  {
+    "archive": "cache-acquisition-receipts.tar.gz",
+    "bytes": 1241031,
+    "sha256": "0194db3112c082fc04bf31c977470f233cc07ba1c03ec7bebce7dd7d2138b948",
+    "file_count": 81
+  },
+  {
+    "archive": "coqword-data-gate-receipts.tar.gz",
+    "bytes": 1028351,
+    "sha256": "c3e02b4873b04bb1b2190d0ffaed6055cca1984acabea078362653d4de16d5a5",
+    "file_count": 48
+  },
+  {
+    "archive": "native-eval-gate-receipts.tar.gz",
+    "bytes": 1036248,
+    "sha256": "4004120d8ae67dbf5b19ba1139f522bc21e5b467bbba290add590007cddd34c1",
+    "file_count": 64
+  },
+  {
+    "archive": "offline-probe-receipts.tar.gz",
+    "bytes": 4907,
+    "sha256": "a0a1e358219c03585a90ebefc61c355059e3a081a46192d36e471a493087eac2",
+    "file_count": 26
+  },
+  {
+    "archive": "provisioning-receipts.tar.gz",
+    "bytes": 53700,
+    "sha256": "ac55999656ea0186b9a00be177b325013164ee389a0f73504d05a6fc3ab83caf",
+    "file_count": 56
+  }
+]

@@ -1,0 +1,965 @@
+{
+  "basis": "all 65 selected package records with url/extra-source sections from published exact solve; acquisition not performed",
+  "artifacts": [
+    {
+      "url": "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh",
+      "checksums": [
+        "sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961",
+        "sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "conf-pkg-config.5",
+          "role": "install-shim.sh"
+        }
+      ],
+      "sections": [
+        "extra-source \"install-shim.sh\" {\n  src: \"https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh\"\n  checksum: [\n    \"sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961\"\n    \"sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c\"\n  ]\n}"
+      ],
+      "id": "A01",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh",
+      "checksums": [
+        "sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a",
+        "sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "conf-pkg-config.5",
+          "role": "write-config.sh"
+        }
+      ],
+      "sections": [
+        "extra-source \"write-config.sh\" {\n  src: \"https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh\"\n  checksum: [\n    \"sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a\"\n    \"sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71\"\n  ]\n}"
+      ],
+      "id": "A02",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4",
+      "checksums": [
+        "sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb",
+        "md5=2fd2970c293c36222a6d299ec155823f"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "conf-gmp.5",
+          "role": "test.c"
+        }
+      ],
+      "sections": [
+        "extra-source \"test.c\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4\"\n  checksum: [\n    \"sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb\"\n    \"md5=2fd2970c293c36222a6d299ec155823f\"\n  ]\n}"
+      ],
+      "id": "A03",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz",
+      "checksums": [
+        "sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocaml-variants.4.14.0+options",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz\"\n  checksum: \"sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8\"\n}"
+      ],
+      "id": "A04",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install",
+      "checksums": [
+        "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678",
+        "md5=3e969b841df1f51ca448e6e6295cb451"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocaml-variants.4.14.0+options",
+          "role": "ocaml-variants.install"
+        }
+      ],
+      "sections": [
+        "extra-source \"ocaml-variants.install\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install\"\n  checksum: [\n    \"sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678\"\n    \"md5=3e969b841df1f51ca448e6e6295cb451\"\n  ]\n}"
+      ],
+      "id": "A05",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install",
+      "checksums": [
+        "sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051",
+        "md5=8e50c5e2517d3463b3aad649748cafd7"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocaml-config.2",
+          "role": "ocaml-config.install"
+        }
+      ],
+      "sections": [
+        "extra-source \"ocaml-config.install\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install\"\n  checksum: [\n    \"sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051\"\n    \"md5=8e50c5e2517d3463b3aad649748cafd7\"\n  ]\n}"
+      ],
+      "id": "A06",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in",
+      "checksums": [
+        "sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29",
+        "md5=a4b41e3236593d8271295b84b0969172"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocaml-config.2",
+          "role": "gen_ocaml_config.ml.in"
+        }
+      ],
+      "sections": [
+        "extra-source \"gen_ocaml_config.ml.in\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in\"\n  checksum: [\n    \"sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29\"\n    \"md5=a4b41e3236593d8271295b84b0969172\"\n  ]\n}"
+      ],
+      "id": "A07",
+      "artifact_class": "extra-file",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz",
+      "checksums": [
+        "md5=ca770e5806032a96131b670f6e07f146",
+        "sha512=8967986de2ab4ec5993f437b0a4206742adf37aa7a292a3bba0a04438d78539b84d001191e60b2d5bde98a695b38cba2593b7051f7749adbdb964a0df3c4b661"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocamlfind.1.9.8",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz\"\n  checksum: [\n    \"md5=ca770e5806032a96131b670f6e07f146\"\n    \"sha512=8967986de2ab4ec5993f437b0a4206742adf37aa7a292a3bba0a04438d78539b84d001191e60b2d5bde98a695b38cba2593b7051f7749adbdb964a0df3c4b661\"\n  ]\n}"
+      ],
+      "id": "A08",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz",
+      "checksums": [
+        "sha512=e918b9a0081f271e507c7a4f4d5d5a7cdf818ca51c52acec1bac85ddad5f6cad078cb3c568252fbcf5401c2d75323ed8f50fdd881bda1c9632840320408393ae"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocamlbuild.0.16.1",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz\"\n  checksum: [\n    \"sha512=e918b9a0081f271e507c7a4f4d5d5a7cdf818ca51c52acec1bac85ddad5f6cad078cb3c568252fbcf5401c2d75323ed8f50fdd881bda1c9632840320408393ae\"\n  ]\n}"
+      ],
+      "id": "A09",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz",
+      "checksums": [
+        "sha256=b5cce325449aac746d5ca963d84688a627cca5b38d41e636cf71c68b60495b3e",
+        "sha512=5cb32dfa9a9f0ad375bfd89079e9b1422979f3c089f61ef2300ad9cc64fb1fc25ed1f86b0267eb017f12ae41a574a959df5bfa39ab22c2be2f1ac84c3c671bdf"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "num.1.6",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz\"\n  checksum: [\n    \"sha256=b5cce325449aac746d5ca963d84688a627cca5b38d41e636cf71c68b60495b3e\"\n    \"sha512=5cb32dfa9a9f0ad375bfd89079e9b1422979f3c089f61ef2300ad9cc64fb1fc25ed1f86b0267eb017f12ae41a574a959df5bfa39ab22c2be2f1ac84c3c671bdf\"\n  ]\n}"
+      ],
+      "id": "A10",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz",
+      "checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "dune.3.9.1",
+          "role": "source"
+        },
+        {
+          "package": "ordering.3.9.1",
+          "role": "source"
+        },
+        {
+          "package": "dyn.3.9.1",
+          "role": "source"
+        },
+        {
+          "package": "stdune.3.9.1",
+          "role": "source"
+        },
+        {
+          "package": "dune-private-libs.3.9.1",
+          "role": "source"
+        },
+        {
+          "package": "dune-site.3.9.1",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+      ],
+      "id": "A11",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://erratique.ch/software/cmdliner/releases/cmdliner-1.3.0.tbz",
+      "checksums": [
+        "sha512=4c46bc334444ff772637deae2f5ba03645d7a1b7db523470a1246acfce79b971c764d964cbb02388639b3161b279700d9ade95da550446fb32aa4849c8a8f283"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "cmdliner.1.3.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://erratique.ch/software/cmdliner/releases/cmdliner-1.3.0.tbz\"\n  checksum:\n    \"sha512=4c46bc334444ff772637deae2f5ba03645d7a1b7db523470a1246acfce79b971c764d964cbb02388639b3161b279700d9ade95da550446fb32aa4849c8a8f283\"\n}"
+      ],
+      "id": "A12",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz",
+      "checksums": [
+        "sha256=5db9dcbd939153942a08581fabd846d0f3f2b8c67fe68b855127e0472d4d1859",
+        "sha512=8a7f3e82dfa5699c8dda54dd5398c712f3ac4fe04f5208d43d8ba198fb8152de5f91cbb59c15c0a4ba010d4dfcc79f52e405bdd0abbf2798167e9e4216bcb3dd"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "zarith.1.14",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz\"\n  checksum: [\n    \"sha256=5db9dcbd939153942a08581fabd846d0f3f2b8c67fe68b855127e0472d4d1859\"\n    \"sha512=8a7f3e82dfa5699c8dda54dd5398c712f3ac4fe04f5208d43d8ba198fb8152de5f91cbb59c15c0a4ba010d4dfcc79f52e405bdd0abbf2798167e9e4216bcb3dd\"\n  ]\n}"
+      ],
+      "id": "A13",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz",
+      "checksums": [
+        "sha256=99414da7609b92a02474ef4b49ecda15edc8cbba5229341b124e7e4695c39610",
+        "sha512=896d0ea829a36ccadba6628800369c1a3ab9e7c64dbda8b76331889c9db481cd64e137f467481ae80a8dd5fca45d748bfa71f58641806cc1bb1a007f8291789f"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "yojson.3.0.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz\"\n  checksum: [\n    \"sha256=99414da7609b92a02474ef4b49ecda15edc8cbba5229341b124e7e4695c39610\"\n    \"sha512=896d0ea829a36ccadba6628800369c1a3ab9e7c64dbda8b76331889c9db481cd64e137f467481ae80a8dd5fca45d748bfa71f58641806cc1bb1a007f8291789f\"\n  ]\n}"
+      ],
+      "id": "A14",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/stdlib-shims/releases/download/0.3.0/stdlib-shims-0.3.0.tbz",
+      "checksums": [
+        "sha256=babf72d3917b86f707885f0c5528e36c63fccb698f4b46cf2bab5c7ccdd6d84a",
+        "sha512=1151d7edc8923516e9a36995a3f8938d323aaade759ad349ed15d6d8501db61ffbe63277e97c4d86149cf371306ac23df0f581ec7e02611f58335126e1870980"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "stdlib-shims.0.3.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml/stdlib-shims/releases/download/0.3.0/stdlib-shims-0.3.0.tbz\"\n  checksum: [\n    \"sha256=babf72d3917b86f707885f0c5528e36c63fccb698f4b46cf2bab5c7ccdd6d84a\"\n    \"sha512=1151d7edc8923516e9a36995a3f8938d323aaade759ad349ed15d6d8501db61ffbe63277e97c4d86149cf371306ac23df0f581ec7e02611f58335126e1870980\"\n  ]\n}"
+      ],
+      "id": "A15",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://ocaml.janestreet.com/ocaml-core/v0.16/files/sexplib0-v0.16.0.tar.gz",
+      "checksums": [
+        "sha256=86dba26468194512f789f2fb709063515a9cb4e5c4461c021c239a369590701d"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "sexplib0.v0.16.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\nsrc: \"https://ocaml.janestreet.com/ocaml-core/v0.16/files/sexplib0-v0.16.0.tar.gz\"\nchecksum: \"sha256=86dba26468194512f789f2fb709063515a9cb4e5c4461c021c239a369590701d\"\n}"
+      ],
+      "id": "A16",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "sail_manifest.0.17",
+          "role": "source"
+        },
+        {
+          "package": "libsail.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_sv_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_smt_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_output.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_ocaml_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_lem_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_latex_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_doc_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_coq_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail_c_backend.0.17",
+          "role": "source"
+        },
+        {
+          "package": "sail.0.17",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+      ],
+      "id": "A17",
+      "artifact_class": "git-tree",
+      "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-ppx/ppx_derivers/archive/1.2.1.tar.gz",
+      "checksums": [
+        "sha256=b6595ee187dea792b31fc54a0e1524ab1e48bc6068d3066c45215a138cc73b95",
+        "md5=5dc2bf130c1db3c731fe0fffc5648b41"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ppx_derivers.1.2.1",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml-ppx/ppx_derivers/archive/1.2.1.tar.gz\"\n  checksum: [\n    \"sha256=b6595ee187dea792b31fc54a0e1524ab1e48bc6068d3066c45215a138cc73b95\"\n    \"md5=5dc2bf130c1db3c731fe0fffc5648b41\"\n  ]\n}"
+      ],
+      "id": "A18",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/fpottier/pprint/archive/20230830.tar.gz",
+      "checksums": [
+        "md5=449216484e93e5691c76f14c87c5a711",
+        "sha512=7c58275cf9951283cf5051c2cf4c98084e8d562a8172a6379d9831a8fc95c9a19fc06710350217da2ea90fd2b17994142b10d1a9f8dab17b2bbf3e47e76c9f5f"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "pprint.20230830",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/fpottier/pprint/archive/20230830.tar.gz\"\n  checksum: [\n    \"md5=449216484e93e5691c76f14c87c5a711\"\n    \"sha512=7c58275cf9951283cf5051c2cf4c98084e8d562a8172a6379d9831a8fc95c9a19fc06710350217da2ea90fd2b17994142b10d1a9f8dab17b2bbf3e47e76c9f5f\"\n  ]\n}"
+      ],
+      "id": "A19",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz",
+      "checksums": [
+        "sha256=8651351518b092b4a2def4e08171c276152f92fb6a84a8b19b6b929ccdb44419",
+        "sha512=78cb68f35c0b975dd1e91bd83d5e33bcec1ee642431585d55864c483c70a032755dfcf21ec5697691e7e7554381ddb580639fd149e28ba6f74d04d2ee43d360d"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "pp.2.0.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz\"\n  checksum: [\n    \"sha256=8651351518b092b4a2def4e08171c276152f92fb6a84a8b19b6b929ccdb44419\"\n    \"sha512=78cb68f35c0b975dd1e91bd83d5e33bcec1ee642431585d55864c483c70a032755dfcf21ec5697691e7e7554381ddb580639fd149e28ba6f74d04d2ee43d360d\"\n  ]\n}"
+      ],
+      "id": "A20",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz",
+      "checksums": [
+        "sha256=b0956210863cc24f480203ba3c2ef06dfae5579536a05744364e7de58822b230",
+        "sha512=257cdd5fb90337b3e3682cade1269c1d181f3124e569a731909f49bbfbe581ab529ac401472fb9ef57166ac34d8ebadfa6a32c93665f38f5a335982d5e5dc0e1"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocamlgraph.2.2.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz\"\n  checksum: [\n    \"sha256=b0956210863cc24f480203ba3c2ef06dfae5579536a05744364e7de58822b230\"\n    \"sha512=257cdd5fb90337b3e3682cade1269c1d181f3124e569a731909f49bbfbe581ab529ac401472fb9ef57166ac34d8ebadfa6a32c93665f38f5a335982d5e5dc0e1\"\n  ]\n}"
+      ],
+      "id": "A21",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/janestreet/ocaml-compiler-libs/releases/download/v0.12.4/ocaml-compiler-libs-v0.12.4.tbz",
+      "checksums": [
+        "sha256=4ec9c9ec35cc45c18c7a143761154ef1d7663036a29297f80381f47981a07760",
+        "sha512=978dba8dfa61f98fa24fda7a9c26c2e837081f37d1685fe636dc19cfc3278a940cf01a10293504b185c406706bc1008bc54313d50f023bcdea6d5ac6c0788b35"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ocaml-compiler-libs.v0.12.4",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/janestreet/ocaml-compiler-libs/releases/download/v0.12.4/ocaml-compiler-libs-v0.12.4.tbz\"\n  checksum: [\n    \"sha256=4ec9c9ec35cc45c18c7a143761154ef1d7663036a29297f80381f47981a07760\"\n    \"sha512=978dba8dfa61f98fa24fda7a9c26c2e837081f37d1685fe636dc19cfc3278a940cf01a10293504b185c406706bc1008bc54313d50f023bcdea6d5ac6c0788b35\"\n  ]\n}"
+      ],
+      "id": "A22",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz",
+      "checksums": [
+        "md5=e993231085db95ab011ffe0cd606d9dd",
+        "sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "menhirSdk.20260209",
+          "role": "source"
+        },
+        {
+          "package": "menhirLib.20260209",
+          "role": "source"
+        },
+        {
+          "package": "menhirGLR.20260209",
+          "role": "source"
+        },
+        {
+          "package": "menhirCST.20260209",
+          "role": "source"
+        },
+        {
+          "package": "menhir.20260209",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+      ],
+      "id": "A23",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz",
+      "checksums": [
+        "sha256=eef172cb98282b7a8be182f3493f4687ed3a3f833d3c2707d07d188bf9dede37",
+        "sha512=b316b034ba712f13c8727a890c5356a52119d6f5e7040273259109bfac6813c383670295942d39441b9b9e792f3b53250400da000bbe0c6848df5643e27018ac"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "linenoise.1.5.1",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz\"\n  checksum: [\n    \"sha256=eef172cb98282b7a8be182f3493f4687ed3a3f833d3c2707d07d188bf9dede37\"\n    \"sha512=b316b034ba712f13c8727a890c5356a52119d6f5e7040273259109bfac6813c383670295942d39441b9b9e792f3b53250400da000bbe0c6848df5643e27018ac\"\n  ]\n}"
+      ],
+      "id": "A24",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz",
+      "checksums": [
+        "sha256=1a14dd04bb4379a41990248550628c77913a9c07f3c35c1370b6960e697787ff",
+        "sha512=be281018bcfc20d4db14894ef51c4b836d6338d2fdfe22e63d46f405f8dea7349e16f1c0ecd65f73d4c85a2a80e618cdbb8c9dafcbb9f229f04f1adca5b1973c"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "csexp.1.5.2",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz\"\n  checksum: [\n    \"sha256=1a14dd04bb4379a41990248550628c77913a9c07f3c35c1370b6960e697787ff\"\n    \"sha512=be281018bcfc20d4db14894ef51c4b836d6338d2fdfe22e63d46f405f8dea7349e16f1c0ecd65f73d4c85a2a80e618cdbb8c9dafcbb9f229f04f1adca5b1973c\"\n  ]\n}"
+      ],
+      "id": "A25",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz",
+      "checksums": [
+        "sha256=b3f5ce301aa72c7032ef90be2332d72ff3962922c00ee2aec6bcade187a2f59b",
+        "sha512=82148a1fefec9493aaeac032c8d46b9548369d7fd90a57865e009a32c8a0eef950f0f8dbb52b74bb46880a590a0b49f2daa7ab4857233734aee8e383f5a164ec"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "base64.3.5.2",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz\"\n  checksum: [\n    \"sha256=b3f5ce301aa72c7032ef90be2332d72ff3962922c00ee2aec6bcade187a2f59b\"\n    \"sha512=82148a1fefec9493aaeac032c8d46b9548369d7fd90a57865e009a32c8a0eef950f0f8dbb52b74bb46880a590a0b49f2daa7ab4857233734aee8e383f5a164ec\"\n  ]\n}"
+      ],
+      "id": "A26",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/rems-project/lem/archive/refs/tags/2026-05-01.tar.gz",
+      "checksums": [
+        "sha256=87782e0887613d5ec3d52831762f4537cd46f4817b03ec37e80831f52a5b7f03",
+        "sha512=5372418b2451ad44a91e8324926661b19fb402b7a33981977bc680be9d33f9c2ccaa2d2bf146c573fcfc5eb4d660cf06c6ac8278313ec52c560ee86b3fc5cfc6"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "lem.2026-05-01",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/rems-project/lem/archive/refs/tags/2026-05-01.tar.gz\"\n  checksum: [\n    \"sha256=87782e0887613d5ec3d52831762f4537cd46f4817b03ec37e80831f52a5b7f03\"\n    \"sha512=5372418b2451ad44a91e8324926661b19fb402b7a33981977bc680be9d33f9c2ccaa2d2bf146c573fcfc5eb4d660cf06c6ac8278313ec52c560ee86b3fc5cfc6\"\n  ]\n}"
+      ],
+      "id": "A27",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz",
+      "checksums": [
+        "md5=64b49dbc3205477bd7517642c0b9cbb6",
+        "sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "coq-core.8.19.0",
+          "role": "source"
+        },
+        {
+          "package": "coqide-server.8.19.0",
+          "role": "source"
+        },
+        {
+          "package": "coq-stdlib.8.19.0",
+          "role": "source"
+        },
+        {
+          "package": "coq.8.19.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz\"\n  checksum: [\n    \"md5=64b49dbc3205477bd7517642c0b9cbb6\"\n    \"sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b\"\n  ]\n}"
+      ],
+      "id": "A28",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz",
+      "checksums": [
+        "sha256=6023e1642631f08f678eb5725820879ed7bb5a3ffee777cdedebc28c1f85fadb",
+        "sha512=fa2070a5f5d30b2cc422937ac4158bb087134a69d47fa15df403afb1c0c60a73dd436c949faa8d44e0b65bdee039779d86191b55085b717253f91ef20a69ef98"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "omd.1.3.2",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz\"\n  checksum: [\n    \"sha256=6023e1642631f08f678eb5725820879ed7bb5a3ffee777cdedebc28c1f85fadb\"\n    \"sha512=fa2070a5f5d30b2cc422937ac4158bb087134a69d47fa15df403afb1c0c60a73dd436c949faa8d44e0b65bdee039779d86191b55085b717253f91ef20a69ef98\"\n  ]\n}"
+      ],
+      "id": "A29",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/yallop/ocaml-integers/archive/0.8.0.tar.gz",
+      "checksums": [
+        "sha256=04a1a6d5cc1ecfd3f354a83caed27e59995bb26adec64d88193ccc36268929fa",
+        "md5=5155b252a1143ebe7f895003a7103f5e"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "integers.0.8.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/yallop/ocaml-integers/archive/0.8.0.tar.gz\"\n  checksum: [\n    \"sha256=04a1a6d5cc1ecfd3f354a83caed27e59995bb26adec64d88193ccc36268929fa\"\n    \"md5=5155b252a1143ebe7f895003a7103f5e\"\n  ]\n}"
+      ],
+      "id": "A30",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ott-lang/ott/archive/0.34.tar.gz",
+      "checksums": [
+        "sha512=371b59c0dc35207f8e85a939f03ae63fc654df50540ed5e656c5a40c5062ebfdfb1e02cfd499074f9d0b43afc165606b57dec4c96a4ca44ee91d1c1dcfa4deaf"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ott.0.34",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/ott-lang/ott/archive/0.34.tar.gz\"\n  checksum: \"sha512=371b59c0dc35207f8e85a939f03ae63fc654df50540ed5e656c5a40c5062ebfdfb1e02cfd499074f9d0b43afc165606b57dec4c96a4ca44ee91d1c1dcfa4deaf\"\n}"
+      ],
+      "id": "A31",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/ocaml-ppx/ppxlib/releases/download/0.35.0/ppxlib-0.35.0.tbz",
+      "checksums": [
+        "sha256=d9d959fc9f84260487e45684dc741898a92fc5506b61a7f5cac65d21832db925",
+        "sha512=e428b1e3b89261c7efdaa18016264d1afbf067cb9b0d41124b04796c2487ac7ca8ee9a24a60d56f20d1774cb44aaa9ecf1512f17455812ba8d62d4ef93616ee7"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "ppxlib.0.35.0",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/ocaml-ppx/ppxlib/releases/download/0.35.0/ppxlib-0.35.0.tbz\"\n  checksum: [\n    \"sha256=d9d959fc9f84260487e45684dc741898a92fc5506b61a7f5cac65d21832db925\"\n    \"sha512=e428b1e3b89261c7efdaa18016264d1afbf067cb9b0d41124b04796c2487ac7ca8ee9a24a60d56f20d1774cb44aaa9ecf1512f17455812ba8d62d4ef93616ee7\"\n  ]\n}"
+      ],
+      "id": "A32",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/rems-project/linksem/archive/0.8.tar.gz",
+      "checksums": [
+        "md5=2075c56715539b3b8f54ae65cc808b8c",
+        "sha512=f7c16e4036a1440a6a8d13707a43f0f9f9db0c68489215f948cc300b6a164dba5bf852e58f89503e9d9f38180ee658d9478156ca1a1ef64d6861eec5f9cf43d2"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "linksem.0.8",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/rems-project/linksem/archive/0.8.tar.gz\"\n  checksum: [\n    \"md5=2075c56715539b3b8f54ae65cc808b8c\"\n    \"sha512=f7c16e4036a1440a6a8d13707a43f0f9f9db0c68489215f948cc300b6a164dba5bf852e58f89503e9d9f38180ee658d9478156ca1a1ef64d6861eec5f9cf43d2\"\n  ]\n}"
+      ],
+      "id": "A33",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/aantron/bisect_ppx/archive/2.8.3.tar.gz",
+      "checksums": [
+        "sha256=27ddeb2f60fbae50dc504e63e63cd5f012689084a76d5fdd4d1371d5341ff8db",
+        "md5=8c755c13e8d90f665986d842a41669f5"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "bisect_ppx.2.8.3",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/aantron/bisect_ppx/archive/2.8.3.tar.gz\"\n  checksum: [\n    \"sha256=27ddeb2f60fbae50dc504e63e63cd5f012689084a76d5fdd4d1371d5341ff8db\"\n    \"md5=8c755c13e8d90f665986d842a41669f5\"\n  ]\n}"
+      ],
+      "id": "A34",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "isla-lang.dev",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a\" }"
+      ],
+      "id": "A35",
+      "artifact_class": "git-tree",
+      "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+          "role": "source"
+        },
+        {
+          "package": "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+          "role": "source"
+        },
+        {
+          "package": "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3\" }"
+      ],
+      "id": "A36",
+      "artifact_class": "git-tree",
+      "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/tchajed/coq-record-update/archive/v0.3.3.tar.gz",
+      "checksums": [
+        "sha512=fb88f33ba716d068506d31047969fff40630adc7df7f21a016c8d92ff3c802007ce4efc0ae93c5456b76544040c323ae4d66755c8b425087504ddb1146a8b81a"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "coq-record-update.0.3.3",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src:\n    \"https://github.com/tchajed/coq-record-update/archive/v0.3.3.tar.gz\"\n  checksum:\n    \"sha512=fb88f33ba716d068506d31047969fff40630adc7df7f21a016c8d92ff3c802007ce4efc0ae93c5456b76544040c323ae4d66755c8b425087504ddb1146a8b81a\"\n}"
+      ],
+      "id": "A37",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "https://github.com/mit-plv/bbv/archive/v1.5.tar.gz",
+      "checksums": [
+        "sha512=43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33"
+      ],
+      "kind": "checksummed-http",
+      "consumers": [
+        {
+          "package": "coq-bbv.1.5",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url {\n  src: \"https://github.com/mit-plv/bbv/archive/v1.5.tar.gz\"\n  checksum: \"sha512=43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33\"\n}"
+      ],
+      "id": "A38",
+      "artifact_class": "archive",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "coq-iris.dev.2024-09-10.1.6f24ed4b",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa\" }"
+      ],
+      "id": "A39",
+      "artifact_class": "git-tree",
+      "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "coq-sail.0.17",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e\" }"
+      ],
+      "id": "A40",
+      "artifact_class": "git-tree",
+      "commit": "169934e27ceafe393ed4d365985f7b12d974d56e",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "coq-lithium.dev.2024-09-11.0.7945a29d",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc\" }"
+      ],
+      "id": "A41",
+      "artifact_class": "git-tree",
+      "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "coq-sail-riscv.0.5",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890\" }"
+      ],
+      "id": "A42",
+      "artifact_class": "git-tree",
+      "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    },
+    {
+      "url": "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "checksums": [],
+      "kind": "fixed-git",
+      "consumers": [
+        {
+          "package": "islaris.dev",
+          "role": "source"
+        }
+      ],
+      "sections": [
+        "url { src: \"git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9\" }"
+      ],
+      "id": "A43",
+      "artifact_class": "git-tree",
+      "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "acquisition_status": "not acquired or validated by this offline preparation"
+    }
+  ],
+  "selected_without_source_sections": [
+    "base-threads.base",
+    "conf-findutils.1",
+    "base-unix.base",
+    "base-bigarray.base",
+    "ocaml-option-flambda.1",
+    "conf-linux-libc-dev.0",
+    "conf-zlib.1",
+    "ocaml.4.14.0",
+    "base-bytes.base"
+  ],
+  "counts": {
+    "extra-file": 6,
+    "archive": 29,
+    "git-tree": 8
+  },
+  "declared_identity_missing": [],
+  "remaining_identity_gates": [
+    "actual bytes and compressed-object hashes",
+    "complete fixed Git trees including mode/symlink/gitlink identity",
+    "old Sail external Z3 exact version/source/binary",
+    "system depext/tool binaries and closure"
+  ]
+}

@@ -1,0 +1,572 @@
+[
+  {
+    "drv": "/nix/store/fs3q1hxa80yp14xfw4rr7rak0xzxl9i4-ocaml4.14.4-elpi-2.0.7.drv",
+    "name": "ocaml4.14.4-elpi-2.0.7",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/747wp1kcqaiymqdp40mb4w4j5yc36k6n-elpi-2.0.7.tbz",
+    "outputs": {
+      "out": {
+        "path": "zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/ikhl9iib8hxign0zi9ly2msw2hyy5j55-elpi-2.0.7.tbz.drv",
+    "source_urls": [
+      "https://github.com/LPCIC/elpi/releases/download/v2.0.7/elpi-2.0.7.tbz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-gCM+vZK6vWlhSO1VMjiWHse23mvxVwRarhxwkIQK7e0=",
+        "method": "flat"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-gCM+vZK6vWlhSO1VMjiWHse23mvxVwRarhxwkIQK7e0=",
+      "outputHashMode": "flat"
+    }
+  },
+  {
+    "drv": "/nix/store/h2xp9vk3q48w88r4jj06yyr7vd0dpw35-rocq-core9.0-elpi-2.5.2.drv",
+    "name": "rocq-core9.0-elpi-2.5.2",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/r6pilabmpgl4lwp1qisgfn7ql0121zg8-source",
+    "outputs": {
+      "out": {
+        "path": "kkzb6af498dhw88sdgc7y3mb40wy39k5-rocq-core9.0-elpi-2.5.2"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/prh72jan1ra312blcllbv3qzr5cb4kms-source.drv",
+    "source_urls": [
+      "https://github.com/LPCIC/coq-elpi/archive/v2.5.2.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-lLzjPrbVB3rrqox528YiheUb0u89R84Xmrgkn0oplOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-lLzjPrbVB3rrqox528YiheUb0u89R84Xmrgkn0oplOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/knfyj86y2pl21chrknr496n2pwpshq87-rocq-core9.0-hierarchy-builder-1.9.1.drv",
+    "name": "rocq-core9.0-hierarchy-builder-1.9.1",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/z7fig4nqqa670j9wnwq9nggalr79lsfz-source",
+    "outputs": {
+      "out": {
+        "path": "d6iw084h4ippi1nhh5xv3acf6w11aakw-rocq-core9.0-hierarchy-builder-1.9.1"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/821p210zfh8ckg386bj95fpi6fbnwn3q-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/hierarchy-builder/archive/v1.9.1.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-AiS0ezMyfIYlXnuNsVLz1GlKQZzJX+ilkrKkbo0GrF0=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-AiS0ezMyfIYlXnuNsVLz1GlKQZzJX+ilkrKkbo0GrF0=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/6rzgdnd3g59dh5kjwslaiq9mjgxfsmq7-coq9.0-mathcomp-boot-2.4.0.drv",
+    "name": "coq9.0-mathcomp-boot-2.4.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "outputs": {
+      "out": {
+        "path": "4w63n2gjvfya8gl0bdam91ab6rnbd4f5-coq9.0-mathcomp-boot-2.4.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/26h025pxlfxrgqajlcf5sxkyr2n3mm79-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/math-comp/archive/mathcomp-2.4.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/2z6kh1grqzv5c36mj3fvk9dbx47afrmm-coq9.0-mathcomp-fingroup-2.4.0.drv",
+    "name": "coq9.0-mathcomp-fingroup-2.4.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "outputs": {
+      "out": {
+        "path": "v0cw5qw110z623i7pmd1l09hvfpj41zl-coq9.0-mathcomp-fingroup-2.4.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/26h025pxlfxrgqajlcf5sxkyr2n3mm79-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/math-comp/archive/mathcomp-2.4.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/ajrzwqnskdnfmmlms6czafdbbarzmg4w-coq9.0-mathcomp-order-2.4.0.drv",
+    "name": "coq9.0-mathcomp-order-2.4.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "outputs": {
+      "out": {
+        "path": "vcnz700kvyv5vnvhwq9y0cmvvknkdih7-coq9.0-mathcomp-order-2.4.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/26h025pxlfxrgqajlcf5sxkyr2n3mm79-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/math-comp/archive/mathcomp-2.4.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/49ybahayrjykab0j3kjfkbxfzd3j711m-coq9.0-mathcomp-algebra-2.4.0.drv",
+    "name": "coq9.0-mathcomp-algebra-2.4.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "outputs": {
+      "out": {
+        "path": "71ginv15dqw700k5s0wn8gf11b4gs5l7-coq9.0-mathcomp-algebra-2.4.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/26h025pxlfxrgqajlcf5sxkyr2n3mm79-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/math-comp/archive/mathcomp-2.4.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/6g0jvi4pwd2nqbkm60qkj9sa87gcr41c-rocq-core9.0-stdlib-9.0.0.drv",
+    "name": "rocq-core9.0-stdlib-9.0.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/l4qajvqxgpki1cl2gvvgmp05h32k2v1q-source",
+    "outputs": {
+      "out": {
+        "path": "hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/s3xpcv1k70y2njlwdjqah7jhmsyh2jjx-source.drv",
+    "source_urls": [
+      "https://github.com/rocq-prover/stdlib/archive/V9.0.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-2l7ak5Q/NbiNvUzIVXOniEneDXouBMNSSVFbD1Pf8cQ=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-2l7ak5Q/NbiNvUzIVXOniEneDXouBMNSSVFbD1Pf8cQ=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/90fa443xbknqmm99fcjiq5wd37g8miyj-coq9.0-mathcomp-ssreflect-2.4.0.drv",
+    "name": "coq9.0-mathcomp-ssreflect-2.4.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "outputs": {
+      "out": {
+        "path": "sq4ng99s0j3czph9xm9a49vfxdlpl53v-coq9.0-mathcomp-ssreflect-2.4.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/26h025pxlfxrgqajlcf5sxkyr2n3mm79-source.drv",
+    "source_urls": [
+      "https://github.com/math-comp/math-comp/archive/mathcomp-2.4.0.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-A1XgLLwZRvKS8QyceCkSQa7ue6TYyf5fMft5gSx9NOs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/zi884gn4vgw74q81kiqww6w2n5ywkw5w-source.drv",
+    "name": "source",
+    "system": "aarch64-linux",
+    "type": "fixed-output-fetch",
+    "requiredSystemFeatures": "",
+    "doCheck": false,
+    "preferLocalBuild": true,
+    "src": null,
+    "outputs": {
+      "out": {
+        "hash": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+        "method": "nar"
+      }
+    },
+    "source_status": "fixed-output-fetch-itself",
+    "source_urls": [
+      "https://github.com/jasmin-lang/coqword/archive/86ed49aeca65a8d32e81bb386778f49b45ee505b.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+        "method": "nar"
+      }
+    }
+  },
+  {
+    "drv": "/nix/store/3fzp0yhf84a013kdgdb8z396s6yygwxb-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae.drv",
+    "name": "coq9.0-mathcomp2.4-word-3.5-git-86ed49ae",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source",
+    "outputs": {
+      "out": {
+        "path": "f0j45rkg327yrv5xdw0xa8r0abl1x52x-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae"
+      }
+    },
+    "source_status": "uncached-derivation-output",
+    "source_derivation": "/nix/store/zi884gn4vgw74q81kiqww6w2n5ywkw5w-source.drv",
+    "source_urls": [
+      "https://github.com/jasmin-lang/coqword/archive/86ed49aeca65a8d32e81bb386778f49b45ee505b.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "rev": "86ed49aeca65a8d32e81bb386778f49b45ee505b",
+      "owner": "jasmin-lang",
+      "repo": "coqword",
+      "outputHash": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/57v55i784s4d94g1asrbpq8qvl379z6w-coq9.0-coq-ext-lib-0.13.1.drv",
+    "name": "coq9.0-coq-ext-lib-0.13.1",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/hm1z75gy58j9dkvxq1nz0mh7zngpmznp-source",
+    "outputs": {
+      "out": {
+        "path": "kdsvnwjp3iyfz2s7m8qaks6ksh7w1mbm-coq9.0-coq-ext-lib-0.13.1"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/lrixz633hdnrji04vw7p71y1h7wi5div-source.drv",
+    "source_urls": [
+      "https://github.com/coq-community/coq-ext-lib/archive/v0.13.1.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-WJZaisQhbK9s/X4UeEYlhIaG2JqVWm1BiXzlDAcfEMk=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-WJZaisQhbK9s/X4UeEYlhIaG2JqVWm1BiXzlDAcfEMk=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/8v31lkzghdy483b31xw6nrg458b4y3zx-setupHook.sh.drv",
+    "name": "setupHook.sh",
+    "system": "aarch64-linux",
+    "type": "generated-support-text",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "1",
+    "src": null,
+    "outputs": {
+      "out": {
+        "path": "1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh"
+      }
+    },
+    "source_status": "generated-support-text"
+  },
+  {
+    "drv": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+    "name": "easycrypt-2026.09",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/1h07ffv5ha497wli56y910j8bsfi59cy-source",
+    "outputs": {
+      "out": {
+        "path": "6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/svmlfsfhmnxkk0n2jb4g7lgfkjbhzsyd-source.drv",
+    "source_urls": [
+      "https://github.com/easycrypt/easycrypt/archive/r2026.09.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "rev": "r2026.09",
+      "owner": "easycrypt",
+      "repo": "easycrypt",
+      "outputHash": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/ggvw9v47w53p9c8xq9ijqc8ql4fg6gj7-ocaml4.14.4-camlidl-1.12.drv",
+    "name": "ocaml4.14.4-camlidl-1.12",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/an1ca64br2yd5xhqclj6ya3qb8xwqil8-source",
+    "outputs": {
+      "out": {
+        "path": "cm942qr65k803vy00jym6k810xb5rzh2-ocaml4.14.4-camlidl-1.12"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/z366pbka1glmjlp4541b3ynl8x7lyhj3-source.drv",
+    "source_urls": [
+      "https://github.com/xavierleroy/camlidl/archive/camlidl112.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-ONPQMDFaU2OzFa5jgMVKx+ZRKk8ZgBZyk42vDvbM7E0=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "rev": "camlidl112",
+      "owner": "xavierleroy",
+      "repo": "camlidl",
+      "outputHash": "sha256-ONPQMDFaU2OzFa5jgMVKx+ZRKk8ZgBZyk42vDvbM7E0=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/znry7fvjp9lgkzs81258hydcvxm74f4g-ocaml4.14.4-mlgmpidl-1.3.0.drv",
+    "name": "ocaml4.14.4-mlgmpidl-1.3.0",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/kyp13hx0gxq28r84raif8c955ypm6qp1-source",
+    "outputs": {
+      "out": {
+        "path": "k858w21zwd3sa8nsp3wvknad73hi2zik-ocaml4.14.4-mlgmpidl-1.3.0"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/3f782mycw5lza676bp0giya4d1r7aamj-source.drv",
+    "source_urls": [
+      "https://github.com/nberth/mlgmpidl/archive/1.3.0.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-ZmSDKZiHko8MCeIuZL53HjupfwO6PAm8QOCc9O3xJOk=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "rev": "1.3.0",
+      "owner": "nberth",
+      "repo": "mlgmpidl",
+      "outputHash": "sha256-ZmSDKZiHko8MCeIuZL53HjupfwO6PAm8QOCc9O3xJOk=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+    "name": "ocaml4.14.4-apron-0.9.15",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/kl4v6az2ljr1n8fa0kx6gi3n2i1b2lb3-source",
+    "outputs": {
+      "dev": {
+        "path": "80afbqa0gr8h9n71jl7j7prlg4wwifpg-ocaml4.14.4-apron-0.9.15-dev"
+      },
+      "out": {
+        "path": "r5xa6cr20nsizra4h8hswbcan4i3r5cn-ocaml4.14.4-apron-0.9.15"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/dpidp7wlnzf5gl5220ia23jjz3p5lj0n-source.drv",
+    "source_urls": [
+      "https://github.com/antoinemine/apron/archive/v0.9.15.tar.gz"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-gHLCurydxX1pS66DTAWUJGl9Yqu9RWRjkZh6lXzM7YY=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "rev": "v0.9.15",
+      "owner": "antoinemine",
+      "repo": "apron",
+      "outputHash": "sha256-gHLCurydxX1pS66DTAWUJGl9Yqu9RWRjkZh6lXzM7YY=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/yyv2cf39abkqs7mzygvslyr8glyvq8rj-coq9.0-paco-4.2.3.drv",
+    "name": "coq9.0-paco-4.2.3",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/cdcq7bgzyf7043hl9z477q8faw1sy5n9-source",
+    "outputs": {
+      "out": {
+        "path": "vl17mw9sz43gnc7836nzq0cmhaaww8bn-coq9.0-paco-4.2.3"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/f71kl2ychd7a8vvjmi34izp8l43y4dmh-source.drv",
+    "source_urls": [
+      "https://github.com/snu-sf/paco/archive/v4.2.3.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-ldUjNd5daUu2B3v4tk20/iXFgyUuW4XHlbubTInpwcs=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-ldUjNd5daUu2B3v4tk20/iXFgyUuW4XHlbubTInpwcs=",
+      "outputHashMode": "recursive"
+    }
+  },
+  {
+    "drv": "/nix/store/qxmngacfgm5r48na2mgv1qdv023pfmpw-coq9.0-InteractionTrees-5.2.1.drv",
+    "name": "coq9.0-InteractionTrees-5.2.1",
+    "system": "aarch64-linux",
+    "type": "package-build",
+    "requiredSystemFeatures": "",
+    "doCheck": "",
+    "preferLocalBuild": "",
+    "src": "/nix/store/b6s2qa23lgkypd2xy90avq2zxq9c439x-source",
+    "outputs": {
+      "out": {
+        "path": "9xkpcgw45njnh24vlrsb2y3i49bnqa5p-coq9.0-InteractionTrees-5.2.1"
+      }
+    },
+    "source_status": "cached-fetch-plan",
+    "source_derivation": "/nix/store/iwfjv8047k2gvx9xnxvglm7ji38z1pv2-source.drv",
+    "source_urls": [
+      "https://github.com/DeepSpec/InteractionTrees/archive/5.2.1.zip"
+    ],
+    "source_hashes": {
+      "out": {
+        "hash": "sha256-3ExKHXIA8EnzAPzSbdB9FTN2OcLCVS5WtmrHOiN9UiQ=",
+        "method": "nar"
+      }
+    },
+    "source_attributes": {
+      "outputHash": "sha256-3ExKHXIA8EnzAPzSbdB9FTN2OcLCVS5WtmrHOiN9UiQ=",
+      "outputHashMode": "recursive"
+    }
+  }
+]

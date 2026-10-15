@@ -1,0 +1,187 @@
+{
+  "verdict": "PASS",
+  "scope": "frozen acquired-source/cache content identity; no build/proof/solver-correctness claim",
+  "findings": [
+    {
+      "severity": "claim_limit",
+      "issue": "archive mode checks cover owner-execute bit only; archive directory entries ignored; hardlink topology not verified",
+      "required_reporting": "Preserve this limit; no exact full Unix mode or archive directory identity claim."
+    },
+    {
+      "severity": "trust_boundary",
+      "issue": "most original transport/Git body bytes not retained; independent audit checks raw receipts, reconstructed trees/commits and recorded hash correspondences without native restream"
+    }
+  ],
+  "executed": {
+    "frozen_manifest": {
+      "files": 237,
+      "bytes": 92878419,
+      "sha256": "836119699026aaefdaa444b01ab7c9ec9ae203e3d29b86dbc1cf28f8697277e3",
+      "all_files_verified": true
+    },
+    "unchanged": {
+      "hashes": 115763,
+      "entries": 154231,
+      "hash_entry_bijection": true,
+      "before_after_identical": true,
+      "gzip_matches": true
+    },
+    "native_result_keys": [
+      "opam-version",
+      "command-line",
+      "switch",
+      "request",
+      "solution",
+      "results"
+    ],
+    "selection_consumer_metadata": {
+      "selected": 74,
+      "roots": 35,
+      "consumer_associations": 68,
+      "native_metadata_inputs": 19429
+    },
+    "http": {
+      "objects": 35,
+      "declared_comparisons": 63,
+      "archives": 29,
+      "archive_copies": 41,
+      "member_comparisons": 67569,
+      "extra_files_rehashed": 6,
+      "scope": "transport MD5/SHA512 use frozen native hash receipts; archived compressed bytes not retained; archive members use frozen streamed member SHA256 ledger"
+    },
+    "git": {
+      "repositories": 8,
+      "object_ledger_comparisons": 4998,
+      "source_copies": 21,
+      "tree_objects_independently_reconstructed": 354,
+      "no_gitlinks_or_extra_worktree_entries": true,
+      "limit": "non-retained blob bodies are independently compared via frozen object SHA256 ledgers, not re-streamed"
+    },
+    "config_receipts": 21,
+    "snippets_bound": 3,
+    "controls": [
+      {
+        "control": "missing artifact",
+        "status": "REJECTED",
+        "reason": "A17-objects.json"
+      },
+      {
+        "control": "corrupted hash",
+        "status": "REJECTED",
+        "reason": "manifest A01-extra-source"
+      },
+      {
+        "control": "missing consumer",
+        "status": "REJECTED",
+        "reason": "consumer association coverage"
+      },
+      {
+        "control": "truncated NUL hash stream",
+        "status": "REJECTED",
+        "reason": "NUL terminator"
+      }
+    ],
+    "exact_git_filter_regression": true
+  },
+  "primary": {
+    "status": "PASS",
+    "physical_metadata_roots": {
+      "main": "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/cross-foundation-runtime/sources/opam-metadata",
+      "overlay": "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/sail-proof-design/islaris-solver-inputs/repository"
+    },
+    "physical_metadata_files_rehashed": 19429,
+    "raw_acquisition_sha256": "78e333362276408578c7b9d34bfaafce004bc2aa78e19b2f05c250fb260a8263",
+    "duplicate_keys_identical": [
+      "command-line"
+    ],
+    "selected_exact_versions": 74,
+    "roots_exact_order": 35,
+    "consumer_declarations_independently_parsed": 68,
+    "all_35_md5_objects_bound_to_raw_native_receipt": true,
+    "missing_consumer_rejected_against_physical_declarations": true
+  },
+  "receipts": {
+    "status": "PASS",
+    "phases": [
+      {
+        "phase": "entries-after",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "entries-before",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "final-observers",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "git-fsck",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "git-layout",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "git-receipts",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "hash-after",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "hash-before",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "http-hashes",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "inventory",
+        "status": 127,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "layout",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "system-inventory",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      },
+      {
+        "phase": "tools",
+        "status": 0,
+        "isolation_and_code_stream_bindings": true
+      }
+    ]
+  },
+  "rejected_checker_diagnosed": {
+    "status": "DIAGNOSED",
+    "stop_point": "alternate hash comparison; no downstream checks ran",
+    "cause": "independent checker assumed trailing newline in alternates; frozen raw git-fsck.stdout and recorded hash bind exact newline-free bytes",
+    "regression": {
+      "without_newline_sha256": "732f16cef8cd48d7b9aeeb11f10d998f84e51372a6de3eea014c63d0e346cf5b",
+      "with_newline_sha256": "f290e385228a87e8281a0d57871348836f1486768a5d1e4f1f91a3326563e743",
+      "recorded_sha256": "732f16cef8cd48d7b9aeeb11f10d998f84e51372a6de3eea014c63d0e346cf5b"
+    },
+    "original_checker_and_streams_retained": true
+  },
+  "originals_modified": false,
+  "network_or_native_container_or_git_used": false,
+  "review_md_sha256": "10dfab04efe016ac74dd4240d68ca242cf4272598e8114ca5951ab888738b2e8"
+}

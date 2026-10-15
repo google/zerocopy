@@ -1,0 +1,22 @@
+[
+  {
+    "label": "valid",
+    "accepted": true,
+    "expected": true
+  },
+  {
+    "label": "failed-empty",
+    "accepted": false,
+    "expected": false
+  },
+  {
+    "label": "status0-empty",
+    "accepted": false,
+    "expected": false
+  },
+  {
+    "label": "missing-size",
+    "accepted": false,
+    "expected": false
+  }
+]

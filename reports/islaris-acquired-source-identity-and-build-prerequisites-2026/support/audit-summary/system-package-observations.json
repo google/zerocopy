@@ -1,0 +1,62 @@
+[
+  {
+    "package": "binutils",
+    "version": "2.40-2",
+    "status": "install ok installed"
+  },
+  {
+    "package": "build-essential",
+    "version": "12.9",
+    "status": "install ok installed"
+  },
+  {
+    "package": "findutils",
+    "version": "4.9.0-4",
+    "status": "install ok installed"
+  },
+  {
+    "package": "g++",
+    "version": "4:12.2.0-3",
+    "status": "install ok installed"
+  },
+  {
+    "package": "g++-12",
+    "version": "12.2.0-14+deb12u1",
+    "status": "install ok installed"
+  },
+  {
+    "package": "gcc",
+    "version": "4:12.2.0-3",
+    "status": "install ok installed"
+  },
+  {
+    "package": "gcc-12",
+    "version": "12.2.0-14+deb12u1",
+    "status": "install ok installed"
+  },
+  {
+    "package": "git",
+    "version": "1:2.39.5-0+deb12u3",
+    "status": "install ok installed"
+  },
+  {
+    "package": "libc6-dev",
+    "version": "2.36-9+deb12u14",
+    "status": "install ok installed"
+  },
+  {
+    "package": "linux-libc-dev",
+    "version": "6.1.187-1",
+    "status": "install ok installed"
+  },
+  {
+    "package": "make",
+    "version": "4.3-4.1",
+    "status": "install ok installed"
+  },
+  {
+    "package": "patch",
+    "version": "2.7.6-7",
+    "status": "install ok installed"
+  }
+]

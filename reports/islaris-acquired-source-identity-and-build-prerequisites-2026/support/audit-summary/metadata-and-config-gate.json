@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "native_input_files": 19429,
+  "selected_metadata": 74,
+  "Git_configs": 21,
+  "Git_config_external_include_filter_or_credential_sections": false,
+  "config_source": "exact framed bytes from git-fsck.stdout, independently matched to all native file hashes"
+}

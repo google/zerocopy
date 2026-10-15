@@ -1,0 +1,47 @@
+[
+  {
+    "artifact": "A17",
+    "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+    "path": "INSTALL.md",
+    "retained": "inspected-source/A17/INSTALL.md",
+    "lines": [
+      21,
+      27,
+      40,
+      46
+    ],
+    "git_blob": "1d887630fab484f103493c214d27a5338afdcbfa",
+    "sha256": "18ed301b5c73273528acc7f8d9af0041afe03f05d1fb83e244ca00e16e3111d4",
+    "bytes": 4704
+  },
+  {
+    "artifact": "A17",
+    "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+    "path": "src/lib/constraint.ml",
+    "retained": "inspected-source/A17/src/lib/constraint.ml",
+    "lines": [
+      95,
+      105,
+      128,
+      131
+    ],
+    "git_blob": "fe3586f895dda7d964be584909c7fc57906e5894",
+    "sha256": "22e813188301d00d674ebc0b0559224fb1dad27882dde21972adad715fd715cb",
+    "bytes": 25431
+  },
+  {
+    "artifact": "A42",
+    "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "path": "Makefile",
+    "retained": "inspected-source/A42/Makefile",
+    "lines": [
+      383,
+      388,
+      405,
+      413
+    ],
+    "git_blob": "923c6a3d0976ab2739a090b4ca37f48c20e9b3e4",
+    "sha256": "99419dddd22f8ec19fcabc26fe2c29adc514d99840ff5214ba29a83916ca3bcd",
+    "bytes": 23277
+  }
+]

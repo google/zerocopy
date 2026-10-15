@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17",
+    "cat-file",
+    "blob",
+    "efe3a9149f0187c2658d8295c38c5e5f52002663"
+  ],
+  "status": 0,
+  "seconds": 0.1283273749286309,
+  "bytes": 2594,
+  "sha256": "b281dbc23f84614cb02950a26ab6b7f803cb4bb615b3af84fde4d5cfec5d6d90",
+  "git_blob": "efe3a9149f0187c2658d8295c38c5e5f52002663"
+}

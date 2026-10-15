@@ -1,0 +1,48 @@
+{
+  "status": "PASS_COMPLETE_CACHE_COPY_WITH_POSTPROCESSING_DIAGNOSIS",
+  "before_valid_paths": 2140,
+  "after_valid_paths": 2331,
+  "new_valid_paths": 191,
+  "remote_reference_closure_paths": 205,
+  "reference_paths_preexisting_unchanged_CA": 14,
+  "all_205_nar_hash_sizes_references_match_remote": true,
+  "all_191_new_roots_have_matching_trusted_cache_signatures": true,
+  "new_root_nar_bytes": 3168388760,
+  "remote_root_downloadSize_sum": 1036128107,
+  "remote_closure_nar_bytes": 3168422536,
+  "local_new_root_signature_key_counts": {
+    "cache.nixos.org-1": 191
+  },
+  "downloadSize_role": "cache metadata compressed byte sum, not measured wire traffic",
+  "coqword_source_absent": true,
+  "native_signature_verify_status": 0,
+  "controls": [
+    {
+      "control": "new-signed",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "control": "new-unsigned",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "control": "existing-CA",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "control": "existing-changed-nar",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "control": "existing-CA-metadata-changed",
+      "accepted": false,
+      "expected": false
+    }
+  ],
+  "no_native_work_after_census_failure_diagnosis": true,
+  "ordering_note": "The independent metadata-only signature check was launched in the same tool orchestration after the host census process returned1, before its result was inspected/diagnosed. No native action followed diagnosis."
+}

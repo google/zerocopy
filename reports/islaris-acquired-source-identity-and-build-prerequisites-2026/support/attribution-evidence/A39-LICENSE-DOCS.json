@@ -1,0 +1,32 @@
+{
+  "artifact": "A39",
+  "revision": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+  "source_path": "LICENSE-DOCS",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "cat-file",
+    "blob",
+    "4c892ca811debe00c1e3844a3574ea67e560f1a6"
+  ],
+  "status": 0,
+  "seconds": 0.07213604100979865,
+  "bytes": 18975,
+  "sha256": "68391acad70d88fe498384dd67da5b07ad151ae45b496031daef5fcd9f3ed3bb",
+  "git_blob": "4c892ca811debe00c1e3844a3574ea67e560f1a6"
+}

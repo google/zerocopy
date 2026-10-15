@@ -1,0 +1,145 @@
+The following actions will be performed:
+  - install conf-findutils       1                         [required by lem]
+  - install ocaml-option-flambda 1
+  - install conf-gmp             5                         [required by coq-sail-riscv, libsail]
+  - install base-bigarray        base                      [required by omd]
+  - install conf-pkg-config      5                         [required by zarith, conf-zlib]
+  - install base-unix            base                      [required by dune, stdune]
+  - install conf-linux-libc-dev  0                         [required by coq-core]
+  - install base-threads         base                      [required by dune]
+  - install ocaml-variants       4.14.0+options
+  - install conf-zlib            1                         [required by coq-sail-riscv, libsail]
+  - install ocaml-config         2                         [required by ocaml]
+  - install ocaml                4.14.0                    [required by ordering, dune-private-libs, coq-sail-riscv, etc.]
+  - install ocamlfind            1.9.8                     [required by coq-core, coq-sail-riscv]
+  - install ocamlbuild           0.16.1                    [required by coq-sail-riscv]
+  - install num                  1.6                       [required by lem]
+  - install dune                 3.9.1
+  - install cmdliner             1.3.0                     [required by islaris]
+  - install zarith               1.14                      [required by coq-core]
+  - install base-bytes           base                      [required by omd]
+  - install yojson               3.0.0                     [required by libsail]
+  - install stdlib-shims         0.3.0                     [required by integers]
+  - install sexplib0             v0.16.0                   [required by ppxlib]
+  - install sail_manifest        0.17
+  - install ppx_derivers         1.2.1                     [required by ppxlib]
+  - install pprint               20230830                  [required by islaris, isla-lang, libsail]
+  - install pp                   2.0.0                     [required by dyn, dune-private-libs, stdune]
+  - install ordering             3.9.1
+  - install ocamlgraph           2.2.0                     [required by ott]
+  - install ocaml-compiler-libs  v0.12.4                   [required by ppxlib]
+  - install menhirSdk            20260209                  [required by menhir]
+  - install menhirLib            20260209                  [required by menhir]
+  - install menhirGLR            20260209                  [required by menhir]
+  - install menhirCST            20260209                  [required by menhir]
+  - install linenoise            1.5.1                     [required by sail]
+  - install csexp                1.5.2                     [required by dune-private-libs, stdune]
+  - install base64               3.5.2                     [required by sail_doc_backend, sail_ocaml_backend]
+  - install lem                  2026-05-01                [required by libsail]
+  - install coq-core             8.19.0
+  - install omd                  1.3.2                     [required by sail_doc_backend, sail_latex_backend]
+  - install integers             0.8.0                     [required by islaris]
+  - install dyn                  3.9.1
+  - install ott                  0.34                      [required by islaris, isla-lang, libsail]
+  - install ppxlib               0.35.0                    [required by bisect_ppx]
+  - install menhir               20260209                  [required by islaris, isla-lang, libsail]
+  - install linksem              0.8                       [required by libsail]
+  - install coqide-server        8.19.0
+  - install coq-stdlib           8.19.0
+  - install stdune               3.9.1
+  - install bisect_ppx           2.8.3                     [required by libsail]
+  - install isla-lang            dev
+  - install coq                  8.19.0
+  - install dune-private-libs    3.9.1
+  - install coq-stdpp            dev.2024-09-10.3.a1a12e00
+  - install coq-record-update    0.3.3
+  - install coq-bbv              1.5
+  - install dune-site            3.9.1
+  - install coq-stdpp-bitvector  dev.2024-09-10.3.a1a12e00
+  - install coq-iris             dev.2024-09-10.1.6f24ed4b
+  - install coq-sail             0.17
+  - install libsail              0.17
+  - install coq-stdpp-unstable   dev.2024-09-10.3.a1a12e00
+  - install sail_sv_backend      0.17
+  - install sail_smt_backend     0.17
+  - install sail_output          0.17
+  - install sail_ocaml_backend   0.17
+  - install sail_lem_backend     0.17
+  - install sail_latex_backend   0.17
+  - install sail_doc_backend     0.17
+  - install sail_coq_backend     0.17
+  - install sail_c_backend       0.17
+  - install sail                 0.17
+  - install coq-lithium          dev.2024-09-11.0.7945a29d
+  - install coq-sail-riscv       0.5
+  - install islaris              dev
+===== 74 to install =====
+
+<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+-> retrieved base64.3.5.2  (https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz)
+-> retrieved bisect_ppx.2.8.3  (https://github.com/aantron/bisect_ppx/archive/2.8.3.tar.gz)
+-> retrieved cmdliner.1.3.0  (https://erratique.ch/software/cmdliner/releases/cmdliner-1.3.0.tbz)
+-> retrieved conf-gmp.5  (https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4)
+-> retrieved conf-pkg-config.5  (2 extra sources)
+-> retrieved coq.8.19.0  (https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz)
+-> retrieved coq-bbv.1.5  (https://github.com/mit-plv/bbv/archive/v1.5.tar.gz)
+-> retrieved coq-core.8.19.0  (cached)
+-> retrieved coq-iris.dev.2024-09-10.1.6f24ed4b  (git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa)
+-> retrieved coq-lithium.dev.2024-09-11.0.7945a29d  (git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc)
+-> retrieved coq-record-update.0.3.3  (https://github.com/tchajed/coq-record-update/archive/v0.3.3.tar.gz)
+-> retrieved coq-sail.0.17  (git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e)
+-> retrieved coq-sail-riscv.0.5  (git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890)
+-> retrieved coq-stdlib.8.19.0  (cached)
+-> retrieved coq-stdpp.dev.2024-09-10.3.a1a12e00  (git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3)
+-> retrieved coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00  (git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3)
+-> retrieved coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00  (git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3)
+-> retrieved coqide-server.8.19.0  (cached)
+-> retrieved csexp.1.5.2  (https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz)
+-> retrieved dune.3.9.1  (https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz)
+-> retrieved dune-private-libs.3.9.1  (cached)
+-> retrieved dune-site.3.9.1  (cached)
+-> retrieved dyn.3.9.1  (cached)
+-> retrieved integers.0.8.0  (https://github.com/yallop/ocaml-integers/archive/0.8.0.tar.gz)
+-> retrieved isla-lang.dev  (git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a)
+-> retrieved islaris.dev  (git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9)
+-> retrieved lem.2026-05-01  (https://github.com/rems-project/lem/archive/refs/tags/2026-05-01.tar.gz)
+-> retrieved libsail.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved linenoise.1.5.1  (https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz)
+-> retrieved linksem.0.8  (https://github.com/rems-project/linksem/archive/0.8.tar.gz)
+-> retrieved menhir.20260209  (https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz)
+-> retrieved menhirCST.20260209  (cached)
+-> retrieved menhirGLR.20260209  (cached)
+-> retrieved menhirLib.20260209  (cached)
+-> retrieved menhirSdk.20260209  (cached)
+-> retrieved num.1.6  (https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz)
+-> retrieved ocaml-compiler-libs.v0.12.4  (https://github.com/janestreet/ocaml-compiler-libs/releases/download/v0.12.4/ocaml-compiler-libs-v0.12.4.tbz)
+-> retrieved ocaml-config.2  (2 extra sources)
+-> retrieved ocaml-variants.4.14.0+options  (https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz)
+-> retrieved ocamlbuild.0.16.1  (https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz)
+-> retrieved ocamlfind.1.9.8  (https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz)
+-> retrieved ocamlgraph.2.2.0  (https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz)
+-> retrieved omd.1.3.2  (https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz)
+-> retrieved ordering.3.9.1  (cached)
+-> retrieved ott.0.34  (https://github.com/ott-lang/ott/archive/0.34.tar.gz)
+-> retrieved pp.2.0.0  (https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz)
+-> retrieved pprint.20230830  (https://github.com/fpottier/pprint/archive/20230830.tar.gz)
+-> retrieved ppx_derivers.1.2.1  (https://github.com/ocaml-ppx/ppx_derivers/archive/1.2.1.tar.gz)
+-> retrieved ppxlib.0.35.0  (https://github.com/ocaml-ppx/ppxlib/releases/download/0.35.0/ppxlib-0.35.0.tbz)
+-> retrieved sail.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_c_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_coq_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_doc_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_latex_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_lem_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_manifest.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_ocaml_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_output.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_smt_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sail_sv_backend.0.17  (git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef)
+-> retrieved sexplib0.v0.16.0  (https://ocaml.janestreet.com/ocaml-core/v0.16/files/sexplib0-v0.16.0.tar.gz)
+-> retrieved stdlib-shims.0.3.0  (https://github.com/ocaml/stdlib-shims/releases/download/0.3.0/stdlib-shims-0.3.0.tbz)
+-> retrieved stdune.3.9.1  (cached)
+-> retrieved yojson.3.0.0  (https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz)
+-> retrieved zarith.1.14  (https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz)
+Done.
+# Run eval $(opam env --root=/solve/opam) to update the current shell environment

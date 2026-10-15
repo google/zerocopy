@@ -1,0 +1,32 @@
+{
+  "artifact": "A41",
+  "revision": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+  "source_path": "LICENSE",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/coq-lithium.dev.2024-09-11.0.7945a29d",
+    "cat-file",
+    "blob",
+    "596b0dfc5d8a8f4f1cd546e519182edb1d4acbc9"
+  ],
+  "status": 0,
+  "seconds": 0.0742201660759747,
+  "bytes": 1718,
+  "sha256": "9f12b4d76683118c79a24bd853b5477eed4a1aa1c20d884e07474900331ece74",
+  "git_blob": "596b0dfc5d8a8f4f1cd546e519182edb1d4acbc9"
+}

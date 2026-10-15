@@ -1,0 +1,20 @@
+[
+  {
+    "repository": "ocaml/opam-repository",
+    "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+    "path": "README.md",
+    "bytes": 976,
+    "sha256": "140f6e852398a15461dde852f0201a8fb09a15d5add977a1b5a95c6848c23663",
+    "git_blob": "99ce6c6a912645ed825ec80f7554c106cfeeb70e",
+    "package_path": "support/notices/opam-repository/README.md"
+  },
+  {
+    "repository": "ocaml/opam-repository",
+    "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+    "path": "COPYING",
+    "bytes": 7047,
+    "sha256": "6d489af6292662d9e36d34ce49423784984a5f6e41d7b58f49b01264df59fa03",
+    "git_blob": "1625c1793607996fcfc46420e8aa2f3d2b7efd1e",
+    "package_path": "support/notices/opam-repository/COPYING"
+  }
+]

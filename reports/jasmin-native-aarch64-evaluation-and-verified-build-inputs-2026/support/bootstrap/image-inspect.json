@@ -1,0 +1,125 @@
+{
+  "Id": "sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+  "RepoTags": [
+    "nixos/nix@sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558"
+  ],
+  "RepoDigests": [
+    "nixos/nix@sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558"
+  ],
+  "Comment": "store paths: ['/nix/store/q63sqi0cdv9q0dhc52gngy4404hapf2y-nix-customisation-layer']",
+  "Created": "1970-01-01T00:00:01Z",
+  "Config": {
+    "User": "0:0",
+    "Env": [
+      "USER=root",
+      "PATH=/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin",
+      "MANPATH=/root/.nix-profile/share/man:/nix/var/nix/profiles/default/share/man",
+      "SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt",
+      "GIT_SSL_CAINFO=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt",
+      "NIX_SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt",
+      "NIX_PATH=/nix/var/nix/profiles/per-user/root/channels:/root/.nix-defexpr/channels"
+    ],
+    "Cmd": [
+      "/nix/store/7bs9aqn70xmh8cy3wfzjz97bnf5g4clc-bash-interactive-5.3p3/bin/bash"
+    ],
+    "Labels": {
+      "org.opencontainers.image.description": "Nix container image",
+      "org.opencontainers.image.source": "https://github.com/NixOS/nix",
+      "org.opencontainers.image.title": "Nix",
+      "org.opencontainers.image.vendor": "Nix project",
+      "org.opencontainers.image.version": "2.34.8"
+    }
+  },
+  "Architecture": "arm64",
+  "Os": "linux",
+  "Size": 154048376,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:7f788836927ed1b4529f2de6820d2084cb576a0e5e4409d7b5592fe4d42f59ca",
+      "sha256:1c89a52ad5a8044f6fa221794cfc1abd8e44d4be5020bccc197c3b07c127a997",
+      "sha256:df528aa3443b3bbd2b8d357d73b71e0dda3735b388b22a65403e177cf1a63be2",
+      "sha256:a44334fcf0693b2806b841e21ec8a455e96a7093a5c8d6854582032fcf58485f",
+      "sha256:611e7eecacdad7f3e9b6cab5b60424cf392e5e0275a19f84f74bf8e6aee2d2cb",
+      "sha256:bd6871a01800dc9b9697354c54db4e594a83d8879c3c7e1a34353928f9788d25",
+      "sha256:6820ef4fd6af239df56c73007f7defc5770ac33bd7b9fe0ebbb61f675179473a",
+      "sha256:c4ef26d606ffcee6bdaf1b36fb6a489ff0726f6ba7d18e1857662ec0b4c279f3",
+      "sha256:5b8a6187c0bf2c053c8d73df243df4d0f8dde5506d634809b492d30df38c02e0",
+      "sha256:f46f959b916d7796c299f92712d980242a245dbc6de6324c9be17380e872fdcd",
+      "sha256:2c20c18a262265cc0c82a90e468ce0368ff9d198c1c008369ce2b71d9e2cb0a4",
+      "sha256:5874ab1c373d715c4f2cd0b4ee3fad69cb58b6aef1717e7e47605a6407844870",
+      "sha256:bfde323b62251642ba8fa3a41fbdebe9fe3482954503b53cbc31031c797793da",
+      "sha256:14a9dd6778008494757c3f20a628aae05f1b41b3a9d89cc9fbb2268f1b5eeba0",
+      "sha256:245c07e9d2f503c76e1aa3c2297ab206dd2dac579aa53101f41ae096571a67e3",
+      "sha256:10e4b0bb1cd8d7f517b2b67fa98cab2c1361e28b9fdf29bb93a99093d98f1e40",
+      "sha256:4c8a64e35701410adae59078fa1f83e1c108059e95c3a034d455dc5607b18390",
+      "sha256:2a9757741b8e5506f1773171727483871b0901bc99869112738bc4903bdbc6c8",
+      "sha256:ba29fa8a03f3642573700ef1c93e64877c9e8f40e648437debd335344eab5c3b",
+      "sha256:909909bb10a5e34a5232b1535965ee70fd5c4b55faf4048bf10ea1cfbb907df5",
+      "sha256:172d5b7efe4d6deca0470a2cd7e1209c37e030a0c8ca1f83578003dcfdcb8b13",
+      "sha256:f1e16ff9e7a52419f63427674efb5cb08478948862ef3e400b4fd56a4d8c067d",
+      "sha256:fc26b5dbdd603b990cbb2262c38b6fed46b5af0a9fd012256bf83605a5fec866",
+      "sha256:863509cdd747f84160b7c88b533c11ffd95c57b0060b5b87e81d75b3697c971b",
+      "sha256:13a6898c88d656d98b1749837afc81a63458d53cbe1bed12fbc90b0a7d05ca0b",
+      "sha256:c21abf0d983bb577749e9dd1bc5ed889293055d84fa9160c822d95003dbfdcbc",
+      "sha256:d89edcd60d7265ef1ddee963ea7dcd0026677e01b19138daf1aad08cf9217b52",
+      "sha256:18faef02a7c42164f57241c97d37bcf7ba495d865dfcab05de6500cedd09ce19",
+      "sha256:7e37f15e30bdb9475f714cd31bc53f29da8a002157c17392a8bfdf3053ca4a7b",
+      "sha256:498bf87d9379b4452efe13d446a14ead57be74540fd88cdc31e953ce0f06a214",
+      "sha256:8c2fb0bc670b512ed3c795e268df95eab84051b7289b38507d3d31991becc238",
+      "sha256:9e39d4a45514831255daecf3ecf0238e88fb9f24552b8489bab91555348083a6",
+      "sha256:a9f75bea51ab66aaf864a9d182e5347214e8ba0ac55111e5bda8dfec79522536",
+      "sha256:63d307e686e1af3ff7b96b7198aa153ec63115a118ae6374a7a6ffd6adf407af",
+      "sha256:05e077c14f551216efa40e5fac6193c9d096555e742c9c98950166ec66c42557",
+      "sha256:08ecf6684f65ff100e1c293df8286676a8f37ac5a43026fbad451c1ae573b36a",
+      "sha256:3e5e26dbce892139c6dd99fe999ede8c94ed18dc6e68fb4d8a5c27f96473d8c6",
+      "sha256:fd0ec456d03cc783400290bd29ae509a7d21ac4d438b62b29490d44fc92e70f1",
+      "sha256:5fcf57fa1f92dc54bf5fe8e1716e5326759a8575fbdd7cbd398103e3e58363c3",
+      "sha256:f6a98f04700ae2c3a765a1da98b8172df58e2d2bd2f780156c1a0093f3272711",
+      "sha256:1bc0d2abb664232022cb9a6eda6b7ae614e072db9dd6ef6baaa463292a38516d",
+      "sha256:8546f485e89082e36de3b92119ec98c8e9cd61fe5150412ee0d32884ad99ebac",
+      "sha256:565ff9ef2c043580a2b4a6812ccaae9b5ac8beeac63052f3b9d1c8fc2db1d976",
+      "sha256:7a28d321f05d2b475c7106c9de0fe2ef7c994956600ca6ecf6b3192a811e5d4f",
+      "sha256:5d8f14ef74407aba54082718b2b46f402455d0691b4a0d5d9a5711b6654e075f",
+      "sha256:ba38d4b7e755f8fab7efc6760b9a4cb14dbfd222c6390c15ba31477bd73f1964",
+      "sha256:ab5d4afed3d8f1b897dd9946d3d51d7384dc08c66067bb96f377048bafc6a148",
+      "sha256:47404a2ae5e92eee994c859dd3cf539fd12acae9a4679705bac9ee08a96eb65d",
+      "sha256:0f3d2e00494dfce1050b6481878400078a0728d167d47a275a102fb6c22ad4aa",
+      "sha256:302665714d5fea3e510a1c146ca89370c13629a884f94b868ebbca28a925b2ed",
+      "sha256:bd05e03f3a227a40a6a3f728f44b5d78b38fedee38119d6295982fc47a7dd564",
+      "sha256:e1b0e19238e0bd88a9f97900638918413d5ba480549b33968b6d94fb8c2bda75",
+      "sha256:683a5bce606cb85dfef9d54890c5c07d12c76903ae61f8d5aee73f49b81bfa53",
+      "sha256:1ad43056ea7c048be881ecd2cd04d49810d7366f2143f4285792b6324c0dc517",
+      "sha256:d8558a9bed4f5a931f888bf00fd6d675916b4d5b02003dc5483dd57dd63e82a2",
+      "sha256:2320e692d66afdd2af6480fab4dd0aad514d8fcfa9e3e38cd8baa5ad4af922cf",
+      "sha256:f2eea5c27b93ca8891fb8c423a13b5c807eec708724ce0d3d59af7f32686999a",
+      "sha256:7c2931ca08c371e7a4a9fa370ba674fb6563a9614d5388f938ada5609ebf1c8d",
+      "sha256:88dc5424468ec2d03e15e079630d8895da84b479287f465507168e698ea96dec",
+      "sha256:bc3d6aec315745cea21265a72483ec760235727c33fc5bb36262a15ae2d1b941",
+      "sha256:e418ce35f97fd00895279065ac194d6a414b4dbe7e54d6eef35e0b1456e9f9dc",
+      "sha256:8166652824cb49780544507ff326c916548111567fae1dda9ccafcdefaf9162b",
+      "sha256:6e936a0c9650b553f0758e6c9947095c937d765306a5b38f837e7609a4feb4e5",
+      "sha256:2e6cc7d931fb25b3a3db8b5ed823748c458194912aa2c0ae082b5560e27261c3",
+      "sha256:7bcfc6b7eec998c1e5570a40b371be60de31048daa375403cd1274ae19ae3911",
+      "sha256:4144f82d9ee2d75cd19b6c165823da09caa706e2d3546a17753028e4abf0f624",
+      "sha256:092d3b47e6bbe8d26fb419bdd2a6277eac3e833df0daee64ec4b2dc6c504d81d",
+      "sha256:b86995844c1210a96386932c475066cb63533b6d1f3da404d6ac675e5b4cfe1a",
+      "sha256:56074346b7c113a8e648f7430fa7200089f2d09a4923c8032210f314b660cf38"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-15T14:28:27.758127527Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "digest": "sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+    "size": 14828
+  },
+  "Identity": {
+    "Pull": [
+      {
+        "Repository": "docker.io/nixos/nix"
+      }
+    ]
+  }
+}

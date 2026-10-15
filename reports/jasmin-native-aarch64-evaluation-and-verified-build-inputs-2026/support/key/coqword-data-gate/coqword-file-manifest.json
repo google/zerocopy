@@ -1,0 +1,103 @@
+{
+  "normalized_nar_sha256": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 848,
+      "mode": "0o444",
+      "sha256": "d1f8603fd966273e999aa7c067cdaa96053b938e7bb213ebb3470370b59ea25a",
+      "git_blob": "6730ae3c54ccd196ff2c84b6dafcd59a9093608a"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 39,
+      "mode": "0o444",
+      "sha256": "304fde3404ae361f9ab6d613eef58fe0a35534674729656b036cb6992a0c3d85",
+      "git_blob": "15c34d98a01496ced26618086c6e497bd089b7a0"
+    },
+    {
+      "path": "AUTHORS",
+      "bytes": 41,
+      "mode": "0o444",
+      "sha256": "e0b23509cf478905d97aedf1d49750533e085ecc402377adc928ef66f57903b0",
+      "git_blob": "43bb9390dc3686fd0d81779d15de8607657f941c"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1654,
+      "mode": "0o444",
+      "sha256": "aa46fcc0dfde2a01beba4f0b5e4585c9fa3476ee674403a4b61b9360e8011aa5",
+      "git_blob": "cf083ab9b6a33efb74c2b36c51f335d122b2a257"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1074,
+      "mode": "0o444",
+      "sha256": "948c4a4e5bbc8c6e4278b8c82167089074be59a2958767bfa7985a68170b03a5",
+      "git_blob": "97ece0a2f18cd4d952168e96361a3e3dc99a1966"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 331,
+      "mode": "0o444",
+      "sha256": "eaac53bbec811686eee21840cc448f225c6ed9f6ce3cda198644dfca43b21020",
+      "git_blob": "4dbed19e3040dd61ed505e3246f2143e93a46c3a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 179,
+      "mode": "0o444",
+      "sha256": "8b432169d47d47e1c72ac52abed176cd3d5bf8943d15f3780c961ca95c0e8077",
+      "git_blob": "2fb4c35c84d7ba0fc7367bb0728e7c6b9a19f36d"
+    },
+    {
+      "path": "_CoqProject",
+      "bytes": 536,
+      "mode": "0o444",
+      "sha256": "2fcc107f484b9d5ef9b1ec98d280c2d84fda74be8bc81f9a14bd73002ae38112",
+      "git_blob": "fa4619125b8819353c8da68631d83c19c3a1ed9d"
+    },
+    {
+      "path": "coq-mathcomp-word.opam",
+      "bytes": 602,
+      "mode": "0o444",
+      "sha256": "eb40bd5cdb91ddec09d49416b95dd0dd230dd442c752d19d124f7aea43f520ce",
+      "git_blob": "f280c2b216c7ab0cada1cfbaf24c300e3e804731"
+    },
+    {
+      "path": "dune-project",
+      "bytes": 57,
+      "mode": "0o444",
+      "sha256": "c3da36da76a264fbe20855e6cf6464912776a963c50fa70b73524c079297cb2c",
+      "git_blob": "6ccdb3a14ccce6b57ee42c6be15af765c53cdd83"
+    },
+    {
+      "path": "shell.nix",
+      "bytes": 299,
+      "mode": "0o444",
+      "sha256": "5359d817c1d8eb7058503346974b8de48815206b073cd448c37ebf38bc69d7e6",
+      "git_blob": "f54a911bef50f5004659597ccb87aa9de495cb16"
+    },
+    {
+      "path": "src/dune",
+      "bytes": 680,
+      "mode": "0o444",
+      "sha256": "027cc1ee7ff05bbad7678b03222da9f5f37a0788ac902139d19fad2561a00938",
+      "git_blob": "c0c2059728cef6f3619b7d89a1618d224ecea50c"
+    },
+    {
+      "path": "src/word.v",
+      "bytes": 56031,
+      "mode": "0o444",
+      "sha256": "123a7059d99f9d912ce676ff324bd2cd1ce5863f323124411f4d3e66e45211fa",
+      "git_blob": "6860d69807b71e42fffd114a7f3c8268281934f2"
+    },
+    {
+      "path": "src/word_ssrZ.v",
+      "bytes": 19437,
+      "mode": "0o444",
+      "sha256": "f4eed8381bc45ab32497c80d663c192e8fe0d92e86869ae8d761d2d21531306e",
+      "git_blob": "f67dfe75c589423957effbbda607539fad2f3911"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "same74versions": true,
+  "same35roots": true,
+  "duplicate_keys": [
+    {
+      "key": "command-line",
+      "identical": true
+    }
+  ],
+  "build_install_authorized": false,
+  "download_phase_authorized": true
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "path": "//nix/store/5h2h4brfrgr89gvh1l93mh63mm0h5r6s-coreutils-9.8/bin/sleep",
+    "type": "2",
+    "bytes": 0,
+    "mode": "0o777",
+    "link": "coreutils"
+  },
+  {
+    "path": "//nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sleep",
+    "type": "2",
+    "bytes": 0,
+    "mode": "0o777",
+    "link": "coreutils"
+  },
+  {
+    "path": "//nix/store/zfhxqasf3afhlpjkjkiq32s3856hfyxn-nix-2.34.8/bin/nix",
+    "type": "0",
+    "bytes": 3598008,
+    "mode": "0o555",
+    "link": ""
+  },
+  {
+    "path": "//nix/store/yrvj2cs09q31hnhx3qazzzmi1vim0jkv-root-profile-env/bin/nix",
+    "type": "2",
+    "bytes": 0,
+    "mode": "0o777",
+    "link": "/nix/store/zfhxqasf3afhlpjkjkiq32s3856hfyxn-nix-2.34.8/bin/nix"
+  },
+  {
+    "path": "//nix/store/yrvj2cs09q31hnhx3qazzzmi1vim0jkv-root-profile-env/bin/sleep",
+    "type": "2",
+    "bytes": 0,
+    "mode": "0o777",
+    "link": "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sleep"
+  }
+]

@@ -1,0 +1,851 @@
+[
+  {
+    "package": "conf-pkg-config.5",
+    "artifact_consumers": [
+      {
+        "id": "A01",
+        "class": "extra-file",
+        "role": "install-shim.sh"
+      },
+      {
+        "id": "A02",
+        "class": "extra-file",
+        "role": "write-config.sh"
+      }
+    ],
+    "materialized_source_directory": false,
+    "coverage": "verified extra-source cache only"
+  },
+  {
+    "package": "base-threads.base",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "conf-findutils.1",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "base-unix.base",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "base-bigarray.base",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "ocaml-option-flambda.1",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "conf-gmp.5",
+    "artifact_consumers": [
+      {
+        "id": "A03",
+        "class": "extra-file",
+        "role": "test.c"
+      }
+    ],
+    "materialized_source_directory": false,
+    "coverage": "verified extra-source cache only"
+  },
+  {
+    "package": "conf-linux-libc-dev.0",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "conf-zlib.1",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "ocaml-variants.4.14.0+options",
+    "artifact_consumers": [
+      {
+        "id": "A04",
+        "class": "archive",
+        "role": "source"
+      },
+      {
+        "id": "A05",
+        "class": "extra-file",
+        "role": "ocaml-variants.install"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ocaml-config.2",
+    "artifact_consumers": [
+      {
+        "id": "A06",
+        "class": "extra-file",
+        "role": "ocaml-config.install"
+      },
+      {
+        "id": "A07",
+        "class": "extra-file",
+        "role": "gen_ocaml_config.ml.in"
+      }
+    ],
+    "materialized_source_directory": false,
+    "coverage": "verified extra-source cache only"
+  },
+  {
+    "package": "ocaml.4.14.0",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "ocamlfind.1.9.8",
+    "artifact_consumers": [
+      {
+        "id": "A08",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ocamlbuild.0.16.1",
+    "artifact_consumers": [
+      {
+        "id": "A09",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "num.1.6",
+    "artifact_consumers": [
+      {
+        "id": "A10",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "dune.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "cmdliner.1.3.0",
+    "artifact_consumers": [
+      {
+        "id": "A12",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "zarith.1.14",
+    "artifact_consumers": [
+      {
+        "id": "A13",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "base-bytes.base",
+    "artifact_consumers": [],
+    "materialized_source_directory": false,
+    "coverage": "no declared source/extra-source"
+  },
+  {
+    "package": "yojson.3.0.0",
+    "artifact_consumers": [
+      {
+        "id": "A14",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "stdlib-shims.0.3.0",
+    "artifact_consumers": [
+      {
+        "id": "A15",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "sexplib0.v0.16.0",
+    "artifact_consumers": [
+      {
+        "id": "A16",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "sail_manifest.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "ppx_derivers.1.2.1",
+    "artifact_consumers": [
+      {
+        "id": "A18",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "pprint.20230830",
+    "artifact_consumers": [
+      {
+        "id": "A19",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "pp.2.0.0",
+    "artifact_consumers": [
+      {
+        "id": "A20",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ordering.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ocamlgraph.2.2.0",
+    "artifact_consumers": [
+      {
+        "id": "A21",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ocaml-compiler-libs.v0.12.4",
+    "artifact_consumers": [
+      {
+        "id": "A22",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "menhirSdk.20260209",
+    "artifact_consumers": [
+      {
+        "id": "A23",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "menhirLib.20260209",
+    "artifact_consumers": [
+      {
+        "id": "A23",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "menhirGLR.20260209",
+    "artifact_consumers": [
+      {
+        "id": "A23",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "menhirCST.20260209",
+    "artifact_consumers": [
+      {
+        "id": "A23",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "linenoise.1.5.1",
+    "artifact_consumers": [
+      {
+        "id": "A24",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "csexp.1.5.2",
+    "artifact_consumers": [
+      {
+        "id": "A25",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "base64.3.5.2",
+    "artifact_consumers": [
+      {
+        "id": "A26",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "lem.2026-05-01",
+    "artifact_consumers": [
+      {
+        "id": "A27",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coq-core.8.19.0",
+    "artifact_consumers": [
+      {
+        "id": "A28",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "omd.1.3.2",
+    "artifact_consumers": [
+      {
+        "id": "A29",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "integers.0.8.0",
+    "artifact_consumers": [
+      {
+        "id": "A30",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "dyn.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ott.0.34",
+    "artifact_consumers": [
+      {
+        "id": "A31",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "ppxlib.0.35.0",
+    "artifact_consumers": [
+      {
+        "id": "A32",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "menhir.20260209",
+    "artifact_consumers": [
+      {
+        "id": "A23",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "linksem.0.8",
+    "artifact_consumers": [
+      {
+        "id": "A33",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coqide-server.8.19.0",
+    "artifact_consumers": [
+      {
+        "id": "A28",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coq-stdlib.8.19.0",
+    "artifact_consumers": [
+      {
+        "id": "A28",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "stdune.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "bisect_ppx.2.8.3",
+    "artifact_consumers": [
+      {
+        "id": "A34",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "isla-lang.dev",
+    "artifact_consumers": [
+      {
+        "id": "A35",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq.8.19.0",
+    "artifact_consumers": [
+      {
+        "id": "A28",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "dune-private-libs.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "artifact_consumers": [
+      {
+        "id": "A36",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-record-update.0.3.3",
+    "artifact_consumers": [
+      {
+        "id": "A37",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coq-bbv.1.5",
+    "artifact_consumers": [
+      {
+        "id": "A38",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "dune-site.3.9.1",
+    "artifact_consumers": [
+      {
+        "id": "A11",
+        "class": "archive",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified archive extraction"
+  },
+  {
+    "package": "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "artifact_consumers": [
+      {
+        "id": "A36",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "artifact_consumers": [
+      {
+        "id": "A39",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-sail.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A40",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "libsail.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "artifact_consumers": [
+      {
+        "id": "A36",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_sv_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_smt_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_output.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_ocaml_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_lem_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_latex_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_doc_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_coq_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail_c_backend.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "sail.0.17",
+    "artifact_consumers": [
+      {
+        "id": "A17",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "artifact_consumers": [
+      {
+        "id": "A41",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "coq-sail-riscv.0.5",
+    "artifact_consumers": [
+      {
+        "id": "A42",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  },
+  {
+    "package": "islaris.dev",
+    "artifact_consumers": [
+      {
+        "id": "A43",
+        "class": "git-tree",
+        "role": "source"
+      }
+    ],
+    "materialized_source_directory": true,
+    "coverage": "verified Git tree"
+  }
+]

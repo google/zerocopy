@@ -1,0 +1,308 @@
+stages:
+- prepare
+- prove
+- build
+- test
+- deploy
+
+image: nixos/nix:2.34.8
+
+variables:
+  EXTRA_SUBSTITUTERS: https://jasmin.cachix.org
+  EXTRA_PUBLIC_KEYS: jasmin.cachix.org-1:aA5r1ovq4HYKUa+8QHVvIP7K6Fi9L75b0SaN/sooWSY=
+  NIXOS_PUBLIC_KEY: cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+  NIXPKGS_ALLOW_UNFREE: 1
+
+  VERSION: development version at commit $CI_COMMIT_SHA on branch $CI_COMMIT_REF_NAME
+
+.common:
+  before_script:
+  - >-
+    nix-shell
+    --extra-substituters "$EXTRA_SUBSTITUTERS"
+    --trusted-public-keys "$NIXOS_PUBLIC_KEY $EXTRA_PUBLIC_KEYS"
+    --arg inCI true
+    $EXTRA_NIX_ARGUMENTS
+    --run 'echo done'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'sed -i -e "s|@VERSION@|$VERSION|" compiler/src/glob_options.ml'
+
+.cache dependencies:
+  stage: prepare
+  extends: .common
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg coqDeps true --arg ocamlDeps true --arg testDeps true --argstr ecRef release --arg opamDeps true
+  environment: cachix
+  only:
+    variables:
+    - $CACHIX_SIGNING_KEY
+  script:
+  - >-
+    nix-shell -p cachix --run
+    'nix-store --query --references $(nix-instantiate --arg inCI true $EXTRA_NIX_ARGUMENTS default.nix)
+    | xargs nix-store --realise
+    | xargs nix-store --query --requisites
+    | cachix push jasmin'
+
+coq-program:
+  stage: prove
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg coqDeps true
+  extends: .common
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -j$NIX_BUILD_CORES -C compiler CIL'
+  artifacts:
+    paths:
+    - proofs/
+    - compiler/src/CIL/
+
+coq-proof:
+  stage: prove
+  tags:
+  - snob
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg coqDeps true
+  extends: .common
+  needs:
+  - coq-program
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -j$NIX_BUILD_CORES -C proofs'
+
+coq-master:
+  stage: prove
+  tags:
+  - u5
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH !~ /^release-/
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg coqDeps true --arg coqMaster true
+  extends: .common
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -j$NIX_BUILD_CORES -C proofs'
+
+ocaml:
+  stage: build
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg ocamlDeps true --arg safetyDeps true
+  extends: .common
+  needs:
+  - coq-program
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -j$NIX_BUILD_CORES -C compiler'
+  artifacts:
+    paths:
+    - compiler/_build/
+    - compiler/jasmin2tex
+    - compiler/jasmin2ec
+    - compiler/jasminc
+    - compiler/jasmin-checksafety
+    - compiler/jasmin-ct
+
+eclib:
+  stage: prove
+  parallel:
+    matrix:
+      - EASYCRYPT_REF: [release, dev]
+  variables:
+    EXTRA_NIX_ARGUMENTS: --argstr ecRef $EASYCRYPT_REF
+  extends: .common
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt why3config -why3 eclib/why3.conf'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt     config -why3 eclib/why3.conf'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make ECARGS="-why3 why3.conf" -C eclib'
+
+tarball:
+  stage: build
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true --arg pyDeps true
+    TARBALL: jasmin-compiler-$CI_COMMIT_SHORT_SHA
+  extends: .common
+  needs:
+  - coq-program
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -C compiler dist DISTDIR=$TARBALL'
+  artifacts:
+    paths:
+    - compiler/$TARBALL.tgz
+
+build-from-tarball:
+  stage: test
+  variables:
+    TARBALL: jasmin-compiler-$CI_COMMIT_SHORT_SHA
+  needs:
+  - tarball
+  script:
+  - tar xvf compiler/$TARBALL.tgz
+  - nix-build -o out $TARBALL/compiler
+  - ./out/bin/jasminc -version
+  - nix-shell -p hello --run 'make JASMINC=../../../../out/bin/jasminc -C compiler/examples/gimli/x86-64'
+
+opam-from-tarball:
+  stage: test
+  variables:
+    OPAMROOTISOK: 'true'
+    OPAMROOT: mapo
+    EXTRA_NIX_ARGUMENTS: --arg opamDeps true
+    TARBALL: jasmin-compiler-$CI_COMMIT_SHORT_SHA
+  extends: .common
+  needs:
+  - tarball
+  cache:
+    key:
+      files:
+        - scripts/nixpkgs.nix
+      prefix: opam
+    paths:
+      - $OPAMROOT
+  script:
+  - tar xvf compiler/$TARBALL.tgz
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'scripts/opam-setup.sh'
+  - >-
+    nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run
+    'eval $(opam env) &&
+     opam install ./$TARBALL &&
+     opam uninstall ./$TARBALL'
+
+check:
+  stage: test
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg testDeps true --arg ocamlDeps true --arg safetyDeps true
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run './compiler/jasminc -version'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'cd compiler && dune runtest'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -j$NIX_BUILD_CORES -C compiler check-ci $EXTRA_MAKE_ARGUMENTS'
+  artifacts:
+    when: always
+    paths:
+    - compiler/report.log
+
+check-proofs:
+  stage: test
+  parallel:
+    matrix:
+      - EASYCRYPT_REF: release
+      - EASYCRYPT_REF: dev
+
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true --argstr ecRef $EASYCRYPT_REF
+    WHY3_CONF: $CI_PROJECT_DIR/why3.conf
+    ECARGS: -why3 $WHY3_CONF -I Jasmin:$CI_PROJECT_DIR/eclib
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run './compiler/jasminc -version'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt why3config -why3 $WHY3_CONF'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt     config -why3 $WHY3_CONF'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -C compiler check-ec'
+
+libjade-compile-to-asm:
+  stage: test
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run './scripts/test-libjade.sh src'
+  artifacts:
+    when: always
+    paths:
+    - libjade/src/check.tar.gz
+
+libjade:
+  stage: test
+  parallel:
+    matrix:
+      - PRIMITIVE: [ curve25519, mldsa, mlkem, xmss ]
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'JOBS=$NIX_BUILD_CORES ./scripts/test-$PRIMITIVE.sh'
+
+libjade-extract-to-ec:
+  stage: test
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true --argstr ecRef release
+    WHY3_CONF: $CI_PROJECT_DIR/why3.conf
+    ECARGS: -why3 $WHY3_CONF -I Jasmin:$CI_PROJECT_DIR/eclib
+    ECJOBS: '$(NIX_BUILD_CORES)'
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt why3config -why3 $WHY3_CONF'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run './scripts/test-libjade.sh proof'
+  artifacts:
+    when: always
+    paths:
+    - libjade/proof/check.tar.gz
+
+test-extract-to-ec:
+  stage: test
+  parallel:
+    matrix:
+      - EASYCRYPT_REF: [release, dev]
+  variables:
+    EXTRA_NIX_ARGUMENTS: --arg runDeps true --arg pyDeps true --argstr ecRef $EASYCRYPT_REF
+    WHY3_CONF: $CI_PROJECT_DIR/why3.conf
+    ECARGS: -why3 $WHY3_CONF
+    JSJOBS: $(NIX_BUILD_CORES)
+  extends: .common
+  needs:
+  - coq-program
+  - ocaml
+  script:
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'easycrypt why3config -why3 $WHY3_CONF'
+  - nix-shell --arg inCI true $EXTRA_NIX_ARGUMENTS --run 'make -C compiler CHECKCATS="x86-64-extraction arm-m4-extraction armv8a-extraction risc-v-extraction" check-ci'
+  artifacts:
+    when: always
+    paths:
+    - compiler/report.log
+
+test-build-docs:
+  stage: test
+  script:
+    - cd docs && nix-shell --pure --run 'make html'
+  needs: []
+
+push-compiler-code:
+  stage: deploy
+  environment: deployment
+  only:
+    variables:
+    - $DEPLOY_KEY
+  variables:
+    TARBALL: jasmin-compiler-$CI_COMMIT_SHORT_SHA
+  needs:
+  - tarball
+  before_script:
+  - nix-env -iA nixpkgs.openssh
+  - eval $(ssh-agent -s)
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
+  - git config --global user.name "Jasmin Contributors"
+  - git config --global user.email "nobody@noreply.example.com"
+  script:
+  - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
+  - git clone git@gitlab.com:jasmin-lang/jasmin-compiler.git _deploy
+  - cd _deploy
+  - git checkout $CI_COMMIT_REF_NAME || git checkout --orphan $CI_COMMIT_REF_NAME
+  - rm -rf compiler eclib Makefile jasmin.opam README.md LICENSE
+  - tar xzvf ../compiler/$TARBALL.tgz
+  - mv $TARBALL/* .
+  - git add compiler eclib Makefile jasmin.opam README.md LICENSE
+  - git commit -m "Jasmin compiler on branch “$CI_COMMIT_REF_NAME” at $CI_COMMIT_SHORT_SHA"  || true
+  - git push --set-upstream origin $CI_COMMIT_REF_NAME

@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/coq-sail-riscv.0.5",
+    "cat-file",
+    "blob",
+    "ac2cff583cdf06b07064a025aaed60c6ced162d0"
+  ],
+  "status": 0,
+  "seconds": 0.08161304192617536,
+  "bytes": 2720,
+  "sha256": "4ffaae6c03465cbd74741057379d88c38377137a25663fac045bf6e37299475b",
+  "git_blob": "ac2cff583cdf06b07064a025aaed60c6ced162d0"
+}

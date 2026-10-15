@@ -1,0 +1,384 @@
+{
+  "git_projects": [
+    {
+      "artifact": "A35",
+      "repository_url": "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/isla-lang.dev",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "a28772fd85460499bda74882611dd437195c9141",
+          "bytes": 2263,
+          "sha256": "0faa544bb919253727d14e4048da0426f66c1db522726c9de28523050b789953"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "Makefile",
+          "git_blob": "c5d08b9f42618cb5ffcc593cc793b381088fd633",
+          "sha256": "050cbabbd62e6fbb8eda43e7d7f7864c98434b7969c24d80eead37f9159afb5c",
+          "bytes": 717
+        },
+        {
+          "path": "README.md",
+          "git_blob": "8d5e382980b4f9407ba40aa4803fa508ec8be62d",
+          "sha256": "b6105ea2f65becf86c9e747e4e70fc3b5ad3346cc01ba53afca68f3b071bea3c",
+          "bytes": 2578
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    },
+    {
+      "artifact": "A36",
+      "repository_url": "git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/coq-stdpp.dev.2024-09-10.3.a1a12e00",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "8a915c847215cebc6a19c0b7484792b83fa7172f",
+          "bytes": 1745,
+          "sha256": "bc4fe79f9b7f78bc6e4e61e1f7c430b1e413b82de4aacb9355ade5e43bad2a69"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "Makefile",
+          "git_blob": "c837f883f58cacd6ee79b86a3a1170702571d75f",
+          "sha256": "73ead158f2c49b265a716eb903970875a615b2963eabe79571a727afae653e29",
+          "bytes": 2084
+        },
+        {
+          "path": "README.md",
+          "git_blob": "2ab63a632048f303bbecdcfec746fd31d84e790f",
+          "sha256": "ac4107463bbbd17c8dd24dcfd7ad08f00fb0ed166a404097d430f73cd96bf822",
+          "bytes": 4603
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    },
+    {
+      "artifact": "A39",
+      "repository_url": "git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/coq-iris.dev.2024-09-10.1.6f24ed4b",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "a7ec31fbcafdbb0fd841469be363560f1574d565",
+          "bytes": 352,
+          "sha256": "b8db39b9a49ba7a283437f8b63d35903ad7169f824af10763e9b4cb6ddf70486"
+        },
+        {
+          "path": "LICENSE-CODE",
+          "mode": "100644",
+          "git_blob": "78e892037cc357cada2ec42cd3cd80ba074c763c",
+          "bytes": 1780,
+          "sha256": "33a506f1d35644a275cd3e04045d67e87087ae700a6ccd9e7d468f9525a38f71"
+        },
+        {
+          "path": "LICENSE-DOCS",
+          "mode": "100644",
+          "git_blob": "4c892ca811debe00c1e3844a3574ea67e560f1a6",
+          "bytes": 18975,
+          "sha256": "68391acad70d88fe498384dd67da5b07ad151ae45b496031daef5fcd9f3ed3bb"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "Makefile",
+          "git_blob": "c837f883f58cacd6ee79b86a3a1170702571d75f",
+          "sha256": "73ead158f2c49b265a716eb903970875a615b2963eabe79571a727afae653e29",
+          "bytes": 2084
+        },
+        {
+          "path": "README.md",
+          "git_blob": "c246c328fc62570bc911fed1044fafc1f40a410b",
+          "sha256": "e1db216a76c5dc0a0ec86460a7e991f1e987fccb161c82cd5b30cb606756c0aa",
+          "bytes": 9586
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    },
+    {
+      "artifact": "A40",
+      "repository_url": "git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e",
+      "commit": "169934e27ceafe393ed4d365985f7b12d974d56e",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/coq-sail.0.17",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "34195c4eb80b2d4eac75766f39325c2255b6ce4b",
+          "bytes": 2355,
+          "sha256": "570a94176eed2a93ebc3bb31edd23754d77924afe9c05fb8c8d8a159cd3fe22a"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "README.md",
+          "git_blob": "27628388edef7e6066b413561eeeadc1139ab2d1",
+          "sha256": "9df5fb85489fa19a10125cb505874f381433fd30b00c5f46c39a3783bf275b10",
+          "bytes": 3158
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    },
+    {
+      "artifact": "A41",
+      "repository_url": "git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/coq-lithium.dev.2024-09-11.0.7945a29d",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "596b0dfc5d8a8f4f1cd546e519182edb1d4acbc9",
+          "bytes": 1718,
+          "sha256": "9f12b4d76683118c79a24bd853b5477eed4a1aa1c20d884e07474900331ece74"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "Makefile",
+          "git_blob": "a95e0b50dd6966fcf4f0bc7fbb527508b6cc403d",
+          "sha256": "ba3631ecb2b44d9b91c0fd23bac105408983f328ad672905719cec2a5fd494b7",
+          "bytes": 3998
+        },
+        {
+          "path": "README.md",
+          "git_blob": "c446f1744012484e5d4263ccf6ad4400f3742055",
+          "sha256": "1837accb8d9595c88f08fdc574bea3cc4867fa891b3298ab8bd53f6bfe1b4d12",
+          "bytes": 15967
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    },
+    {
+      "artifact": "A43",
+      "repository_url": "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "cache_repository": "/solve/opam/islaris-dry/.opam-switch/sources/islaris.dev",
+      "root_notices": [
+        {
+          "path": "LICENSE",
+          "mode": "100644",
+          "git_blob": "091d8448b0afa65f11271fc9cbe26f6f1a4d8909",
+          "bytes": 2265,
+          "sha256": "d43eeae8b2e1639534f8d095d3b3231f1fc193cfc172b98069adf41bf9684fb9"
+        },
+        {
+          "path": "THIRD_PARTY_FILES.md",
+          "mode": "100644",
+          "git_blob": "d24252a436720a3ccdecb69c990fff58341ff97c",
+          "bytes": 6,
+          "sha256": "b07313f37d4d0b6c36ae55d01211d46275412f3419c656e22cef16216f9ed91a"
+        }
+      ],
+      "redistributed_inspected_files": [
+        {
+          "path": "Makefile",
+          "git_blob": "1ea030d46be29960f94d5ac774f1ec00ee616d84",
+          "sha256": "f03c0f1deb78b66fba510c0254f315d5f74ce3aa7f534c98a23f18d8fb9b71d8",
+          "bytes": 5597
+        },
+        {
+          "path": "README.md",
+          "git_blob": "1750da7e6e65c568f75aa4512a9376b0b4142fe9",
+          "sha256": "a105c4453b80b3e7decc391c110b5494e40fa8444c8bd85ecf2ed091971570d8",
+          "bytes": 6364
+        }
+      ],
+      "scope": "Coordinates derived from frozen Git tree and independently checked object-body ledger; license bodies not yet read here."
+    }
+  ],
+  "external_extra_sources": [
+    {
+      "artifact": "A01",
+      "package": "conf-pkg-config.5",
+      "role": "install-shim.sh",
+      "source_url": "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh",
+      "source_checksums": [
+        "sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961",
+        "sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c"
+      ],
+      "retained_bytes": 2823,
+      "retained_sha256": "9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961",
+      "retained_git_blob_identity": "66a2c48592df62f730ebd7a97efe325e126f9b27",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/conf-pkg-config/conf-pkg-config.5/opam",
+        "bytes": 3893,
+        "sha256": "7826bafd660abb2925edb6821518c34aeee31eab692a45345c7331dc58a69816",
+        "git_blob": "0a0fe26820f308a819d81f8b85da690f94891b82"
+      },
+      "origin_metadata_license_field": "\"GPL-2.0-or-later\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A01-extra-source"
+    },
+    {
+      "artifact": "A02",
+      "package": "conf-pkg-config.5",
+      "role": "write-config.sh",
+      "source_url": "https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh",
+      "source_checksums": [
+        "sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a",
+        "sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71"
+      ],
+      "retained_bytes": 4498,
+      "retained_sha256": "b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a",
+      "retained_git_blob_identity": "a9fea74b9653fa05bd3c973bc2f65409262db840",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/conf-pkg-config/conf-pkg-config.5/opam",
+        "bytes": 3893,
+        "sha256": "7826bafd660abb2925edb6821518c34aeee31eab692a45345c7331dc58a69816",
+        "git_blob": "0a0fe26820f308a819d81f8b85da690f94891b82"
+      },
+      "origin_metadata_license_field": "\"GPL-2.0-or-later\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A02-extra-source"
+    },
+    {
+      "artifact": "A03",
+      "package": "conf-gmp.5",
+      "role": "test.c",
+      "source_url": "https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4",
+      "source_checksums": [
+        "sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb",
+        "md5=2fd2970c293c36222a6d299ec155823f"
+      ],
+      "retained_bytes": 128,
+      "retained_sha256": "54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb",
+      "retained_git_blob_identity": "da9c0b59a8116db9fdd945972d4b8cba3e1b4964",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/conf-gmp/conf-gmp.5/opam",
+        "bytes": 2164,
+        "sha256": "0b84f83c98bc73e52fe57b44dc5f7eef62def903cda780ce4d3123756a86d5b1",
+        "git_blob": "24e361425ef98e17e22815469e2c32235d5db3f2"
+      },
+      "origin_metadata_license_field": "\"GPL-1.0-or-later\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A03-extra-source"
+    },
+    {
+      "artifact": "A05",
+      "package": "ocaml-variants.4.14.0+options",
+      "role": "ocaml-variants.install",
+      "source_url": "https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install",
+      "source_checksums": [
+        "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678",
+        "md5=3e969b841df1f51ca448e6e6295cb451"
+      ],
+      "retained_bytes": 52,
+      "retained_sha256": "79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678",
+      "retained_git_blob_identity": "4f1481379713692389ee9852f292b155777cc323",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/ocaml-variants/ocaml-variants.4.14.0+options/opam",
+        "bytes": 5020,
+        "sha256": "817b92187a023603902535d54afc56c429e67f4e7a06543d65240799a06d6fcb",
+        "git_blob": "19cf36fc382a5c3c9fd1b70c1ab09bea919a79c1"
+      },
+      "origin_metadata_license_field": "\"LGPL-2.1-or-later WITH OCaml-LGPL-linking-exception\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A05-extra-source"
+    },
+    {
+      "artifact": "A06",
+      "package": "ocaml-config.2",
+      "role": "ocaml-config.install",
+      "source_url": "https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install",
+      "source_checksums": [
+        "sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051",
+        "md5=8e50c5e2517d3463b3aad649748cafd7"
+      ],
+      "retained_bytes": 31,
+      "retained_sha256": "6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051",
+      "retained_git_blob_identity": "03a7de264c06cdb86c2a32861f5b6b4e25bfeb4d",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/ocaml-config/ocaml-config.2/opam",
+        "bytes": 1208,
+        "sha256": "5c713ed479ba809f4d64533cab058000e369f14425fe5491221ec6993a894e3f",
+        "git_blob": "4122be5289db1a97cbdfe0dc670fa82ecea85e01"
+      },
+      "origin_metadata_license_field": "\"ISC\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A06-extra-source"
+    },
+    {
+      "artifact": "A07",
+      "package": "ocaml-config.2",
+      "role": "gen_ocaml_config.ml.in",
+      "source_url": "https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in",
+      "source_checksums": [
+        "sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29",
+        "md5=a4b41e3236593d8271295b84b0969172"
+      ],
+      "retained_bytes": 2324,
+      "retained_sha256": "22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29",
+      "retained_git_blob_identity": "8de5a661c9b5733c2ab4e85ac4bddcb8f2fb9833",
+      "origin_metadata": {
+        "repository": "ocaml/opam-repository",
+        "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+        "path": "packages/ocaml-config/ocaml-config.2/opam",
+        "bytes": 1208,
+        "sha256": "5c713ed479ba809f4d64533cab058000e369f14425fe5491221ec6993a894e3f",
+        "git_blob": "4122be5289db1a97cbdfe0dc670fa82ecea85e01"
+      },
+      "origin_metadata_license_field": "\"ISC\"",
+      "origin_metadata_notice": "README.md lines 12-22 + COPYING, CC0 1.0; applies to repository metadata",
+      "exact_source_body_present_in_main_metadata_manifest": false,
+      "source_body_self_contained_license_notice": false,
+      "public_body_retained": false,
+      "projection_omission_member": "audit/A07-extra-source"
+    }
+  ],
+  "metadata_notices": [
+    {
+      "repository": "ocaml/opam-repository",
+      "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "README.md",
+      "bytes": 976,
+      "sha256": "140f6e852398a15461dde852f0201a8fb09a15d5add977a1b5a95c6848c23663",
+      "git_blob": "99ce6c6a912645ed825ec80f7554c106cfeeb70e",
+      "package_path": "support/notices/opam-repository/README.md"
+    },
+    {
+      "repository": "ocaml/opam-repository",
+      "commit": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "COPYING",
+      "bytes": 7047,
+      "sha256": "6d489af6292662d9e36d34ce49423784984a5f6e41d7b58f49b01264df59fa03",
+      "git_blob": "1625c1793607996fcfc46420e8aa2f3d2b7efd1e",
+      "package_path": "support/notices/opam-repository/COPYING"
+    }
+  ],
+  "scope": "All six external bodies omitted under one publication rule; no external-body license interpretation or metadata-CC0 inheritance is asserted. Nine exact root project notices cover the additional retained complete README/Makefile copies."
+}

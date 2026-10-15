@@ -1,0 +1,16 @@
+[
+  {
+    "script": "check_bootstrap.py",
+    "status": 0,
+    "stdout": "{\n  \"valid\": true,\n  \"wrong_manifest_rejected\": true,\n  \"wrong_config_rejected\": true,\n  \"wrong_architecture_rejected\": true\n}\n",
+    "stderr": "",
+    "source_sha256": "defffaeada44e76afea78b9a89a404192bd2ea107377bc76077528156aef8eda"
+  },
+  {
+    "script": "check_evidence.py",
+    "status": 0,
+    "stdout": "{\n  \"status\": \"PASS\",\n  \"evaluated_derivations\": 1485,\n  \"new_signed_cache_paths\": 191,\n  \"reference_closure\": 205,\n  \"unchanged_preexisting_CA_records\": 14,\n  \"only_new_source\": \"/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source\",\n  \"separate_owned_offline_probe\": {\n    \"status\": 0,\n    \"network\": \"detached; HostConfig remains bridge\",\n    \"max_jobs_override\": 1,\n    \"output_bytes\": 19\n  },\n  \"typed_signature_controls\": {\n    \"signed_new\": true,\n    \"unsigned_new_rejected\": true,\n    \"existing_CA\": true,\n    \"changed_existing_rejected\": true\n  },\n  \"scope\": \"host data/receipt consistency; trusts the preserved native executable observations\"\n}\n",
+    "stderr": "",
+    "source_sha256": "1c0f15ed4b6f7b2602a40eb87b5d6a2dfdd15b888f4ad49ed92bf201073e4f4d"
+  }
+]

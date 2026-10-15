@@ -1,0 +1,32 @@
+{
+  "artifact": "A43",
+  "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+  "source_path": "LICENSE",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/islaris.dev",
+    "cat-file",
+    "blob",
+    "091d8448b0afa65f11271fc9cbe26f6f1a4d8909"
+  ],
+  "status": 0,
+  "seconds": 0.07218920800369233,
+  "bytes": 2265,
+  "sha256": "d43eeae8b2e1639534f8d095d3b3231f1fc193cfc172b98069adf41bf9684fb9",
+  "git_blob": "091d8448b0afa65f11271fc9cbe26f6f1a4d8909"
+}

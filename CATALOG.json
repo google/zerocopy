@@ -16893,6 +16893,108 @@
         "anneal/orchestration"
       ]
     },
+    "islaris-acquired-source-identity-and-build-prerequisites-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/sail.git",
+            "revision": "b14f649845db850b3673696e2aa90565fa2a60ef"
+          },
+          "name": "Acquired sail_manifest.0.17 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/isla-lang.git",
+            "revision": "bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+          },
+          "name": "Acquired isla-lang.dev source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/stdpp.git",
+            "revision": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3"
+          },
+          "name": "Acquired coq-stdpp.dev.2024-09-10.3.a1a12e00 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/iris.git",
+            "revision": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa"
+          },
+          "name": "Acquired coq-iris.dev.2024-09-10.1.6f24ed4b source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/coq-sail.git",
+            "revision": "169934e27ceafe393ed4d365985f7b12d974d56e"
+          },
+          "name": "Acquired coq-sail.0.17 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+            "revision": "7945a29d1647970709a9b5ad2ffc53c757e130cc"
+          },
+          "name": "Acquired coq-lithium.dev.2024-09-11.0.7945a29d source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/riscv/sail-riscv.git",
+            "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890"
+          },
+          "name": "Acquired coq-sail-riscv.0.5 source"
+        },
+        {
+          "identity": {
+            "repository_url": "https://github.com/rems-project/islaris.git",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Acquired islaris.dev source"
+        },
+        {
+          "identity": {
+            "sha256": "8f42016825a9b10fd21802a18c22d37060c95e8c5a1d2be3df5135402c6a494d",
+            "version": "2.1.6 (263921263e1f745613e2882745114b7b08f3608b)"
+          },
+          "name": "Actual opam acquisition executable"
+        },
+        {
+          "identity": {
+            "image_sha256": "1189d6a4a06d068d675121d121999a7a8d3afa35e6d922ee41a0679fc98876ce"
+          },
+          "name": "Downloaded-source audit image"
+        },
+        {
+          "identity": {
+            "artifact": "audit/manifest.json",
+            "sha256": "836119699026aaefdaa444b01ab7c9ec9ae203e3d29b86dbc1cf28f8697277e3"
+          },
+          "name": "Frozen original audit evidence"
+        },
+        {
+          "identity": {
+            "artifact": "independent-review/manifest.json",
+            "sha256": "f672d74f95b4fb74bc9dc1179b47d1699e64fc3f7c6545c5ae54dcef7295a4a7"
+          },
+          "name": "Frozen independent review evidence"
+        },
+        {
+          "identity": {
+            "artifact": "http-object-map.json",
+            "sha256": "0df87af08eaa38affa05033a407d04595681aaae90e42da67343b4b0dda167dc"
+          },
+          "name": "Verified HTTP transport identity ledger"
+        }
+      ],
+      "topics": [
+        "islaris",
+        "opam/source-acquisition",
+        "source/identity-audit",
+        "coq/build-prerequisites",
+        "sail/proof-bridges"
+      ]
+    },
     "islaris-logical-dependency-pins-and-offline-solve-gate-2026": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -17149,6 +17251,87 @@
         "opam/offline-solving",
         "opam/reproducibility",
         "sail/proof-bridges"
+      ]
+    },
+    "jasmin-native-aarch64-evaluation-and-verified-build-inputs-2026": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+            "source_manifest_sha256": "64acc476a06c1150553f2a126f9952086eb2dd03d25bc7fc0c472dce4de7796b"
+          },
+          "name": "Jasmin fresh source and Nix environment"
+        },
+        {
+          "identity": {
+            "fetchTarball_sha256": "11vxn2zqblkxfl6m20x4qd4b90sn7wmnmngi4c6mydhdr2kbhvj2",
+            "repository": "NixOS/nixpkgs",
+            "revision": "652efddd59a21783edff64959252ec1cfce09041"
+          },
+          "name": "Pinned nixpkgs evaluated source"
+        },
+        {
+          "identity": {
+            "config_sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87",
+            "executable_sha256": "20d14cac461d9a879b9058ed1e5b5ce8112afb05dcee8f33ece9181f7e265842",
+            "image": "nixos/nix",
+            "platform": "aarch64-linux",
+            "platform_manifest_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+            "version": "2.34.8"
+          },
+          "name": "Nix 2.34.8 native AArch64 runtime"
+        },
+        {
+          "identity": {
+            "derivation": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+            "normalized_source_sha256": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+            "release": "r2026.09",
+            "repository": "easycrypt/easycrypt"
+          },
+          "name": "EasyCrypt selected release source and native derivation"
+        },
+        {
+          "identity": {
+            "normalized_source_sha256": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+            "repository": "jasmin-lang/coqword",
+            "revision": "86ed49aeca65a8d32e81bb386778f49b45ee505b",
+            "store_path": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source"
+          },
+          "name": "Coqword source data"
+        },
+        {
+          "identity": {
+            "artifact": "cache-fetch-191.json",
+            "sha256": "94f52a3b0ad9038c84cac5397d2f1b6455c9234cd88098e9cf7943f76dbe2dff"
+          },
+          "name": "Exact cache acquisition roots"
+        },
+        {
+          "identity": {
+            "COPYING_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+            "repository": "NixOS/nix",
+            "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+            "version": "2.34.8"
+          },
+          "name": "Nix release license source, not established binary-build provenance"
+        },
+        {
+          "identity": {
+            "derivation": "/nix/store/z5pir11sfylhnw6gfqdb3dkh3cl63zv5-anneal-owned-offline-sandbox-probe.drv",
+            "output_sha256": "ec2420b37aa9a5c9f66acba9f5488c9c403a96962e9a2736017a1c6599fc7b6a",
+            "source_sha256": "1e72ecac59cd12866728b52d57e06073a767daca87d8a541ba160d9370dd8f4a"
+          },
+          "name": "Parent-owned offline Bash-printf environment probe"
+        }
+      ],
+      "topics": [
+        "jasmin",
+        "nix/reproducibility",
+        "nix/offline-inputs",
+        "proof/toolchain-boundaries",
+        "assembly/isa-models"
       ]
     },
     "jasmin-vale-s2n-artifact-and-access-boundaries": {
