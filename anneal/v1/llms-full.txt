@@ -822,14 +822,16 @@ theorem wp_prove_orthogonal {α} {m : Result α} {P : α → Prop} :
   This reflects Rust's requirement that all layout alignments are non-zero powers
   of two.
 -/
-def IsAlignment (n : Nat) : Prop
+abbrev IsAlignment
 
 /-- A validated Rust alignment, bundling the value and its proof. -/
-structure Alignment where
-  val : Usize
-  isValid : IsAlignment val.val
+abbrev Alignment
 
-instance : Inhabited Alignment
+abbrev mk
+
+abbrev val (x : Alignment)
+
+abbrev isValid (x : Alignment)
 
 /--
   A stub for the `Sized` trait.
@@ -898,35 +900,29 @@ def deriveSizedCmd (declName : Name) : CommandElabM Unit
   to fit within `Usize`. It is used to reason about the layout of values whose
   sizes may exceed the maximum addressable memory.
 -/
-structure SpecLayout where
-  size : Nat
-  align : Alignment
-  sizeAligned : align.val.val ∣ size
+abbrev SpecLayout
 
-/--
-  A valid physical memory layout for a value.
+abbrev mk
 
-  This layout is defined by a size and an alignment. It is bounded by the
-  physical constraints of the machine, meaning that its size is guaranteed to
-  fit within the addressable memory bounds of `Usize`. It is used to represent
-  the layout of a value that actually exists in physical memory.
--/
-structure Layout where
-  size : Usize
-  align : Alignment
-  sizeAligned : align.val.val ∣ size.val
+abbrev size (x : SpecLayout)
 
-/--
-  A proof that a mathematical layout size is small enough to exist in physical
-  memory.
+abbrev align (x : SpecLayout)
 
-  This proof establishes that the size of a mathematical layout fits within
-  `Usize.max`, meaning the layout can describe a physical value.
--/
-class FitsInUsize (lay : SpecLayout) : Prop where
-  fits : lay.size ≤ Usize.max
+abbrev sizeAligned (x : SpecLayout)
 
-instance (lay : Layout) : FitsInUsize lay.toSpecLayout
+abbrev toGeometry (x : SpecLayout)
+
+abbrev Layout
+
+abbrev mk
+
+abbrev sizeAligned (x : Layout)
+
+abbrev FitsInUsize
+
+abbrev mk {lay : SpecLayout} (fits : lay.size ≤ Usize.max) : FitsInUsize lay
+
+abbrev fits {lay : SpecLayout} [FitsInUsize lay] : lay.size ≤ Usize.max
 
 /--
   The ability to compute a mathematically idealized layout for a runtime value.
@@ -986,10 +982,17 @@ class HasStaticLayout (α : Type) [core.marker.Sized α] where
   The mathematical layout properties that are statically known for all instances
   of a slice-based dynamically-sized type (Slice DST).
 -/
-structure SpecSliceDstLayout where
-  trailingOffset : Nat
-  elementSize : Nat
-  align : Alignment
+abbrev SpecSliceDstLayout
+
+abbrev mk
+
+abbrev trailingOffset (x : SpecSliceDstLayout)
+
+abbrev elementSize (x : SpecSliceDstLayout)
+
+abbrev align (x : SpecSliceDstLayout)
+
+abbrev toGeometry (x : SpecSliceDstLayout)
 
 /--
   Provides the static slice DST layout properties for a given type.
@@ -1006,16 +1009,11 @@ class SpecSliceDstTypeLayout (α : Type) where
 class TrailingSlice (α : Type) where
   len : α → Nat
 
-/-- Rounds `val` up to the nearest multiple of `align`. -/
-def roundUpToAlign (val align : Nat) : Nat
+abbrev roundUpToAlign
 
-/-- A theorem stating that rounding up always produces a value greater than or equal to the original value. -/
-theorem roundUpToAlign_ge (val align : Nat) (h : 0 < align) :
-  val ≤ roundUpToAlign val align
+abbrev roundUpToAlign_ge
 
-/-- A theorem stating that if the resulting padded value is non-zero, it must be at least the alignment. -/
-theorem align_le_roundUpToAlign (val align : Nat) (h_val : 0 < val) (h_align : 0 < align) :
-  align ≤ roundUpToAlign val align
+abbrev align_le_roundUpToAlign
 
 /--
   Computes the exact mathematical size of a `repr(C)` Slice DST instance.
@@ -1086,71 +1084,58 @@ abbrev align_of_spec (align_of_fun : Type → Result Usize) : Prop
   Because there is no guarantee that an allocation is contiguous, `addresses`
   is modeled as an arbitrary `Set Nat` rather than a contiguous range.
 -/
-structure Allocation where
-  base : Usize
-  size : Usize
-  addresses : Set Nat
+abbrev Allocation
 
-  -- `base` is not equal to null (address 0)
-  base_not_null : base.val ≠ 0
+abbrev mk
 
-  -- `size <= isize::MAX`
-  size_le_isize_max : size.val ≤ Isize.max
+abbrev base (x : Allocation)
 
-  -- `base + size <= usize::MAX`
-  base_add_size_le_usize_max : base.val + size.val ≤ Usize.max
+abbrev size (x : Allocation)
 
-  -- For all addresses `a` in `addresses`, `a` is in the range `base .. (base + size)`
-  bounds : ∀ a ∈ addresses, base.val ≤ a ∧ a < base.val + size.val
+abbrev addresses (x : Allocation)
 
-theorem offset_le_isize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a - alloc.base.val ≤ Isize.max
+abbrev base_not_null (x : Allocation)
 
-theorem offset_non_negative (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    alloc.base.val ≤ a
+abbrev size_le_isize_max (x : Allocation)
 
-theorem address_le_usize_max (alloc : Allocation) (a : Nat) (ha : a ∈ alloc.addresses) :
-    a ≤ Usize.max
+abbrev base_add_size_le_usize_max (x : Allocation)
+
+abbrev bounds (x : Allocation)
+
+abbrev toGeometry (x : Allocation)
+
+abbrev offset_le_isize_max (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses)
+
+abbrev offset_non_negative (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses)
+
+abbrev address_le_usize_max (x : Allocation) (addr : Nat) (ha : addr ∈ x.addresses)
 
 /--
   Retrieves the properties of a pointer's referent.
   The referent is the region of memory that the pointer addresses.
 -/
-structure Referent where
-  -- The start address of the referent
-  address : Usize
-  -- The size of the referent in bytes
-  size : Usize
-  -- The mathematical set of addresses that make up the referent
-  addresses : Set Nat
+abbrev Referent
 
-  bounds : ∀ a ∈ addresses, address.val ≤ a ∧ a < address.val + size.val
+abbrev mk
 
-  addresses_are_usizes : ∀ a ∈ addresses, a ≤ Usize.max
+abbrev address (x : Referent)
 
-instance : Nonempty Referent
+abbrev size (x : Referent)
 
-/--
-  A predicate indicating that a referent's set of addresses fills the contiguous
-  range `[address, address + size)`. This means every address in that range
-  belongs to the referent's addresses.
--/
-def Referent.IsContiguous (r : Referent) : Prop
+abbrev addresses (x : Referent)
 
-/--
-  A predicate indicating that a referent fits entirely within a given allocation.
-  This means that all logical addresses of the referent are addresses allocated
-  in the allocation, and the contiguous address range of the referent is
-  a sub-range of the contiguous address range of the allocation.
--/
-def FitsInAllocation (r : Referent) (a : Allocation) : Prop
+abbrev bounds (x : Referent)
 
-/--
-  A helper theorem proving that any address belonging to a referent that
-  fits in an allocation is strictly less than the allocation's upper bound.
--/
-theorem FitsInAllocation.address_bounds_alloc (r : Referent) (a : Allocation) (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses) :
-  addr < a.base.val + a.size.val
+abbrev addresses_are_usizes (x : Referent)
+
+abbrev toGeometry (x : Referent)
+
+abbrev IsContiguous (x : Referent) : Prop
+
+abbrev FitsInAllocation
+
+abbrev address_bounds_alloc (r : Referent) (a : Allocation)
+    (h : FitsInAllocation r a) (addr : Nat) (ha : addr ∈ r.addresses)
 
 /--
   A class for types that act as pointers with a well-defined referent.
