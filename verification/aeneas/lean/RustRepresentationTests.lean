@@ -67,9 +67,9 @@ example : (modelNonZeroUScalar .U8 core.num.niche_types.NonZeroU8Inner).zeroedRe
 
 -- Missing physical semantics fail closed even for an inhabited raw carrier.
 example : ¬ RustModel.completeRepresentation Nat := by
-  simp [RustModel.completeRepresentation, RustModel.representation]
+  simp [RustModel.completeRepresentation, RustModel.representation, RustModel.storage]
 example : ¬ RustModel.zeroRepresentation Nat := by
-  simp [RustModel.zeroRepresentation, RustModel.representation]
+  simp [RustModel.zeroRepresentation, RustModel.representation, RustModel.storage]
 example : modelNat.zeroedResult = .fail .undef := rfl
 
 -- The same physical domain with a provider rejecting zero must reject the
@@ -77,7 +77,7 @@ example : modelNat.zeroedResult = .fail .undef := rfl
 @[reducible] def rejectsZero : RustModel U8 where
   Model := Unit
   decode raw := if raw.val = 0 then none else some ()
-  representation := some (uScalarBitDecoder .U8)
+  storage := some (.fixed (uScalarBitDecoder .U8))
 
 theorem rejectsZero_not_zero : ¬ @RustModel.zeroRepresentation U8 rejectsZero := by
   intro zero

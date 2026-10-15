@@ -8,7 +8,7 @@ those terms. -/
 
 module
 public import Aeneas
-public import Rust.Storage
+public import PhysicalStorage
 public meta import Lean
 @[expose] public section
 
@@ -47,7 +47,7 @@ class RustModel (Raw : Type u) where
   /-- Optional language-level byte interpretation. Absence means that this
   provider cannot establish byte-validity laws.
   This decoder operates independently of the optional library invariant. -/
-  representation : Option (Rust.Storage.BitDecoder Raw) := none
+  storage : Option (PhysicalStorage Raw) := none
   /-- A preferred physical representation. Operations check it before use.
   Universally varying this field retains every accepted representation. -/
   representationChoice : Raw → List Rust.Storage.AMByte := fun _ => []
@@ -71,31 +71,61 @@ def isValid {Raw : Type u} [m : RustModel Raw] (raw : Raw) : Prop :=
 def decoded {Raw : Type u} (m : RustModel Raw) (raw : Raw) (value : m.Model) : Prop :=
   m.decode raw = some value
 
-/-- IntoBytes needs an available physical decoder whose entire language-valid
-representation domain is initialized. A library decoder cannot shrink this
-quantification: even a provider which rejects every mathematical value must
-establish initialization for all bytes accepted by its physical decoder. -/
-def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
-  match m.representation with
-  | none => False
-  | some decoder => decoder.Initialized
+/-- The fixed-width compatibility API is derived from the sole physical profile.
+Indexed storage never acquires an invented fixed metadata value. -/
+def RustModel.representation {Raw : Type u} (m : RustModel Raw) :
+    Option (Rust.Storage.BitDecoder Raw) := m.storage.bind PhysicalStorage.fixed?
 
-/-- Every admitted source has some physical representation. This is vacuous
-for uninhabited sources and does not require a canonical encoding. -/
-def RustModel.realizableRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
-  match m.representation with
+/-- IntoBytes covers every accepted language representation at every metadata,
+independently of the optional library decoder. Missing storage fails closed. -/
+def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.storage with
   | none => False
-  | some decoder => ∀ raw, @isValid Raw m raw →
-      ∃ bytes, decoder.run bytes = some raw
+  | some physical => physical.Initialized
+
+/-- Every admitted source has bytes at its actual metadata. This is vacuous
+for an uninhabited source and never constructs a default value. -/
+def RustModel.realizableRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.storage with
+  | none => False
+  | some physical => physical.Realizable (@isValid Raw m)
+
+/-- An owned operation may use the fixed projection only after this check. -/
+theorem RustModel.initialized_fixed {Raw : Type u} (m : RustModel Raw)
+    (decoder : Rust.Storage.BitDecoder Raw) (available : m.representation = some decoder)
+    (initialized : @RustModel.initializedRepresentation Raw m) : decoder.Initialized := by
+  cases stored : m.storage with
+  | none => simp [RustModel.representation, stored] at available
+  | some physical =>
+    simp only [RustModel.representation, stored, Option.bind_some] at available
+    exact physical.initialized_fixed available (by simpa [RustModel.initializedRepresentation, stored] using initialized)
+
+/-- Recover realizability for the fixed decoder selected by an owned operation. -/
+theorem RustModel.realizable_fixed {Raw : Type u} (m : RustModel Raw)
+    (decoder : Rust.Storage.BitDecoder Raw) (available : m.representation = some decoder)
+    (realizable : @RustModel.realizableRepresentation Raw m) :
+    ∀ raw, @isValid Raw m raw → ∃ bytes, decoder.run bytes = some raw := by
+  cases stored : m.storage with
+  | none => simp [RustModel.representation, stored] at available
+  | some physical =>
+    cases physical with
+    | fixed selected =>
+      have same : selected = decoder := by simpa [RustModel.representation, stored,
+        PhysicalStorage.fixed?] using available
+      subst selected
+      simpa [RustModel.realizableRepresentation, stored, PhysicalStorage.Realizable] using realizable
+    | indexed metadata equality selected =>
+      simp [RustModel.representation, stored, PhysicalStorage.fixed?] at available
 
 /-- Change the operational preference without changing either decoder. -/
 @[reducible] def RustModel.withChoice {Raw : Type u} (m : RustModel Raw)
     (choose : Raw → List Rust.Storage.AMByte) : RustModel Raw :=
   { m with representationChoice := choose }
 
-/-- Every initialized representation of the physical width admits a language
+/-- Fixed-layout FromBytes law. Every initialized representation admits a language
 value and a mathematical value through this same provider. Missing physical
-semantics fail closed. This law does not establish Rust layout correspondence,
+semantics fail closed. Indexed completeness is `StorageDecoder.CompleteWith`;
+this owned-value law requires the fixed projection. Neither establishes Rust layout correspondence,
 resource ownership, or the other obligations of a FromBytes implementation. -/
 def RustModel.completeRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
   match m.representation with
@@ -312,13 +342,13 @@ theorem RustModel.dspec_decodeResult_iff {Raw : Type u} (m : RustModel Raw)
 @[reducible] instance modelBool : RustModel Bool where
   Model := Bool
   decode := some
-  representation := some Rust.Storage.boolDecoder
+  storage := some (.fixed Rust.Storage.boolDecoder)
 @[reducible] instance modelNat : RustModel Nat := { Model := Nat, «decode» := some }
 @[reducible] instance modelInt : RustModel Int := { Model := Int, «decode» := some }
 @[reducible] instance modelUnit : RustModel Unit where
   Model := Unit
   decode := some
-  representation := some Rust.Storage.unitDecoder
+  storage := some (.fixed Rust.Storage.unitDecoder)
 
 @[reducible] instance modelProd {α : Type u} {β : Type v} [ma : RustModel α] [mb : RustModel β] :
     RustModel (α × β) where
@@ -364,12 +394,6 @@ abbrev SliceValue (Element : Type u) :=
 abbrev ArrayValue (Element : Type u) (n : Usize) :=
   { values : List Element // values.length = n.val }
 
-@[reducible] instance modelSlice {α : Type u} [ma : RustModel α] : RustModel (Slice α) where
-  Model := SliceValue ma.Model
-  decode raw := match h : decodeList ma.decode raw.val with
-    | none => none
-    | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
-
 /-- Explicit physical slice adapter. The caller supplies a usize element count,
 including for zero-sized elements. Its value-level bound is carried by metadata,
 so no count is inferred from byte length and no extra Nat admission guard is needed. -/
@@ -411,34 +435,98 @@ theorem RustModel.sliceStorageDecoder_initialized {α : Type u}
   | none => simp [decoded] at language
   | some values => exact Rust.Storage.arrayDecode_initialized element initialized count.val bytes values decoded
 
+/-- Fixed arrays preserve fixed storage. Indexed children also compose as a
+pure sequence of explicitly supplied metadata; no Rust ABI is inferred for
+otherwise impossible instantiations such as an array of unsized elements. -/
+def PhysicalStorage.array (physical : PhysicalStorage α) (n : Usize) :
+    PhysicalStorage (Aeneas.Std.Array α n) :=
+  match physical with
+  | .fixed element => .fixed ((Rust.Storage.arrayDecoder element n.val).map
+      (fun values => Aeneas.Std.Array.from values.val values.property))
+  | .indexed metadata equality element =>
+    .indexed (List metadata) inferInstance
+      ((element.sequence.restrict (fun values => values.length = n.val)).map
+        (fun values => Aeneas.Std.Array.from values.val values.property)
+        (fun raw => raw.val.map element.metadata)
+        (fun values => by simp only [Aeneas.Std.Array.from_val]; rfl))
+
+/-- Ordinary Rust slices have usize element-count metadata. Composing already
+indexed mathematical children retains each child's metadata explicitly. This
+second case makes generic model laws total; it asserts no nested-DST Rust ABI. -/
+def PhysicalStorage.slice (physical : PhysicalStorage α) : PhysicalStorage (Slice α) :=
+  match physical with
+  | .fixed element => .indexed Usize inferInstance (RustModel.sliceStorageDecoder element)
+  | .indexed metadata equality element =>
+    .indexed (List metadata) inferInstance
+      ((element.sequence.restrict (fun values => values.length ≤ Usize.max)).map
+        (fun values => Slice.from values.val values.property)
+        (fun raw => raw.val.map element.metadata)
+        (fun values => by simp only [Slice.from_val]; rfl))
+
+@[reducible] instance modelSlice {α : Type u} [ma : RustModel α] : RustModel (Slice α) where
+  Model := SliceValue ma.Model
+  decode raw := match h : decodeList ma.decode raw.val with
+    | none => none
+    | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
+  storage := ma.storage.map PhysicalStorage.slice
+
 @[reducible] instance modelArray {α : Type u} (n : Usize) [ma : RustModel α] :
     RustModel (Aeneas.Std.Array α n) where
   Model := ArrayValue ma.Model n
   decode raw := match h : decodeList ma.decode raw.val with
     | none => none
     | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
-  representation := ma.representation.map (fun element =>
-    (Rust.Storage.arrayDecoder element n.val).map
-      (fun values => Aeneas.Std.Array.from values.val values.property))
+  storage := ma.storage.map (·.array n)
 
-/-- The language-level array representation concatenates element storage.
-This theorem concerns every accepted representation, including padding bytes;
-it never asks whether the optional library decoder accepts the decoded value. -/
+@[simp] theorem modelArray_representation {α : Type u} [ma : RustModel α] (n : Usize) :
+    (@modelArray α n ma).representation = ma.representation.map (fun element =>
+      (Rust.Storage.arrayDecoder element n.val).map
+        (fun values => Aeneas.Std.Array.from values.val values.property)) := by
+  change (ma.storage.map (·.array n)).bind PhysicalStorage.fixed? = _
+  cases stored : ma.storage with
+  | none => simp [RustModel.representation, stored]
+  | some physical => cases physical <;> simp [RustModel.representation,
+      PhysicalStorage.array, PhysicalStorage.fixed?, stored]
+
+theorem PhysicalStorage.initialized_array (physical : PhysicalStorage α) (n : Usize)
+    (initialized : physical.Initialized) : (physical.array n).Initialized := by
+  cases physical with
+  | fixed element =>
+    exact Rust.Storage.BitDecoder.map_initialized _ _
+      (Rust.Storage.arrayDecoder_initialized element initialized n.val)
+  | indexed metadata equality element =>
+    apply Rust.Storage.StorageDecoder.map_initialized
+    exact element.sequence.restrict_initialized _ (element.sequence_initialized initialized)
+
+theorem PhysicalStorage.initialized_slice (physical : PhysicalStorage α)
+    (initialized : physical.Initialized) : physical.slice.Initialized := by
+  cases physical with
+  | fixed element => exact RustModel.sliceStorageDecoder_initialized element initialized
+  | indexed metadata equality element =>
+    apply Rust.Storage.StorageDecoder.map_initialized
+    exact element.sequence.restrict_initialized _ (element.sequence_initialized initialized)
+
+/-- Initialization includes every language representation, independently of
+whether the mathematical decoder accepts the resulting raw value. -/
 theorem RustModel.initialized_array (α : Type u) [ma : RustModel α] (n : Usize)
     (element : RustModel.initializedRepresentation α) :
     @RustModel.initializedRepresentation (Aeneas.Std.Array α n) (@modelArray α n ma) := by
-  cases representation : ma.representation with
-  | none => simp [RustModel.initializedRepresentation, representation] at element
-  | some decoder =>
-    simp only [RustModel.initializedRepresentation, representation] at element
-    unfold RustModel.initializedRepresentation
-    rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
-      (Rust.Storage.arrayDecoder element n.val).map
-        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
-    rw [representation]
-    simp only [Option.map_some]
-    exact Rust.Storage.BitDecoder.map_initialized _ _
-      (Rust.Storage.arrayDecoder_initialized decoder element n.val)
+  cases stored : ma.storage with
+  | none => simp [RustModel.initializedRepresentation, stored] at element
+  | some physical =>
+    simp only [RustModel.initializedRepresentation, RustModel.storage, stored, Option.map_some]
+    exact physical.initialized_array n
+      (by simpa [RustModel.initializedRepresentation, stored] using element)
+
+theorem RustModel.initialized_slice (α : Type u) [ma : RustModel α]
+    (element : RustModel.initializedRepresentation α) :
+    @RustModel.initializedRepresentation (Slice α) (@modelSlice α ma) := by
+  cases stored : ma.storage with
+  | none => simp [RustModel.initializedRepresentation, stored] at element
+  | some physical =>
+    simp only [RustModel.initializedRepresentation, RustModel.storage, stored, Option.map_some]
+    exact physical.initialized_slice
+      (by simpa [RustModel.initializedRepresentation, stored] using element)
 
 -- This is Rust's Ok/Err payload type. Either constructor is admitted exactly
 -- when its selected child decodes, independently of Aeneas execution Result.

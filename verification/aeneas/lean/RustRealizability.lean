@@ -94,8 +94,7 @@ theorem RustModel.realizableRepresentation_exists {Raw : Type u} [m : RustModel 
     (realizable : RustModel.realizableRepresentation Raw)
     (decoder : BitDecoder Raw) (available : m.representation = some decoder)
     (raw : Raw) (valid : isValid raw) : ∃ bytes, decoder.run bytes = some raw := by
-  simp only [RustModel.realizableRepresentation, available] at realizable
-  exact realizable raw valid
+  exact m.realizable_fixed decoder available realizable raw valid
 
 theorem realizableUScalar (ty : UScalarTy) :
     RustModel.realizableRepresentation (UScalar ty) := by
@@ -213,46 +212,57 @@ theorem realizableNonZeroIScalar (ty : IScalarTy) (Inner : Type) :
   rw [BitDecoder.run_filterMap, accepted]
   simp only [Option.bind_some, nonzero, ↓reduceIte]
 
-/-- A transparent wrapper reuses its payload's bytes. The inverse and validity
-premises also cover generated wrapper providers with their retained decoder. -/
+/-- A transparent wrapper reuses its payload's bytes at the same metadata.
+Both inverse laws ensure that every admitted wrapper is in the image of wrapping. -/
 theorem RustModel.realizable_of_wrapper {A B : Type} [ma : RustModel A] [mb : RustModel B]
-    (wrap : A → B) (unwrap : B → A) (inverse : ∀ raw, wrap (unwrap raw) = raw)
-    (representation : mb.representation = wrapperRepresentation wrap)
+    (wrap : A → B) (unwrap : B → A)
+    (leftInverse : ∀ raw, unwrap (wrap raw) = raw)
+    (rightInverse : ∀ raw, wrap (unwrap raw) = raw)
+    (storage : mb.storage = wrapperStorage wrap unwrap leftInverse)
     (validChild : ∀ raw, isValid raw → isValid (unwrap raw))
     (child : RustModel.realizableRepresentation A) :
     RustModel.realizableRepresentation B := by
-  cases available : ma.representation with
-  | none => simp [RustModel.realizableRepresentation, available] at child
-  | some decoder =>
-    simp only [RustModel.realizableRepresentation, available] at child
-    simp only [RustModel.realizableRepresentation, representation,
-      wrapperRepresentation, available, Option.map_some]
-    intro raw valid
-    obtain ⟨bytes, accepted⟩ := child (unwrap raw) (validChild raw valid)
-    exact ⟨bytes, by rw [BitDecoder.run_map, accepted]; simp [inverse]⟩
+  cases stored : ma.storage with
+  | none => simp [RustModel.realizableRepresentation, stored] at child
+  | some physical =>
+    simp only [RustModel.realizableRepresentation, stored] at child
+    simp only [RustModel.realizableRepresentation, storage, wrapperStorage, stored, Option.map_some]
+    cases physical with
+    | fixed decoder =>
+      intro raw valid
+      obtain ⟨bytes, accepted⟩ := child (unwrap raw) (validChild raw valid)
+      exact ⟨bytes, by rw [BitDecoder.run_map, accepted]; simp [rightInverse]⟩
+    | indexed metadata equality decoder =>
+      intro raw valid
+      obtain ⟨bytes, accepted⟩ := child (unwrap raw) (validChild raw valid)
+      refine ⟨bytes, ?_⟩
+      rw [StorageDecoder.run_map]
+      simp only [StorageDecoder.map]
+      rw [accepted]
+      simp [rightInverse]
 
 theorem realizableManuallyDrop (T : Type) [ma : RustModel T]
     (child : RustModel.realizableRepresentation T) :
     RustModel.realizableRepresentation (core.mem.manually_drop.ManuallyDrop T) :=
-  RustModel.realizable_of_wrapper _ (·.value) (by rintro ⟨raw⟩; rfl) rfl
+  RustModel.realizable_of_wrapper _ (·.value) (by intro raw; rfl) (by rintro ⟨raw⟩; rfl) rfl
     (fun _ valid => valid) child
 
 theorem realizableCell (T : Type) [ma : RustModel T]
     (child : RustModel.realizableRepresentation T) :
     RustModel.realizableRepresentation (core.cell.Cell T) :=
-  RustModel.realizable_of_wrapper _ (·.value) (by rintro ⟨raw⟩; rfl) rfl
+  RustModel.realizable_of_wrapper _ (·.value) (by intro raw; rfl) (by rintro ⟨raw⟩; rfl) rfl
     (fun _ valid => valid) child
 
 theorem realizableUnsafeCell (T : Type) [ma : RustModel T]
     (child : RustModel.realizableRepresentation T) :
     RustModel.realizableRepresentation (core.cell.UnsafeCell T) :=
-  RustModel.realizable_of_wrapper _ (·.value) (by rintro ⟨raw⟩; rfl) rfl
+  RustModel.realizable_of_wrapper _ (·.value) (by intro raw; rfl) (by rintro ⟨raw⟩; rfl) rfl
     (fun _ valid => valid) child
 
 theorem realizableWrapping (T : Type) [ma : RustModel T]
     (child : RustModel.realizableRepresentation T) :
     RustModel.realizableRepresentation (Zerocopy.core.num.wrapping.Wrapping T) :=
-  RustModel.realizable_of_wrapper _ (·._0) (by rintro ⟨raw⟩; rfl) rfl
+  RustModel.realizable_of_wrapper _ (·._0) (by intro raw; rfl) (by rintro ⟨raw⟩; rfl) rfl
     (fun _ valid => valid) child
 
 /-- Successful list decoding admits every stored element with the same provider. -/
@@ -295,28 +305,21 @@ theorem RustModel.valid_array {α : Type u} [ma : RustModel α] {n : Usize}
     contradiction
   · exact ⟨_, rfl⟩
 
-theorem RustModel.realizable_array (α : Type u) [ma : RustModel α] (n : Usize)
-    (element : RustModel.realizableRepresentation α) :
-    @RustModel.realizableRepresentation (Aeneas.Std.Array α n) (@modelArray α n ma) := by
-  cases available : ma.representation with
-  | none => simp [RustModel.realizableRepresentation, available] at element
-  | some decoder =>
-    simp only [RustModel.realizableRepresentation, available] at element
-    unfold RustModel.realizableRepresentation
-    rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
-      (arrayDecoder element n.val).map
-        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
-    rw [available]
-    simp only [Option.map_some]
-    intro raw valid
-    obtain ⟨model, accepted⟩ := valid
-    have all : ∀ item ∈ raw.val, isValid item := by
-      dsimp only [RustModel.decode] at accepted
-      split at accepted
-      · contradiction
-      · rename_i values decoded
-        exact decodeList_valid raw.val values decoded
-    obtain ⟨bytes, width, physical⟩ := arrayDecode_realizable decoder isValid element raw.val all
+/-- Restricting mathematical admission preserves existing physical witnesses. -/
+theorem PhysicalStorage.realizable_mono (physical : PhysicalStorage Raw)
+    (source destination : Raw → Prop) (realizable : physical.Realizable source)
+    (preserves : ∀ raw, destination raw → source raw) : physical.Realizable destination := by
+  cases physical <;> exact fun raw valid => realizable raw (preserves raw valid)
+
+/-- Arrays compose representations of admitted children. Indexed children use
+an explicit metadata list, retaining every element boundary even at size zero. -/
+theorem PhysicalStorage.realizable_array (physical : PhysicalStorage α) (n : Usize)
+    (valid : α → Prop) (realizable : physical.Realizable valid) :
+    (physical.array n).Realizable (fun raw => ∀ item ∈ raw.val, valid item) := by
+  cases physical with
+  | fixed decoder =>
+    intro raw all
+    obtain ⟨bytes, width, physical⟩ := arrayDecode_realizable decoder valid realizable raw.val all
     refine ⟨bytes, ?_⟩
     rw [BitDecoder.run_map]
     have rawLength : raw.val.length = n.val := raw.property
@@ -330,5 +333,95 @@ theorem RustModel.realizable_array (α : Type u) [ma : RustModel α] (n : Usize)
       Aeneas.Std.Array.ext _ _ (Aeneas.Std.Array.from_val _ _)
     simp only [rawLength] at width
     simp [BitDecoder.run, arrayDecoder, width, decoded, fromRaw]
+  | indexed metadata equality decoder =>
+    intro raw all
+    obtain ⟨bytes, accepted⟩ := decoder.sequence_realizable valid realizable
+      (raw.val.map decoder.metadata) raw.val rfl all
+    refine ⟨bytes, ?_⟩
+    rw [StorageDecoder.run_map, StorageDecoder.run_restrict]
+    simp only [StorageDecoder.map]
+    rw [accepted]
+    simp only [raw.property, ↓reduceDIte, Option.bind_some, Option.map_some]
+    congr 1
+    exact Aeneas.Std.Array.ext _ _ (Aeneas.Std.Array.from_val _ _)
+
+/-- Slice realizability retains the raw slice's actual count. Indexed children
+compose their own metadata without claiming a nested-DST Rust layout. -/
+theorem PhysicalStorage.realizable_slice (physical : PhysicalStorage α)
+    (valid : α → Prop) (realizable : physical.Realizable valid) :
+    physical.slice.Realizable (fun raw => ∀ item ∈ raw.val, valid item) := by
+  cases physical with
+  | fixed decoder =>
+    intro raw all
+    obtain ⟨bytes, accepted⟩ := arrayDecoder_realizable decoder valid realizable raw.val all
+    refine ⟨bytes, ?_⟩
+    rw [RustModel.sliceStorageDecoder_run]
+    dsimp only [RustModel.sliceStorageDecoder]
+    have rawCount : raw.val.length = raw.len.val := by simp
+    have transport (count : Nat) (h : raw.val.length = count) :
+        (arrayDecoder decoder count).run bytes = some ⟨raw.val, h⟩ := by
+      cases h
+      exact accepted
+    rw [transport raw.len.val rawCount]
+    simp only [Option.map_some]
+    congr 1
+    exact Slice.ext _ _ (Slice.from_val _ _)
+  | indexed metadata equality decoder =>
+    intro raw all
+    obtain ⟨bytes, accepted⟩ := decoder.sequence_realizable valid realizable
+      (raw.val.map decoder.metadata) raw.val rfl all
+    refine ⟨bytes, ?_⟩
+    rw [StorageDecoder.run_map, StorageDecoder.run_restrict]
+    simp only [StorageDecoder.map]
+    rw [accepted]
+    simp only [raw.property, ↓reduceDIte, Option.bind_some, Option.map_some]
+    congr 1
+    exact Slice.ext _ _ (Slice.from_val _ _)
+
+theorem RustModel.realizable_array (α : Type u) [ma : RustModel α] (n : Usize)
+    (element : RustModel.realizableRepresentation α) :
+    @RustModel.realizableRepresentation (Aeneas.Std.Array α n) (@modelArray α n ma) := by
+  cases stored : ma.storage with
+  | none => simp [RustModel.realizableRepresentation, stored] at element
+  | some physical =>
+    simp only [RustModel.realizableRepresentation, RustModel.storage, stored, Option.map_some]
+    apply (physical.array n).realizable_mono _ _ (physical.realizable_array n isValid
+      (by simpa [RustModel.realizableRepresentation, stored] using element))
+    intro raw valid
+    obtain ⟨value, accepted⟩ := valid
+    dsimp only [RustModel.decode] at accepted
+    split at accepted
+    · contradiction
+    · rename_i values decoded
+      exact decodeList_valid raw.val values decoded
+
+/-- Slice admission follows from admission of every stored element. -/
+theorem RustModel.valid_slice {α : Type u} [ma : RustModel α]
+    (raw : Slice α) (valid : ∀ item ∈ raw.val, isValid item) : isValid raw := by
+  obtain ⟨values, decoded⟩ := decodeList_exists raw.val valid
+  unfold isValid
+  dsimp only [RustModel.decode]
+  split
+  · rename_i rejected
+    rw [decoded] at rejected
+    contradiction
+  · exact ⟨_, rfl⟩
+
+theorem RustModel.realizable_slice (α : Type u) [ma : RustModel α]
+    (element : RustModel.realizableRepresentation α) :
+    @RustModel.realizableRepresentation (Slice α) (@modelSlice α ma) := by
+  cases stored : ma.storage with
+  | none => simp [RustModel.realizableRepresentation, stored] at element
+  | some physical =>
+    simp only [RustModel.realizableRepresentation, RustModel.storage, stored, Option.map_some]
+    apply physical.slice.realizable_mono _ _ (physical.realizable_slice isValid
+      (by simpa [RustModel.realizableRepresentation, stored] using element))
+    intro raw valid
+    obtain ⟨value, accepted⟩ := valid
+    dsimp only [RustModel.decode] at accepted
+    split at accepted
+    · contradiction
+    · rename_i values decoded
+      exact decodeList_valid raw.val values decoded
 
 end AeneasSpecs

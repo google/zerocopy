@@ -27,18 +27,18 @@ namespace EmptyConstructionTests
   decode raw := nomatch raw
 
 example : ¬ @RustModel.initializedRepresentation Empty modelEmpty := by
-  simp [RustModel.initializedRepresentation, RustModel.representation]
+  simp [RustModel.initializedRepresentation, RustModel.storage]
 
 example : modelEmpty.decodeBitsResult [] = .fail .undef := rfl
 example : modelEmpty.decodeBytesResult [] = .fail .undef := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, RustModel.decode]
 example : ¬ WP.spec (modelEmpty.decodeBytesResult []) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage]
 example : ¬ WP.dspec (modelEmpty.decodeBytesResult []) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage]
 
 inductive StateToken where
   | mk
@@ -52,13 +52,13 @@ inductive StateToken where
   decode _ := some ()
 
 example : ¬ @RustModel.initializedRepresentation StateToken inhabitedOnly := by
-  simp [RustModel.initializedRepresentation, RustModel.representation]
+  simp [RustModel.initializedRepresentation, RustModel.storage]
 
 example : (default : StateToken) = .mk := rfl
 example : inhabitedOnly.decode .mk = some () := rfl
 example : inhabitedOnly.decodeBytesResult [] = .fail .undef := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, RustModel.decode]
 
 -- Model an external admission condition explicitly. The physical decoder may
 -- supply the unit-like raw constructor while the full provider still rejects
@@ -66,24 +66,24 @@ example : inhabitedOnly.decodeBytesResult [] = .fail .undef := by
 @[reducible] def stateModel (masked : Bool) : RustModel StateToken where
   Model := Unit
   decode _ := if masked then some () else none
-  representation := some (emptyDecoder StateToken.mk)
+  storage := some (.fixed (emptyDecoder StateToken.mk))
 
 example : (stateModel false).decodeBitsResult [] = .ok StateToken.mk := rfl
 example : (stateModel true).decodeBytesResult [] = .ok () := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     emptyDecoder, BitDecoder.run]
 example : (stateModel false).decodeBytesResult [] = .fail .undef := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     emptyDecoder, BitDecoder.run]
 example : ¬ WP.spec ((stateModel false).decodeBytesResult []) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     emptyDecoder, BitDecoder.run]
 example : ¬ WP.dspec ((stateModel false).decodeBytesResult []) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     emptyDecoder, BitDecoder.run]
 
 -- Both states satisfy the physical initialization law. That law cannot prove
@@ -98,7 +98,7 @@ example : (modelPhantomData Empty).decodeBitsResult [] =
     .ok (Zerocopy.core.marker.PhantomData.mk : Zerocopy.core.marker.PhantomData Empty) := rfl
 example : (modelPhantomData Empty).decodeBytesResult [] = .ok () := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     emptyDecoder, BitDecoder.run]
 
 end EmptyConstructionTests

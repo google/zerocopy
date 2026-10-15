@@ -110,8 +110,8 @@ meta def auditNativeProviders (bindings : Json) : TermElabM Unit := do
   boundaryDefinition `AeneasSpecs.modelManuallyDrop
     (← `(fun (T : Type) [child : AeneasSpecs.RustModel T] =>
       ({ Model := child.Model, «decode» := fun raw => child.decode raw.value,
-         representation := child.representation.map
-           (fun decoder => decoder.map core.mem.manually_drop.ManuallyDrop.mk),
+         storage := child.storage.map (fun physical => physical.map
+           core.mem.manually_drop.ManuallyDrop.mk (fun raw => raw.value) (fun _ => rfl)),
          representationChoice := fun raw => child.representationChoice raw.value } :
         AeneasSpecs.RustModel (core.mem.manually_drop.ManuallyDrop T))))
     #[.default, .instImplicit]

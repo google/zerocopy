@@ -124,8 +124,11 @@ operation in its dependency closure was faithfully modeled.
 [`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) represents initialized and
 uninitialized bytes and fixed-width physical decoders as pure values.
 `BitDecoder.Initialized` says that every byte list accepted by a decoder is
-initialized. `RustModel.initializedRepresentation` requires an available
-physical decoder and this law; absence is `False`. The library's mathematical
+initialized. `RustModel.initializedRepresentation` requires an available physical profile
+and this law at every metadata value; absence is `False`. The single profile
+in `RustModel.storage` is either fixed or indexed. Its fixed `representation`
+accessor is a projection used by owned-value primitives, not a second physical
+interpretation. Slice storage takes its count explicitly. The library's mathematical
 `decode` cannot restrict that quantification. A decoder rejecting every byte
 list satisfies initialization vacuously, so its law alone does not establish
 correspondence with Rust.

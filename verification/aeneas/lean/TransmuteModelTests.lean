@@ -17,12 +17,12 @@ namespace TransmuteModelTests
 @[reducible] def ambiguousSource : RustModel Unit where
   Model := Unit
   decode := some
-  representation := some (byteDecoder.map fun _ => ())
+  storage := some (.fixed (byteDecoder.map fun _ => ()))
 
 @[reducible] def byteDestination : RustModel Rust.Bytes.Byte where
   Model := Rust.Bytes.Byte
   decode := some
-  representation := some byteDecoder
+  storage := some (.fixed byteDecoder)
 
 theorem ambiguous_source_initialized : @RustModel.initializedRepresentation Unit ambiguousSource :=
   BitDecoder.map_initialized _ _ byteDecoder_initialized
@@ -66,7 +66,7 @@ example (choose : Unit → List AMByte) :
 @[reducible] def rejectsAllSource : RustModel Unit where
   Model := Unit
   decode := some
-  representation := some { byteSize := 1, decode := fun _ => none }
+  storage := some (.fixed { byteSize := 1, decode := fun _ => none })
 
 example : @RustModel.initializedRepresentation Unit rejectsAllSource := by
   intro bytes raw accepted
@@ -90,7 +90,7 @@ example : rejectsAllSource.transmuteCopyResult byteDestination () = .fail .undef
 @[reducible] def emptySource : RustModel Empty where
   Model := Empty
   decode raw := nomatch raw
-  representation := some { byteSize := 0, decode := fun _ => none }
+  storage := some (.fixed { byteSize := 0, decode := fun _ => none })
 
 example : @RustModel.realizableRepresentation Empty emptySource := by
   intro raw
@@ -109,7 +109,7 @@ example : ¬ @RustModel.completeRepresentation Empty emptySource := by
 @[reducible] def boolDestination : RustModel Bool where
   Model := Bool
   decode := some
-  representation := some boolDecoder
+  storage := some (.fixed boolDecoder)
 
 theorem rejects_invalid_bool :
     (ambiguousSource.withChoice (fun _ => [.init 2])).transmuteCopyResult boolDestination () =
@@ -129,7 +129,7 @@ example : ¬ WP.spec
 @[reducible] def rejectsModelDestination : RustModel Rust.Bytes.Byte where
   Model := Unit
   decode := fun _ => none
-  representation := some byteDecoder
+  storage := some (.fixed byteDecoder)
 
 example :
     (ambiguousSource.withChoice (fun _ => [.init 0])).transmuteCopyResult rejectsModelDestination () =

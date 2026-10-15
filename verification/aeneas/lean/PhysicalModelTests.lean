@@ -59,7 +59,7 @@ example : (modelOptionNonZeroIScalar .I8 core.num.niche_types.NonZeroI8Inner).de
 
 -- Missing physical semantics cannot establish a trait law by vacuity.
 example : ¬ RustModel.initializedRepresentation Nat := by
-  simp [RustModel.initializedRepresentation, RustModel.representation]
+  simp [RustModel.initializedRepresentation, RustModel.storage]
 
 -- This intentionally bad physical decoder accepts an uninitialized byte.
 -- Rejecting all library values cannot turn it into an IntoBytes interpretation.
@@ -70,7 +70,7 @@ def acceptsUninit : BitDecoder Nat where
 @[reducible] def rejectsEverything : RustModel Nat where
   Model := Unit
   decode _ := none
-  representation := some acceptsUninit
+  storage := some (.fixed acceptsUninit)
 
 example : ¬ @RustModel.initializedRepresentation Nat rejectsEverything := by
   intro law
@@ -82,11 +82,11 @@ example : (modelBool).decodeBitsResult [AMByte.init 2] = .fail .undef := rfl
 example : (modelBool).decodeBitsResult [] = .fail .undef := rfl
 example : (modelBool).decodeBytesResult [AMByte.init 1] = .ok true := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode, BitDecoder.run, boolDecoder]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode, BitDecoder.run, boolDecoder]
 example : (modelUScalar .U8).decodeBytesResult [AMByte.init 255] =
     .ok (unsignedWord (255#u8)) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode,
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode,
     uScalarBitDecoder, Rust.Storage.AeneasAdapter.unsignedDecoder,
     BitDecoder.map, BitDecoder.run, integerDecoder, collectInitialized,
     Rust.Bytes.decode, Rust.Bytes.decodeLE, UScalar.ofNatCore]
@@ -95,10 +95,10 @@ example : (modelUScalar .U8).decodeBytesResult [AMByte.init 255] =
 -- written postcondition makes no promise about the returned value.
 example : ¬ WP.spec (modelBool.decodeBytesResult [AMByte.init 2]) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode, BitDecoder.run, boolDecoder]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode, BitDecoder.run, boolDecoder]
 example : ¬ WP.dspec (modelBool.decodeBytesResult [AMByte.uninit]) (fun _ => True) := by
   simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult,
-    RustModel.decodeResult, RustModel.representation, RustModel.decode, BitDecoder.run, boolDecoder]
+    RustModel.decodeResult, RustModel.representation, RustModel.storage, PhysicalStorage.fixed?, RustModel.decode, BitDecoder.run, boolDecoder]
 
 -- An element-count recursion, rather than division by byte width, handles
 -- empty arrays, zero-sized elements, and nested arrays with the same rule.

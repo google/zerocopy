@@ -253,7 +253,7 @@ namespace Zerocopy.Proofs
     [meaning : RustModel T] [law : TraitLaws.into_bytes_initialized T dictionary] :
     TraitLaws.into_bytes_initialized (Zerocopy.wrappers.Unalign T)
       (Zerocopy.wrappers.Unalign.Insts.ZerocopyIntoBytes dictionary) :=
-  ⟨⟨initializedWrapperRepresentation Zerocopy.wrappers.Unalign.mk
+  ⟨⟨initializedWrapperStorage Zerocopy.wrappers.Unalign.mk (·._0) (fun _ => rfl)
     (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).1, realizableUnalign T
     (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).2⟩⟩
 
@@ -262,7 +262,7 @@ namespace Zerocopy.Proofs
     [meaning : RustModel T] [law : TraitLaws.into_bytes_initialized T dictionary] :
     TraitLaws.into_bytes_initialized (Zerocopy.wrappers.read_only_def.ReadOnly T)
       (Zerocopy.wrappers.read_only_def.ReadOnly.Insts.ZerocopyIntoBytes dictionary) :=
-  ⟨⟨initializedWrapperRepresentation Zerocopy.wrappers.read_only_def.ReadOnly.mk
+  ⟨⟨initializedWrapperStorage Zerocopy.wrappers.read_only_def.ReadOnly.mk (·.inner) (fun _ => rfl)
     (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).1, realizableReadOnly T
     (@TraitLaws.into_bytes_initialized.holds T dictionary meaning law).2⟩⟩
 
@@ -273,96 +273,96 @@ namespace Zerocopy.Proofs
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.U16 O)
       (Zerocopy.byteorder.U16.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.U16.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.U16.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (2#usize) (initializedUScalar .U8)), realizableByteorderU16 O⟩⟩
 
 @[instance] theorem byteorder.U32.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.U32 O)
       (Zerocopy.byteorder.U32.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.U32.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.U32.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (4#usize) (initializedUScalar .U8)), realizableByteorderU32 O⟩⟩
 
 @[instance] theorem byteorder.U64.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.U64 O)
       (Zerocopy.byteorder.U64.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.U64.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.U64.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderU64 O⟩⟩
 
 @[instance] theorem byteorder.U128.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.U128 O)
       (Zerocopy.byteorder.U128.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.U128.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.U128.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (16#usize) (initializedUScalar .U8)), realizableByteorderU128 O⟩⟩
 
 @[instance] theorem byteorder.Usize.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.Usize O)
       (Zerocopy.byteorder.Usize.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.Usize.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.Usize.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderUsize O⟩⟩
 
 @[instance] theorem byteorder.I16.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.I16 O)
       (Zerocopy.byteorder.I16.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.I16.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.I16.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (2#usize) (initializedUScalar .U8)), realizableByteorderI16 O⟩⟩
 
 @[instance] theorem byteorder.I32.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.I32 O)
       (Zerocopy.byteorder.I32.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.I32.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.I32.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (4#usize) (initializedUScalar .U8)), realizableByteorderI32 O⟩⟩
 
 @[instance] theorem byteorder.I64.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.I64 O)
       (Zerocopy.byteorder.I64.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.I64.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.I64.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderI64 O⟩⟩
 
 @[instance] theorem byteorder.I128.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.I128 O)
       (Zerocopy.byteorder.I128.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.I128.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.I128.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (16#usize) (initializedUScalar .U8)), realizableByteorderI128 O⟩⟩
 
 @[instance] theorem byteorder.Isize.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.Isize O)
       (Zerocopy.byteorder.Isize.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.Isize.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.Isize.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderIsize O⟩⟩
 
 @[instance] theorem byteorder.F32.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.F32 O)
       (Zerocopy.byteorder.F32.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.F32.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.F32.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (4#usize) (initializedUScalar .U8)), realizableByteorderF32 O⟩⟩
 
 @[instance] theorem byteorder.F64.Insts.ZerocopyIntoBytes_law
     (O : Type) [meaning : RustModel O] :
     TraitLaws.into_bytes_initialized (Zerocopy.byteorder.F64 O)
       (Zerocopy.byteorder.F64.Insts.ZerocopyIntoBytes O) :=
-  ⟨⟨initializedWrapperRepresentation
-    (fun raw => Zerocopy.byteorder.F64.mk raw Zerocopy.core.marker.PhantomData.mk)
+  ⟨⟨initializedWrapperStorage
+    (fun raw => Zerocopy.byteorder.F64.mk raw Zerocopy.core.marker.PhantomData.mk) (·._0) (fun _ => rfl)
     (RustModel.initialized_array U8 (8#usize) (initializedUScalar .U8)), realizableByteorderF64 O⟩⟩
 
 end Zerocopy.Proofs

@@ -32,7 +32,7 @@ namespace AeneasSpecs
 @[reducible] instance modelPhantomData (T : Type) :
     RustModel (Zerocopy.core.marker.PhantomData T) :=
   { Model := Unit, «decode» := fun _ => some (),
-    representation := some (Rust.Storage.emptyDecoder Zerocopy.core.marker.PhantomData.mk) }
+    storage := some (.fixed (Rust.Storage.emptyDecoder Zerocopy.core.marker.PhantomData.mk)) }
 
 /-- This check fails if the pinned extracted carrier gains runtime fields. -/
 theorem phantomData_eq_mk (T : Type) (raw : Zerocopy.core.marker.PhantomData T) :
@@ -41,22 +41,37 @@ theorem phantomData_eq_mk (T : Type) (raw : Zerocopy.core.marker.PhantomData T) 
   rfl
 
 
--- A wrapper has exactly its payload's accepted bytes. Missing child storage
--- semantics stay missing; a mathematical decoder never supplies those bytes.
+-- A wrapper has exactly its payload's accepted bytes and retains its metadata.
+-- Missing physical semantics stay missing; a mathematical decoder cannot supply them.
+def wrapperStorage {A B : Type} [ma : RustModel A] (wrap : A → B) (unwrap : B → A)
+    (inverse : ∀ raw, unwrap (wrap raw) = raw) : Option (PhysicalStorage B) :=
+  ma.storage.map (·.map wrap unwrap inverse)
+
+-- Fixed-layout consumers keep a projection of the same child's physical profile.
 def wrapperRepresentation {A B : Type} [ma : RustModel A] (wrap : A → B) :
     Option (Rust.Storage.BitDecoder B) := ma.representation.map (·.map wrap)
 
-theorem initializedWrapperRepresentation {A B : Type} [ma : RustModel A]
-    (wrap : A → B) (child : RustModel.initializedRepresentation A) :
-    match wrapperRepresentation wrap with
+@[simp] theorem wrapperStorage_fixed? {A B : Type} [ma : RustModel A]
+    (wrap : A → B) (unwrap : B → A) (inverse : ∀ raw, unwrap (wrap raw) = raw) :
+    (wrapperStorage wrap unwrap inverse).bind PhysicalStorage.fixed? =
+      wrapperRepresentation wrap := by
+  cases stored : ma.storage with
+  | none => simp [wrapperStorage, wrapperRepresentation, RustModel.representation, stored]
+  | some physical =>
+    simp [wrapperStorage, wrapperRepresentation, RustModel.representation, stored]
+
+theorem initializedWrapperStorage {A B : Type} [ma : RustModel A]
+    (wrap : A → B) (unwrap : B → A) (inverse : ∀ raw, unwrap (wrap raw) = raw)
+    (child : RustModel.initializedRepresentation A) :
+    match wrapperStorage wrap unwrap inverse with
     | none => False
-    | some decoder => decoder.Initialized := by
-  cases h : ma.representation with
-  | none => simp [RustModel.initializedRepresentation, h] at child
-  | some decoder =>
-    simp only [RustModel.initializedRepresentation, h] at child
-    simp only [wrapperRepresentation, h, Option.map_some]
-    exact Rust.Storage.BitDecoder.map_initialized decoder wrap child
+    | some physical => physical.Initialized := by
+  cases stored : ma.storage with
+  | none => simp [RustModel.initializedRepresentation, stored] at child
+  | some physical =>
+    simp only [wrapperStorage, stored, Option.map_some]
+    exact physical.map_initialized wrap unwrap inverse
+      (by simpa [RustModel.initializedRepresentation, stored] using child)
 
 -- These providers interpret stored values only. They do not model mutation,
 -- aliasing, synchronization, or destruction of the standard-library wrappers.
@@ -64,46 +79,46 @@ theorem initializedWrapperRepresentation {A B : Type} [ma : RustModel A]
     RustModel (core.mem.manually_drop.ManuallyDrop T) where
   Model := ma.Model
   decode raw := ma.decode raw.value
-  representation := wrapperRepresentation core.mem.manually_drop.ManuallyDrop.mk
+  storage := wrapperStorage core.mem.manually_drop.ManuallyDrop.mk (fun raw => raw.value) (fun _ => rfl)
   representationChoice raw := ma.representationChoice raw.value
 
 @[reducible] instance modelCell (T : Type) [ma : RustModel T] :
     RustModel (core.cell.Cell T) where
   Model := ma.Model
   decode raw := ma.decode raw.value
-  representation := wrapperRepresentation core.cell.Cell.mk
+  storage := wrapperStorage core.cell.Cell.mk (fun raw => raw.value) (fun _ => rfl)
 
 @[reducible] instance modelUnsafeCell (T : Type) [ma : RustModel T] :
     RustModel (core.cell.UnsafeCell T) where
   Model := ma.Model
   decode raw := ma.decode raw.value
-  representation := wrapperRepresentation core.cell.UnsafeCell.mk
+  storage := wrapperStorage core.cell.UnsafeCell.mk (fun raw => raw.value) (fun _ => rfl)
 
 @[reducible] instance modelWrapping (T : Type) [ma : RustModel T] :
     RustModel (Zerocopy.core.num.wrapping.Wrapping T) where
   Model := ma.Model
   decode raw := ma.decode raw._0
-  representation := wrapperRepresentation Zerocopy.core.num.wrapping.Wrapping.mk
+  storage := wrapperStorage Zerocopy.core.num.wrapping.Wrapping.mk (fun raw => raw._0) (fun _ => rfl)
 
 theorem initializedManuallyDrop (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (core.mem.manually_drop.ManuallyDrop T) :=
-  initializedWrapperRepresentation core.mem.manually_drop.ManuallyDrop.mk child
+  initializedWrapperStorage core.mem.manually_drop.ManuallyDrop.mk (fun raw => raw.value) (fun _ => rfl) child
 
 theorem initializedCell (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (core.cell.Cell T) :=
-  initializedWrapperRepresentation core.cell.Cell.mk child
+  initializedWrapperStorage core.cell.Cell.mk (fun raw => raw.value) (fun _ => rfl) child
 
 theorem initializedUnsafeCell (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (core.cell.UnsafeCell T) :=
-  initializedWrapperRepresentation core.cell.UnsafeCell.mk child
+  initializedWrapperStorage core.cell.UnsafeCell.mk (fun raw => raw.value) (fun _ => rfl) child
 
 theorem initializedWrapping (T : Type) [ma : RustModel T]
     (child : RustModel.initializedRepresentation T) :
     RustModel.initializedRepresentation (Zerocopy.core.num.wrapping.Wrapping T) :=
-  initializedWrapperRepresentation Zerocopy.core.num.wrapping.Wrapping.mk child
+  initializedWrapperStorage Zerocopy.core.num.wrapping.Wrapping.mk (fun raw => raw._0) (fun _ => rfl) child
 
 -- The bounds are proofs stored beside the value. They contribute constraints
 -- to the mathematical type without another runtime field or admission test.
@@ -161,11 +176,11 @@ abbrev u8BitDecoder := uScalarBitDecoder .U8
 @[reducible] instance modelUScalar (ty : UScalarTy) : RustModel (UScalar ty) where
   Model := UnsignedWord ty
   decode x := some (unsignedWord x)
-  representation := some (uScalarBitDecoder ty)
+  storage := some (.fixed (uScalarBitDecoder ty))
 @[reducible] instance modelIScalar (ty : IScalarTy) : RustModel (IScalar ty) where
   Model := SignedWord ty
   decode x := some (signedWord x)
-  representation := some (iScalarBitDecoder ty)
+  storage := some (.fixed (iScalarBitDecoder ty))
 
 /-- Char stores a Unicode scalar value in four bytes. Filtering the complete
 integer decoder rejects surrogates and out-of-range code points without ever
@@ -178,7 +193,7 @@ def charBitDecoder : Rust.Storage.BitDecoder Char :=
 @[reducible] instance modelChar : RustModel Char where
   Model := Char
   decode x := some x
-  representation := some charBitDecoder
+  storage := some (.fixed charBitDecoder)
 
 def nonzeroUScalarBitDecoder (ty : UScalarTy) (Inner : Type) :
     Rust.Storage.BitDecoder (core.num.nonzero.NonZero (UScalar ty) Inner) :=
@@ -194,13 +209,13 @@ def nonzeroIScalarBitDecoder (ty : IScalarTy) (Inner : Type) :
     RustModel (core.num.nonzero.NonZero (UScalar ty) Inner) where
   Model := NonZeroUnsignedWord ty
   decode raw := if h : 0 < raw.val.val then some ⟨unsignedWord raw.val, h⟩ else none
-  representation := some (nonzeroUScalarBitDecoder ty Inner)
+  storage := some (.fixed (nonzeroUScalarBitDecoder ty Inner))
 
 @[reducible] instance modelNonZeroIScalar (ty : IScalarTy) (Inner : Type) :
     RustModel (core.num.nonzero.NonZero (IScalar ty) Inner) where
   Model := NonZeroSignedWord ty
   decode raw := if h : raw.val.val ≠ 0 then some ⟨signedWord raw.val, h⟩ else none
-  representation := some (nonzeroIScalarBitDecoder ty Inner)
+  storage := some (.fixed (nonzeroIScalarBitDecoder ty Inner))
 
 -- Rust guarantees the zero niche for these particular standard-library
 -- wrappers. Map the full integer decoder: a zero is a successfully decoded
@@ -211,16 +226,16 @@ def nonzeroIScalarBitDecoder (ty : IScalarTy) (Inner : Type) :
     RustModel (Option (core.num.nonzero.NonZero (UScalar ty) Inner)) where
   Model := Option (NonZeroUnsignedWord ty)
   decode := (modelOption (ma := modelNonZeroUScalar ty Inner)).decode
-  representation := some ((uScalarBitDecoder ty).map fun word =>
-    if word.val = 0 then none else some ⟨word⟩)
+  storage := some (.fixed ((uScalarBitDecoder ty).map fun word =>
+    if word.val = 0 then none else some ⟨word⟩))
 
 @[reducible] instance (priority := 1001) modelOptionNonZeroIScalar
     (ty : IScalarTy) (Inner : Type) :
     RustModel (Option (core.num.nonzero.NonZero (IScalar ty) Inner)) where
   Model := Option (NonZeroSignedWord ty)
   decode := (modelOption (ma := modelNonZeroIScalar ty Inner)).decode
-  representation := some ((iScalarBitDecoder ty).map fun word =>
-    if word.val = 0 then none else some ⟨word⟩)
+  storage := some (.fixed ((iScalarBitDecoder ty).map fun word =>
+    if word.val = 0 then none else some ⟨word⟩))
 
 theorem initializedUScalar (ty : UScalarTy) :
     RustModel.initializedRepresentation (UScalar ty) :=
