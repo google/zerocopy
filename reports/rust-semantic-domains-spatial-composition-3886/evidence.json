@@ -1,0 +1,529 @@
+{
+  "observed_at": "2026-10-15",
+  "corpus_revision": "fa65b241fd0cb2c791c841eace86d43d724359bc",
+  "method": "Read-only report reconciliation and selected primary source/documentation reads. No new upstream execution or proof checking.",
+  "reused_reports": [
+    {
+      "package": "aeneas-charon-functionalization-and-spatial-boundaries",
+      "report_sha256": "4f25686f8a10b597dced494e9f0c0f0c2a77d581a620a347cd408e6abecf98bd",
+      "metadata": {
+        "topics": [
+          "rust/extraction",
+          "aeneas",
+          "charon",
+          "verification/separation-logic",
+          "translation/certificates"
+        ],
+        "subjects": [
+          {
+            "name": "Aeneas assigned implementation",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+            }
+          },
+          {
+            "name": "Charon assigned implementation",
+            "identity": {
+              "repository": "AeneasVerif/charon",
+              "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+            }
+          },
+          {
+            "name": "Aeneas spatial PR1352 draft head",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "92552f503cd19ca023ae9897cf521db49ee8d887"
+            }
+          },
+          {
+            "name": "Aeneas 2022 paper",
+            "identity": {
+              "arxiv": "2206.07185v2",
+              "doi": "10.1145/3547647",
+              "url": "https://arxiv.org/pdf/2206.07185v2"
+            }
+          },
+          {
+            "name": "Aeneas 2024 LLBC/PL long paper",
+            "identity": {
+              "arxiv": "2404.02680v2",
+              "url": "https://arxiv.org/pdf/2404.02680v2"
+            }
+          },
+          {
+            "name": "Read-only Anneal proof/admission documents",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "assembly-tcb-concurrency-security-platform-frontiers",
+      "report_sha256": "ecfca9c3faba7336a7d7748fe112f064b19e452b630008bd874690d50f7bf3b3",
+      "metadata": {
+        "topics": [
+          "assembly/tcb",
+          "assembly/concurrency",
+          "assembly/constant-time",
+          "assembly/platform-effects"
+        ],
+        "subjects": [
+          {
+            "name": "Kraken",
+            "identity": {
+              "repository": "AeneasVerif/kraken",
+              "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+            }
+          },
+          {
+            "name": "MiniRust",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "Rust compiler and library 1.99.0",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+            }
+          },
+          {
+            "name": "Rust Reference",
+            "identity": {
+              "repository": "rust-lang/reference",
+              "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+            }
+          },
+          {
+            "name": "Lean 4.34.1",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+            }
+          },
+          {
+            "name": "s2n-bignum soundness analysis",
+            "identity": {
+              "repository": "awslabs/s2n-bignum",
+              "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+            }
+          },
+          {
+            "name": "Intel DOIT guidance",
+            "identity": {
+              "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html",
+              "observed-date": "2026-10-14",
+              "updated-date": "2025-09-10"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "minirust-race-alias-and-weak-memory-boundaries-d821c6e",
+      "report_sha256": "e89f1540c436fd6594e1d5dac28dc07d757131e33a3d3a03c602eeb05eaf5f35",
+      "metadata": {
+        "topics": [
+          "minirust/concurrency",
+          "rust/data-races",
+          "rust/weak-memory",
+          "iris/adequacy",
+          "rust/aliasing"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "Miri Tree Borrows",
+            "identity": {
+              "repository": "rust-lang/miri",
+              "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+            }
+          },
+          {
+            "name": "GPFSL-derived 2024 adequacy",
+            "identity": {
+              "repository": "kaist-cp/relaxed-memory-separation-logic",
+              "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+            }
+          },
+          {
+            "name": "Rust atomic documentation",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+              "path": "library/core/src/sync/atomic.rs"
+            }
+          },
+          {
+            "name": "RustBelt Meets Relaxed Memory",
+            "identity": {
+              "doi": "10.1145/3371102",
+              "publication": "PACMPL 4 POPL Article 34"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "minirust-representation-copy-provenance-laws-d821c6e",
+      "report_sha256": "e954f1a5bd6bb843b43e411f02bddb7ff5ae64d1eeda849e5d223525a7442c2f",
+      "metadata": {
+        "topics": [
+          "minirust",
+          "rust/representation",
+          "rust/provenance",
+          "rust/typed-copies",
+          "verification/representation-laws",
+          "zerocopy/contracts"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust operational specification",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 source artifact",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+            }
+          },
+          {
+            "name": "Rust exposed-provenance API documentation",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0",
+              "url": "https://doc.rust-lang.org/std/ptr/fn.with_exposed_provenance.html"
+            }
+          },
+          {
+            "name": "Lean proof checker",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+              "version": "4.34.1"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/probe.py",
+              "sha256": "89d8c1111825049296abb845f47451cdfb8685561e8296f8184a3aef46eedeac"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/enum_wf_probe.py",
+              "sha256": "6ed461bbb3ed08b0cceb147ea5c0ef173934dbece2dff200250a9a952cd33b05"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/Representation.lean",
+              "sha256": "d573f64e1ebb9117376be9dfb0d057795fd4c2a73ee87fc37b88d882e983fd3c"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/EnumCoherence.lean",
+              "sha256": "fcc40a8d7c108e1cdb9de885cbdf8435163c780e68f5600914f4587c50bdcbcc"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "minirust-rustbelt-spatial-linking-obligations-2026",
+      "report_sha256": "58248a059cafa373b803f01e851e09673e96c94712e9e6b025ac675dce80050a",
+      "metadata": {
+        "topics": [
+          "minirust",
+          "rustbelt",
+          "refinedrust",
+          "verification/linking",
+          "verification/source-safety",
+          "rust/interior-mutability"
+        ],
+        "subjects": [
+          {
+            "name": "MiniRust operational specification",
+            "identity": {
+              "repository": "minirust/minirust",
+              "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+            }
+          },
+          {
+            "name": "RustBelt original LambdaRust source archive",
+            "identity": {
+              "archive": "lambda-rust-popl18.tar.gz",
+              "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+              "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 source artifact",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+            }
+          },
+          {
+            "name": "Aeneas configuration and prior-corpus comparison",
+            "identity": {
+              "repository": "AeneasVerif/aeneas",
+              "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+            }
+          },
+          {
+            "name": "Gillian dual contract emitter",
+            "identity": {
+              "repository": "GillianPlatform/gillian-rust",
+              "revision": "83d739e83034d71162fb66b569041cf301123df7"
+            }
+          },
+          {
+            "name": "Rust compiler used for safe client probe",
+            "identity": {
+              "repository": "rust-lang/rust",
+              "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+              "version": "1.99.0"
+            }
+          },
+          {
+            "name": "Lean proof checker",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+              "version": "4.34.1"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/Bridge.lean",
+              "sha256": "7d66f6560e342b5c8268079ea3efa4df240857132dce57e35a33640c370b9554"
+            }
+          },
+          {
+            "name": "Owned investigation fragment",
+            "identity": {
+              "artifact": "support/safe_clients.rs",
+              "sha256": "19b46816b1adfa81880f3257a6092e79eff587f965648468b0df8df63ad9a5e9"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "refinedrust-radium-proof-boundary-2026-v2",
+      "report_sha256": "52a2b53d1e31bf80ecf051b1c7ae98548eb5683cdbb8f924474e3102b5e3a38a",
+      "metadata": {
+        "topics": [
+          "refinedrust",
+          "radium/semantics",
+          "iris/byte-resources",
+          "rust/layout",
+          "verification/mir-extraction",
+          "verification/proof-acceptance",
+          "verification/cross-prover"
+        ],
+        "subjects": [
+          {
+            "name": "RefinedRust 2026 source artifact",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+              "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 paper",
+            "identity": {
+              "doi": "10.1145/3839484",
+              "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+            }
+          },
+          {
+            "name": "RefinedRust 2024 paper",
+            "identity": {
+              "doi": "10.1145/3656422",
+              "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "rustbelt-rusthornbelt-contract-bridge-2022",
+      "report_sha256": "0688e10ab201a6bc493580ca2940557010f2c80c778d41f60e0ce89092fa2095",
+      "metadata": {
+        "topics": [
+          "rust/semantic-typing",
+          "rustbelt",
+          "rusthornbelt",
+          "rusthorn/chc",
+          "iris/lifetimes",
+          "iris/parametric-prophecy",
+          "verification/contract-bridge"
+        ],
+        "subjects": [
+          {
+            "name": "RustBelt LambdaRust source",
+            "identity": {
+              "archive": "lambda-rust-popl18.tar.gz",
+              "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+              "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+            }
+          },
+          {
+            "name": "RustHornBelt 2022 source artifact",
+            "identity": {
+              "zenodo": "6417462",
+              "archive": "the_artifact.tgz",
+              "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+            }
+          },
+          {
+            "name": "RustHornBelt paper",
+            "identity": {
+              "doi": "10.1145/3519939.3523704",
+              "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+            }
+          },
+          {
+            "name": "RustHornBelt author erratum",
+            "identity": {
+              "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt",
+              "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5"
+            }
+          },
+          {
+            "name": "RustHorn updated author full-version paper",
+            "identity": {
+              "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+              "doi": "10.1007/978-3-030-44914-8_18",
+              "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "rustbelt-unsafe-abstraction-model-popl-2018",
+      "report_sha256": "e4e1cdb51d2fc09f803e01534b46d258db75c3e71cff457193d383501796414f",
+      "metadata": {
+        "topics": [
+          "rustbelt",
+          "rust/unsafe",
+          "rust/unsafe-abstractions",
+          "rust/library-soundness",
+          "semantics/logical-relations",
+          "separation-logic"
+        ],
+        "subjects": [
+          {
+            "name": "RustBelt POPL 2018 unsafe-abstraction soundness model",
+            "identity": {
+              "doi": "10.1145/3158154",
+              "publication": "Proc. ACM Program. Lang. 2, POPL, Article 66",
+              "year": "2018"
+            }
+          },
+          {
+            "name": "RustBelt POPL 2018 accompanying artifact record",
+            "identity": {
+              "doi": "10.5281/zenodo.1115560",
+              "version": "v1",
+              "published": "2017-12-13"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "sail-islaris-compcert-access-foundations",
+      "report_sha256": "9f8bfd661dd57017fc10d63a353db9240ed20c915a8c97e6ed0ba3c28bd11306",
+      "metadata": {
+        "topics": [
+          "assembly/isa-models",
+          "sail",
+          "islaris",
+          "compcert",
+          "memory/permissions"
+        ],
+        "subjects": [
+          {
+            "name": "Sail",
+            "identity": {
+              "repository": "rems-project/sail",
+              "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
+            }
+          },
+          {
+            "name": "Islaris",
+            "identity": {
+              "repository": "rems-project/islaris",
+              "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+            }
+          },
+          {
+            "name": "CompCert 3.18",
+            "identity": {
+              "repository": "AbsInt/CompCert",
+              "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+              "version": "3.18"
+            }
+          },
+          {
+            "name": "Islaris PLDI 2022 paper",
+            "identity": {
+              "doi": "10.1145/3519939.3523434",
+              "publication": "PLDI 2022"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    }
+  ],
+  "fresh_primary_evidence": "primary-evidence.json"
+}

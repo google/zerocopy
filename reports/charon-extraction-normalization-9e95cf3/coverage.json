@@ -1,0 +1,13 @@
+{
+  "questions": {
+    "A06": {
+      "answered": "Driver/query branches, actual versus requested MIR, compiler settings, crate/sysroot/dependency selection and artifact identity limitations",
+      "not_established": "Compiler correctness, full dependency/build closure or reproducible binding to actual binaries"
+    },
+    "A07": {
+      "answered": "53-occurrence schedule, predicates/internal guards, default Aeneas profile, per-pass derived obligations, erasure/reference/failure seams and candidate local witnesses",
+      "not_established": "Per-pass semantic proof, UB reflection or independently checked rewrite certificates"
+    }
+  },
+  "execution": "none"
+}

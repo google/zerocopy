@@ -1,0 +1,55 @@
+{
+  "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+  "files": [
+    {
+      "path": "charon/src/ast/bodies/expressions.rs",
+      "blob": "99f7848c52b8965034ecf3294c62a0b75d611778",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/expressions.rs"
+    },
+    {
+      "path": "charon/src/ast/bodies/places.rs",
+      "blob": "050637689579aa441ad23834b9a0f563c27b1234",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/places.rs"
+    },
+    {
+      "path": "charon/src/transform/ctx.rs",
+      "blob": "4485e426b38312fddbb16d3a4dfd7576aefd3794",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/ctx.rs"
+    },
+    {
+      "path": "charon/src/bin/charon/main.rs",
+      "blob": "9cf9b193acc1b08b1211add4e6492427497f1cb3",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon/main.rs"
+    },
+    {
+      "path": "charon/src/bin/charon-driver/translate/translate_crate.rs",
+      "blob": "30d45599d1741a1b18ac42d70399cabc4dfb00a0",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon-driver/translate/translate_crate.rs"
+    },
+    {
+      "path": "charon/Cargo.toml",
+      "blob": "19c663b17c063afd0efc39a94d8467be02bc39ad",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/Cargo.toml"
+    }
+  ],
+  "dependency_comparison": [
+    {
+      "path": "charon/src/options.rs",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "blob": "68216fcc8da74fed09a44dfcc7c1a48282a07e7d",
+      "comparison": "acquired contents equal upstream inspected file"
+    },
+    {
+      "path": "charon/src/transform/mod.rs",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "blob": "cbd56ac4b2bdee54e76ff50d640b354b832584dc",
+      "comparison": "acquired contents equal upstream inspected file"
+    },
+    {
+      "path": "docs/minirust.md",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "blob": "b1e446062a21c2e81f438e600a80dba86599b837",
+      "comparison": "acquired contents equal upstream inspected file"
+    }
+  ]
+}

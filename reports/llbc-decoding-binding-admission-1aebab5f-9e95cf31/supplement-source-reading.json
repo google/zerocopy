@@ -1,0 +1,159 @@
+{
+  "observed_at": "2026-10-15",
+  "supplement": {
+    "finite-map-graph-comparison.md": {
+      "questions": [
+        "A12.4"
+      ],
+      "evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "compiled_or_executed": false,
+      "release_resolution": {
+        "tag": "v4.35.0",
+        "commit": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+      },
+      "limits": [
+        "selected library proofs read, not independently compiled",
+        "no OCaml runtime-version or library refinement theorem",
+        "no graph algorithm verification or mathlib graph survey"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/HashMap/Basic.lean",
+      "blob_sha": "05c1543db5d9be997bf7b0682d0ee7ebe30cf358",
+      "line_count": 362,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/HashMap/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/HashMap/Lemmas.lean",
+      "blob_sha": "184056a1c9e3d3ab0be31bf01124a03abbcb2541",
+      "line_count": 3583,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/HashMap/Lemmas.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/DHashMap/Basic.lean",
+      "blob_sha": "539fba70eac1adac665bcce8b9c44b227da2bee5",
+      "line_count": 437,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/DHashMap/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/DHashMap/Lemmas.lean",
+      "blob_sha": "1d4f278d84ef830feed25620cef155abf925d747",
+      "line_count": 5428,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/DHashMap/Lemmas.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/ExtHashMap/Basic.lean",
+      "blob_sha": "0295cf8fd7115c46ab3efcb09960b2c71db767f5",
+      "line_count": 284,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/ExtHashMap/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/ExtHashMap/Lemmas.lean",
+      "blob_sha": "73a8d42176a143dec02168ab8c13269d462432d9",
+      "line_count": 2789,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/ExtHashMap/Lemmas.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/ExtDHashMap/Basic.lean",
+      "blob_sha": "67be6c8517a0068d9683dd6b9a8305b11e7c9666",
+      "line_count": 438,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/ExtDHashMap/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/TreeMap/Basic.lean",
+      "blob_sha": "dc74a378680d78db19b67b7ede33f69c60dab85c",
+      "line_count": 529,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/TreeMap/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Std/Data/TreeMap/Lemmas.lean",
+      "blob_sha": "866c7b984df9c1c0f1c9dc8af1b2c8a6c2fa0838",
+      "line_count": 4962,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/Data/TreeMap/Lemmas.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Init/Data/Array/Basic.lean",
+      "blob_sha": "25357be24c8d7f2b0d2ff4a6a58396d0729486f9",
+      "line_count": 2214,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Init/Data/Array/Basic.lean"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+      "release": "v4.35.0",
+      "path": "src/Init/Data/Array/Lemmas.lean",
+      "blob_sha": "b25a086095ded3acdcbc066c3365d61507729943",
+      "line_count": 4759,
+      "role": "source theorem and implementation inspection; no independent compilation",
+      "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Init/Data/Array/Lemmas.lean"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/utils/SCC.ml",
+      "blob_sha": "aa700193fda3a4eb76b6eb5fe67edf1821dad567",
+      "line_count": 328,
+      "role": "source graph algorithm inspection",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/utils/SCC.ml"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/Collections.ml",
+      "blob_sha": "e916dc89e753035a6705a9780e3575b3fb0b6590",
+      "line_count": 629,
+      "reading_scope": [
+        "MakeMap 223-285",
+        "MakeSet 335-387",
+        "MakeInjMap 512-570"
+      ],
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/Collections.ml"
+    }
+  ]
+}

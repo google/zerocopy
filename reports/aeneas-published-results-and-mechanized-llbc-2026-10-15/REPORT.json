@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/formal-results",
+    "llbc",
+    "rocq/assumptions",
+    "verification/semantic-correspondence",
+    "aeneas/theorem-inventory",
+    "aeneas/soundness",
+    "verification/publication-scope"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Mechanized LLBC",
+      "identity": {
+        "repository": "AeneasVerif/mechanized-llbc",
+        "revision": "2762a26a3c0792017fa7a731aab1683d9a4cf23a"
+      }
+    },
+    {
+      "name": "Aeneas functional translation paper",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2",
+        "pdf_sha256": "5a75ed1543f5db5a47b7506753898443bc7b88ecb7a2f76325e80ed5494664bc"
+      }
+    },
+    {
+      "name": "Symbolic borrow-checking paper",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680v2",
+        "pdf_sha256": "ff1f01d5bcd98c6387b24dcc06ce76e5f15d6c1234d199c0b1311ce7645bebda"
+      }
+    },
+    {
+      "name": "Charon tool paper",
+      "identity": {
+        "arxiv": "2410.18042v2"
+      }
+    },
+    {
+      "name": "Aeneas SymCrypt report",
+      "identity": {
+        "arxiv": "2609.15648v1"
+      }
+    },
+    {
+      "name": "Rust-to-Lean experience report",
+      "identity": {
+        "arxiv": "2605.30106v1"
+      }
+    },
+    {
+      "name": "Formal Verification of Rust Programs by Functional Translation",
+      "identity": {
+        "author": "Son Ho",
+        "year": "2024",
+        "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf",
+        "sha256": "0c1b720ff28c004211f47aa288efe3f22a471531f28e427a576b7926264bce07"
+      }
+    },
+    {
+      "name": "Cited downstream pipeline proof source",
+      "identity": {
+        "repository": "runtimeverification/p3-hax-lean-fri-pipeline",
+        "revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

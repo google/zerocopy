@@ -1,0 +1,46 @@
+{
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "function": "loops::list_nth_mut",
+  "source": {
+    "path": "tests/src/loops.rs",
+    "lines": [
+      97,
+      107
+    ],
+    "blob_sha": "b6b63ec1a8501046af3d153c51b44f34cdde5798"
+  },
+  "stored_output": {
+    "path": "tests/lean/Loops.lean",
+    "lines": [
+      243,
+      268
+    ],
+    "symbols": [
+      "loops.list_nth_mut_loop",
+      "loops.list_nth_mut"
+    ],
+    "blob_sha": "6c6b33ffbea02c116fa6c28e30dfb99687022411"
+  },
+  "trace_kind": "source-reconstructed; no execution; LLBC artifact absent from inspected tracked test tree",
+  "derived_case": {
+    "input": "Cons a (Cons b Nil), index one",
+    "successful_forward_value": "b",
+    "backward_result": "fun z => Cons a (Cons z Nil)",
+    "qualification": "derived by unfolding stored source equations; not an evaluated test"
+  },
+  "phase_observations": [
+    "early return requires update_loops normalization; exact branch conditional on serialized LLBC",
+    "fresh input symbolic values and frozen input abstractions",
+    "continue summary links original-list loan to current-tail borrow",
+    "backward continuation reconstructs outer Cons cells",
+    "pure type erasure removes Box and mutable references",
+    "stored output has checked subtraction, nil panic, recursive auxiliary and reducible wrapper"
+  ],
+  "unresolved": [
+    "exact LLBC/local IDs",
+    "original build/target/flags",
+    "historical intermediate pass deltas",
+    "regeneration/elaboration results"
+  ]
+}

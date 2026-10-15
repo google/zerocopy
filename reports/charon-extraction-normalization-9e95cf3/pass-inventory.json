@@ -1,0 +1,975 @@
+{
+  "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+  "evidence_role": "source; preservation obligations are derived audit requirements, not verified theorems",
+  "scope": "53 source schedule occurrences, excluding diagnostic PrintCtxPass. should_run defaults true; internal guards and pattern matches also determine effect. Structured phase guarded by !options.ullbc. Order is per-body for fused phases, with carried-body preprocessing and finalization.",
+  "passes": [
+    {
+      "order": 1,
+      "namespace": "add_missing_info",
+      "name": "link_specs",
+      "symbol": "global(&add_missing_info::link_specs::Transform)",
+      "path": "charon/src/transform/add_missing_info/link_specs.rs",
+      "blob": "655f81395881db92b58d6a20b93e165c720e734f",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/link_specs.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Contract links preserve item/associated-item identity; no executable change."
+    },
+    {
+      "order": 2,
+      "namespace": "simplify_output",
+      "name": "duplicate_defaulted_methods",
+      "symbol": "global(&simplify_output::duplicate_defaulted_methods::Transform)",
+      "path": "charon/src/transform/simplify_output/duplicate_defaulted_methods.rs",
+      "blob": "f06bd22f00bd7e735ce7df2f2099e9b7e1948bd1",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &TranslateOptions) -> bool {\n        options.duplicate_defaulted_methods\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 83,
+          "text": "        options.duplicate_defaulted_methods"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/duplicate_defaulted_methods.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Copied default bodies substitute the same trait/impl arguments and dispatch."
+    },
+    {
+      "order": 3,
+      "namespace": "add_missing_info",
+      "name": "compute_short_names",
+      "symbol": "global(&add_missing_info::compute_short_names::Transform)",
+      "path": "charon/src/transform/add_missing_info/compute_short_names.rs",
+      "blob": "ebd97527f164f320567801aeaacaea8539544965",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/compute_short_names.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Names remain unambiguous display aliases; IDs and execution unchanged."
+    },
+    {
+      "order": 4,
+      "namespace": "typecheck_and_unify",
+      "name": "Check",
+      "symbol": "global(&typecheck_and_unify::Check::PostTranslation)",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "efd33a5a6dcb979f611a5ecd1735587719f73d48",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !options.no_typecheck\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 103,
+          "text": "                if self.ctx.options.monomorphize_with_hax"
+        },
+        {
+          "line": 284,
+          "text": "                if !self.ctx.options.monomorphize_with_hax {"
+        },
+        {
+          "line": 524,
+          "text": "            && !self.ctx.options.lift_associated_types.is_empty()"
+        },
+        {
+          "line": 665,
+          "text": "        if x.is_tuple() && self.ctx.options.no_gen_tuple_structs {"
+        },
+        {
+          "line": 797,
+          "text": "        !options.no_typecheck"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/typecheck_and_unify.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Type consistency and best-effort region unification; this check is not semantic preservation."
+    },
+    {
+      "order": 5,
+      "namespace": "finish_translation",
+      "name": "filter_invisible_trait_impls",
+      "symbol": "global(&finish_translation::filter_invisible_trait_impls::Transform)",
+      "path": "charon/src/transform/finish_translation/filter_invisible_trait_impls.rs",
+      "blob": "88fd4f0c647dcea2774e768208f41944a41398c9",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/filter_invisible_trait_impls.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Remove only implementations already classified invisible; preserve relevant dispatch."
+    },
+    {
+      "order": 6,
+      "namespace": "simplify_output",
+      "name": "lift_associated_item_clauses",
+      "symbol": "global(&simplify_output::lift_associated_item_clauses::Transform)",
+      "path": "charon/src/transform/simplify_output/lift_associated_item_clauses.rs",
+      "blob": "e18dd6bac999b9f0642f30bd02b9de09ff9e7250",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !options.no_normalize\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 15,
+          "text": "        !options.no_normalize"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/lift_associated_item_clauses.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Reindex proof arguments and bound regions consistently when moving clauses."
+    },
+    {
+      "order": 7,
+      "namespace": "add_missing_info",
+      "name": "add_missing_alias_clauses",
+      "symbol": "global(&add_missing_info::add_missing_alias_clauses::Transform)",
+      "path": "charon/src/transform/add_missing_info/add_missing_alias_clauses.rs",
+      "blob": "7504012d98b984b989572303a2edc7835338bc54",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/add_missing_alias_clauses.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Added trait premises match unresolved associated-type requirements without changing instantiations."
+    },
+    {
+      "order": 8,
+      "namespace": "add_missing_info",
+      "name": "add_implied_outlives",
+      "symbol": "global(&add_missing_info::add_implied_outlives::Transform)",
+      "path": "charon/src/transform/add_missing_info/add_implied_outlives.rs",
+      "blob": "86ad61bd5ee5d28f6d513a51b98a6048e774cbfb",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/add_implied_outlives.rs",
+      "phase": "item-prefix",
+      "preservation_obligation": "Make only signature-implied outlives predicates explicit with correct binders."
+    },
+    {
+      "order": 9,
+      "namespace": "add_missing_info",
+      "name": "detect_drop_flags",
+      "symbol": "CowBox::Borrowed(&add_missing_info::detect_drop_flags::Transform)",
+      "path": "charon/src/transform/add_missing_info/detect_drop_flags.rs",
+      "blob": "f7a0192e245b243f32026771a82502d5e9f82eb4",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &TranslateOptions) -> bool {\n        options.detect_drop_flags || options.resugar_drops\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 415,
+          "text": "        options.detect_drop_flags || options.resugar_drops"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/detect_drop_flags.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Detected Boolean tracks precisely initializedness on the relevant paths."
+    },
+    {
+      "order": 10,
+      "namespace": "resugar",
+      "name": "resugar_drops",
+      "symbol": "CowBox::Borrowed(&resugar::resugar_drops::Transform)",
+      "path": "charon/src/transform/resugar/resugar_drops.rs",
+      "blob": "f7639eb8cf0d91b6775ce163033f6ae8914f3813",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &TranslateOptions) -> bool {\n        options.resugar_drops\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 24,
+          "text": "        options.resugar_drops"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/resugar_drops.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Recover conditional drops without losing partial-move/cleanup effects or misidentifying flags."
+    },
+    {
+      "order": 11,
+      "namespace": "finish_translation",
+      "name": "insert_ptr_metadata",
+      "symbol": "CowBox::Borrowed(&finish_translation::insert_ptr_metadata::Transform)",
+      "path": "charon/src/transform/finish_translation/insert_ptr_metadata.rs",
+      "blob": "f4c4ef9437f16a50d574eff2391c31b4a78408be",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_ptr_metadata.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Inserted metadata expressions match original pointer metadata without new accesses."
+    },
+    {
+      "order": 12,
+      "namespace": "finish_translation",
+      "name": "insert_assign_return_unit",
+      "symbol": "CowBox::Borrowed(&finish_translation::insert_assign_return_unit::Transform)",
+      "path": "charon/src/transform/finish_translation/insert_assign_return_unit.rs",
+      "blob": "08ec2558b2d31935cf2efce5aad7f7d2fc7c82b4",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_assign_return_unit.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Unit return initialization changes no observable evaluation or validity behavior."
+    },
+    {
+      "order": 13,
+      "namespace": "finish_translation",
+      "name": "insert_storage_statements",
+      "symbol": "CowBox::Borrowed(&finish_translation::insert_storage_statements::Transform)",
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "44c7822a76e4c34ecbaf61d674c69b601865a528",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 195,
+          "text": "        self.transform_function(fun, ctx.options.deallocate_all_locals)"
+        },
+        {
+          "line": 201,
+          "text": "        let deallocate_all_locals = ctx.options.deallocate_all_locals;"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Explicit allocation/deallocation reproduces implicit local lifetime; globals excluded from dead insertion."
+    },
+    {
+      "order": 14,
+      "namespace": "normalize",
+      "name": "desugar_drops",
+      "symbol": "CowBox::Borrowed(&normalize::desugar_drops::Transform)",
+      "path": "charon/src/transform/normalize/desugar_drops.rs",
+      "blob": "004f969eba092a231e29e8563376c3d389573cb8",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.desugar_drops\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 64,
+          "text": "        options.desugar_drops"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/desugar_drops.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Precise drop glue call with fresh mutable reference preserves validity, moved-out state, cleanup and evaluation order."
+    },
+    {
+      "order": 15,
+      "namespace": "normalize",
+      "name": "skip_trait_refs_when_known",
+      "symbol": "CowBox::Borrowed(&normalize::skip_trait_refs_when_known::Transform)",
+      "path": "charon/src/transform/normalize/skip_trait_refs_when_known.rs",
+      "blob": "7602f7fc4ac5861d24c46517505e1599647fc529",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/skip_trait_refs_when_known.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Direct callee has identical implementation selection and generic substitution."
+    },
+    {
+      "order": 16,
+      "namespace": "normalize",
+      "name": "transform_dyn_trait_calls",
+      "symbol": "CowBox::Borrowed(&normalize::transform_dyn_trait_calls::Transform)",
+      "path": "charon/src/transform/normalize/transform_dyn_trait_calls.rs",
+      "blob": "1bd7a59e5f121937250d098e6ddda814d7b88a9d",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 213,
+          "text": "    let fn_ptr_place = if ctx.ctx.options.monomorphize_with_hax {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/transform_dyn_trait_calls.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Vtable load/call preserves metadata, method ABI, argument ordering and unwind edge."
+    },
+    {
+      "order": 17,
+      "namespace": "simplify_output",
+      "name": "anon_const_to_call",
+      "symbol": "simplify_output::anon_const_to_call::Transform::new(ctx)",
+      "path": "charon/src/transform/simplify_output/anon_const_to_call.rs",
+      "blob": "4fca571f529ca2791000e31d86bf673fe7999bf7",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.inline_anon_consts && !self.anon_consts.is_empty()\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 26,
+          "text": "        options.inline_anon_consts && !self.anon_consts.is_empty()"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/anon_const_to_call.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Initializer invocation preserves constant identity, sharing, evaluation and effects."
+    },
+    {
+      "order": 18,
+      "namespace": "simplify_output",
+      "name": "inline_selected_functions",
+      "symbol": "simplify_output::inline_selected_functions::Transform::new(ctx)",
+      "path": "charon/src/transform/simplify_output/inline_selected_functions.rs",
+      "blob": "e875831fec3075261d766bbc9a0522ba9b053bf4",
+      "gate_excerpts": [
+        "fn should_run(&self, _options: &crate::options::TranslateOptions) -> bool {\n        !self.to_inline.is_empty()\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 65,
+          "text": "                        || (is_anon_const_initializer && ctx.options.inline_anon_consts)"
+        },
+        {
+          "line": 66,
+          "text": "                        || (is_vec_construction_fn && ctx.options.treat_box_as_builtin)"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/inline_selected_functions.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Inlining preserves argument moves, local scope, returns, unwind paths and constant semantics."
+    },
+    {
+      "order": 19,
+      "namespace": "resugar",
+      "name": "reconstruct_panic_calls",
+      "symbol": "resugar::reconstruct_panic_calls::Transform::new(ctx)",
+      "path": "charon/src/transform/resugar/reconstruct_panic_calls.rs",
+      "blob": "64df23fcacf108f463b7431c1b5ee45f9648ecdb",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.reconstruct_panic_calls\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 43,
+          "text": "        options.reconstruct_panic_calls"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_panic_calls.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Recognized panic callee has the same failure and unwind behavior."
+    },
+    {
+      "order": 20,
+      "namespace": "simplify_output",
+      "name": "filter_trivial_drops",
+      "symbol": "CowBox::Borrowed(&simplify_output::filter_trivial_drops::Transform)",
+      "path": "charon/src/transform/simplify_output/filter_trivial_drops.rs",
+      "blob": "6269fa2ae9d420bc01d405db2de686d11544635c",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/filter_trivial_drops.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "NoopDestruct classification justifies removing all effects and unwind behavior."
+    },
+    {
+      "order": 21,
+      "namespace": "resugar",
+      "name": "move_asserts_to_statements",
+      "symbol": "CowBox::Borrowed(&resugar::move_asserts_to_statements::Transform)",
+      "path": "charon/src/transform/resugar/move_asserts_to_statements.rs",
+      "blob": "2113f96b882eb75d2d2b4da2a0d9bf2d4c2b078a",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.reconstruct_fallible_operations\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 18,
+          "text": "        options.reconstruct_fallible_operations"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/move_asserts_to_statements.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Implicit failure semantics must justify discarding the concrete cleanup-edge identity."
+    },
+    {
+      "order": 22,
+      "namespace": "control_flow",
+      "name": "merge_goto_chains",
+      "symbol": "CowBox::Borrowed(&control_flow::merge_goto_chains::Transform)",
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "8ab7e533c16373b35806e3eb3201b002ba5a14b5",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/merge_goto_chains.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Redirected/concatenated paths preserve statements and all edge destinations, including cyclic paths."
+    },
+    {
+      "order": 23,
+      "namespace": "resugar",
+      "name": "reconstruct_fallible_operations",
+      "symbol": "CowBox::Borrowed(&resugar::reconstruct_fallible_operations::Transform)",
+      "path": "charon/src/transform/resugar/reconstruct_fallible_operations.rs",
+      "blob": "0c142d997250db6afd6c711b684a5d56ba13693b",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.reconstruct_fallible_operations\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 735,
+          "text": "        options.reconstruct_fallible_operations"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_fallible_operations.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Matched checks correspond exactly to implicit panic checks, arithmetic mode and operand evaluation."
+    },
+    {
+      "order": 24,
+      "namespace": "resugar",
+      "name": "reconstruct_vec_boxes",
+      "symbol": "resugar::reconstruct_vec_boxes::Transform::new(ctx)",
+      "path": "charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+      "blob": "c2b03f8683e00b811b4131d7847bfd13a198e46f",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.treat_box_as_builtin\n            && !options.monomorphize_with_hax\n            && self.box_new.is_some()\n            && self.box_write.is_some()\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 286,
+          "text": "        options.treat_box_as_builtin"
+        },
+        {
+          "line": 287,
+          "text": "            && !options.monomorphize_with_hax"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Box/Vec construction rewrite preserves initialization, allocation failure, moves and cleanup."
+    },
+    {
+      "order": 25,
+      "namespace": "resugar",
+      "name": "reconstruct_box_derefs",
+      "symbol": "CowBox::Borrowed(&resugar::reconstruct_box_derefs::Transform)",
+      "path": "charon/src/transform/resugar/reconstruct_box_derefs.rs",
+      "blob": "ba6a54bffacab0cc34292802f3c68fcee9ef4c3b",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.treat_box_as_builtin\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 148,
+          "text": "        options.treat_box_as_builtin"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_box_derefs.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Hidden-pointer projection denotes the same Box pointee and validity requirements."
+    },
+    {
+      "order": 26,
+      "namespace": "resugar",
+      "name": "reconstruct_intrinsics",
+      "symbol": "CowBox::Borrowed(&resugar::reconstruct_intrinsics::Transform)",
+      "path": "charon/src/transform/resugar/reconstruct_intrinsics.rs",
+      "blob": "1269838e436f4c5387f793e1ad0e57c1e5993f9e",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_intrinsics.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Recognized offset_of constant equals compiler layout-derived offset."
+    },
+    {
+      "order": 27,
+      "namespace": "resugar",
+      "name": "reconstruct_asserts",
+      "symbol": "CowBox::Borrowed(&resugar::reconstruct_asserts::Transform)",
+      "path": "charon/src/transform/resugar/reconstruct_asserts.rs",
+      "blob": "1402250e59e615fe56f1d864b0afbe2b7647d62a",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.reconstruct_asserts\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 14,
+          "text": "        options.reconstruct_asserts"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_asserts.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Branch-to-assert resugaring preserves condition, expected value and error/unwind effects."
+    },
+    {
+      "order": 28,
+      "namespace": "resugar",
+      "name": "reconstruct_static_accesses",
+      "symbol": "CowBox::Borrowed(&resugar::reconstruct_static_accesses::Transform)",
+      "path": "charon/src/transform/resugar/reconstruct_static_accesses.rs",
+      "blob": "d928968d2a407ba09019441a0b68097358ab91c1",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_static_accesses.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "All rewritten temporary dereferences denote the same static; no other temporary uses are lost."
+    },
+    {
+      "order": 29,
+      "namespace": "simplify_output",
+      "name": "simplify_constants",
+      "symbol": "CowBox::Borrowed(&simplify_output::simplify_constants::Transform)",
+      "path": "charon/src/transform/simplify_output/simplify_constants.rs",
+      "blob": "3d4dee08913e36f5e82896c635f5d25f9fb92898",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !options.raw_consts\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 234,
+          "text": "        !options.raw_consts"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/simplify_constants.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Fresh temporaries/promoted globals preserve sharing, relocation, metadata and evaluation order."
+    },
+    {
+      "order": 30,
+      "namespace": "simplify_output",
+      "name": "index_intermediate_assigns",
+      "symbol": "CowBox::Borrowed(&simplify_output::index_intermediate_assigns::Transform)",
+      "path": "charon/src/transform/simplify_output/index_intermediate_assigns.rs",
+      "blob": "8b79ae36729e1038caa2b097b411f23803db136d",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/index_intermediate_assigns.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "RHS is evaluated before LHS reference construction with identical moves and failure behavior."
+    },
+    {
+      "order": 31,
+      "namespace": "simplify_output",
+      "name": "remove_unit_locals",
+      "symbol": "CowBox::Borrowed(&simplify_output::remove_unit_locals::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_unit_locals.rs",
+      "blob": "7bfce6153383c5857dfdb38c1272411bd8789b3f",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unit_locals.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Erased direct unit uses/stores do not erase side effects or validity errors."
+    },
+    {
+      "order": 32,
+      "namespace": "control_flow",
+      "name": "duplicate_return",
+      "symbol": "CowBox::Borrowed(&control_flow::duplicate_return::Transform)",
+      "path": "charon/src/transform/control_flow/duplicate_return.rs",
+      "blob": "e9096da163e9b83528765ba9eb641603044a0e31",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/duplicate_return.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Clones keep branch/cleanup destinations and cycles; dynamic execution still visits only one clone."
+    },
+    {
+      "order": 33,
+      "namespace": "resugar",
+      "name": "reconstruct_matches",
+      "symbol": "resugar::reconstruct_matches::Transform::new(ctx)",
+      "path": "charon/src/transform/resugar/reconstruct_matches.rs",
+      "blob": "1a787e86663429d99757dbd9c77da21419bbadac",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.reconstruct_matches\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 153,
+          "text": "        options.reconstruct_matches"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_matches.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Discriminant cases and fallthrough remain equivalent including invalid discriminants."
+    },
+    {
+      "order": 34,
+      "namespace": "simplify_output",
+      "name": "remove_unused_locals",
+      "symbol": "CowBox::Borrowed(&simplify_output::remove_unused_locals::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Only unobserved local storage is removed; all remaining IDs/types/references remap consistently."
+    },
+    {
+      "order": 35,
+      "namespace": "control_flow",
+      "name": "merge_goto_chains",
+      "symbol": "CowBox::Borrowed(&control_flow::merge_goto_chains::Transform)",
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "8ab7e533c16373b35806e3eb3201b002ba5a14b5",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/merge_goto_chains.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Redirected/concatenated paths preserve statements and all edge destinations, including cyclic paths."
+    },
+    {
+      "order": 36,
+      "namespace": "simplify_output",
+      "name": "update_block_indices",
+      "symbol": "CowBox::Borrowed(&simplify_output::update_block_indices::Transform)",
+      "path": "charon/src/transform/simplify_output/update_block_indices.rs",
+      "blob": "01df36cbe93b1c7b6abdcabe8ebd0ce84e2917d5",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/update_block_indices.rs",
+      "phase": "fused-ullbc",
+      "preservation_obligation": "Reachability and bijective renaming preserve all reachable edges; unreachable blocks may disappear."
+    },
+    {
+      "order": 37,
+      "namespace": "control_flow",
+      "name": "ullbc_to_llbc",
+      "symbol": "mixed_body(&control_flow::ullbc_to_llbc::Transform)",
+      "path": "charon/src/transform/control_flow/ullbc_to_llbc.rs",
+      "blob": "b047783836b4b0d2024a1903fe873ee02e8933f6",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 897,
+          "text": "        let allow_duplication = !ctx.options.no_code_duplication;"
+        },
+        {
+          "line": 1373,
+          "text": "        if ctx.options.print_built_llbc {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/ullbc_to_llbc.rs",
+      "phase": "only-if-structured",
+      "preservation_obligation": "Structured positions simulate CFG positions including divergence and unwinding."
+    },
+    {
+      "order": 38,
+      "namespace": "control_flow",
+      "name": "prettify_cfg",
+      "symbol": "CowBox::Borrowed(&control_flow::prettify_cfg::Transform)",
+      "path": "charon/src/transform/control_flow/prettify_cfg.rs",
+      "blob": "986b335efa16a5fac3772f00ddf8a79d8c1c7c5c",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/prettify_cfg.rs",
+      "phase": "only-if-structured",
+      "preservation_obligation": "Structural simplification preserves nested block, loop and jump targets."
+    },
+    {
+      "order": 39,
+      "namespace": "simplify_output",
+      "name": "builtins_to_function_calls",
+      "symbol": "simplify_output::builtins_to_function_calls::Transform::new(ctx)",
+      "path": "charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+      "blob": "ddbb8475b384ecbe4df37253298b1856d68a380b",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.ops_to_function_calls || options.index_to_function_calls\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 15,
+          "text": "    if ctx.options.add_destruct_bounds"
+        },
+        {
+          "line": 681,
+          "text": "        options.ops_to_function_calls || options.index_to_function_calls"
+        },
+        {
+          "line": 691,
+          "text": "        if ctx.options.ops_to_function_calls {"
+        },
+        {
+          "line": 697,
+          "text": "        if ctx.options.index_to_function_calls {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+      "phase": "only-if-structured",
+      "preservation_obligation": "Library models agree on validity, panic, retagging, allocation, aliases and evaluation order."
+    },
+    {
+      "order": 40,
+      "namespace": "finish_translation",
+      "name": "insert_storage_statements",
+      "symbol": "mixed_body(&finish_translation::insert_storage_statements::Transform)",
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "44c7822a76e4c34ecbaf61d674c69b601865a528",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 195,
+          "text": "        self.transform_function(fun, ctx.options.deallocate_all_locals)"
+        },
+        {
+          "line": 201,
+          "text": "        let deallocate_all_locals = ctx.options.deallocate_all_locals;"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Explicit allocation/deallocation reproduces implicit local lifetime; globals excluded from dead insertion."
+    },
+    {
+      "order": 41,
+      "namespace": "normalize",
+      "name": "normalize_trait_refs",
+      "symbol": "global(&normalize::normalize_trait_refs::Transform)",
+      "path": "charon/src/transform/normalize/normalize_trait_refs.rs",
+      "blob": "abc1c6ce9d637d9c40639449f3d99a38c0be297b",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !options.no_normalize\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 69,
+          "text": "        !options.no_normalize"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/normalize_trait_refs.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Normalized proof references select equivalent implementations."
+    },
+    {
+      "order": 42,
+      "namespace": "normalize",
+      "name": "expand_associated_types",
+      "symbol": "global(&normalize::expand_associated_types::Transform)",
+      "path": "charon/src/transform/normalize/expand_associated_types.rs",
+      "blob": "914ed8e05c409aa97f21e28d3b7684a19243f33c",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !(options.lift_associated_types.is_empty() && options.no_normalize)\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 1446,
+          "text": "        !(options.lift_associated_types.is_empty() && options.no_normalize)"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/expand_associated_types.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Lifted generics/associated types and substitutions agree for every caller."
+    },
+    {
+      "order": 43,
+      "namespace": "simplify_output",
+      "name": "remove_unused_clauses",
+      "symbol": "global(&simplify_output::remove_unused_clauses::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_unused_clauses.rs",
+      "blob": "4bb1aacc0f4a28ae37e80e18fec1dddcd8cd0823",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.remove_unused_clauses || options.remove_unused_self_clauses\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 149,
+          "text": "        options.remove_unused_clauses || options.remove_unused_self_clauses"
+        },
+        {
+          "line": 163,
+          "text": "                        && (ctx.options.remove_unused_clauses"
+        },
+        {
+          "line": 164,
+          "text": "                            || (ctx.options.remove_unused_self_clauses"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unused_clauses.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Removed evidence is unused, including indirect proof dependencies."
+    },
+    {
+      "order": 44,
+      "namespace": "simplify_output",
+      "name": "remove_adt_clauses",
+      "symbol": "global(&simplify_output::remove_adt_clauses::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_adt_clauses.rs",
+      "blob": "e4aee5e9de65c6e2414f34502dedfe0bdb74fa6c",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 161,
+          "text": "        if !ctx.options.remove_adt_clauses {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_adt_clauses.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Removed ADT evidence does not lose associated-type information or relevant trait obligations."
+    },
+    {
+      "order": 45,
+      "namespace": "simplify_output",
+      "name": "remove_unused_locals",
+      "symbol": "mixed_body(&simplify_output::remove_unused_locals::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Only unobserved local storage is removed; all remaining IDs/types/references remap consistently."
+    },
+    {
+      "order": 46,
+      "namespace": "simplify_output",
+      "name": "remove_nops",
+      "symbol": "mixed_body(&simplify_output::remove_nops::Transform)",
+      "path": "charon/src/transform/simplify_output/remove_nops.rs",
+      "blob": "da8db8c252017f1489dec971ce4259be8e20033d",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_nops.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Only inert statements are removed; comments retained when present."
+    },
+    {
+      "order": 47,
+      "namespace": "add_missing_info",
+      "name": "recover_body_comments",
+      "symbol": "mixed_body(&add_missing_info::recover_body_comments::Transform)",
+      "path": "charon/src/transform/add_missing_info/recover_body_comments.rs",
+      "blob": "100fd9031b211d48fbd5dc13eb052767966cc12f",
+      "gate_excerpts": [],
+      "internal_option_lines": [],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/recover_body_comments.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Only source presentation changes."
+    },
+    {
+      "order": 48,
+      "namespace": "simplify_output",
+      "name": "hide_allocator_param",
+      "symbol": "global(&simplify_output::hide_allocator_param::Transform)",
+      "path": "charon/src/transform/simplify_output/hide_allocator_param.rs",
+      "blob": "fc7058b301f552b9b5ffd64805e6e0f8aa76152f",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 25,
+          "text": "        if !ctx.options.hide_allocator {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/hide_allocator_param.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Consumer restriction/model must justify losing allocator parameter identity."
+    },
+    {
+      "order": 49,
+      "namespace": "normalize",
+      "name": "partial_monomorphization",
+      "symbol": "global(&normalize::partial_monomorphization::Transform)",
+      "path": "charon/src/transform/normalize/partial_monomorphization.rs",
+      "blob": "08e2c56382579af48ac2db33c808bc3885fc784b",
+      "gate_excerpts": [],
+      "internal_option_lines": [
+        {
+          "line": 488,
+          "text": "        if x.is_tuple() && self.ctx.options.no_gen_tuple_structs {"
+        },
+        {
+          "line": 532,
+          "text": "        let Some(include_types) = ctx.options.monomorphize_mut else {"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/partial_monomorphization.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Specialized copies and shape arguments denote the original instantiation with matching binders."
+    },
+    {
+      "order": 50,
+      "namespace": "add_missing_info",
+      "name": "compute_layout_guarantees",
+      "symbol": "global(&add_missing_info::compute_layout_guarantees::Transform)",
+      "path": "charon/src/transform/add_missing_info/compute_layout_guarantees.rs",
+      "blob": "2548fcbcdb4a83a02a067fa73812cc918fea4ee5",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &TranslateOptions) -> bool {\n        !options.no_compute_layout_guarantees\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 220,
+          "text": "        !options.no_compute_layout_guarantees"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/compute_layout_guarantees.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Derived layout facts are valid for represented target/repr and do not overclaim actual layout."
+    },
+    {
+      "order": 51,
+      "namespace": "add_missing_info",
+      "name": "reorder_decls",
+      "symbol": "global(&add_missing_info::reorder_decls::Transform)",
+      "path": "charon/src/transform/add_missing_info/reorder_decls.rs",
+      "blob": "5526307537c5ff4da08192d8440fe16bcdd2480a",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &TranslateOptions) -> bool {\n        !options.no_reorder_decls\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 497,
+          "text": "        !options.no_reorder_decls"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/reorder_decls.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Dependency SCC/order changes do not alter item identity or runtime order."
+    },
+    {
+      "order": 52,
+      "namespace": "typecheck_and_unify",
+      "name": "Check",
+      "symbol": "global(&typecheck_and_unify::Check::PostTransformation)",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "efd33a5a6dcb979f611a5ecd1735587719f73d48",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        !options.no_typecheck\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 103,
+          "text": "                if self.ctx.options.monomorphize_with_hax"
+        },
+        {
+          "line": 284,
+          "text": "                if !self.ctx.options.monomorphize_with_hax {"
+        },
+        {
+          "line": 524,
+          "text": "            && !self.ctx.options.lift_associated_types.is_empty()"
+        },
+        {
+          "line": 665,
+          "text": "        if x.is_tuple() && self.ctx.options.no_gen_tuple_structs {"
+        },
+        {
+          "line": 797,
+          "text": "        !options.no_typecheck"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/typecheck_and_unify.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Type consistency and best-effort region unification; this check is not semantic preservation."
+    },
+    {
+      "order": 53,
+      "namespace": "simplify_output",
+      "name": "unbind_item_vars",
+      "symbol": "mixed_body(&simplify_output::unbind_item_vars::Check)",
+      "path": "charon/src/transform/simplify_output/unbind_item_vars.rs",
+      "blob": "82722cc0bd05900b7ddde70275cfea6b073555f6",
+      "gate_excerpts": [
+        "fn should_run(&self, options: &crate::options::TranslateOptions) -> bool {\n        options.unbind_item_vars\n    }"
+      ],
+      "internal_option_lines": [
+        {
+          "line": 41,
+          "text": "        options.unbind_item_vars"
+        }
+      ],
+      "source_url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/unbind_item_vars.rs",
+      "phase": "common-final",
+      "preservation_obligation": "Free-variable renaming preserves the correct binding level under nested binders."
+    }
+  ]
+}

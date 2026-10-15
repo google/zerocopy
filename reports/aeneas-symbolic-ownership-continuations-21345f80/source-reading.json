@@ -1,0 +1,201 @@
+{
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "observed_at": "2026-10-15",
+  "acquisition": "Read-only connected GitHub fetch_file at explicit full revision; selected symbol and line-region reading. Full file responses were held transiently, not preserved as a source mirror.",
+  "execution": false,
+  "whole_repository_audit": false,
+  "files": [
+    {
+      "path": "src/llbc/Values.ml",
+      "blob_sha": "9c0f95d25c40c456f7c694db583153aba2dc7513",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/llbc/Values.ml",
+      "reading_scope": [
+        "symbolic_value/value/borrow_content/loan_content; 86-213",
+        "aproj records and ended projection meta; 544-610",
+        "evalue, abs_fun, abs_cont, abs, menv; 1111-1576"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/llbc/Contexts.ml",
+      "blob_sha": "627c9b254874da5c0b2a3e69bc5e4763b333a172",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/llbc/Contexts.ml",
+      "reading_scope": [
+        "eval_ctx; 137-180",
+        "abs_is_endable; 811-840"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/llbc/RegionsHierarchy.ml",
+      "blob_sha": "b23deda36c030083003dc2b379250bc18540bb0c",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/llbc/RegionsHierarchy.ml",
+      "reading_scope": [
+        "compute_regions_hierarchy_for_sig; 1-135 and 295-356"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/Invariants.ml",
+      "blob_sha": "d7f75807d79eb7ba5aaacf2d6e1b37291f1c02a0",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/Invariants.ml",
+      "reading_scope": [
+        "check_loans_borrows_relation_invariant; 54-90",
+        "check_borrowed_values_invariant; 310-381",
+        "check_symbolic_values; 821-845, 889-1011"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpBorrows.mli",
+      "blob_sha": "249c1d3aff003a145f55b20ded55e596b00849db",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpBorrows.mli",
+      "reading_scope": [
+        "end and promote contracts; 6-99"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpBorrows.ml",
+      "blob_sha": "6284f1a8607f75c3c98f50ca0ddbd78429db4f3c",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpBorrows.ml",
+      "reading_scope": [
+        "priority selection; 15-120",
+        "end_borrow_aux; 940-1018",
+        "end_abs_aux/end_all_sub_abs/end_abs_loans; 1175-1354",
+        "end_abs_borrows; 1357-1455",
+        "end_abs_synthesize/end_proj_loans_symbolic; 1553-1660",
+        "destructure_abs nested rejection; 1935-2132"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpExpansion.ml",
+      "blob_sha": "ded98d0db333ddaf9a749636fe5763128f5e7e75",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpExpansion.ml",
+      "reading_scope": [
+        "apply_symbolic_expansion_to_target_aevalues; 48-217",
+        "shared expansion; 349-386",
+        "reference and branch expansion; 494-553, 607-742"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpProjectors.ml",
+      "blob_sha": "c360426c30ad331791b4815461e8c2c4f9176252",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpProjectors.ml",
+      "reading_scope": [
+        "apply_proj_borrows; 102-253"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpStatements.ml",
+      "blob_sha": "1f75159b23df8bee7ae2b613b4538c53f98420c4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpStatements.ml",
+      "reading_scope": [
+        "call signature/abstraction construction; 1346-1535"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/Interp.ml",
+      "blob_sha": "cc4c315bce9b7807701ac323e3c387cded478156",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/Interp.ml",
+      "reading_scope": [
+        "evaluate_function_symbolic_synthesize_backward_from_return; 387-517"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/symbolic/SymbolicToPureAbs.ml",
+      "blob_sha": "06d0e4effcf036c1a9a04afc42e78e7e5e4be185",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureAbs.ml",
+      "reading_scope": [
+        "declaration scan for consumed/given-back translators",
+        "abs_cont_to_texpr_aux/translate_abs_to_cont; 1050-1109",
+        "ended_abs_cont_to_texpr_aux/translate_ended_abs_to_texpr; 1250-1290"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Config.ml",
+      "reading_scope": [
+        "sanity_checks, allow_bottom_below_borrow, return_unit_end_abs_with_no_loans declaration/default scan"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpMatchCtxs.ml",
+      "blob_sha": "29705f4ffb6ec0b7c0d1cfa359cfb694683c9fbf",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpMatchCtxs.ml",
+      "reading_scope": [
+        "nested join rejection declaration/error scan; 414-430, 970-1242"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    }
+  ],
+  "question_crosswalk": {
+    "A13": {
+      "sections": [
+        "Findings 1-3",
+        "Findings 8",
+        "Boundaries"
+      ],
+      "established": [
+        "regular versus abstraction/expression values",
+        "meta-erasing equality and captured environments",
+        "region-sensitive projections",
+        "mutable/shared symbolic expansion; boolean/ADT/integer branch refinement",
+        "runtime invariant gate and implemented projection checks"
+      ],
+      "unresolved": [
+        "formal concrete-memory-to-symbolic relation and preservation theorem",
+        "all feasible execution coverage",
+        "partial moves and inaccessible place semantics across all paths",
+        "full admissible nested-reference subset"
+      ]
+    },
+    "A14": {
+      "sections": [
+        "Findings 4-5",
+        "Boundaries"
+      ],
+      "established": [
+        "priority-based ending; parent/subabs/loan/borrow order",
+        "two-phase promotion contract",
+        "ignored and ended payload purpose",
+        "static/frozen permissions; cycle chain"
+      ],
+      "unresolved": [
+        "proved termination measure for recursive ending",
+        "capability-indexed specification; code uses dynamic checks",
+        "total nested-borrow support"
+      ]
+    },
+    "A17": {
+      "sections": [
+        "Findings 6-7",
+        "Boundaries"
+      ],
+      "established": [
+        "call and return abstraction continuations",
+        "backward region hierarchy and soundness guard",
+        "evalue pure translation ordering",
+        "level-zero translation restriction"
+      ],
+      "derived_only": [
+        "continuation/lens/resource-transformer/separation-logic comparison",
+        "semantic correspondence obligations"
+      ],
+      "unresolved": [
+        "equivalence theorems for alternative interpretations",
+        "general higher-level/sub-abstraction pure translation",
+        "published theorem applicability to exact current engine"
+      ]
+    }
+  }
+}

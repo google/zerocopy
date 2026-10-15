@@ -1,0 +1,236 @@
+{
+  "observed_at": "2026-10-15",
+  "evidence_roles": [
+    "source",
+    "documentation",
+    "derived"
+  ],
+  "acquisition": "Read-only connected GitHub tools at explicit full pins. Selected regions and module/declaration inventories, not exhaustive source audit. Full responses held transiently; no source mirror or upstream execution.",
+  "files": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "charon-pin",
+      "blob_sha": "9e90db588b230b9883a3be63a7d4bd710a18ce82",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/charon-pin",
+      "reading_scope": [
+        "compatible dependency identity"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Main.ml",
+      "blob_sha": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Main.ml",
+      "reading_scope": [
+        "CLI option consistency 460-485; load/preset 552-617; dispatch/status 755-812"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/PrePasses.ml",
+      "blob_sha": "5e3f01a0d98799240b3103171ecd0a80e6cd2b19",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/PrePasses.ml",
+      "reading_scope": [
+        "driver order/recovery 2322-2392; declaration scan; body region erasure 44-87"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Translate.ml",
+      "blob_sha": "74e7d223a0d38dc8ca9797d20ef60fd140909535",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Translate.ml",
+      "reading_scope": [
+        "symbolic dispatcher 22-51; well-binding 53-98; body entry 105-136; recovery 280-304; crate phases 315-450,571-608; headers/names/extraction 1289-1413,1461-1510,2198-2209"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Config.ml",
+      "reading_scope": [
+        "defaults: sanity_checks, pure checks, fail_hard, backend/micro-pass flags"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicAst.ml",
+      "blob_sha": "6493df016b9cfea39d6be5a63e4eb732b346d77c",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicAst.ml",
+      "reading_scope": [
+        "constructor/declaration inventory"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPure.ml",
+      "blob_sha": "38ec2bba23c76ef815e66174856ce29dd4ac15ea",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPure.ml",
+      "reading_scope": [
+        "function synthesis 11-130"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob_sha": "99697b0d63061dfc2edad677c8d19d2cadeeba6d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureTypes.ml",
+      "reading_scope": [
+        "pure checker wrapper 1273-1303"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/Pure.ml",
+      "blob_sha": "b4d7f338fb7e6b650c57b3ef9f9667f24bc2b092",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/Pure.ml",
+      "reading_scope": [
+        "pure expression/loop grammar 1349-1447; builtin/effects declaration inventory"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob_sha": "e2f2c4a0e070ce1fea56d8858fae6b41dee221ec",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureMicroPasses.ml",
+      "reading_scope": [
+        "full ordered driver 13-270; post-list pipeline 355-503"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureMicroPassesBase.ml",
+      "blob_sha": "437911bac253564ade5c402150bcb31e0e63d5ac",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureMicroPassesBase.ml",
+      "reading_scope": [
+        "binder-opening transformation wrappers 83-129"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureMicroPassesLoops.ml",
+      "blob_sha": "c4f20ed85a47b328f2a54a86bc8f4df74679c886",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureMicroPassesLoops.ml",
+      "reading_scope": [
+        "loop relation criteria 2436-2585; transformation 2831-2895; LoopOp lowering 3269-3315; helper declaration inventory"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureTypeCheck.ml",
+      "blob_sha": "dea95ecb5bbbc6129e42c824b60de829fa7a2257",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureTypeCheck.ml",
+      "reading_scope": [
+        "check_texpr 165-283; partial qualifier/loop cases"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureUtils.ml",
+      "blob_sha": "31ed458722ad51d2d985f19b7858be3d56b97d11",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureUtils.ml",
+      "reading_scope": [
+        "typed let helpers and check gates 1855-1932"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/Extract.ml",
+      "blob_sha": "dc667f431c62ff19cd192bfb24d141f3c781ff69",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/Extract.ml",
+      "reading_scope": [
+        "error nodes 703-741; LoopOp 803-817; function printing/opening 2082-2210; termination/postqualifier 2295-2378"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/ExtractBase.ml",
+      "blob_sha": "b5a0ae765651af56f7798cc3f2ee065cb508c139",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractBase.ml",
+      "reading_scope": [
+        "name escaping 755-790; builtin model names 1133-1201; declaration qualifiers 1418-1457"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/ExtractBuiltin.ml",
+      "blob_sha": "8d959753f8ef73467971f2c6a61ebf82cd5aeef8",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractBuiltin.ml",
+      "reading_scope": [
+        "builtin map/default/effect construction 883-953"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/ExtractBuiltinLean.ml",
+      "blob_sha": "b243296bdd00df5fb88c995058dae0a4c72764d8",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractBuiltinLean.ml",
+      "reading_scope": [
+        "Lean builtin declaration/name inventory; selected result names"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/ExtractErrors.ml",
+      "blob_sha": "9169ab076be376ee6150ef7f04b298b92a840965",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractErrors.ml",
+      "reading_scope": [
+        "entire 13-50 recovery printing helpers"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "backends/lean/Aeneas/Std/Primitives.lean",
+      "blob_sha": "2ea4041066748907411b490eb691f2a5f5f0f6d5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Primitives.lean",
+      "reading_scope": [
+        "Result/RustEffect 51-91; loop 447-457"
+      ]
+    }
+  ],
+  "question_crosswalk": {
+    "A05": {
+      "sections": [
+        "Findings 1-3",
+        "Findings 6-8"
+      ],
+      "resolved": "phase call graph, configuration/error recovery, dynamic versus optional checks, model map/global cache and per-task names",
+      "limits": "representative source path; no executed function trace, full repository audit, or complete supported-fragment predicate"
+    },
+    "A18": {
+      "sections": [
+        "Findings 3-5"
+      ],
+      "resolved": "pure grammar, exact pass driver list, post-list loop lowering, ordering prerequisites and effect-sensitive semantic obligations",
+      "limits": "complete pass-driver inventory; only selected rewrite bodies inspected; no current IR denotation or per-pass proof"
+    },
+    "A30": {
+      "sections": [
+        "Findings 7-8"
+      ],
+      "resolved": "names, auxiliaries, headers/imports, model mapping, recursion qualifiers, current ITree Result source, definition/theorem identity requirements",
+      "limits": "no target elaboration or kernel-expression/dependency check for concrete artifact"
+    }
+  },
+  "execution": false
+}

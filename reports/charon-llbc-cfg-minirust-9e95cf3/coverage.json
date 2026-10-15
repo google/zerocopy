@@ -1,0 +1,17 @@
+{
+  "questions": {
+    "A08": {
+      "answered": "Algorithm, irreducibility, duplication, synthetic loops, unwind edges, positional relation and finite certificate design",
+      "not_established": "Implemented certificate or divergence-sensitive semantic preservation proof"
+    },
+    "A09": {
+      "answered": "Production AST, operation distinctions, regions, typecheck scope, body variants, core elaboration requirements",
+      "not_established": "Complete formal typing/evaluation specification or verified correspondence with paper LLBC"
+    },
+    "A10": {
+      "answered": "Option overlay, exporter operations, model selection, checked-in harness/goldens, manual limitations and known failures",
+      "not_established": "Native reproduction, all exporter arms, independent MiniRust semantics audit or exporter preservation theorem"
+    }
+  },
+  "execution": "none"
+}

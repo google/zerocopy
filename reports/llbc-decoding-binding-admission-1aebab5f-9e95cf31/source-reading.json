@@ -1,0 +1,276 @@
+{
+  "observed_at": "2026-10-15",
+  "evidence_roles": [
+    "source",
+    "documentation",
+    "derived"
+  ],
+  "acquisition": "Read-only connected GitHub tools at explicit full pins. Selected regions and module/declaration inventories, not exhaustive source audit. Full responses held transiently; no source mirror or upstream execution.",
+  "files": [
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/OfJson.ml",
+      "blob_sha": "02b77216e638713535122e5b96e49b3abe9b1c5b",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/OfJson.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "02b77216e638713535122e5b96e49b3abe9b1c5b",
+      "same_blob": true,
+      "reading_scope": "selected decoder branches: envelope/version; dedup; indexed vectors/maps; binders; bodies; metadata; trait refs; translated crate"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/OfJsonBasic.ml",
+      "blob_sha": "519d9e97b4e19675f645ae639041a819d9458f66",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/OfJsonBasic.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "519d9e97b4e19675f645ae639041a819d9458f66",
+      "same_blob": true,
+      "reading_scope": "selected decoder branches: envelope/version; dedup; indexed vectors/maps; binders; bodies; metadata; trait refs; translated crate"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/Identifiers.ml",
+      "blob_sha": "de32442d677f55e216b05ad99ef6af954f8f73b5",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/Identifiers.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "de32442d677f55e216b05ad99ef6af954f8f73b5",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/DeserializationCtx.ml",
+      "blob_sha": "b29cd66d16ea7db9f7d26d7834f0bdcfff319567",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/DeserializationCtx.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "b29cd66d16ea7db9f7d26d7834f0bdcfff319567",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/Substitute.ml",
+      "blob_sha": "a95137f22325c166152c7ba5255867a624237e2c",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/Substitute.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "a95137f22325c166152c7ba5255867a624237e2c",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/CharonVersion.ml",
+      "blob_sha": "fb94927381c2d3d29a1b53aff6e90f004233b1b5",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/CharonVersion.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "fb94927381c2d3d29a1b53aff6e90f004233b1b5",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/generated/Generated_OfJson.ml",
+      "blob_sha": "f0be9d88ba62e42719c733b998f4d89639793093",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/generated/Generated_OfJson.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "f0be9d88ba62e42719c733b998f4d89639793093",
+      "same_blob": true,
+      "reading_scope": "selected decoder branches: envelope/version; dedup; indexed vectors/maps; binders; bodies; metadata; trait refs; translated crate"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/generated/Generated_GAst.ml",
+      "blob_sha": "eb3022ac430a8d9a8d0a34e947bef47da0a2de41",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/generated/Generated_GAst.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "eb3022ac430a8d9a8d0a34e947bef47da0a2de41",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "path": "charon-ml/src/generated/Generated_Types.ml",
+      "blob_sha": "7cbcd908583d6b862993337d83afc3bdcf923842",
+      "url": "https://github.com/AeneasVerif/charon/blob/1aebab5f03a58067e5dc0ede2fec584117f54964/charon-ml/src/generated/Generated_Types.ml",
+      "compared_revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "compared_blob_sha": "7cbcd908583d6b862993337d83afc3bdcf923842",
+      "same_blob": true,
+      "reading_scope": "selected identifier/binder/substitution records and helper algorithms; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/export.rs",
+      "blob_sha": "b0dea86e53ff0c3ef748a3efdbf1319d6abe14d9",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/export.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "b0dea86e53ff0c3ef748a3efdbf1319d6abe14d9",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/ast/krate.rs",
+      "blob_sha": "8179459cbfc2219e70b39b1ef8e7d7a090a9a633",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/krate.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "8179459cbfc2219e70b39b1ef8e7d7a090a9a633",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/ast/bodies.rs",
+      "blob_sha": "0f87e08014bb164993c9af98650059b8763f874d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "0f87e08014bb164993c9af98650059b8763f874d",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/ast/type_level/vars.rs",
+      "blob_sha": "ebed9e02b6cf474ccfc093e27fe488b9737583b4",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/type_level/vars.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "ebed9e02b6cf474ccfc093e27fe488b9737583b4",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/ast/type_level/substitute.rs",
+      "blob_sha": "346c5810f74fdf9778d6730057c33f7615f810f5",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/type_level/substitute.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "346c5810f74fdf9778d6730057c33f7615f810f5",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/ast/type_level/trait_proofs.rs",
+      "blob_sha": "930ebabe8164490662292f75982483ee7d4e93db",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/type_level/trait_proofs.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "930ebabe8164490662292f75982483ee7d4e93db",
+      "same_blob": true,
+      "reading_scope": "selected envelope/body/binder/substitution/trait-proof records and helpers; not exhaustive audit"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob_sha": "efd33a5a6dcb979f611a5ecd1735587719f73d48",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/typecheck_and_unify.rs",
+      "compared_revision": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+      "compared_blob_sha": "c2bea324fdfe131e5b40963e2a0142483e99e8d5",
+      "same_blob": false,
+      "reading_scope": "both files: match_tys; binder and trait checks; Check gate/item skips/unification. Upstream 854 lines versus compatible 845 lines; selected difference in ADT matching."
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "charon-pin",
+      "blob_sha": "9e90db588b230b9883a3be63a7d4bd710a18ce82",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/charon-pin",
+      "reading_scope": [
+        "compatible dependency identity"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Main.ml",
+      "blob_sha": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Main.ml",
+      "reading_scope": [
+        "CLI option consistency 460-485; load/preset 552-617; dispatch/status 755-812"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Translate.ml",
+      "blob_sha": "74e7d223a0d38dc8ca9797d20ef60fd140909535",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Translate.ml",
+      "reading_scope": [
+        "symbolic dispatcher 22-51; well-binding 53-98; body entry 105-136; recovery 280-304; crate phases 315-450,571-608; headers/names/extraction 1289-1413,1461-1510,2198-2209"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/PrePasses.ml",
+      "blob_sha": "5e3f01a0d98799240b3103171ecd0a80e6cd2b19",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/PrePasses.ml",
+      "reading_scope": [
+        "driver order/recovery 2322-2392; declaration scan; body region erasure 44-87"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/llbc/TypesAnalysis.ml",
+      "blob_sha": "b8c1b73f09c01b2e36bc4f954111376e4cd8b1c5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/llbc/TypesAnalysis.ml",
+      "reading_scope": [
+        "higher-ranked bound/free implied-bound guard 978-1082"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob_sha": "99697b0d63061dfc2edad677c8d19d2cadeeba6d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureTypes.ml",
+      "reading_scope": [
+        "pure checker wrapper 1273-1303"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/Extract.ml",
+      "blob_sha": "dc667f431c62ff19cd192bfb24d141f3c781ff69",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/Extract.ml",
+      "reading_scope": [
+        "error nodes 703-741; LoopOp 803-817; function printing/opening 2082-2210; termination/postqualifier 2295-2378"
+      ]
+    }
+  ],
+  "question_crosswalk": {
+    "A11": {
+      "sections": [
+        "Findings 1-5",
+        "Findings 7-8"
+      ],
+      "resolved": "envelope exact third-field discard, version equality, structural generated decoder, sparse/duplicate map boundaries, partial body/meta retention and later client checks",
+      "limits": "conditional information-loss risk only; no malformed accepted unsoundness demonstration or complete graph closure/admission theorem"
+    },
+    "A12": {
+      "sections": [
+        "Findings 5-7",
+        "Findings 9"
+      ],
+      "resolved": "kind-separated IDs; de Bruijn/free binding; OCaml and Rust capture-avoiding helper algorithms; best-effort binder/trait checks; representation comparison",
+      "limits": "no intrinsic well-formedness proof, verified validator, map/graph refinement proof or all substitution lemmas"
+    }
+  },
+  "execution": false
+}

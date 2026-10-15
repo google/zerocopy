@@ -1,0 +1,508 @@
+{
+  "observed_at": "2026-10-15",
+  "corpus_revision": "fa65b241fd0cb2c791c841eace86d43d724359bc",
+  "method": "Read-only report reconciliation and selected primary source/documentation reads. No new upstream execution or proof checking.",
+  "reused_reports": [
+    {
+      "package": "cogent-dargent-memory-value-layout-certificates-2021-2023",
+      "report_sha256": "3eac032f83348291be2311e7c70cf6b6cba9d9e42127012679581019ae3d9e59",
+      "metadata": {
+        "topics": [
+          "cogent",
+          "dargent",
+          "certificates/data-refinement",
+          "anneal/memory",
+          "semantics/layout"
+        ],
+        "subjects": [
+          {
+            "name": "Cogent uniqueness types and certifying compilation",
+            "identity": {
+              "doi": "10.1017/S095679682100023X",
+              "publication": "JFP 2021 e25",
+              "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+              "pdf-pages": "67"
+            }
+          },
+          {
+            "name": "Dargent data layout refinement",
+            "identity": {
+              "doi": "10.1145/3571240",
+              "publication": "PACMPL 7 POPL 2023 article 47",
+              "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+              "pdf-pages": "27"
+            }
+          },
+          {
+            "name": "Anneal shared models and execution admission design",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "creusot-permission-coma-trust-c4e9770",
+      "report_sha256": "9009ff3d692ef67d2181de2a125fd986bea0116cfa0b5726a12d0030e9716571",
+      "metadata": {
+        "topics": [
+          "creusot",
+          "verification/pearlite",
+          "verification/coma",
+          "verification/permissions",
+          "rust/unsafe",
+          "verification/why3-trust"
+        ],
+        "subjects": [
+          {
+            "name": "Creusot source",
+            "identity": {
+              "repository": "creusot-rs/creusot",
+              "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+            }
+          },
+          {
+            "name": "Coma ESOP 2025 author paper",
+            "identity": {
+              "url": "https://paulpatault.fr/pdfs/papers/esop2025.pdf",
+              "sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "foundational-verifast-hinted-mirroring-2026-10-14",
+      "report_sha256": "6a87567b47d750fccdc8986954208aab97569c88236e8c5d5e3cf4330472ec7e",
+      "metadata": {
+        "topics": [
+          "verifast",
+          "rust/verification",
+          "verification/certificates",
+          "tcb",
+          "iris"
+        ],
+        "subjects": [
+          {
+            "name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring",
+            "identity": {
+              "arxiv": "2601.13727v1",
+              "publication": "2026-01-20"
+            }
+          },
+          {
+            "name": "VeriFast Rocq replay and axiomatic semantics",
+            "identity": {
+              "repository": "verifast/verifast",
+              "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+            }
+          },
+          {
+            "name": "Anneal PR-stack admission design",
+            "identity": {
+              "repository": "google/zerocopy",
+              "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "hol-proof-producing-synthesis-and-binary-lifting",
+      "report_sha256": "92a8ea55e79e4ee4b0084f78e649d7488fda4706a0b72b03ee9b5dadf4fd2620",
+      "metadata": {
+        "topics": [
+          "compilation/proof-producing",
+          "compilation/decompilation",
+          "hol4",
+          "cakeml/synthesis",
+          "holba/lifting"
+        ],
+        "subjects": [
+          {
+            "name": "Li/Owens/Slind ESOP2007 primary paper",
+            "identity": {
+              "primary_url": "https://link.springer.com/chapter/10.1007/978-3-540-71316-6_15",
+              "doi": "10.1007/978-3-540-71316-6_15",
+              "inspection": "full15-page primary PDF;sections2,4",
+              "sha256": "f077d7ef766635bf34c4ea3c46297b0fde5ec88135695034d2c0fd903752bd1c"
+            }
+          },
+          {
+            "name": "Blech/Poetzsch-Heffter code-generation paper",
+            "identity": {
+              "primary_url": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+              "doi": "10.1016/j.entcs.2007.09.008",
+              "publication": "ENTCS190(4),2007",
+              "coordinates": "sections2.3,3.2,4;17-page author PDF"
+            }
+          },
+          {
+            "name": "Myreen/Slind/Gordon extensible compilation",
+            "identity": {
+              "primary_url": "https://www.cl.cam.ac.uk/~mom22/extensible-compilation.pdf",
+              "doi": "10.1007/978-3-642-00722-4_2",
+              "publication": "CC2009",
+              "coordinates": "section2;15-page author PDF"
+            }
+          },
+          {
+            "name": "Myreen/Owens pure and stateful ML translation",
+            "identity": {
+              "primary_url": "https://www.cl.cam.ac.uk/~mom22/jfp14.pdf",
+              "doi": "10.1017/S0956796813000282",
+              "publication": "JFP24(2-3),2014",
+              "coordinates": "sections4.3-4.4;32-page author PDF"
+            }
+          },
+          {
+            "name": "Monadic CakeML synthesis",
+            "identity": {
+              "primary_url": "https://cakeml.org/jar20.pdf",
+              "publication": "JAR2020 author paper",
+              "coordinates": "sections3.3-3.5;20-page PDF"
+            }
+          },
+          {
+            "name": "HOL-Theorem-Prover/HOL",
+            "identity": {
+              "repository": "HOL-Theorem-Prover/HOL",
+              "revision": "166fd15df77be1f2e79dc8592a933b1a65540526",
+              "path": "examples/machine-code/compiler/codegenLib.sml"
+            }
+          },
+          {
+            "name": "CakeML/cakeml",
+            "identity": {
+              "repository": "CakeML/cakeml",
+              "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+              "path": "translator/ml_translatorScript.sml"
+            }
+          },
+          {
+            "name": "kth-step/HolBA",
+            "identity": {
+              "repository": "kth-step/HolBA",
+              "revision": "c20c5aeae7c4464c3a5032ee66d9e31324937fe1",
+              "path": "src/theory/tools/lifter/bir_inst_liftingScript.sml"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "independent-kernels-and-model-checking-certificates",
+      "report_sha256": "456f69d1858d692ad442fd674819e8e95b7f4de36c104e999e547a01520ee3dd",
+      "metadata": {
+        "topics": [
+          "verification/kernel-diversity",
+          "verification/model-checking",
+          "lean/kernel",
+          "isabelle/reconstruction"
+        ],
+        "subjects": [
+          {
+            "name": "Lean4.30rc2",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+            }
+          },
+          {
+            "name": "Lean4.31",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+            }
+          },
+          {
+            "name": "Lean4.34.1",
+            "identity": {
+              "repository": "leanprover/lean4",
+              "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+            }
+          },
+          {
+            "name": "Nanoda",
+            "identity": {
+              "repository": "ammkrn/nanoda_lib",
+              "revision": "e0d76f5ec30bba244023466875b4845a57fd3ea5"
+            }
+          },
+          {
+            "name": "Lean4Lean",
+            "identity": {
+              "repository": "digama0/lean4lean",
+              "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+            }
+          },
+          {
+            "name": "Comparator",
+            "identity": {
+              "repository": "leanprover/comparator",
+              "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+            }
+          },
+          {
+            "name": "IC3ref",
+            "identity": {
+              "repository": "arbrad/IC3ref",
+              "revision": "07174c2c8e12109ed659318a3805e46a6479eabd"
+            }
+          },
+          {
+            "name": "Certifaiger",
+            "identity": {
+              "repository": "Froleyks/certifaiger",
+              "revision": "29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4"
+            }
+          },
+          {
+            "name": "Isabelle",
+            "identity": {
+              "repository": "isabelle-prover/mirror-isabelle",
+              "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "proof-producing-versus-validating-translations-1997-2022",
+      "report_sha256": "e081d474e3779da30c01971fcfbb450fd06a2bb2c61577c2957743dff821b077",
+      "metadata": {
+        "topics": [
+          "compiler-verification/certification",
+          "proof-carrying-code",
+          "translation-validation/verified-validator",
+          "translation-certification",
+          "verification/proof-artifacts"
+        ],
+        "subjects": [
+          {
+            "name": "Proof-Carrying Code",
+            "identity": {
+              "doi": "10.1145/263699.263712",
+              "publication": "POPL 1997"
+            }
+          },
+          {
+            "name": "A Certifying Code Generation Phase",
+            "identity": {
+              "doi": "10.1016/j.entcs.2007.09.008",
+              "publication": "ENTCS 190(4), 2007"
+            }
+          },
+          {
+            "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+            "identity": {
+              "doi": "10.1145/1328438.1328444",
+              "publication": "POPL 2008"
+            }
+          },
+          {
+            "name": "Translation Certification for Smart Contracts",
+            "identity": {
+              "doi": "10.1007/978-3-030-99461-7_6",
+              "publication": "FLOPS 2022"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "refinedrust-radium-proof-boundary-2026-v2",
+      "report_sha256": "52a2b53d1e31bf80ecf051b1c7ae98548eb5683cdbb8f924474e3102b5e3a38a",
+      "metadata": {
+        "topics": [
+          "refinedrust",
+          "radium/semantics",
+          "iris/byte-resources",
+          "rust/layout",
+          "verification/mir-extraction",
+          "verification/proof-acceptance",
+          "verification/cross-prover"
+        ],
+        "subjects": [
+          {
+            "name": "RefinedRust 2026 source artifact",
+            "identity": {
+              "zenodo": "21636474",
+              "archive": "artifact.tar.gz",
+              "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+              "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+            }
+          },
+          {
+            "name": "RefinedRust 2026 paper",
+            "identity": {
+              "doi": "10.1145/3839484",
+              "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+            }
+          },
+          {
+            "name": "RefinedRust 2024 paper",
+            "identity": {
+              "doi": "10.1145/3656422",
+              "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "rust-symbolic-completeness-boundaries-2026",
+      "report_sha256": "5f0dcdd45d0d15ebaf3e41d9d0a63a0e206e50606599e0ee665b778fe440db70",
+      "metadata": {
+        "topics": [
+          "kani",
+          "crux-mir",
+          "soteria",
+          "verification/bounded-symbolic",
+          "verification/completeness",
+          "verification/model-checking-evidence"
+        ],
+        "subjects": [
+          {
+            "name": "Kani source",
+            "identity": {
+              "repository": "model-checking/kani",
+              "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+            }
+          },
+          {
+            "name": "Crux-MIR and Crucible source",
+            "identity": {
+              "repository": "GaloisInc/crucible",
+              "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4"
+            }
+          },
+          {
+            "name": "Soteria PLDI 2026 source artifact",
+            "identity": {
+              "zenodo": "19080425",
+              "archive": "soteria-pldi26-artifact.zip",
+              "sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2"
+            }
+          },
+          {
+            "name": "Soteria extended paper",
+            "identity": {
+              "arxiv": "2511.08729v6",
+              "doi": "10.1145/3808306",
+              "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "rustbelt-rusthornbelt-contract-bridge-2022",
+      "report_sha256": "0688e10ab201a6bc493580ca2940557010f2c80c778d41f60e0ce89092fa2095",
+      "metadata": {
+        "topics": [
+          "rust/semantic-typing",
+          "rustbelt",
+          "rusthornbelt",
+          "rusthorn/chc",
+          "iris/lifetimes",
+          "iris/parametric-prophecy",
+          "verification/contract-bridge"
+        ],
+        "subjects": [
+          {
+            "name": "RustBelt LambdaRust source",
+            "identity": {
+              "archive": "lambda-rust-popl18.tar.gz",
+              "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+              "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+            }
+          },
+          {
+            "name": "RustHornBelt 2022 source artifact",
+            "identity": {
+              "zenodo": "6417462",
+              "archive": "the_artifact.tgz",
+              "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+            }
+          },
+          {
+            "name": "RustHornBelt paper",
+            "identity": {
+              "doi": "10.1145/3519939.3523704",
+              "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+            }
+          },
+          {
+            "name": "RustHornBelt author erratum",
+            "identity": {
+              "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt",
+              "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5"
+            }
+          },
+          {
+            "name": "RustHorn updated author full-version paper",
+            "identity": {
+              "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+              "doi": "10.1007/978-3-030-44914-8_18",
+              "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+            }
+          }
+        ],
+        "observed_at": "2026-10-14"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    },
+    {
+      "package": "verified-compiler-pass-composition-compcert-3-18-popl-2008",
+      "report_sha256": "accf7e3f3f1595d8e45465c4e1c4cdc1809d59644dc1ec58c140695eb2c7658f",
+      "metadata": {
+        "topics": [
+          "compiler-verification/composition",
+          "compcert/semantic-preservation",
+          "compcert/simulation",
+          "translation-validation/verified-validator",
+          "verification/refinement"
+        ],
+        "subjects": [
+          {
+            "name": "CompCert 3.18 verified compiler",
+            "identity": {
+              "repository": "AbsInt/CompCert",
+              "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+              "version": "3.18"
+            }
+          },
+          {
+            "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+            "identity": {
+              "doi": "10.1145/1328438.1328444",
+              "publication": "POPL 2008"
+            }
+          }
+        ],
+        "observed_at": "2026-09-27"
+      },
+      "evidence_role": "reused report at identified corpus baseline; original evidence remains scoped there"
+    }
+  ],
+  "fresh_primary_evidence": "primary-evidence.json"
+}

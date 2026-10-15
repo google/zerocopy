@@ -1,0 +1,19 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/pipeline",
+    "aeneas/pure-ir",
+    "aeneas/extraction",
+    "lean/generated-code"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas OCaml pipeline and Lean primitives",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

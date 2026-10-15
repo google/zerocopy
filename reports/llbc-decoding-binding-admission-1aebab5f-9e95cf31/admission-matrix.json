@@ -1,0 +1,54 @@
+{
+  "subjects": {
+    "aeneas": "21345f80fa212c596f6437378d7d57984fa2ea77",
+    "charon_compatible": "1aebab5f03a58067e5dc0ede2fec584117f54964",
+    "charon_upstream": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+  },
+  "evidence": "source-only; listed omissions concern specific decoder functions, not proof of final acceptance",
+  "layers": [
+    {
+      "layer": "envelope",
+      "implemented": "exact field-list shape; version string equality",
+      "discarded": "arbitrary one third association including normal has_errors",
+      "unresolved": "whole-producer-success policy outside decoder"
+    },
+    {
+      "layer": "serialized syntax",
+      "implemented": "constructor/field recursion and JSON primitive kinds",
+      "not_established": "graph closure, contextual well-formedness, body/signature consistency"
+    },
+    {
+      "layer": "IDs/maps",
+      "implemented": "generative kind separation; positional sparse maps; typed lists/pair lists",
+      "not_established": "range/nonnegativity at scalar ID decode; key/internal-ID coherence; pair-list key uniqueness"
+    },
+    {
+      "layer": "binding/substitution",
+      "implemented": "de Bruijn/free variants; shifted substitution algorithms; best-effort binding-stack checks in Rust",
+      "not_established": "verified capture avoidance and substitution composition/preservation lemmas"
+    },
+    {
+      "layer": "trait proofs",
+      "implemented": "constructors plus claimed predicates; reconstruction/checking of selected forms",
+      "not_established": "independently verified proof checker; all-case semantic validity"
+    },
+    {
+      "layer": "Aeneas",
+      "implemented": "preset, selected signature/borrow support guards, errors/recovery, optional invariant/type checks",
+      "not_established": "single complete pre-erasure admission predicate"
+    },
+    {
+      "layer": "target",
+      "implemented": "extraction may print holes/opaque declarations",
+      "not_established": "whole-target completeness, hole/axiom-free elaboration, source/theorem identity"
+    }
+  ],
+  "proposed_not_executed_probes": [
+    "toggle only envelope has_errors",
+    "omit referenced declaration",
+    "slot/record-ID mismatch",
+    "out-of-range binder variable",
+    "target-dispatch map variation",
+    "explicit ErrorBody"
+  ]
+}

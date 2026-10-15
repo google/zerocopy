@@ -211,6 +211,88 @@
         "translation/certificates"
       ]
     },
+    "aeneas-charon-history-and-regression-oracles-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas inspected source"
+        },
+        {
+          "identity": {
+            "artifact": "evidence.json",
+            "sha256": "1e07064aed26eee0916ba3e978a9670436944b934de3f2dd4b8008ae0a96c800"
+          },
+          "name": "Historical Aeneas and Charon case ledger"
+        },
+        {
+          "identity": {
+            "displayed_source_revision": "58cf8f9c3",
+            "urls": "https://doc.rust-lang.org/std/vec/struct.Vec.html#method.insert; https://doc.rust-lang.org/std/cmp/trait.Ord.html#method.max",
+            "version": "1.99.1"
+          },
+          "name": "Rust standard-library API documentation"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "charon",
+        "aeneas/historical-defects",
+        "aeneas/regression-testing",
+        "verification/oracles"
+      ]
+    },
+    "aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+          },
+          "name": "Charon (declared Aeneas dependency)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+          },
+          "name": "Charon (independent current source comparison)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+          },
+          "name": "Reused reference corpus"
+        },
+        {
+          "identity": {
+            "issue": "3886",
+            "repository": "google/zerocopy",
+            "url": "https://github.com/google/zerocopy/issues/3886"
+          },
+          "name": "Investigation checklist"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "charon",
+        "llbc",
+        "research/coverage",
+        "verification/experiments"
+      ]
+    },
     "aeneas-compatible-bundle-source-drift-2026-09-30": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -600,6 +682,24 @@
         "aeneas/partial-functions"
       ]
     },
+    "aeneas-joins-loops-fixed-points-21345f80": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas symbolic interpreter"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/joins",
+        "aeneas/loops",
+        "aeneas/recursion"
+      ]
+    },
     "aeneas-lean-project-package-anatomy-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -824,6 +924,25 @@
         "lean/partial-fixpoint"
       ]
     },
+    "aeneas-pipeline-pure-extraction-21345f80": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas OCaml pipeline and Lean primitives"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/pipeline",
+        "aeneas/pure-ir",
+        "aeneas/extraction",
+        "lean/generated-code"
+      ]
+    },
     "aeneas-post-monomorphization-errors-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -858,6 +977,85 @@
         "aeneas/monomorphization",
         "rust/post-monomorphization-errors",
         "zerocopy/static-assertions"
+      ]
+    },
+    "aeneas-published-results-and-mechanized-llbc-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/mechanized-llbc",
+            "revision": "2762a26a3c0792017fa7a731aab1683d9a4cf23a"
+          },
+          "name": "Mechanized LLBC"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185v2",
+            "doi": "10.1145/3547647",
+            "pdf_sha256": "5a75ed1543f5db5a47b7506753898443bc7b88ecb7a2f76325e80ed5494664bc"
+          },
+          "name": "Aeneas functional translation paper"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.02680v2",
+            "doi": "10.1145/3674640",
+            "pdf_sha256": "ff1f01d5bcd98c6387b24dcc06ce76e5f15d6c1234d199c0b1311ce7645bebda"
+          },
+          "name": "Symbolic borrow-checking paper"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.18042v2"
+          },
+          "name": "Charon tool paper"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.15648v1"
+          },
+          "name": "Aeneas SymCrypt report"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.30106v1"
+          },
+          "name": "Rust-to-Lean experience report"
+        },
+        {
+          "identity": {
+            "author": "Son Ho",
+            "sha256": "0c1b720ff28c004211f47aa288efe3f22a471531f28e427a576b7926264bce07",
+            "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf",
+            "year": "2024"
+          },
+          "name": "Formal Verification of Rust Programs by Functional Translation"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/p3-hax-lean-fri-pipeline",
+            "revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab"
+          },
+          "name": "Cited downstream pipeline proof source"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/formal-results",
+        "llbc",
+        "rocq/assumptions",
+        "verification/semantic-correspondence",
+        "aeneas/theorem-inventory",
+        "aeneas/soundness",
+        "verification/publication-scope"
       ]
     },
     "aeneas-raw-pointers-nightly-2026-06-03": {
@@ -1176,6 +1374,45 @@
         "rust/types"
       ]
     },
+    "aeneas-scaling-proof-engineering-and-maintenance-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas source workflow"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.15648v1",
+            "version": "2026-09-14"
+          },
+          "name": "SymCrypt scaling technical report"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.30106v1"
+          },
+          "name": "Rust-to-Lean pipeline experience report"
+        },
+        {
+          "identity": {
+            "aeneas_source": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "corpus_revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+          },
+          "name": "Prior retained component experiments"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/scaling",
+        "lean/proof-engineering",
+        "verification/maintenance"
+      ]
+    },
     "aeneas-semantic-omissions-unsafe-rust-nightly-2026-06-03": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1235,6 +1472,24 @@
         "aeneas/resources",
         "aeneas/lean",
         "aeneas/itree"
+      ]
+    },
+    "aeneas-symbolic-ownership-continuations-21345f80": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas symbolic interpreter"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/symbolic-interpreter",
+        "aeneas/borrows",
+        "aeneas/backward-functions"
       ]
     },
     "aeneas-trait-translation-nightly-2026-06-03": {
@@ -1359,6 +1614,26 @@
         "charon/type-aliases",
         "rust/type-aliases",
         "source-correspondence"
+      ]
+    },
+    "aeneas-types-traits-primitives-and-models-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas current interfaces and models"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/types",
+        "aeneas/traits",
+        "aeneas/library-models",
+        "rust/arithmetic",
+        "rust/drop"
       ]
     },
     "aeneas-wp-proof-tools-nightly-2026-06-03": {
@@ -13129,6 +13404,58 @@
         "cargo/rustc-invocation"
       ]
     },
+    "certifying-translations-related-techniques-3886": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+          },
+          "name": "Reference corpus reports compared"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547628"
+          },
+          "name": "Katamaran ICFP 2022 paper"
+        },
+        {
+          "identity": {
+            "pdf-pages": "59",
+            "printed-date": "2018-11-19",
+            "url": "https://cakeml.org/jfp19.pdf"
+          },
+          "name": "CakeML backend author manuscript"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064v3"
+          },
+          "name": "Lean4Lean versioned paper"
+        },
+        {
+          "identity": {
+            "repository": "cryspen/hax",
+            "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+          },
+          "name": "hax architecture and Lean documentation"
+        },
+        {
+          "identity": {
+            "git-blob": "670746012e99efc7b239bc5cd41f9ee2d967997b",
+            "repository": "Kha/electrolysis"
+          },
+          "name": "Electrolysis README"
+        }
+      ],
+      "topics": [
+        "verification/certificates",
+        "verification/translation-validation",
+        "aeneas",
+        "verification/related-work"
+      ]
+    },
     "charon-0-1-210-to-nightly-2026-09-30-source-review": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -13412,6 +13739,32 @@
         "rust/layout"
       ]
     },
+    "charon-extraction-normalization-9e95cf3": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+          },
+          "name": "Charon upstream source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+          },
+          "name": "Charon dependency source (three-file comparison)"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/extraction",
+        "charon/normalization",
+        "rust/mir",
+        "aeneas"
+      ]
+    },
     "charon-extraction-scaling-nightly-2026-06-03": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -13608,6 +13961,32 @@
         "charon/json",
         "charon/postcard",
         "charon/hash-consing"
+      ]
+    },
+    "charon-llbc-cfg-minirust-9e95cf3": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+          },
+          "name": "Charon upstream source"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+          },
+          "name": "Charon dependency source (three-file comparison)"
+        }
+      ],
+      "topics": [
+        "charon",
+        "llbc",
+        "charon/control-flow",
+        "minirust",
+        "rust/semantics"
       ]
     },
     "charon-llbc-output-goldens-and-revision-diffs-2026-09-27": {
@@ -20586,6 +20965,41 @@
         "lake/build-failure"
       ]
     },
+    "lean-wp-partiality-and-aeneas-integration-2026-10-15": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "lean_toolchain": "v4.35.0-rc4",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas Lean backend"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4.35.0"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "88539871b4133140b0d5e9beb4cd446bcc0d2f40"
+          },
+          "name": "Lean reconnaissance comparison"
+        }
+      ],
+      "topics": [
+        "lean/wp",
+        "lean/partiality",
+        "lean/tcb",
+        "aeneas/lean-backend",
+        "verification/automation"
+      ]
+    },
     "leantar-archive-format-v0-1-16-v0-1-19": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -20726,6 +21140,49 @@
         "verification/specifications",
         "rustbelt",
         "compcert"
+      ]
+    },
+    "llbc-decoding-binding-admission-1aebab5f-9e95cf31": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+          },
+          "name": "Charon compatible dependency"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+          },
+          "name": "Charon upstream comparison"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas client admission and recovery"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 collection specifications"
+        }
+      ],
+      "topics": [
+        "charon",
+        "llbc",
+        "llbc/decoding",
+        "llbc/binding",
+        "aeneas/admission",
+        "lean/containers",
+        "verification/refinement"
       ]
     },
     "lsp-proof-assistant-architecture-2026-09-27": {
@@ -26142,6 +26599,45 @@
         "rust/safety-boundary",
         "rust/invariants",
         "rustc/unsafety"
+      ]
+    },
+    "rust-semantic-domains-spatial-composition-3886": {
+      "observed_at": "2026-10-15",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+          },
+          "name": "Reference corpus reports compared"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.04372v1"
+          },
+          "name": "Corten versioned paper"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+          },
+          "name": "Rust core API contracts"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+          },
+          "name": "Anneal model and admission documentation"
+        }
+      ],
+      "topics": [
+        "rust/semantics",
+        "rust/unsafe",
+        "verification/spatial",
+        "verification/concurrency",
+        "anneal"
       ]
     },
     "rust-size-align-nightly-2026-05-31": {

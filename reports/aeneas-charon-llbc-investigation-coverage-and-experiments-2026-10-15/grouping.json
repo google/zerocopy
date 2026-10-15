@@ -1,0 +1,161 @@
+{
+  "status": "candidate-grouping-adjustable-as-evidence-changes",
+  "reports": [
+    {
+      "group": "G01",
+      "package": "aeneas-published-results-and-mechanized-llbc-2026-10-15",
+      "topics": [
+        "A01",
+        "A02",
+        "A03",
+        "A04"
+      ]
+    },
+    {
+      "group": "G02",
+      "package": "charon-extraction-normalization-9e95cf3",
+      "topics": [
+        "A06",
+        "A07"
+      ]
+    },
+    {
+      "group": "G03",
+      "package": "charon-llbc-cfg-minirust-9e95cf3",
+      "topics": [
+        "A08",
+        "A09",
+        "A10"
+      ]
+    },
+    {
+      "group": "G04",
+      "package": "aeneas-symbolic-ownership-continuations-21345f80",
+      "topics": [
+        "A13",
+        "A14",
+        "A17"
+      ]
+    },
+    {
+      "group": "G05",
+      "package": "aeneas-joins-loops-fixed-points-21345f80",
+      "topics": [
+        "A15",
+        "A16"
+      ]
+    },
+    {
+      "group": "G06",
+      "package": "aeneas-pipeline-pure-extraction-21345f80",
+      "topics": [
+        "A05",
+        "A18",
+        "A30"
+      ]
+    },
+    {
+      "group": "G07",
+      "package": "aeneas-types-traits-primitives-and-models-2026-10-15",
+      "topics": [
+        "A19",
+        "A20",
+        "A21",
+        "A22",
+        "A23"
+      ]
+    },
+    {
+      "group": "G08",
+      "package": "llbc-decoding-binding-admission-1aebab5f-9e95cf31",
+      "topics": [
+        "A11",
+        "A12"
+      ]
+    },
+    {
+      "group": "G09",
+      "package": "lean-wp-partiality-and-aeneas-integration-2026-10-15",
+      "topics": [
+        "A26",
+        "A27",
+        "A29"
+      ]
+    },
+    {
+      "group": "G10",
+      "package": "rust-semantic-domains-spatial-composition-3886",
+      "topics": [
+        "A02",
+        "A24",
+        "A25",
+        "A35"
+      ]
+    },
+    {
+      "group": "G11",
+      "package": "aeneas-charon-history-and-regression-oracles-2026-10-15",
+      "topics": [
+        "A31",
+        "A32"
+      ]
+    },
+    {
+      "group": "G12",
+      "package": "aeneas-scaling-proof-engineering-and-maintenance-2026-10-15",
+      "topics": [
+        "A33"
+      ]
+    },
+    {
+      "group": "G13",
+      "package": "certifying-translations-related-techniques-3886",
+      "topics": [
+        "A28",
+        "A34"
+      ]
+    },
+    {
+      "group": "G14",
+      "package": "aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15",
+      "topics": [
+        "A36",
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A19",
+        "A20",
+        "A21",
+        "A22",
+        "A23",
+        "A24",
+        "A25",
+        "A26",
+        "A27",
+        "A28",
+        "A29",
+        "A30",
+        "A31",
+        "A32",
+        "A33",
+        "A34",
+        "A35"
+      ]
+    }
+  ]
+}

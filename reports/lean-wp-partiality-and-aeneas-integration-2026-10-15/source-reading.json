@@ -1,0 +1,137 @@
+{
+  "observed_at": "2026-10-15",
+  "basis": "source",
+  "lean": {
+    "repository": "leanprover/lean4",
+    "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+    "files": [
+      {
+        "path": "src/Std/WP/Basic.lean",
+        "blob": "6500575d9e7616a9f2095d609cba71fc8dbba7cd",
+        "bytes": 5916,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/WP/Basic.lean"
+      },
+      {
+        "path": "src/Std/WP/Monad/Sound.lean",
+        "blob": "0347652782d1daa91e9f829f9a2a519a999f0406",
+        "bytes": 11748,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/WP/Monad/Sound.lean"
+      },
+      {
+        "path": "src/Std/WP/Frame.lean",
+        "blob": "fee93fca3e20869e7c6ecd7eebbb23d9de9704a8",
+        "bytes": 6029,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/WP/Frame.lean"
+      },
+      {
+        "path": "src/Std/WP/Monad/Instances.lean",
+        "blob": "d1bcd180907ca300e0fdefde3703b4792b55b527",
+        "bytes": 10805,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Std/WP/Monad/Instances.lean"
+      },
+      {
+        "path": "tests/elab/vcgenImp.lean",
+        "blob": "a1ff314133e084bd20e5e84b272811fba064b953",
+        "bytes": 17786,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/tests/elab/vcgenImp.lean"
+      },
+      {
+        "path": "tests/elab/vcgenSepLogic.lean",
+        "blob": "783db38a02b187c0166c3d497677c943c0a773ca",
+        "bytes": 75214,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/tests/elab/vcgenSepLogic.lean"
+      },
+      {
+        "path": "tests/elab/vcgenCoinductiveFixpoint.lean",
+        "blob": "515550393bda3ab267cc1a0135e29534fd059b0f",
+        "bytes": 2716,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/tests/elab/vcgenCoinductiveFixpoint.lean"
+      },
+      {
+        "path": "src/Init/Internal/Order/Basic.lean",
+        "blob": "e5ea86bcfd5d1df17975262b40a2448ff64d3f07",
+        "bytes": 48870,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Init/Internal/Order/Basic.lean"
+      },
+      {
+        "path": "src/Lean/Elab/PreDefinition/PartialFixpoint/Main.lean",
+        "blob": "f7b4ad196a568faf81cff5ace77412f02e4b9986",
+        "bytes": 11357,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Lean/Elab/PreDefinition/PartialFixpoint/Main.lean"
+      },
+      {
+        "path": "src/Lean/Elab/Tactic/Decide.lean",
+        "blob": "2e1e51ccdd2b9a913df9e81100389995cbcb8764",
+        "bytes": 9747,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Lean/Elab/Tactic/Decide.lean"
+      },
+      {
+        "path": "src/Lean/Meta/ReduceEval.lean",
+        "blob": "a4d6ccb662ea4091ce5080a936bc80b9dc06ba38",
+        "bytes": 4611,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Lean/Meta/ReduceEval.lean"
+      },
+      {
+        "path": "src/lake/Lake/CLI/Check.lean",
+        "blob": "8ec393aabb3d106da38db76c31b8f179fb6eac80",
+        "bytes": 30904,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/lake/Lake/CLI/Check.lean"
+      },
+      {
+        "path": "src/LeanChecker.lean",
+        "blob": "aa69c77767cfab76fdb95a7cafb170d36b9950c2",
+        "bytes": 6673,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/LeanChecker.lean"
+      },
+      {
+        "path": "src/Lean/Meta/Native.lean",
+        "blob": "890d6e446ffff269d98078b436b569134f172ae0",
+        "bytes": 3207,
+        "url": "https://github.com/leanprover/lean4/blob/eb6cafb7290e8bd5f2937522d8d804f58f02bafc/src/Lean/Meta/Native.lean"
+      }
+    ]
+  },
+  "aeneas": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+    "files": [
+      {
+        "path": "backends/lean/Aeneas/Std/Primitives.lean",
+        "blob": "2ea4041066748907411b490eb691f2a5f5f0f6d5",
+        "bytes": 17360,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Primitives.lean"
+      },
+      {
+        "path": "backends/lean/Aeneas/Std/WP.lean",
+        "blob": "035f4b5ab37a0d7870df387749902bfd3e4edcf2",
+        "bytes": 29613,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/WP.lean"
+      },
+      {
+        "path": "backends/lean/Aeneas/Data/Coinductive/ITreeWP/DWP.lean",
+        "blob": "0049da5e2933a9d750e3cac477a5e17c6290e473",
+        "bytes": 5111,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Data/Coinductive/ITreeWP/DWP.lean"
+      },
+      {
+        "path": "backends/lean/Aeneas/Data/Coinductive/ITreeWP/DWLP.lean",
+        "blob": "b3f96020f77199d80c939aa31189fbb3244a436c",
+        "bytes": 6572,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Data/Coinductive/ITreeWP/DWLP.lean"
+      },
+      {
+        "path": "backends/lean/Aeneas/Data/Coinductive/ITreeWP/Taxonomy.lean",
+        "blob": "39a01a7758a46ed5420050feb5b372f44031d5fc",
+        "bytes": 1299,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Data/Coinductive/ITreeWP/Taxonomy.lean"
+      },
+      {
+        "path": "backends/lean/Aeneas/Data/Coinductive/README",
+        "blob": "d1aed87def13ad147771673797e4a10ba50c49ac",
+        "bytes": 420,
+        "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Data/Coinductive/README"
+      }
+    ]
+  },
+  "scope": "Selected source inspection only; no compilation or execution of upstream programs."
+}

@@ -1,0 +1,624 @@
+{
+  "observed_at": "2026-10-15",
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "scope": "Source/documentation inspection; no execution. A19-A23. Selected extracts are evidence, not instructions.",
+  "sections": [
+    {
+      "topic": "A22",
+      "label": "Current Result effect interface",
+      "path": "backends/lean/Aeneas/Std/Primitives.lean",
+      "blob_sha": "2ea4041066748907411b490eb691f2a5f5f0f6d5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Primitives.lean",
+      "excerpts": [
+        {
+          "start": 41,
+          "end": 100,
+          "text": "   | integerOverflow: Error\n   | divisionByZero: Error\n   | arrayOutOfBounds: Error\n   | maximumSizeExceeded: Error\n   | panic: Error\n   | undef: Error\nderiving Repr, BEq\n\nopen Error\n\ninductive RustEffect.Input : Type where\n| fail : Error \u2192 RustEffect.Input\n\n@[implicit_reducible]\ndef RustEffect.Output (i : RustEffect.Input) : Type :=\n  match i with\n  | .fail _ => PEmpty\n\n@[implicit_reducible]\ndef RustEffect : Effect := {\n  I := RustEffect.Input\n  O := RustEffect.Output\n}\n\n-- We need Result to be irreducible outside this file (to not break metaprograms which normalize\n-- types), but reducible within. The `unseal` command only affects the local scope.\n@[irreducible]\ndef Result (\u03b1 : Type u) : Type u := ITree RustEffect \u03b1\nunseal Result\nattribute [local implicit_reducible] Result\n\ndef Result.ok {\u03b1} (a : \u03b1) : Result \u03b1 := .ret a\n\ndef Result.vis {\u03b1} (eff : RustEffect.Input) (k : RustEffect.Output eff \u2192 Result \u03b1) : Result \u03b1 := ITree.vis eff k\n\n/- `Result.fail` is deliberately kept opaque: we do *not* mark it with `simp`/`grind` so that it\n   never gets unfolded to a `Result.vis`. All the reasoning about `fail` should go through the\n   dedicated lemmas below (`bind_fail`, `spec_fail`, ...). -/\ndef Result.fail {\u03b1} (e : Error) : Result \u03b1 := Result.vis (.fail e) PEmpty.elim\n\ntheorem Result.fail_eq_vis {\u03b1} (e : Error) :\n  (Result.fail e : Result \u03b1) = Result.vis (.fail e) PEmpty.elim := rfl\n\ndef Result.div {\u03b1} : Result \u03b1 := ITree.div\n\ndef bind {\u03b1 : Type u} {\u03b2 : Type v} (x: Result \u03b1) (f: \u03b1 \u2192 Result \u03b2) : Result \u03b2 :=\n  ITree.bind x f\n\ninstance : Monad Result where\n  pure := .ok\n  bind := bind\n\n@[elab_as_elim, cases_eliminator]\ndef Result.cases {R}\n    {motive : Result R \u2192 Sort v}\n    (t : Result R)\n    (ret : \u2200 r, motive (Result.ok r))\n    (vis : \u2200 i k, motive (Result.vis i k))\n    (div :  motive (Result.div))\n    : motive t := ITree.cases ret div vis t"
+        }
+      ]
+    },
+    {
+      "topic": "A19",
+      "label": "Types and generics",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob_sha": "99697b0d63061dfc2edad677c8d19d2cadeeba6d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureTypes.ml",
+      "excerpts": [
+        {
+          "start": 11,
+          "end": 17,
+          "text": "(* We simply ignore the bound regions. Note that this messes up the de bruijn\n   ids in variables: variables inside `rb.binder_value` are nested deeper so\n   we should shift them before moving them out of their binder. We ignore this\n   because we don't yet handle complex binding situations in Aeneas. *)\nlet translate_region_binder (translate_value : 'a -> 'b)\n    (rb : 'a T.region_binder) : 'b =\n  translate_value rb.binder_value"
+        },
+        {
+          "start": 28,
+          "end": 53,
+          "text": "let translate_constant_expr_kind (span : span option) :\n    Types.constant_expr_kind -> const_generic = function\n  | CGlobal { id; _ } -> CgGlobal id\n  | CVar v -> CgVar v\n  | CBool v -> CgValue (VBool v)\n  | CInteger v -> CgValue (VScalar v)\n  | CChar v -> CgValue (VChar v)\n  | CFloat v -> CgValue (VFloat v)\n  | CStr v -> CgValue (VStr v)\n  | CByteStr v -> CgValue (VByteStr v)\n  | _ -> [%craise_opt_span] span \"Unsupported constant expression kind\"\n\nlet translate_literal_type (ty : V.scalar_type) : literal_type =\n  match ty with\n  | V.TInteger (Signed x) -> TInt x\n  | V.TInteger (Unsigned x) -> TUInt x\n  | V.TFloat x -> TFloat x\n  | V.TBool -> TBool\n  | V.TChar -> TChar\n\nlet translate_const_generic_param (span : span option)\n    (c : Types.const_generic_param) : const_generic_param =\n  match c.ty with\n  | TScalar ty ->\n      { index = c.index; name = c.name; ty = translate_literal_type ty }\n  | _ -> [%craise_opt_span] span \"Unsupported constant expression type\""
+        },
+        {
+          "start": 137,
+          "end": 198,
+          "text": "let rec translate_sty (span : Meta.span option) (ty : T.ty) : ty =\n  let translate = translate_sty in\n  match ty with\n  | T.TAdt { id; generics; builtin } -> (\n      let generics = translate_sgeneric_args span generics in\n      match builtin with\n      | None -> TAdt (TAdtId id, generics)\n      | Some aty -> (\n          match aty with\n          | T.TTuple ->\n              [%sanity_check_opt_span] span (generics.const_generics = []);\n              mk_simpl_tuple_ty generics.types\n          | T.TBox -> (\n              (* Eliminate the boxes *)\n              match generics.types with\n              | [ ty ] -> ty\n              | _ ->\n                  [%craise_opt_span] span\n                    \"Box/vec/option type with incorrect number of arguments\")\n          | T.TStr -> TAdt (TBuiltin TStr, generics)))\n  | T.TArray (ty, len, _) ->\n      let ty = translate span ty in\n      let len = translate_constant_expr_kind span len.kind in\n      TAdt\n        ( TBuiltin TArray,\n          { types = [ ty ]; const_generics = [ len ]; trait_refs = [] } )\n  | T.TSlice (ty, _) ->\n      let ty = translate span ty in\n      TAdt\n        ( TBuiltin TSlice,\n          { types = [ ty ]; const_generics = []; trait_refs = [] } )\n  | TVar var ->\n      TVar var\n      (* Note: the `de_bruijn_id`s are incorrect, see comment on `translate_region_binder` *)\n  | TScalar ty -> TLiteral (translate_literal_type ty)\n  | TNever -> TNever\n  | TRef (_, rty, _) -> translate span rty\n  | TRawPtr (ty, rkind) ->\n      let mut =\n        match rkind with\n        | RMut -> Mut\n        | RShared -> Const\n      in\n      let ty = translate span ty in\n      let generics = { types = [ ty ]; const_generics = []; trait_refs = [] } in\n      TAdt (TBuiltin (TRawPtr mut), generics)\n  | TTraitType (trait_ref, type_name, generics) ->\n      let trait_ref = translate_strait_ref span trait_ref in\n      [%cassert_opt_span] span\n        (generics = TypesUtils.empty_generic_args)\n        \"Unimplemented\";\n      TTraitType (trait_ref, type_name)\n  | TFnDef _ | TFnPtr _ ->\n      [%craise_opt_span] span \"Arrow types are not supported yet\"\n  | TDynTrait _ ->\n      [%craise_opt_span] span \"Dynamic trait types are not supported yet\"\n  | TError _ ->\n      [%craise_opt_span] span \"Found type error in the output of charon\"\n  | _ -> [%craise_opt_span] span (\"unsupported type: \" ^ T.show_ty ty)\n\nand translate_sgeneric_args (span : Meta.span option)\n    (generics : T.generic_args) : generic_args ="
+        },
+        {
+          "start": 274,
+          "end": 284,
+          "text": "let translate_type_decl_kind (span : Meta.span) (kind : T.type_decl_kind) :\n    type_decl_kind =\n  match kind with\n  | T.Struct fields -> Struct (translate_fields span fields)\n  | T.Enum variants -> Enum (translate_variants span variants)\n  | Alias _ -> [%craise] span \"type aliases should have been removed earlier\"\n  | T.Union _ | T.Opaque | T.TDeclError _ -> Opaque\n\n(** Translate a type definition from LLBC\n\n    Remark: this is not symbolic to pure but LLBC to pure. Still, I don't see"
+        },
+        {
+          "start": 397,
+          "end": 428,
+          "text": "  | TFnDef { binder_regions; binder_value = { kind; generics }; _ } -> (\n      [%cassert_opt_span] span (binder_regions = []) \"Unimplemented\";\n      let generics = translate_fwd_generic_args span decls_ctx generics in\n      match kind with\n      | T.Fun fid ->\n          let fdecl =\n            [%unwrap_opt_span] span\n              (FunDeclId.Map.find_opt fid decls_ctx.fun_ctx.fun_decls)\n              \"Could not lookup a function declaration\"\n          in\n          let sigs = translate_fun_sigs_from_decl decls_ctx fdecl in\n          let sg = sigs.sg in\n          (* Check that the function lives in the expected effect - otherwise we\n                 have to lift it *)\n          [%cassert_opt_span] span sg.fwd_info.effect_info.can_fail\n            \"Unimplemented\";\n          [%cassert_opt_span] span\n            (RegionGroupId.Map.for_all\n               (fun _ (e : fun_effect_info) -> not e.can_fail)\n               sg.back_effect_info)\n            \"Unimplemented\";\n          (* Substitute *)\n          let subst = make_subst_from_generics sg.generics generics in\n          ty_substitute subst sigs.ty\n      | T.TraitMethod _ -> [%craise_opt_span] span \"Unimplemented\")\n  | TFnPtr _ -> [%craise_opt_span] span \"Arrow types are not supported yet\"\n  | TDynTrait { binder } ->\n      let params, _predicates =\n        translate_generic_params span binder.binder_params\n      in\n      TDynTrait { params }\n  | TError _ ->"
+        }
+      ]
+    },
+    {
+      "topic": "A20",
+      "label": "Trait representation and generic limits",
+      "path": "src/extract/ExtractTypes.ml",
+      "blob_sha": "fb48b3a883e9643e069fa50e6d67a9d7c7b97d08",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractTypes.ml",
+      "excerpts": [
+        {
+          "start": 1330,
+          "end": 1382,
+          "text": "    if explicit = Implicit && backend () <> FStar then F.pp_print_string fmt \"{\"\n    else F.pp_print_string fmt \"(\"\n  in\n  let right_bracket (explicit : explicit) =\n    if explicit = Implicit && backend () <> FStar then F.pp_print_string fmt \"}\"\n    else F.pp_print_string fmt \")\"\n  in\n  let print_implicit_symbol (explicit : explicit) =\n    if explicit = Implicit && backend () = FStar then F.pp_print_string fmt \"#\"\n    else ()\n  in\n  let insert_req_space () =\n    match space with\n    | None -> F.pp_print_space fmt ()\n    | Some space -> insert_req_space fmt space\n  in\n  (* Print the type/const generic parameters *)\n  if all_params <> [] then begin\n    if use_forall then (\n      if use_forall_use_sep then (\n        insert_req_space ();\n        F.pp_print_string fmt \":\");\n      insert_req_space ();\n      F.pp_print_string fmt \"forall\");\n    if use_fun then (\n      insert_req_space ();\n      F.pp_print_string fmt \"fun\");\n    (* Small helper - we may need to split the parameters *)\n    let print_generics (type_params : (explicit * string) list)\n        (const_generics : (explicit * const_generic_param) list)\n        (trait_clauses : (explicit * trait_param) list) : unit =\n      (* Note that in HOL4 we don't print the type parameters. *)\n      if backend () <> HOL4 then (\n        (* Print the type parameters *)\n        if type_params <> [] then (\n          List.iter\n            (fun (expl, s) ->\n              (* ( *)\n              insert_req_space ();\n              left_bracket expl;\n              print_implicit_symbol expl;\n              F.pp_print_string fmt s;\n              F.pp_print_space fmt ();\n              F.pp_print_string fmt \":\";\n              F.pp_print_space fmt ();\n              (* Generic trait-method parameters are bound inside a structure\n                 field, where Lean can't infer a universe for [Type _]: they\n                 stay in [Type]. *)\n              F.pp_print_string fmt (type_keyword ~poly:(origin = Item) span);\n              (* ) *)\n              right_bracket expl)\n            type_params;\n          if use_arrows then ("
+        },
+        {
+          "start": 1625,
+          "end": 1644,
+          "text": "          if is_tuple_struct then \": Type :=\" else \":=\"\n      | Lean -> if is_tuple_struct then \":=\" else \"where\"\n      | HOL4 -> \"=\"\n    in\n    F.pp_print_string fmt eq)\n  else (\n    (* Otherwise print \": Type\", unless it is the HOL4 backend (in\n       which case we declare the type with `new_type`) *)\n    if use_forall then F.pp_print_string fmt \",\"\n    else (\n      F.pp_print_space fmt ();\n      F.pp_print_string fmt \":\");\n    F.pp_print_space fmt ();\n    F.pp_print_string fmt (type_keyword ~poly:false span));\n  (* Close the box for \"type TYPE_NAME (TYPE_PARAMS) =\" *)\n  F.pp_close_box fmt ();\n  (if extract_body then\n     match def.kind with\n     | Struct fields ->\n         if is_tuple_struct then"
+        }
+      ]
+    },
+    {
+      "topic": "A20",
+      "label": "Universe extraction",
+      "path": "src/extract/ExtractBase.ml",
+      "blob_sha": "b5a0ae765651af56f7798cc3f2ee065cb508c139",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractBase.ml",
+      "excerpts": [
+        {
+          "start": 1460,
+          "end": 1477,
+          "text": "\n    In Lean, [~poly:true] prints [Type _] so that generic type parameters are\n    universe-polymorphic: generic code sometimes needs to manipulate types which\n    live in universes higher than [Type]. For instance, adding effects to\n    [Result] can push it to a higher universe: an effect which\n    nondeterministically picks a value of any [Type] puts [Result] in [Type 1],\n    so a function type [A -> Result B] lives at least in [Type 1].\n\n    Use [~poly:false] where Lean can't infer the level.\n\n    TODO: move inside the formatter? *)\nlet type_keyword ~(poly : bool) (span : Meta.span) =\n  match backend () with\n  | FStar -> \"Type0\"\n  | Coq -> \"Type\"\n  | Lean -> if poly then \"Type _\" else \"Type\"\n  | HOL4 -> [%craise] span \"Unexpected\"\n"
+        }
+      ]
+    },
+    {
+      "topic": "A20",
+      "label": "Closure repair",
+      "path": "src/PrePasses.ml",
+      "blob_sha": "5e3f01a0d98799240b3103171ecd0a80e6cd2b19",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/PrePasses.ml",
+      "excerpts": [
+        {
+          "start": 1954,
+          "end": 1980,
+          "text": "(** Add missing outlives constraints for closure trait implementations.\n\n    Charon sometimes fails to properly retrieves the lifetime constraints\n    between the inputs and outputs of closures. This passes is a temporary\n    (ad-hoc) fix for the following situation:\n    {[\n      call_mut<'a, 'b, 'c>(v@1 : &'c mut closure<'a>) -> &'b T\n    ]}\n    that we update to:\n    {[\n      call_mut<'b, 'c>(v@1 : &'c mut closure<'a>) -> &'a T\n    ]}\n\n    Similarly we do:\n    {[\n      call_once<'a, 'b>(v@1 : mut closure<'a>) -> &'b T\n    ]}\n    that we update to:\n    {[\n      call_once<'b, 'c>(v@1 : mut closure<'a>) -> &'a T\n    ]}\n\n    See https://github.com/AeneasVerif/aeneas/issues/804 and\n    https://github.com/AeneasVerif/charon/issues/1040.\n\n    TODO: remove once the Charon issue is fixed. *)\nlet fix_closure_lifetimes (crate : crate) (f : fun_decl) : fun_decl ="
+        },
+        {
+          "start": 2016,
+          "end": 2054,
+          "text": "(** Fill in erased lifetime arguments on closure types in function signatures.\n\n    For example, the user may write:\n    {[\n      fn f<'a>(x: &'a u8) -> impl Fn() -> u8 + 'a {\n        move || *x\n      }\n    ]}\n    Charon resolves the opaque [impl Fn()] return type to the generated closure\n    type, but leaves its lifetime argument erased:\n    {[\n      struct f::closure<'a> {\n        _0 : &'a u8,\n      }\n\n      fn f<'a>(x : &'a u8) -> make::closure<'_>\n    ]}\n    The return type should instead be [f::closure<'a>].\n\n    We can repair the signature when it binds exactly one region parameter: in\n    that case every erased region argument of a closure type must refer to that\n    region. With several region parameters, we cannot determine which lifetime\n    the closure captured and leave the signature unchanged. Also note that the\n    closure type may be nested inside another type, such as\n    [Map<Range<i32>, f::closure<'_>>], so we have to be quite general.\n\n    This complements [fix_closure_lifetimes], which repairs the generated\n    closure methods rather than the function creating the closure.\n\n    See https://github.com/AeneasVerif/charon/issues/1040 and\n    https://github.com/AeneasVerif/aeneas/issues/1207.\n\n    TODO: remove once the Charon issue is fixed. *)\nlet fix_closure_signature_regions (crate : crate) (f : fun_decl) : fun_decl =\n  match f.generics.regions with\n  | [ rp ] ->\n      (* Only one region parameter: we can eventually fix *)\n      let region = RVar (Free rp.index) in\n      let updated = ref false in"
+        }
+      ]
+    },
+    {
+      "topic": "A20",
+      "label": "Callable and mutation traits",
+      "path": "backends/lean/Aeneas/Std/Core/Ops.lean",
+      "blob_sha": "a6a4e4371a863632bd4c333bc5ee2183c1ad6667",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Core/Ops.lean",
+      "excerpts": [
+        {
+          "start": 13,
+          "end": 35,
+          "text": "structure core.ops.index.Index (Self Idx Output : Type _) where\n  index : Self \u2192 Idx \u2192 Result Output\n\n@[rust_trait \"core::ops::index::IndexMut\" (parentClauses := [\"indexInst\"])]\nstructure core.ops.index.IndexMut (Self Idx Output : Type _) where\n  indexInst : Index Self Idx Output\n  index_mut : Self \u2192 Idx \u2192 Result (Output \u00d7 (Output \u2192 Self))\n\n@[rust_trait \"core::ops::deref::Deref\"]\nstructure core.ops.deref.Deref (Self Target : Type _) where\n  deref : Self \u2192 Result Target\n\n@[rust_trait \"core::ops::deref::DerefMut\" (parentClauses := [\"derefInst\"])]\nstructure core.ops.deref.DerefMut (Self Target : Type _) where\n  derefInst : Deref Self Target\n  deref_mut : Self \u2192 Result (Target \u00d7 (Target \u2192 Self))\n\n/-- Trait instance -/\n@[expose, rust_trait_impl \"core::ops::deref::Deref<Box<@T>, @T>\" (keepParams := [true, false])]\ndef core.ops.deref.DerefBoxInst (T : Type _) :\n  core.ops.deref.Deref T T := {\n  deref x := ok (alloc.boxed.Box.deref x)\n}"
+        },
+        {
+          "start": 58,
+          "end": 100,
+          "text": "@[rust_trait \"core::ops::function::FnOnce\"]\nstructure core.ops.function.FnOnce (Self : Type u) (Args : Type v) (Output : Type w) where\n  call_once : Self \u2192 Args \u2192 Result Output\n\n@[rust_trait \"core::ops::function::FnMut\" (parentClauses := [\"FnOnceInst\"])]\nstructure core.ops.function.FnMut (Self : Type u) (Args : Type v) (Output : Type w) where\n  FnOnceInst : core.ops.function.FnOnce Self Args Output\n  call_mut : Self \u2192 Args \u2192 Result (Output \u00d7 Self)\n\n@[rust_trait \"core::ops::function::Fn\" (parentClauses := [\"FnMutInst\"])]\nstructure core.ops.function.Fn (Self : Type u) (Args : Type v) (Output : Type w) where\n  FnMutInst : core.ops.function.FnMut Self Args Output\n  call : Self \u2192 Args \u2192 Result Output\n\ndef BuiltinFnOnce (Inputs : Type u) (Outputs : Type v) : core.ops.function.FnOnce (Inputs \u2192 Result Outputs) Inputs Outputs := {\n  call_once f x := f x\n}\n\ndef BuiltinFnMut (Inputs : Type u) (Outputs : Type v) : core.ops.function.FnMut (Inputs \u2192 Result Outputs) Inputs Outputs := {\n  FnOnceInst := BuiltinFnOnce Inputs Outputs\n  call_mut f x := do\n    bind (f x) \u03bb v =>\n    ok (v, f)\n}\n\ndef BuiltinFn (Inputs : Type u) (Outputs : Type v) : core.ops.function.Fn (Inputs \u2192 Result Outputs) Inputs Outputs := {\n  FnMutInst := BuiltinFnMut Inputs Outputs\n  call f x := f x\n}\n\n@[rust_trait \"core::ops::try_trait::FromResidual\"]\nstructure core.ops.try_trait.FromResidual (Self : Type u) (R : Type v) where\n  from_residual : R \u2192 Result Self\n\n@[rust_type \"core::ops::control_flow::ControlFlow\"]\ninductive core.ops.control_flow.ControlFlow (B : Type _) (C : Type _) where\n| Continue : C \u2192 core.ops.control_flow.ControlFlow B C\n| Break : B \u2192 core.ops.control_flow.ControlFlow B C\n\n@[rust_trait \"core::ops::try_trait::Try\" (parentClauses := [\"FromResidualInst\"])]\nstructure core.ops.try_trait.Try (Self Output Residual : Type _) where\n  FromResidualInst : core.ops.try_trait.FromResidual Self Residual\n  from_output : Output \u2192 Result Self"
+        }
+      ]
+    },
+    {
+      "topic": "A22",
+      "label": "Drop/panic interpretation",
+      "path": "src/interp/InterpStatements.ml",
+      "blob_sha": "1f75159b23df8bee7ae2b613b4538c53f98420c4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpStatements.ml",
+      "excerpts": [
+        {
+          "start": 21,
+          "end": 45,
+          "text": "(** Drop a value at a given place - TODO: factorize this with [assign_to_place]\n*)\nlet drop_value (config : config) (span : Meta.span) (p : place) : cm_fun =\n fun ctx ->\n  log#ltrace\n    (lazy\n      (\"drop_value: place: \" ^ place_to_string ctx p ^ \"\\n- Initial context:\\n\"\n      ^ eval_ctx_to_string ~span:(Some span) ctx));\n  (* Note that we use [Write], not [Move]: we allow to drop values *below* borrows *)\n  let access = Write in\n  (* First make sure we can access the place, by ending loans or expanding\n   * symbolic values along the path, for instance *)\n  let ctx, cc = update_ctx_along_read_place config span access p ctx in\n  (* Prepare the place (by ending the outer loans *at* the place). *)\n  let v, ctx, cc = comp2 cc (prepare_lplace config span p ctx) in\n  (* Replace the value with {!Bottom} *)\n  let ctx =\n    (* Move the value at destination (that we will overwrite) to a dummy variable\n     * to preserve the borrows it may contain *)\n    let _, mv = InterpPaths.read_place span access p ctx in\n    let dummy_id = ctx.fresh_dummy_var_id () in\n    let ctx = ctx_push_dummy_var ctx dummy_id mv in\n    (* Update the destination to \u22a5 *)\n    let nv = { v with value = VBottom } in\n    let ctx = write_place span access p nv ctx in"
+        },
+        {
+          "start": 760,
+          "end": 781,
+          "text": "  | Drop (p, _, _, _) ->\n      if !Config.drop_as_no_op then\n        ([ (ctx, Unit) ], cf_singleton __FILE__ __LINE__ st.span)\n      else\n        let ctx, cc = drop_value config st.span p ctx in\n        ([ (ctx, Unit) ], cc_singleton __FILE__ __LINE__ st.span cc)\n  | StorageDead local ->\n      let p = mk_place_from_var_id ctx st.span local in\n      let ctx, cc = drop_value config st.span p ctx in\n      ([ (ctx, Unit) ], cc_singleton __FILE__ __LINE__ st.span cc)\n  | Assert (assertion, _on_failure, _) ->\n      let (ctx, res), cc = eval_assertion config st.span assertion ctx in\n      ([ (ctx, res) ], cc_singleton __FILE__ __LINE__ st.span cc)\n  | Call (call, _) -> eval_function_call config st.span call ctx\n  | Panic _ | UnwindTerminate | UndefinedBehavior ->\n      (* Evaluate to a panic only if the execution is concrete, otherwise we stop\n         evaluating there and synthesize a [panic] node in the symbolic AST. *)\n      if config.mode = ConcreteMode then\n        ([ (ctx, Panic) ], cf_singleton __FILE__ __LINE__ st.span)\n      else ([], cf_empty __FILE__ __LINE__ st.span SA.Panic)\n  | Return -> ([ (ctx, Return) ], cf_singleton __FILE__ __LINE__ st.span)\n  | UnwindResume -> [%craise] st.span \"unwinding is not supported by Aeneas\""
+        }
+      ]
+    },
+    {
+      "topic": "A22",
+      "label": "Defaults and frontend flags",
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Config.ml",
+      "excerpts": [
+        {
+          "start": 604,
+          "end": 627,
+          "text": "(** When extracting a trait impl, filter out the methods which are absent from\n    the model of the trait declaration (its builtin info).\n\n    Trait declarations which have no model are not affected: all their methods\n    are extracted. This is useful for the traits of the standard library, whose\n    models often list only a subset of the methods of the original Rust trait.\n    Without this option, the extracted impls may contain fields which do not\n    exist in the model, leading to code which does not typecheck. *)\nlet filter_trait_impl_methods = ref false\n\n(** Do not attempt to extract loops to recursive functions *)\nlet no_recursive_loops = ref false\n\n(** This is for Lean: the value we should initialize `maxHeartBeats` to at the\n    top of the generated files *)\nlet max_heartbeats = ref 1000000\n\n(** This is for Lean: the value we should initialize `maxRecDepth` to at the top\n    of the generated files *)\nlet max_recdepth = ref 2048\n\n(** If [false], evaluate [drop(p)] as [p := bottom]. Otherwise, evaluate it as a\n    no-op (which means that we do not borrow-check the drops). *)\nlet drop_as_no_op = ref true"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Arithmetic representation",
+      "path": "backends/lean/Aeneas/Std/Scalar/Core.lean",
+      "blob_sha": "972f67c95458ac4269468f6b004b2bc9df1aa9ab",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/Core.lean",
+      "excerpts": [
+        {
+          "start": 31,
+          "end": 80,
+          "text": "inductive UScalarTy where\n| Usize\n| U8\n| U16\n| U32\n| U64\n| U128\nderiving BvEnumToBitVec\n\n/-- Kinds of signed integers -/\ninductive IScalarTy where\n| Isize\n| I8\n| I16\n| I32\n| I64\n| I128\nderiving BvEnumToBitVec\n\n@[expose, implicit_reducible]\ndef UScalarTy.numBits (ty : UScalarTy) : Nat :=\n  match ty with\n  | Usize => System.Platform.numBits\n  | U8 => 8\n  | U16 => 16\n  | U32 => 32\n  | U64 => 64\n  | U128 => 128\n\n@[expose, implicit_reducible]\ndef IScalarTy.numBits (ty : IScalarTy) : Nat :=\n  match ty with\n  | Isize => System.Platform.numBits\n  | I8 => 8\n  | I16 => 16\n  | I32 => 32\n  | I64 => 64\n  | I128 => 128\n\n/-- Unsigned integer -/\nstructure UScalar (ty : UScalarTy) where\n  /- The internal representation is a bit-vector -/\n  bv : BitVec ty.numBits\nderiving Repr, BEq, DecidableEq\n\n@[expose, implicit_reducible] def UScalar.val {ty} (x : UScalar ty) : \u2115 := x.bv.toNat\n\n/-- Signed integer -/\nstructure IScalar (ty : IScalarTy) where\n  /- The internal representation is a bit-vector -/"
+        },
+        {
+          "start": 568,
+          "end": 616,
+          "text": "@[simp] abbrev UScalar.inBounds (ty : UScalarTy) (x : Nat) : Prop :=\n  x < 2^ty.numBits\n\n@[simp] abbrev IScalar.inBounds (ty : IScalarTy) (x : Int) : Prop :=\n  - 2^(ty.numBits - 1) \u2264 x \u2227 x < 2^(ty.numBits - 1)\n\n@[simp] abbrev UScalar.check_bounds (ty : UScalarTy) (x : Nat) : Bool :=\n  x < 2^ty.numBits\n\n@[simp] abbrev IScalar.check_bounds (ty : IScalarTy) (x : Int) : Bool :=\n  -2^(ty.numBits - 1) \u2264 x \u2227 x < 2^(ty.numBits - 1)\n\ntheorem UScalar.check_bounds_imp_inBounds {ty : UScalarTy} {x : Nat}\n  (h: UScalar.check_bounds ty x) :\n  UScalar.inBounds ty x := by\n  simp at *; apply h\n\ntheorem UScalar.check_bounds_eq_inBounds (ty : UScalarTy) (x : Nat) :\n  UScalar.check_bounds ty x \u2194 UScalar.inBounds ty x := by\n  constructor <;> intro h\n  . apply (check_bounds_imp_inBounds h)\n  . simp_all\n\ntheorem IScalar.check_bounds_imp_inBounds {ty : IScalarTy} {x : Int}\n  (h: IScalar.check_bounds ty x) :\n  IScalar.inBounds ty x := by\n  simp at *; apply h\n\ntheorem IScalar.check_bounds_eq_inBounds (ty : IScalarTy) (x : Int) :\n  IScalar.check_bounds ty x \u2194 IScalar.inBounds ty x := by\n  constructor <;> intro h\n  . apply (check_bounds_imp_inBounds h)\n  . simp_all\n\n@[expose] def UScalar.tryMkOpt (ty : UScalarTy) (x : Nat) : Option (UScalar ty) :=\n  if h:UScalar.check_bounds ty x then\n    some (UScalar.ofNatCore x (UScalar.check_bounds_imp_inBounds h))\n  else none\n\n@[expose] def UScalar.tryMk (ty : UScalarTy) (x : Nat) : Result (UScalar ty) :=\n  Result.ofOption (tryMkOpt ty x) integerOverflow\n\n@[expose] def IScalar.tryMkOpt (ty : IScalarTy) (x : Int) : Option (IScalar ty) :=\n  if h:IScalar.check_bounds ty x then\n    some (IScalar.ofIntCore x (IScalar.check_bounds_imp_inBounds h))\n  else none\n\n@[expose] def IScalar.tryMk (ty : IScalarTy) (x : Int) : Result (IScalar ty) :=\n  Result.ofOption (tryMkOpt ty x) integerOverflow"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Add",
+      "path": "backends/lean/Aeneas/Std/Scalar/Ops/Add.lean",
+      "blob_sha": "ba4fc07e68d8db5d2ee5b466e4dedbff0740ddc0",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/Ops/Add.lean",
+      "excerpts": [
+        {
+          "start": 15,
+          "end": 26,
+          "text": "-/\ndef UScalar.add {ty : UScalarTy} (x y : UScalar ty) : Result (UScalar ty) :=\n  UScalar.tryMk ty (x.val + y.val)\n\ndef IScalar.add {ty : IScalarTy} (x y : IScalar ty) : Result (IScalar ty) :=\n  IScalar.tryMk ty (x.val + y.val)\n\ndef UScalar.try_add {ty : UScalarTy} (x y : UScalar ty) : Option (UScalar ty) :=\n  Option.ofResult (add x y)\n\ndef IScalar.try_add {ty : IScalarTy} (x y : IScalar ty) : Option (IScalar ty) :=\n  Option.ofResult (add x y)"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Division",
+      "path": "backends/lean/Aeneas/Std/Scalar/Ops/Div.lean",
+      "blob_sha": "6b7b050507297c4164ee86f567f31a8314b9b5dd",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/Ops/Div.lean",
+      "excerpts": [
+        {
+          "start": 17,
+          "end": 34,
+          "text": "@[expose] def UScalar.div {ty : UScalarTy} (x y : UScalar ty) : Result (UScalar ty) :=\n  if y.bv != 0 then ok \u27e8 BitVec.udiv x.bv y.bv \u27e9 else fail divisionByZero\n\n@[expose] def IScalar.div {ty : IScalarTy} (x y : IScalar ty): Result (IScalar ty) :=\n  if y.val != 0 then\n    -- There can be an overflow if `x` is equal to the lower bound and `y` to `-1`\n    if \u00ac (x.val = IScalar.min ty && y.val = -1) then ok \u27e8 BitVec.sdiv x.bv y.bv \u27e9\n    else fail integerOverflow\n  else fail divisionByZero\n\ndef UScalar.try_div {ty : UScalarTy} (x y : UScalar ty) : Option (UScalar ty) :=\n  Option.ofResult (div x y)\n\ndef IScalar.try_div {ty : IScalarTy} (x y : IScalar ty): Option (IScalar ty) :=\n  Option.ofResult (div x y)\n\ninstance {ty} : HDiv (UScalar ty) (UScalar ty) (Result (UScalar ty)) where\n  hDiv x y := UScalar.div x y"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Checked arithmetic",
+      "path": "backends/lean/Aeneas/Std/Scalar/CheckedOps/Add.lean",
+      "blob_sha": "c89c78dac53759073d7e6fd6545cef4de39f5e22",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/CheckedOps/Add.lean",
+      "excerpts": [
+        {
+          "start": 15,
+          "end": 26,
+          "text": "def core.num.checked_add_UScalar {ty} (x y : UScalar ty) : Option (UScalar ty) :=\n  Option.ofResult (x + y)\n\nuscalar def \u00ab%S\u00bb.checked_add (x y : \u00ab%S\u00bb) : Option \u00ab%S\u00bb := core.num.checked_add_UScalar x y\n\n/- [core::num::{T}::checked_add] -/\ndef core.num.checked_add_IScalar {ty} (x y : IScalar ty) : Option (IScalar ty) :=\n  Option.ofResult (x + y)\n\niscalar def \u00ab%S\u00bb.checked_add (x y : \u00ab%S\u00bb) : Option \u00ab%S\u00bb := core.num.checked_add_IScalar x y\n\n/-!"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Wrapping arithmetic",
+      "path": "backends/lean/Aeneas/Std/Scalar/WrappingOps/Add.lean",
+      "blob_sha": "92c6d3a4f466bd997858e4433aff7b5051bbf4d0",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/WrappingOps/Add.lean",
+      "excerpts": [
+        {
+          "start": 15,
+          "end": 31,
+          "text": "\n@[expose] def IScalar.wrapping_add {ty} (x y : IScalar ty) : IScalar ty := \u27e8 x.bv + y.bv \u27e9\n\nuscalar @[expose, step_pure_def]\ndef \u00ab%S\u00bb.wrapping_add (x y : \u00ab%S\u00bb) : \u00ab%S\u00bb := @UScalar.wrapping_add UScalarTy.\u00ab%S\u00bb x y\n\niscalar @[expose, step_pure_def]\ndef \u00ab%S\u00bb.wrapping_add (x y : \u00ab%S\u00bb) : \u00ab%S\u00bb := @IScalar.wrapping_add IScalarTy.\u00ab%S\u00bb x y\n\n/- [core::num::{_}::wrapping_add] -/\nuscalar @[expose, step_pure_def]\ndef core.num.\u00ab%S\u00bb.wrapping_add : \u00ab%S\u00bb \u2192 \u00ab%S\u00bb \u2192 \u00ab%S\u00bb := @UScalar.wrapping_add UScalarTy.\u00ab%S\u00bb\n\n/- [core::num::{_}::wrapping_add] -/\niscalar @[expose, step_pure_def]\ndef core.num.\u00ab%S\u00bb.wrapping_add : \u00ab%S\u00bb \u2192 \u00ab%S\u00bb \u2192 \u00ab%S\u00bb  := @IScalar.wrapping_add IScalarTy.\u00ab%S\u00bb\n"
+        }
+      ]
+    },
+    {
+      "topic": "A21",
+      "label": "Overflowing arithmetic",
+      "path": "backends/lean/Aeneas/Std/Scalar/OverflowingOps/Add.lean",
+      "blob_sha": "37effc07d16127ba445537108497bf87f4bbd380",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Scalar/OverflowingOps/Add.lean",
+      "excerpts": [
+        {
+          "start": 14,
+          "end": 21,
+          "text": "\ndef UScalar.overflowing_add {ty} (x y : UScalar ty) : UScalar ty \u00d7 Bool :=\n  (\u27e8x.bv + y.bv\u27e9, BitVec.uaddOverflow x.bv y.bv)\n\ndef IScalar.overflowing_add {ty} (x y : IScalar ty) : IScalar ty \u00d7 Bool :=\n  (\u27e8x.bv + y.bv\u27e9, BitVec.saddOverflow x.bv y.bv)\n\nuscalar @[step_pure_def]"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Array",
+      "path": "backends/lean/Aeneas/Std/Array/Array.lean",
+      "blob_sha": "192ff0f5a0b47e0ab34b7ef11f22ee06b2c9a58f",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Array/Array.lean",
+      "excerpts": [
+        {
+          "start": 21,
+          "end": 43,
+          "text": "-/\n\n-- Note that we can't define `Array` as a subtype of `List` (that is:\n-- `{ l : List \u03b1 // l.length = n.val }`): Lean would then reject the inductive definitions\n-- which use `Array` in a positive position.\n-- See the explanations in `Aeneas/Data/ListN.lean`, as well as the github issue:\n-- https://github.com/AeneasVerif/aeneas/issues/1138.\nstructure Array (\u03b1 : Type u) (n : Usize) where\n  list : ListN \u03b1 n.val\nderiving BEq, ReflBEq, LawfulBEq, DecidableEq\n\n@[expose, coe]\ndef Array.val {\u03b1 n} (a : Array \u03b1 n) : List \u03b1 := a.list.toList\n\n@[simp, scalar_tac_simps, simp_scalar_safe, simp_lists_safe, grind =, agrind =]\ntheorem Array.property {\u03b1 n} (s : Array \u03b1 n) : s.val.length = n.val := by\n  simp [Array.val, ListN_length]\n\n@[expose] def Array.from {\u03b1 n} (l : List \u03b1) (h : l.length = n.val) : Array \u03b1 n :=\n  {\n    list := cast (congrArg (ListN \u03b1) h) (.fromList l)\n  }\n"
+        },
+        {
+          "start": 98,
+          "end": 104,
+          "text": "@[expose] def Array.make {\u03b1 : Type u} (n : Usize) (init : List \u03b1) (hl : init.length = n.val := by simp) :\n  Array \u03b1 n := .from init (by apply hl)\n\n@[simp, simp_lists_safe, grind =, agrind =]\ntheorem Array.make_val {\u03b1 : Type u} (n : Usize) (init : List \u03b1) (hl : init.length = n.val) :\n  (Array.make n init hl).val = init := by\n  simp [Array.make]"
+        },
+        {
+          "start": 159,
+          "end": 167,
+          "text": "@[expose] def Array.index_usize {\u03b1 : Type u} {n : Usize} (v: Array \u03b1 n) (i: Usize) : Result \u03b1 :=\n  match v[i]? with\n  | none => fail .arrayOutOfBounds\n  | some x => ok x\n\n-- For initialization\n@[expose, rust_fun \"core::array::repeat\" -canFail -lift (keepTraitClauses := [false])]\ndef Array.repeat {\u03b1 : Type u} (n : Usize) (x : \u03b1) : Array \u03b1 n :=\n  .from (List.replicate n.val x) (by simp_all)"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Slice storage",
+      "path": "backends/lean/Aeneas/Std/SliceDef.lean",
+      "blob_sha": "11778d8aabd5ca6ead3a2124d669ca3dc6a52488",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/SliceDef.lean",
+      "excerpts": [
+        {
+          "start": 10,
+          "end": 35,
+          "text": "-- Note that we can't define `Slice` as a subtype of `List` (that is:\n-- `{ l : List \u03b1 // l.length \u2264 Usize.max }`): Lean would then reject the inductive\n-- definitions which use `Slice` in a positive position.\n-- See the explanations in `Aeneas/Data/ListN.lean`, as well as the corresponding\n-- github issue: https://github.com/AeneasVerif/aeneas/issues/1138.\nstructure Slice (\u03b1 : Type u) where\n  leng : Nat\n  list : ListN \u03b1 leng\n  bound : leng \u2264 Usize.max\nderiving BEq, ReflBEq, LawfulBEq, DecidableEq\n\n@[expose, coe]\ndef Slice.val {\u03b1} (s : Slice \u03b1) : List \u03b1 := s.list.toList\n\n@[simp, scalar_tac s.val]\ntheorem Slice.property {\u03b1} (s : Slice \u03b1) : s.val.length \u2264 Usize.max := by\n  simp [Slice.val, ListN_length]\n  apply s.bound\n\ngrind_pattern Slice.property => s.val\ngrind_pattern [agrind] Slice.property => s.val\n\n@[expose] def Slice.from {\u03b1} (l : List \u03b1) (h : l.length \u2264 Usize.max) : Slice \u03b1 :=\n  {\n    leng := l.length\n    list := .fromList l"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Vec",
+      "path": "backends/lean/Aeneas/Std/Vec.lean",
+      "blob_sha": "2094d4e8cbcc3547cb2e971c797898f50643fcad",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Vec.lean",
+      "excerpts": [
+        {
+          "start": 25,
+          "end": 45,
+          "text": "-- Note that `Vec` has to be a `structure` wrapping a `Slice`: defining it as an alias\n-- (`def Vec (\u03b1 : Type u) := Slice \u03b1`, or even an `abbrev`) introduces positivity\n-- issue, because the kernel does not unfold the alias when checking that a recursive\n-- occurrence is legal. See the explanations in `Aeneas/Data/ListN.lean`, as well\n-- as https://github.com/AeneasVerif/aeneas/issues/1138.\n@[rust_type \"alloc::vec::Vec\"]\nstructure Vec (\u03b1 : Type u) where\n  slice : Slice \u03b1\nderiving BEq, ReflBEq, LawfulBEq, DecidableEq\n\n@[expose, coe]\ndef Vec.val {\u03b1} (v : Vec \u03b1) : List \u03b1 := (Slice.val v.slice)\n\n/-- We need this to coerce vectors to lists without marking `Vec` as reducible.\n    Also not that we *do not* want to mark `Vec` as reducible: it triggers issues.\n-/\ninstance (\u03b1 : Type u) : CoeOut (Vec \u03b1) (List \u03b1) where\n  coe := \u03bb v => v.val\n\n@[expose] def Vec.from {\u03b1} (l : List \u03b1) (h : l.length \u2264 Usize.max) : Vec \u03b1 := {slice := Slice.from l h}\n"
+        },
+        {
+          "start": 155,
+          "end": 186,
+          "text": "@[expose, irreducible, rust_fun \"alloc::vec::{alloc::vec::Vec<@T>}::push\" (keepParams := [true,false])]\ndef Vec.push {\u03b1 : Type u} (v : Vec \u03b1) (x : \u03b1) : Result (Vec \u03b1)\n  :=\n  let nlen := List.length v.val + 1\n  if h : nlen \u2264 U32.max || nlen \u2264 Usize.max then\n    ok (.from (List.concat v.val x) (by simp; scalar_tac))\n  else\n    fail maximumSizeExceeded\n\n@[step]\ntheorem Vec.push_spec {\u03b1 : Type u} (v : Vec \u03b1) (x : \u03b1) (h : v.val.length < Usize.max) :\n  v.push x \u2983 v1 =>\n  v1.val = v.val ++ [x] \u2984 := by\n  unfold push; grind\n\n@[expose, rust_fun \"alloc::vec::{alloc::vec::Vec<@T>}::insert\" (keepParams := [true, false])]\ndef Vec.insert {\u03b1 : Type u} (v: Vec \u03b1) (i: Usize) (x: \u03b1) : Result (Vec \u03b1) :=\n  if i.val < v.length then\n    if h : v.length < Usize.max then\n      ok (.from (v.val.insertIdx i x)\n        (List.length_insertIdx_le_succ.trans (Nat.succ_le_of_lt h)))\n    else\n      fail maximumSizeExceeded\n  else\n    fail arrayOutOfBounds\n\n@[step]\ntheorem Vec.insert_spec {\u03b1 : Type u} (v: Vec \u03b1) (i: Usize) (x: \u03b1)\n  (hbound : i.val < v.length)\n  (hsize : v.length < Usize.max) :\n  v.insert i x \u2983 nv => nv.val = v.val.insertIdx i x \u2984 := by\n  simp [insert, *]"
+        },
+        {
+          "start": 219,
+          "end": 246,
+          "text": "@[expose] def Vec.index_mut_usize {\u03b1 : Type u} (v: Vec \u03b1) (i: Usize) :\n  Result (\u03b1 \u00d7 (\u03b1 \u2192 Vec \u03b1)) :=\n  do let x \u2190 Vec.index_usize v i\n     ok (x, Vec.set v i)\n\n@[step]\ntheorem Vec.index_mut_usize_spec {\u03b1 : Type u} (v: Vec \u03b1) (i: Usize)\n  (hbound : i.val < v.length) :\n  v.index_mut_usize i \u2983 x y => x = v.val[i.val] \u2227 y = v.set i \u2984 := by\n  simp only [index_mut_usize]\n  apply spec_bind (index_usize_spec v i hbound)\n  intro x hx\n  simp [hx]\n\n@[expose, rust_fun \"alloc::vec::{core::ops::index::Index<alloc::vec::Vec<@T>, @I, @O>}::index\"\n  (keepParams := [true,true,false, true])]\ndef Vec.index {T I Output : Type _} (inst : core.slice.index.SliceIndex I (Slice T) Output)\n  (self : Vec T) (i : I) : Result Output :=\n  inst.index i self.slice\n\n@[expose, rust_fun \"alloc::vec::{core::ops::index::IndexMut<alloc::vec::Vec<@T>, @I, @O>}::index_mut\"\n  (keepParams := [true,true,false, true])]\ndef Vec.index_mut {T I Output : Type _} (inst : core.slice.index.SliceIndex I (Slice T) Output)\n  (self : Vec T) (i : I) :\n  Result (Output \u00d7 (Output \u2192 Vec T)) := do\n  let \u27e8o, back\u27e9 \u2190 inst.index_mut i self.slice\n  pure \u27e8o, fun o' => {slice := back o'}\u27e9\n"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Trait laws",
+      "path": "backends/lean/Aeneas/Std/Core/Cmp.lean",
+      "blob_sha": "509bef8d2d807cca4fee977005c35264e40279b4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Core/Cmp.lean",
+      "excerpts": [
+        {
+          "start": 14,
+          "end": 23,
+          "text": "structure core.cmp.PartialEq (Self : Type _) (Rhs : Type _) where\n  eq : Self \u2192 Rhs \u2192 Result Bool\n  ne : Self \u2192 Rhs \u2192 Result Bool := fun self other => do ok (not (\u2190 eq self other))\n\n@[rust_trait \"core::cmp::Eq\" (parentClauses := [\"partialEqInst\"])]\nstructure core.cmp.Eq (Self : Type _) where\n  partialEqInst : core.cmp.PartialEq Self Self\n  assert_fields_are_eq (_ : Self) : Result Unit := .ok ()\n\n@[expose, simp, trait_default, rust_fun \"core::cmp::Eq::assert_fields_are_eq\"]"
+        },
+        {
+          "start": 42,
+          "end": 51,
+          "text": "  (eq : T \u2192 T \u2192 Result Bool) (self : T) (other : T)\n  (hEq : eq self other \u2983 b => b \u2194 (self = other) \u2984) :\n  core.cmp.PartialEq.ne.default eq self other \u2983 b => b \u2194 (self \u2260 other) \u2984 := by\n  unfold core.cmp.PartialEq.ne.default\n  apply WP.spec_bind hEq\n  intro b hb\n  simp only [WP.spec_ok]\n  cases b <;> simp_all\n\n/-- Step spec for the homogeneous `PartialEq::ne`. -/"
+        },
+        {
+          "start": 165,
+          "end": 176,
+          "text": "@[rust_trait \"core::cmp::Ord\" (parentClauses := [\"eqInst\", \"partialOrdInst\"])]\nstructure core.cmp.Ord (Self : Type _) where\n  eqInst : core.cmp.Eq Self\n  partialOrdInst : core.cmp.PartialOrd Self Self\n  cmp : Self \u2192 Self \u2192 Result Ordering\n  max : Self \u2192 Self \u2192 Result Self :=\n    core.cmp.Ord.max_body partialOrdInst.lt\n  min : Self \u2192 Self \u2192 Result Self :=\n    core.cmp.Ord.min_body partialOrdInst.lt\n  clamp : Self \u2192 Self \u2192 Self \u2192 Result Self :=\n    core.cmp.Ord.clamp_body partialOrdInst.le partialOrdInst.lt partialOrdInst.gt\n"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Registry contract",
+      "path": "backends/lean/Aeneas/Extract/Extract.lean",
+      "blob_sha": "d922887ec355369413357219dd4df269dac2c659",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Extract/Extract.lean",
+      "excerpts": [
+        {
+          "start": 90,
+          "end": 109,
+          "text": "structure FunInfo where\n  /-- The name to use for the extraction -/\n  extract : Option String := none\n  /-- We might want to filter some of the function parameters, for instance\n      the `Allocator` parameter, which we actually don't use. -/\n  keepParams : Option (List Bool) := none\n  /-- Similar to `keepParams`, but for trait clauses.\n\n    We generally use this to filter clauses of the shape `A : Allocator` (as we filter\n    the type parameters corresponding to the allocators).\n  -/\n  keepTraitClauses : Option (List Bool) := none\n  canFail : Bool := true\n  /-- If the function can not fail, should we still lift it to the [Result]\n      monad? This can make reasonings easier, as we can then use [step]\n      to do proofs in a Hoare-Logic style, rather than equational reasonings. -/\n  lift : Bool := true\n  /-- If this is a trait method: does this method have a default\n      implementation? If yes, we might want to register it as well. -/\n  hasDefault : Bool := false"
+        },
+        {
+          "start": 612,
+          "end": 620,
+          "text": "- `keepParams`: see the comment for the `rust_type` attribute. This allows to indicate that some\n  type parameters in Rust are ignored in the Lean model.\n- `canFail`: `true` by default, indicates whether the function lives in the `Result` monad or not.\n- `lift`: `true` by default, indicates whether the function should be lifted to the `Result` monad\n  in the generated code, if the function can not fail (i.e., `canFail = false`).\n  If we lift the function, Aeneas generates code like this:\n  ```\n  let y \u2190 (\u2191(foo x) : Result ...)\n  ..."
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Target assumptions",
+      "path": "backends/lean/Aeneas/Std/Target.lean",
+      "blob_sha": "2ed084207c82fdff39c81b8912e1377a17223c82",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/Target.lean",
+      "excerpts": [
+        {
+          "start": 15,
+          "end": 32,
+          "text": "/-- Returns the compilation target as a string.\n\n    Used by multi-target dispatch: nothing meaningful can be deduced from\n    its output. -/\naxiom get_target : Result Str\n\n@[step]\naxiom get_target.spec : get_target \u2983 fun _ => True \u2984\n\n/-- `target_feature_enabled feat` is `true` if the target feature `feat` (for\n    instance `\"avx2\"`) is available on the machine executing the code.\n\n    Introduced by the `-feature-gates` option: the functions annotated with\n    `#[target_feature(enable = \"feat\")]` assert `target_feature_enabled \"feat\"` at\n    the beginning of their body. -/\naxiom target_feature_enabled : Str \u2192 Bool\n\nend Aeneas.Std"
+        }
+      ]
+    },
+    {
+      "topic": "A23",
+      "label": "Raw pointer boundary",
+      "path": "backends/lean/Aeneas/Std/RawPtr.lean",
+      "blob_sha": "4ea6083c3a71efcaa725be28a8a305fc1e6c137f",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/Aeneas/Std/RawPtr.lean",
+      "excerpts": [
+        {
+          "start": 10,
+          "end": 17,
+          "text": "-- We don't really use raw pointers for now\nstructure RawPtr (T : Type _) (M : Mutability) where\n  v : T\n\nabbrev MutRawPtr (T : Type _) := RawPtr T .Mut\nabbrev ConstRawPtr (T : Type _) := RawPtr T .Const\n\ninductive ScalarKind where"
+        },
+        {
+          "start": 28,
+          "end": 32,
+          "text": "  isScalar := by simp\n\n-- TODO: we can properly define this once we have separation logic\ndef RawPtr.cast_scalar {T} {M} (T' : Type) (M' : Mutability) [IsScalar T] [IsScalar T'] (_ : RawPtr T M) :\n  Result (RawPtr T' M') :="
+        }
+      ]
+    }
+  ],
+  "fetches": [
+    {
+      "path": "README.md",
+      "blob_sha": "26e67b4fa713bbf10f6d5ece743aacd638d15ce4",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob_sha": "99697b0d63061dfc2edad677c8d19d2cadeeba6d",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/extract/ExtractTypes.ml",
+      "blob_sha": "fb48b3a883e9643e069fa50e6d67a9d7c7b97d08",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/extract/ExtractBuiltinLean.ml",
+      "blob_sha": "b243296bdd00df5fb88c995058dae0a4c72764d8",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/PrePasses.ml",
+      "blob_sha": "5e3f01a0d98799240b3103171ecd0a80e6cd2b19",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Core/Ops.lean",
+      "blob_sha": "a6a4e4371a863632bd4c333bc5ee2183c1ad6667",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Scalar.lean",
+      "blob_sha": null,
+      "result": "not found"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Checked.lean",
+      "blob_sha": null,
+      "result": "not found"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Array/Array.lean",
+      "blob_sha": "192ff0f5a0b47e0ab34b7ef11f22ee06b2c9a58f",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Slice.lean",
+      "blob_sha": "d7cad3f67353f0be6c25adf3824e89c2aba81cae",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Vec.lean",
+      "blob_sha": "2094d4e8cbcc3547cb2e971c797898f50643fcad",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Core/Marker.lean",
+      "blob_sha": "8e4ea01f2699865a72af4e325debc0aec4c1e7eb",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Core/Cmp.lean",
+      "blob_sha": "509bef8d2d807cca4fee977005c35264e40279b4",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "result": "source fetched"
+    },
+    {
+      "path": "tests/test_runner/Run.ml",
+      "blob_sha": null,
+      "result": "not found"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Core.lean",
+      "blob_sha": "972f67c95458ac4269468f6b004b2bc9df1aa9ab",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Ops.lean",
+      "blob_sha": "9e34259bc4fd24f6547db1672065c7d6cb8afaa8",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/CheckedOps.lean",
+      "blob_sha": "c782654393fbe07f7747d8d52cbf3b7a56f40163",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/OverflowingOps.lean",
+      "blob_sha": "eda072f3a2209f58b5a289104ef9bcaab2cbcc0c",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/WrappingOps.lean",
+      "blob_sha": "2be4d0f3cafe4b773e8c3b99fdbb6bce63efaab7",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Casts.lean",
+      "blob_sha": "c276d93084553e3dcb8a5dbdfff6e4a03c8baa7b",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/RawPtr.lean",
+      "blob_sha": "4ea6083c3a71efcaa725be28a8a305fc1e6c137f",
+      "result": "source fetched"
+    },
+    {
+      "path": "tests/test_runner/run_test.ml",
+      "blob_sha": "0a4b726e995dca0132314dae00c421ffd7f3a7a4",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/interp/InterpStatements.ml",
+      "blob_sha": "1f75159b23df8bee7ae2b613b4538c53f98420c4",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Ops/Add.lean",
+      "blob_sha": "ba4fc07e68d8db5d2ee5b466e4dedbff0740ddc0",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Ops/Div.lean",
+      "blob_sha": "6b7b050507297c4164ee86f567f31a8314b9b5dd",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/CheckedOps/Add.lean",
+      "blob_sha": "c89c78dac53759073d7e6fd6545cef4de39f5e22",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/WrappingOps/Add.lean",
+      "blob_sha": "92c6d3a4f466bd997858e4433aff7b5051bbf4d0",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/OverflowingOps/Add.lean",
+      "blob_sha": "37effc07d16127ba445537108497bf87f4bbd380",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/SaturatingOps.lean",
+      "blob_sha": "fad4eed08e31022d318cd7781cead4723b063655",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Core/Num.lean",
+      "blob_sha": null,
+      "result": "not found"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Global.lean",
+      "blob_sha": "52e111df8424cc3cba7aba04b5c78525233245aa",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/extract/ExtractBase.ml",
+      "blob_sha": "b5a0ae765651af56f7798cc3f2ee065cb508c139",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/Main.ml",
+      "blob_sha": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/SliceDef.lean",
+      "blob_sha": "11778d8aabd5ca6ead3a2124d669ca3dc6a52488",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/Misc.lean",
+      "blob_sha": "de0360e5076e8dbea30a2df369a132e269e34fb4",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Alloc.lean",
+      "blob_sha": "f10006f976ce4a2f3855504b037a9147e8fc22cd",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Platform.lean",
+      "blob_sha": null,
+      "result": "not found"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/CoreConvertNum.lean",
+      "blob_sha": "91b4d1d7b6dd64c2fe3273e72603238654233932",
+      "result": "source fetched"
+    },
+    {
+      "path": "tests/src/closures.rs",
+      "blob_sha": "525a3f8941c3224ddf32f818d168fef20f8a1b20",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Core/Core.lean",
+      "blob_sha": "a14cbe3c289a27b239909ea90e4076b98b6346d7",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPure.ml",
+      "blob_sha": "38ec2bba23c76ef815e66174856ce29dd4ac15ea",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Extract/Extract.lean",
+      "blob_sha": "d922887ec355369413357219dd4df269dac2c659",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/lean-toolchain",
+      "blob_sha": "9532ebf33701f2ff0a999f12b21fb7a675f24e6e",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Target.lean",
+      "blob_sha": "2ed084207c82fdff39c81b8912e1377a17223c82",
+      "result": "source fetched"
+    },
+    {
+      "path": "backends/lean/Aeneas/Std/Scalar/SaturatingOps.lean",
+      "blob_sha": "fad4eed08e31022d318cd7781cead4723b063655",
+      "result": "source fetched"
+    },
+    {
+      "path": "src/pure/PureUtils.ml",
+      "blob_sha": "31ed458722ad51d2d985f19b7858be3d56b97d11",
+      "result": "source fetched"
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+{
+  "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5",
+  "observed_at": "2026-10-15",
+  "evidence_role": "source and upstream checked-in expected artifacts; no execution",
+  "minirust_gitlink": "c0b555e5b15accc6c1366b1d911a1bfd49c3d9d0",
+  "files": [
+    {
+      "path": "charon/src/transform/add_missing_info/add_implied_outlives.rs",
+      "blob": "86ad61bd5ee5d28f6d513a51b98a6048e774cbfb",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/add_implied_outlives.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/add_missing_alias_clauses.rs",
+      "blob": "7504012d98b984b989572303a2edc7835338bc54",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/add_missing_alias_clauses.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/compute_layout_guarantees.rs",
+      "blob": "2548fcbcdb4a83a02a067fa73812cc918fea4ee5",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/compute_layout_guarantees.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/compute_short_names.rs",
+      "blob": "ebd97527f164f320567801aeaacaea8539544965",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/compute_short_names.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/detect_drop_flags.rs",
+      "blob": "f7a0192e245b243f32026771a82502d5e9f82eb4",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/detect_drop_flags.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/link_specs.rs",
+      "blob": "655f81395881db92b58d6a20b93e165c720e734f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/link_specs.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/recover_body_comments.rs",
+      "blob": "100fd9031b211d48fbd5dc13eb052767966cc12f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/recover_body_comments.rs"
+    },
+    {
+      "path": "charon/src/transform/add_missing_info/reorder_decls.rs",
+      "blob": "5526307537c5ff4da08192d8440fe16bcdd2480a",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/add_missing_info/reorder_decls.rs"
+    },
+    {
+      "path": "charon/src/transform/control_flow/duplicate_return.rs",
+      "blob": "e9096da163e9b83528765ba9eb641603044a0e31",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/duplicate_return.rs"
+    },
+    {
+      "path": "charon/src/transform/control_flow/merge_goto_chains.rs",
+      "blob": "8ab7e533c16373b35806e3eb3201b002ba5a14b5",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/merge_goto_chains.rs"
+    },
+    {
+      "path": "charon/src/transform/control_flow/prettify_cfg.rs",
+      "blob": "986b335efa16a5fac3772f00ddf8a79d8c1c7c5c",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/prettify_cfg.rs"
+    },
+    {
+      "path": "charon/src/transform/control_flow/ullbc_to_llbc.rs",
+      "blob": "b047783836b4b0d2024a1903fe873ee02e8933f6",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/control_flow/ullbc_to_llbc.rs"
+    },
+    {
+      "path": "charon/src/transform/ctx.rs",
+      "blob": "4485e426b38312fddbb16d3a4dfd7576aefd3794",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/ctx.rs"
+    },
+    {
+      "path": "charon/src/transform/finish_translation/filter_invisible_trait_impls.rs",
+      "blob": "88fd4f0c647dcea2774e768208f41944a41398c9",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/filter_invisible_trait_impls.rs"
+    },
+    {
+      "path": "charon/src/transform/finish_translation/insert_assign_return_unit.rs",
+      "blob": "08ec2558b2d31935cf2efce5aad7f7d2fc7c82b4",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_assign_return_unit.rs"
+    },
+    {
+      "path": "charon/src/transform/finish_translation/insert_ptr_metadata.rs",
+      "blob": "f4c4ef9437f16a50d574eff2391c31b4a78408be",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_ptr_metadata.rs"
+    },
+    {
+      "path": "charon/src/transform/finish_translation/insert_storage_statements.rs",
+      "blob": "44c7822a76e4c34ecbaf61d674c69b601865a528",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/finish_translation/insert_storage_statements.rs"
+    },
+    {
+      "path": "charon/src/transform/mod.rs",
+      "blob": "cbd56ac4b2bdee54e76ff50d640b354b832584dc",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/mod.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/desugar_drops.rs",
+      "blob": "004f969eba092a231e29e8563376c3d389573cb8",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/desugar_drops.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/expand_associated_types.rs",
+      "blob": "914ed8e05c409aa97f21e28d3b7684a19243f33c",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/expand_associated_types.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/normalize_trait_refs.rs",
+      "blob": "abc1c6ce9d637d9c40639449f3d99a38c0be297b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/normalize_trait_refs.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/partial_monomorphization.rs",
+      "blob": "08e2c56382579af48ac2db33c808bc3885fc784b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/partial_monomorphization.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/skip_trait_refs_when_known.rs",
+      "blob": "7602f7fc4ac5861d24c46517505e1599647fc529",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/skip_trait_refs_when_known.rs"
+    },
+    {
+      "path": "charon/src/transform/normalize/transform_dyn_trait_calls.rs",
+      "blob": "1bd7a59e5f121937250d098e6ddda814d7b88a9d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/normalize/transform_dyn_trait_calls.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/move_asserts_to_statements.rs",
+      "blob": "2113f96b882eb75d2d2b4da2a0d9bf2d4c2b078a",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/move_asserts_to_statements.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_asserts.rs",
+      "blob": "1402250e59e615fe56f1d864b0afbe2b7647d62a",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_asserts.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_box_derefs.rs",
+      "blob": "ba6a54bffacab0cc34292802f3c68fcee9ef4c3b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_box_derefs.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_fallible_operations.rs",
+      "blob": "0c142d997250db6afd6c711b684a5d56ba13693b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_fallible_operations.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_intrinsics.rs",
+      "blob": "1269838e436f4c5387f793e1ad0e57c1e5993f9e",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_intrinsics.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_matches.rs",
+      "blob": "1a787e86663429d99757dbd9c77da21419bbadac",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_matches.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_panic_calls.rs",
+      "blob": "64df23fcacf108f463b7431c1b5ee45f9648ecdb",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_panic_calls.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_static_accesses.rs",
+      "blob": "d928968d2a407ba09019441a0b68097358ab91c1",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_static_accesses.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+      "blob": "c2b03f8683e00b811b4131d7847bfd13a198e46f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/reconstruct_vec_boxes.rs"
+    },
+    {
+      "path": "charon/src/transform/resugar/resugar_drops.rs",
+      "blob": "f7639eb8cf0d91b6775ce163033f6ae8914f3813",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/resugar/resugar_drops.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/anon_const_to_call.rs",
+      "blob": "4fca571f529ca2791000e31d86bf673fe7999bf7",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/anon_const_to_call.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+      "blob": "ddbb8475b384ecbe4df37253298b1856d68a380b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/builtins_to_function_calls.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/duplicate_defaulted_methods.rs",
+      "blob": "f06bd22f00bd7e735ce7df2f2099e9b7e1948bd1",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/duplicate_defaulted_methods.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/filter_trivial_drops.rs",
+      "blob": "6269fa2ae9d420bc01d405db2de686d11544635c",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/filter_trivial_drops.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/hide_allocator_param.rs",
+      "blob": "fc7058b301f552b9b5ffd64805e6e0f8aa76152f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/hide_allocator_param.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/index_intermediate_assigns.rs",
+      "blob": "8b79ae36729e1038caa2b097b411f23803db136d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/index_intermediate_assigns.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/inline_selected_functions.rs",
+      "blob": "e875831fec3075261d766bbc9a0522ba9b053bf4",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/inline_selected_functions.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/lift_associated_item_clauses.rs",
+      "blob": "e18dd6bac999b9f0642f30bd02b9de09ff9e7250",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/lift_associated_item_clauses.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/remove_adt_clauses.rs",
+      "blob": "e4aee5e9de65c6e2414f34502dedfe0bdb74fa6c",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_adt_clauses.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/remove_nops.rs",
+      "blob": "da8db8c252017f1489dec971ce4259be8e20033d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_nops.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/remove_unit_locals.rs",
+      "blob": "7bfce6153383c5857dfdb38c1272411bd8789b3f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unit_locals.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/remove_unused_clauses.rs",
+      "blob": "4bb1aacc0f4a28ae37e80e18fec1dddcd8cd0823",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unused_clauses.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+      "blob": "8bf1c90f98dd94c7a99c320a82c40cdfcc89af38",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/remove_unused_locals.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/simplify_constants.rs",
+      "blob": "3d4dee08913e36f5e82896c635f5d25f9fb92898",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/simplify_constants.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/unbind_item_vars.rs",
+      "blob": "82722cc0bd05900b7ddde70275cfea6b073555f6",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/unbind_item_vars.rs"
+    },
+    {
+      "path": "charon/src/transform/simplify_output/update_block_indices.rs",
+      "blob": "01df36cbe93b1c7b6abdcabe8ebd0ce84e2917d5",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/simplify_output/update_block_indices.rs"
+    },
+    {
+      "path": "charon/src/transform/typecheck_and_unify.rs",
+      "blob": "efd33a5a6dcb979f611a5ecd1735587719f73d48",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/typecheck_and_unify.rs"
+    },
+    {
+      "path": "charon/src/options.rs",
+      "blob": "68216fcc8da74fed09a44dfcc7c1a48282a07e7d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/options.rs"
+    },
+    {
+      "path": "charon/src/bin/charon-driver/driver.rs",
+      "blob": "b48fd810fb7153512642ad18136bec78df54b8cf",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon-driver/driver.rs"
+    },
+    {
+      "path": "charon/src/bin/charon-driver/translate/get_mir.rs",
+      "blob": "5f67305aaed4000fcf29214c6339c37b75b411e6",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon-driver/translate/get_mir.rs"
+    },
+    {
+      "path": "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+      "blob": "f70dfc6e20f9b842a11db3c193ddffa3256291dd",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon-driver/translate/translate_bodies.rs"
+    },
+    {
+      "path": "charon/src/ast/bodies.rs",
+      "blob": "0f87e08014bb164993c9af98650059b8763f874d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies.rs"
+    },
+    {
+      "path": "charon/src/ast/bodies/structured.rs",
+      "blob": "bfe50ae6d676640b09f03591446e33c81324106c",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/structured.rs"
+    },
+    {
+      "path": "charon/src/ast/bodies/unstructured.rs",
+      "blob": "0ddef217d2478b8f2ea34c03f9b33cded5f62702",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/unstructured.rs"
+    },
+    {
+      "path": "charon/src/ast/krate.rs",
+      "blob": "8179459cbfc2219e70b39b1ef8e7d7a090a9a633",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/krate.rs"
+    },
+    {
+      "path": "charon/src/export.rs",
+      "blob": "b0dea86e53ff0c3ef748a3efdbf1319d6abe14d9",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/export.rs"
+    },
+    {
+      "path": "docs/minirust.md",
+      "blob": "b1e446062a21c2e81f438e600a80dba86599b837",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/docs/minirust.md"
+    },
+    {
+      "path": "charon/src/minirust.rs",
+      "blob": "38e146420be85688eedd1c34d89353af027ade2d",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/minirust.rs"
+    },
+    {
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/rust-toolchain"
+    },
+    {
+      "path": "charon/tests/minirust.rs",
+      "blob": "55850102e939426062983e08ce7f292a2218eaed",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/minirust.rs"
+    },
+    {
+      "path": "charon/tests/ui/unwind-llbc.rs",
+      "blob": "ab97e4880eddc222a5700e1c66cca59fc3a76b92",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/unwind-llbc.rs"
+    },
+    {
+      "path": "charon/tests/ui/unwind-llbc.out",
+      "blob": "c48d6f1492711dacb8692305dedb9e43872c12d1",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/unwind-llbc.out"
+    },
+    {
+      "path": "charon/tests/ui/control-flow/no-code-duplication.rs",
+      "blob": "9866cecef676b56e14b8d5d2d421a18b8c06cd3b",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/control-flow/no-code-duplication.rs"
+    },
+    {
+      "path": "charon/tests/ui/control-flow/no-code-duplication.forward-break.out",
+      "blob": "af35eaa98162b88531df8ebab85544ad96143bb4",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/control-flow/no-code-duplication.forward-break.out"
+    },
+    {
+      "path": "charon/tests/ui/minirust/invalid-char.rs",
+      "blob": "4a1cd3eaca1d13eb3f0046a180eca5cf1e19861f",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/minirust/invalid-char.rs"
+    },
+    {
+      "path": "charon/tests/ui/minirust/invalid-char.out",
+      "blob": "f85660309ebc7661f4b7499a8729d1817c9ea9c0",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/tests/ui/minirust/invalid-char.out"
+    },
+    {
+      "path": "charon/src/ast/bodies/expressions.rs",
+      "blob": "99f7848c52b8965034ecf3294c62a0b75d611778",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/expressions.rs"
+    },
+    {
+      "path": "charon/src/ast/bodies/places.rs",
+      "blob": "050637689579aa441ad23834b9a0f563c27b1234",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/ast/bodies/places.rs"
+    },
+    {
+      "path": "charon/src/minirust/types.rs",
+      "blob": "eba5b628a08ca3118129ec80be8ed02fc3c51a56",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/minirust/types.rs"
+    },
+    {
+      "path": "charon/src/minirust/intrinsics.rs",
+      "blob": "2c78da3168d5172650e25941007d1c3a7d828066",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/minirust/intrinsics.rs"
+    },
+    {
+      "path": "charon/src/transform/ctx.rs",
+      "blob": "4485e426b38312fddbb16d3a4dfd7576aefd3794",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/transform/ctx.rs"
+    },
+    {
+      "path": "charon/src/bin/charon/main.rs",
+      "blob": "9cf9b193acc1b08b1211add4e6492427497f1cb3",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon/main.rs"
+    },
+    {
+      "path": "charon/src/bin/charon-driver/translate/translate_crate.rs",
+      "blob": "30d45599d1741a1b18ac42d70399cabc4dfb00a0",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/src/bin/charon-driver/translate/translate_crate.rs"
+    },
+    {
+      "path": "charon/Cargo.toml",
+      "blob": "19c663b17c063afd0efc39a94d8467be02bc39ad",
+      "url": "https://github.com/AeneasVerif/charon/blob/9e95cf318e3a2964fcf5e03104cde5b718f98ea5/charon/Cargo.toml"
+    }
+  ]
+}

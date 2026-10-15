@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "aeneas",
+    "charon",
+    "aeneas/historical-defects",
+    "aeneas/regression-testing",
+    "verification/oracles"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas inspected source",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Historical Aeneas and Charon case ledger",
+      "identity": {
+        "artifact": "evidence.json",
+        "sha256": "1e07064aed26eee0916ba3e978a9670436944b934de3f2dd4b8008ae0a96c800"
+      }
+    },
+    {
+      "name": "Rust standard-library API documentation",
+      "identity": {
+        "version": "1.99.1",
+        "displayed_source_revision": "58cf8f9c3",
+        "urls": "https://doc.rust-lang.org/std/vec/struct.Vec.html#method.insert; https://doc.rust-lang.org/std/cmp/trait.Ord.html#method.max"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

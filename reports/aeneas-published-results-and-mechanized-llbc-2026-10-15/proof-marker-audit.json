@@ -1,0 +1,127 @@
+{
+  "scope": "Textual markers in all pinned src V files; not a parsed dependency or compiled assumption audit",
+  "files_checked": 29,
+  "blob_mismatches": [],
+  "markers": [
+    {
+      "path": "src/PL.v",
+      "line": 804,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 2368,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3014,
+      "marker": "admit."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3017,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3117,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3336,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3347,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3357,
+      "marker": "admit."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3359,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3368,
+      "marker": "admit."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3370,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3811,
+      "marker": "admit."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3813,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 3963,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 4012,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 4024,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/PL.v",
+      "line": 4062,
+      "marker": "Abort."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 431,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 459,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 481,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 568,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 575,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 676,
+      "marker": "Admitted."
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "line": 731,
+      "marker": "Admitted."
+    }
+  ]
+}

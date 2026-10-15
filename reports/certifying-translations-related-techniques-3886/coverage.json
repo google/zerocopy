@@ -1,0 +1,16 @@
+{
+  "questions": {
+    "A28": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Verified/validating/replay/specialization distinctions, witness interfaces, failures/composition and published cost evidence",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    },
+    "A34": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Exact-domain comparison of related Rust, replay, compiler and checker techniques",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    }
+  },
+  "execution": "none",
+  "derived_interfaces": "proposed semantic proof obligations, not current implemented certificates"
+}

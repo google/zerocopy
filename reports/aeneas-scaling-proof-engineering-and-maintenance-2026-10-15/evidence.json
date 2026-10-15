@@ -1,0 +1,253 @@
+{
+  "observed_at": "2026-10-15",
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "role": "source, not execution",
+  "sources": [
+    {
+      "path": "src/Main.ml",
+      "blob_sha": "3ba4be5805e6d394efab73e774eccac3f1cf6839",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Main.ml",
+      "excerpts": [
+        {
+          "start": 130,
+          "end": 152,
+          "text": "        Arg.Set split_files,\n        \" Split the definitions between different files for types, functions, \\\n         etc.\" );\n      ( \"-checks\",\n        Arg.Set sanity_checks,\n        \" Activate extensive sanity checks (warning: causes a ~100 times slow \\\n         down).\" );\n      ( \"-gen-lib-entry\",\n        Arg.Set generate_lib_entry_point,\n        \" Add an entry point file to the generated library (only valid if the \\\n         crate is split between different files)\" );\n      ( \"-lean-default-lakefile\",\n        Arg.Clear lean_gen_lakefile,\n        \" Generate a default lakefile.lean (Lean only)\" );\n      ( \"-emit-json\",\n        Arg.Set emit_json,\n        \" Emit a translation.json file alongside the Lean files (Lean only)\" );\n      (\"-print-llbc\", Arg.Set print_llbc, \" Print the imported LLBC\");\n      ( \"-abort-on-error\",\n        Arg.Set fail_hard,\n        \" Abort on the first encountered error\" );\n      ( \"-warnings-as-errors\",\n        Arg.Set warnings_as_errors,"
+        },
+        {
+          "start": 188,
+          "end": 202,
+          "text": "         prefixes are: 's' (symbolic value id), 'b' (borrow id), 'a' \\\n         (abstraction id), 'r' (region id), 'f' (pure free variable id).\" );\n      (\"-sequential\", Arg.Clear parallel, \" Execute sequentially\");\n      ( \"-no-progress-bar\",\n        Arg.Clear progress_bar,\n        \" Do not display a progress bar\" );\n      ( \"-max-error-spans\",\n        Arg.Int (fun x -> max_error_spans := x),\n        \" Maximum number of local uses of an external definition which \\\n         triggered an error that we print (if < 0 we print them all)\" );\n      ( \"-strict-joins\",\n        Arg.Clear recover_joins,\n        \" Report an error whenever joining contexts fails rather than \\\n         duplicating the code after the branching statement\" );\n      ( \"-color\","
+        },
+        {
+          "start": 230,
+          "end": 274,
+          "text": "      ( \"-loops-to-rec\",\n        Arg.Set loops_to_recursive_functions,\n        \" Always extract loops to recursive functions.\" );\n      ( \"-feature-gates\",\n        Arg.Set feature_gates,\n        \" For Lean: introduce an assertion at the beginning of the functions \\\n         annotated with `#[target_feature(enable = \\\"...\\\")]`, to check that \\\n         the required target features are available.\" );\n      ( \"-loops-no-rec\",\n        Arg.Set no_recursive_loops,\n        \" Never attempt to extract loops to recursive functions.\" );\n      ( \"-max-heartbeats\",\n        Arg.Int\n          (fun x ->\n            set_max_heartbeats := true;\n            max_heartbeats := x),\n        \"For Lean: set the value of the `set_option maxHeartBeats ...` command \\\n         at the top of the generated files\" );\n      ( \"-max-recdepth\",\n        Arg.Int\n          (fun x ->\n            set_max_recdepth := true;\n            max_recdepth := x),\n        \"For Lean: set the value of the `set_option maxRecDepth ...` command \\\n         at the top of the generated files\" );\n      ( \"-eval-drops\",\n        Arg.Clear drop_as_no_op,\n        \"Evaluate the drops. By default we do not borrow-check them by \\\n         treating them as no-ops.\" );\n      ( \"-diagnose-translation\",\n        Arg.Set diagnose_translation,\n        \" Measure the time it takes to translate every function and print the \\\n         results sorted from longest to shortest\" );\n      ( \"-diagnose-micro-passes\",\n        Arg.Set diagnose_micro_passes,\n        \" Measure the time it takes to apply the micro-passes on every \\\n         function and print them from longest to shortest\" );\n      ( \"-diagnose-detailed\",\n        Arg.Set diagnose_detailed,\n        \" In combination with -diagnose-micro-passes, compute per-function, \\\n         per -micro-pass time measurements\" );\n      ( \"-diagnose-limit\",\n        Arg.Int (fun x -> diagnose_limit := x),\n        \" Upper bound on the number of lines printed for the -diagnose \\\n         options. If positive, print at most this many lines. If negative, \\"
+        },
+        {
+          "start": 552,
+          "end": 576,
+          "text": "  (* If running in parallel mode there can be racing conditions on the memoized\n     elements. Precompute them so that it doesn't happen. *)\n  let _ = ExtractBuiltin.builtin_globals_map () in\n  let _ = ExtractBuiltin.builtin_types_map () in\n  let _ = ExtractBuiltin.builtin_trait_decls_map () in\n  let _ = ExtractBuiltin.builtin_trait_impls_map () in\n  let _ = ExtractBuiltin.builtin_funs_map () in\n  let _ = ExtractBuiltin.builtin_fun_effects_map () in\n\n  (* Retrieve and check the filename *)\n  let filename =\n    match !filenames with\n    | [ f ] ->\n        (* TODO: update the extension *)\n        if not (Filename.check_suffix f \".llbc\") then (\n          print_string (\"Unrecognized file extension: \" ^ f ^ \"\\n\");\n          fail true)\n        else if not (Sys.file_exists f) then (\n          print_string (\"File not found: \" ^ f ^ \"\\n\");\n          fail true)\n        else f\n    | _ ->\n        (* For now, we only process one file at a time *)\n        print_string usage;\n        exit 1"
+        },
+        {
+          "start": 763,
+          "end": 771,
+          "text": "      if !borrow_check then Aeneas.BorrowCheck.borrow_check_crate m marked_ids\n      else\n        Aeneas.Translate.translate_crate filename dest_dir !Config.subdir m\n          extracted_opaque marked_ids;\n\n      let has_errors =\n        if !Errors.error_list <> [] then true\n        else (\n          if !borrow_check then"
+        },
+        {
+          "start": 808,
+          "end": 813,
+          "text": "          (Printf.sprintf \"Total execution time: %f seconds\"\n             (Unix.gettimeofday () -. start_time)));\n\n      (* *)\n      if has_errors then exit 1\n"
+        }
+      ]
+    },
+    {
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Config.ml",
+      "excerpts": [
+        {
+          "start": 95,
+          "end": 99,
+          "text": "(** Activate the sanity checks, and in particular the invariant checks that are\n    performed at every evaluation step. This is very expensive (~100x slow down)\n    but very efficient to catch mistakes early. *)\nlet sanity_checks = ref false\n"
+        },
+        {
+          "start": 176,
+          "end": 182,
+          "text": "(** The maximum number of iterations we can do to find a loop fixed point.\n\n    This is mostly for sanity: we should always find a fixed point in a\n    reasonable number of iterations. If we fail to do so, it is likely a bug: we\n    thus use this bound to detect a loop, fail and report the case to the user.\n*)\nlet loop_fixed_point_max_num_iters = 2"
+        },
+        {
+          "start": 478,
+          "end": 497,
+          "text": "(** Should we run the translation in parallel?\n\n    Note: the race condition on Pack.Digraph's global vertex counter in SCC.ml\n    has been fixed by switching to Imperative.Digraph.Concrete, and the pool is\n    now persistent (created once and reused).\n\n    Note: the way functions are ordered before being translated is wrong:\n    - the function which computes the size of the function should count the the\n      loops differently (the body of a loop is executed twice to compute a fixed\n      point: the result is exponential)\n    - the way the parellelism is executed implies that the first domain will\n      translate all the biggest functions! We should rather have a queue of\n      tasks (or an index of the next function to translate that we would\n      atomically increment)\n    - it is probably worth reordering the functions also before running the\n      micro-passes *)\nlet parallel = ref true\n\n(** Display a progress bar *)\nlet progress_bar = ref true"
+        },
+        {
+          "start": 540,
+          "end": 553,
+          "text": "let diagnose_translation = ref false\n\n(** If activated, measure the time it takes to apply the micro-passes on every\n    function, and print them from the longest to the shortest, together with the\n    function size. *)\nlet diagnose_micro_passes = ref false\n\n(** If activated in combination with -diagnose-micro-passes, compute\n    per-function, per -micro-pass time measurements. *)\nlet diagnose_detailed = ref false\n\n(** Upper bound on the number of lines printed for the diagnose options. If\n    positive, print at most this many lines. If negative, print everything. *)\nlet diagnose_limit = ref (-1)"
+        },
+        {
+          "start": 617,
+          "end": 627,
+          "text": "(** This is for Lean: the value we should initialize `maxHeartBeats` to at the\n    top of the generated files *)\nlet max_heartbeats = ref 1000000\n\n(** This is for Lean: the value we should initialize `maxRecDepth` to at the top\n    of the generated files *)\nlet max_recdepth = ref 2048\n\n(** If [false], evaluate [drop(p)] as [p := bottom]. Otherwise, evaluate it as a\n    no-op (which means that we do not borrow-check the drops). *)\nlet drop_as_no_op = ref true"
+        }
+      ]
+    },
+    {
+      "path": "src/Parallel.ml",
+      "blob_sha": "183e7fd97dbed91c3610fe8fe9e8e6cce7dc70b8",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Parallel.ml",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 38,
+          "text": "(** A persistent pool that is created once and reused for all parallel\n    operations. This avoids the overhead of creating and tearing down domains\n    for each parallel call. *)\nmodule Pool = struct\n  module T = Domainslib.Task\n\n  let pool =\n    lazy\n      (let num_domains = recommended_domain_count () - 1 in\n       T.setup_pool ~num_domains ())\n\n  let get () = Lazy.force pool\n\n  (* Tear down the pool at program exit *)\n  let () =\n    at_exit (fun () ->\n        if Lazy.is_val pool then T.teardown_pool (Lazy.force pool))\nend\n\n(** Run a map in parallel."
+        },
+        {
+          "start": 85,
+          "end": 110,
+          "text": "\n    We allocate the maximum number of recommended domains. Each element gets its\n    own async task, allowing the pool to schedule work dynamically (avoiding the\n    problem where chunking gives all the biggest tasks to the first worker). *)\nlet parallel_map_pool_aux (f : 'a -> 'b) (ls : 'a list) : 'b list =\n  (* Only run in parallel if the option is activated *)\n  if !Config.parallel then\n    let f = run_with_backtrace f in\n    let module T = Domainslib.Task in\n    let pool = Pool.get () in\n    (* Run the tasks asynchronously *)\n    let run (x : 'a) () = f x in\n    let tasks = List.map (fun x -> T.async pool (run x)) ls in\n    (* Wait *)\n    T.run pool (fun _ -> List.map (T.await pool) tasks)\n  else List.map f ls\n\nlet parallel_map_pool f ls = catch_reraise (parallel_map_pool_aux f) ls\n\n(** Run a filter_map in parallel using the persistent pool.\n\n    We allocate the maximum number of recommended domains. Each element gets its\n    own async task, allowing the pool to schedule work dynamically. *)\nlet parallel_filter_map_pool_aux (f : 'a -> 'b option) (ls : 'a list) : 'b list\n    =\n  (* Only run in parallel if the option is activated *)"
+        }
+      ]
+    },
+    {
+      "path": "src/Translate.ml",
+      "blob_sha": "74e7d223a0d38dc8ca9797d20ef60fd140909535",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Translate.ml",
+      "excerpts": [
+        {
+          "start": 315,
+          "end": 325,
+          "text": "let translate_crate_to_pure (crate : crate) (marked_ids : marked_ids) :\n    trans_ctx * translated_crate =\n  (* Debug *)\n  [%ltrace \"\"];\n\n  (* Compute the translation context *)\n  let trans_ctx = compute_contexts crate in\n\n  (* Translate all the type definitions *)\n  let type_decls = SymbolicToPure.translate_type_decls trans_ctx in\n"
+        },
+        {
+          "start": 445,
+          "end": 483,
+          "text": "        funs\n    in\n\n    (* Reorder the transparent functions to have the biggest first:\n       because the execution is parallel, we want to start processing the bigger\n       functions as early as possible.\n\n       TODO: this doesn't seem to have much effect.\n    *)\n    let transparent =\n      if !Config.parallel then\n        let funs =\n          List.map\n            (fun f -> (f, LlbcAstUtils.compute_fun_decl_size f))\n            transparent\n        in\n        List.map fst (List.sort (fun (_, n) (_, n') -> n' - n) funs)\n      else transparent\n    in\n\n    (* Assign size-based ranks (rank 1 = biggest):\n       transparent functions are already sorted by decreasing size *)\n    let n_transparent = List.length transparent in\n    let transparent_ranked = List.mapi (fun i f -> (i + 1, f)) transparent in\n    let opaque_ranked =\n      List.mapi (fun i f -> (n_transparent + i + 1, f)) opaque\n    in\n\n    let diagnose_transl_data : (string * float * int * int) list ref = ref [] in\n    let diagnose_transl_mutex = Mutex.create () in\n\n    (* Process a function *)\n    let process (kind : string) (funs : (int * fun_decl) list) =\n      let num_decls = List.length funs in\n      ProgressBar.with_parallel_reporter num_decls\n        (\"Translated \" ^ kind ^ \" functions: \")\n        (fun report ->\n          parallel_filter_map\n            (fun (rank, x) ->"
+        },
+        {
+          "start": 490,
+          "end": 526,
+          "text": "                  global_decls_map fun_sigs x\n              in\n              if !Config.diagnose_translation then begin\n                let elapsed = Unix.gettimeofday () -. start in\n                let fname = name_to_string trans_ctx x.item_meta.name in\n                let size = LlbcAstUtils.compute_fun_decl_size x in\n                Mutex.lock diagnose_transl_mutex;\n                diagnose_transl_data :=\n                  (fname, elapsed, size, rank) :: !diagnose_transl_data;\n                Mutex.unlock diagnose_transl_mutex\n              end;\n              report 1;\n              f)\n            funs)\n    in\n\n    let opaque = process \"opaque\" opaque_ranked in\n    let transparent = process \"transparent\" transparent_ranked in\n\n    (* Print -diagnose-translation results *)\n    if !Config.diagnose_translation then begin\n      let sorted =\n        List.sort\n          (fun (_, t1, _, _) (_, t2, _, _) -> Float.compare t2 t1)\n          !diagnose_transl_data\n      in\n      let limit = !Config.diagnose_limit in\n      let to_print =\n        if limit >= 0 then Collections.List.prefix limit sorted else sorted\n      in\n      Printf.printf \"\\n=== Translation time per function ===\\n\";\n      List.iter\n        (fun (name, time, size, rank) ->\n          Printf.printf \"  %s: %.4fs (size: %d, rank: %d)\\n\" name time size rank)\n        to_print\n    end;\n"
+        },
+        {
+          "start": 2198,
+          "end": 2211,
+          "text": "let translate_crate (filename : string) (dest_dir : string)\n    (subdir : string option) (crate : crate) (extracted_opaque : bool ref)\n    (marked_ids : marked_ids) : unit =\n  [%ltrace\n    \"- filename: \" ^ filename ^ \"\\n- dest_dir: \" ^ dest_dir ^ \"\\n- subdir: \"\n    ^ Print.option_to_string (fun x -> x) subdir];\n\n  (* Translate the module to the pure AST *)\n  let trans_ctx, trans_crate = translate_crate_to_pure crate marked_ids in\n\n  extract_translated_crate filename dest_dir subdir crate trans_ctx trans_crate\n    extracted_opaque\n"
+        }
+      ]
+    },
+    {
+      "path": "src/Errors.ml",
+      "blob_sha": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Errors.ml",
+      "excerpts": [
+        {
+          "start": 79,
+          "end": 98,
+          "text": "let error_list : (string * int * Meta.span option * string) list ref = ref []\nlet unique_errors = ref FileLineMap.empty\n\n(** Save an error and print it at the same time.\n\n    We prefer printing errors gradually rather than reporting everyting at the\n    very end. *)\nlet push_error (file : string) (line : int) (span : Meta.span option)\n    (msg : string) =\n  Mutex.protect error_mutex (fun _ ->\n      error_list := (file, line, span, msg) :: !error_list;\n      unique_errors :=\n        FileLineMap.update (file, line)\n          (function\n            | None -> Some 1\n            | Some n -> Some (n + 1))\n          !unique_errors);\n  if !Config.print_error_emitters then\n    log#serror (format_error_message_with_file_line file line span msg)\n  else log#serror (format_error_message span msg)"
+        }
+      ]
+    },
+    {
+      "path": "tests/test_runner/run_test.ml",
+      "blob_sha": "0a4b726e995dca0132314dae00c421ffd7f3a7a4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/test_runner/run_test.ml",
+      "excerpts": [
+        {
+          "start": 85,
+          "end": 100,
+          "text": "    | KnownFailure when backend = Backend.BorrowCheck -> []\n    | _ -> [ \"-abort-on-error\" ]\n  in\n  let args =\n    List.concat [ args; aeneas_options; abort_on_error ]\n    @ [\n        \"-print-error-emitters\";\n        \"-no-progress-bar\";\n        \"-checks\";\n        \"-color\";\n        \"-sequential\";\n      ]\n  in\n  let cmd = Command.make args in\n  (* Remove leftover files if they're not needed anymore *)\n  if"
+        },
+        {
+          "start": 108,
+          "end": 124,
+          "text": "  (* Run Aeneas *)\n  match action with\n  | Skip -> ()\n  | Normal -> Command.run_command_expecting_success cmd\n  | KnownFailure ->\n      let out =\n        if check_output then\n          Core_unix.openfile ~mode:[ O_CREAT; O_TRUNC; O_WRONLY ] output_file\n        else Core_unix.openfile ~mode:[ O_WRONLY ] \"/dev/null\"\n      in\n      let cmd = { cmd with redirect_out = Some out } in\n      Command.run_command_expecting_failure cmd;\n      Unix.close out\n\n(* Run Charon on a specific input with the given options *)\nlet run_charon (env : runner_env) (case : Input.t) =\n  (* Create the folder for the .llbc files, if it doesn't exist yet *)"
+        },
+        {
+          "start": 151,
+          "end": 174,
+          "text": "  | Crate ->\n      (* Because some tests have dependencies which force us to implement custom\n         treatment in the flake.nix, when in CI, we regenerate files for the crates\n         only if the .llbc doesn't exist (if it exists, it means it was generated\n         via a custom derivation in the flake.nix) *)\n      let generate =\n        match Sys.getenv_opt \"IN_CI\" with\n        | None -> true\n        | Some _ -> not (Sys.file_exists llbc_name)\n        (* Check if the llbc file already exists *)\n      in\n      if generate then (\n        let args =\n          [\n            env.charon_path;\n            \"cargo\";\n            \"--preset=aeneas\";\n            \"--rustc-arg=--allow=unused\";\n            \"--dest-file\";\n            llbc_name;\n          ]\n        in\n        let args = List.append args case.charon_options in\n        (* Run Charon inside the crate *)"
+        }
+      ]
+    },
+    {
+      "path": "tests/lean/Makefile",
+      "blob_sha": "da0834a97eeb137fb0c44d3b077b10b73b1d47b7",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/lean/Makefile",
+      "excerpts": [
+        {
+          "start": 16,
+          "end": 36,
+          "text": "all: prepare-projects verify\n\n.PHONY: prepare-projects\nprepare-projects: copy-lean-toolchain lakefile.lean\n\n.PHONY: copy-lean-toolchain\ncopy-lean-toolchain:\n\tcp ../../backends/lean/lean-toolchain .\n\n.PHONY: lakefile.lean\nlakefile.lean:\n\tbash script.sh\n\n.PHONY: update\nupdate:\n\tlake update\n\n.PHONY: verify\nverify:\n\tlake exe cache get && lake build\n"
+        }
+      ]
+    },
+    {
+      "path": "scripts/check-charon-install.sh",
+      "blob_sha": "170a35809cd4a5623ae7006c0a826dc28e63be71",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/scripts/check-charon-install.sh",
+      "excerpts": [
+        {
+          "start": 17,
+          "end": 27,
+          "text": "    fi\n}\n\nPINNED_COMMIT=\"$(tail -1 charon-pin)\"\nif [ ! -e ./charon ]; then\n    if [[ \"$FORCE\" == \"1\" ]]; then\n        git clone https://github.com/AeneasVerif/charon --recurse-submodules\n        cd charon && git checkout \"$PINNED_COMMIT\" && rebuild\n        exit 0\n    else\n        echo 'Error: `charon` not found. Please clone the charon repository into `./charon` at the commit specified '\\"
+        },
+        {
+          "start": 41,
+          "end": 55,
+          "text": "    CHARON_IS_SYMLINK=1\nfi\n\ncd charon\n\nACTUAL_COMMIT=\"$(git rev-parse HEAD)\"\nif [[ \"$CHARON_IS_SYMLINK\" != \"1\" && \"$ACTUAL_COMMIT\" != \"$PINNED_COMMIT\" ]]; then\n    if [[ \"$FORCE\" == \"1\" ]]; then\n        git fetch origin && git checkout \"$PINNED_COMMIT\" && rebuild\n        exit 0\n    else\n        echo 'Error: `charon` commit is not the pinned commit. Update the charon repository to the commit specified in `./charon-pin`:'\n        echo '  $ cd charon && git fetch origin && git checkout '\"$PINNED_COMMIT\"' && make test'\n        echo 'To do this automatically, run `make setup-charon`.'\n        exit 1"
+        }
+      ]
+    },
+    {
+      "path": "charon-pin",
+      "blob_sha": "9e90db588b230b9883a3be63a7d4bd710a18ce82",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/charon-pin",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 2,
+          "text": "# This is the commit from https://github.com/AeneasVerif/charon that should be used with this version of aeneas.\n1aebab5f03a58067e5dc0ede2fec584117f54964"
+        }
+      ]
+    },
+    {
+      "path": "backends/lean/lean-toolchain",
+      "blob_sha": "9532ebf33701f2ff0a999f12b21fb7a675f24e6e",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/backends/lean/lean-toolchain",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 1,
+          "text": "leanprover/lean4:v4.35.0-rc4"
+        }
+      ]
+    }
+  ],
+  "paper_notes": [
+    {
+      "identifier": "arXiv:2609.15648v1",
+      "url": "https://arxiv.org/html/2609.15648v1",
+      "title": "Scaling Verification of Cryptographic Software with Aeneas, Rust, and Lean",
+      "locations": "Abstract; Table 1; sections5,8.1,8.3; Figure6",
+      "scope": "September2026 draft. Read cached PDF18pages and official HTML. Metrics are paper reports, not recreated.",
+      "reported": {
+        "rust_lines": 16700,
+        "lean_lines": 237160,
+        "generated_lean_lines": 30253,
+        "source_lean_lines": 206907,
+        "agent_theorems_approx": 5100,
+        "agent_proof_lines_approx": 125000,
+        "hard_proof_suite": 7,
+        "model_comparison": "Opus5 vs Opus4.8, successful terminal runs; approximately2.8x faster and2.5x cheaper; not an uncontrolled productivity law."
+      }
+    },
+    {
+      "identifier": "arXiv:2605.30106v1",
+      "url": "https://arxiv.org/html/2605.30106v1",
+      "title": "A Rust-to-Lean Verification Pipeline with AI Provers: An Experience Report",
+      "locations": "sections5–7; Table1",
+      "scope": "Mixed Aeneas/Hax targets. Two Aleph running-example proofs are Hax code; four remaining goals reported sorry. Historical generic/loop claims not current source guarantees.",
+      "reported": {
+        "running_example_total_theorems": 6,
+        "aleph_completed": 2,
+        "remaining_sorry": 4,
+        "aeneas_fold_step_checked_operations": 13,
+        "aligned_lean": "Hax4.26.0; Aeneas4.28.0"
+      }
+    }
+  ],
+  "prior_evidence": {
+    "corpus_revision": "fa65b241fd0cb2c791c841eace86d43d724359bc",
+    "role": "Prior corpus reports preserve execution; not rerun here.",
+    "reports": [
+      "anneal-3730-combined-pipeline-concurrency-2026-09-29",
+      "aeneas-generated-source-repeat-run-probe-nightly-2026-06-03",
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03"
+    ],
+    "aeneas_source": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "fixed_llbc_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098"
+  }
+}

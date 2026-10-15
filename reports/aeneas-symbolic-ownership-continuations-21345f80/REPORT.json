@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/symbolic-interpreter",
+    "aeneas/borrows",
+    "aeneas/backward-functions"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas symbolic interpreter",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

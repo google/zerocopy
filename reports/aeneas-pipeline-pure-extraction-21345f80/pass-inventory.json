@@ -1,0 +1,362 @@
+{
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "evidence": "source-driver inventory; semantic classification in report is derived; no rewrite verification claimed",
+  "prepasses": {
+    "crate_before": [
+      "update_array_default",
+      "anon_consts_to_calls"
+    ],
+    "function": [
+      "fix_closure_lifetimes",
+      "fix_closure_signature_regions",
+      "fix_anon_const_initializers",
+      "erase_body_regions",
+      "remove_unreachable",
+      "update_loop",
+      "remove_useless_joins",
+      "remove_shallow_borrows_storage_live_dead",
+      "simplify_panics",
+      "decompose_global_accesses",
+      "refresh_statement_ids"
+    ],
+    "crate_after": [
+      "strip_unnecessary_target_suffixes",
+      "filter_marker_traits",
+      "filter_type_aliases",
+      "remove_vtables",
+      "rename_type_vars",
+      "simplify_trait_calls"
+    ]
+  },
+  "pure_driver": [
+    {
+      "order": 1,
+      "label": "compute_pretty_names",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 2,
+      "label": "remove_meta_def",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 3,
+      "label": "inline_anon_const_initializers",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 4,
+      "label": "intro_target_feature_asserts",
+      "outer_gate": "Config.feature_gates",
+      "qualification": null
+    },
+    {
+      "order": 5,
+      "label": "unit_vars_to_unit",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 6,
+      "label": "intro_massert",
+      "outer_gate": "Config.intro_massert",
+      "qualification": null
+    },
+    {
+      "order": 7,
+      "label": "simplify_decompose_struct",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 8,
+      "label": "intro_struct_updates",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 9,
+      "label": "simplify_lambdas",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 10,
+      "label": "simplify_let_bindings",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 11,
+      "label": "inline_useless_var_assignments",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 12,
+      "label": "apply_beta_reduction",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 13,
+      "label": "eliminate_box_functions",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 14,
+      "label": "simplify_trait_calls",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 15,
+      "label": "simplify_duplicate_calls",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 16,
+      "label": "merge_let_app_then_decompose_tuple",
+      "outer_gate": "Config.merge_let_app_decompose_tuple",
+      "qualification": null
+    },
+    {
+      "order": 17,
+      "label": "filter_useless",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 18,
+      "label": "simplify_let_branching",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 19,
+      "label": "simplify_let_then_ok",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 20,
+      "label": "simplify_lambdas (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 21,
+      "label": "decompose_loop_outputs",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 22,
+      "label": "simplify_loop_output_conts",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 23,
+      "label": "apply_beta_reduction (pass 3)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 24,
+      "label": "inline_useless_var_assignments (pass 3)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 25,
+      "label": "filter_loop_useless_inputs_outputs",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 26,
+      "label": "apply_beta_reduction (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 27,
+      "label": "inline_useless_var_assignments (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 28,
+      "label": "reorder_loop_outputs",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 29,
+      "label": "loops_to_recursive",
+      "outer_gate": null,
+      "qualification": "Internal structural/continuation criteria and Config.no_recursive_loops; not an unconditional rewrite"
+    },
+    {
+      "order": 30,
+      "label": "reorder_loop_inputs",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 31,
+      "label": "let_to_match",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 32,
+      "label": "flatten_struct_updates",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 33,
+      "label": "simplify_aggregates",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 34,
+      "label": "simplify_aggregates_unchanged_fields",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 35,
+      "label": "simplify_lambdas (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 36,
+      "label": "simplify_let_bindings (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 37,
+      "label": "inline_useless_var_assignments (pass 4)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 38,
+      "label": "filter_useless (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 39,
+      "label": "simplify_let_then_ok (pass 2)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 40,
+      "label": "simplify_binop_panic_then_wrapping",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 41,
+      "label": "recover_builtin_index_functions",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 42,
+      "label": "filter_useless (after index recovery)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 43,
+      "label": "simplify_lambdas (after index recovery)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 44,
+      "label": "inline_useless_var_assignments (after index recovery)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 45,
+      "label": "simplify_array_slice_update",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 46,
+      "label": "simplify_let_then_ok (pass 3)",
+      "outer_gate": null,
+      "qualification": null
+    },
+    {
+      "order": 47,
+      "label": "decompose_monadic_let_bindings",
+      "outer_gate": "Config.decompose_monadic_let_bindings",
+      "qualification": null
+    },
+    {
+      "order": 48,
+      "label": "decompose_nested_let_patterns",
+      "outer_gate": "Config.decompose_nested_let_patterns",
+      "qualification": null
+    },
+    {
+      "order": 49,
+      "label": "unfold_monadic_let_bindings",
+      "outer_gate": "Config.unfold_monadic_let_bindings",
+      "qualification": null
+    },
+    {
+      "order": 50,
+      "label": "lift_pure_function_calls",
+      "outer_gate": "Config.lift_pure_function_calls",
+      "qualification": null
+    },
+    {
+      "order": 51,
+      "label": "update_match_over_isize_usize",
+      "outer_gate": null,
+      "qualification": null
+    }
+  ],
+  "post_driver": [
+    "decompose_loops",
+    "filter_loop_useless_inputs (function and auxiliary loops)",
+    "decompose_loop_bodies",
+    "loops_to_fixed_points (function, loops, bodies)",
+    "simplify_let_then_ok final",
+    "intro_massert post-loop (Config.intro_massert)",
+    "add_fuel (Config.use_fuel)"
+  ],
+  "checks": {
+    "sanity_checks_default": false,
+    "type_check_pure_code_default": false,
+    "pure_checker_partial": [
+      "FunOrOp",
+      "Global",
+      "TraitConst",
+      "LoopOp",
+      "ScalarValProj",
+      "MkDynTrait",
+      "loop inputs"
+    ]
+  }
+}

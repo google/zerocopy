@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "rust/semantics",
+    "rust/unsafe",
+    "verification/spatial",
+    "verification/concurrency",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Reference corpus reports compared",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+      }
+    },
+    {
+      "name": "Corten versioned paper",
+      "identity": {
+        "arxiv": "2609.04372v1"
+      }
+    },
+    {
+      "name": "Rust core API contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Anneal model and admission documentation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cce761ad53785973ec2f4a6b13715b770b340c87"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

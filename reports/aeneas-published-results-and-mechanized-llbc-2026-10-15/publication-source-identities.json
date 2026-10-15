@@ -1,0 +1,84 @@
+{
+  "observed_at": "2026-10-15",
+  "primary_sources": [
+    {
+      "cache_name": "aeneas-2022.pdf",
+      "url": "https://arxiv.org/pdf/2206.07185v2",
+      "sha256": "5a75ed1543f5db5a47b7506753898443bc7b88ecb7a2f76325e80ed5494664bc",
+      "bytes": 596202,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "aeneas-2024.pdf",
+      "url": "https://arxiv.org/pdf/2404.02680v2",
+      "sha256": "ff1f01d5bcd98c6387b24dcc06ce76e5f15d6c1234d199c0b1311ce7645bebda",
+      "bytes": 1404543,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "thesis.pdf",
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf",
+      "sha256": "0c1b720ff28c004211f47aa288efe3f22a471531f28e427a576b7926264bce07",
+      "bytes": 7062224,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "aeneas-2022.html",
+      "url": "https://arxiv.org/html/2206.07185v2",
+      "sha256": "bb92a581dffad0dcf44334a08b9397185e7432f153cacd5af946501fce1707b0",
+      "bytes": 1103049,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "aeneas-2024.html",
+      "url": "https://arxiv.org/html/2404.02680v2",
+      "sha256": "bbf6a65388aa03b04c721546bd661e1792fe23e62d4f049239b63c620f547906",
+      "bytes": 2952579,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "symcrypt.html",
+      "url": "https://arxiv.org/html/2609.15648v1",
+      "sha256": "f664df07b0f122e4a566063b1fbc5d7c44c0fcb82ae89c9d3c827fae9863a69d",
+      "bytes": 482832,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "pipeline.html",
+      "url": "https://arxiv.org/html/2605.30106v1",
+      "sha256": "d163ff8836a21c9d7257f4e13d1caa6fae4f7da01a48882d983bc3363fec3a15",
+      "bytes": 312229,
+      "adopted_into_package": false
+    },
+    {
+      "cache_name": "charon.html",
+      "url": "https://arxiv.org/html/2410.18042v2",
+      "sha256": "602d94a4dfd771caff6145f5dec4d05d21c960b3da52ed3d2fadb57948f12089",
+      "bytes": 166133,
+      "adopted_into_package": false
+    }
+  ],
+  "scans": {
+    "paper2024": "Complete HTML ltx_theorem nodes, 40; exclude3 definitions =>37 results; PDF86pages crosscheck.",
+    "thesis": "PDF402pages; anchored Theorem/Lemma headings in Chapter11 and appendicesC–G; all11theorems+27lemmas, plus Chapter14 named backend statements.",
+    "other_publications": "Complete HTML formal-node and code-listing scans; no numbered formal blocks; displayed/named results classified individually."
+  },
+  "mechanized_source": {
+    "repository": "AeneasVerif/mechanized-llbc",
+    "revision": "2762a26a3c0792017fa7a731aab1683d9a4cf23a",
+    "source_only": true
+  },
+  "pipeline_source": {
+    "repository": "runtimeverification/p3-hax-lean-fri-pipeline",
+    "revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+    "path": "lean/P3FriProofs/Proofs/FoldingCorrectness.lean",
+    "blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+    "paper_references": "PR1 head2cb29925ddf2b1cd155de8a6f8fedd1fd20a4272;PR3 head4fab6ff08a8e515321675ca121f9ad36c38268ab",
+    "source_only": true
+  },
+  "thesis_key_locations": {
+    "literal_theorem5": "PDF210/printed198; visually inspected",
+    "mechanization_status": "PDF291/printed279; pen-and-paper, mechanization ongoing, translation correctness future work",
+    "backend": "PDF264–278/printed252–266"
+  }
+}

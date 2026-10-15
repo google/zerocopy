@@ -1,0 +1,2267 @@
+{
+  "observed_at": "2026-10-15",
+  "protocol": {
+    "seed_cases": 18,
+    "added_cases": 8,
+    "selection": "All 18 assigned seed issue/PR records; scan first30 updated merged-fix results per repository; add eight semantic/interface/loop/binder cases, exclude infrastructure-only fixes. Follow four issue comment threads. Commit query supplements provenance/performance, not exhaustive.",
+    "case_count": 26,
+    "pull_request_details_count": 20,
+    "issue_comment_threads": 4,
+    "execution": "None; GitHub source and metadata inspection only.",
+    "queries": [
+      {
+        "query": "repo:AeneasVerif/aeneas is:merged fix",
+        "tool": "search_pull_requests",
+        "sort": "updated",
+        "order": "desc",
+        "page": 1,
+        "per_page": 30,
+        "incomplete_results": false,
+        "items": [
+          {
+            "closed_at": "2026-10-15T10:34:12Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1441",
+            "number": 1441,
+            "state": "closed",
+            "title": "Fixed setup-charon not initialising the submodules of charon"
+          },
+          {
+            "closed_at": "2026-10-12T11:15:18Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1416",
+            "number": 1416,
+            "state": "closed",
+            "title": "Add @[expose] to `toStr`"
+          },
+          {
+            "closed_at": "2026-10-08T11:11:42Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1380",
+            "number": 1380,
+            "state": "closed",
+            "title": "Add models of `Option::map`, `Option::is_some_and`, `bool::then` and `Result::unwrap_or`"
+          },
+          {
+            "closed_at": "2026-10-01T17:46:51Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1390",
+            "number": 1390,
+            "state": "closed",
+            "title": "Fix the elaborator for step"
+          },
+          {
+            "closed_at": "2026-09-30T15:13:08Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1379",
+            "number": 1379,
+            "state": "closed",
+            "title": "Use a fresh id when copying a symbolic value with no borrows"
+          },
+          {
+            "closed_at": "2026-09-30T13:57:30Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1378",
+            "number": 1378,
+            "state": "closed",
+            "title": "Simplify `Step.introOutputs`"
+          },
+          {
+            "closed_at": "2026-09-28T10:12:26Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1360",
+            "number": 1360,
+            "state": "closed",
+            "title": "Fix the models of the `PartialOrd` and `Ord` default methods - #1274"
+          },
+          {
+            "closed_at": "2026-09-25T13:52:17Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1302",
+            "number": 1302,
+            "state": "closed",
+            "title": "`Vec::insert` translated to `.set` instead of `.insertIdx`"
+          },
+          {
+            "closed_at": "2026-09-25T09:35:55Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1340",
+            "number": 1340,
+            "state": "closed",
+            "title": "Fix problems around `Aeneas.Std.bind`"
+          },
+          {
+            "closed_at": "2026-09-24T21:27:27Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1355",
+            "number": 1355,
+            "state": "closed",
+            "title": "Fix `Array I8` in the signed byte-conversion models"
+          },
+          {
+            "closed_at": "2026-09-23T13:55:19Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1230",
+            "number": 1230,
+            "state": "closed",
+            "title": " Migrate Aeneas to the Lean module system"
+          },
+          {
+            "closed_at": "2026-09-16T14:10:23Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1348",
+            "number": 1348,
+            "state": "closed",
+            "title": "In `InterpLoopsFixedPoint.ml` join the break contexts from two iterations"
+          },
+          {
+            "closed_at": "2026-09-03T07:21:38Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1256",
+            "number": 1256,
+            "state": "closed",
+            "title": "Jacob/positivity1138"
+          },
+          {
+            "closed_at": "2026-09-06T09:31:03Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1335",
+            "number": 1335,
+            "state": "closed",
+            "title": "Fix release"
+          },
+          {
+            "closed_at": "2026-09-03T22:02:39Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1131",
+            "number": 1131,
+            "state": "closed",
+            "title": "Fix `Iterator` extraction"
+          },
+          {
+            "closed_at": "2026-09-03T21:34:02Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1330",
+            "number": 1330,
+            "state": "closed",
+            "title": "Add suffix \"constructor\" to functions generated from constructor applications"
+          },
+          {
+            "closed_at": "2026-09-03T12:06:10Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1286",
+            "number": 1286,
+            "state": "closed",
+            "title": "fix: fix default impl of Ord::max,min"
+          },
+          {
+            "closed_at": "2026-09-03T10:57:43Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1333",
+            "number": 1333,
+            "state": "closed",
+            "title": "Implement `PrePasses.fix_closure_signature_regions`"
+          },
+          {
+            "closed_at": "2026-09-03T08:42:37Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1331",
+            "number": 1331,
+            "state": "closed",
+            "title": "Fix a function that visited projections twice in InterpBorrowsCore.ml"
+          },
+          {
+            "closed_at": "2026-09-02T19:47:22Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1329",
+            "number": 1329,
+            "state": "closed",
+            "title": "Fix a check that was in the wrong direction"
+          },
+          {
+            "closed_at": "2026-08-29T10:30:13Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1322",
+            "number": 1322,
+            "state": "closed",
+            "title": "ci: Fix release action"
+          },
+          {
+            "closed_at": "2026-08-28T12:31:36Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1318",
+            "number": 1318,
+            "state": "closed",
+            "title": "Regenerate `LeanKeywords.ml`"
+          },
+          {
+            "closed_at": "2026-08-28T10:19:49Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1315",
+            "number": 1315,
+            "state": "closed",
+            "title": "regenerate ExtractBuiltinLean.ml"
+          },
+          {
+            "closed_at": "2026-08-27T09:07:29Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1296",
+            "number": 1296,
+            "state": "closed",
+            "title": "Add regression test for Region ID fix"
+          },
+          {
+            "closed_at": "2026-08-26T16:57:47Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1306",
+            "number": 1306,
+            "state": "closed",
+            "title": "Fix Lean keyword escaping - #1301"
+          },
+          {
+            "closed_at": "2026-08-26T14:37:26Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1304",
+            "number": 1304,
+            "state": "closed",
+            "title": "Fix a bug in `PrePasses.simplify_trait_calls`"
+          },
+          {
+            "closed_at": "2026-08-25T06:52:48Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1294",
+            "number": 1294,
+            "state": "closed",
+            "title": "Correctly choose `num_domains` for parallel work"
+          },
+          {
+            "closed_at": "2026-08-24T12:42:22Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1291",
+            "number": 1291,
+            "state": "closed",
+            "title": "Fix lift_pure_function_calls to only lift monadic expressions"
+          },
+          {
+            "closed_at": "2026-08-21T13:48:27Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1254",
+            "number": 1254,
+            "state": "closed",
+            "title": "Fix a bug with the namespacing of external items for the emit-json feature"
+          },
+          {
+            "closed_at": "2026-06-05T16:09:24Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/pull/1104",
+            "number": 1104,
+            "state": "closed",
+            "title": "Update charon"
+          }
+        ],
+        "total_count": 246
+      },
+      {
+        "query": "repo:AeneasVerif/charon is:merged fix",
+        "tool": "search_pull_requests",
+        "sort": "updated",
+        "order": "desc",
+        "page": 1,
+        "per_page": 30,
+        "incomplete_results": false,
+        "items": [
+          {
+            "closed_at": "2026-10-15T15:47:05Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1490",
+            "number": 1490,
+            "state": "closed",
+            "title": "In mono mode, avoid poly items as much as possible"
+          },
+          {
+            "closed_at": "2026-10-15T14:26:29Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1531",
+            "number": 1531,
+            "state": "closed",
+            "title": "Instantiate all higher-ranked clauses"
+          },
+          {
+            "closed_at": "2026-10-15T09:21:06Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1529",
+            "number": 1529,
+            "state": "closed",
+            "title": "Fix stable build"
+          },
+          {
+            "closed_at": "2026-10-01T11:27:44Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1481",
+            "number": 1481,
+            "state": "closed",
+            "title": "Extend AST to have safety information"
+          },
+          {
+            "closed_at": "2026-10-13T08:50:59Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1515",
+            "number": 1515,
+            "state": "closed",
+            "title": "README.md: `opam` should be run w/ `--with-test`"
+          },
+          {
+            "closed_at": "2026-10-13T14:37:59Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1520",
+            "number": 1520,
+            "state": "closed",
+            "title": "Misc documentation improvements"
+          },
+          {
+            "closed_at": "2026-10-13T09:19:46Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1506",
+            "number": 1506,
+            "state": "closed",
+            "title": "pretty: avoid cloning local names on every FmtCtx reborrow"
+          },
+          {
+            "closed_at": "2026-10-13T09:41:31Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1513",
+            "number": 1513,
+            "state": "closed",
+            "title": "Retain closure bodies called by opaque code in mono mode"
+          },
+          {
+            "closed_at": "2026-10-12T13:05:34Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1518",
+            "number": 1518,
+            "state": "closed",
+            "title": "Fix the output type of known-length array subslices"
+          },
+          {
+            "closed_at": "2026-10-12T10:51:28Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1514",
+            "number": 1514,
+            "state": "closed",
+            "title": "Add `--no-code-duplication` option"
+          },
+          {
+            "closed_at": "2026-10-12T09:57:35Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1508",
+            "number": 1508,
+            "state": "closed",
+            "title": "Fix declaration ordering for associated-const initializers"
+          },
+          {
+            "closed_at": "2026-10-12T08:53:13Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1516",
+            "number": 1516,
+            "state": "closed",
+            "title": "fix: the asm test is target-specific"
+          },
+          {
+            "closed_at": "2026-10-02T23:35:07Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1495",
+            "number": 1495,
+            "state": "closed",
+            "title": "Translate to Minirust"
+          },
+          {
+            "closed_at": "2026-10-02T13:41:20Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1498",
+            "number": 1498,
+            "state": "closed",
+            "title": "Fix `vec!` reconstruction with repeated elements"
+          },
+          {
+            "closed_at": "2026-09-29T14:38:39Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1489",
+            "number": 1489,
+            "state": "closed",
+            "title": "Remember which items we started from"
+          },
+          {
+            "closed_at": "2026-09-29T13:02:24Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1488",
+            "number": 1488,
+            "state": "closed",
+            "title": "Allow having multiple concurrent versions of charon."
+          },
+          {
+            "closed_at": "2026-09-28T15:02:42Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1487",
+            "number": 1487,
+            "state": "closed",
+            "title": "Use published version of `serde_state`"
+          },
+          {
+            "closed_at": "2026-09-23T23:49:32Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1479",
+            "number": 1479,
+            "state": "closed",
+            "title": "Fix Zulip bot"
+          },
+          {
+            "closed_at": "2026-09-22T23:11:46Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1476",
+            "number": 1476,
+            "state": "closed",
+            "title": "Bump rustc test harness and fix some bugs"
+          },
+          {
+            "closed_at": "2026-09-09T13:59:25Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1427",
+            "number": 1427,
+            "state": "closed",
+            "title": "Fix escaping bound var for HRTB"
+          },
+          {
+            "closed_at": "2026-09-17T16:49:47Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1425",
+            "number": 1425,
+            "state": "closed",
+            "title": "Translate anon const as globals"
+          },
+          {
+            "closed_at": "2026-09-18T13:48:45Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1458",
+            "number": 1458,
+            "state": "closed",
+            "title": "Minor perf improvements"
+          },
+          {
+            "closed_at": "2026-09-19T14:03:17Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1461",
+            "number": 1461,
+            "state": "closed",
+            "title": "Small speedups and fixes"
+          },
+          {
+            "closed_at": "2026-09-21T21:27:30Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1469",
+            "number": 1469,
+            "state": "closed",
+            "title": "Fix panics in foreign statics and consts with fn ptrs"
+          },
+          {
+            "closed_at": "2026-09-18T21:29:42Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1459",
+            "number": 1459,
+            "state": "closed",
+            "title": "Fix misaligned anon consts"
+          },
+          {
+            "closed_at": "2026-09-22T13:38:22Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1451",
+            "number": 1451,
+            "state": "closed",
+            "title": "Fix panic for an `FnDef` with bound vars"
+          },
+          {
+            "closed_at": "2026-09-14T13:17:48Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1443",
+            "number": 1443,
+            "state": "closed",
+            "title": "Fix two bugs"
+          },
+          {
+            "closed_at": "2026-09-08T23:02:19Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1424",
+            "number": 1424,
+            "state": "closed",
+            "title": "Correctly track closure signature lifetimes in their impls"
+          },
+          {
+            "closed_at": "2026-09-08T22:22:51Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1419",
+            "number": 1419,
+            "state": "closed",
+            "title": "Rework enum discriminator computation"
+          },
+          {
+            "closed_at": "2026-09-08T21:38:50Z",
+            "html_url": "https://github.com/AeneasVerif/charon/pull/1421",
+            "number": 1421,
+            "state": "closed",
+            "title": "Remove `FunId`"
+          }
+        ],
+        "total_count": 387
+      },
+      {
+        "query": "is:closed translation bug",
+        "owner": "AeneasVerif",
+        "repo": "aeneas",
+        "tool": "search_issues (natural-language matching)",
+        "sort": "updated",
+        "order": "desc",
+        "page": 1,
+        "per_page": 30,
+        "incomplete_results": false,
+        "items": [
+          {
+            "closed_at": "2026-07-03T14:43:22Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/issues/1099",
+            "number": 1099,
+            "state": "closed",
+            "title": "Fail to translate function with double reference and try (`?`)"
+          },
+          {
+            "closed_at": "2026-06-24T10:52:42Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/issues/1160",
+            "number": 1160,
+            "state": "closed",
+            "title": "translate.json contains machine specific paths"
+          },
+          {
+            "closed_at": "2024-08-20T14:31:46Z",
+            "html_url": "https://github.com/AeneasVerif/aeneas/issues/293",
+            "number": 293,
+            "state": "closed",
+            "title": "Incorrect/missing translation for non-bool '!'"
+          }
+        ],
+        "total_count": 3
+      }
+    ],
+    "commit_search": {
+      "query": "repo:AeneasVerif/aeneas regression",
+      "sort": "committer-date",
+      "order": "desc",
+      "page": 1,
+      "per_page": 10,
+      "total_count": 14,
+      "incomplete_results": false,
+      "items": [
+        {
+          "sha": "6c2788d1366f09d69fd55b2b9be71cd17d28a9ab",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/6c2788d1366f09d69fd55b2b9be71cd17d28a9ab",
+          "message": "Extract type parameters as `Type _` in Lean (#1412)\n\n* Extract type parameters as `Type _` in Lean\n\n`A \u2192 Result B` need not live in `Type`, so generic extracted code and the\nStd models must accept types in any universe.\n\nExtraction:\n- Generic parameters and associated types are printed as `Type _`.\n- Generic trait-method parameters (bound inside a structure field) and the\n  result sort of opaque types stay in `Type`: Lean can't infer the level th"
+        },
+        {
+          "sha": "39d61ed942d56a7b0aa833d72b4863665a269712",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/39d61ed942d56a7b0aa833d72b4863665a269712",
+          "message": "Add generic WPs for ITrees (#1344)\n\n* Add generic coinductive specifications and refactor WP around them\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\n\n* Add handler-based total and partial WPMonad interpretations\n\nProve generic bind and conjunction laws for coinductive specifications. Add opt-in WPMonad constructors and triple bridges for conjunctive stateful handlers while preserving the existing Result interpretation. C"
+        },
+        {
+          "sha": "1dc1c98edc609a4cc982f283b9ca37f7f135ed82",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/1dc1c98edc609a4cc982f283b9ca37f7f135ed82",
+          "message": "Improve `intro_massert_visitor` following regressions in https://github.com/AeneasVerif/aeneas/pull/1379 (#1388)\n\n* Use a fresh id when copying a symbolic value with no borrows\n\n* Make intro_massert_visitor more general and regenerate the tests"
+        },
+        {
+          "sha": "661644c4120e529b48ea4153bfcc56622fe90256",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/661644c4120e529b48ea4153bfcc56622fe90256",
+          "message": "Fix problems around `Aeneas.Std.bind` (#1340)\n\n* Support heterogeneous binds in step tactics\n\nRecognize Bind.bind and Aeneas.Std.bind when stepping and extracting continuation names, preserving bind tracing and arity diagnostics.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\n\n* Consolidate WP rules under unprimed names\n\nRetain the wrapped spec/dspec mono and heterogeneous-bind implementations under the unprimed names, remo"
+        },
+        {
+          "sha": "63afc34e006673e38b4dd7289e4f824567050e47",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/63afc34e006673e38b4dd7289e4f824567050e47",
+          "message": "Fix `Array I8` in the signed byte-conversion models (#1355)\n\n* Fix `Array I8` in the signed byte-conversion models\n\nRust's i8..i128 to_le_bytes/to_be_bytes/from_le_bytes/from_be_bytes all use\n[u8; N] - the bytes are unsigned regardless of the integer's signedness. The\nLean models for signed scalars declared Array I8 N, while extraction correctly\npasses Array U8 N, so any crate that feeds a u8 buffer through a signed\nconversion produced Lean that "
+        },
+        {
+          "sha": "d30e6b2ff10079da7642f28e6f10c9184fa7cd4f",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/d30e6b2ff10079da7642f28e6f10c9184fa7cd4f",
+          "message": "Add regression test for Region ID fix (#1296)\n\n* add test\n\n* update test\n\n---------\n\nCo-authored-by: Oliver Butterley <51876429+oliver-butterley@users.noreply.github.com>\nCo-authored-by: Oliver Butterley <oliver.butterley@gmail.com>"
+        },
+        {
+          "sha": "94fc4cc88f2a6e7da0d7441cdad73a3fe211a671",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/94fc4cc88f2a6e7da0d7441cdad73a3fe211a671",
+          "message": "Fix Usize inequality lifting in bvify (#1208)\n\nThis PR fixes a regression introduced by #1000 by adding the missing Usize.lt_bv and Usize.le_bv theorems for bvify.\n\nExample proof hitting the regression: https://github.com/AeneasVerif/jxl-proofs/blob/f365cc22b372396949021d36c321f9033d0f326b/lean/JxlProofs/Proofs.lean#L86\n\nGemini was used to debug and fix this issue, after which I have reviewed and tested the PR."
+        },
+        {
+          "sha": "bd30f6076f5d9a7f6c1db1b067e5aa43e7af4691",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/bd30f6076f5d9a7f6c1db1b067e5aa43e7af4691",
+          "message": "Update Lean to v4.31.0 (#1136)\n\n* Update Lean to v4.31.0\n\n* Control the transparency of getMatchingAssumptions\n\n* Simplify the inferred post-conditions\n\n* Remove some useless scalar lemmas and add some others\n\n* Add a regression test\n\n* Update the scalar cast simp lemmas\n\n* Set ematch:=3 and instances:=100 by default for step\n\n* Mark ite_self as @[step_simps]"
+        },
+        {
+          "sha": "85582dfc88f3c307842cd8e47dd419994ffd39a7",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/85582dfc88f3c307842cd8e47dd419994ffd39a7",
+          "message": "fix: Correctly flag used and unused variables (#1019)\n\n* add unused var regressions\n\n* fix\n\n* address review comments\n\n* fix merge errors"
+        },
+        {
+          "sha": "1b39931d2db787e7e5f298795f0d4934daf59eb4",
+          "url": "https://github.com/AeneasVerif/aeneas/commit/1b39931d2db787e7e5f298795f0d4934daf59eb4",
+          "message": "Merge pull request #963 from mpenciak/mp/do_elab_regression\n\nfix: `do` elab regressions"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1286,
+      "title": "fix: fix default impl of Ord::max,min",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1286",
+      "state": "closed",
+      "created_at": "2026-08-24T10:06:35Z",
+      "closed_at": "2026-09-03T12:06:10Z",
+      "category": "semantic-model",
+      "invariant": "Ord ties select distinguishable equal operands correctly; numerical min/max equalities alone miss identity choice.",
+      "material_evidence_summary": "Cmp.lean switches comparison to lt y x; later #1360 adds ties tests.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-03T12:06:10Z",
+      "base_revision": "6022804326451799d4ed68d6d0204acfad164683",
+      "head_revision": "03c563ef573702ca810180a14545f54390b4526d",
+      "changed_file_count": 2,
+      "returned_file_count": 2,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Cmp.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/03c563ef573702ca810180a14545f54390b4526d/backends/lean/Aeneas/Std/Core/Cmp.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Scalar/EqOrd.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/03c563ef573702ca810180a14545f54390b4526d/backends/lean/Aeneas/Std/Scalar/EqOrd.lean"
+        }
+      ],
+      "test_files": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1116,
+      "title": "Rocq Axiom `mk_array` is unsound",
+      "url": "https://github.com/AeneasVerif/aeneas/issues/1116",
+      "state": "open",
+      "created_at": "2026-06-10T20:03:39Z",
+      "closed_at": null,
+      "category": "backend-inconsistency",
+      "invariant": "Rocq mk_array assumes length without checking input; constructing array False 1 from [] yields False.",
+      "material_evidence_summary": "Reported proof, maintainer agrees. Specific to Rocq axioms; no Lean inconsistency inference.",
+      "reported_reproducer": true,
+      "closing_prs": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 938,
+      "title": "Wrong translation with slice update in tuple",
+      "url": "https://github.com/AeneasVerif/aeneas/issues/938",
+      "state": "closed",
+      "created_at": "2026-04-15T10:17:56Z",
+      "closed_at": "2026-06-02T15:35:42Z",
+      "category": "illtyped-target",
+      "invariant": "Tuple/slice field updates must retain both updated values rather than replacing one by Unit.",
+      "material_evidence_summary": "Issue reproducer and generated Lean; comment explicitly attributes fix to #1095.",
+      "reported_reproducer": true,
+      "closing_prs": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 960,
+      "title": "Wrong binder for call to `FnMut` closure returning unit.",
+      "url": "https://github.com/AeneasVerif/aeneas/issues/960",
+      "state": "open",
+      "created_at": "2026-04-28T14:58:54Z",
+      "closed_at": null,
+      "category": "illtyped-target",
+      "invariant": "Unit elimination must preserve trait return ABI, especially (Unit, updated FnMut state).",
+      "material_evidence_summary": "Issue+comment identify ignore_output simplification; open status does not establish current repro.",
+      "reported_reproducer": true,
+      "closing_prs": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 715,
+      "title": "Add preliminary support for nested (mutable) borrows",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/715",
+      "state": "closed",
+      "created_at": "2026-01-28T17:13:08Z",
+      "closed_at": "2026-01-28T17:35:30Z",
+      "category": "support-frontier",
+      "invariant": "Ending a nested region abstraction may require ending only sub-abstractions.",
+      "material_evidence_summary": "PR explicitly preliminary, tests/src/nested-borrows.rs changed.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-01-28T17:35:29Z",
+      "base_revision": "5f77147d13369a8c393d60436412aa39f3ad205e",
+      "head_revision": "b7a0d175038d20a18f5736850f98132a6e7cf4d4",
+      "changed_file_count": 62,
+      "returned_file_count": 62,
+      "source_files": [
+        {
+          "path": "src/Translate.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/Translate.ml"
+        },
+        {
+          "path": "src/interp/Interp.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/Interp.ml"
+        },
+        {
+          "path": "src/interp/InterpAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpAbs.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrows.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpBorrows.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrows.mli",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpBorrows.mli"
+        },
+        {
+          "path": "src/interp/InterpBorrowsCore.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpBorrowsCore.ml"
+        },
+        {
+          "path": "src/interp/InterpExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpExpressions.ml"
+        },
+        {
+          "path": "src/interp/InterpJoin.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpJoin.ml"
+        },
+        {
+          "path": "src/interp/InterpJoinCore.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpJoinCore.ml"
+        },
+        {
+          "path": "src/interp/InterpLoops.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpLoops.ml"
+        },
+        {
+          "path": "src/interp/InterpMatchCtxs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpMatchCtxs.ml"
+        },
+        {
+          "path": "src/interp/InterpProjectors.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpProjectors.ml"
+        },
+        {
+          "path": "src/interp/InterpReduceCollapse.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpReduceCollapse.ml"
+        },
+        {
+          "path": "src/interp/InterpReduceCollapse.mli",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpReduceCollapse.mli"
+        },
+        {
+          "path": "src/interp/InterpStatements.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpStatements.ml"
+        },
+        {
+          "path": "src/interp/InterpUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/InterpUtils.ml"
+        },
+        {
+          "path": "src/interp/Invariants.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/interp/Invariants.ml"
+        },
+        {
+          "path": "src/llbc/Contexts.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/Contexts.ml"
+        },
+        {
+          "path": "src/llbc/Print.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/Print.ml"
+        },
+        {
+          "path": "src/llbc/Substitute.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/Substitute.ml"
+        },
+        {
+          "path": "src/llbc/TypesAnalysis.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/TypesAnalysis.ml"
+        },
+        {
+          "path": "src/llbc/TypesUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/TypesUtils.ml"
+        },
+        {
+          "path": "src/llbc/Values.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/Values.ml"
+        },
+        {
+          "path": "src/llbc/ValuesUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/llbc/ValuesUtils.ml"
+        },
+        {
+          "path": "src/pure/PrintPure.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/pure/PrintPure.ml"
+        },
+        {
+          "path": "src/pure/Pure.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/pure/Pure.ml"
+        },
+        {
+          "path": "src/pure/PureMicroPasses.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/pure/PureMicroPasses.ml"
+        },
+        {
+          "path": "src/pure/PureUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/pure/PureUtils.ml"
+        },
+        {
+          "path": "src/symbolic/PrintSymbolicAst.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/PrintSymbolicAst.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicAst.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicAst.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPure.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPure.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPureAbs.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureCore.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPureCore.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPureExpressions.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureTypes.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPureTypes.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureValues.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SymbolicToPureValues.ml"
+        },
+        {
+          "path": "src/symbolic/SynthesizeSymbolic.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/src/symbolic/SynthesizeSymbolic.ml"
+        },
+        {
+          "path": "tests/src/nested-borrows.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b7a0d175038d20a18f5736850f98132a6e7cf4d4/tests/src/nested-borrows.rs"
+        }
+      ],
+      "test_files": [
+        "tests/coq/demo/Demo.v",
+        "tests/coq/hashmap/Hashmap_Funs.v",
+        "tests/coq/misc/NoNestedBorrows.v",
+        "tests/coq/misc/Paper.v",
+        "tests/coq/misc/PoloniusList.v",
+        "tests/fstar/demo/Demo.fst",
+        "tests/fstar/hashmap/Hashmap.Funs.fst",
+        "tests/fstar/misc/NoNestedBorrows.fst",
+        "tests/fstar/misc/Paper.fst",
+        "tests/fstar/misc/PoloniusList.fst",
+        "tests/lean/AdtBorrows.lean",
+        "tests/lean/Demo/Demo.lean",
+        "tests/lean/Hashmap/Funs.lean",
+        "tests/lean/Loops.lean",
+        "tests/lean/LoopsAdts.lean",
+        "tests/lean/LoopsNested.lean",
+        "tests/lean/LoopsSequences.lean",
+        "tests/lean/NestedBorrows.lean",
+        "tests/lean/NoNestedBorrows.lean",
+        "tests/lean/Paper.lean",
+        "tests/lean/PoloniusList.lean",
+        "tests/lean/Slices.lean",
+        "tests/lean/Tutorial/Tutorial.lean",
+        "tests/src/mutually-recursive-traits.lean.out",
+        "tests/src/nested-borrows.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1186,
+      "title": "bug: Unsupported nested borrows",
+      "url": "https://github.com/AeneasVerif/aeneas/issues/1186",
+      "state": "open",
+      "created_at": "2026-07-03T14:30:29Z",
+      "closed_at": null,
+      "category": "unsupported-input",
+      "invariant": "Arrays containing slice references inside loops remain distinct from separate slice locals.",
+      "material_evidence_summary": "Issue gives failing/passing pair; no independently established fix.",
+      "reported_reproducer": true,
+      "closing_prs": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1399,
+      "title": "Bug: Internal error in `InterpMatchCtxs` when joining loop contexts over non-opaque wrapper holding borrow",
+      "url": "https://github.com/AeneasVerif/aeneas/issues/1399",
+      "state": "open",
+      "created_at": "2026-10-05T19:56:56Z",
+      "closed_at": null,
+      "category": "internal-failure-partial-output",
+      "invariant": "Loop joining over wrapper-with-borrow may fail internally and still emit a partial Lean file.",
+      "material_evidence_summary": "Self-contained fuzzing report at b86120db/Charon4bd5a29; no local run.",
+      "reported_reproducer": true,
+      "closing_prs": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1055,
+      "title": "Fix minor issues in the symbolic execution and improve performance",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1055",
+      "state": "closed",
+      "created_at": "2026-05-25T10:03:01Z",
+      "closed_at": "2026-05-26T13:57:14Z",
+      "category": "symbolic-projection-performance",
+      "invariant": "Projection checks must use projected regions, independent projectors and retained ignored metadata; equality must ignore translation-only metadata.",
+      "material_evidence_summary": "PR details specific predicate and EIgnored changes plus equality performance.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-05-26T13:57:14Z",
+      "base_revision": "6afb7c08f722ff3ce94224b27e090473887ed8eb",
+      "head_revision": "25f35b714d53ef59e6a2eaa748a665138b98f03f",
+      "changed_file_count": 18,
+      "returned_file_count": 18,
+      "source_files": [
+        {
+          "path": "src/interp/Interp.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/Interp.ml"
+        },
+        {
+          "path": "src/interp/InterpAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpAbs.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrows.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpBorrows.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrowsCore.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpBorrowsCore.ml"
+        },
+        {
+          "path": "src/interp/InterpExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpExpressions.ml"
+        },
+        {
+          "path": "src/interp/InterpJoin.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpJoin.ml"
+        },
+        {
+          "path": "src/interp/InterpMatchCtxs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpMatchCtxs.ml"
+        },
+        {
+          "path": "src/interp/InterpPaths.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpPaths.ml"
+        },
+        {
+          "path": "src/interp/InterpProjectors.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpProjectors.ml"
+        },
+        {
+          "path": "src/interp/InterpStatements.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpStatements.ml"
+        },
+        {
+          "path": "src/interp/InterpUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/interp/InterpUtils.ml"
+        },
+        {
+          "path": "src/llbc/PrintBase.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/llbc/PrintBase.ml"
+        },
+        {
+          "path": "src/llbc/Values.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/llbc/Values.ml"
+        },
+        {
+          "path": "src/llbc/ValuesUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/llbc/ValuesUtils.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/symbolic/SymbolicToPureAbs.ml"
+        },
+        {
+          "path": "src/utils/Utils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/src/utils/Utils.ml"
+        },
+        {
+          "path": "tests/src/iterators.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/25f35b714d53ef59e6a2eaa748a665138b98f03f/tests/src/iterators.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Iterators.lean",
+        "tests/src/iterators.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1095,
+      "title": "Fix several issues in the translation",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1095",
+      "state": "closed",
+      "created_at": "2026-06-01T15:11:50Z",
+      "closed_at": "2026-06-01T15:21:47Z",
+      "category": "symbolic-projection",
+      "invariant": "Shared borrow projectors may intersect; break contexts require Loop region kind; ADT backward translation must retain values.",
+      "material_evidence_summary": "Fix bundle with loops/nested-borrows tests; #938 closure explicitly links it.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-06-01T15:21:47Z",
+      "base_revision": "be9b34066864ecac63ad6e8651fc83d6fdd1c21f",
+      "head_revision": "b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88",
+      "changed_file_count": 17,
+      "returned_file_count": 17,
+      "source_files": [
+        {
+          "path": "src/interp/InterpAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpAbs.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrows.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpBorrows.ml"
+        },
+        {
+          "path": "src/interp/InterpBorrows.mli",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpBorrows.mli"
+        },
+        {
+          "path": "src/interp/InterpBorrowsCore.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpBorrowsCore.ml"
+        },
+        {
+          "path": "src/interp/InterpLoops.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpLoops.ml"
+        },
+        {
+          "path": "src/interp/InterpLoopsFixedPoint.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/InterpLoopsFixedPoint.ml"
+        },
+        {
+          "path": "src/interp/Invariants.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/interp/Invariants.ml"
+        },
+        {
+          "path": "src/llbc/TypesUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/llbc/TypesUtils.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureAbs.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/symbolic/SymbolicToPureAbs.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/symbolic/SymbolicToPureExpressions.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureValues.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/src/symbolic/SymbolicToPureValues.ml"
+        },
+        {
+          "path": "tests/src/loops.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/tests/src/loops.rs"
+        },
+        {
+          "path": "tests/src/nested-borrows.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/tests/src/nested-borrows.rs"
+        },
+        {
+          "path": "tests/src/step_by.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/b572f1eb9d7bb4ae3cbb7156a2b18f8a9fca1a88/tests/src/step_by.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Loops.lean",
+        "tests/lean/NestedBorrows.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/loops.rs",
+        "tests/src/nested-borrows.rs",
+        "tests/src/step_by.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 779,
+      "title": "Use a `loop` fixed-point combinator when extracting loops",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/779",
+      "state": "closed",
+      "created_at": "2026-02-18T10:10:47Z",
+      "closed_at": "2026-02-18T13:14:52Z",
+      "category": "loop-representation",
+      "invariant": "Loop fixed-point combinator versus recursion depends on backward-function elimination and structural measure inference.",
+      "material_evidence_summary": "Mode changes are expected output differences; tests and flags documented.",
+      "reported_reproducer": true,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-02-18T13:14:52Z",
+      "base_revision": "3bbd3442414ce56c13943ccb13cdd5a286262959",
+      "head_revision": "736464b76b1c13cfb5dd206188e3bff6b23ece69",
+      "changed_file_count": 97,
+      "returned_file_count": 97,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Primitives.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/backends/lean/Aeneas/Std/Primitives.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/backends/lean/Aeneas/Std/WP.lean"
+        },
+        {
+          "path": "src/Config.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/Config.ml"
+        },
+        {
+          "path": "src/Main.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/Main.ml"
+        },
+        {
+          "path": "src/Translate.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/Translate.ml"
+        },
+        {
+          "path": "src/extract/Extract.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/extract/Extract.ml"
+        },
+        {
+          "path": "src/extract/ExtractBase.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/extract/ExtractBase.ml"
+        },
+        {
+          "path": "src/pure/PrintPure.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PrintPure.ml"
+        },
+        {
+          "path": "src/pure/Pure.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/Pure.ml"
+        },
+        {
+          "path": "src/pure/PureMicroPasses.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureMicroPasses.ml"
+        },
+        {
+          "path": "src/pure/PureMicroPassesAnnots.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureMicroPassesAnnots.ml"
+        },
+        {
+          "path": "src/pure/PureMicroPassesGeneral.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureMicroPassesGeneral.ml"
+        },
+        {
+          "path": "src/pure/PureMicroPassesLoops.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureMicroPassesLoops.ml"
+        },
+        {
+          "path": "src/pure/PureTypeCheck.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureTypeCheck.ml"
+        },
+        {
+          "path": "src/pure/PureUtils.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/PureUtils.ml"
+        },
+        {
+          "path": "src/pure/ReorderDecls.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/pure/ReorderDecls.ml"
+        },
+        {
+          "path": "src/symbolic/SymbolicToPureExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/src/symbolic/SymbolicToPureExpressions.ml"
+        },
+        {
+          "path": "tests/src/arrays.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/arrays.rs"
+        },
+        {
+          "path": "tests/src/hashmap.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/hashmap.rs"
+        },
+        {
+          "path": "tests/src/loops-issues.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/loops-issues.rs"
+        },
+        {
+          "path": "tests/src/loops-nested-rec.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/loops-nested-rec.rs"
+        },
+        {
+          "path": "tests/src/loops-rec.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/loops-rec.rs"
+        },
+        {
+          "path": "tests/src/rename_attribute.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/rename_attribute.rs"
+        },
+        {
+          "path": "tests/src/tutorial/aeneas-test-options",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/736464b76b1c13cfb5dd206188e3bff6b23ece69/tests/src/tutorial/aeneas-test-options"
+        }
+      ],
+      "test_files": [
+        "tests/coq/arrays/Arrays.v",
+        "tests/coq/misc/RenameAttribute.v",
+        "tests/fstar/arrays/Arrays.Clauses.Template.fst",
+        "tests/fstar/arrays/Arrays.Funs.fst",
+        "tests/fstar/arrays/Arrays.Types.fst",
+        "tests/fstar/misc/RenameAttribute.Clauses.Template.fst",
+        "tests/fstar/misc/RenameAttribute.Funs.fst",
+        "tests/fstar/misc/RenameAttribute.Types.fst",
+        "tests/lean/Adt.lean",
+        "tests/lean/AdtBorrows.lean",
+        "tests/lean/ArraySliceIndex.lean",
+        "tests/lean/Arrays.lean",
+        "tests/lean/ArraysDefs.lean",
+        "tests/lean/AsMut.lean",
+        "tests/lean/Avl/Funs.lean",
+        "tests/lean/Avl/Types.lean",
+        "tests/lean/Bitwise.lean",
+        "tests/lean/BlanketImpl.lean",
+        "tests/lean/Bst/Funs.lean",
+        "tests/lean/Bst/Types.lean",
+        "tests/lean/Builtin.lean",
+        "tests/lean/Closures.lean",
+        "tests/lean/Constants.lean",
+        "tests/lean/ConstantsLean.lean",
+        "tests/lean/Default.lean",
+        "tests/lean/DefaultedMethod.lean",
+        "tests/lean/Demo/Demo.lean",
+        "tests/lean/Deref.lean",
+        "tests/lean/Derive.lean",
+        "tests/lean/Discriminant.lean",
+        "tests/lean/Dyn.lean",
+        "tests/lean/DynamicSize.lean",
+        "tests/lean/FromTo.lean",
+        "tests/lean/Hashmap/Funs.lean",
+        "tests/lean/Hashmap/Types.lean",
+        "tests/lean/Into.lean",
+        "tests/lean/Issue134LoopSharedBorrows.lean",
+        "tests/lean/Issue194RecursiveStructProjector.lean",
+        "tests/lean/Issue270LoopList.lean",
+        "tests/lean/Issue440TypeError.lean",
+        "tests/lean/Iterators.lean",
+        "tests/lean/IteratorsArray.lean",
+        "tests/lean/IteratorsScalar.lean",
+        "tests/lean/JoinDuplicate.lean",
+        "tests/lean/Joins.lean",
+        "tests/lean/ListBorrows.lean",
+        "tests/lean/Loops.lean",
+        "tests/lean/LoopsAdts.lean",
+        "tests/lean/LoopsIssues.lean",
+        "tests/lean/LoopsNested.lean",
+        "tests/lean/LoopsNestedRec.lean",
+        "tests/lean/LoopsRec.lean",
+        "tests/lean/LoopsSequences.lean",
+        "tests/lean/MiniTree.lean",
+        "tests/lean/Names.lean",
+        "tests/lean/NestedBorrows.lean",
+        "tests/lean/NoNestedBorrows.lean",
+        "tests/lean/Options.lean",
+        "tests/lean/Order.lean",
+        "tests/lean/Paper.lean",
+        "tests/lean/PoloniusList.lean",
+        "tests/lean/Print.lean",
+        "tests/lean/Range.lean",
+        "tests/lean/RenameAttribute.lean",
+        "tests/lean/Scalars.lean",
+        "tests/lean/Slices.lean",
+        "tests/lean/Static.lean",
+        "tests/lean/StringChars.lean",
+        "tests/lean/SwitchTest.lean",
+        "tests/lean/Traits.lean",
+        "tests/lean/Tutorial/Tutorial.lean",
+        "tests/lean/Vec.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/arrays.rs",
+        "tests/src/hashmap.rs",
+        "tests/src/loops-issues.rs",
+        "tests/src/loops-nested-rec.rs",
+        "tests/src/loops-rec.rs",
+        "tests/src/rename_attribute.rs",
+        "tests/src/tutorial/aeneas-test-options"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1355,
+      "title": "Fix `Array I8` in the signed byte-conversion models",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1355",
+      "state": "closed",
+      "created_at": "2026-09-17T22:16:43Z",
+      "closed_at": "2026-09-24T21:27:27Z",
+      "category": "illtyped-target-model-interface",
+      "invariant": "Signed scalar bytes still have unsigned element type; round-trip tests can hide symmetric model errors.",
+      "material_evidence_summary": "Patch changes Array I8 to U8; tests/src/builtin.rs adds signed endian cases.",
+      "reported_reproducer": true,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-24T21:27:26Z",
+      "base_revision": "557f7a15f3b75e18ddae224fc65db0807b70acdf",
+      "head_revision": "34c80f8b8e3619bcbd2a139b2e08fa016723e043",
+      "changed_file_count": 3,
+      "returned_file_count": 3,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Scalar/CoreConvertNum.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/34c80f8b8e3619bcbd2a139b2e08fa016723e043/backends/lean/Aeneas/Std/Scalar/CoreConvertNum.lean"
+        },
+        {
+          "path": "tests/src/builtin.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/34c80f8b8e3619bcbd2a139b2e08fa016723e043/tests/src/builtin.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Builtin.lean",
+        "tests/src/builtin.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1360,
+      "title": "Fix the models of the `PartialOrd` and `Ord` default methods - #1274",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1360",
+      "state": "closed",
+      "created_at": "2026-09-25T10:34:14Z",
+      "closed_at": "2026-09-28T10:12:26Z",
+      "category": "illtyped-target-model-interface",
+      "invariant": "Default trait models must accept instance ABI used by extractor, including reference comparison impls.",
+      "material_evidence_summary": "Patch and order.rs tests cover default methods, partial order None, references, ties.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-28T10:12:26Z",
+      "base_revision": "b86120db3183b0107eb5f2637b11c424cd06ef1c",
+      "head_revision": "2430e8568d45c9617a34644febcd144373e27cb7",
+      "changed_file_count": 4,
+      "returned_file_count": 4,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Cmp.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/2430e8568d45c9617a34644febcd144373e27cb7/backends/lean/Aeneas/Std/Core/Cmp.lean"
+        },
+        {
+          "path": "src/extract/ExtractBuiltinLean.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/2430e8568d45c9617a34644febcd144373e27cb7/src/extract/ExtractBuiltinLean.ml"
+        },
+        {
+          "path": "tests/src/order.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/2430e8568d45c9617a34644febcd144373e27cb7/tests/src/order.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Order.lean",
+        "tests/src/order.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1296,
+      "title": "Add regression test for Region ID fix",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1296",
+      "state": "closed",
+      "created_at": "2026-08-24T19:16:02Z",
+      "closed_at": "2026-08-27T09:07:29Z",
+      "category": "regression-provenance",
+      "invariant": "A fix and regression test can arrive in separate PRs months apart.",
+      "material_evidence_summary": "Test-only PR attributes fix to #1158 instantiate_fun_sig; issue765 test paths.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-08-27T09:07:29Z",
+      "base_revision": "52f570cfd4ae81000d21d3ee536dcf296e03366d",
+      "head_revision": "2bbe4ab4281916eab9fd2baefc89794a33f71aa2",
+      "changed_file_count": 3,
+      "returned_file_count": 3,
+      "source_files": [
+        {
+          "path": "tests/src/issue-765-hrtb-conditional-negate.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/2bbe4ab4281916eab9fd2baefc89794a33f71aa2/tests/src/issue-765-hrtb-conditional-negate.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Issue765HrtbConditionalNegate.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/issue-765-hrtb-conditional-negate.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1412,
+      "title": "Extract type parameters as `Type _` in Lean",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1412",
+      "state": "closed",
+      "created_at": "2026-10-09T19:02:16Z",
+      "closed_at": "2026-10-14T08:52:27Z",
+      "category": "target-universe",
+      "invariant": "Generic generated code and models need compatible universe levels; generic trait fields remain restricted.",
+      "material_evidence_summary": "PR body describes target-only universe test, but requested file not found at pin or PR head.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-10-14T08:52:27Z",
+      "base_revision": "bbc0151747be4e3412ed7b113a0d4b170fba0de8",
+      "head_revision": "e04ee47fe4ab815ed617bc91260623ec7e86cce0",
+      "changed_file_count": 100,
+      "returned_file_count": 100,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Do/Delab.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Do/Delab.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Do/Elab.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Do/Elab.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Do/Tests.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Do/Tests.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Alloc.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Alloc.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Array/Array.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Array/Array.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Array/ArrayDebug.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Array/ArrayDebug.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Array/ArraySlice.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Array/ArraySlice.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Cmp.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Cmp.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Convert.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Convert.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Core.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Core.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/CoreOption.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/CoreOption.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/CoreResult.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/CoreResult.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Discriminant.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Discriminant.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Error.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Error.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Fmt.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Fmt.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Hash.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Hash.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Iter.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Iter.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Marker.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Marker.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Ops.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Ops.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Pin.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Pin.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Core/Ptr.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Core/Ptr.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Primitives.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Primitives.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/RangeIter.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/RangeIter.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/RawPtr.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/RawPtr.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Slice.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Slice.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/SliceIter.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/SliceIter.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/StringIter.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/StringIter.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Vec.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/Vec.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/VecIter.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/VecIter.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Std/WP.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Elab/TraitDefault/Init.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/backends/lean/Aeneas/Tactic/Elab/TraitDefault/Init.lean"
+        },
+        {
+          "path": "documentation/aeneas-overview.md",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/documentation/aeneas-overview.md"
+        },
+        {
+          "path": "documentation/skills/aeneas-lean-core.instructions.md",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/documentation/skills/aeneas-lean-core.instructions.md"
+        },
+        {
+          "path": "src/extract/Extract.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/src/extract/Extract.ml"
+        },
+        {
+          "path": "src/extract/ExtractBase.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/src/extract/ExtractBase.ml"
+        },
+        {
+          "path": "src/extract/ExtractBuiltinLean.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/src/extract/ExtractBuiltinLean.ml"
+        },
+        {
+          "path": "src/extract/ExtractTypes.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/src/extract/ExtractTypes.ml"
+        },
+        {
+          "path": "tests/src/fn_ptr_generic.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/e04ee47fe4ab815ed617bc91260623ec7e86cce0/tests/src/fn_ptr_generic.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/AdtBorrows.lean",
+        "tests/lean/Arrays.lean",
+        "tests/lean/ArraysDefs.lean",
+        "tests/lean/AsMut.lean",
+        "tests/lean/Avl/Funs.lean",
+        "tests/lean/Avl/Types.lean",
+        "tests/lean/BlanketImpl.lean",
+        "tests/lean/Bst/Funs.lean",
+        "tests/lean/Bst/Types.lean",
+        "tests/lean/Builtin.lean",
+        "tests/lean/BuiltinAuto.lean",
+        "tests/lean/Closures.lean",
+        "tests/lean/ConstShadow.lean",
+        "tests/lean/Constants.lean",
+        "tests/lean/ConstantsLean.lean",
+        "tests/lean/DefaultedMethod.lean",
+        "tests/lean/Demo/Demo.lean",
+        "tests/lean/Deref.lean",
+        "tests/lean/Derive.lean",
+        "tests/lean/Drop.lean",
+        "tests/lean/DropBug.lean",
+        "tests/lean/Dyn.lean",
+        "tests/lean/DynamicSize.lean",
+        "tests/lean/FnPtrGeneric.lean",
+        "tests/lean/FromTo.lean",
+        "tests/lean/GenericUnitOutput.lean",
+        "tests/lean/Hashmap/Funs.lean",
+        "tests/lean/Hashmap/Types.lean",
+        "tests/lean/HigherRankedTraitBounds.lean",
+        "tests/lean/Issue1043IteratorMethods.lean",
+        "tests/lean/Issue1141ImplFnRef.lean",
+        "tests/lean/Issue1207ClosureSignatureRegions.lean",
+        "tests/lean/Issue194RecursiveStructProjector.lean",
+        "tests/lean/Issue270LoopList.lean",
+        "tests/lean/Issue765HrtbConditionalNegate.lean",
+        "tests/lean/Issue767AdtConstructor.lean",
+        "tests/lean/Issue801Hrtb.lean",
+        "tests/lean/Issue804ClosureReturnRef.lean",
+        "tests/lean/LeanKeywords.lean",
+        "tests/lean/LoopSharedBorrowProj.lean",
+        "tests/lean/Loops.lean",
+        "tests/lean/LoopsAdts.lean",
+        "tests/lean/LoopsRec.lean",
+        "tests/lean/MultiTarget.lean",
+        "tests/lean/MutBorrowInSharedBorrow.lean",
+        "tests/lean/NestedBorrows.lean",
+        "tests/lean/NestedSharedBorrows.lean",
+        "tests/lean/NoNestedBorrows.lean",
+        "tests/lean/OpaqueMutRegion.lean",
+        "tests/lean/Options.lean",
+        "tests/lean/Order.lean",
+        "tests/lean/Paper.lean",
+        "tests/lean/PoloniusList.lean",
+        "tests/lean/RenameAttribute.lean",
+        "tests/lean/RustBorrowCheckIssues.lean",
+        "tests/lean/Slices.lean",
+        "tests/lean/Static.lean",
+        "tests/lean/Traits.lean",
+        "tests/lean/Tutorial/Tutorial.lean",
+        "tests/lean/Vec.lean",
+        "tests/lean/VecIter.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/fn_ptr_generic.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1189,
+      "title": "Bug: missing drop function",
+      "url": "https://github.com/AeneasVerif/charon/issues/1189",
+      "state": "closed",
+      "created_at": "2026-05-28T09:07:46Z",
+      "closed_at": "2026-05-28T10:08:22Z",
+      "category": "frontend-reference-closure",
+      "invariant": "Filtering a Drop impl can leave LLBC function references dangling.",
+      "material_evidence_summary": "Issue LLBC reproducer and explicit closer #1191.",
+      "reported_reproducer": true,
+      "closing_prs": [
+        {
+          "number": 1191,
+          "repository": "AeneasVerif/charon",
+          "state": "MERGED",
+          "title": "aeneas: don't hide `Drop` impls",
+          "url": "https://github.com/AeneasVerif/charon/pull/1191"
+        }
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1191,
+      "title": "aeneas: don't hide `Drop` impls",
+      "url": "https://github.com/AeneasVerif/charon/pull/1191",
+      "state": "closed",
+      "created_at": "2026-05-28T09:54:06Z",
+      "closed_at": "2026-05-28T10:08:20Z",
+      "category": "frontend-reference-closure",
+      "invariant": "Aeneas preset must not exclude Drop impls still referenced by extracted glue.",
+      "material_evidence_summary": "Patch removes two exclude entries; no regression test file in PR.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-05-28T10:08:20Z",
+      "base_revision": "56c7fe5aa35a36cbdd5b105708cdb981fe98b79a",
+      "head_revision": "b1096182b418d99fa7440421dcf1099fda5785ae",
+      "changed_file_count": 1,
+      "returned_file_count": 1,
+      "source_files": [
+        {
+          "path": "charon/src/options.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/b1096182b418d99fa7440421dcf1099fda5785ae/charon/src/options.rs"
+        }
+      ],
+      "test_files": []
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1480,
+      "title": "Add a flag that undoes drop elaboration",
+      "url": "https://github.com/AeneasVerif/charon/pull/1480",
+      "state": "closed",
+      "created_at": "2026-09-24T18:07:49Z",
+      "closed_at": "2026-09-25T19:56:35Z",
+      "category": "frontend-schema-drop",
+      "invariant": "Conditional drop resugaring depends on faithful drop flags/place inhabitedness, with restricted detected cases.",
+      "material_evidence_summary": "New detection/resugar passes, Rust fixtures and generated AST/decoders changed.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-25T19:56:35Z",
+      "base_revision": "a661f842203b7ee9d8f97df65f08639b563bdb10",
+      "head_revision": "4bd5a29f6e97ce2201ed35251afe5716e53b0a3a",
+      "changed_file_count": 33,
+      "returned_file_count": 33,
+      "source_files": [
+        {
+          "path": "charon-ml/src/CharonVersion.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/CharonVersion.ml"
+        },
+        {
+          "path": "charon-ml/src/PrintFmt.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/PrintFmt.ml"
+        },
+        {
+          "path": "charon-ml/src/Substitute.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/Substitute.ml"
+        },
+        {
+          "path": "charon-ml/src/generated/Generated_FullAst.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/generated/Generated_FullAst.ml"
+        },
+        {
+          "path": "charon-ml/src/generated/Generated_GAst.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/generated/Generated_GAst.ml"
+        },
+        {
+          "path": "charon-ml/src/generated/Generated_OfJson.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/generated/Generated_OfJson.ml"
+        },
+        {
+          "path": "charon-ml/src/generated/Generated_OfPostcard.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon-ml/src/generated/Generated_OfPostcard.ml"
+        },
+        {
+          "path": "charon/Cargo.lock",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/Cargo.lock"
+        },
+        {
+          "path": "charon/Cargo.toml",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/Cargo.toml"
+        },
+        {
+          "path": "charon/src/ast/bodies.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/ast/bodies.rs"
+        },
+        {
+          "path": "charon/src/ast/bodies/places.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/ast/bodies/places.rs"
+        },
+        {
+          "path": "charon/src/ast/bodies/unstructured.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/ast/bodies/unstructured.rs"
+        },
+        {
+          "path": "charon/src/ast/type_level/types.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/ast/type_level/types.rs"
+        },
+        {
+          "path": "charon/src/ast/visitor.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/ast/visitor.rs"
+        },
+        {
+          "path": "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/bin/charon-driver/translate/translate_bodies.rs"
+        },
+        {
+          "path": "charon/src/options.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/options.rs"
+        },
+        {
+          "path": "charon/src/pretty/fmt_with_ctx.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/pretty/fmt_with_ctx.rs"
+        },
+        {
+          "path": "charon/src/transform/add_missing_info/detect_drop_flags.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/transform/add_missing_info/detect_drop_flags.rs"
+        },
+        {
+          "path": "charon/src/transform/mod.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/transform/mod.rs"
+        },
+        {
+          "path": "charon/src/transform/resugar/resugar_drops.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/transform/resugar/resugar_drops.rs"
+        },
+        {
+          "path": "charon/src/transform/simplify_output/remove_unused_locals.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/src/transform/simplify_output/remove_unused_locals.rs"
+        },
+        {
+          "path": "charon/tests/help-output.txt",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/tests/help-output.txt"
+        },
+        {
+          "path": "charon/tests/ui/detect-drop-flags.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/tests/ui/detect-drop-flags.rs"
+        },
+        {
+          "path": "charon/tests/ui/resugar-drops.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/charon/tests/ui/resugar-drops.rs"
+        },
+        {
+          "path": "docs/SUMMARY.md",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/docs/SUMMARY.md"
+        },
+        {
+          "path": "docs/faq.md",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/docs/faq.md"
+        },
+        {
+          "path": "docs/internals.md",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/docs/internals.md"
+        },
+        {
+          "path": "docs/introduction.md",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/docs/introduction.md"
+        },
+        {
+          "path": "docs/usage.md",
+          "url": "https://github.com/AeneasVerif/charon/blob/4bd5a29f6e97ce2201ed35251afe5716e53b0a3a/docs/usage.md"
+        }
+      ],
+      "test_files": [
+        "charon/tests/help-output.txt",
+        "charon/tests/ui/detect-drop-flags.out",
+        "charon/tests/ui/detect-drop-flags.rs",
+        "charon/tests/ui/issue-114-opaque-bodies.out",
+        "charon/tests/ui/resugar-drops.out",
+        "charon/tests/ui/resugar-drops.rs",
+        "charon/tests/ui/simple/conditional-drop.out"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1451,
+      "title": "Fix panic for an `FnDef` with bound vars",
+      "url": "https://github.com/AeneasVerif/charon/pull/1451",
+      "state": "closed",
+      "created_at": "2026-09-17T12:13:47Z",
+      "closed_at": "2026-09-22T13:38:22Z",
+      "category": "frontend-binder",
+      "invariant": "FnDef bound vars may not satisfy no_bound_vars assertion; erasure avoids panic with precision loss.",
+      "material_evidence_summary": "Patch explicitly says loss of precision; fndef-with-bound-vars.rs regression.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-22T13:38:22Z",
+      "base_revision": "b0f353fd7e53d2581c4490179b1f8f2f2977b811",
+      "head_revision": "470fa26cf55c873d0c844599b563d5320a37c4bf",
+      "changed_file_count": 5,
+      "returned_file_count": 5,
+      "source_files": [
+        {
+          "path": ".gitignore",
+          "url": "https://github.com/AeneasVerif/charon/blob/470fa26cf55c873d0c844599b563d5320a37c4bf/.gitignore"
+        },
+        {
+          "path": "charon/src/bin/charon-driver/hax/types/ty.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/470fa26cf55c873d0c844599b563d5320a37c4bf/charon/src/bin/charon-driver/hax/types/ty.rs"
+        },
+        {
+          "path": "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/470fa26cf55c873d0c844599b563d5320a37c4bf/charon/src/bin/charon-driver/translate/translate_bodies.rs"
+        },
+        {
+          "path": "charon/tests/ui/fndef-with-bound-vars.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/470fa26cf55c873d0c844599b563d5320a37c4bf/charon/tests/ui/fndef-with-bound-vars.rs"
+        }
+      ],
+      "test_files": [
+        "charon/tests/ui/fndef-with-bound-vars.out",
+        "charon/tests/ui/fndef-with-bound-vars.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1302,
+      "title": "`Vec::insert` translated to `.set` instead of `.insertIdx`",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1302",
+      "state": "closed",
+      "created_at": "2026-08-26T13:46:04Z",
+      "closed_at": "2026-09-25T13:52:17Z",
+      "category": "semantic-model",
+      "invariant": "Vec insert must increase length and shift elements; proving a spec for set can validate wrong model.",
+      "material_evidence_summary": "Patch uses insertIdx plus capacity check but retains strict i<length guard: full Rust boundary equivalence not established.",
+      "reported_reproducer": true,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-25T13:52:17Z",
+      "base_revision": "09e1e980e2c0dbed92fadd4d8afd33e45f8137c2",
+      "head_revision": "d24aa6be88683b78e6ea86ed2e865e3a3bcc3167",
+      "changed_file_count": 2,
+      "returned_file_count": 2,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Vec.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/d24aa6be88683b78e6ea86ed2e865e3a3bcc3167/backends/lean/Aeneas/Std/Vec.lean"
+        },
+        {
+          "path": "src/extract/ExtractBuiltinLean.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/d24aa6be88683b78e6ea86ed2e865e3a3bcc3167/src/extract/ExtractBuiltinLean.ml"
+        }
+      ],
+      "test_files": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1348,
+      "title": "In `InterpLoopsFixedPoint.ml` join the break contexts from two iterations",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1348",
+      "state": "closed",
+      "created_at": "2026-09-16T13:01:27Z",
+      "closed_at": "2026-09-16T14:10:23Z",
+      "category": "loop-join",
+      "invariant": "Joining break contexts must include abstraction relationships exposed by refreshed identities.",
+      "material_evidence_summary": "Patch reevaluates break paths; issue1206 regression; excludes last case moved to1349.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-16T14:10:23Z",
+      "base_revision": "505b6ca35217e7be5c96c3e2f8045edfbdf47291",
+      "head_revision": "f0e05bf556e747f040effa704037e4d106b5cb72",
+      "changed_file_count": 4,
+      "returned_file_count": 4,
+      "source_files": [
+        {
+          "path": "src/interp/InterpLoopsFixedPoint.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/f0e05bf556e747f040effa704037e4d106b5cb72/src/interp/InterpLoopsFixedPoint.ml"
+        },
+        {
+          "path": "tests/src/issue-1206-loop-break.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/f0e05bf556e747f040effa704037e4d106b5cb72/tests/src/issue-1206-loop-break.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Issue1206LoopBreak.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/issue-1206-loop-break.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1379,
+      "title": "Use a fresh id when copying a symbolic value with no borrows",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1379",
+      "state": "closed",
+      "created_at": "2026-09-28T10:46:25Z",
+      "closed_at": "2026-09-30T15:13:08Z",
+      "category": "symbolic-identity",
+      "invariant": "Copying borrow-free symbolic values needs fresh identity so later expansion does not expand frozen original.",
+      "material_evidence_summary": "Patch+joins.rs; later commit1dc1c98 explicitly follows regressions caused by1379.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-30T15:13:08Z",
+      "base_revision": "cd8fcc87dee884c499c4e99daeb184eb7efa1c85",
+      "head_revision": "bfd5c8b5db465dd2e1dcb6ee0f7593cf07b42ece",
+      "changed_file_count": 12,
+      "returned_file_count": 12,
+      "source_files": [
+        {
+          "path": "src/interp/InterpExpressions.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/bfd5c8b5db465dd2e1dcb6ee0f7593cf07b42ece/src/interp/InterpExpressions.ml"
+        },
+        {
+          "path": "tests/src/joins.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/bfd5c8b5db465dd2e1dcb6ee0f7593cf07b42ece/tests/src/joins.rs"
+        }
+      ],
+      "test_files": [
+        "tests/coq/misc/NoNestedBorrows.v",
+        "tests/lean/AssertCfg.lean",
+        "tests/lean/Dyn.lean",
+        "tests/lean/Issue789LoopCtxMatch.lean",
+        "tests/lean/Iterators.lean",
+        "tests/lean/Joins.lean",
+        "tests/lean/LoopsAdts.lean",
+        "tests/lean/LoopsIssues.lean",
+        "tests/lean/NestedBorrows.lean",
+        "tests/lean/RustBorrowCheckIssues.lean",
+        "tests/src/joins.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1390,
+      "title": "Fix the elaborator for step",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1390",
+      "state": "closed",
+      "created_at": "2026-10-01T17:15:05Z",
+      "closed_at": "2026-10-01T17:46:51Z",
+      "category": "target-elaborator",
+      "invariant": "Malformed spec/config arguments must throw, not recover into synthetic sorry terms; parser registration unambiguous.",
+      "material_evidence_summary": "Target-only ParserErrors.lean checks malformed syntax, errors, fallback branch.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-10-01T17:46:51Z",
+      "base_revision": "ad05a717f8238ad51e13d10216dba39e42e48737",
+      "head_revision": "73fc4e991e02eff4abb8deddd9a7c4f1d8105aeb",
+      "changed_file_count": 4,
+      "returned_file_count": 4,
+      "source_files": [
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Step.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/73fc4e991e02eff4abb8deddd9a7c4f1d8105aeb/backends/lean/Aeneas/Tactic/Step/Step.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/StepStar.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/73fc4e991e02eff4abb8deddd9a7c4f1d8105aeb/backends/lean/Aeneas/Tactic/Step/StepStar.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Tests.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/73fc4e991e02eff4abb8deddd9a7c4f1d8105aeb/backends/lean/Aeneas/Tactic/Step/Tests.lean"
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Tests/ParserErrors.lean",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/73fc4e991e02eff4abb8deddd9a7c4f1d8105aeb/backends/lean/Aeneas/Tactic/Step/Tests/ParserErrors.lean"
+        }
+      ],
+      "test_files": []
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "number": 1333,
+      "title": "Implement `PrePasses.fix_closure_signature_regions`",
+      "url": "https://github.com/AeneasVerif/aeneas/pull/1333",
+      "state": "closed",
+      "created_at": "2026-09-03T10:43:00Z",
+      "closed_at": "2026-09-03T10:57:43Z",
+      "category": "frontend-region-repair",
+      "invariant": "Closure signatures with exactly one bound region can repair erased region arguments; not general lifetime reconstruction.",
+      "material_evidence_summary": "PrePasses patch and issue1207 regression; mitigates Charon1040.",
+      "reported_reproducer": true,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-03T10:57:43Z",
+      "base_revision": "e03feebaab239bfc52e303c059b936980c13ef82",
+      "head_revision": "3eba3e4638d61cb5a51909103d5bd7c6b26027e4",
+      "changed_file_count": 4,
+      "returned_file_count": 4,
+      "source_files": [
+        {
+          "path": "src/PrePasses.ml",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/3eba3e4638d61cb5a51909103d5bd7c6b26027e4/src/PrePasses.ml"
+        },
+        {
+          "path": "tests/src/issue-1207-closure-signature-regions.rs",
+          "url": "https://github.com/AeneasVerif/aeneas/blob/3eba3e4638d61cb5a51909103d5bd7c6b26027e4/tests/src/issue-1207-closure-signature-regions.rs"
+        }
+      ],
+      "test_files": [
+        "tests/lean/Issue1207ClosureSignatureRegions.lean",
+        "tests/lean/lakefile.lean",
+        "tests/src/issue-1207-closure-signature-regions.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1427,
+      "title": "Fix escaping bound var for HRTB",
+      "url": "https://github.com/AeneasVerif/charon/pull/1427",
+      "state": "closed",
+      "created_at": "2026-09-09T13:35:27Z",
+      "closed_at": "2026-09-09T13:59:25Z",
+      "category": "frontend-binder",
+      "invariant": "Translate higher-ranked region binder before erasing it, rather than skipping binder unsafely.",
+      "material_evidence_summary": "translate_predicates patch; broad golden churn does not alone prove all HRTB cases.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-09-09T13:59:24Z",
+      "base_revision": "604ffdc746db0fc008a3401c4d412c8578eee104",
+      "head_revision": "1941b9e7b626d54c8f6ec519e63483e7c16489da",
+      "changed_file_count": 47,
+      "returned_file_count": 47,
+      "source_files": [
+        {
+          "path": "charon/src/bin/charon-driver/translate/translate_predicates.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/1941b9e7b626d54c8f6ec519e63483e7c16489da/charon/src/bin/charon-driver/translate/translate_predicates.rs"
+        }
+      ],
+      "test_files": [
+        "charon/tests/cargo/dependencies.out",
+        "charon/tests/cargo/issue-396-lib-bin.out",
+        "charon/tests/cargo/issue-412-dup-deps.out",
+        "charon/tests/cargo/test-attributes.out",
+        "charon/tests/ui/arrays.out",
+        "charon/tests/ui/associated_types/associated-types.out",
+        "charon/tests/ui/associated_types/mem-discriminant-from-derive.out",
+        "charon/tests/ui/borrowck-statements.out",
+        "charon/tests/ui/comments.out",
+        "charon/tests/ui/control-flow/issue-297-cfg.out",
+        "charon/tests/ui/copy_nonoverlapping.out",
+        "charon/tests/ui/dyn/box-dyn-fnonce-raw.out",
+        "charon/tests/ui/dyn/dyn-cast-to-supertrait.out",
+        "charon/tests/ui/dyn/dyn-trait.out",
+        "charon/tests/ui/dyn/vtables.out",
+        "charon/tests/ui/gosim-demo.out",
+        "charon/tests/ui/impl-trait.out",
+        "charon/tests/ui/issue-1409-anonymous-method-lifetime.out",
+        "charon/tests/ui/issue-394-rpit-with-lifetime.out",
+        "charon/tests/ui/issue-45-misc.out",
+        "charon/tests/ui/iterator.out",
+        "charon/tests/ui/ml-name-matcher-tests.out",
+        "charon/tests/ui/ml-partial-mono-name-matcher-tests.out",
+        "charon/tests/ui/monomorphization/issue-1159-assoc-const.out",
+        "charon/tests/ui/monomorphize-mut-no-types.out",
+        "charon/tests/ui/monomorphize-mut.out",
+        "charon/tests/ui/multi-target/issue-1213-merge-methods-when-missing.out",
+        "charon/tests/ui/partial-monomorphization/issue-1204-partial-mono-tuples.out",
+        "charon/tests/ui/partial-monomorphization/mono-mut-tuple.out",
+        "charon/tests/ui/polonius_map.out",
+        "charon/tests/ui/predicates-on-late-bound-vars.out",
+        "charon/tests/ui/quantified-clause.out",
+        "charon/tests/ui/regressions/issue-1073-out-of-bounds-body-region.out",
+        "charon/tests/ui/rust-name-matcher-tests.out",
+        "charon/tests/ui/simple/catch-unwind.out",
+        "charon/tests/ui/simple/closure-fn.out",
+        "charon/tests/ui/simple/lending-iterator-gat.out",
+        "charon/tests/ui/simple/pass-higher-kinded-fn-item-as-closure.out",
+        "charon/tests/ui/simple/slice_index_range.out",
+        "charon/tests/ui/simple/thread-local.out",
+        "charon/tests/ui/simple/well-formedness-bound.out",
+        "charon/tests/ui/slice-index-range.out",
+        "charon/tests/ui/traits.out",
+        "charon/tests/ui/type_inference_is_order_dependent.out",
+        "charon/tests/ui/unsize.out",
+        "charon/tests/ui/unsupported/issue-79-bound-regions.out"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1498,
+      "title": "Fix `vec!` reconstruction with repeated elements",
+      "url": "https://github.com/AeneasVerif/charon/pull/1498",
+      "state": "closed",
+      "created_at": "2026-10-02T13:09:01Z",
+      "closed_at": "2026-10-02T13:41:20Z",
+      "category": "frontend-reconstruction",
+      "invariant": "vec literal reconstruction must recognize repeat rvalue as well as array aggregates.",
+      "material_evidence_summary": "Patch retains Rvalue and type; repeated_value Rust+out fixtures.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-10-02T13:41:20Z",
+      "base_revision": "f32886b22dbcc4f5d2811cfea10c8fda3b46ad32",
+      "head_revision": "5a9c681dcafb582aec9276c2a91d5cdcc3a17dfa",
+      "changed_file_count": 3,
+      "returned_file_count": 3,
+      "source_files": [
+        {
+          "path": "charon/src/transform/resugar/reconstruct_vec_boxes.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/5a9c681dcafb582aec9276c2a91d5cdcc3a17dfa/charon/src/transform/resugar/reconstruct_vec_boxes.rs"
+        },
+        {
+          "path": "charon/tests/ui/vec-reconstruct-multiple-adjacent.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/5a9c681dcafb582aec9276c2a91d5cdcc3a17dfa/charon/tests/ui/vec-reconstruct-multiple-adjacent.rs"
+        }
+      ],
+      "test_files": [
+        "charon/tests/ui/vec-reconstruct-multiple-adjacent.out",
+        "charon/tests/ui/vec-reconstruct-multiple-adjacent.rs"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "number": 1518,
+      "title": "Fix the output type of known-length array subslices",
+      "url": "https://github.com/AeneasVerif/charon/pull/1518",
+      "state": "closed",
+      "created_at": "2026-10-12T12:19:03Z",
+      "closed_at": "2026-10-12T13:05:34Z",
+      "category": "frontend-schema-type",
+      "invariant": "Statically sized array subslices require concretization from slice reference to array reference.",
+      "material_evidence_summary": "Patch adds Concretize cast; issue320 golden fixture changes.",
+      "reported_reproducer": false,
+      "closing_prs": [],
+      "merged": true,
+      "merged_at": "2026-10-12T13:05:34Z",
+      "base_revision": "350f5d842e6ea765956184a09a714932008958e6",
+      "head_revision": "b2bd183e3ff9782e63053144a6f5b17c92096288",
+      "changed_file_count": 5,
+      "returned_file_count": 5,
+      "source_files": [
+        {
+          "path": "charon-ml/src/generated/Generated_Expressions.ml",
+          "url": "https://github.com/AeneasVerif/charon/blob/b2bd183e3ff9782e63053144a6f5b17c92096288/charon-ml/src/generated/Generated_Expressions.ml"
+        },
+        {
+          "path": "charon/src/ast/bodies/expressions.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/b2bd183e3ff9782e63053144a6f5b17c92096288/charon/src/ast/bodies/expressions.rs"
+        },
+        {
+          "path": "charon/src/minirust.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/b2bd183e3ff9782e63053144a6f5b17c92096288/charon/src/minirust.rs"
+        },
+        {
+          "path": "charon/src/transform/simplify_output/builtins_to_function_calls.rs",
+          "url": "https://github.com/AeneasVerif/charon/blob/b2bd183e3ff9782e63053144a6f5b17c92096288/charon/src/transform/simplify_output/builtins_to_function_calls.rs"
+        }
+      ],
+      "test_files": [
+        "charon/tests/ui/issue-320-slice-pattern.out"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "repo": "aeneas",
+      "number": 938,
+      "comments": [
+        {
+          "url": "https://github.com/AeneasVerif/aeneas/issues/938#issuecomment-4603625202",
+          "date": "2026-06-02T14:50:41Z",
+          "summary": "Here is a reproducer for a slightly different version of this issue:\n```rust\nfn f(a : &mut [S; 8]) {\n    let mut i = 0;\n    while i < 8 {\n        a[i].0 = 0;\n        i += 1;\n    }\n}\n```\n\nwhich produces the following lean:\n```lean\ndef f_loop.body\n  (a : Array S 8#usize) (i : Std.Usize) :\n  Result (ControlFlow ((Array S 8#usize) \u00d7 Std.Usize) (Array S 8#usize))\n  := do\n  if i < 8#usize\n  then let a1 \u2190 Array.update a i ()\n       let i1 \u2190 i + 1#usize\n       ok (cont (a1, i1))\n  else ok (done a)\n```\n\nwhere `Array.update a i ()` is incorrect"
+        },
+        {
+          "url": "https://github.com/AeneasVerif/aeneas/issues/938#issuecomment-4604038379",
+          "date": "2026-06-02T15:35:42Z",
+          "summary": "Fixed by https://github.com/AeneasVerif/aeneas/pull/1095"
+        }
+      ]
+    },
+    {
+      "repo": "aeneas",
+      "number": 1116,
+      "comments": [
+        {
+          "url": "https://github.com/AeneasVerif/aeneas/issues/1116#issuecomment-4676370504",
+          "date": "2026-06-11T01:33:46Z",
+          "summary": "That is correct. But at this stage I'm pondering whether I should not simply deprecate the F*, Rocq and HOL4 backends: they are not maintained."
+        }
+      ]
+    },
+    {
+      "repo": "aeneas",
+      "number": 960,
+      "comments": [
+        {
+          "url": "https://github.com/AeneasVerif/aeneas/issues/960#issuecomment-4336963445",
+          "date": "2026-04-28T15:59:18Z",
+          "summary": "Other reproducer:\n\n```rust\ntrait T {\n    type Output;\n    fn f(&mut self) -> Self::Output; \n}\n\nimpl T for u16 {\n    type Output = ();\n    fn f(&mut self) -> () {\n    }\n}\n```\nThe issue seems to come from the [`ignore_output` simplification](https://github.com/AeneasVerif/aeneas/blob/a2fcf1923d16684cec638f5503da11acd0ef002d/src/symbolic/SymbolicToPureExpressions.ml#L384) that omits the `Unit` from the return type which doesn't play well with traits where the shape of the return value must be the same for all impls. We could deactivate the optimization for trait methods, or at least for trait methods where the output type comes from a generic or associated type."
+        }
+      ]
+    },
+    {
+      "repo": "aeneas",
+      "number": 1186,
+      "comments": [
+        {
+          "url": "https://github.com/AeneasVerif/aeneas/issues/1186#issuecomment-4877877849",
+          "date": "2026-07-03T16:02:58Z",
+          "summary": "Thanks!"
+        }
+      ]
+    }
+  ],
+  "pinned_source": [
+    {
+      "path": "tests/lean/FnPtrGenericUniverses.lean",
+      "result": "404"
+    },
+    {
+      "path": "tests/README.md",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/README.md",
+      "blob_sha": "5aa96fab26146514d0ecb2e26fcc40a5a45c94d9"
+    },
+    {
+      "path": "tests/test_runner.ml",
+      "result": "404"
+    },
+    {
+      "path": "Makefile",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/Makefile",
+      "blob_sha": "6fffed2d210577295a52cc8ace33131b4883d17d"
+    },
+    {
+      "path": "tests/test_runner/Input.ml",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/test_runner/Input.ml",
+      "blob_sha": "042191ed5aecc9f591a7522e0c7d956b14e76842"
+    },
+    {
+      "path": "tests/test_runner/Runner.ml",
+      "result": "404"
+    },
+    {
+      "path": "tests/Makefile",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/Makefile",
+      "blob_sha": "a911e037441a0693dc5aad5ce12326cbd849f161"
+    },
+    {
+      "path": "tests/lean/lakefile.lean",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/lean/lakefile.lean",
+      "blob_sha": "0f3d9fb4c9ce41f2248738ef6778779992185989"
+    }
+  ],
+  "universe_test_caveat": {
+    "claimed_path": "tests/lean/FnPtrGenericUniverses.lean",
+    "not_found_at": [
+      "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "e04ee47fe4ab815ed617bc91260623ec7e86cce0"
+    ],
+    "pr1412_second_file_page_count": 0,
+    "verified_generated_file": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/lean/FnPtrGeneric.lean"
+  },
+  "normative_api_documents": [
+    {
+      "name": "Rust std Vec::insert",
+      "url": "https://doc.rust-lang.org/std/vec/struct.Vec.html#method.insert",
+      "version": "1.99.1",
+      "displayed_revision": "58cf8f9c3",
+      "observation": "2026-10-15",
+      "requirement_summary": "Insertion shifts suffix; index equal to len is permitted; index greater than len panics."
+    },
+    {
+      "name": "Rust std Ord::max/min",
+      "url": "https://doc.rust-lang.org/std/cmp/trait.Ord.html#method.max",
+      "version": "1.99.1",
+      "displayed_revision": "58cf8f9c3",
+      "observation": "2026-10-15",
+      "requirement_summary": "Equal comparison selects second argument for max, first for min."
+    }
+  ]
+}

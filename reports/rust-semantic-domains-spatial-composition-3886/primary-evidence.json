@@ -1,0 +1,77 @@
+{
+  "observed_at": "2026-10-15",
+  "fresh_primary": [
+    {
+      "name": "Corten paper",
+      "identity": {
+        "arxiv": "2609.04372v1"
+      },
+      "url": "https://arxiv.org/html/2609.04372v1",
+      "coordinates": [
+        "Section 3",
+        "Appendix C (abstract memory handlers)",
+        "Appendix G Table 4 and oracle",
+        "Appendix H trust base"
+      ],
+      "role": "documentation; versioned paper claims, no artifact build"
+    },
+    {
+      "name": "Rust core API contract",
+      "repository": "rust-lang/rust",
+      "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "path": "library/core/src/pin.rs",
+      "blob": "52a84082f3b920882b9d567207a8fe191556cec9",
+      "role": "source/documentation"
+    },
+    {
+      "name": "Rust core API contract",
+      "repository": "rust-lang/rust",
+      "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "path": "library/core/src/future/future.rs",
+      "blob": "fab13bb7c853586b2d0001e9fbd2e5a7d9379764",
+      "role": "source/documentation"
+    },
+    {
+      "name": "Rust core API contract",
+      "repository": "rust-lang/rust",
+      "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "path": "library/core/src/marker.rs",
+      "blob": "1eea7adf1a6d5b0d0b5f64603c3a4029ee41c41d",
+      "role": "source/documentation"
+    },
+    {
+      "name": "Anneal documented model/admission boundary",
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/SEMANTICS.md",
+      "blob": "d89909750724dbafb76715e673626023b6cd49fd",
+      "role": "source documentation; not current product execution"
+    },
+    {
+      "name": "Anneal documented model/admission boundary",
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "verification/aeneas/ADMISSION_DESIGN.md",
+      "blob": "bb01b1d5df63f53dd427f9f3dbde84cfa8dd5cdf",
+      "role": "source documentation; not current product execution"
+    },
+    {
+      "name": "Anneal documented model/admission boundary",
+      "repository": "google/zerocopy",
+      "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+      "path": "anneal/lean/README.md",
+      "blob": "9799e4c04818c085ac9b3e95bb79dc7ddbe78cc5",
+      "role": "source documentation; not current product execution"
+    },
+    {
+      "name": "Rust Reference destructors",
+      "url": "https://doc.rust-lang.org/reference/destructors.html",
+      "identity_limit": "Moving documentation observed 2026-10-15; no immutable document revision established",
+      "coordinates": [
+        "destructors.operation",
+        "destructors.scope"
+      ],
+      "role": "normative documentation"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "verification/certificates",
+    "verification/translation-validation",
+    "aeneas",
+    "verification/related-work"
+  ],
+  "subjects": [
+    {
+      "name": "Reference corpus reports compared",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "fa65b241fd0cb2c791c841eace86d43d724359bc"
+      }
+    },
+    {
+      "name": "Katamaran ICFP 2022 paper",
+      "identity": {
+        "doi": "10.1145/3547628"
+      }
+    },
+    {
+      "name": "CakeML backend author manuscript",
+      "identity": {
+        "url": "https://cakeml.org/jfp19.pdf",
+        "printed-date": "2018-11-19",
+        "pdf-pages": "59"
+      }
+    },
+    {
+      "name": "Lean4Lean versioned paper",
+      "identity": {
+        "arxiv": "2403.14064v3"
+      }
+    },
+    {
+      "name": "hax architecture and Lean documentation",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Electrolysis README",
+      "identity": {
+        "repository": "Kha/electrolysis",
+        "git-blob": "670746012e99efc7b239bc5cd41f9ee2d967997b"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

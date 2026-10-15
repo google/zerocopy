@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "charon",
+    "charon/extraction",
+    "charon/normalization",
+    "rust/mir",
+    "aeneas"
+  ],
+  "subjects": [
+    {
+      "name": "Charon upstream source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+      }
+    },
+    {
+      "name": "Charon dependency source (three-file comparison)",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

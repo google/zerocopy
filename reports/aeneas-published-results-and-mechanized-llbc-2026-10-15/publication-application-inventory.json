@@ -1,0 +1,416 @@
+{
+  "observed_at": "2026-10-15",
+  "scans": {
+    "2022": {
+      "html_formal_blocks": 0,
+      "pdf_pages": 43,
+      "scope": "Whole arXiv2206.07185v2 including all appendices. No numbered metatheorem; four displayed named application/assumption contracts."
+    },
+    "symcrypt": {
+      "html_formal_blocks": 0,
+      "scope": "Whole arXiv2609.15648v1 main text and appendicesA\u2013C. No numbered semantic metatheorem. Four displayed application/model theorem signatures, two specification axioms and one model predicate axiom. Separately named generated equality compute_eq is inventoried without inventing an unavailable full signature."
+    },
+    "pipeline": {
+      "html_formal_blocks": 0,
+      "scope": "Whole arXiv2605.30106v1. Four displayed Lean theorem blocks plus named application claims; linked PRhead inspected for exact signatures. Hax example is not Aeneas proof."
+    },
+    "charon": {
+      "edition": "arXiv:2410.18042v2",
+      "url": "https://arxiv.org/html/2410.18042v2",
+      "html_formal_blocks": 0,
+      "named_result_heading_matches": 0,
+      "scope": "Complete HTML article, Sections 1\u20135, including all case studies and references. Searched theorem/lemma/corollary/proposition and inspected correctness/preservation/proof references. No named or numbered semantic-correctness result declaration is present.",
+      "disposition": "Introduction describes MIR/ULLBC and ULLBC/LLBC preservation as design claims without a theorem statement or formal premises. Section 4.3 refers to the separately inventoried Aeneas soundness paper. Empirical client evaluations and the Section 4.1 taint-analysis validation are not frontend semantic-preservation theorems. No mechanized Charon extraction-correctness result is established by this publication."
+    }
+  },
+  "aeneas2022_application_contracts": [
+    {
+      "identifier": "hash_map_insert_fwd_lem",
+      "class": "application theorem over trusted translation",
+      "quantifiers_and_domain": "Any type t,invariant-valid table self,key,value",
+      "premises": "Requires hash_map_t_inv self",
+      "conclusion": "Fail implies absent key and maximal entry count; Return preserves invariant, installs binding, preserves other bindings and adjusts size only for new keys",
+      "displayed_signature": "val hash_map_insert_fwd_lem (#t : Type) (self : hash_map_t t) (key : usize) (value : t) :\nLemma (requires (hash_map_t_inv self)) (ensures (\nmatch hash_map_insert_fwd t self key value with\n| Fail ->\nNone? (find_s self key) /\\\nsize_s self = usize_max\n| Return hm\u2019 ->\nhash_map_t_inv hm\u2019 /\\\nfind_s hm\u2019 key == Some value /\\\n(forall k\u2019. k\u2019 <> key ==> find_s hm\u2019 k\u2019 == find_s self k\u2019) /\\\n(match find_s self key with\n| None -> size_s hm\u2019 = size_s self + 1\n| Some _ -> size_s hm\u2019 = size_s self)))",
+      "url": "https://arxiv.org/html/2206.07185v2#S6.SS0.SSS0.Px1.p6.1",
+      "excluded": "Not a metatheorem for the translator; external contracts assumed; safe/static-ownership subset, unsafe and interior mutability excluded.",
+      "mechanization": "F* application verification reported by publication; no exact compiled artifact/dependency closure checked here."
+    },
+    {
+      "identifier": "serialize_lem",
+      "class": "assumed external contract",
+      "quantifiers_and_domain": "Any table hm and external state st",
+      "premises": "External serialize_fwd model",
+      "conclusion": "Failure unconstrained; successful state projects to hm",
+      "displayed_signature": "val serialize_lem (hm : hash_map_t u64) (st : state) : Lemma (\nmatch serialize_fwd hm st with | Fail -> True | Return (st\u2019, ()) -> state_v st\u2019 == hm)",
+      "url": "https://arxiv.org/html/2206.07185v2#S6.SS0.SSS0.Px3.p7.1",
+      "excluded": "Not a metatheorem for the translator; external contracts assumed; safe/static-ownership subset, unsafe and interior mutability excluded.",
+      "mechanization": "Assumption explicitly described by publication, not a proved external implementation contract."
+    },
+    {
+      "identifier": "deserialize_lem",
+      "class": "assumed external contract",
+      "quantifiers_and_domain": "Type t and external state st",
+      "premises": "External deserialize_fwd model",
+      "conclusion": "Failure unconstrained; successful table equals state_v st and projected external state is unchanged",
+      "displayed_signature": "val deserialize_lem (t : Type) (st : state) : Lemma (\nmatch deserialize_fwd st with\n| Fail -> True | Return (st\u2019, hm) -> hm == state_v st /\\ state_v st\u2019 == state_v st)",
+      "url": "https://arxiv.org/html/2206.07185v2#S6.SS0.SSS0.Px3.p7.1",
+      "excluded": "Not a metatheorem for the translator; external contracts assumed; safe/static-ownership subset, unsafe and interior mutability excluded.",
+      "mechanization": "Assumption explicitly described by publication, not a proved external implementation contract."
+    },
+    {
+      "identifier": "insert_on_disk_fwd",
+      "class": "application theorem over trusted translation",
+      "quantifiers_and_domain": "Key,value,external state st",
+      "premises": "Assumed serialize/deserialize contracts; generated model",
+      "conclusion": "Failure unconstrained; successful external operation related to generated insertion; printed snippet uses post-state in both comparisons",
+      "displayed_signature": "val insert_on_disk_fwd (key : usize) (value : u64) (st : state) : Lemma (\nmatch hash_map_main_insert_on_disk_fwd key value st with\n| Fail -> True\n| Return (st\u2019, ()) ->\nlet hm = state_v st\u2019 in\nmatch hash_map_insert_fwd_back u64 hm key value with\n| Fail -> False\n| Return hm\u2019 -> hm\u2019 == state_v st\u2019)",
+      "url": "https://arxiv.org/html/2206.07185v2#S6.SS0.SSS0.Px3.p9.1",
+      "excluded": "Not a metatheorem for the translator; external contracts assumed; safe/static-ownership subset, unsafe and interior mutability excluded.",
+      "mechanization": "F* application verification reported by publication; no exact compiled artifact/dependency closure checked here."
+    }
+  ],
+  "symcrypt_displayed_contracts": [
+    {
+      "identifier": "reduce.spec",
+      "class": "application theorem; displayed proof",
+      "quantifiers_and_domain": "U64 x with x.val<2*Q.val",
+      "premises": "Range premise and reduction model",
+      "conclusion": "Normal output equals x.val modulo Q.val",
+      "displayed_signature": "@[step]\ntheorem reduce.spec\n(x : U64)\n(h : x.val < 2 * Q.val) :\nreduce x \u2983 (r : U64) => r.val = x.val % Q.val \u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#S5.SS2.p2.1",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "featurePresent",
+      "class": "axiom/model predicate, not a correctness theorem",
+      "quantifiers_and_domain": "U32 feature identifiers",
+      "premises": "None; uninterpreted feature predicate",
+      "conclusion": "Boolean feature availability",
+      "displayed_signature": "axiom featurePresent : U32 -> Bool",
+      "url": "https://arxiv.org/html/2609.15648v1#S6.p5.2",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "cpu_features_present.spec",
+      "class": "axiomatized contract",
+      "quantifiers_and_domain": "Every feature identifier feat",
+      "premises": "Assumed external feature-detection contract",
+      "conclusion": "Returned Boolean agrees with featurePresent feat",
+      "displayed_signature": "@[step] axiom cpu_features_present.spec (feat : U32) :\ncpu_features_present feat \u2983 r => r = featurePresent feat \u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#S6.p5.2",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "ct_equal_u16.spec",
+      "class": "application theorem; body omitted",
+      "quantifiers_and_domain": "Two U16 slices of equal length",
+      "premises": "Length equality",
+      "conclusion": "Returned byte is 0xFF exactly when slices equal; otherwise 0",
+      "displayed_signature": "theorem ct_equal_u16.spec  (a b : Slice Std.U16)\n(h_len : a.length = b.length) : frodokem.ct_equal_u16 a b\n\u2983 m => m = (if a = b then 0xFF#u8 else 0x00#u8) \u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#S7.SS4.p3.4",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "set1_epi16.spec",
+      "class": "model theorem; proof ellipsis",
+      "quantifiers_and_domain": "U16 a; each lane k<16",
+      "premises": "AVX2 featurePresent=true",
+      "conclusion": "Every output lane equals a",
+      "displayed_signature": "theorem set1_epi16.spec (a : U16)\n(hfeat : featurePresent FEATURE_AVX2 = true) :\nset1_epi16 a \u2983 r =>\n\u2200 k (hk : k < 16), r[k] = a \u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#A2.p1.4",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "mm_aesenc_si128.spec",
+      "class": "axiomatized intrinsic contract",
+      "quantifiers_and_domain": "Input register and round-key values",
+      "premises": "Assumed intrinsic semantics",
+      "conclusion": "Output bytes equal Spec.AES.round of input/key bytes",
+      "displayed_signature": "axiom mm_aesenc_si128.spec r rkey :\nmm_aesenc_si128 r rkey \u2983 r\u2019 =>\nr\u2019.toBytes = Spec.AES.round r.toBytes rkey.toBytes \u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#A2.p2.2",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    },
+    {
+      "identifier": "mlkem.decapsulate.spec",
+      "class": "application API theorem; body omitted",
+      "quantifiers_and_domain": "ParameterSet,key,ciphertext slice,output-secret slice",
+      "premises": "wfDecapKey key params",
+      "conclusion": "Success matches MLKEM.Decaps; InvalidArgument implies bad length; MemoryAllocationFailure implies out_of_memory; other error cases impossible",
+      "displayed_signature": "theorem mlkem.decapsulate.spec\n(params : ParameterSet)\n(pk_mlkem_key : mlkem.key.Key)\n(pb_ciphertext : Slice U8)\n(pb_agreed_secret : Slice U8)\n(h_key : wfDecapKey pk_mlkem_key params) :\nmlkem.decapsulate\npk_mlkem_key\npb_ciphertext\npb_agreed_secret\n\u2983 error pb_agreed_secret\u2019 =>\nmatch error with\n| .NoError =>\n\u2203 h_s h_c,\nMLKEM.Decaps params\n(pk_mlkem_key.toDecapKey params)\n(pb_ciphertext.toSpec _ h_c)\n= some (pb_agreed_secret\u2019.toSpec _ h_s)\n| .InvalidArgument =>\npb_agreed_secret.length \u2260 32 \u2228\npb_ciphertext.length \u2260 cipherlength params\n| .MemoryAllocationFailure =>\nout_of_memory\n| _ => False\n\u2984",
+      "url": "https://arxiv.org/html/2609.15648v1#A3.p3.1",
+      "excluded": "Application/library-model proposition, not Charon/Aeneas translation soundness; specification/intrinsic/compiler/kernel assumptions remain; no leakage-resistance claim.",
+      "mechanization": "Lean proof or axiom as distinguished in class; publication reports checked development, but this investigation did not rebuild it or audit theorem assumption closure."
+    }
+  ],
+  "pipeline_referenced_source_results": [
+    {
+      "identifier": "compute_log_arity_gives_folding_degree",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem compute_log_arity_gives_folding_degree\n  (log_current_height : USize64)\n  (next_input_log_height : Core_models.Option.Option USize64)\n  (log_final_height : USize64)\n  (max_log_arity : USize64)\n  (result : USize64)\n  (_h_gt      : log_current_height.toNat > log_final_height.toNat)\n  (_h_result  : P3_fri_kernel.compute_log_arity_for_round\n                  log_current_height next_input_log_height\n                  log_final_height max_log_arity = .ok result)\n  -- Warming-up: just \u2203 s : Nat; full version would use \u2115+ + h_max_pos > 0\n  : \u2203 s : Nat, s = result.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L50",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "RustM_ok_ite_decide_lt_le_left",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem RustM_ok_ite_decide_lt_le_left (a b r : USize64) :\n  (if decide (a < b) then (RustM.ok a : RustM USize64) else RustM.ok b) = RustM.ok r \u2192 r \u2264 a",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L68",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "arity_respects_target_distance",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem arity_respects_target_distance (log_current_height : USize64)\n  (log_final_height : USize64)\n  (max_log_arity : USize64)\n  (result : USize64)\n  (h_gt : log_current_height.toNat > log_final_height.toNat)\n  (h_result : P3_fri_kernel.compute_log_arity_for_round\n                log_current_height Core_models.Option.Option.None\n                log_final_height max_log_arity = .ok result)\n  : result.toNat \u2264 log_current_height.toNat - log_final_height.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L83",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "RustM_bind_eq_ok",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem RustM_bind_eq_ok {\u03b1 \u03b2 : Type} (x : RustM \u03b1) (f : \u03b1 \u2192 RustM \u03b2) (r : \u03b2) :\n  RustM.bind x f = .ok r \u2192 \u2203 a, x = .ok a \u2227 f a = .ok r",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L121",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "RustM_ok_ite_decide_lt_le_right",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem RustM_ok_ite_decide_lt_le_right (a b r : USize64) :\n  (if decide (a < b) then (RustM.ok a : RustM USize64) else RustM.ok b) = RustM.ok r \u2192 r \u2264 b",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L136",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "arity_respects_max_bound",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem arity_respects_max_bound (log_current_height : USize64)\n  (next_input_log_height : Core_models.Option.Option USize64)\n  (log_final_height : USize64)\n  (max_log_arity : USize64)\n  (result : USize64)\n  (h_gt : log_current_height.toNat > log_final_height.toNat)\n  (h_result : P3_fri_kernel.compute_log_arity_for_round\n                log_current_height next_input_log_height\n                log_final_height max_log_arity = .ok result)\n  : result.toNat \u2264 max_log_arity.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L151",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Completed source proof term/script at referenced PR head; no Lean compilation or assumption audit here.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "arity_respects_next_input",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem arity_respects_next_input\n  (log_current_height : USize64)\n  (next_log_height : USize64)\n  (log_final_height : USize64)\n  (max_log_arity : USize64)\n  (result : USize64)\n  (h_gt_final : log_current_height.toNat > log_final_height.toNat)\n  (h_gt_next  : log_current_height.toNat > next_log_height.toNat)\n  (h_result : P3_fri_kernel.compute_log_arity_for_round\n                log_current_height (Core_models.Option.Option.Some next_log_height)\n                log_final_height max_log_arity = .ok result)\n  : result.toNat \u2264 log_current_height.toNat - next_log_height.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L197",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Source contains sorry; not completed proof.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "folding_respects_final_height",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem folding_respects_final_height\n  (log_current_height : USize64)\n  (log_final_height : USize64)\n  (max_log_arity : USize64)\n  (result : USize64)\n  (h_gt : log_current_height.toNat > log_final_height.toNat)\n  (h_result : P3_fri_kernel.compute_log_arity_for_round\n                log_current_height Core_models.Option.Option.None\n                log_final_height max_log_arity = .ok result)\n  : domain_height_after_fold log_current_height.toNat result.toNat\n      \u2265 log_final_height.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L215",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Source contains sorry; not completed proof.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    },
+    {
+      "identifier": "round_consistency_preserved",
+      "class": "Hax RustM model theorem/helper (not Aeneas semantic metatheorem)",
+      "quantifiers_and_premises": "Exact binders and assumptions are in displayed_signature. RustM operations use this downstream Hax model and USize64 where indicated.",
+      "displayed_signature": "theorem round_consistency_preserved\n  (round1_arity round2_arity : USize64)\n  (initial_height intermediate_height final_height : USize64)\n  (max_arity : USize64)\n  (h_gt1 : initial_height.toNat > final_height.toNat)\n  (h_gt2 : intermediate_height.toNat > final_height.toNat)\n  (h_gt_int : initial_height.toNat > intermediate_height.toNat)\n  (h1 : P3_fri_kernel.compute_log_arity_for_round\n          initial_height\n          (Core_models.Option.Option.Some intermediate_height)\n          final_height max_arity = .ok round1_arity)\n  (h2 : P3_fri_kernel.compute_log_arity_for_round\n          intermediate_height Core_models.Option.Option.None\n          final_height max_arity = .ok round2_arity)\n  : round1_arity.toNat + round2_arity.toNat\n      \u2264 initial_height.toNat - final_height.toNat",
+      "url": "https://github.com/runtimeverification/p3-hax-lean-fri-pipeline/blob/4fab6ff08a8e515321675ca121f9ad36c38268ab/lean/P3FriProofs/Proofs/FoldingCorrectness.lean#L233",
+      "source_revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab",
+      "source_blob": "ab559f0310049ecea67d2c90c670fecb52f055fe",
+      "mechanization": "Source contains sorry; not completed proof.",
+      "excluded": "Not an Aeneas translator theorem; not a complete FRI protocol theorem or cryptographic security result."
+    }
+  ],
+  "thesis_backend_results": [
+    {
+      "identifier": "sum_eq",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 264,
+      "printed_page": 252,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=264",
+      "displayed_syntax_transcription": "theorem sum_eq (l : List Int) : sum l 0 = l.foldl (fun s x => s + x) 0",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Illustrative total-correctness equation; proof omitted; historical partial-function discussion.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "id_unfold",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 265,
+      "printed_page": 253,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=265",
+      "displayed_syntax_transcription": "theorem id_unfold (x : Int) : id x = if x = 0 then ok 0 else do let x \u2190 id (x - 1); ok (x + 1)",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Unfolding equation for the fixed-point-defined example; not definitional equality.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "id_is_id (total)",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 266,
+      "printed_page": 254,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=266",
+      "displayed_syntax_transcription": "theorem id_is_id (x : Int) (h : x \u2265 0) : id x = ok x",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Example total correctness; proof omitted. Premise visually confirmed from PDF.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "id_is_id (partial)",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 266,
+      "printed_page": 254,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=266",
+      "displayed_syntax_transcription": "theorem id_is_id (x : Int) (h : x \u2265 0) : \u2200 y, id x = ok y \u2192 y = x",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Alternative partial-correctness statement; same printed name, not another simultaneous declaration.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "fix_eq",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 268,
+      "printed_page": 256,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=268",
+      "displayed_syntax_transcription": "theorem fix_eq (f : ((x:a) \u2192 Result (b x)) \u2192 (x:a) \u2192 Result (b x)) (Hvalid : is_valid f) : fix f = f (fix f)",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Generic fixed-point equation requires monotonicity/continuity via is_valid; proof uses excluded middle. Historical inductive Result, not current ITree representation.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "expr_is_valid_bind",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 269,
+      "printed_page": 257,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=269",
+      "displayed_syntax_transcription": "theorem expr_is_valid_bind {a b c} {k : ((x:a) \u2192 Result (b x)) \u2192 (x:a) \u2192 Result (b x)} {g : ((x:a) \u2192 Result (b x)) \u2192 Result c} {h : c \u2192 ((x:a) \u2192 Result (b x)) \u2192 Result d} (Hgvalid : is_valid_p k g) (Hhvalid : \u2200 y, is_valid_p k (h y)) : is_valid_p k (\u03bb k => do let y \u2190 g k; h y k)",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Compositional validity of bind; displayed is_valid_p differs from nearby exp_is_valid naming, and d is not explicitly listed in opening implicit binders. Preserve as illustrative source syntax.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "map_is_valid",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 271,
+      "printed_page": 259,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=271",
+      "displayed_syntax_transcription": "theorem map_is_valid {a b c d} {f : (a \u2192 Result (b a)) \u2192 d \u2192 Result c} (k : (a \u2192 Result (b a)) \u2192 a \u2192 Result (b a)) (HfValid : \u2200 x1, exp_is_valid k (fun kk1 => f kk1 x1)) (ls : List d) : is_valid_p k (\u03bb k => map (f k) ls)",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Simplified validity rule for handwritten map; higher-order recursion requires stored validity lemmas. Printed type notation is illustrative, not claimed fresh-elaborated syntax.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "length_append",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 272,
+      "printed_page": 260,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=272",
+      "displayed_syntax_transcription": "theorem length_append {a} (l0 l1 : List) : length (l0 ++ l1) = length l0 + length l1",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Automation example; List parameter omitted in display; proof elided.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "Scalar.bounds",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 273,
+      "printed_page": 261,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=273",
+      "displayed_syntax_transcription": "theorem Scalar.bounds {ty : ScalarTy} (x : Scalar ty) : Scalar.min ty \u2264 x.val \u2227 x.val \u2264 Scalar.max ty",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Historical scalar-model bounds lemma; proof omitted.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "pos_mul_pos_is_pos",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 273,
+      "printed_page": 261,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=273",
+      "displayed_syntax_transcription": "theorem pos_mul_pos_is_pos (x y : Int) : (x < 0) \u2228 (y < 0) \u2228 (0 \u2264 x * y)",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Disjunctive arithmetic rule used to demonstrate local automation; not a Rust semantic result.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "U32.add_spec",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 274,
+      "printed_page": 262,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=274",
+      "displayed_syntax_transcription": "theorem U32.add_spec {x y : U32} (h : \u2191x + \u2191y \u2264 U32.max) : \u2203 z, x + y = ok z \u2227 \u2191z = \u2191x + \u2191y",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Historical checked-add model contract under no-overflow bound; not ordinary Rust release wrapping arithmetic.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "insert_spec",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 275,
+      "printed_page": 263,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=275",
+      "displayed_syntax_transcription": "theorem insert_spec {\u03b1 : Type} (ordInst : Ord \u03b1) [ordSpec : OrdSpec ord] (x : \u03b1) (t : BTree \u03b1) (s : Set \u03b1) : inv s \u2192 isSet t s \u2192 \u2203 t', insert ordInst x t = ok t' \u2227 inv s \u2227 isSet t (s \u222a {x})",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Illustrative sketch spans PDFpages275\u2013276; displayed ord/ordInst and t/tprime differ from intended prose, so this is not cited as a checked complete theorem.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    },
+    {
+      "identifier": "inv_scalar_facts",
+      "class": "backend/model/helper result or illustrative statement; not Rust-to-target soundness",
+      "pdf_page": 278,
+      "printed_page": 266,
+      "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf#page=278",
+      "displayed_syntax_transcription": "theorem inv_scalar_facts {hm : HashMap \u03b1} (h : hm.inv) : 0 < hm.slots.length \u2227 ...",
+      "transcription_scope": "Unicode normalization of arrows/quantifiers/coercions; exact original typography is at PDF locator; ellipses and source defects retained.",
+      "premises_and_conclusion": "Only first conjunct printed; full theorem cannot be reconstructed from publication. Example of exposing selected invariant facts.",
+      "mechanization": "Thesis describes Lean/backend proofs; displayed bodies are elided or illustrative. No historical compiled artifact or current implementation correspondence was established here."
+    }
+  ],
+  "pipeline_scope_cautions": [
+    "Paper reports four remaining sorry goals; inspected cited PRhead has three named sorry theorem declarations plus one unnamed sorry example. The sixth named application theorem compute_log_arity_gives_folding_degree is a completed trivial existential witness, not positive folding-degree correctness.",
+    "The Aeneas fold_step versus ArkLib result is described without an exact theorem identifier/signature in the paper; scope is modular arithmetic with inputs<p and p^2<=2^64-1,13 checked operations, no overflow and equality to foldNth2 evaluation. No source-symbol identity was established for that prose claim.",
+    "No numbered metatheorem proves Aeneas/Charon extraction correctness. Downstream source proof scripts are not a fresh build or assumption audit."
+  ],
+  "symcrypt_generated_equalities": [
+    {
+      "identifier": "compute_eq",
+      "class": "illustrative generated equality theorem described by decomposition command",
+      "url": "https://arxiv.org/html/2609.15648v1#S5.SS3.p4",
+      "displayed_command": "#decompose compute compute_eq\n  letRange 0 4 => reduce\n  letRange 1 4 => reduce",
+      "quantifiers_and_domain": "The displayed compute example and its original/rewritten Lean bodies; full definition and exact theorem signature are not printed.",
+      "premises": "Valid decomposition/rewrite of the selected body using the displayed reduce definition; exact formal premises unavailable in the publication.",
+      "conclusion": "Equates the main function body before and after folding the repeated reduction code; used by rw [compute_eq] before stepping through the rewritten body.",
+      "signature_status": "unavailable: compute body is ellipsized and theorem type is described in prose",
+      "mechanization": "Publication states that the command defines and proves the theorem; no source artifact replay or assumption-closure audit in this investigation.",
+      "excluded": "Program-specific target equality, not Rust frontend or Aeneas translation correctness."
+    }
+  ]
+}

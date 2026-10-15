@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/scaling",
+    "lean/proof-engineering",
+    "verification/maintenance"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas source workflow",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "SymCrypt scaling technical report",
+      "identity": {
+        "arxiv": "2609.15648v1",
+        "version": "2026-09-14"
+      }
+    },
+    {
+      "name": "Rust-to-Lean pipeline experience report",
+      "identity": {
+        "arxiv": "2605.30106v1"
+      }
+    },
+    {
+      "name": "Prior retained component experiments",
+      "identity": {
+        "corpus_revision": "fa65b241fd0cb2c791c841eace86d43d724359bc",
+        "aeneas_source": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

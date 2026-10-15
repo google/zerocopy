@@ -1,0 +1,119 @@
+{
+  "observed_at": "2026-10-15",
+  "scope": "Research inventory; reused executions retain original pins. Proposed fixtures and stronger proofs are not executed results.",
+  "cases": [
+    {
+      "id": "X01",
+      "question": "Mutable-reference field update and framing",
+      "status": "reused-executed",
+      "reports": [
+        "aeneas-pair-returned-update-alpha24"
+      ],
+      "result": "Actual emitted endpoints and imported pair-field update/frame certificates; native controls cover 16777216 updates.",
+      "boundary": "Legacy alpha24 pipeline; import and exclusive permission assumed. Not a returned-reference certificate."
+    },
+    {
+      "id": "X02",
+      "question": "A function returning a mutable borrow",
+      "status": "proposed-not-executed",
+      "reports": [
+        "aeneas-symbolic-ownership-continuations-21345f80"
+      ],
+      "result": "Current source explains forward/backward abstraction construction and restricted ending.",
+      "boundary": "No new independently checked source-to-backward-continuation theorem; proposed pick_mut fixture separates this from ordinary choose."
+    },
+    {
+      "id": "X03",
+      "question": "Nested aggregate/enum borrows and loop-carried borrows",
+      "status": "source-history-reconciled",
+      "reports": [
+        "aeneas-symbolic-ownership-continuations-21345f80",
+        "aeneas-joins-loops-fixed-points-21345f80",
+        "aeneas-charon-history-and-regression-oracles-2026-10-15"
+      ],
+      "result": "Current implementation paths and historical failures delimit partial support and invariant requirements.",
+      "boundary": "No fresh repeated extraction or loop refinement proof."
+    },
+    {
+      "id": "X04",
+      "question": "Mutable closure state, unit return and borrowed generic instantiation",
+      "status": "source-history-reconciled",
+      "reports": [
+        "aeneas-charon-history-and-regression-oracles-2026-10-15"
+      ],
+      "result": "FnMut unit-result history, binder repairs and target interface tests distinguish oracles.",
+      "boundary": "No fresh pipeline execution at current pins. Candidate fixtures do not establish acceptance."
+    },
+    {
+      "id": "X05",
+      "question": "Actual CFG reconstruction and storage semantics",
+      "status": "reused-executed",
+      "reports": [
+        "charon-fork-storage-certificate-alpha24"
+      ],
+      "result": "Actual four-block choose ULLBC and structured endpoints related for all modeled initial states/fuel>=3; mutation controls distinguish storage and move behavior.",
+      "boundary": "Trusted decode/import, call-free and loop-free legacy specimen; not certification of current structurer."
+    },
+    {
+      "id": "X06",
+      "question": "A real zerocopy source-to-model specimen",
+      "status": "reused-executed",
+      "reports": [
+        "zerocopy-validity-real-pass-certificate-alpha24"
+      ],
+      "result": "Actual raw/final selected bool predicate and emitted endpoints checked over every byte; outside local state retained.",
+      "boundary": "Wrapper context and selected function only, trusted import and scalar interpretation; no physical byte-read theorem."
+    },
+    {
+      "id": "X07",
+      "question": "A safe API containing an unsafe operation and full input-domain coverage",
+      "status": "reused-executed",
+      "reports": [
+        "safe-unsafe-bool-domain-certificate-2026-10-14"
+      ],
+      "result": "All256native byte inputs and checked finite-prefix model; widened-guard/narrowed-domain witnesses expose vacuity.",
+      "boundary": "Manual state-machine import; no references, aliasing, allocation, concurrency or destruction."
+    },
+    {
+      "id": "X08",
+      "question": "Historical model errors and independently selected expectations",
+      "status": "source-history-reconciled",
+      "reports": [
+        "aeneas-charon-history-and-regression-oracles-2026-10-15"
+      ],
+      "result": "Ord tie choice, Vec insertion versus replacement and signed-byte interfaces identify distinct semantic/interface oracles.",
+      "boundary": "Historical patches and normative contracts, not fresh reproduction."
+    },
+    {
+      "id": "X09",
+      "question": "Compatible-release differences and support/rejection outcomes",
+      "status": "reused-executed",
+      "reports": [
+        "rust-llbc-lean-golden-and-aeneas-revision-probes-2026-09-28"
+      ],
+      "result": "Preserved fixtures and compatible-pair matrix; matching baseline Lean bytes with different LLBC; cross-pairs rejected.",
+      "boundary": "June2026 exact releases and small fixture set; not Aeneas-only causal attribution or current support."
+    },
+    {
+      "id": "X10",
+      "question": "Move/drop/panic cleanup, resource effects and independent semantic composition",
+      "status": "proposed-not-executed",
+      "reports": [
+        "charon-extraction-normalization-9e95cf3",
+        "charon-llbc-cfg-minirust-9e95cf3"
+      ],
+      "result": "Current pass and AST inspection identify cleanup and initializedness seams to test.",
+      "boundary": "No fresh native or MiniRust execution, cleanup-preservation proof, or cross-language composition theorem."
+    },
+    {
+      "id": "X11",
+      "question": "Current Lean adapter, native-evaluation assumptions and proof cost",
+      "status": "source-reconciled",
+      "reports": [
+        "lean-wp-partiality-and-aeneas-integration-2026-10-15"
+      ],
+      "result": "Exact current interface and source policy comparison distinguishes total/partial outcomes and native axioms.",
+      "boundary": "No fresh Lean4.35 compilation, adapter theorem or benchmark."
+    }
+  ]
+}

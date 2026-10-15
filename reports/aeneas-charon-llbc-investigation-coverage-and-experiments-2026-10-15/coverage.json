@@ -1,0 +1,2043 @@
+{
+  "issue": "https://github.com/google/zerocopy/issues/3886",
+  "observed_at": "2026-10-15",
+  "meaning": "Research questions answered within stated evidence boundaries; not a claim that every proposed experiment or stronger theorem has been performed.",
+  "questions": [
+    {
+      "id": "A01.1",
+      "group": "A01",
+      "question": "What source object is being modeled: Rust text, expanded/typed Rust, a particular MIR phase, ULLBC, or LLBC?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The paper languages, production MIR/ULLBC/LLBC and elaborated targets are distinct subjects; current Charon body queries vary by item and fallback.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Current formal syntax is an intentionally smaller object; G02 effective MIR selection"
+        }
+      ]
+    },
+    {
+      "id": "A01.2",
+      "group": "A01",
+      "question": "What do existing claims establish: result preservation, safety, termination, refinement, equivalence, or contextual equivalence? Are all behaviors covered or only a corresponding execution?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The 2022 translation, 2024 borrow-checking/correspondence theorems and downstream target proofs establish different propositions. Preserve direction, quantifiers and environment premises.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Publication inventory and distinct result domains"
+        }
+      ]
+    },
+    {
+      "id": "A01.3",
+      "group": "A01",
+      "question": "Which observations matter: values, mutation, panic, destruction, allocation, I/O, pointer identity, timing, and nondeterminism?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Return values and updates alone omit panic/divergence, cleanup, allocation, identity and interference. The observation policy must be selected explicitly at each transfer boundary.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "A reusable specification-transfer diagram"
+        }
+      ]
+    },
+    {
+      "id": "A01.4",
+      "group": "A01",
+      "question": "What assumptions about valid inputs, libraries, compiler behavior, and external functions are necessary? What theorem transfers a specification of a generated model to the corresponding Rust artifact?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Specification transfer requires frontend, state abstraction, symbolic coverage, functionalization, target identity and library contracts. No whole-current-pipeline theorem was established.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "A reusable specification-transfer diagram"
+        }
+      ]
+    },
+    {
+      "id": "A02.1",
+      "group": "A02",
+      "question": "Compare MiniRust, the Aeneas papers' pointer languages, RustBelt, RefinedRust, and other candidate semantics by language fragment, observations, and guarantees.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Compare the concrete subjects in G10: LambdaRust safety/resources, RustHornBelt transformers, Radium byte-level adequacy, MiniRust execution and Aeneas ownership/pointer languages.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "How to select and compare an external semantics"
+        },
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A02.2",
+      "group": "A02",
+      "question": "Which models account for bytes, layout, validity, provenance, allocation, target widths, and destruction?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "MiniRust and Radium expose representation/memory details that the common mechanized LLBC grammar omits. Layout, target width, validity, allocation and destruction remain explicit parameters or restrictions.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "How to select and compare an external semantics"
+        },
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A02.3",
+      "group": "A02",
+      "question": "How do ownership-oriented values relate to concrete memory? How is unspecified or nondeterministic behavior represented?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "A value abstraction needs a concrete representation/resource relation; nondeterministic choices and bad executions may not be silently discarded. Byte decoding alone grants no access authority.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "How to select and compare an external semantics"
+        },
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A02.4",
+      "group": "A02",
+      "question": "What does independence of a semantic definition require? Can a common semantic interface support separately justified instantiations and revisions?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "An external semantics must be able to disagree with the producer. A common interface needs separately justified concrete instances, versioned laws and explicit observation/failure policies.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "How to select and compare an external semantics"
+        },
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A03.1",
+      "group": "A03",
+      "question": "Read all relevant papers, long versions, appendices, theses, artifacts, subsequent publications, and citation follow-ups.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The bounded primary-source inventory covers the foundational 2022/2024 papers, thesis, Charon paper and two 2026 experience/industrial publications, with linked editions and supplementary domains.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Publication inventory and distinct result domains; publication-results.md"
+        }
+      ]
+    },
+    {
+      "id": "A03.2",
+      "group": "A03",
+      "question": "For every theorem, record its exact syntax, assumptions, conclusion, excluded features, and mechanization status.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G01 individually inventories all37 numbered2024 semantic results plus3 definitions, all38 thesis soundness results and named/displayed application statements, with exact locators, domains, premises, conclusions, exclusions and mechanization limits. Printed ambiguities and unavailable full signatures remain explicit; compiled assumption audits are unperformed.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Individual publication results and their exact premises; publication-results-inventory.json; publication-application-inventory.json"
+        }
+      ]
+    },
+    {
+      "id": "A03.3",
+      "group": "A03",
+      "question": "Separate results about borrow checking, functional translation, and individual translated programs.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Borrow-checker soundness, functional-translation definitions and proofs of generated programs are recorded separately. A checked application theorem does not verify the translator.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Publication inventory and distinct result domains; publication-results.md"
+        }
+      ]
+    },
+    {
+      "id": "A03.4",
+      "group": "A03",
+      "question": "Which implementation features postdate the formal models? Which gaps are addressed elsewhere in supplementary or repository material?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current traits, closures, richer types, effects and ITree target interfaces exceed the narrow common Rocq grammar; G04\u2013G09 inspect these production differences rather than infer coverage.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Current formal syntax is an intentionally smaller object; G04\u2013G09 current source"
+        }
+      ]
+    },
+    {
+      "id": "A04.1",
+      "group": "A04",
+      "question": "Inventory the Rocq mechanized-llbc development, its theorem dependencies, assumptions, admissions, and supported fragment.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Every pinned mechanized src .v file was acquired with blob identities. Nine Admitted and eleven Abort endings were classified; imported axioms and complete compiled assumptions need a separate audit.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "The source contains completed proof scripts, admissions and abandoned attempts"
+        }
+      ]
+    },
+    {
+      "id": "A04.2",
+      "group": "A04",
+      "question": "How do its syntax and rules correspond to production LLBC and the published artifacts?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Common grammar supports mutable borrowing, tuples, natural arithmetic, branches and loops, but lacks calls, returns, traits, destructors and pure-target syntax. PL.v is a separate richer development.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Current formal syntax is an intentionally smaller object"
+        }
+      ]
+    },
+    {
+      "id": "A04.3",
+      "group": "A04",
+      "question": "Which hybrid-state, framing, simulation, and abstraction techniques are general?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Hybrid intermediate states, simulation relations and abstraction ordering provide reusable proof patterns; step indices, environment assumptions and framing cannot be dropped.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "Publication inventory and distinct result domains (hybrid-language methodology)"
+        }
+      ]
+    },
+    {
+      "id": "A04.4",
+      "group": "A04",
+      "question": "What evidence would justify correspondence between independently maintained formalizations in different proof assistants? How are changes tracked?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Cross-assistant correspondence needs a shared semantic contract and checked relation, with synchronized syntax/rules/assumption identities. Similar theorem names or successful exports are insufficient.",
+      "reports": [
+        {
+          "group": "G01",
+          "path": "../aeneas-published-results-and-mechanized-llbc-2026-10-15/REPORT.md",
+          "locator": "How to select and compare an external semantics"
+        }
+      ]
+    },
+    {
+      "id": "A05.1",
+      "group": "A05",
+      "question": "Trace representative functions through Translate, preprocessing, values/contexts, interpreter invariants, borrow operations, joins/loops, symbolic-to-pure translation, pure passes, and backend extraction.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G06 traces current loops::list_nth_mut Rust/stored-Lean endpoints through controlling preprocessing, ownership, loop, pure and extraction paths. The intermediate trace is source-reconstructed, not a new execution or acquired LLBC snapshot.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A05.2",
+      "group": "A05",
+      "question": "Classify semantic transformations, search heuristics, representation maintenance, diagnostics, and printing.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The reports distinguish semantic rewrites, freshening/representation maintenance, heuristic search, invariant/type gates, diagnostics and printers; the pure-pass inventory records all 51 list entries.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A05.3",
+      "group": "A05",
+      "question": "Which invariants are documented, dynamically checked, or assumed? Which metadata and equality operations affect later synthesis?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Dynamic invariants are flag-gated and are not preservation theorems. Metadata-erasing comparison is for designated analyses; backward synthesis still needs historical/projected values.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A05.4",
+      "group": "A05",
+      "question": "How do configuration, global state, caches, fresh names, exception recovery, and per-declaration failures affect results?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Configuration, fresh identifiers, maps/caches and exception recovery affect the emitted artifact and completeness. A successful target file can coexist with omitted or opaque declarations.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A06.1",
+      "group": "A06",
+      "question": "Read the driver, MIR queries, translation modules, compiler settings, crate selection, and dependency handling.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G02 reads the driver/compiler integration, selection and translation paths, dependencies and MIR settings; source indices bind the files and relevant symbols.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A06.2",
+      "group": "A06",
+      "question": "Which actual MIR phase supplies each body, including external bodies and fallback queries? What remains assumed about expansion, typing, borrow checking, const evaluation, shims, and monomorphization?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Local early bodies may fall back to optimized bodies when stolen; foreign bodies and CTFE have distinct queries. Requested phase is not sufficient effective-body identity.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A06.3",
+      "group": "A06",
+      "question": "What records bind source files, compiler/sysroot/dependencies, target, edition, cfg/features, build scripts, and effective flags to an extraction?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The existing envelope/metadata identifies useful compiler and extraction facts but does not fully bind source/dependency/build-script/cfg/target closure; a stronger binding manifest is derived.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A06.4",
+      "group": "A06",
+      "question": "How are precompiled dependencies and platform-specific bodies identified? What guarantees are possible at each proposed artifact boundary?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Precompiled and platform-selected bodies need effective identity and target dispatch records. A theorem at an imported MIR boundary still retains the upstream compiler/build assumptions.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A07.1",
+      "group": "A07",
+      "question": "Inventory enabled passes and their exact order and configuration; identify a preservation obligation for each.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The exact current schedule has 53 pass occurrences with configuration gates and fused/body-carried behavior. pass-inventory.json records order and individual preservation obligations.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A07.2",
+      "group": "A07",
+      "question": "Which transformations affect evaluation order, arithmetic checks, indexing, references, storage, allocation, boxes, panic, or local removal?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Normalization affects checks, arithmetic/indexing, references, storage, drops and panic/cleanup observations; retained AST variants do not alone prove those observations survive.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A07.3",
+      "group": "A07",
+      "question": "What prevents normalization from hiding earlier undefined behavior? Under what conditions is introducing a fresh reference justified?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Reference-introducing normalization needs validity/alias premises and preservation of earlier UB. The Aeneas indexing preset warning is material evidence, not a cosmetic configuration note.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A07.4",
+      "group": "A07",
+      "question": "Which passes admit small independently checked witnesses? What would a semantic boundary before normalization preserve?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Positional/storage/rewrite witnesses can check proposed results independently of search. A pre-normalization boundary preserves more concrete operations but requires an explicit semantics for them.",
+      "reports": [
+        {
+          "group": "G02",
+          "path": "../charon-extraction-normalization-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A08.1",
+      "group": "A08",
+      "question": "Specify the relation between source CFG positions and structured statements.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Source CFG positions must relate to structured positions and copied blocks, with a correspondence for every edge and exit; the report derives this relation from the structurer.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A08.2",
+      "group": "A08",
+      "question": "How are duplicated blocks, inserted loops, special jumps, and irreducible control flow handled?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The source uses reconstruction modes, duplication and synthetic-loop/exit decisions. Discovery may remain untrusted if a finite map validates its accepted result.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A08.3",
+      "group": "A08",
+      "question": "How do normal edges, cleanup edges, unwinding, return, and labeled break/continue participate in preservation, including stuttering and divergence?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Normal/cleanup edges, labeled exits and return must match under an outcome relation. Administrative ranks control stuttering; divergence needs more than matching terminating paths.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A08.4",
+      "group": "A08",
+      "question": "Can reconstruction results be validated using a finite positional certificate independently of loop/dominator discovery?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "A finite positional certificate is proposed, with full edge/exit coverage and ranks; the legacy four-block executed certificate is useful precedent, not a proof of the current structurer.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A09.1",
+      "group": "A09",
+      "question": "Inventory syntax, typing, well-formedness, evaluation, and differences between paper LLBC and current serialized LLBC.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Production syntax is richer than paper/common mechanized LLBC. G03 inventories operations and body distinctions; G08 separates decoding from semantic well-formedness.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A09.2",
+      "group": "A09",
+      "question": "What do storage operations, place mentions, drop kinds, unwind blocks, intrinsics, and explicit UB mean?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Storage, place mention, DropKind, unwind, intrinsics and explicit UB need separate transitions or justified erasure. Dynamic-check normalization can lose concrete cleanup identity.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A09.3",
+      "group": "A09",
+      "question": "What is retained, existentially represented, or erased about regions? How are extern, opaque, missing, erroneous, intrinsic, and target-dispatch bodies distinguished?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Region representations and body availability are separate axes; extern/opaque/error/missing/intrinsic/target-dispatch cases must not all mean an ordinary successful body.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A09.4",
+      "group": "A09",
+      "question": "Is there a small semantic core into which a richer representation can be elaborated with a justified correspondence?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "A small core is possible only with a restriction/elaboration theorem retaining required observations. Choosing a smaller AST is not itself that theorem.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A10.1",
+      "group": "A10",
+      "question": "Read the MiniRust exporter, documentation, tests, and configuration changes.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G03 reads the exporter, presets, documentation and tests at the pinned tree, retaining the exporter Gitlink identity separately from older corpus MiniRust pins.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A10.2",
+      "group": "A10",
+      "question": "How do monomorphized MiniRust ULLBC and generic Aeneas-preset LLBC correspond, given different drop, constant, extraction, and MIR settings?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "MiniRust uses a monomorphized ULLBC route with different MIR/drop/constant settings from generic Aeneas LLBC. It is not an alternative interpretation of identical extracted bytes.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A10.3",
+      "group": "A10",
+      "question": "Which documented unsupported or unsound cases require restrictions, repairs, or separate treatment?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Documented static-offset, track_caller and union-padding cases plus harness-specific failures require explicit exclusions or repairs; documentation and source evidence are not fresh executions.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A10.4",
+      "group": "A10",
+      "question": "What is defined by exporter behavior, what is independently specified, and what preservation evidence exists or is missing?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Exporter implementation, independent semantic definitions and preservation proof are separate. No new exporter soundness theorem or MiniRust execution was obtained.",
+      "reports": [
+        {
+          "group": "G03",
+          "path": "../charon-llbc-cfg-minirust-9e95cf3/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A11.1",
+      "group": "A11",
+      "question": "What explicit predicate identifies the supported fragment, and when is it checked relative to information-erasing passes?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Admission is distributed over decoder/checkers/interpreter paths, some after erasing passes. An explicit pre-erasure supported-fragment predicate is proposed rather than claimed present.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A11.2",
+      "group": "A11",
+      "question": "Which checks validate decoding, schema compatibility, identifiers, duplicate/sparse maps, substitutions, target selection, and declaration closure?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Structural decoding recognizes constructors but does not establish closed IDs, duplicate/sparse-map semantics, well-scoped substitution or complete target selection. G08 maps each gate.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A11.3",
+      "group": "A11",
+      "question": "How are partial-output indicators, missing functions, errors, stubs, and opaque declarations propagated?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The serialization envelope and decoded crate retain different information. Error/partial-output and missing/opaque body facts require propagation; the completeness risk is conditional.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A11.4",
+      "group": "A11",
+      "question": "What distinguishes checking selected definitions from checking the complete requested target? What constitutes successful extraction, elaboration, and verification?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Success for selected elaborated definitions differs from complete requested closure and from a proved source specification. Bind requested, emitted, assumed and failed sets independently.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A12.1",
+      "group": "A12",
+      "question": "Compare intrinsically typed syntax, proof-carrying well-formed syntax, and raw syntax with verified validators.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Intrinsic syntax shifts obligations into construction; proof-carrying syntax retains raw forms plus witnesses; verified validators permit untrusted producers with a sound acceptance theorem.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A12.2",
+      "group": "A12",
+      "question": "How are identifiers, scopes, binders, fresh names, and alpha-equivalence represented?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Pinned identifiers have namespaces, binders use de Bruijn depth plus variable kind, and freshening/equivalence operate over additional state. Namespaces do not prove referential closure.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A12.3",
+      "group": "A12",
+      "question": "Which shifting, substitution, renaming, opening/closing, and capture-avoidance lemmas are needed?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Renaming/substitution need scope, identity/composition, capture avoidance and interpretation lemmas; multi-kind binders and nested region projections add separate cases.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A12.4",
+      "group": "A12",
+      "question": "Which finite-map/graph implementations have suitable specifications? Can efficient structures refine simpler mathematical ones?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G08 compares actual OCaml ID maps/injective-map caches/SCC consumers and Lean4.35 HashMap/DHashMap/ExtHashMap/TreeMap/Array lookup, domain, quotient/extensional and ordering laws. Graph algorithm and cross-language refinements remain unproved.",
+      "reports": [
+        {
+          "group": "G08",
+          "path": "../llbc-decoding-binding-admission-1aebab5f-9e95cf31/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A13.1",
+      "group": "A13",
+      "question": "Define the relations among memory states, ownership values, symbolic values, and region abstractions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G04 distinguishes ordinary, abstraction and symbolic values and their state roles. A concrete-memory relation must be supplied separately from these executable representations.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A13.2",
+      "group": "A13",
+      "question": "Which transformations preserve those relations and cover all feasible executions?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Expansion, projections and updates must preserve a concretization covering feasible paths; source algorithms and checks identify obligations rather than discharge a universal proof.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A13.3",
+      "group": "A13",
+      "question": "How are expansion, enum refinement, partial moves, inaccessible values, and symbolic projections justified?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Enum refinement, aggregate expansion and inaccessible/ignored values preserve correlated views and backward reconstruction metadata. Partial moves cannot be treated as ordinary copies.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A13.4",
+      "group": "A13",
+      "question": "Which metadata-erasing equalities are valid? How do executable invariant checks relate to mathematical preservation claims?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Metadata-erasing equalities are valid only for their analysis purpose; checks can detect represented violations but do not prove all transformations preserve semantic relations.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A14.1",
+      "group": "A14",
+      "question": "What invariants justify ending borrows, loans, abstractions, and sub-abstractions, and in what order?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Ending recursively resolves borrow/loan dependencies and then abstraction parents/sub-abstractions under static/endability restrictions. The report traces the actual priority order.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A14.2",
+      "group": "A14",
+      "question": "How are reserved/two-phase borrows, nested shared/mutable borrows, aggregate projections, and partially ended loans treated?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Reserved/two-phase, nested and projected forms have distinct paths and restrictions. Presence of syntax does not establish unrestricted support for arbitrary nesting.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A14.3",
+      "group": "A14",
+      "question": "Which ignored or historical values remain necessary for backward reconstruction?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Ignored/historical values and projections can remain essential for restored values and backward functions; they cannot be erased merely because the current forward result ignores them.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A14.4",
+      "group": "A14",
+      "question": "Can capabilities or indexed representations express ending permissions and prevent invalid operations? What termination measure or witness supports recursive ending?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Indexed capabilities could encode endability and ownership transfer; a well-founded dependency measure or checked ending witness would justify recursive progress. Neither is claimed implemented.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A15.1",
+      "group": "A15",
+      "question": "What abstract order do joins implement: least upper bounds, common generalizations, or checked approximations?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current joins preserve common context structure and abstract differences; their operational purpose does not by itself establish a least-upper-bound theorem.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A15.2",
+      "group": "A15",
+      "question": "What justifies information loss, freshening, identity abstractions, context matching, reduction/collapse, and join-order choices?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Freshening, reduction/collapse and branch matching need concretization inclusions and coherent identity maps. Search order may affect precision without being semantically authoritative.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A15.3",
+      "group": "A15",
+      "question": "How are fixed and existential identities distinguished? Can analysis-only and synthesis-ready states be separated explicitly?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Fixed/existential identities and analysis/synthesis contracts differ: analysis joins freshen left nonfixed abstractions, while synthesis matching projects/replays the relevant side.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A15.4",
+      "group": "A15",
+      "question": "What inductiveness or post-fixed-point property is sufficient for soundness? Can search remain bounded and reject without requiring a convergence theorem?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "An accepted invariant needs entry inclusion and body post-fixed-point closure. Bounded search may reject without a convergence theorem if acceptance independently checks those obligations.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A16.1",
+      "group": "A16",
+      "question": "Relate loop entry, iteration, continue, break, return, panic, unwind, and unreachable states.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Loop processing separates entry, body, continues, breaks and exits, with distinct outcome handling. Unsupported early-return/unwind paths are recorded explicitly.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A16.2",
+      "group": "A16",
+      "question": "Which resources and symbolic values persist across iterations, nested loops, and exits to outer loops?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Persistent resources, fresh IDs and level-sensitive projections cross iterations; nested representations exist but abs_level=0 restrictions and rejection paths limit executable cases.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A16.3",
+      "group": "A16",
+      "question": "How are mutually recursive functions and loops handled, and which cases are currently unsupported?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Recursive calls use signature abstraction; loop fixed-point search is bounded, with the inspected cap of two. Recursive groups and loop lowering are separate mechanisms.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A16.4",
+      "group": "A16",
+      "question": "Separate soundness of accepted translations from search completeness, generated-code termination, and successful execution of the source.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Accepted-translation soundness, analysis convergence, generated termination and source successful termination are different claims; no one is inferred from process completion.",
+      "reports": [
+        {
+          "group": "G05",
+          "path": "../aeneas-joins-loops-fixed-points-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A17.1",
+      "group": "A17",
+      "question": "State the relation between a Rust returned reference, the forward result, and backward computation.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "A returned mutable reference is represented through forward outputs and a later backward computation restoring the owner; its contract includes allowed final updates and authority.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A17.2",
+      "group": "A17",
+      "question": "How do multiple region groups, nested regions, levels/binders, and partially ended projections compose?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Region groups, levels, binders and partially ended projections constrain composition. Current source restrictions must appear in the theorem domain.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A17.3",
+      "group": "A17",
+      "question": "Compare interpretations using continuations, lenses, resource transformers, and separation-logic implications.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Continuation, lens, resource-transformer and separating-implication views illuminate different laws; an arbitrary lens lacks lifetime/alias authority and effect guarantees.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A17.4",
+      "group": "A17",
+      "question": "What justifies splitting, merging, reordering, and ending abstractions? What restrictions on use are necessary for valid source-level reasoning?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Splitting/merging/reordering/ending need state-relation and resource proofs. Backward synthesis restricts which regions may end rather than permitting arbitrary continuation use.",
+      "reports": [
+        {
+          "group": "G04",
+          "path": "../aeneas-symbolic-ownership-continuations-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A18.1",
+      "group": "A18",
+      "question": "Define the pure IR's operational or denotational meaning.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Pure IR is typed/effectful syntax with lets, applications, loops and error forms; interpretation must include Result effects, target primitives and recursion behavior.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A18.2",
+      "group": "A18",
+      "question": "Inventory continuation simplification, tuple/loop-output decomposition, filtering, loop restructuring, indexing recovery, and update normalization.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G06 records the 51-entry micro-pass sequence and subsequent loop lowering, including tuple/continuation/output/filtering/index/update transformations and gate conditions.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A18.3",
+      "group": "A18",
+      "question": "Which rewrites require effect-sensitive equivalence because panic, sequencing, or divergence matters?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Removing/reordering computations can change fail/diverge/sequence behavior. Functional result equality alone is insufficient for effect-sensitive rewrites.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A18.4",
+      "group": "A18",
+      "question": "Which pass-order dependencies are semantic? Can common transformations be expressed through a small library of proved rewrites or independently validated steps?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Local typed rewrite derivations and proved substitution/effect laws could certify steps; inventory/order is source evidence, not current per-pass preservation proofs.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A19.1",
+      "group": "A19",
+      "question": "What does a type interpretation include: values, validity, ownership resources, layout, and operations?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current target type translation supplies mathematical values and operations; concrete validity/layout/ownership interpretations must be attached separately where required.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A19.2",
+      "group": "A19",
+      "question": "How are generic correctness and monomorphic executions connected, especially for types containing mutable references?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Generic correctness needs a type/resource interpretation stable under instantiation, especially reference-bearing types. Type-correct monomorphic output alone does not prove parametric source adequacy.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A19.3",
+      "group": "A19",
+      "question": "What handles associated types, const generics, higher-ranked lifetimes, GATs, variance, and unsizing?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G07 distinguishes associated/const/generic representations, lifetime binder handling and unsupported/partial cases; G08 treats scope/substitution and schema checks.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A19.4",
+      "group": "A19",
+      "question": "Which universe and parametricity assumptions are justified? What restrictions are fundamental versus implementation-specific?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Type versus Type_ and dictionary/universe restrictions are inspected implementation facts; accepted universe elaboration is not a proof of Rust parametricity.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A20.1",
+      "group": "A20",
+      "question": "Compare explicit dictionaries, records, and Lean typeclasses; understand current trait-reference validation.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Aeneas emits explicit operational dictionaries; Lean typeclass inference is a different resolution mechanism. Trait-reference validation checks selected structural properties, not semantic laws.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A20.2",
+      "group": "A20",
+      "question": "Which trait laws does Rust actually guarantee, and which are additional assumptions?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Ord and similar mathematical laws are not automatically guaranteed by every Rust implementation. Model laws must be justified or explicit assumptions; historical tie-choice bugs demonstrate the distinction.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A20.3",
+      "group": "A20",
+      "question": "How are closure captures, Fn/FnMut/FnOnce, repeated calls, unit results, and updated closure state represented?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Closure captures and updated FnMut state are explicit returned state; unit result handling has historical regressions. Fn/FnMut/FnOnce contracts differ in resource consumption.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A20.4",
+      "group": "A20",
+      "question": "What handles callbacks retaining resources or returning borrows, default methods, recursive declaration groups, vtables, and target-dependent dispatch?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Retained-resource callbacks/returned borrows require higher-order lifetime contracts; dynamic/vtable/function-pointer paths are partial or rejected and target dispatch needs exact identity.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A21.1",
+      "group": "A21",
+      "question": "Compare integer representations, target-width usize/isize, overflow modes, casts, shifts, division, and checked/wrapping operations.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Scalar models distinguish bounded integer operations and errors; usize/isize depend on target assumptions, including the inspected System.Platform interface.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A21.2",
+      "group": "A21",
+      "question": "How are endianness, alignment, padding, niches, discriminants, validity, byte conversions, and constants modeled?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Byte models and value models do not automatically prove layout/alignment/padding/niche/provenance correspondence. Signed-byte interfaces were historically repaired to U8.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A21.3",
+      "group": "A21",
+      "question": "What handles floats, NaNs, signed zero, chars, and strings?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Float/NaN/signed-zero/char/string coverage is bounded by the inspected models; primitive representation or source constructors are not full concrete Rust refinement evidence.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A21.4",
+      "group": "A21",
+      "question": "When may representation details be abstracted? Which primitive correspondences can be established once and reused?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Representation details can be hidden only under the chosen observations and a proved abstraction. Reusable primitive contracts need exact operation, width, failure and representation premises.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A22.1",
+      "group": "A22",
+      "question": "Relate partial initialization, moves, drop flags, conditional drops, glue, user destructors, field destruction, and deallocation.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Initialization/moves/drop flags/glue/destructors/deallocation are not one effect. Current Drop default and eval-drops bookkeeping do not establish full Rust destructor execution.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A22.2",
+      "group": "A22",
+      "question": "Under what conditions may destruction or allocation details be ignored?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Erasing allocation/destruction is justified only when their effects cannot change promised observations or resource safety; arbitrary user destructors invalidate blanket erasure.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A22.3",
+      "group": "A22",
+      "question": "Distinguish panic, unwind, abort, double panic, UB, divergence, allocation failure, leaks, and forget.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current Result separates ok/fail/div, while source panic/unwind/abort/UB/resource failure need a policy and relation. Identifying all failures would lose distinctions required by stronger claims.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A22.4",
+      "group": "A22",
+      "question": "How do cleanup and early exits interact with effects? Which assumptions support useful restricted claims and later extensions?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Cleanup and early exits need initializedness and resource-restoration relations at every exit. G02/G03/G05 identify concrete normalization and rejection seams.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A23.1",
+      "group": "A23",
+      "question": "Inventory model registration, selected Rust definitions, versions, generic filtering, trait clauses, and user-provided external templates.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G07 inventories builtin/model registration, generic filtering, trait clauses, Lean imports and user templates. Selected model identity is part of the target artifact.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A23.2",
+      "group": "A23",
+      "question": "What refinement evidence connects each model to Rust behavior?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Existing models and proofs of their algebra are not automatically Rust implementation refinements. Record individual contracts/assumptions and audit source binding.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A23.3",
+      "group": "A23",
+      "question": "Which observations beyond mathematical contents matter: identity, ordering/tie selection, capacity, allocation, aliasing, destruction, and failures?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Tie selection, insertion position, capacity/allocation, aliasing and destruction can matter beyond collection contents; historical Ord/Vec fixes distinguish these observations.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A23.4",
+      "group": "A23",
+      "question": "What assumptions accompany opaque models, and can those be audited compositionally? Which independent tests expose self-consistent but incorrect models?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Opaque assumptions need a compositional ledger and independent Rust/specification oracles. Two target artifacts sharing an incorrect model can agree consistently.",
+      "reports": [
+        {
+          "group": "G07",
+          "path": "../aeneas-types-traits-primitives-and-models-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A24.1",
+      "group": "A24",
+      "question": "What semantic interface connects functional models to spatial specifications and unsafe implementations?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "A functional/spatial bridge combines a representation relation, pure result/update contract and concrete resource transition/frame theorem.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A24.2",
+      "group": "A24",
+      "question": "What predicates express initialization, provenance, alignment, validity, lifetimes, raw pointers, unions, and casts?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Keep initializedness, geometry/alignment, validity, provenance, ownership/lifetimes and value abstraction distinct; a byte decoder or bounds theorem supplies only part.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A24.3",
+      "group": "A24",
+      "question": "How are UnsafeCell, interior mutability, and pointer arithmetic represented?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "UnsafeCell permits designated interior mutation under a sharing invariant; pointer arithmetic needs provenance and access authority in addition to integer geometry.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A24.4",
+      "group": "A24",
+      "question": "Can ownership abstractions be justified through an established separation logic? Under what conditions can safe clients compose with independently justified unsafe APIs?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Established logics provide patterns for ownership/lifetime/unsafe-API composition, but actual concrete semantics adequacy and compatible client contracts remain required premises.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A25.1",
+      "group": "A25",
+      "question": "What do atomics, threads, synchronization, Send/Sync, and unsafe trait implementations require?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Threads/atomics and unsafe Send/Sync need interference-aware sharing/transfer invariants and the selected memory model, not a sequential value contract.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A25.2",
+      "group": "A25",
+      "question": "Can sequential functional reasoning compose with concurrent library contracts?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Sequential functional reasoning composes through explicit exclusive access, lock invariants, linearization/history or another justified concurrent contract.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A25.3",
+      "group": "A25",
+      "question": "How do async lowering, suspension, cancellation, and destruction change ownership obligations?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Suspension stores resource-bearing state; cancellation/destruction is an additional exit requiring restoration/cleanup for every suspended state.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A25.4",
+      "group": "A25",
+      "question": "What does Pin require? Should different effect domains use a common semantics or separately justified translation paths?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Pin concerns address-sensitive lifetime/projection/destruction invariants. Separate effect paths can share an interface only with justified concrete interpretations and relations.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A26.1",
+      "group": "A26",
+      "question": "Evaluate Std.WP, vcgen and legacy mvcgen, generalized framing, and deeply embedded languages.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Lean4.35 Std.WP supports generalized assertion lattices, frames and deeply embedded commands. Its demonstration heap is not a Rust memory model.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A26.2",
+      "group": "A26",
+      "question": "Compare those facilities with Aeneas WP/step tools, including exact specification equivalences, missing features, and performance.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current Aeneas uses the legacy Std.Do bridge; exact spec=DWP and dspec=DWLP distinctions and nondivergence preconditions matter. No current adapter benchmark was run.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A26.3",
+      "group": "A26",
+      "question": "Investigate partial_fixpoint, fixed-point induction, do notation, mutable locals, loops and exits; UInt/SInt/BitVec; grind/omega/bv_decide/simp; containers; Lean.Expr, quotation, and elaboration.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G09 maps partial/fixed-point tools, notation/control flow, scalar containers, simplification/decision procedures and elaboration to the obligations they can support.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A26.4",
+      "group": "A26",
+      "question": "Which facilities help explain or verify current implementations versus generated programs? What is stable, experimental, semantically mismatched, or insufficient for borrow/resource reasoning?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Lean facilities can discharge logical/algorithmic obligations after interpretation and adequacy are supplied; no generic VCG or monotone WP instance establishes borrow/resource semantics.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A27.1",
+      "group": "A27",
+      "question": "Compare fuel, inductive evaluation, coinductive traces, interaction trees, partiality monads, and order-theoretic fixed points.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Fuel, inductive judgments, coinductive traces, ITree and order-theoretic fixed points expose different termination and effect observations; select a common adequacy statement before comparing.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A27.2",
+      "group": "A27",
+      "question": "Distinguish partial, partial_fixpoint, well-founded recursion, and opaque definitions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "partial, partial_fixpoint, well-founded recursion and opaque definitions have different logical/runtime roles; equations may underdetermine diverging executions.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A27.3",
+      "group": "A27",
+      "question": "When do equations characterize behavior adequately, and how are divergence and failure separated from unspecified logical values?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Current ITree Result explicitly distinguishes fail/div; DWP is least-fixed-point total correctness and DWLP greatest-fixed-point partial correctness. Ordinary inhabited outputs need an independent divergence account.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A27.4",
+      "group": "A27",
+      "question": "What supports extrinsic successful-termination proofs? How is compiled execution related to logical denotation?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Extrinsic termination proofs need a measure or semantic totality argument; logical denotation does not by itself certify compiled execution and foreign/runtime behavior.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A28.1",
+      "group": "A28",
+      "question": "Survey verified compilation, proof-producing translation, result checking, per-pass validation, guided symbolic replay, and interpreter specialization.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G13 compares verified translation, per-run checking, proof production, hinted replay, per-pass validation and specialization by the proposition accepted.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A28.2",
+      "group": "A28",
+      "question": "Which witness formats describe borrow operations, abstraction changes, joins, loop invariants, and pure transformations?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Proposed witnesses carry resource/identity maps for borrow/abstraction steps, injections for joins, invariants/exits for loops and typed local derivations for pure passes.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A28.3",
+      "group": "A28",
+      "question": "How are checking soundness, producer completeness, failure behavior, and proof composition separated?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Checker soundness permits incomplete/rejecting search; acceptance must bind complete subjects and fail closed. Semantic relations need composable direction/stuttering/failure conditions.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A28.4",
+      "group": "A28",
+      "question": "Compare certificate size, checking cost, implementation complexity, and assumptions using actual published systems.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Katamaran/CakeML/Lean4Lean provide actual published cost anchors for different workloads. Proposed Aeneas witness size/checking cost remains unknown; cross-system timing ratios would be invalid.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A29.1",
+      "group": "A29",
+      "question": "Inventory axioms, opaque constants, admissions, native evaluation, unsafe code, foreign interfaces, runtime assumptions, and proof-checking paths.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G09 separates kernel proof checking, model adequacy, statement identity and compiled execution; nativeEqTrue adds a fresh axiom even when its caller is a proved certificate checker.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A29.2",
+      "group": "A29",
+      "question": "What exactly does each selected decision procedure or certificate checker trust?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "simp/omega/grind proof construction differs from native-backed decision paths. Audit the actual returned proof and reachable axioms, not the tactic name.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A29.3",
+      "group": "A29",
+      "question": "How are unexpected assumptions and theorem dependency changes detected?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Dependency/axiom audits and fixed allowlists detect unexpected assumptions; source policy inspection of lake check is not an executed closure audit.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A29.4",
+      "group": "A29",
+      "question": "Evaluate independent kernels, lake check, comparator-style checking, and their limitations. Separate theorem-statement correctness, proof validity, model adequacy, and execution identity.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Independent checkers diversify proof validity checks but retain export/theory/runtime premises; agreement does not establish source/model correspondence or correct theorem selection.",
+      "reports": [
+        {
+          "group": "G09",
+          "path": "../lean-wp-partiality-and-aeneas-integration-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A30.1",
+      "group": "A30",
+      "question": "Compare text, syntax, kernel expressions, and deeply embedded programs with denotations.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Text, parsed syntax, elaborated kernel terms and deeply embedded denotations are distinct output boundaries. Only the identified term has a kernel type.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A30.2",
+      "group": "A30",
+      "question": "How do printer escaping, coercions, typeclass inference, notation, names, and namespaces affect output?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Escaping, names, coercions, notation and inferred dictionaries can change elaborated meaning. Printer success alone is not semantic identity.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A30.3",
+      "group": "A30",
+      "question": "How are generated auxiliaries, recursive definitions, imports, and model lookups included?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Generated helpers, recursive definitions, model lookups and complete imports form the relevant closure; omitted/stub/error declarations need explicit accounting.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A30.4",
+      "group": "A30",
+      "question": "What independently checkable evidence ties a theorem to the intended generated definition, source artifact, and specification?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Bind the intended source/IR/specification to the actual definition and semantic relation. Hashes identify bytes; checked equations/relations justify their meaning.",
+      "reports": [
+        {
+          "group": "G06",
+          "path": "../aeneas-pipeline-pure-extraction-21345f80/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A31.1",
+      "group": "A31",
+      "question": "Read open and closed issues, merged fixes, regression commits, release changes, disabled tests, and relevant discussions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G11 samples open/closed issues, merged patches, comments, commits and test sources through a recorded bounded protocol. It is a classified technical sample, not an exhaustive issue census.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A31.2",
+      "group": "A31",
+      "question": "Classify accepted semantic errors, inconsistent axioms, ill-typed output, unsupported inputs, internal failures, frontend/schema problems, and proof-performance regressions separately.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Accepted model errors, Rocq inconsistency, ill-typed output, unsupported input, internal/schema failures and performance cases are separate classes with exact records.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A31.3",
+      "group": "A31",
+      "question": "Which fixes establish a general invariant versus patch a special case? Which required independent semantic oracles?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Tie-choice and Vec behavior need independent operation contracts; binder/projection repairs expose recurring invariants. A merged patch alone does not prove the general invariant.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A31.4",
+      "group": "A31",
+      "question": "Audit nested borrows, projections, joins, fixed points, closure state, traits/binders, drops, partial output, models, and target interfaces; locate durable tests and missing regressions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The ledger covers nested borrows/joins/closures/binders/drop/model/target cases and checks durable test paths. #1412 described path was absent in inspected trees, without claiming no equivalent test exists.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A32.1",
+      "group": "A32",
+      "question": "Compare actual Rust, independent semantics/interpreters, concrete Aeneas execution, and generated models; identify shared-code dependencies between oracles.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Rust execution, independent semantics, concrete Aeneas and generated models have different shared dependencies. hax Lean delegation is not an independent translation oracle.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A32.2",
+      "group": "A32",
+      "question": "Investigate well-typed generation, differential fuzzing, counterexample minimization, and metamorphic changes such as helper extraction, aggregate splitting, opacity, and equivalent control flow.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G11 derives typed-generation, minimization and metamorphic oracles with separate expected acceptance/error classifications; no fresh fuzz campaign was performed.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A32.3",
+      "group": "A32",
+      "question": "Can deliberate invalid transformations exercise admission and certificate checks?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Prior executed CFG/byte certificates preserve deliberate bad transformations and counterexamples. They exercise narrow checks, not a complete current admission validator.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A32.4",
+      "group": "A32",
+      "question": "Include target-only universe/elaboration/recursion tests and cross-model interface tests; categorize expected rejection, failure, disagreement, and performance regressions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Target-only universe/elaboration/recursion sources and cross-model interfaces need separate tests from Rust execution; report rejection, internal failure, disagreement and performance distinctly.",
+      "reports": [
+        {
+          "group": "G11",
+          "path": "../aeneas-charon-history-and-regression-oracles-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A33.1",
+      "group": "A33",
+      "question": "Measure translation, proof generation, elaboration, kernel checking, memory, certificate size, and storage separately.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G12 records published workload measurements, existing exact-pin component timings and a stage-specific measurement protocol. Current all-stage translation/proof/check/storage costs remain unmeasured.",
+      "reports": [
+        {
+          "group": "G12",
+          "path": "../aeneas-scaling-proof-engineering-and-maintenance-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A33.2",
+      "group": "A33",
+      "question": "Identify quadratic structures, lost sharing, large terms, recursive groups, and proof bottlenecks.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Source loops/maps/sharing and generated recursive groups identify candidate bottlenecks; they are hypotheses until profiled under controlled identities.",
+      "reports": [
+        {
+          "group": "G12",
+          "path": "../aeneas-scaling-proof-engineering-and-maintenance-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A33.3",
+      "group": "A33",
+      "question": "What correctness conditions govern caching, incremental checking, and parallelism? Which semantic, model, source, compiler, and target identities belong in cache keys?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Cache keys must bind semantic/source/compiler/target/configuration/model/dependency identities and proposition/checker policy. Parallel/incremental reuse cannot discard dependency closure.",
+      "reports": [
+        {
+          "group": "G12",
+          "path": "../aeneas-scaling-proof-engineering-and-maintenance-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A33.4",
+      "group": "A33",
+      "question": "How robust are proofs and generated interfaces under small changes and toolchain upgrades? What are the maintenance costs of shared generic lemmas versus specialized proofs?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Small-change robustness needs regeneration/elaboration/proof/behavior observations separately. Shared generic lemmas amortize proofs but can increase dependency and specialization costs.",
+      "reports": [
+        {
+          "group": "G12",
+          "path": "../aeneas-scaling-proof-engineering-and-maintenance-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A34.1",
+      "group": "A34",
+      "question": "Compare RustHorn/RustHornBelt, RustBelt, RefinedRust, Creusot, hax, Electrolysis, Corten, and relevant other Rust verification work.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G10/G13 compare RustBelt/RustHornBelt/RefinedRust/Creusot/hax/Electrolysis/Corten with exact theorem and frontend/model boundaries, reusing pinned corpus subjects.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A34.2",
+      "group": "A34",
+      "question": "Examine Foundational VeriFast's hinted mirroring and Katamaran's verified symbolic execution.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Foundational VeriFast checks replay hints against its axiomatic semantics with admitted primitive/storage gaps; Katamaran proves symbolic-to-shallow/operational steps for its language.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A34.3",
+      "group": "A34",
+      "question": "Study relevant proof-producing compiler techniques in Cogent, CompCert, CakeML, and other systems; inspect Lean-based verified-checker experience including Lean4Lean.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Cogent/Dargent separates value/state/layout relations; CompCert composes qualified simulations; CakeML provides verified compilation/proof synthesis; Lean4Lean checks proof objects.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A34.4",
+      "group": "A34",
+      "question": "Compare precise theorem domains, semantic assumptions, reusable abstractions, certificate/proof interfaces, and measured costs rather than feature names alone.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The comparison records statement domains, assumptions, witness interfaces and measured tasks. Architecture labels or incomparable timing figures cannot establish a ranking.",
+      "reports": [
+        {
+          "group": "G13",
+          "path": "../certifying-translations-related-techniques-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A35.1",
+      "group": "A35",
+      "question": "Which obligations are value-level, and which require bytes, layout, validity, provenance, resources, or contextual safety?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Anneal obligations separate layout arithmetic, byte/value validity, unsafe resources, functional behavior, Rust/assembly ABI and deployment binding.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A35.2",
+      "group": "A35",
+      "question": "How do pure specifications compose with unsafe Rust bodies, opaque implementations, intrinsics, and assembly?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Pure specifications compose with unsafe/opaque/intrinsic/assembly bodies only through matching implementation contracts and concrete footprint/failure/resource relations.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A35.3",
+      "group": "A35",
+      "question": "What interface supports Rust/assembly behavioral correspondence together with ownership and ABI requirements?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Rust/assembly correspondence requires argument/result encoding, register/stack/clobbers, memory/provenance, control/unwind and architectural-effect contracts tied to instruction identity.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A35.4",
+      "group": "A35",
+      "question": "Which facts must survive extraction for casts, slices, initialization, alignment, and zero-copy reasoning? What TCB assumptions remain at each boundary?",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Retain types/metadata/extents/stride/alignment/initializedness/call identity and update/resource ownership. Each erased fact needs an irrelevance theorem or exposed assumption.",
+      "reports": [
+        {
+          "group": "G10",
+          "path": "../rust-semantic-domains-spatial-composition-3886/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A36.1",
+      "group": "A36",
+      "question": "Propose and, when undertaken, preserve minimal examples for mutable-reference updates, returned borrows, nested aggregate/enum borrows, loops carrying borrows, and generics instantiated with borrowed types.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The eleven-case inventory proposes returned-reference, nested/enum/loop and borrowed-generic probes while reusing preserved mutable-update specimens; five cases reuse actual older executions.",
+      "reports": [
+        {
+          "group": "G14",
+          "path": "../aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A36.2",
+      "group": "A36",
+      "question": "Include mutable closures returning unit, move/drop/panic behavior, safe APIs with unsafe implementations, control-flow reconstruction, historical model errors, and a small zerocopy/Anneal case.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "Closure/unit, move/drop/panic, unsafe-safe API, CFG, model-error and zerocopy cases have distinct fixtures/oracles or explicit unperformed status.",
+      "reports": [
+        {
+          "group": "G14",
+          "path": "../aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A36.3",
+      "group": "A36",
+      "question": "State each experiment's question, exact revisions/configuration, independent oracle, result classification, and limits.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "G14 links exact configurations and evidence in the original executed packages; source/history and proposed cases are separately classified, with no new current-pin execution claimed.",
+      "reports": [
+        {
+          "group": "G14",
+          "path": "../aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    },
+    {
+      "id": "A36.4",
+      "group": "A36",
+      "question": "Reconcile all reports into a coverage map, explicit remaining assumptions, prioritized follow-ups, and evidence needed to resolve outstanding questions.",
+      "disposition": "research-answer-with-explicit-boundaries",
+      "answer": "The 144-question crosswalk records answers and limits; the prioritized follow-ups expose unperformed closure audits, certificates, adapters and stronger source/resource proofs.",
+      "reports": [
+        {
+          "group": "G14",
+          "path": "../aeneas-charon-llbc-investigation-coverage-and-experiments-2026-10-15/REPORT.md",
+          "locator": "Findings (topic headings); Boundaries; Evidence; Revalidation"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "repository": "AeneasVerif/aeneas",
+  "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+  "observed_at": "2026-10-15",
+  "acquisition": "Read-only connected GitHub fetch_file at explicit full revision; selected symbol and line-region reading. Full file responses were held transiently, not preserved as a source mirror.",
+  "execution": false,
+  "whole_repository_audit": false,
+  "files": [
+    {
+      "path": "src/interp/InterpJoin.mli",
+      "blob_sha": "45ff4fdbaa2efeccd4fc9d44e0f65e0571fa28c7",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpJoin.mli",
+      "reading_scope": [
+        "join contract and freshening warning; 75-126",
+        "reborrow contract; 5-60",
+        "match contract; 167-330"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpJoin.ml",
+      "blob_sha": "46328d4464e026c76ec87e776f736b8fb0a7bdee",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpJoin.ml",
+      "reading_scope": [
+        "join_ctxs; 640-923",
+        "join_ctxs_list; 924-1013",
+        "match_ctx_with_target; 1348-1665"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpJoinCore.ml",
+      "blob_sha": "b1928d751e3639d706ea4b7c1764bcb5b2b46b85",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpJoinCore.ml",
+      "reading_scope": [
+        "join result types; 9-32",
+        "fixed abstractions ignoring continuation; 859-873"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpMatchCtxs.mli",
+      "blob_sha": "d723e5999250606302716503488219c5e044408c",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpMatchCtxs.mli",
+      "reading_scope": [
+        "matching and equivalence modes; 64-159"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpMatchCtxs.ml",
+      "blob_sha": "29705f4ffb6ec0b7c0d1cfa359cfb694683c9fbf",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpMatchCtxs.ml",
+      "reading_scope": [
+        "join literals and borrow-bearing symbolic summary; 621-766",
+        "identifier maps and abstraction matching; 2176-2390",
+        "nested-borrow rejection declaration/error scan"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpLoopsFixedPoint.ml",
+      "blob_sha": "2c11a26c754228d8afc3c7c627ac775cc142223f",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpLoopsFixedPoint.ml",
+      "reading_scope": [
+        "compute_loop_entry_fixed_point and continuation enrichment; 13-237",
+        "compute_loop_break_context; 239-381"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpLoops.ml",
+      "blob_sha": "94630c8c9052e326782cc6f71b1f346df451f3e5",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpLoops.ml",
+      "reading_scope": [
+        "entry matching; 78-123",
+        "body synthesis exits; 134-343",
+        "loop driver and AST assembly; 344-505"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpStatements.ml",
+      "blob_sha": "1f75159b23df8bee7ae2b613b4538c53f98420c4",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpStatements.ml",
+      "reading_scope": [
+        "statement panic/return/unwind/loop control; 774-791",
+        "eval_switch_with_join; 1053-1199",
+        "symbolic call dispatch; 1230-1249",
+        "signature-based call; 1346-1535"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpReduceCollapse.ml",
+      "blob_sha": "19ed34863b489ccb4e8ce494e8349b5e508f9d43",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpReduceCollapse.ml",
+      "reading_scope": [
+        "reduce/collapse description; 624-697",
+        "reduce_ctx; 840-871",
+        "helper/declaration scan including static handling; 1475"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/InterpAbs.ml",
+      "blob_sha": "758de2ba897a00df27875d44215c00d4482c2d2d",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpAbs.ml",
+      "reading_scope": [
+        "merge_abs_conts and merge_abstractions; 2016-2075",
+        "project_context and continuation helper declaration scan"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/llbc/Values.ml",
+      "blob_sha": "9c0f95d25c40c456f7c694db583153aba2dc7513",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/llbc/Values.ml",
+      "reading_scope": [
+        "meta equality; 181-249 and 1572-1576",
+        "markers and evalue/abs representations"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/interp/Invariants.ml",
+      "blob_sha": "d7f75807d79eb7ba5aaacf2d6e1b37291f1c02a0",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/Invariants.ml",
+      "reading_scope": [
+        "check_invariants; 1002-1011"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    },
+    {
+      "path": "src/Config.ml",
+      "blob_sha": "87e3469ce27d0079482fbe563c76f67d6491e636",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Config.ml",
+      "reading_scope": [
+        "loop_fixed_point_max_num_iters; 176-182",
+        "sanity_checks/recover_joins/loops_to_recursive_functions declaration/default scan"
+      ],
+      "scope_note": "Selected regions and declarations; no assertion of exhaustive file audit."
+    }
+  ],
+  "question_crosswalk": {
+    "A15": {
+      "sections": [
+        "Findings 1-5",
+        "Boundaries"
+      ],
+      "established": [
+        "join/update/retry and marker collapse algorithm",
+        "left freshening versus right synthesis projection",
+        "record/replay merge ordering",
+        "fixed/existential identifier maps and equivalence mode",
+        "two-iteration bound and rejection behavior"
+      ],
+      "derived_only": [
+        "inductiveness and branch-specific provenance requirements"
+      ],
+      "unresolved": [
+        "formal abstract order; leastness",
+        "join commutativity/associativity/order independence",
+        "complete convergence theorem or accepted-state soundness proof"
+      ]
+    },
+    "A16": {
+      "sections": [
+        "Findings 5-8",
+        "Boundaries"
+      ],
+      "established": [
+        "continue filtering and separate breaks",
+        "second break evaluation for fresh identifiers",
+        "entry/body/exit synthesis",
+        "early-return and outer-exit rejection in identified paths",
+        "panic/UB/unwind node treatment",
+        "signature abstraction for ordinary symbolic calls"
+      ],
+      "unresolved": [
+        "all preprocessing effects on early returns and nested loops",
+        "complete mutually recursive group support",
+        "downstream recursive-definition generation/partiality/termination",
+        "source execution success versus accepted translation"
+      ]
+    }
+  }
+}

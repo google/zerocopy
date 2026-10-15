@@ -1,0 +1,26 @@
+{
+  "questions": {
+    "A02": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Language, operational/resource domain, independent semantics and safety-transfer direction",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    },
+    "A24": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Functional/spatial relation, authority/validity/representation separation and contextual unsafe APIs",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    },
+    "A25": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Interference, atomics, trait contracts, suspension/cancellation/pinning obligations and bounded support knowledge",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    },
+    "A35": {
+      "disposition": "answered by source/literature comparison and explicitly derived interfaces",
+      "scope": "Layout/bytes/validity/source-model/unsafe/assembly/ABI interfaces and residual assumptions",
+      "not_established": "New end-to-end correspondence theorem, implementation, native reproduction or complete current feature audit"
+    }
+  },
+  "execution": "none",
+  "derived_interfaces": "proposed semantic proof obligations, not current implemented certificates"
+}

@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "lean/wp",
+    "lean/partiality",
+    "lean/tcb",
+    "aeneas/lean-backend",
+    "verification/automation"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas Lean backend",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+        "lean_toolchain": "v4.35.0-rc4"
+      }
+    },
+    {
+      "name": "Lean 4.35.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Lean reconnaissance comparison",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "88539871b4133140b0d5e9beb4cd446bcc0d2f40"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

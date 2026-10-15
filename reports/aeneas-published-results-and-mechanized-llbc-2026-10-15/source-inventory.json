@@ -1,0 +1,182 @@
+{
+  "repository": "AeneasVerif/mechanized-llbc",
+  "revision": "2762a26a3c0792017fa7a731aab1683d9a4cf23a",
+  "observed_at": "2026-10-15",
+  "files": [
+    {
+      "path": "Makefile",
+      "blob": "b3467b2d460ed3880453f3bb325c2b612c33174f",
+      "bytes": 32436,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/Makefile"
+    },
+    {
+      "path": "README.md",
+      "blob": "997fe7d2f11f12a903c986780db488ddb90fa459",
+      "bytes": 539,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/README.md"
+    },
+    {
+      "path": "_RocqProject",
+      "blob": "48167880f1a436c929336457299cc4957c5dd2db",
+      "bytes": 2129,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/_RocqProject"
+    },
+    {
+      "path": "mechanized-llbc.opam",
+      "blob": "64feaef4bb13b4cc56f98617fb6deb50cc911b23",
+      "bytes": 573,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/mechanized-llbc.opam"
+    },
+    {
+      "path": "src/HLPL.v",
+      "blob": "2b92668d4391ede2ca56db002dfd47b421995e01",
+      "bytes": 20909,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/HLPL.v"
+    },
+    {
+      "path": "src/HLPL_No_Anon.v",
+      "blob": "b792f9ab094a23bf199e2fdee21b55ca1602a915",
+      "bytes": 21043,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/HLPL_No_Anon.v"
+    },
+    {
+      "path": "src/HLPL_plus.v",
+      "blob": "183089cb17a13c39786c1823c9dbf1abfd03a48f",
+      "bytes": 18826,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/HLPL_plus.v"
+    },
+    {
+      "path": "src/LLBC.v",
+      "blob": "15f8f97a81c788f21f75a6e6fea8c0973bc4bf7b",
+      "bytes": 11771,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/LLBC.v"
+    },
+    {
+      "path": "src/LLBC_plus.v",
+      "blob": "e5751fe2fe2884302afa9e1187a50bd01545a628",
+      "bytes": 3449,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/LLBC_plus.v"
+    },
+    {
+      "path": "src/LLBC_sharp.v",
+      "blob": "848e66e4a8e99a469a6f6df4f971db4621085c85",
+      "bytes": 20222,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/LLBC_sharp.v"
+    },
+    {
+      "path": "src/ListBackInd.v",
+      "blob": "c9bfc545d1fe891b51803dbf44a74457fe0169df",
+      "bytes": 995,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/ListBackInd.v"
+    },
+    {
+      "path": "src/OptionMonad.v",
+      "blob": "be0930091240f29ba2dfd1d05a5227ba9f49dac4",
+      "bytes": 5469,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/OptionMonad.v"
+    },
+    {
+      "path": "src/PL.v",
+      "blob": "7886cb5b60b7ec3410db801595440f6f0f12f87d",
+      "bytes": 164685,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/PL.v"
+    },
+    {
+      "path": "src/PathToSubtree.v",
+      "blob": "d07aebf1d1b851f17439f9fb53ccab299ebf2a38",
+      "bytes": 111408,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/PathToSubtree.v"
+    },
+    {
+      "path": "src/Symbolic_states.v",
+      "blob": "6f07325cb3343e96b1422f5e2d1d889c2e318bdb",
+      "bytes": 149315,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/Symbolic_states.v"
+    },
+    {
+      "path": "src/base.v",
+      "blob": "8a4b40110e26f10d394edf9e67f86326d788c094",
+      "bytes": 60718,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/base.v"
+    },
+    {
+      "path": "src/executions/HLPL_No_Anon_executions.v",
+      "blob": "9007b0b15187a7fbcb141eecb5867318a5b4ad17",
+      "bytes": 9537,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/HLPL_No_Anon_executions.v"
+    },
+    {
+      "path": "src/executions/HLPL_executions.v",
+      "blob": "fa6e434eadab127ffebb3c41025fc681aa86001a",
+      "bytes": 9721,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/HLPL_executions.v"
+    },
+    {
+      "path": "src/executions/LLBC_sharp_exec_utils.v",
+      "blob": "cd2f9f894645c8c1a8000baa64108afa7b756aa6",
+      "bytes": 18885,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/LLBC_sharp_exec_utils.v"
+    },
+    {
+      "path": "src/executions/choose.v",
+      "blob": "6363f148fa3bc73b5e4f53849a73dc90e6eef1c4",
+      "bytes": 8263,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/choose.v"
+    },
+    {
+      "path": "src/executions/join_mutable_loan.v",
+      "blob": "953f96125647f3c9155b5efbc2a08b99a35ac8f0",
+      "bytes": 11309,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/join_mutable_loan.v"
+    },
+    {
+      "path": "src/executions/loop.v",
+      "blob": "a1e168b53b57a0a7762c6be38e56b18485be2f3a",
+      "bytes": 7767,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/loop.v"
+    },
+    {
+      "path": "src/executions/overwriteInnerLoan.v",
+      "blob": "c541cb733f240c79da1cf0d0d2b96dab446d32ef",
+      "bytes": 16329,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/executions/overwriteInnerLoan.v"
+    },
+    {
+      "path": "src/lang.v",
+      "blob": "ce4d47790983791a1cb87d315e4895b048881429",
+      "bytes": 6202,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/lang.v"
+    },
+    {
+      "path": "src/simulations/SimulationUtils.v",
+      "blob": "f6e0badca9ea64fe41fec310cec63bf0387debd8",
+      "bytes": 21835,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/simulations/SimulationUtils.v"
+    },
+    {
+      "path": "src/simulations/Simulation_HLPL_plus.v",
+      "blob": "f01c464373f6f3e6de2d199b9ae53010d3b92238",
+      "bytes": 70780,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/simulations/Simulation_HLPL_plus.v"
+    },
+    {
+      "path": "src/simulations/Simulation_LLBC_plus.v",
+      "blob": "a5d4016b170679d49adcaaf2753a41be1ccc072e",
+      "bytes": 178090,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/simulations/Simulation_LLBC_plus.v"
+    },
+    {
+      "path": "src/simulations/Simulation_LLBC_sharp_LLBC_plus.v",
+      "blob": "5da80dd4db01dfd7dc17b344aaad47744b69d3ee",
+      "bytes": 4793,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/simulations/Simulation_LLBC_sharp_LLBC_plus.v"
+    },
+    {
+      "path": "src/simulations/Symbolic_relations.v",
+      "blob": "cce0afd929fc2c7ee13f4ae184672056729cfc42",
+      "bytes": 35249,
+      "url": "https://github.com/AeneasVerif/mechanized-llbc/blob/2762a26a3c0792017fa7a731aab1683d9a4cf23a/src/simulations/Symbolic_relations.v"
+    }
+  ],
+  "scope": "All src V files plus project metadata; not a compiled assumption audit."
+}

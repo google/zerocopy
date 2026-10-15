@@ -1,0 +1,220 @@
+{
+  "observed_at": "2026-10-15",
+  "supplement": {
+    "representative-trace.md": {
+      "questions": [
+        "A05.1"
+      ],
+      "evidence_roles": [
+        "source",
+        "documentation",
+        "derived"
+      ],
+      "executed": false,
+      "endpoints": "pinned Rust and stored Lean with matching source-span comments",
+      "llbc": "No serialized LLBC in bounded tracked tests tree; intermediate ownership/control trace reconstructed, no serialized IDs or historical invocation asserted"
+    }
+  },
+  "sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "tests/src/loops.rs",
+      "blob_sha": "b6b63ec1a8501046af3d153c51b44f34cdde5798",
+      "line_count": 589,
+      "role": "retained current source specimen endpoint",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/src/loops.rs"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "tests/lean/Loops.lean",
+      "blob_sha": "6c6b33ffbea02c116fa6c28e30dfb99687022411",
+      "line_count": 1268,
+      "role": "retained current source specimen endpoint",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/tests/lean/Loops.lean"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/PrePasses.ml",
+      "blob_sha": "5e3f01a0d98799240b3103171ecd0a80e6cd2b19",
+      "reading_scope": [
+        "update_loops 490-680"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/PrePasses.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/Translate.ml",
+      "blob_sha": "74e7d223a0d38dc8ca9797d20ef60fd140909535",
+      "reading_scope": [
+        "translate_function_to_pure_aux 105-280"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/Translate.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/Interp.ml",
+      "blob_sha": "cc4c315bce9b7807701ac323e3c387cded478156",
+      "reading_scope": [
+        "initialize_symbolic_context_for_fun 286-378",
+        "backward-from-return synthesis 387-506"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/Interp.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/InterpLoops.ml",
+      "blob_sha": "94630c8c9052e326782cc6f71b1f346df451f3e5",
+      "reading_scope": [
+        "eval_loop_symbolic 344-505"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpLoops.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/InterpLoopsFixedPoint.ml",
+      "blob_sha": "2c11a26c754228d8afc3c7c627ac775cc142223f",
+      "reading_scope": [
+        "entry analysis 44-237"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpLoopsFixedPoint.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/InterpExpansion.ml",
+      "blob_sha": "ded98d0db333ddaf9a749636fe5763128f5e7e75",
+      "reading_scope": [
+        "mutable-reference/boolean expansion 494-552"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpExpansion.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/InterpBorrows.ml",
+      "blob_sha": "6284f1a8607f75c3c98f50ca0ddbd78429db4f3c",
+      "reading_scope": [
+        "end_abs_aux 1175-1288"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpBorrows.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPureAbs.ml",
+      "blob_sha": "06d0e4effcf036c1a9a04afc42e78e7e5e4be185",
+      "reading_scope": [
+        "abs_cont_to_texpr_aux 1050-1109"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureAbs.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureMicroPassesLoops.ml",
+      "blob_sha": "c4f20ed85a47b328f2a54a86bc8f4df74679c886",
+      "reading_scope": [
+        "loop recursive criteria 2436-2585"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureMicroPassesLoops.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob_sha": "e2f2c4a0e070ce1fea56d8858fae6b41dee221ec",
+      "reading_scope": [
+        "pass order 13-155"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/pure/PureMicroPasses.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/Extract.ml",
+      "blob_sha": "dc667f431c62ff19cd192bfb24d141f3c781ff69",
+      "reading_scope": [
+        "extract_fun_decl_gen 2082-2135"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/Extract.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/extract/ExtractBase.ml",
+      "blob_sha": "b5a0ae765651af56f7798cc3f2ee065cb508c139",
+      "reading_scope": [
+        "declaration qualifiers 1418-1457"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/extract/ExtractBase.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "charon-pin",
+      "blob_sha": "9e90db588b230b9883a3be63a7d4bd710a18ce82",
+      "reading_scope": [
+        "entire file"
+      ],
+      "role": "selected controlling implementation region; source-reconstructed trace",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/charon-pin"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/interp/InterpJoin.mli",
+      "blob_sha": "45ff4fdbaa2efeccd4fc9d44e0f65e0571fa28c7",
+      "line_count": 362,
+      "reading_scope": [
+        "list_nth_mut example 174-295"
+      ],
+      "role": "selected implementation/documentation source",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/interp/InterpJoin.mli"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPureExpressions.ml",
+      "blob_sha": "0ecd258d1ca49c56d00bd400d1548f8d87a8bcd5",
+      "line_count": 2240,
+      "reading_scope": [
+        "translate_expr dispatch 228-252",
+        "translate_loop 1850-2052"
+      ],
+      "role": "selected implementation/documentation source",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureExpressions.ml"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "21345f80fa212c596f6437378d7d57984fa2ea77",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob_sha": "99697b0d63061dfc2edad677c8d19d2cadeeba6d",
+      "line_count": 1304,
+      "reading_scope": [
+        "translate_sty 137-173",
+        "translate_fwd_ty 344-381"
+      ],
+      "role": "selected implementation/documentation source",
+      "url": "https://github.com/AeneasVerif/aeneas/blob/21345f80fa212c596f6437378d7d57984fa2ea77/src/symbolic/SymbolicToPureTypes.ml"
+    }
+  ]
+}
