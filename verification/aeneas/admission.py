@@ -91,6 +91,9 @@ EXCLUDED_PROVIDED_METHODS = (
 # Calls to them are rejected; the generated interface definitions return undef.
 INTERFACE_ONLY_VALIDATORS = '{impl zerocopy::TryFromBytes for _}::is_safe'
 INTERFACE_ONLY_TYPES = ('zerocopy::pointer::ptr::def::Ptr',)
+MANUALLY_DROP = 'core::mem::manually_drop::ManuallyDrop'
+MANUALLY_DROP_NEW = 'core::mem::manually_drop::{' + MANUALLY_DROP + '<T0>}::new'
+TRANSMUTE_COPY = 'core::mem::transmute_copy'
 
 
 def digest(path):
@@ -240,6 +243,11 @@ class Admission:
         if tag == 'Adt':
             base = self.name(self.types[body['id']]['item_meta']['name'])
             args = body['generics']['types']
+            if check_carrier and base == MANUALLY_DROP:
+                arguments = body['generics']
+                if (len(args) != 1 or any(arguments.get(key) for key in
+                        ('regions', 'const_generics', 'trait_refs'))):
+                    raise ValueError('Unreviewed opaque value carrier ManuallyDrop type arguments')
             if body['generics']['const_generics']:
                 raise ValueError('Nominal const-generic value carriers are unsupported')
             if check_carrier:
@@ -273,6 +281,20 @@ class Admission:
         declaration = self.types[index]
         kind, body = variant(declaration['kind'])
         name = self.name(declaration['item_meta']['name'])
+        if name == MANUALLY_DROP:
+            meta = declaration['item_meta']
+            generics = declaration.get('generics', {})
+            if (kind != 'Opaque' or meta.get('is_local') is not False
+                    or meta.get('is_extern') is not False
+                    or meta.get('has_errors') is not False
+                    or meta.get('lang_item') != 'ManuallyDrop'
+                    or len(generics.get('types', [])) != 1
+                    or generics['types'][0]['index'] != 0
+                    or any(generics.get(key) for key in ('regions',
+                        'const_generics', 'trait_clauses', 'regions_outlive',
+                        'types_outlive', 'trait_type_constraints'))):
+                raise ValueError('Unreviewed opaque value carrier ManuallyDrop shape')
+            return
         if kind == 'Opaque':
             if name not in {'tuple0', 'str', 'core::fmt::Arguments',
                             'core::fmt::Formatter', 'core::marker::PhantomData',
@@ -354,6 +376,30 @@ class Admission:
                     matches[0].get('interpretation_extension') != 'retained-model-provider-v1'
                     or meta['is_local']):
                 raise ValueError('Zeroed construction changed its reviewed model-provider boundary')
+            if name == 'core::mem::size_of' and (meta['is_local'] or function['body'] != 'Opaque'):
+                raise ValueError('Size read changed its reviewed ABI boundary')
+            if name in {MANUALLY_DROP_NEW, TRANSMUTE_COPY}:
+                extension = ('nominal-wrapper-constructor-v1' if name == MANUALLY_DROP_NEW
+                             else 'retained-model-byte-copy-v1')
+                generics = function['generics']
+                regions = generics['regions']
+                expected = ({'unsafe': False, 'inputs': ['T0'],
+                    'output': MANUALLY_DROP + '<T0>', 'types': 1, 'consts': 0}
+                    if name == MANUALLY_DROP_NEW else
+                    {'unsafe': True, 'inputs': ['&T0'], 'output': 'T1',
+                     'types': 2, 'consts': 0})
+                expected_lean = ('core.mem.manually_drop.ManuallyDrop.new'
+                    if name == MANUALLY_DROP_NEW else 'core.mem.transmute_copy')
+                if (prototype != expected or matches[0]['lean'] != expected_lean
+                        or matches[0].get('interpretation_extension') != extension
+                        or meta['is_local'] or function['body'] != 'Opaque'
+                        or len(regions) != (1 if name == TRANSMUTE_COPY else 0)
+                        or [ty['index'] for ty in generics['types']] !=
+                            list(range(prototype['types']))
+                        or (regions and regions[0]['index'] != 0)
+                        or any(generics[key] for key in ('const_generics',
+                            'trait_clauses', 'regions_outlive', 'trait_type_constraints'))):
+                    raise ValueError('Transmute-copy reviewed external boundary changed')
             # A builtin may replace a visible Rust body. Always select the
             # interpretation first, rather than approving the unused body.
             self.visited[index] = {'rust': name, 'origin': 'interpretation',
@@ -461,7 +507,7 @@ class Admission:
             if body not in self.locals:
                 raise ValueError('Unknown local place')
         elif tag == 'Global':
-            self.global_value(body['id'])
+            self.global_value(body['id'], body['generics'])
         elif tag == 'Projection':
             self.place(body[0], indexed)
             projection, detail = variant(body[1])
@@ -483,14 +529,22 @@ class Admission:
         else:
             raise ValueError(f'Unsupported place {tag}')
 
-    def global_value(self, index):
+    def global_value(self, index, arguments):
+        global_ = self.crate['global_decls'][index]
+        value, _ = untag(global_['value'])
+        tag, producer = variant(value)
+        if tag == 'Call':
+            function, _ = producer
+            kind, callee = variant(function['kind'])
+            if kind != 'Fun':
+                raise ValueError('Unresolved global initializer')
+            self.record_native_call(callee, arguments, kind='global')
         if index in self.globals:
             return
         self.globals.add(index)
-        global_ = self.crate['global_decls'][index]
         if global_['global_kind'] != 'NamedConst' or global_['item_meta']['has_errors']:
             raise ValueError('Unreviewed static or global origin')
-        self.constant(global_['value'])
+        self.constant(global_['value'], record_call=False)
 
     def operand(self, operand):
         tag, body = variant(operand)
@@ -501,7 +555,17 @@ class Admission:
         else:
             raise ValueError(f'Unsupported operand {tag}')
 
-    def constant(self, constant):
+    def record_native_call(self, callee, arguments, **extra):
+        fields(arguments, 'regions types const_generics trait_refs')
+        target = self.functions[callee]
+        row = {'caller': self.current, 'callee': self.name(target['item_meta']['name']),
+            'caller_def_id': self.current_function['def_id'],
+            'callee_def_id': callee,
+            'type_arguments': [self.ty_name(ty) for ty in arguments['types']], **extra}
+        self.calls.append(row)
+        return row
+
+    def constant(self, constant, *, record_call=True):
         value, ty = untag(constant)
         self.ty_name(ty)
         tag, body = variant(value)
@@ -516,7 +580,7 @@ class Admission:
                 self.constant(field)
             return
         if tag == 'Global':
-            self.global_value(body['id'])
+            self.global_value(body['id'], body['generics'])
             return
         if tag == 'Call':
             function, args = body
@@ -524,6 +588,9 @@ class Admission:
                 raise ValueError('Unresolved constant producer')
             for arg in args:
                 self.constant(arg)
+            if record_call:
+                self.record_native_call(function['kind']['Fun'], function['generics'],
+                                        kind='constant')
             self.visit(function['kind']['Fun'])
             return
         if tag == 'TraitConst':
@@ -891,7 +958,24 @@ class Admission:
                         'usize', 'core::num::niche_types::NonZeroUsizeInner']
                     if actual != expected:
                         raise ValueError(f'Unsupported NonZero::new_unchecked instantiation {actual}')
-                call_evidence = {'caller': self.current, 'callee': name}
+                arguments = fn['generics']
+                fields(arguments, 'regions types const_generics trait_refs')
+                actual = [self.ty_name(ty) for ty in arguments['types']]
+                call_evidence = {'caller': self.current, 'callee': name,
+                    'caller_def_id': self.current_function['def_id'],
+                    'callee_def_id': callee, 'type_arguments': actual}
+                if name == MANUALLY_DROP_NEW and (actual != ['T0'] or
+                        any(arguments[key] for key in
+                            ('regions', 'const_generics', 'trait_refs'))):
+                    raise ValueError('Unsupported original ManuallyDrop constructor endpoint')
+                if name == TRANSMUTE_COPY:
+                    regions = arguments['regions']
+                    if (actual != [MANUALLY_DROP + '<T0>', 'T1']
+                            or len(regions) != 1
+                            or variant(regions[0])[0] != 'Body'
+                            or type(variant(regions[0])[1]) is not int
+                            or arguments['const_generics'] or arguments['trait_refs']):
+                        raise ValueError('Unsupported original transmute_copy endpoints or regions')
                 if name == 'core::mem::zeroed':
                     arguments = fn['generics']
                     if (len(arguments['types']) != 1 or arguments['regions']
@@ -1019,8 +1103,114 @@ class Admission:
             if self.name(trait['item_meta']['name']) not in self.law_traits:
                 continue
             self.audit_implementation(implementation, trait)
+        self.audit_copy_closures()
         return {'roots': sorted(roots), 'executions': list(self.visited.values()),
                 'calls': self.calls, 'empty_drops': list(self.empty_drops.values())}
+
+    def audit_copy_closures(self):
+        """Bound each invocation to one byte choice, including helper calls.
+
+        Count the syntactic call multigraph, not just distinct callees. Loops
+        and recursion in an owner which can reach copy can repeat a choice;
+        unrelated numerical loops retain their existing admission rules.
+        """
+        copy_name = [{'Ident': [part, 0]} for part in TRANSMUTE_COPY.split('::')]
+        copies = {ident for ident, function in self.functions.items()
+                  if function['item_meta']['name'] == copy_name}
+        if not copies:
+            return
+        edges = {}
+        for row in self.calls:
+            if 'callee_def_id' in row:
+                edges.setdefault(row['caller_def_id'], []).append(row['callee_def_id'])
+        reaching = set(copies)
+        while True:
+            added = {owner for owner, children in edges.items()
+                     if any(child in reaching for child in children)} - reaching
+            if not added:
+                break
+            reaching.update(added)
+        # A fixed concrete instantiation would select a default provider rather
+        # than retaining the caller's universally quantified byte choice. Every
+        # local forwarding edge must therefore pass original type variables.
+        # The primitive's nominal ManuallyDrop endpoint is checked separately.
+        for row in self.calls:
+            owner, child = row.get('caller_def_id'), row.get('callee_def_id')
+            if child not in reaching - copies:
+                continue
+            arguments = row.get('type_arguments')
+            source_indices = {parameter['index'] for parameter in
+                              self.functions[owner]['generics']['types']}
+            if not isinstance(arguments, list) or not arguments or any(
+                    not isinstance(argument, str) or
+                    (match := re.fullmatch(r'T(0|[1-9][0-9]*)', argument)) is None or
+                    int(match[1]) not in source_indices for argument in arguments):
+                raise ValueError('Transmute-copy forwarding requires original type variables')
+        counts, active = {}, set()
+
+        def count(owner):
+            if owner in active:
+                raise ValueError('Transmute-copy closure contains recursive calls')
+            if owner in counts:
+                return counts[owner]
+            if owner in copies:
+                return 1
+            active.add(owner)
+            total = sum(count(child) for child in edges.get(owner, [])
+                        if child in reaching)
+            active.remove(owner)
+            if total > 1:
+                raise ValueError('Transmute-copy closure contains multiple byte choices')
+            counts[owner] = total
+            return total
+
+        def structured_loop(value):
+            if isinstance(value, dict):
+                if set(value) == {'Loop'}:
+                    return True
+                return any(structured_loop(child) for child in value.values())
+            return isinstance(value, list) and any(map(structured_loop, value))
+
+        for owner in reaching - copies:
+            count(owner)
+            if not self.functions[owner]['generics']['types']:
+                raise ValueError('Transmute-copy local bodies must be type generic')
+            stage, body = variant(self.functions[owner]['body'])
+            if stage == 'Structured':
+                if structured_loop(body['body']):
+                    raise ValueError('Transmute-copy closure contains a body loop')
+            elif stage == 'Unstructured':
+                blocks = body['body']
+                graph = {}
+                for index, block in enumerate(blocks):
+                    tag, term = variant(block['terminator']['kind'])
+                    if tag == 'Goto':
+                        children = [term]
+                    elif tag == 'Switch':
+                        children = term['branches']
+                    elif tag in {'Call', 'Drop', 'Assert'}:
+                        children = [term['target'], term['on_unwind']]
+                    else:
+                        children = []
+                    if any(type(child) is not int or not 0 <= child < len(blocks)
+                           for child in children):
+                        raise ValueError('Invalid transmute-copy control-flow edge')
+                    graph[index] = children
+                seen, pending = set(), set()
+
+                def visit(block):
+                    if block in pending:
+                        raise ValueError('Transmute-copy closure contains a CFG cycle')
+                    if block in seen:
+                        return
+                    pending.add(block)
+                    for child in graph[block]:
+                        visit(child)
+                    pending.remove(block)
+                    seen.add(block)
+
+                for block in graph:
+                    visit(block)
 
 
 def input_identity(root):
@@ -1181,6 +1371,11 @@ def check_translation(work, evidence):
     text = (work / 'Zerocopy/FunsExternal_Template.lean').read_text()
     signatures = {
         'core.mem.zeroed': 'axiom core.mem.zeroed (T : Type) : Result T',
+        'core.mem.size_of': 'axiom core.mem.size_of (T : Type) : Result Std.Usize',
+        'core.mem.manually_drop.ManuallyDrop.new':
+            'axiom core.mem.manually_drop.ManuallyDrop.new {T : Type} : T → Result (core.mem.manually_drop.ManuallyDrop T)',
+        'core.mem.transmute_copy':
+            'axiom core.mem.transmute_copy {Src : Type} (Dst : Type) : Src → Result Dst',
         'core.intrinsics.transmute':
             'axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst',
         'util.transmute_unchecked':

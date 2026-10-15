@@ -378,4 +378,9 @@ structure trait_checks.Forward (C : Type) where
 structure wrappers.Unalign (T : Type) where
   _0 : T
 
+/-- Trait declaration: [zerocopy::util::macro_util::transmute_copy::StaticAssert]
+    Source: 'src/util/macros.rs', lines 679:8-681:9 -/
+structure util.macro_util.transmute_copy.StaticAssert (Self : Type) where
+  ASSERT : Result Bool
+
 end Zerocopy

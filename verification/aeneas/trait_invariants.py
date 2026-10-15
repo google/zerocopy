@@ -472,11 +472,15 @@ def bind_laws(annotations, work, final, before):
     if used_proofs != {(p['file'], p['syntax']) for p in getattr(annotations, 'trait_proofs', [])}:
         raise ValueError('An annotated implementation proof was not bound and checked')
     # Source roots and dependency dictionaries have different coverage rules.
-    # Only marked owners may be independently rooted; all local dictionaries
-    # of annotated traits, including unmarked dependencies, still need proofs.
+    # A function-root prefix can also select a nested implementation of an
+    # unannotated trait (for example a static assertion's private trait). Such
+    # dependencies are not invariant-proof markers. Restrict the root bijection
+    # to annotated traits; every local dictionary of those traits, including
+    # unmarked dependencies, still receives its proof obligation above.
     for crate in (before, final):
         rooted = {ident for ident, impl in declarations(crate, 'trait_impls').items()
-                  if impl['item_meta'].get('started_from') is True}
+                  if impl['item_meta'].get('started_from') is True
+                  and impl['impl_trait']['id'] in by_id}
         if rooted != marked_owners:
             raise ValueError('Compiler implementation roots disagree with bound markers')
     return laws, implementations, dictionaries

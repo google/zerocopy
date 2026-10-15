@@ -1294,3 +1294,34 @@ checking its signature; no formatting proposition or behavior is assumed. A
 change to a proposition or a function fails the audit. The PhantomData model
 likewise records its zero runtime fields, with a Lean shape theorem that fails
 if extraction adds fields; it makes no ownership or provenance claim.
+
+## Generic owned transmute proof
+
+The inline specification on [`util::macro_util::transmute_copy`](../../zerocopy/src/util/macro_util.rs)
+requires `RustModel.sameSize Src Dst` and guarantees `RustModel.byteCast src result`.
+`sameSize` links both ordinary ABI size queries to the physical decoder widths.
+`byteCast` says one byte string represents both endpoints; it does not select a
+canonical string. Accepted input decoding, termination, non-panicking execution,
+and output decoding remain automatic contract obligations.
+
+[`Proofs/GenericTransmute.lean`](lean/Proofs/GenericTransmute.lean) proves the actual
+helper, an independent generic caller, guard retention, and coverage of every
+represented outcome. The caller reuses the helper's theorem. The byte proof
+combines source initialization and realizability with destination completeness.
+An uninhabited source is vacuous, and zero-sized types need no special case.
+
+Aeneas's ordinary `Result` is deterministic. To cover ambiguous representations,
+`RustModel` retains a checked representation preference and generic specifications
+quantify over that provider. The coverage theorem varies only the preference,
+while fixing both decoders. Tests show that the same raw source can yield two
+different byte-observing outputs. Admission permits only one conversion per
+execution and generic forwarding that retains that choice. Repetition, loops,
+recursion, concrete forwarding, and unreviewed endpoint shapes fail closed.
+
+CI also audits the compiler call identities, ordered endpoints, exact providers,
+constant initializer, and complete external interpretations. The ownership checker
+proves the ignored normal and unwind drops empty. Failure controls challenge the
+size guard, providers, trait premises, and destination admission. The exact
+[semantic scope and Rust premises](SEMANTICS.md#generic-owned-conversion-through-transmute_copy)
+exclude pointer provenance, resource ownership, meaningful destructor execution,
+and general storage-copy effects. The production `transmute!` macro is unchanged.

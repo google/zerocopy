@@ -154,6 +154,68 @@ class TraitBindingsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'lacks its native dictionary'):
                 traits.bind_laws(annotations, work, self.final, self.before)
 
+    def test_function_root_nested_unannotated_impl_is_not_a_proof_marker(self):
+        annotations = inline.Annotations()
+        annotations['zerocopy::Marker'] = {'kind': 'trait', 'rust': 'zerocopy::Marker',
+            'generics': ['Self'], 'theorem': 'marker', 'predicate': 'Self = Self'}
+        nested_trait = {'def_id': 3,
+            'item_meta': meta('zerocopy::helper::StaticAssert'),
+            'generics': generics(names=('Self',)), 'types': []}
+        annotated = {'def_id': 2, 'item_meta': meta('zerocopy::MarkerImpl'),
+            'impl_trait': {'id': 0, 'generics': args([{'Scalar': 'Bool'}])},
+            'generics': generics(names=())}
+        nested = {'def_id': 4, 'item_meta': meta('zerocopy::helper::StaticAssertImpl'),
+            'impl_trait': {'id': 3, 'generics': args([{'Scalar': 'Bool'}])},
+            'generics': generics(names=())}
+        nested['item_meta']['started_from'] = True
+        self.final['trait_decls'].append(nested_trait)
+        self.before['trait_decls'].append(copy.deepcopy(nested_trait))
+        self.final['trait_impls'] = [annotated, nested]
+        self.before['trait_impls'] = copy.deepcopy(self.final['trait_impls'])
+        location = {'file': 'src/lib.rs', 'begin_line': 1, 'end_line': 4}
+        native = {'crate': 'zerocopy', 'charon_version': '0.1.276',
+            'aeneas_version': 'nightly-2026.10.01-ca282ec+nominal-tuple-structs.1',
+            'trait_decls': [{'def_id': ident, 'lean_name': raw,
+                'rust_name': rust, 'is_local': True, 'source': location}
+                for ident, raw, rust in [
+                    (0, 'Zerocopy.Marker', 'zerocopy::Marker'),
+                    (3, 'Zerocopy.helper.StaticAssert', 'zerocopy::helper::StaticAssert')]],
+            'trait_impls': [{'def_id': ident, 'lean_name': raw,
+                'impl_trait_def_id': trait, 'impl_trait_rust_name': rust,
+                'is_local': True, 'source': location}
+                for ident, raw, trait, rust in [
+                    (2, 'Zerocopy.Bool.Insts.Marker', 0, 'zerocopy::Marker'),
+                    (4, 'Zerocopy.helper.Bool.Insts.StaticAssert', 3,
+                     'zerocopy::helper::StaticAssert')]]}
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            (work / 'Zerocopy').mkdir()
+            (work / 'Zerocopy/translation.json').write_text(json.dumps(native))
+
+            def bind():
+                return traits.bind_laws(annotations, work, self.final, self.before)
+
+            laws, obligations, _ = bind()
+            self.assertEqual([law['def_id'] for law in laws], [0])
+            # The unmarked annotated dependency still needs its exact proof.
+            self.assertEqual([row['def_id'] for row in obligations], [2])
+            self.assertEqual(obligations[0]['proof'],
+                             'Zerocopy.Proofs.Bool.Insts.Marker_law')
+            # Neither compiler stage may independently root an unmarked owner
+            # of an annotated trait, even beside a legitimate nested root.
+            for crate in (self.before, self.final):
+                crate['trait_impls'][0]['item_meta']['started_from'] = True
+                with self.assertRaisesRegex(ValueError, 'roots disagree with bound markers'):
+                    bind()
+                crate['trait_impls'][0]['item_meta']['started_from'] = False
+            for crate in (self.before, self.final):
+                crate['trait_impls'][0]['item_meta']['started_from'] = True
+            annotations.trait_proofs = [{'file': 'zerocopy/src/lib.rs',
+                'syntax': '__marker_impl', 'theorem': None,
+                'generics': [], 'const_generics': [],
+                'open_line': 1, 'open_col': 0, 'end_line': 4, 'end_col': 1}]
+            self.assertEqual([row['def_id'] for row in bind()[1]], [2])
+
     def test_array_impl_retains_usize_const_and_original_application(self):
         annotations = inline.Annotations()
         annotations['zerocopy::Marker'] = {'kind': 'trait', 'rust': 'zerocopy::Marker',

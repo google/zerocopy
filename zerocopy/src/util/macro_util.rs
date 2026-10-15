@@ -510,6 +510,71 @@ pub const fn hash_name(name: &str) -> i128 {
     i128::from_ne_bytes(hash.to_ne_bytes())
 }
 
+/// Transfers the representation of `src` into an equal-sized `Dst`.
+///
+/// The source is consumed without running its destructor. The source must have
+/// initialized bytes, and every initialized representation must be valid for the
+/// destination, as enforced by the trait bounds.
+///
+/// # PME
+///
+/// Instantiating this function produces a post-monomorphization error unless
+/// `size_of::<Src>() == size_of::<Dst>()`. `cargo check` alone may not diagnose
+/// an unequal-size instantiation; code generation or const evaluation does.
+///
+/// ```compile_fail,E0080
+/// use zerocopy::util::macro_util::transmute_copy;
+/// const TOO_LARGE: u16 = transmute_copy(0u8);
+/// ```
+///
+/// ```compile_fail,E0080
+/// use zerocopy::util::macro_util::transmute_copy;
+/// const TOO_SMALL: u8 = transmute_copy(0u16);
+/// ```
+///
+/// ```compile_fail,E0277
+/// use zerocopy::util::macro_util::transmute_copy;
+/// // `bool` does not accept every initialized byte representation.
+/// const INVALID_DESTINATION: bool = transmute_copy(0u8);
+/// ```
+///
+/// ```compile_fail,E0277
+/// use core::mem::MaybeUninit;
+/// use zerocopy::util::macro_util::transmute_copy;
+/// // `MaybeUninit<u8>` does not promise initialized bytes.
+/// const UNINITIALIZED_SOURCE: u8 = transmute_copy(MaybeUninit::uninit());
+/// ```
+///
+/// ```aeneas
+/// spec transmute_copy_spec
+///   requires(raw) same_size : AeneasSpecs.RustModel.sameSize Src Dst
+///   ensures(raw) result => AeneasSpecs.RustModel.byteCast src result
+/// ```
+#[cfg(not(no_zerocopy_const_refs_to_cell_1_83_0))]
+#[cfg_attr(doc_cfg, doc(cfg(rust = "1.83.0")))]
+#[inline(always)]
+#[must_use]
+pub const fn transmute_copy<Src: IntoBytes, Dst: FromBytes>(src: Src) -> Dst {
+    static_assert!(Src, Dst => mem::size_of::<Src>() == mem::size_of::<Dst>());
+    let src = mem::ManuallyDrop::new(src);
+    // SAFETY: The static assertion establishes equal sizes, and ManuallyDrop
+    // preserves its inner type's layout and bit validity [1]. Thus the entire
+    // destination fits in this live source object. IntoBytes guarantees that
+    // the source representation consists of initialized bytes; FromBytes
+    // permits constructing Dst from any such bytes. Together these facts
+    // establish the readable extent and destination validity required by [2],
+    // including when both types have size zero. [2] permits stricter alignment
+    // for Dst, so no additional alignment bound is needed.
+    //
+    // [2] copies without moving the source. ManuallyDrop inhibits the source
+    // destructor [1], and the source is never accessed after the copy. Only the
+    // returned Dst remains available for use or destruction.
+    //
+    // [1] https://doc.rust-lang.org/1.74.0/core/mem/struct.ManuallyDrop.html
+    // [2] https://doc.rust-lang.org/1.74.0/core/mem/fn.transmute_copy.html
+    unsafe { mem::transmute_copy(&src) }
+}
+
 /// Attempts to transmute `Src` into `Dst`.
 ///
 /// A helper for `try_transmute!`.

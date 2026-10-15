@@ -17,6 +17,9 @@ pub mod macro_util;
 mod allocation;
 pub(crate) mod bytewrite;
 mod checks;
+#[cfg(not(no_zerocopy_const_refs_to_cell_1_83_0))]
+#[allow(dead_code)]
+mod generic_transmute;
 mod move_checks;
 #[cfg(target_endian = "little")]
 #[allow(dead_code)]
