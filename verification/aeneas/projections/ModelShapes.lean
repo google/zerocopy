@@ -44,11 +44,17 @@ derive_model_shape Zerocopy.byteorder.F32 with 1 type parameters
 
 derive_model_shape Zerocopy.byteorder.F64 with 1 type parameters
 
+derive_model_shape Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
+
+derive_model_shape Zerocopy.pointer.invariant.Initialized with 0 type parameters
+
+derive_model_shape Zerocopy.pointer.invariant.Shared with 0 type parameters
+
+derive_model_shape Zerocopy.pointer.invariant.Safe with 0 type parameters
+
 derive_model_shape Zerocopy.trait_checks.XorCodec with 0 type parameters
 
 derive_model_shape Zerocopy.trait_checks.Forward with 1 type parameters
 
 derive_model_shape Zerocopy.wrappers.Unalign with 1 type parameters
-
-derive_model_shape Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
 

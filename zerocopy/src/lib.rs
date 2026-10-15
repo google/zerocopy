@@ -3701,6 +3701,10 @@ where
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(FromZeros)]` to `{Self}`")
 )]
+/// ```aeneas
+/// invariant from_zeros_valid for self =>
+///   AeneasSpecs.RustModel.zeroRepresentation Self
+/// ```
 pub unsafe trait FromZeros: TryFromBytes {
     // The `Self: Sized` bound makes it so that `FromZeros` is still object
     // safe.
@@ -4287,6 +4291,10 @@ pub use zerocopy_derive::FromBytes;
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(FromBytes)]` to `{Self}`")
 )]
+/// ```aeneas
+/// invariant from_bytes_valid for self =>
+///   AeneasSpecs.RustModel.completeRepresentation Self
+/// ```
 pub unsafe trait FromBytes: FromZeros {
     // The `Self: Sized` bound makes it so that `FromBytes` is still object
     // safe.

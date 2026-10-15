@@ -10,6 +10,7 @@ those terms. -/
 -- [zerocopy]: function definitions
 module
 public import Aeneas
+public import NativeModels
 public import Zerocopy.Types
 public import Zerocopy.FunsExternal
 @[expose] public section
@@ -642,6 +643,13 @@ def byteorder.verification.set_u32_be
       value n
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
+/-- [zerocopy::FromZeros::new_zeroed]:
+    Source: 'src/lib.rs', lines 3823:4-3829:5
+    Visibility: public -/
+@[trait_default]
+native_models def FromZeros.new_zeroed.default (Self : Type) : Result Self := do
+  core.mem.zeroed Self
+
 /-- [zerocopy::trait_checks::{impl zerocopy::trait_checks::ByteCodec for zerocopy::trait_checks::XorCodec}::decode]:
     Source: 'src/trait_checks.rs', lines 41:4-43:5 -/
 def trait_checks.XorCodec.Insts.ZerocopyTrait_checksByteCodec.decode
@@ -791,6 +799,112 @@ def trait_checks.check_array_into_bytes : Result Unit := do
   trait_checks.require_into_bytes (Array.Insts.ZerocopyIntoBytes 3#usize
     (Array.Insts.ZerocopyIntoBytes 2#usize Bool.Insts.ZerocopyIntoBytes))
 
+/-- [zerocopy::impls::_::{impl zerocopy::FromZeros for ()}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Tuple.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_::{impl zerocopy::TryFromBytes for ()}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 153:8-153:62
+    Visibility: public -/
+def
+  Tuple.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::TryFromBytes for ()}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Tuple.Insts.ZerocopyTryFromBytes : TryFromBytes Unit := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Tuple.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => Tuple.Insts.ZerocopyTryFromBytes.is_safe
+    pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::FromZeros for ()}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Tuple.Insts.ZerocopyFromZeros : FromZeros Unit := {
+  TryFromBytesInst := Tuple.Insts.ZerocopyTryFromBytes
+  only_derive_is_allowed_to_implement_this_trait :=
+    Tuple.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  new_zeroed := FromZeros.new_zeroed.default Unit
+}
+
+/-- [zerocopy::impls::_::{impl zerocopy::FromBytes for ()}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Tuple.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_::{impl zerocopy::FromBytes for ()}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Tuple.Insts.ZerocopyFromBytes : FromBytes Unit := {
+  FromZerosInst := Tuple.Insts.ZerocopyFromZeros
+  only_derive_is_allowed_to_implement_this_trait :=
+    Tuple.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U8.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 153:8-153:62
+    Visibility: public -/
+def
+  U8.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U8.Insts.ZerocopyTryFromBytes : TryFromBytes Std.U8 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U8.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => U8.Insts.ZerocopyTryFromBytes.is_safe
+    pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U8.Insts.ZerocopyFromZeros : FromZeros Std.U8 := {
+  TryFromBytesInst := U8.Insts.ZerocopyTryFromBytes
+  only_derive_is_allowed_to_implement_this_trait :=
+    U8.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  new_zeroed := FromZeros.new_zeroed.default Std.U8
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u8}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U8.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u8}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U8.Insts.ZerocopyFromBytes : FromBytes Std.U8 := {
+  FromZerosInst := U8.Insts.ZerocopyFromZeros
+  only_derive_is_allowed_to_implement_this_trait :=
+    U8.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for i8}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
@@ -834,6 +948,58 @@ def I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 def I16.Insts.ZerocopyIntoBytes : IntoBytes Std.I16 := {
   only_derive_is_allowed_to_implement_this_trait :=
     I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 153:8-153:62
+    Visibility: public -/
+def
+  U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyTryFromBytes : TryFromBytes Std.U32 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => U32.Insts.ZerocopyTryFromBytes.is_safe
+    pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyFromZeros : FromZeros Std.U32 := {
+  TryFromBytesInst := U32.Insts.ZerocopyTryFromBytes
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  new_zeroed := FromZeros.new_zeroed.default Std.U32
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyFromBytes : FromBytes Std.U32 := {
+  FromZerosInst := U32.Insts.ZerocopyFromZeros
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
@@ -956,6 +1122,42 @@ def
 def Isize.Insts.ZerocopyIntoBytes : IntoBytes Std.Isize := {
   only_derive_is_allowed_to_implement_this_trait :=
     Isize.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#2::{impl zerocopy::FromZeros for bool}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def Bool.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#3::{impl zerocopy::TryFromBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 140:8-140:62
+    Visibility: public -/
+def
+  Bool.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#3::{impl zerocopy::TryFromBytes for bool}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def Bool.Insts.ZerocopyTryFromBytes : TryFromBytes Bool := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Bool.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => Bool.Insts.ZerocopyTryFromBytes.is_safe
+    pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::FromZeros for bool}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Bool.Insts.ZerocopyFromZeros : FromZeros Bool := {
+  TryFromBytesInst := Bool.Insts.ZerocopyTryFromBytes
+  only_derive_is_allowed_to_implement_this_trait :=
+    Bool.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  new_zeroed := FromZeros.new_zeroed.default Bool
 }
 
 /-- [zerocopy::impls::_#4::{impl zerocopy::IntoBytes for char}::only_derive_is_allowed_to_implement_this_trait]:
@@ -1639,6 +1841,69 @@ def core.marker.PhantomData.Insts.ZerocopyIntoBytes (T : Type) : IntoBytes
     T
 }
 
+/-- [zerocopy::impls::_#23::{impl zerocopy::FromZeros for [T; N]}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Array.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (N : Std.Usize) (FromZerosInst : FromZeros T) : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#23::{impl zerocopy::TryFromBytes for [T; N]}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 140:8-140:62
+    Visibility: public -/
+def
+  Array.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (N : Std.Usize) (TryFromBytesInst : TryFromBytes T) :
+  Result Unit
+  := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#23::{impl zerocopy::TryFromBytes for [T; N]}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+def Array.Insts.ZerocopyTryFromBytes {T : Type} (N : Std.Usize)
+  (TryFromBytesInst : TryFromBytes T) : TryFromBytes (Array T N) := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Array.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+    N TryFromBytesInst
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => Array.Insts.ZerocopyTryFromBytes.is_safe
+    TryFromBytesInst pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_#23::{impl zerocopy::FromZeros for [T; N]}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+native_models def Array.Insts.ZerocopyFromZeros {T : Type} (N : Std.Usize) (FromZerosInst :
+  FromZeros T) : FromZeros (Array T N) := {
+  TryFromBytesInst := Array.Insts.ZerocopyTryFromBytes N
+    FromZerosInst.TryFromBytesInst
+  only_derive_is_allowed_to_implement_this_trait :=
+    Array.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+    N FromZerosInst
+  new_zeroed := FromZeros.new_zeroed.default (Array T N)
+}
+
+/-- [zerocopy::impls::_#23::{impl zerocopy::FromBytes for [T; N]}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def
+  Array.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+  {T : Type} (N : Std.Usize) (FromBytesInst : FromBytes T) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#23::{impl zerocopy::FromBytes for [T; N]}]
+    Source: 'src/util/macros.rs', lines 132:8-134:9 -/
+@[reducible]
+native_models def Array.Insts.ZerocopyFromBytes {T : Type} (N : Std.Usize) (FromBytesInst :
+  FromBytes T) : FromBytes (Array T N) := {
+  FromZerosInst := Array.Insts.ZerocopyFromZeros N FromBytesInst.FromZerosInst
+  only_derive_is_allowed_to_implement_this_trait :=
+    Array.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+    N FromBytesInst
+}
+
 /-- [zerocopy::wrappers::_::{impl zerocopy::IntoBytes for zerocopy::wrappers::Unalign<T>}::only_derive_is_allowed_to_implement_this_trait]:
     Source: 'src/util/macros.rs', lines 165:8-165:62
     Visibility: public -/
@@ -1823,25 +2088,25 @@ def util.min
   else ok a
 
 /-- [zerocopy::util::owned_transmute::to_bytes_native]:
-    Source: 'src/util/owned_transmute.rs', lines 29:0-33:1 -/
+    Source: 'src/util/owned_transmute.rs', lines 30:0-34:1 -/
 def util.owned_transmute.to_bytes_native
   (value : Std.U32) : Result (Array Std.U8 4#usize) := do
   core.intrinsics.transmute (Array Std.U8 4#usize) value
 
 /-- [zerocopy::util::owned_transmute::to_bytes]:
-    Source: 'src/util/owned_transmute.rs', lines 22:0-24:1 -/
+    Source: 'src/util/owned_transmute.rs', lines 23:0-25:1 -/
 def util.owned_transmute.to_bytes
   (value : Std.U32) : Result (Array Std.U8 4#usize) := do
   util.owned_transmute.to_bytes_native value
 
 /-- [zerocopy::util::owned_transmute::from_bytes]:
-    Source: 'src/util/owned_transmute.rs', lines 44:0-48:1 -/
+    Source: 'src/util/owned_transmute.rs', lines 45:0-49:1 -/
 def util.owned_transmute.from_bytes
   (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
   core.intrinsics.transmute Std.U32 bytes
 
 /-- [zerocopy::util::owned_transmute::checked_bool]:
-    Source: 'src/util/owned_transmute.rs', lines 59:0-67:1 -/
+    Source: 'src/util/owned_transmute.rs', lines 60:0-68:1 -/
 def util.owned_transmute.checked_bool
   (byte : Std.U8) : Result (Option Bool) := do
   if byte < 2#u8
@@ -1850,7 +2115,7 @@ def util.owned_transmute.checked_bool
   else ok none
 
 /-- [zerocopy::util::owned_transmute::round_trip_checks]:
-    Source: 'src/util/owned_transmute.rs', lines 75:0-79:1 -/
+    Source: 'src/util/owned_transmute.rs', lines 76:0-80:1 -/
 def util.owned_transmute.round_trip_checks
   (value : Std.U32) : Result Unit := do
   let bytes ← util.owned_transmute.to_bytes value

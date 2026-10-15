@@ -9,6 +9,7 @@ those terms. -/
 module
 public import ModelPrelude
 public import ModelCompletion
+public import NativeModels
 public meta import Lean
 public import TraitDictionarySupport
 public section
@@ -67,7 +68,7 @@ meta def modelBinding (raw : Name) : MetaM (Name × Name × Name × Name × Nat)
   return (b.fields, b.model, b.decoder, b.provider, b.generics)
 
 /-- One dictionary for every original Rust generic, including unused parameters. -/
-meta def withModelDictionaries (params : Array Expr)
+meta def withBoundModelDictionaries (params retained : Array Expr)
     (k : Array Expr → TermElabM α) : TermElabM α := do
   let rec loop (i : Nat) (dicts : Array Expr) : TermElabM α := do
     if h : i < params.size then
@@ -75,10 +76,19 @@ meta def withModelDictionaries (params : Array Expr)
       unless (← whnf (← inferType param)).isSort do
         throwError "Only Rust type parameters are supported in model generation"
       let classType ← mkAppM ``RustModel #[param]
-      withLocalDecl (Name.mkSimple s!"_rustModel{i}") .instImplicit classType fun dict =>
-        loop (i + 1) (dicts.push dict)
+      let matching ← retained.filterM fun model => do isDefEq (← inferType model) classType
+      if matching.size > 1 then throwError "Repeated retained model provider"
+      if matching.size == 1 then
+        loop (i + 1) (dicts.push matching[0]!)
+      else
+        withLocalDecl (Name.mkSimple s!"_rustModel{i}") .instImplicit classType fun dict =>
+          loop (i + 1) (dicts.push dict)
     else k dicts
   loop 0 #[]
+
+meta def withModelDictionaries (params : Array Expr)
+    (k : Array Expr → TermElabM α) : TermElabM α :=
+  withBoundModelDictionaries params #[] k
 
 /-- These restrictions describe the supported extracted shape. Indexed types
 and recursive groups would require additional carrier and decoding semantics;
@@ -566,11 +576,12 @@ must fail even if a later clause would ignore the affected value. -/
 elab "check_model_inputs " functionId:ident " with " count:num " type " "parameters" : command =>
   Command.liftTermElabM do
     let function ← realizeGlobalConstNoOverloadWithInfo functionId
-    forallTelescope (← getConstInfo function).type fun inputs result => do
+    forallTelescope (← getConstInfo function).type fun allInputs result => do
+      let (inputs, retained) ← splitNativeModels allInputs
       unless count.getNat ≤ inputs.size do throwError "Invalid Rust generic prefix count"
       let traitCount ← traitDictionaryCount inputs count.getNat
       let params := inputs.extract 0 count.getNat
-      withModelDictionaries params fun dicts => do
+      withBoundModelDictionaries params retained fun dicts => do
         for input in inputs.extract (count.getNat + traitCount) inputs.size do
           let _ ← boundModelProvider (← inferType input) params dicts
         let result ← whnf result

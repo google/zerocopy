@@ -505,8 +505,10 @@ The marker has no name or proposition: the Rust header identifies the trait,
 carrier, and generic bounds. Its proof must cover every original type and const
 parameter using only those bounds and their model providers. CI binds the marker
 to its compiler owner. The source census retains inactive and unused source
-and checks reserved annotations in macro templates too. Conditional, computed,
-inner, misplaced, and unsupported forms fail explicitly. The complete native
+and checks reserved annotations in macro templates too. Conditional or computed
+annotations, inner annotations, misplaced annotations, and unsupported forms
+fail explicitly. Computed ordinary documentation may accompany a literal
+annotation; the expanded census must still account for every reserved fence. The complete native
 HIR attribute census reconciles physical source origin, decoded doc text,
 fragment order, and multiplicity; direct markers also retain their declaration,
 signature, body, and source checks. Native evidence is recorded in
@@ -524,8 +526,9 @@ the trait's promise. It cannot prove that a future downstream impl keeps that
 promise. Each selected local impl has a separate ordinary theorem discharging
 the promise, and Rust's unsafe-trait contract remains the obligation of external
 implementers. CI also inspects every extracted
-implementation method body in the original and final ASTs, even when only the
-law refers to the method.
+admitted implementation method body in the original and final ASTs, even when
+only the law refers to the method. Excluded provided methods cannot execute;
+interface-only validators retain their required signatures but cannot be called.
 
 This initial bridge accepts traits with only their `Self` parameter and simple
 generic bounds. It compares compiler-resolved original and final type
@@ -783,6 +786,49 @@ pointer provenance, destruction, or general Rust UB-freedom.
 `IntoBytes::as_bytes` retains its Rust safety argument; its pointer implementation
 is outside these laws. See [LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the remaining
 lowering boundaries.
+
+## `FromBytes`, `FromZeros`, and owned zero construction
+
+The `FromBytes` law requires every fully initialized byte sequence of the
+physical decoder's exact width to produce both a language-valid raw value and
+a mathematical value. The `FromZeros` law requires the same two stages for the
+all-zero sequence. Both stages use one `RustModel` provider; a physical success
+cannot bypass an optional library invariant. A missing physical decoder fails
+both laws. These definitions permit padding: neither law promises that a typed
+copy preserves the initialized padding bytes used for construction.
+
+Nine `invariant_proof` markers cover `()` and `u8`/`u32` for both traits,
+`bool` for `FromZeros`, and the two generic array impls. Array proofs compose
+the actual element decoder and its law, including empty arrays and zero-sized
+elements. The completeness lemma also derives the zero law from a `FromBytes`
+law. Negative Lean examples distinguish Boolean zero validity from Boolean
+validity for every byte, and reject zero construction of nonzero integers or a
+value rejected by its library decoder.
+
+Aeneas normally has no model dictionary in the computation. The downstream
+`native_models` elaborator retains a provider only in generic definitions
+whose bodies need this boundary. Original Rust arguments remain in their exact
+order, followed by implicit semantic providers; anonymous lets retain unused
+arguments without changing the body. Contracts reuse those same providers.
+They cannot quantify a different decoder after choosing an execution outcome.
+The native-input audit distinguishes this checked suffix from source arguments.
+
+Charon can erase the unused enclosing Self dictionary from a default body.
+Source and compiler evidence identify its trait and method slot before that
+erasure; the specification receives that exact trait dictionary and law as
+premises. These are specification parameters, not replacements for Rust
+arguments. Separately, required `TryFromBytes::is_safe` fields retain their
+native signatures but have no execution model. Carrying those dictionaries is
+allowed; calling an unmodeled validator is rejected at admission. Its opaque
+`Ptr` carrier supplies no construction, layout, provenance, or validity facts.
+
+As with `IntoBytes`, applying these proofs to Rust assumes the physical decoder
+has the correct Rust width and language meaning. The primitive and array
+interpretations have explicit Reference premises; compiler assertions challenge
+the concrete widths. A generic provider is a supplied interpretation, not a
+proof of an arbitrary downstream type's representation. These construction laws
+cover the selected impls; they do not certify pointer access, external-state
+invariants, destructors, or every `FromBytes`/`FromZeros` impl.
 
 ## Native Lean proofs and independent checks
 

@@ -33,6 +33,9 @@ class AdmissionTests(unittest.TestCase):
         # Only unused provided methods can be excluded; any executable reference
         # is a compiler error, also covered by native front-end controls.
         self.data['translated']['options']['exclude'] = list(admission.EXCLUDED_PROVIDED_METHODS)
+        self.interface_opaque = [admission.INTERFACE_ONLY_VALIDATORS,
+                                 *admission.INTERFACE_ONLY_TYPES]
+        self.data['translated']['options']['opaque'].extend(self.interface_opaque)
         self.registry = json.loads((ROOT / 'verification/aeneas/external.json').read_text())
         # This historical fixture selects only its original opaque helpers.
         # Keep its evidence bytes intact as the production registry grows;
@@ -145,7 +148,7 @@ class AdmissionTests(unittest.TestCase):
 
     def test_missing_registration_is_not_an_opaque_success(self):
         self.registry = [r for r in self.registry if not r.get('opaque')]
-        self.data['translated']['options']['opaque'] = []
+        self.data['translated']['options']['opaque'] = self.interface_opaque
         with self.assertRaisesRegex(ValueError, 'No reviewed interpretation'):
             self.check()
 
@@ -154,7 +157,7 @@ class AdmissionTests(unittest.TestCase):
         # interpretation. Inspecting the caller must still reject its assembly.
         callee = self.data['translated']['fun_decls'][1]
         self.registry = [r for r in self.registry if not r.get('opaque')]
-        self.data['translated']['options']['opaque'] = []
+        self.data['translated']['options']['opaque'] = self.interface_opaque
         callee['item_meta']['attr_info']['attributes'] = [{'DocComment': '```aeneas'}]
         callee['body'] = copy.deepcopy(self.data['translated']['fun_decls'][0]['body'])
         callee['body']['Unstructured']['body'][0]['terminator']['kind'] = {'InlineAsm': {

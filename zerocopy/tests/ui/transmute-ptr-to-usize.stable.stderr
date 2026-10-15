@@ -14,15 +14,15 @@ help: the trait `IntoBytes` is implemented for `usize`
  30 |           unsafe impl $trait for $ty {
     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-   ::: src/impls.rs:145:5
+   ::: src/impls.rs:169:5
     |
-145 | /     unsafe_impl!(
-146 | |         usize: Immutable, TryFromBytes, FromZeros, FromBytes,
-147 | |         /// ```aeneas
-148 | |         /// invariant_proof
-149 | |         /// ```
-150 | |         IntoBytes,
-151 | |     );
+169 | /     unsafe_impl!(
+170 | |         usize: Immutable, TryFromBytes, FromZeros, FromBytes,
+171 | |         /// ```aeneas
+172 | |         /// invariant_proof
+173 | |         /// ```
+174 | |         IntoBytes,
+175 | |     );
     | |_____- in this macro invocation
 note: required by a bound in `POINTER_VALUE::transmute`
    --> $DIR/transmute-ptr-to-usize.rs:21:30

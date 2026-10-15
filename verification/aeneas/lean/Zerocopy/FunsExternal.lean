@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Zerocopy.Types
+public import ModelPrelude
 @[expose] public section
 open Aeneas Aeneas.Std
 open Zerocopy
@@ -25,6 +26,56 @@ def core.num.niche_types.NonZeroUsizeInner.Insts.CoreCloneClone.clone
 -- Total and partial contracts both reject it. Future recovery models must
 -- propagate it rather than turn it into a successful return or divergence.
 def Zerocopy.forbiddenExecution {α : Type} : Result α := .fail .undef
+
+-- The native default constructor retains this interpretation's model provider
+-- as an implicit semantic parameter. Decoding must succeed before a typed
+-- result is returned; neither an absent decoder nor a rejected bit pattern
+-- supplies a default value. The physical decoder's Rust correspondence is an
+-- explicit premise, checked against the supported native layout profiles.
+noncomputable def core.mem.zeroed (T : Type) [model : AeneasSpecs.RustModel T] : Result T :=
+  model.zeroedResult
+
+-- These required validator fields carry their actual native signatures. Their
+-- pointer-based implementations have no admitted execution semantics yet.
+-- Keeping a field is not permission to call it: admission rejects every such
+-- call, and the compiled audit requires these whole definitions to return
+-- undef. They let representation laws mention real FromZeros/FromBytes
+-- dictionaries without asserting anything about TryFromBytes validation.
+def Zerocopy.Tuple.Insts.ZerocopyTryFromBytes.is_safe
+    {Alignment : Type} (_alignment : pointer.invariant.Alignment Alignment)
+    (_candidate : pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Unit)
+      (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+      pointer.invariant.Shared Alignment pointer.invariant.Initialized) : Result Bool :=
+  .fail .undef
+
+def Zerocopy.U8.Insts.ZerocopyTryFromBytes.is_safe
+    {Alignment : Type} (_alignment : pointer.invariant.Alignment Alignment)
+    (_candidate : pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly U8)
+      (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+      pointer.invariant.Shared Alignment pointer.invariant.Initialized) : Result Bool :=
+  .fail .undef
+
+def Zerocopy.U32.Insts.ZerocopyTryFromBytes.is_safe
+    {Alignment : Type} (_alignment : pointer.invariant.Alignment Alignment)
+    (_candidate : pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly U32)
+      (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+      pointer.invariant.Shared Alignment pointer.invariant.Initialized) : Result Bool :=
+  .fail .undef
+
+def Zerocopy.Bool.Insts.ZerocopyTryFromBytes.is_safe
+    {Alignment : Type} (_alignment : pointer.invariant.Alignment Alignment)
+    (_candidate : pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Bool)
+      (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+      pointer.invariant.Shared Alignment pointer.invariant.Initialized) : Result Bool :=
+  .fail .undef
+
+def Zerocopy.Array.Insts.ZerocopyTryFromBytes.is_safe
+    {T Alignment : Type} {N : Usize} (_element : TryFromBytes T)
+    (_alignment : pointer.invariant.Alignment Alignment)
+    (_candidate : pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly (Aeneas.Std.Array T N))
+      (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+      pointer.invariant.Shared Alignment pointer.invariant.Initialized) : Result Bool :=
+  .fail .undef
 
 -- This is an interpretation of the whole Rust helper, whose raw-pointer body
 -- is deliberately opaque to extraction. Valid input references supply separate

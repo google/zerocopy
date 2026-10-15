@@ -54,6 +54,47 @@ def rename_copy_fields(types, funs):
     return types, funs
 
 
+def retain_native_models(funs):
+    """Elaborate native bodies with only the semantic providers they use.
+
+    The Lean command parses the original declaration, preserves its argument
+    prefix, and adds an implicit provider suffix when an external operation
+    needs one. No function expression or Rust argument is replaced here.
+    Unsupported declaration forms fail in that command rather than being
+    silently edited by a second Lean parser.
+    """
+    if 'public import NativeModels\n' in funs or 'native_models def' in funs:
+        raise ValueError('Native model extension must be applied exactly once')
+    if funs.count('public import Aeneas\n') != 1:
+        raise ValueError('Native function imports changed')
+    funs = funs.replace('public import Aeneas\n',
+                        'public import Aeneas\npublic import NativeModels\n')
+    starts = list(re.finditer(r'^def\s+([A-Za-z_][A-Za-z_0-9.]*)\b', funs, re.MULTILINE))
+    if not starts:
+        raise ValueError('Native function inventory is empty')
+    definitions = {match[1]: funs[match.start():
+        starts[index + 1].start() if index + 1 < len(starts) else len(funs)]
+        for index, match in enumerate(starts)}
+    # A missed dependency fails Lean elaboration because no model provider is
+    # available. Restrict the extension to the actual primitive's dependency
+    # closure so unrelated native proof terms and anonymous arguments retain
+    # their ordinary upstream elaboration.
+    dependent = {'core.mem.zeroed'}
+    while True:
+        found = {name for name, definition in definitions.items()
+                 if any(re.search(r'(?<![A-Za-z_0-9.])(?:Zerocopy\.)?' + re.escape(callee)
+                                  + r'(?![A-Za-z_0-9.])', definition)
+                        for callee in dependent)}
+        if found <= dependent:
+            break
+        dependent.update(found)
+    for match in reversed(starts):
+        header = definitions[match[1]].split(':=', 1)[0]
+        if (match[1] in dependent and re.search(r'[({][^(){}]*:\s*Type\b', header)):
+            funs = funs[:match.start()] + 'native_models ' + funs[match.start():]
+    return funs
+
+
 def share_manifest(workspace, backend, rust_model):
     """Reuse pinned packages and discover library roots from assembled modules.
 
@@ -154,6 +195,7 @@ def main():
         types = args.path / "Zerocopy/Types.lean"
         funs = args.path / "Zerocopy/Funs.lean"
         types_text, funs_text = rename_copy_fields(types.read_text(), funs.read_text())
+        funs_text = retain_native_models(funs_text)
         write_text(types, types_text)
         write_text(funs, funs_text)
     if args.command == "workspace":

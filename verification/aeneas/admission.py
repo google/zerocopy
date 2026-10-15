@@ -37,9 +37,58 @@ import source_inventory
 # resolved reference to an excluded provided method; exclusion never supplies
 # an opaque implementation or a theorem about its behavior. Required trait
 # methods, bounds, associated constraints, and original method slots remain.
-EXCLUDED_PROVIDED_METHODS = tuple('zerocopy::IntoBytes::' + name for name in (
-    'as_bytes', 'as_mut_bytes', 'write_to', 'write_to_prefix', 'write_to_suffix',
-    'as_bytes_mut'))
+EXCLUDED_PROVIDED_METHODS = (
+    'zerocopy::IntoBytes::as_bytes',
+    'zerocopy::IntoBytes::as_mut_bytes',
+    'zerocopy::IntoBytes::write_to',
+    'zerocopy::IntoBytes::write_to_prefix',
+    'zerocopy::IntoBytes::write_to_suffix',
+    'zerocopy::IntoBytes::as_bytes_mut',
+    'zerocopy::TryFromBytes::try_ref_from_bytes',
+    'zerocopy::TryFromBytes::try_ref_from_prefix',
+    'zerocopy::TryFromBytes::try_ref_from_suffix',
+    'zerocopy::TryFromBytes::try_mut_from_bytes',
+    'zerocopy::TryFromBytes::try_mut_from_prefix',
+    'zerocopy::TryFromBytes::try_mut_from_suffix',
+    'zerocopy::TryFromBytes::try_ref_from_bytes_with_elems',
+    'zerocopy::TryFromBytes::try_ref_from_prefix_with_elems',
+    'zerocopy::TryFromBytes::try_ref_from_suffix_with_elems',
+    'zerocopy::TryFromBytes::try_mut_from_bytes_with_elems',
+    'zerocopy::TryFromBytes::try_mut_from_prefix_with_elems',
+    'zerocopy::TryFromBytes::try_mut_from_suffix_with_elems',
+    'zerocopy::TryFromBytes::try_read_from_bytes',
+    'zerocopy::TryFromBytes::try_read_from_prefix',
+    'zerocopy::TryFromBytes::try_read_from_suffix',
+    'zerocopy::FromBytes::ref_from_bytes',
+    'zerocopy::FromBytes::ref_from_prefix',
+    'zerocopy::FromBytes::ref_from_suffix',
+    'zerocopy::FromBytes::mut_from_bytes',
+    'zerocopy::FromBytes::mut_from_prefix',
+    'zerocopy::FromBytes::mut_from_suffix',
+    'zerocopy::FromBytes::ref_from_bytes_with_elems',
+    'zerocopy::FromBytes::ref_from_prefix_with_elems',
+    'zerocopy::FromBytes::ref_from_suffix_with_elems',
+    'zerocopy::FromBytes::mut_from_bytes_with_elems',
+    'zerocopy::FromBytes::mut_from_prefix_with_elems',
+    'zerocopy::FromBytes::mut_from_suffix_with_elems',
+    'zerocopy::FromBytes::read_from_bytes',
+    'zerocopy::FromBytes::read_from_prefix',
+    'zerocopy::FromBytes::read_from_suffix',
+    'zerocopy::FromBytes::ref_from',
+    'zerocopy::FromBytes::mut_from',
+    'zerocopy::FromBytes::slice_from_prefix',
+    'zerocopy::FromBytes::slice_from_suffix',
+    'zerocopy::FromBytes::mut_slice_from_prefix',
+    'zerocopy::FromBytes::mut_slice_from_suffix',
+    'zerocopy::FromBytes::read_from',
+    'zerocopy::FromZeros::zero',
+)
+
+# These required validators remain dictionary fields with their original
+# signatures. Their pointer-based bodies are outside this proof fragment.
+# Calls to them are rejected; the generated interface definitions return undef.
+INTERFACE_ONLY_VALIDATORS = '{impl zerocopy::TryFromBytes for _}::is_safe'
+INTERFACE_ONLY_TYPES = ('zerocopy::pointer::ptr::def::Ptr',)
 
 
 def digest(path):
@@ -123,7 +172,8 @@ class Admission:
         self.before = stages == {'Unstructured'}
         # Opaque selection comes only from the registry, never from arbitrary
         # command-line flags which could hide an unsafe local body.
-        expected = sorted(row['rust'] for row in registry if row.get('opaque'))
+        expected = sorted([row['rust'] for row in registry if row.get('opaque')]
+                          + [INTERFACE_ONLY_VALIDATORS, *INTERFACE_ONLY_TYPES])
         if sorted(options['opaque']) != expected:
             raise ValueError('Opaque selections disagree with the external interpretation registry')
 
@@ -254,6 +304,8 @@ class Admission:
             raise ValueError(f'Missing executable dependency {index}')
         meta = function['item_meta']
         name = self.name(meta['name'])
+        if self.interface_validator(function):
+            raise ValueError('Execution of a signature-only TryFromBytes validator is unsupported')
         prototype = self.prototype(function)
         if meta['has_errors'] or meta['is_extern']:
             raise ValueError(f'Untranslated or foreign-ABI dependency {name}')
@@ -294,6 +346,10 @@ class Admission:
                         or meta['is_local'] or function['body'] != {
                             'Intrinsic': {'name': 'transmute', 'arg_names': ['src']}}):
                     raise ValueError('Standard transmute reviewed boundary extension changed')
+            if name == 'core::mem::zeroed' and (
+                    matches[0].get('interpretation_extension') != 'retained-model-provider-v1'
+                    or meta['is_local']):
+                raise ValueError('Zeroed construction changed its reviewed model-provider boundary')
             # A builtin may replace a visible Rust body. Always select the
             # interpretation first, rather than approving the unused body.
             self.visited[index] = {'rust': name, 'origin': 'interpretation',
@@ -480,7 +536,9 @@ class Admission:
                 self.audit_implementation(impl, trait)
             for method in impl['methods']:
                 if method is not None:
-                    self.visit(method['skip_binder']['id'])
+                    function = self.functions[method['skip_binder']['id']]
+                    if not self.interface_validator(function):
+                        self.visit(method['skip_binder']['id'])
         elif tag in {'BuiltinOrAuto', 'Clause'}:
             trait = self.crate['trait_decls'][reference['trait_decl_ref']['skip_binder']['id']]
             if trait['methods'] or self.name(trait['item_meta']['name']) in self.law_traits:
@@ -560,6 +618,9 @@ class Admission:
         if not isinstance(method_id, int) or not 0 <= method_id < len(methods) or methods[method_id] is None:
             raise ValueError('Trait dispatch does not identify a declared method')
         method = methods[method_id]
+        if (self.name(trait['item_meta']['name']) == 'zerocopy::TryFromBytes'
+                and method['skip_binder']['name'] == 'is_safe'):
+            raise ValueError('Execution of a signature-only TryFromBytes validator is unsupported')
         if method.get('kind') != {'TraitMethod': [trait['def_id'], method_id]}:
             raise ValueError('Trait method has the wrong compiler declaration owner')
         if any(method['params'].get(k) for k in ('types', 'regions', 'const_generics', 'trait_clauses')):
@@ -586,12 +647,75 @@ class Admission:
                 raise ValueError('Annotated trait implementation is missing a method body')
             entry = methods[index]
             function = self.functions.get(entry['skip_binder']['id'])
-            source = function.get('src', {}).get('TraitImpl') if function else None
-            if (entry.get('kind') != {'TraitMethod': [trait['def_id'], index]}
-                    or source is None or source['impl_ref']['id'] != implementation['def_id']
-                    or source['trait_ref']['id'] != trait['def_id'] or source['item_id'] != index):
+            source = function.get('src') if function else None
+            default = source.get('TraitDefault') if isinstance(source, dict) else None
+            source = source.get('TraitImpl') if isinstance(source, dict) else None
+            if entry.get('kind') != {'TraitMethod': [trait['def_id'], index]}:
                 raise ValueError('Trait implementation method has the wrong compiler owner')
+            if source is not None:
+                if (source['impl_ref']['id'] != implementation['def_id']
+                        or source['trait_ref']['id'] != trait['def_id'] or source['item_id'] != index):
+                    raise ValueError('Trait implementation method has the wrong compiler owner')
+            elif default is not None:
+                declared = method['skip_binder'].get('default')
+                if (default['trait_ref']['id'] != trait['def_id'] or default['item_id'] != index
+                        or declared is None or declared['id'] != function['def_id']
+                        or any(method['params'].get(k) for k in
+                               ('regions', 'types', 'const_generics', 'trait_clauses'))):
+                    raise ValueError('Inherited method does not use its declared default body')
+                import trait_invariants as traits
+                arguments = entry['skip_binder']['generics']
+                actual = [traits.simple_type(t, self.crate, 1) for t in arguments['types']]
+                expected = [traits.simple_type(t, self.crate) for t in implementation['impl_trait']['generics']['types']]
+                if actual != expected or arguments['regions'] or arguments['const_generics']:
+                    raise ValueError('Inherited method changed its implementation type arguments')
+                references = arguments['trait_refs']
+                if self.before:
+                    reference = untag(references[0]) if len(references) == 1 else {}
+                    selected = reference.get('kind', {}).get('TraitImpl', {})
+                    if (selected.get('id') != implementation['def_id']
+                            or reference.get('trait_decl_ref', {}).get('skip_binder', {}).get('id') != trait['def_id']):
+                        raise ValueError('Inherited method lost its original Self dictionary')
+                    try:
+                        application = traits.default_trait_application(
+                            reference['trait_decl_ref'], self.crate, 2)
+                        supplied = selected['generics']
+                        fields(supplied, 'regions types const_generics trait_refs')
+                        parameters = implementation['generics']
+                        if (application != {'id': trait['def_id'], 'arguments': expected}
+                                or supplied['regions']
+                                or [traits.simple_type(t, self.crate, 1) for t in supplied['types']]
+                                   != [['parameter', i] for i in range(len(parameters['types']))]
+                                or [traits.simple_const(c, 1) for c in supplied['const_generics']]
+                                   != [['const_parameter', p['index']] for p in
+                                       traits.usize_const_parameters(parameters)]
+                                or len(supplied['trait_refs']) != len(parameters['trait_clauses'])):
+                            raise ValueError('Changed Self application')
+                        for supplied_ref, clause in zip(supplied['trait_refs'], parameters['trait_clauses']):
+                            supplied_ref = untag(supplied_ref)
+                            if (supplied_ref['kind'] != {'Clause': {'Bound': [1, clause['clause_id']]}}
+                                    or traits.default_trait_application(supplied_ref['trait_decl_ref'], self.crate, 2)
+                                       != traits.default_trait_application(clause['trait_'], self.crate, 1)):
+                                raise ValueError('Changed Self argument dictionary')
+                    except (KeyError, TypeError, ValueError) as error:
+                        raise ValueError('Inherited method changed its original Self dictionary application') from error
+                elif references:
+                    raise ValueError('Unsupported retained default-method Self dictionary')
+            else:
+                raise ValueError('Trait implementation method has no native implementation owner')
             self.visit(entry['skip_binder']['id'])
+
+    def interface_validator(self, function):
+        """Identify an unused required method without admitting its execution."""
+        source = function.get('src')
+        source = source.get('TraitImpl') if isinstance(source, dict) else None
+        if source is None:
+            return False
+        trait = self.crate['trait_decls'][source['trait_ref']['id']]
+        index = source['item_id']
+        return (self.name(trait['item_meta']['name']) == 'zerocopy::TryFromBytes'
+                and 0 <= index < len(trait['methods']) and trait['methods'][index] is not None
+                and trait['methods'][index]['skip_binder']['name'] == 'is_safe')
 
     def rvalue(self, rvalue):
         tag, body = variant(rvalue)
@@ -737,6 +861,13 @@ class Admission:
                     if actual != expected:
                         raise ValueError(f'Unsupported NonZero::new_unchecked instantiation {actual}')
                 call_evidence = {'caller': self.current, 'callee': name}
+                if name == 'core::mem::zeroed':
+                    arguments = fn['generics']
+                    if (len(arguments['types']) != 1 or arguments['regions']
+                            or arguments['const_generics'] or arguments['trait_refs']):
+                        raise ValueError('Zeroed construction changed its original type arguments')
+                    call_evidence.update(type_arguments=[self.ty_name(arguments['types'][0])],
+                                         caller_def_id=self.current_function['def_id'])
                 if name == 'core::intrinsics::transmute':
                     actual = [self.ty_name(ty) for ty in fn['generics']['types']]
                     providers = {
@@ -962,6 +1093,7 @@ def inspect(root, work, roots, sources, body_digests=None, law_traits=()):
 def check_translation(work, evidence):
     text = (work / 'Zerocopy/FunsExternal_Template.lean').read_text()
     signatures = {
+        'core.mem.zeroed': 'axiom core.mem.zeroed (T : Type) : Result T',
         'core.intrinsics.transmute':
             'axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst',
         'util.transmute_unchecked':
@@ -997,7 +1129,8 @@ def main():
         print('\n'.join(EXCLUDED_PROVIDED_METHODS))
     else:
         registry = json.loads((args.root / 'verification/aeneas/external.json').read_text())
-        print('\n'.join(row['rust'] for row in registry if row.get('opaque')))
+        print('\n'.join([row['rust'] for row in registry if row.get('opaque')]
+                        + [INTERFACE_ONLY_VALIDATORS, *INTERFACE_ONLY_TYPES]))
 
 
 if __name__ == '__main__':

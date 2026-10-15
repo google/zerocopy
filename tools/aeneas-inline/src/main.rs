@@ -241,7 +241,10 @@ impl Functions<'_> {
         if let syn::ReturnType::Type(_, ty) = &sig.output {
             supported &= !unsupported_borrow(ty, false);
         }
-        let (bounds, bounds_supported) = trait_bounds(&sig.generics);
+        let (bounds, bounds_supported) = trait_bounds_with_context(
+            &sig.generics,
+            if method { &self.impl_generics } else { &[] },
+        );
         supported &= bounds_supported;
         let mut generics = if method { self.impl_generics.clone() } else { Vec::new() };
         for parameter in &sig.generics.params {
@@ -304,6 +307,10 @@ fn declaration_start(
 // These spellings propose source ownership only. The compiler's resolved
 // predicates, not names from syn, decide which trait dictionary is required.
 fn trait_bounds(generics: &syn::Generics) -> (Vec<Value>, bool) {
+    trait_bounds_with_context(generics, &[])
+}
+
+fn trait_bounds_with_context(generics: &syn::Generics, context: &[String]) -> (Vec<Value>, bool) {
     fn bound(subject: &str, bound: &syn::TypeParamBound) -> Option<Value> {
         let syn::TypeParamBound::Trait(bound) = bound else { return None };
         if bound.lifetimes.is_some()
@@ -345,7 +352,8 @@ fn trait_bounds(generics: &syn::Generics) -> (Vec<Value>, bool) {
                 continue;
             };
             supported &= predicate.lifetimes.is_none()
-                && generics.type_params().any(|p| p.ident == *subject);
+                && (generics.type_params().any(|p| p.ident == *subject)
+                    || context.iter().any(|name| subject == name));
             for predicate in &predicate.bounds {
                 match bound(&subject.to_string(), predicate) {
                     Some(value) => bounds.push(value),
@@ -729,6 +737,31 @@ impl<'ast> Visit<'ast> for Functions<'_> {
             "supported": self.unsupported == 0 && item.generics.params.is_empty()
                 && item.generics.where_clause.is_none(),
         }));
+        // A provided method owns a real function body. Its implicit Self type
+        // and enclosing trait come from this item, not from a guessed path.
+        // Report these bodies separately so their specs receive the same
+        // closed annotation census as free functions and inherent methods.
+        let previous_generics = self.impl_generics.clone();
+        self.impl_generics = std::iter::once("Self".to_string())
+            .chain(item.generics.type_params().map(|p| p.ident.to_string()))
+            .collect();
+        self.modules.push(item.ident.to_string());
+        for member in &item.items {
+            if let syn::TraitItem::Fn(method) = member {
+                if let Some(body) = &method.default {
+                    self.function(
+                        &method.sig,
+                        body,
+                        &method.attrs,
+                        true,
+                        &syn::Visibility::Inherited,
+                    );
+                    self.functions.last_mut().unwrap()["default_trait"] = json!(path.join("::"));
+                }
+            }
+        }
+        self.modules.pop();
+        self.impl_generics = previous_generics;
         self.unsupported += 1;
         visit::visit_item_trait(self, item);
         self.unsupported -= 1;
@@ -907,6 +940,23 @@ mod tests {
         ] {
             assert_eq!(inspect(source).unwrap()["functions"][0]["supported"], false);
         }
+    }
+
+    #[test]
+    fn provided_method_retains_enclosing_self_in_where_clauses() {
+        let value = inspect(
+            "mod nested { unsafe trait Marker { fn required();
+                fn make() -> Self where Self: Sized { panic!() }
+            } }",
+        )
+        .unwrap();
+        let functions = value["functions"].as_array().unwrap();
+        assert_eq!(functions.len(), 1);
+        assert_eq!(functions[0]["path"], "nested::Marker::make");
+        assert_eq!(functions[0]["default_trait"], "nested::Marker");
+        assert_eq!(functions[0]["generics"], json!(["Self"]));
+        assert_eq!(functions[0]["trait_bounds"], json!([{"subject": "Self", "trait": "Sized"}]));
+        assert_eq!(functions[0]["supported"], true);
     }
 
     #[test]
