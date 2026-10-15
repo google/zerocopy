@@ -1,0 +1,28 @@
+--- run_host_codegen.py
++++ run_remaining_host_codegen.py
+@@ -7,7 +7,7 @@
+ PLAN_SHA='b805597d4b38d3022bffbc17d4b322a241bcfb785ec9bf8ed916daebf92763dc'
+ STAGE4_SHA='ec647915a8430be9c262630fd88bffc6fe4ce19c8a71c86d26648f47d8e1c97d'
+ CONTROLLER_SHA='22714dad1a3cae8913c4cf4a334934f6a8901097e8df975f1bc23c74f8d62bed'
+-VECTOR_STDERR='79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec'
++VECTOR_STDERR='078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8'
+ EMPTY='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+ def h(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+ def save(p,z):
+@@ -34,6 +34,7 @@
+ def main():
+  if len(sys.argv)!=2:raise SystemExit('one exact approved host profile required')
+  profile=sys.argv[1]
++ if profile!='host-vectors-opt2':raise SystemExit('only the remaining original vector O2 compile is authorized')
+  plan=json.loads((B/'stage4/CODEGEN-WINDOWS-PLAN.json').read_text())
+  matches=[x for x in plan['host_commands'] if x['profile']==profile]
+  assert len(matches)==1,'profile outside approved four'
+@@ -62,7 +63,7 @@
+  result['additional_stage5_bytes']=sum(p.stat().st_size for p in S.rglob('*') if p.is_file())
+  expected=VECTOR_STDERR if 'vectors' in profile else EMPTY
+  result['expected_stderr_sha256']=expected
+- result['classified_warning_scope']='Exact five experimental SIMD warnings retained; not FFI safety' if 'vectors' in profile else 'No diagnostics expected'
++ result['classified_warning_scope']='Exact six compile-only experimental SIMD warnings retained (including unused simd_ffi); not FFI safety' if 'vectors' in profile else 'No diagnostics expected'
+  good=(result['exit_code']==0 and result['controller_failure'] is None and result['stop_reason'] is None and not result['remaining_group_after_parent_wait'] and result['stdout_sha256']==EMPTY and result['stderr_sha256']==expected and result['additional_stage5_bytes']<268435456)
+  outputs=[]
+  for suffix in ['ll','s','o']:

@@ -1,0 +1,97 @@
+{
+  "format": "SHA256 inventory; excludes itself and separate frozen handoff",
+  "files": [
+    {
+      "path": "COMMANDS.md",
+      "bytes": 4317,
+      "sha256": "4a62fb3210cf8dc8a36b538b0766af1e380039630440fd52828ba52a75c89828"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 9101,
+      "sha256": "9f0ecc416f75d2ddd40f244f00be2172fea797c1fa560c727f3027839ef38710"
+    },
+    {
+      "path": "build-one-control.sh",
+      "bytes": 1285,
+      "sha256": "35c633732666c053c5845af97452bb1e9f0519d40087e9cc8fcfe83b2f37d7e9"
+    },
+    {
+      "path": "check_shadow_fixture.py",
+      "bytes": 303,
+      "sha256": "73731d2f793c22fe86d105560b3b745a6e64f16c3ddadd62be3d91f3a280cd5f"
+    },
+    {
+      "path": "control-plan.json",
+      "bytes": 6230,
+      "sha256": "41889113cf7b9093b09405e0c83f52ac098a238575ac1a0e0d224962e21edb7c"
+    },
+    {
+      "path": "fixtures/forbidden-checker-definition.txt",
+      "bytes": 27,
+      "sha256": "9a68c9e384e90e924ddace9b3067229b9e49eb1817b9b0ba96abfa7b97fb5ca9"
+    },
+    {
+      "path": "import-scope.json",
+      "bytes": 9337,
+      "sha256": "2e283aa627124ff3eba288cf668031f21b0cdcf7b4106f5655e3ec50425eb06e"
+    },
+    {
+      "path": "mutation-receipt.json",
+      "bytes": 1560,
+      "sha256": "ce88a7bf0bb047a2133ce7bb9b723b0398235b98991b8df51d5e42aedf415584"
+    },
+    {
+      "path": "objects/bad-text.o",
+      "bytes": 1528,
+      "sha256": "c7043eb5d0c1a32eac91771a1c4b6bc8a5c8ccfa1efefe3720e4814ce59eb9c1"
+    },
+    {
+      "path": "objects/original.o",
+      "bytes": 1528,
+      "sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb"
+    },
+    {
+      "path": "objects/renamed-symbol.o",
+      "bytes": 1528,
+      "sha256": "2acb08cadb3fac8aa81a175f7011fc3416db1684f8318bedea72e91dbed708eb"
+    },
+    {
+      "path": "objects/wrong-machine.o",
+      "bytes": 1528,
+      "sha256": "4e0d08e2fb43c904d8cb90e62b8ad27ae9d395b14861c3815c1577a729ff4ddd"
+    },
+    {
+      "path": "preparation-validation.json",
+      "bytes": 872,
+      "sha256": "ed80c5bc04a2a84382bff599707a1418aa8a37080e6a51dedd4e690885e11329"
+    },
+    {
+      "path": "prepare_log_control.py",
+      "bytes": 1694,
+      "sha256": "b35d69e21f15466fc39cf78245c33ee0b0bcb496817475748916dbf184b745a8"
+    },
+    {
+      "path": "require_symbol.py",
+      "bytes": 903,
+      "sha256": "70e18a6fd2ac9355703b48caea0efe235b97c3d3d9193454cfd731c0720e3347"
+    },
+    {
+      "path": "source/ArithmeticObservation.ml",
+      "bytes": 971,
+      "sha256": "ad9494d90f3392f338ed25c88aeb2276332066bfb3a36e5e42b49b8d8e3627c1"
+    },
+    {
+      "path": "source/AxiomPolicyNegative.ml",
+      "bytes": 696,
+      "sha256": "7cce46cd8890e5f8a25fd532fddb65f9af01c25e4d3b187e7c11a4bceb58b7ab"
+    },
+    {
+      "path": "source/ImporterControl.ml",
+      "bytes": 2214,
+      "sha256": "d4b1b457f5920a42a626018bc4afc120f015ca6b6bfa44b7720082231541846b"
+    }
+  ],
+  "file_count": 18,
+  "total_bytes": 45622
+}

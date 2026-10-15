@@ -1,0 +1,28 @@
+--- observer_v2.rs
++++ PROPOSED_ONLY_observer_qualified.rs
+@@ -17,6 +17,7 @@
+ use rustc_interface::interface;
+ use rustc_middle::ty::{self, Instance, Ty, TyCtxt, TypingEnv};
+ use rustc_span::def_id::LOCAL_CRATE;
++use rustc_middle::ty::print::{with_resolve_crate_name, with_no_trimmed_paths};
+ use rustc_target::callconv::{ArgAbi, ArgAttributes, FnAbi, PassMode};
+ use serde_json::{json, Value};
+ use std::collections::BTreeSet;
+@@ -87,7 +88,7 @@
+         keys(s,&["path","query","type_args","extra_args"])?;
+         let path=string(s,"path")?;let query=string(s,"query")?;
+         if !seen.insert(serde_json::to_string(s).map_err(|e|e.to_string())?){return Err("duplicate selection".into());}
+-        let hits:Vec<_>=defs.iter().filter(|d|tcx.def_path_str(d.to_def_id())==path).copied().collect();
++        let hits:Vec<_>=defs.iter().filter(|d|with_resolve_crate_name!(with_no_trimmed_paths!(tcx.def_path_str(d.to_def_id())))==path).copied().collect();
+         if hits.len()!=1 {return Err(format!("selected definition absent/ambiguous: {path}"));}
+         let def=hits[0].to_def_id();
+         let ts=list(s,"type_args")?.iter().map(|x|x.as_str().ok_or("type argument string required").map_err(String::from).and_then(|x|parse_ty(tcx,x))).collect::<R<Vec<_>>>()?;
+@@ -115,7 +116,7 @@
+             },
+             _=>return Err("unknown query selector".into()),
+         };
+-        selected.push(json!({"selection":s,"resolved_definition":tcx.def_path_str(def),"definition_kind":format!("{:?}",tcx.def_kind(def)),"identity":identity,"fn_abi":result}));
++        selected.push(json!({"selection":s,"resolved_definition":with_resolve_crate_name!(with_no_trimmed_paths!(tcx.def_path_str(def))),"definition_kind":format!("{:?}",tcx.def_kind(def)),"identity":identity,"fn_abi":result}));
+     }
+     let mut sources=Vec::new();
+     for f in tcx.sess.source_map().files().iter(){if !f.is_imported(){if let Some(text)=&f.src {sources.push(json!({"name":f.name.prefer_remapped_unconditionally().to_string(),"compiler_source":text.to_string()}));}}}

@@ -1,0 +1,27 @@
+{
+  "pid": 74313,
+  "pgid": 74313,
+  "launch_start_unix_ns": 1792028623366191000,
+  "pid_persisted_unix_ns": 1792028623405360000,
+  "argv": [
+    "${WORKSPACE}/work/execution/abi-witness/observer-v3",
+    "${WORKSPACE}/work/execution/abi-witness/selectors-subjects.json",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-omit-variadic-extra-01/reference.json",
+    "--",
+    "${WORKSPACE}/work/execution/abi-witness/subjects.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "--crate-type=lib",
+    "--crate-name=abi_subjects",
+    "--target=x86_64-pc-windows-msvc",
+    "-Copt-level=2",
+    "-Cpanic=abort",
+    "-Ctarget-cpu=x86-64",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "--emit=metadata",
+    "--out-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-omit-variadic-extra-01"
+  ]
+}

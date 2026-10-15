@@ -1,0 +1,32 @@
+{
+  "classification": "Data preparation/source syntax/import inspection only; no control execution",
+  "checks": {
+    "all_positive_package_files_unchanged": true,
+    "positive_manifest_unchanged": true,
+    "importer_only_base_literal_load": true,
+    "new_axiom_only_negative_source": true,
+    "no_positive_native_command": true,
+    "three_uncompiled_sources": true
+  },
+  "Python_AST_inspection": [
+    {
+      "path": "check_shadow_fixture.py",
+      "Python_AST": "parses",
+      "executed": false
+    },
+    {
+      "path": "prepare_log_control.py",
+      "Python_AST": "parses",
+      "executed": false
+    },
+    {
+      "path": "require_symbol.py",
+      "Python_AST": "parses",
+      "executed": false
+    }
+  ],
+  "ML_compilation": "not attempted",
+  "shell_execution": "not attempted",
+  "mutant_execution": "never",
+  "runtime_staging": "not attempted"
+}

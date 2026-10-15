@@ -1,0 +1,36 @@
+{
+  "schema": "e33-effective-consumer-request-v2",
+  "authority_sha256": "d9b0b86788625c0d9f23c4662a39708c587fa6a34ea21e8790e5f26532700078",
+  "historical_catalog_sha256": "8e466823b3aa953c68539f903497c1c33216500d9f1d39235bacda0f6020f0f8",
+  "profile": {
+    "id": "host-vectors-opt2",
+    "enabled_for_execution": false,
+    "source": {
+      "path": "vectors.rs",
+      "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+    },
+    "selectors": {
+      "path": "selectors-vectors.json",
+      "sha256": "226282517f938453a434a0981e1490f817c27efe947da6af8ea288f910b9cebe"
+    },
+    "crate_name": "abi_vectors",
+    "target": "aarch64-apple-darwin",
+    "edition": "2021",
+    "optimization": 2,
+    "target_cpu": "apple-m1",
+    "target_features": "",
+    "panic": "abort",
+    "incremental": false,
+    "codegen_units": 1,
+    "compiler_threads": 1,
+    "extra_flags": []
+  },
+  "observer_source": {
+    "path": "observer_v3.rs",
+    "sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1"
+  },
+  "observer_binary": {
+    "path": "observer-v3",
+    "sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b"
+  }
+}

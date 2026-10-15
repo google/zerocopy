@@ -1,0 +1,50 @@
+{
+  "status": "NONEXECUTED; parent review and new grant required",
+  "consumer_source_sha256": "15ddc3cb6e31bafc539773aa307df6071a2a9c02508e1dfe95cf376639157354",
+  "data_grammar_source_sha256": "b0457a8c0867286827c6d85093c3a5a55e278934e44278a0b4d9e3fc7b1780ed",
+  "controller_sha256": "9aa830ca10fd4f50bd318cc338fb197881bb96dc379a36da4fd89a37e7d45594",
+  "authority_sha256": "4af1a36c1ad3cb1fc7d808b06cdbe94abd80c74da62a673eae0879e687a898ac",
+  "observer_binary_sha256": "c1c6ecdcdd07d779c50f83ad3b55bf789d905288d87d283e0b1cffa7fed6cc41",
+  "first_capture": {
+    "argv": [
+      "${PYTHON3}",
+      "-B",
+      "${E33_ROOT}/e33_consumer.py",
+      "capture",
+      "--toolchain",
+      "${PINNED_MAY1_TOOLCHAIN}",
+      "--profile",
+      "host-subjects-opt0",
+      "--run-dir",
+      "${E33_ROOT}/capture-host-subjects-opt0-01"
+    ],
+    "purpose": "One actual fixed selected-source analysis/FnAbi observation, no candidate acceptance; not run",
+    "limits": "One compiler serial;60-second controller wall limit; periodic owned-group RSS stop at1GiB and outputs128MiB; no hardAS/isolation claim.",
+    "preconditions": "New explicit parent grant, current frozen hashes and actual loader layout/bytes, scoped ps/pgrep capability before child launch, fresh owned path.",
+    "stop": "Unexpected compiler diagnostic/ICE/panic/monitor failure/reference grammar mismatch stops dependent path; do not retry or weaken source/schema without reviewed diagnosis."
+  },
+  "after_first_review_only": {
+    "next_same_profile_check_argv": [
+      "${PYTHON3}",
+      "-B",
+      "${E33_ROOT}/e33_consumer.py",
+      "check",
+      "--toolchain",
+      "${PINNED_MAY1_TOOLCHAIN}",
+      "--profile",
+      "host-subjects-opt0",
+      "--candidate",
+      "${E33_ROOT}/capture-host-subjects-opt0-01/reference.json",
+      "--run-dir",
+      "${E33_ROOT}/check-host-subjects-opt0-01"
+    ],
+    "meaning": "Would generate a NEW independent reference and compare entire actual packet. This command is not run or authorized by this plan."
+  },
+  "withheld": [
+    "Other3actual profile captures and semantic controls until next review/grant",
+    "Fixture IR/asm/object compilation",
+    "Target installation/query/codegen and Windows shadow-space observation",
+    "Foreign/native execution",
+    "Any source-to-machine/unwinder/resource proof"
+  ]
+}

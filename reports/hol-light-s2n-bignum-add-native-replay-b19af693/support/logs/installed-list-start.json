@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "list",
+    "--switch=hol54",
+    "--installed",
+    "--columns=name,version",
+    "--short"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:09:51.669042+00:00",
+  "classification": "read-only installed49-package identity query",
+  "host_pid": 20970
+}

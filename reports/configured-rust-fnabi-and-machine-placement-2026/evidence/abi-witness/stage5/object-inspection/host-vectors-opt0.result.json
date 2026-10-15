@@ -1,0 +1,20 @@
+{
+  "profile": "host-vectors-opt0",
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "--disassemble",
+    "--reloc",
+    "--syms",
+    "--section-headers",
+    "--full-contents",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-vectors-opt0/abi_vectors.o"
+  ],
+  "exit_code": 0,
+  "reader_sha256_before_after": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+  "object_sha256_before_after": "cf2450a3d2c3722d484fc99bdbbf4b93e455b328e6c47828961e790b3ed637aa",
+  "stdout_sha256": "fa6ac10901b32844007a04b188050de0bec6653acc9ad5c68722c135243f2c6e",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_bytes": 962,
+  "metadata_sha256": "7fec828aa7663ddad0a7c32599666581be8a68389318f428b31c700952e57f6c",
+  "native_execution": false
+}

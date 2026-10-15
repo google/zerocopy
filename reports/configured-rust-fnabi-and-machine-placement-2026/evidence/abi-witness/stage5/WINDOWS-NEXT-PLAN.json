@@ -1,0 +1,135 @@
+{
+  "status": "PREPARATION ONLY; all Windows compiler/observer/codegen invocations0",
+  "profile": "windows-subjects-opt2",
+  "request_effective_sha256": "70261ec10722d9627e265adebdcf1279c75102a767be99c6c299729192db2afc",
+  "consumer_source_sha256": "710ddfdac53cda6e50198cd3f3a642712676d69db7d1474d47d589bcb1cd3810",
+  "grammar_source_sha256": "50493b7946d44a2bc10359ca974200578a2c02defb0432a413581ef6f6a7c890",
+  "consumer_authority_sha256": "c7b2e34bd5e7e96fdf47c67e44f55c41eab1eaac2fba0f0c86870f1d5c5996dd",
+  "catalog_sha256": "4d1cc81001486f37a90fafeb0f692b2a5193cc23f1efae158b1bfa1060911845",
+  "target_installed_receipt_sha256": "7fa5209409ec071efd04e77529a27216d4764f486bc0af4016505356acb06b46",
+  "target_archive_sha256": "0e217c42f8f89e98b255461f96d75b6aef812a9d192d9eb1826a4ff336e050e2",
+  "read_only_target_files": 45,
+  "read_only_target_bytes": 116133518,
+  "source_sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+  "selectors_sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19",
+  "observer_source_sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1",
+  "observer_binary_sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+  "actual_resolved_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+  "reader": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+    "version": "Apple LLVM21.0.0",
+    "availability": "Registered x86-64 target/options inspected, actual Windows COFF result not yet produced or parsed; no absence/support theorem inferred."
+  },
+  "resource_policy": {
+    "capture_seconds": 60,
+    "compile_seconds": 600,
+    "sampled_RSS_stop_bytes": 1073741824,
+    "per_process_output_stop_bytes": 134217728,
+    "one_compiler_serial": true,
+    "hard_AS_or_peak_bound": false
+  },
+  "expected_diagnostics": "None for original ordinary fixture; any diagnostic/status/schema/identity/monitor failure stops, no retry/source edit. No vector Windows profile selected.",
+  "next_gate": "Parent reviews bindings/code/plan before EXACT ONE fixed Windows capture. No later step implicitly authorized.",
+  "commands_proposed_not_executed": [
+    {
+      "gate": "ONE actual fixed capture AFTER parent review/grant",
+      "CLI_argv": [
+        "python3",
+        "-B",
+        "${E33_ROOT}/stage5/e33_consumer_windows.py",
+        "capture",
+        "--toolchain",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--profile",
+        "windows-subjects-opt2",
+        "--run-dir",
+        "${E33_ROOT}/stage5/windows-runs/capture-subjects-o2-01"
+      ],
+      "actual_child_argv": [
+        "${E33_ROOT}/observer-v3",
+        "${E33_ROOT}/selectors-subjects.json",
+        "${E33_ROOT}/stage5/windows-runs/capture-subjects-o2-01/reference.json",
+        "--",
+        "${E33_ROOT}/subjects.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_subjects",
+        "--target=x86_64-pc-windows-msvc",
+        "-Copt-level=2",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=x86-64",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=metadata",
+        "--out-dir",
+        "${E33_ROOT}/stage5/windows-runs/capture-subjects-o2-01"
+      ],
+      "child_env_exact": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "TMPDIR": "${E33_ROOT}/stage5/windows-runs/capture-subjects-o2-01/tmp",
+        "LANG": "C",
+        "LC_ALL": "C"
+      },
+      "scope": "after_analysis stops before fixture codegen; zero accepted candidates for capture"
+    },
+    {
+      "gate": "Separate later grant, only after actual capture and full binding review",
+      "CLI_argv": [
+        "python3",
+        "-B",
+        "${E33_ROOT}/stage5/e33_consumer_windows.py",
+        "check",
+        "--toolchain",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--profile",
+        "windows-subjects-opt2",
+        "--candidate",
+        "${E33_ROOT}/stage5/windows-runs/capture-subjects-o2-01/reference.json",
+        "--run-dir",
+        "${E33_ROOT}/stage5/windows-runs/check-subjects-o2-01"
+      ],
+      "scope": "One new fresh independent compiler observation for correct candidate; full parsed equality."
+    },
+    {
+      "gate": "Separate later compile-only grant",
+      "argv": [
+        "${PINNED_MAY1_TOOLCHAIN}/bin/rustc",
+        "${E33_ROOT}/subjects.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_subjects",
+        "--target=x86_64-pc-windows-msvc",
+        "-Copt-level=2",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=x86-64",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=llvm-ir,asm,obj",
+        "--out-dir",
+        "${E33_ROOT}/stage5/windows-codegen/subjects-opt2-01"
+      ],
+      "scope": "No link, SDK or native execution. Inspect generated IR/asm/actual COFF and relocations. Filename extension observed rather than assumed."
+    }
+  ],
+  "pure_data_controls": {
+    "status": "PASS",
+    "case_count": 63,
+    "outcomes": {
+      "pass": 7,
+      "reject": 52,
+      "CLI-reject": 4
+    },
+    "observer_compiler_invocations": 0
+  },
+  "explicit_exclusions": [
+    "No SDK/linker/native/Windows execution",
+    "No repr_simd Windows profile",
+    "No host authority mutation",
+    "No complete ABI/source-machine correctness theorem"
+  ]
+}

@@ -1,0 +1,974 @@
+{
+  "object_sha256": "e60f2c51f131496d62fca49ce5c56ee0b28d1f36a9e490f5e9d4e4b2616b4e77",
+  "format": {
+    "machine": 34404,
+    "sections": 23,
+    "symbol_table_entries_including_aux": 73,
+    "timestamp": 0,
+    "characteristics": 0
+  },
+  "sections": [
+    {
+      "index_zero_based": 0,
+      "name": ".text",
+      "size": 0,
+      "raw_file_offset": 940,
+      "raw_hex": "",
+      "characteristics": 1613758496,
+      "symbols": [],
+      "relocations": []
+    },
+    {
+      "index_zero_based": 1,
+      "name": ".data",
+      "size": 0,
+      "raw_file_offset": 940,
+      "raw_hex": "",
+      "characteristics": 3224371264,
+      "symbols": [],
+      "relocations": []
+    },
+    {
+      "index_zero_based": 2,
+      "name": ".bss",
+      "size": 0,
+      "raw_file_offset": 0,
+      "raw_hex": "",
+      "characteristics": 3224371328,
+      "symbols": [],
+      "relocations": []
+    },
+    {
+      "index_zero_based": 3,
+      "name": ".text",
+      "size": 18,
+      "raw_file_offset": 940,
+      "raw_hex": "4889c8488b4a10488948100f10020f1100c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_big",
+          "value": 0,
+          "section_one_based": 4,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        },
+        {
+          "name": "abi_rust_big",
+          "value": 0,
+          "section_one_based": 4,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        },
+        {
+          "name": "abi_system_big",
+          "value": 0,
+          "section_one_based": 4,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        18
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "488b4a10",
+          "instruction": "movq\t0x10(%rdx), %rcx"
+        },
+        {
+          "offset": 7,
+          "bytes": "48894810",
+          "instruction": "movq\t%rcx, 0x10(%rax)"
+        },
+        {
+          "offset": 11,
+          "bytes": "0f1002",
+          "instruction": "movups\t(%rdx), %xmm0"
+        },
+        {
+          "offset": 14,
+          "bytes": "0f1100",
+          "instruction": "movups\t%xmm0, (%rax)"
+        },
+        {
+          "offset": 17,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 4,
+      "name": ".text",
+      "size": 9,
+      "raw_file_offset": 958,
+      "raw_hex": "f30f5ac0f20f58c1c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_fp",
+          "value": 0,
+          "section_one_based": 5,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        9
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "f30f5ac0",
+          "instruction": "cvtss2sd\t%xmm0, %xmm0"
+        },
+        {
+          "offset": 4,
+          "bytes": "f20f58c1",
+          "instruction": "addsd\t%xmm1, %xmm0"
+        },
+        {
+          "offset": 8,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 5,
+      "name": ".text",
+      "size": 10,
+      "raw_file_offset": 967,
+      "raw_hex": "4889c80f10020f1101c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_hfa",
+          "value": 0,
+          "section_one_based": 6,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        10
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "0f1002",
+          "instruction": "movups\t(%rdx), %xmm0"
+        },
+        {
+          "offset": 6,
+          "bytes": "0f1101",
+          "instruction": "movups\t%xmm0, (%rcx)"
+        },
+        {
+          "offset": 9,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 6,
+      "name": ".text",
+      "size": 18,
+      "raw_file_offset": 977,
+      "raw_hex": "0fb6c1480fbfca4831c1410fb6c04831c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_narrow",
+          "value": 0,
+          "section_one_based": 7,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        },
+        {
+          "name": "abi_system_narrow",
+          "value": 0,
+          "section_one_based": 7,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        18
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "0fb6c1",
+          "instruction": "movzbl\t%cl, %eax"
+        },
+        {
+          "offset": 3,
+          "bytes": "480fbfca",
+          "instruction": "movswq\t%dx, %rcx"
+        },
+        {
+          "offset": 7,
+          "bytes": "4831c1",
+          "instruction": "xorq\t%rax, %rcx"
+        },
+        {
+          "offset": 10,
+          "bytes": "410fb6c0",
+          "instruction": "movzbl\t%r8b, %eax"
+        },
+        {
+          "offset": 14,
+          "bytes": "4831c8",
+          "instruction": "xorq\t%rcx, %rax"
+        },
+        {
+          "offset": 17,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 7,
+      "name": ".text",
+      "size": 16,
+      "raw_file_offset": 995,
+      "raw_hex": "4889c8488b0a8b5208488908895008c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_pair",
+          "value": 0,
+          "section_one_based": 8,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        },
+        {
+          "name": "abi_system_pair",
+          "value": 0,
+          "section_one_based": 8,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        16
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "488b0a",
+          "instruction": "movq\t(%rdx), %rcx"
+        },
+        {
+          "offset": 6,
+          "bytes": "8b5208",
+          "instruction": "movl\t0x8(%rdx), %edx"
+        },
+        {
+          "offset": 9,
+          "bytes": "488908",
+          "instruction": "movq\t%rcx, (%rax)"
+        },
+        {
+          "offset": 12,
+          "bytes": "895008",
+          "instruction": "movl\t%edx, 0x8(%rax)"
+        },
+        {
+          "offset": 15,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 8,
+      "name": ".text",
+      "size": 4,
+      "raw_file_offset": 1011,
+      "raw_hex": "4889c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_c_raw",
+          "value": 0,
+          "section_one_based": 9,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        4
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 9,
+      "name": ".text",
+      "size": 4,
+      "raw_file_offset": 1015,
+      "raw_hex": "4889c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_interior",
+          "value": 0,
+          "section_one_based": 10,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        4
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 10,
+      "name": ".text",
+      "size": 18,
+      "raw_file_offset": 1019,
+      "raw_hex": "0fb6c1480fbfca4831c1410fb6c04831c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_rust_narrow",
+          "value": 0,
+          "section_one_based": 11,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        18
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "0fb6c1",
+          "instruction": "movzbl\t%cl, %eax"
+        },
+        {
+          "offset": 3,
+          "bytes": "480fbfca",
+          "instruction": "movswq\t%dx, %rcx"
+        },
+        {
+          "offset": 7,
+          "bytes": "4831c1",
+          "instruction": "xorq\t%rax, %rcx"
+        },
+        {
+          "offset": 10,
+          "bytes": "410fb6c0",
+          "instruction": "movzbl\t%r8b, %eax"
+        },
+        {
+          "offset": 14,
+          "bytes": "4831c8",
+          "instruction": "xorq\t%rcx, %rax"
+        },
+        {
+          "offset": 17,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 11,
+      "name": ".text",
+      "size": 4,
+      "raw_file_offset": 1037,
+      "raw_hex": "4889c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_rust_tuple",
+          "value": 0,
+          "section_one_based": 12,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        4
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889c8",
+          "instruction": "movq\t%rcx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 12,
+      "name": ".text",
+      "size": 4,
+      "raw_file_offset": 1041,
+      "raw_hex": "488b01c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_shared",
+          "value": 0,
+          "section_one_based": 13,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        4
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "488b01",
+          "instruction": "movq\t(%rcx), %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 13,
+      "name": ".text",
+      "size": 4,
+      "raw_file_offset": 1045,
+      "raw_hex": "4889d0c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_slice",
+          "value": 0,
+          "section_one_based": 14,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        4
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4889d0",
+          "instruction": "movq\t%rdx, %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 14,
+      "name": ".text",
+      "size": 69,
+      "raw_file_offset": 1049,
+      "raw_hex": "4883ec680f288424900000000f288c24a00000000f289424b00000000f289c24c00000000f115c24500f115424400f114c24300f11442420e80000000048ffc04883c468c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_stack_driver",
+          "value": 0,
+          "section_one_based": 15,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [
+        {
+          "offset": 57,
+          "type": 4,
+          "symbol_index": 63,
+          "symbol": "abi_opaque_twelve"
+        }
+      ],
+      "range_half_open": [
+        0,
+        69
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4883ec68",
+          "instruction": "subq\t$0x68, %rsp"
+        },
+        {
+          "offset": 4,
+          "bytes": "0f28842490000000",
+          "instruction": "movaps\t0x90(%rsp), %xmm0"
+        },
+        {
+          "offset": 12,
+          "bytes": "0f288c24a0000000",
+          "instruction": "movaps\t0xa0(%rsp), %xmm1"
+        },
+        {
+          "offset": 20,
+          "bytes": "0f289424b0000000",
+          "instruction": "movaps\t0xb0(%rsp), %xmm2"
+        },
+        {
+          "offset": 28,
+          "bytes": "0f289c24c0000000",
+          "instruction": "movaps\t0xc0(%rsp), %xmm3"
+        },
+        {
+          "offset": 36,
+          "bytes": "0f115c2450",
+          "instruction": "movups\t%xmm3, 0x50(%rsp)"
+        },
+        {
+          "offset": 41,
+          "bytes": "0f11542440",
+          "instruction": "movups\t%xmm2, 0x40(%rsp)"
+        },
+        {
+          "offset": 46,
+          "bytes": "0f114c2430",
+          "instruction": "movups\t%xmm1, 0x30(%rsp)"
+        },
+        {
+          "offset": 51,
+          "bytes": "0f11442420",
+          "instruction": "movups\t%xmm0, 0x20(%rsp)"
+        },
+        {
+          "offset": 56,
+          "bytes": "e800000000",
+          "instruction": "callq\t0x3d <abi_stack_driver+0x3d>"
+        },
+        {
+          "offset": 61,
+          "bytes": "48ffc0",
+          "instruction": "incq\t%rax"
+        },
+        {
+          "offset": 64,
+          "bytes": "4883c468",
+          "instruction": "addq\t$0x68, %rsp"
+        },
+        {
+          "offset": 68,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 15,
+      "name": ".text",
+      "size": 7,
+      "raw_file_offset": 1136,
+      "raw_hex": "8b42104831c8c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_track",
+          "value": 0,
+          "section_one_based": 16,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        7
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "8b4210",
+          "instruction": "movl\t0x10(%rdx), %eax"
+        },
+        {
+          "offset": 3,
+          "bytes": "4831c8",
+          "instruction": "xorq\t%rcx, %rax"
+        },
+        {
+          "offset": 6,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 16,
+      "name": ".text",
+      "size": 10,
+      "raw_file_offset": 1143,
+      "raw_hex": "488b0148ffc0488901c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_unique",
+          "value": 0,
+          "section_one_based": 17,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        10
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "488b01",
+          "instruction": "movq\t(%rcx), %rax"
+        },
+        {
+          "offset": 3,
+          "bytes": "48ffc0",
+          "instruction": "incq\t%rax"
+        },
+        {
+          "offset": 6,
+          "bytes": "488901",
+          "instruction": "movq\t%rax, (%rcx)"
+        },
+        {
+          "offset": 9,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 17,
+      "name": ".text",
+      "size": 1,
+      "raw_file_offset": 1153,
+      "raw_hex": "c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_unit",
+          "value": 0,
+          "section_one_based": 18,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [],
+      "range_half_open": [
+        0,
+        1
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 18,
+      "name": ".text",
+      "size": 36,
+      "raw_file_offset": 1154,
+      "raw_hex": "4883ec2889cab901000000660f6fd166490f7ec84531c9e80000000048ffc04883c428c3",
+      "characteristics": 1615859744,
+      "symbols": [
+        {
+          "name": "abi_vararg_driver",
+          "value": 0,
+          "section_one_based": 19,
+          "type": 32,
+          "storage": 2,
+          "aux_count": 0
+        }
+      ],
+      "relocations": [
+        {
+          "offset": 24,
+          "type": 4,
+          "symbol_index": 64,
+          "symbol": "abi_opaque_vararg"
+        }
+      ],
+      "range_half_open": [
+        0,
+        36
+      ],
+      "instructions": [
+        {
+          "offset": 0,
+          "bytes": "4883ec28",
+          "instruction": "subq\t$0x28, %rsp"
+        },
+        {
+          "offset": 4,
+          "bytes": "89ca",
+          "instruction": "movl\t%ecx, %edx"
+        },
+        {
+          "offset": 6,
+          "bytes": "b901000000",
+          "instruction": "movl\t$0x1, %ecx"
+        },
+        {
+          "offset": 11,
+          "bytes": "660f6fd1",
+          "instruction": "movdqa\t%xmm1, %xmm2"
+        },
+        {
+          "offset": 15,
+          "bytes": "66490f7ec8",
+          "instruction": "movq\t%xmm1, %r8"
+        },
+        {
+          "offset": 20,
+          "bytes": "4531c9",
+          "instruction": "xorl\t%r9d, %r9d"
+        },
+        {
+          "offset": 23,
+          "bytes": "e800000000",
+          "instruction": "callq\t0x1c <abi_vararg_driver+0x1c>"
+        },
+        {
+          "offset": 28,
+          "bytes": "48ffc0",
+          "instruction": "incq\t%rax"
+        },
+        {
+          "offset": 31,
+          "bytes": "4883c428",
+          "instruction": "addq\t$0x28, %rsp"
+        },
+        {
+          "offset": 35,
+          "bytes": "c3",
+          "instruction": "retq"
+        }
+      ],
+      "assembly_match": "all instructions, whitespace/hex normalization; calls use actual REL32 symbol"
+    },
+    {
+      "index_zero_based": 19,
+      "name": ".xdata",
+      "size": 8,
+      "raw_file_offset": 1128,
+      "raw_hex": "0104010004c20000",
+      "characteristics": 1076891712,
+      "symbols": [],
+      "relocations": []
+    },
+    {
+      "index_zero_based": 20,
+      "name": ".xdata",
+      "size": 8,
+      "raw_file_offset": 1200,
+      "raw_hex": "0104010004420000",
+      "characteristics": 1076891712,
+      "symbols": [],
+      "relocations": []
+    },
+    {
+      "index_zero_based": 21,
+      "name": ".pdata",
+      "size": 12,
+      "raw_file_offset": 1208,
+      "raw_hex": "000000004500000000000000",
+      "characteristics": 1076891712,
+      "symbols": [],
+      "relocations": [
+        {
+          "offset": 0,
+          "type": 3,
+          "symbol_index": 39,
+          "symbol": ".text"
+        },
+        {
+          "offset": 4,
+          "type": 3,
+          "symbol_index": 39,
+          "symbol": ".text"
+        },
+        {
+          "offset": 8,
+          "type": 3,
+          "symbol_index": 42,
+          "symbol": ".xdata"
+        }
+      ]
+    },
+    {
+      "index_zero_based": 22,
+      "name": ".pdata",
+      "size": 12,
+      "raw_file_offset": 1250,
+      "raw_hex": "000000002400000000000000",
+      "characteristics": 1076891712,
+      "symbols": [],
+      "relocations": [
+        {
+          "offset": 0,
+          "type": 3,
+          "symbol_index": 53,
+          "symbol": ".text"
+        },
+        {
+          "offset": 4,
+          "type": 3,
+          "symbol_index": 53,
+          "symbol": ".text"
+        },
+        {
+          "offset": 8,
+          "type": 3,
+          "symbol_index": 56,
+          "symbol": ".xdata"
+        }
+      ]
+    }
+  ],
+  "text_bytes": 232,
+  "text_instruction_count": 72,
+  "text_body_count": 16,
+  "exported_function_symbols": 20,
+  "unexplained_text_bytes": 0,
+  "padding_text_bytes": 0,
+  "ir_headers": [
+    "@abi_rust_big = unnamed_addr alias void (ptr, ptr), ptr @abi_c_big",
+    "@abi_system_big = unnamed_addr alias void (ptr, ptr), ptr @abi_c_big",
+    "@abi_system_narrow = unnamed_addr alias i64 (i8, i16, i1), ptr @abi_c_narrow",
+    "@abi_system_pair = unnamed_addr alias void (ptr, ptr), ptr @abi_c_pair",
+    "define void @abi_c_big(ptr dead_on_unwind noalias noundef writable writeonly sret([24 x i8]) align 8 captures(none) dereferenceable(24) initializes((0, 24)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(24) %x) unnamed_addr #0 {",
+    "define noundef double @abi_c_fp(float noundef %x, double noundef %y) unnamed_addr #1 {",
+    "define void @abi_c_hfa(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 4 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 4 captures(none) dereferenceable(16) %x) unnamed_addr #0 {",
+    "define noundef i64 @abi_c_narrow(i8 noundef zeroext %x, i16 noundef signext %y, i1 noundef zeroext %flag) unnamed_addr #1 {",
+    "define void @abi_c_pair(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 8 captures(none) dereferenceable(16) initializes((0, 12)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %x) unnamed_addr #0 {",
+    "define noundef ptr @abi_c_raw(ptr noundef readnone returned captures(ret: address, provenance) %x) unnamed_addr #1 {",
+    "define noundef nonnull ptr @abi_interior(ptr noundef nonnull readnone returned align 8 captures(ret: address, provenance) %x) unnamed_addr #1 {",
+    "define noundef i64 @abi_rust_narrow(i8 noundef %x, i16 noundef %y, i1 noundef zeroext %flag) unnamed_addr #1 {",
+    "define { i64, i32 } @abi_rust_tuple(i64 noundef %x.0, i32 noundef %x.1) unnamed_addr #1 {",
+    "define noundef i64 @abi_shared(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %x) unnamed_addr #2 {",
+    "define noundef range(i64 0, -9223372036854775808) i64 @abi_slice(ptr noalias noundef nonnull readonly captures(none) %x.0, i64 noundef returned range(i64 0, -9223372036854775808) %x.1) unnamed_addr #1 {",
+    "define noundef i64 @abi_stack_driver(i64 noundef %a, i64 noundef %b, i64 noundef %c, i64 noundef %d, i64 noundef %e, i64 noundef %f, i64 noundef %g, i64 noundef %h, i64 noundef %i, i64 noundef %j, i64 noundef %k, i64 noundef %l) unnamed_addr #3 {",
+    "define noundef i64 @abi_track(i64 noundef %x, ptr noalias noundef readonly align 8 captures(none) dereferenceable(24) %0) unnamed_addr #2 {",
+    "define noundef i64 @abi_unique(ptr noalias noundef align 8 captures(none) dereferenceable(8) %x) unnamed_addr #0 {",
+    "define void @abi_unit() unnamed_addr #1 {",
+    "define noundef i64 @abi_vararg_driver(i32 noundef %x, double noundef %y) unnamed_addr #3 {",
+    "declare void @llvm.memcpy.p0.p0.i64(ptr noalias writeonly captures(none), ptr noalias readonly captures(none), i64, i1 immarg) #4",
+    "declare noundef i64 @abi_opaque_twelve(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef) unnamed_addr #5",
+    "declare noundef i64 @abi_opaque_vararg(i32 noundef, ...) unnamed_addr #5"
+  ],
+  "trust": "Untrusted bounded Python COFF parsing and selected LLVM decoding/assembly comparison; no verified decoder/assembler/compiler theorem."
+}

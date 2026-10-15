@@ -1,0 +1,31 @@
+{
+  "status": "STOP retained; parent reviewed and classified before continuation",
+  "initial_codegen_harness_sha256": "73fae19dcee961d16eb3073d30de71327a1dac6fdee887f34cbb10de44293776",
+  "observer_warning_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec",
+  "compile_only_warning_sha256": "078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8",
+  "difference": "Same five warnings plus unused simd_ffi warning; summary count changes5\u21926",
+  "cause": "after_analysis Stop skips codegen_and_build_linker and report_unused_features; ordinary compilation reaches report_unused_features after codegen.",
+  "source_endpoints": [
+    {
+      "path": "rustc_driver_impl/src/lib.rs",
+      "sha256": "3846a029d9484ef7d954a35766c36f257fa97e22f91ea2dfc68777fd1a53804a",
+      "lines": [
+        326,
+        343
+      ]
+    },
+    {
+      "path": "rustc_middle/src/ty/context.rs",
+      "sha256": "d4b1400c87a881bfda793120a504bafef3f78a39de1f071fb47a1323701567a8",
+      "lines": [
+        1649,
+        1684
+      ]
+    }
+  ],
+  "source_or_flag_change": false,
+  "vectorO0_compiler_exit": 0,
+  "vectorO0_retry": false,
+  "parent_authorization": "Remaining original vectorO2 command only; exact six-warning bundle retained; no schema/domain/lint suppression change",
+  "remaining_helper_sha256": "147665657c19f624190c877723c2319ba967d5b9f53d611b0590170045c47702"
+}

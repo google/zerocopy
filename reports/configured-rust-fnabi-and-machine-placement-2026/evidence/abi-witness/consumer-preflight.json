@@ -1,0 +1,10 @@
+{
+  "status": "preflight_only",
+  "exit_code": 0,
+  "effective_request_sha256": "cc4ed69fcd3cdf7b525a27008cf5144fb8b29ff1a522e29c8685e66f2dec6027",
+  "observer_invocations": 0,
+  "mode_executed": "preflight",
+  "consumer_source_sha256": "15ddc3cb6e31bafc539773aa307df6071a2a9c02508e1dfe95cf376639157354",
+  "data_source_sha256": "b0457a8c0867286827c6d85093c3a5a55e278934e44278a0b4d9e3fc7b1780ed",
+  "meaning": "Separate executed data/hash preflight, not a capture/check; terminal observation retained in task history."
+}

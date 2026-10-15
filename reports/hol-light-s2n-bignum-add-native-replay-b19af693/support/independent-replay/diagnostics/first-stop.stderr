@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "$TASK/work/execution/review-hol-replay/static_review.py", line 289, in <module>
+    main()
+  File "$TASK/work/execution/review-hol-replay/static_review.py", line 251, in main
+    require(original.is_file(), "Missing raw projection origin: " + rel)
+  File "$TASK/work/execution/review-hol-replay/static_review.py", line 26, in require
+    raise RuntimeError(explanation)
+RuntimeError: Missing raw projection origin: support/environment/hol-module-start.json

@@ -1,0 +1,31 @@
+{
+  "status": "FROZEN preparation handoff; no E33 execution claim",
+  "source_files": [
+    "subjects.rs",
+    "vectors.rs",
+    "proposed_observer.rs"
+  ],
+  "proposed_selections": {
+    "subjects": 26,
+    "vectors": 3
+  },
+  "actual_compiler_observations": 0,
+  "actual_controls": 0,
+  "actual_machine_placement_observations": 0,
+  "source_review_basis": "source-identities.json",
+  "next_required_authority": "Parent reviews plan/source/commands and grants bounded execution; target setup separate.",
+  "open_prototype_work": [
+    "Build and loader-validate new observer",
+    "Implement/review strict caller-owned request and candidate input acceptor",
+    "Capture four actual host profiles",
+    "Fresh complete-witness acceptance and all negative controls",
+    "Match actual emitted IR/asm/object and inspect placement",
+    "If authorized, install exact optional cross-target std and perform Windows compile-only placement case"
+  ],
+  "stronger_frontiers": [
+    "No verified ABI classification checker",
+    "No all-Rust/all-target equivalence",
+    "No source safety or resource theorem from attributes",
+    "No native Windows/runtime/unwind proof"
+  ]
+}

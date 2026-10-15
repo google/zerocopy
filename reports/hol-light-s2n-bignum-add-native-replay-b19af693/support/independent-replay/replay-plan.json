@@ -1,0 +1,172 @@
+{
+  "status": "FROZEN PROPOSAL ONLY; zero runtime queries or native launches",
+  "parent_approval_required_before_runtime_queries_or_launch": true,
+  "working_directory": "$TASK/work/execution/review-hol-replay",
+  "container_id": "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+  "image": "sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+  "subject_pins": {
+    "hol": "b19af6934759eed622d7aca25092367f81656eee",
+    "s2n": "4d1356a7470663c752660a59375dc3a9ef548428",
+    "opam_metadata": "56aefa37456aa263913289a4174daca01c4b9339"
+  },
+  "native_program_sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8",
+  "native_program_bytes": 30819144,
+  "producer_launches_planned": 0,
+  "native_positive_launches_planned": 1,
+  "negative_controls_planned": 0,
+  "new_container_files_planned": 0,
+  "capture_helper": "host_run.py",
+  "prepared_helper_identities": {
+    "helpers": {
+      "host_run.py": {
+        "bytes": 1587,
+        "sha256": "d81a4e48cbc64b6964f054e341b4317fcd323fee60bc92fb82b879e404e29fe5",
+        "exact_copy_of": "work/execution/hol-replay/host_run.py"
+      },
+      "preflight_reader.py": {
+        "bytes": 176636,
+        "sha256": "8db441e4f7c6e7f52f7778d9e34b28fc936aeddfcd21b4e0de0aae661e14c544",
+        "exact_copy_of": "work/execution/hol-replay/preflight_reader.py"
+      },
+      "inline_census_reader.py": {
+        "bytes": 1547,
+        "sha256": "329858f20a3e2e4813685a034d5c691e3d0a94375dd4fa2d129e805c202900b1",
+        "exact_copy_of": "work/execution/hol-replay/inline_census_reader.py"
+      },
+      "supplemental_identity_reader.py": {
+        "bytes": 2199,
+        "sha256": "c4a99cf5ed1a8d199d5a374dc306f68a74952876850c6699ec269396a57327cf",
+        "status": "new read-only query proposed; not run"
+      }
+    },
+    "host_docker_cli": {
+      "path": "$DOCKER_BIN",
+      "resolved": "/Applications/OrbStack.app/Contents/MacOS/xbin/docker-tools",
+      "bytes": 72068112,
+      "sha256": "70d5a06adf388bd09b652f47ddc9ca31663a3e5353d24188bdb0054b3014ab3e",
+      "role": "preparation-observed host CLI; fresh identity required before/after; no historical worker identity inference"
+    },
+    "runtime_calls_executed": 0,
+    "native_calls_executed": 0
+  },
+  "serial_phase_specs": [
+    {
+      "label": "independent-before-inspect",
+      "path": "specs/independent-before-inspect.json",
+      "bytes": 251,
+      "sha256": "b9a21e064d00315a9436fbfdc091578f3f29fe97b4b9bcb19fe67d521aae60dd"
+    },
+    {
+      "label": "independent-before-identities",
+      "path": "specs/independent-before-identities.json",
+      "bytes": 416,
+      "sha256": "1b49c58b67e462ba49b2772199d12e27608b72ae8b0e9a9d3fe1b46166f40268"
+    },
+    {
+      "label": "independent-before-census",
+      "path": "specs/independent-before-census.json",
+      "bytes": 416,
+      "sha256": "3512b9ad4f174b83656c1b235d0e9699f5621bed2f2e63509cec365894432c78"
+    },
+    {
+      "label": "independent-before-supplemental",
+      "path": "specs/independent-before-supplemental.json",
+      "bytes": 731,
+      "sha256": "d8d399ee4eed09189b8f714eaa6664704096576a3a61a36c49cda6b5dc4d01a9"
+    },
+    {
+      "label": "independent-positive",
+      "path": "specs/independent-positive.json",
+      "bytes": 778,
+      "sha256": "88b4279cebae2502d00536058c733a6d0edc97726acf9499ee3c70c0cb3e3bd8"
+    },
+    {
+      "label": "independent-after-identities",
+      "path": "specs/independent-after-identities.json",
+      "bytes": 415,
+      "sha256": "2e5802ba2ff4811a6175f72d581fdfb0de356219eb599c9bc58b6ec3f8cce5d5"
+    },
+    {
+      "label": "independent-after-census",
+      "path": "specs/independent-after-census.json",
+      "bytes": 415,
+      "sha256": "4e89068040a765d0c6aa81a162d6687765ca8dfe1defe7536c12e3bab921f4be"
+    },
+    {
+      "label": "independent-after-supplemental",
+      "path": "specs/independent-after-supplemental.json",
+      "bytes": 730,
+      "sha256": "37b4955795bfa2e2ee59e90623e29bf81da82eb855b375d79a7f86ecd48b1b8a"
+    },
+    {
+      "label": "independent-after-inspect",
+      "path": "specs/independent-after-inspect.json",
+      "bytes": 250,
+      "sha256": "add4f4715aad0f07853e90dc1565b545d0c630ba62928bea8048a196172dc556"
+    }
+  ],
+  "detailed_requirements": {
+    "path": "REPLAY-PLAN.md",
+    "bytes": 8258,
+    "sha256": "0499a86a518d296e556aff381d8b6a8607390c24640ca0d35c99f6bd62107990"
+  },
+  "existing_identity_baselines": {
+    "original_source_manifest": {
+      "bytes": 2773753,
+      "sha256": "eed7dd6b8ce62b4d71411955bfe2627389f1d5a9d1f53378cfb6ff2a0cd6e3df"
+    },
+    "source_tools_libraries_generated": "work/execution/hol-replay/logs/postpositive.stdout",
+    "inclusion_audits_and_all_outputs": "work/execution/hol-replay/logs/final-census.stdout",
+    "full_theorem_strings": "work/execution/hol-replay/theorem-statements.json"
+  },
+  "positive_stdout_acceptance": {
+    "full_statement_count": 71,
+    "fixed_statements": 12,
+    "decode_some": 59,
+    "decode_none": 122,
+    "all_decode_slots_once": 181,
+    "ordered_runtime_ledgers": [
+      47,
+      83
+    ],
+    "exact_complete_global_axiom_statements": [
+      "|- exists f. ONE_ONE f /\\ ~ONTO f",
+      "|- forall P x. P x ==> P ((@) P)",
+      "|- forall t. (\\x. t x) = t"
+    ],
+    "inner_policy_marker_count": 1,
+    "outer_policy_marker_count": 1,
+    "inner_end_count": 1,
+    "outer_end_count": 1,
+    "returncode": 0,
+    "fresh_complete_stream_hash_receipts": true,
+    "raw_stdout_byte_identity_to_original_required": false
+  },
+  "supplemental_loader_scope": "New fresh before/after expected direct installed loader/DSO/configuration paths, not original author observations, actual mappings or full OS closure",
+  "resource_limits": {
+    "cpu": 2,
+    "memory_bytes": 4294967296,
+    "memory_swap_bytes": 8589934592,
+    "pids": 512,
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "mounts": [],
+    "published_ports": {}
+  },
+  "host_output_stopping_threshold_bytes": 33554432,
+  "GNU_timeout_signal": "KILL",
+  "GNU_timeout_seconds": 1200,
+  "excluded": [
+    "native_once.py",
+    "producer/rebuild",
+    "new resource",
+    "install",
+    "network",
+    "new source staging",
+    "negative controls",
+    "x86 object execution",
+    "MiniRust/minimize/Miri/E05"
+  ],
+  "stop_policy": "Unexpected assertion/failure/timeout/identity discrepancy stops dependent work; preserve complete streams and diagnose before any retry or mechanism change."
+}

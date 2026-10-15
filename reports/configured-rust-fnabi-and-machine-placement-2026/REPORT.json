@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "rust",
+    "rust/abi",
+    "rust/compiler",
+    "machine-code",
+    "ffi"
+  ],
+  "subjects": [
+    {
+      "name": "May1 Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+      }
+    },
+    {
+      "name": "ordinary ABI fixture",
+      "identity": {
+        "artifact": "subjects.rs",
+        "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+      }
+    },
+    {
+      "name": "experimental vector fixture",
+      "identity": {
+        "artifact": "vectors.rs",
+        "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+      }
+    },
+    {
+      "name": "observer v3 source",
+      "identity": {
+        "artifact": "observer_v3.rs",
+        "sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1"
+      }
+    },
+    {
+      "name": "Apple LLVM object reader",
+      "identity": {
+        "version": "21.0.0",
+        "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

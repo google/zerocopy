@@ -1,0 +1,29 @@
+{
+  "schema": "e33-windows-fixed-consumer-catalog-v1",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "execution_status": "Preparation/data-only; no Windows compiler/observer/codegen invocations authorized yet",
+  "profiles": [
+    {
+      "id": "windows-subjects-opt2",
+      "source": {
+        "path": "subjects.rs",
+        "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+      },
+      "selectors": {
+        "path": "selectors-subjects.json",
+        "sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19"
+      },
+      "crate_name": "abi_subjects",
+      "target": "x86_64-pc-windows-msvc",
+      "edition": "2021",
+      "optimization": 2,
+      "target_cpu": "x86-64",
+      "target_features": "",
+      "panic": "abort",
+      "incremental": false,
+      "codegen_units": 1,
+      "compiler_threads": 1,
+      "extra_flags": []
+    }
+  ]
+}

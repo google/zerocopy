@@ -1,0 +1,6 @@
+12ad9ae40f6912cd5f9941786a16586ddcb3311e886064b81246cab9af3c86b6  audit-00-syntax-error.py.txt
+c8da6ded423173c1bc7c7f541043019f4f4a5eb315a72ddb4f6dcbda3e01805e  audit-01-task-prefix-error.py.txt
+84e89633aaffa56e4628e0ab076b918b742ac229cf1be3f4c8842b3258b49aa9  audit-02-docker-prefix-error.py.txt
+fc743b45461888923e956729785979e86609b8be565c134be5ffe68551db47fc  audit-03-first-pass.py.txt
+7d705975fe924795536caa1a34c13dfaeb9d8ad6071b76a82e64e8b58e46a9dd  REVIEWER-DIAGNOSTIC.md
+1f5e910ce41ef54002629bb210bb0b20a2eea86e6bf8a95392bb9344469b3e53  REVIEWER-FAILURE-OUTPUTS.txt

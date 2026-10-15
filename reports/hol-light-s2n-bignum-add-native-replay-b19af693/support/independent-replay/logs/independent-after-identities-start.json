@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-independent-replay",
+  "started_utc": "2026-10-15T02:14:56.614730+00:00",
+  "classification": "PROPOSED NOT RUN: read-only after original/source/tool/module/output identities",
+  "host_pid": 54315
+}

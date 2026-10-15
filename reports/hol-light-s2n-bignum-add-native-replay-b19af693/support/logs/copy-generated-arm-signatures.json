@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-output/signature-mirror/arm/proofs/subroutine_signatures.ml",
+    "$TASK/work/execution/hol-replay/artifacts/generated-arm-subroutine_signatures.ml"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:22:28.279434+00:00",
+  "classification": "narrow read-only copy of exact authorized task evidence into own host scratch",
+  "host_pid": 36063,
+  "returncode": 0,
+  "elapsed_seconds": 0.029276042,
+  "stdout_bytes": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

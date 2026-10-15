@@ -1,0 +1,101 @@
+{
+  "meaning": "Display host-prefix substitution and fixed AI authorship boilerplate only. Embedded raw hash manifests identify original review files; this inventory identifies public copies. Reviewer helpers and reconstructed .txt snapshots are source evidence, not executed public copies. Exact private mapping remains outside package. Bare privacy-scan tokens in review text/source are intentionally retained.",
+  "files": [
+    {
+      "path": "CONTROLS-REVIEW.md",
+      "raw_bytes": 5503,
+      "raw_sha256": "5e1c6eaccfccefae60512f6e1cc6f80eb74d484b45e923a33ba19cc405f9fe26",
+      "public_bytes": 5557,
+      "public_sha256": "7db2426cbbd60e985bad61828cb040ac13ce8c572af4792d383992b45f9f2af1",
+      "changed": true
+    },
+    {
+      "path": "CONTROLS-REVIEW.json",
+      "raw_bytes": 926,
+      "raw_sha256": "77c3c788772b1b72f6f65f34c604f61472971aedd50874009896456d09711b05",
+      "public_bytes": 926,
+      "public_sha256": "77c3c788772b1b72f6f65f34c604f61472971aedd50874009896456d09711b05",
+      "changed": false
+    },
+    {
+      "path": "controls-checks.json",
+      "raw_bytes": 172981,
+      "raw_sha256": "e775c96b75da845bfcf1cd3cd70a4ba304585c3fe1bd7be8ec42717d92c8c16e",
+      "public_bytes": 172981,
+      "public_sha256": "e775c96b75da845bfcf1cd3cd70a4ba304585c3fe1bd7be8ec42717d92c8c16e",
+      "changed": false
+    },
+    {
+      "path": "review_controls.py",
+      "raw_bytes": 6147,
+      "raw_sha256": "10d2dcecf893a1732297fcc9f4ddda850f26568de14de80d430811f3b6e892a5",
+      "public_bytes": 6125,
+      "public_sha256": "96100336469f90a197ac948f8719d181345c9d855c8afcf9e906a13115299c04",
+      "changed": true
+    },
+    {
+      "path": "controls-review.sha256",
+      "raw_bytes": 344,
+      "raw_sha256": "968d4bd2641e6f6345dbeadead12e1e46906acd0213eb4121af59f6286932575",
+      "public_bytes": 344,
+      "public_sha256": "968d4bd2641e6f6345dbeadead12e1e46906acd0213eb4121af59f6286932575",
+      "changed": false
+    },
+    {
+      "path": "REVIEWER-DIAGNOSTIC.md",
+      "raw_bytes": 4114,
+      "raw_sha256": "7d705975fe924795536caa1a34c13dfaeb9d8ad6071b76a82e64e8b58e46a9dd",
+      "public_bytes": 4020,
+      "public_sha256": "b29d2c5b1187f44b60f8bb46fef0ea70ed0ae7803352d41620b3cc929de058c2",
+      "changed": true
+    },
+    {
+      "path": "REVIEWER-FAILURE-OUTPUTS.txt",
+      "raw_bytes": 1977,
+      "raw_sha256": "1f5e910ce41ef54002629bb210bb0b20a2eea86e6bf8a95392bb9344469b3e53",
+      "public_bytes": 1607,
+      "public_sha256": "e5bf40c2a716ff17c60cd0d9142d0065a62838ef18a6f138962f72cef95f5888",
+      "changed": true
+    },
+    {
+      "path": "reviewer-diagnostic.sha256",
+      "raw_bytes": 574,
+      "raw_sha256": "9cbf0e6d459b68bb2d591b9b6db6efba0369c966182be2ee52a0283b49e1c1ea",
+      "public_bytes": 574,
+      "public_sha256": "9cbf0e6d459b68bb2d591b9b6db6efba0369c966182be2ee52a0283b49e1c1ea",
+      "changed": false
+    },
+    {
+      "path": "audit-00-syntax-error.py.txt",
+      "raw_bytes": 5249,
+      "raw_sha256": "12ad9ae40f6912cd5f9941786a16586ddcb3311e886064b81246cab9af3c86b6",
+      "public_bytes": 5249,
+      "public_sha256": "12ad9ae40f6912cd5f9941786a16586ddcb3311e886064b81246cab9af3c86b6",
+      "changed": false
+    },
+    {
+      "path": "audit-01-task-prefix-error.py.txt",
+      "raw_bytes": 5250,
+      "raw_sha256": "c8da6ded423173c1bc7c7f541043019f4f4a5eb315a72ddb4f6dcbda3e01805e",
+      "public_bytes": 5250,
+      "public_sha256": "c8da6ded423173c1bc7c7f541043019f4f4a5eb315a72ddb4f6dcbda3e01805e",
+      "changed": false
+    },
+    {
+      "path": "audit-02-docker-prefix-error.py.txt",
+      "raw_bytes": 5351,
+      "raw_sha256": "84e89633aaffa56e4628e0ab076b918b742ac229cf1be3f4c8842b3258b49aa9",
+      "public_bytes": 5351,
+      "public_sha256": "84e89633aaffa56e4628e0ab076b918b742ac229cf1be3f4c8842b3258b49aa9",
+      "changed": false
+    },
+    {
+      "path": "audit-03-first-pass.py.txt",
+      "raw_bytes": 5330,
+      "raw_sha256": "fc743b45461888923e956729785979e86609b8be565c134be5ffe68551db47fc",
+      "public_bytes": 5308,
+      "public_sha256": "e22057aa83158e20383dc26d686c5f98cbd317849c3355565730839cad0501f2",
+      "changed": true
+    }
+  ]
+}

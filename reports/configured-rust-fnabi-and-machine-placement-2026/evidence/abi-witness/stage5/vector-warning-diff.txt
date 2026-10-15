@@ -1,0 +1,17 @@
+--- historical observer stderr
++++ compile-only stderr
+@@ -64,5 +64,13 @@
+  8 | pub struct V4(pub [u32; 4]);
+    | ^^^^^^^^^^^^^
+ 
+-warning: 5 warnings emitted
++warning: feature `simd_ffi` is declared but not used
++ --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:4:23
++  |
++4 | #![feature(repr_simd, simd_ffi)]
++  |                       ^^^^^^^^
++  |
++  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+ 
++warning: 6 warnings emitted
++

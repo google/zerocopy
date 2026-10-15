@@ -1,0 +1,77 @@
+{
+  "fixed_pins": {
+    "manifest_sha256": "771904e9afb82d941465ef0a9f50c1ff4cb5d58ecfce4485402799a85b26266f",
+    "manifest_files": 122,
+    "manifest_bytes": 1563342,
+    "files": {
+      "stage5/e33_consumer_windows.py": "710ddfdac53cda6e50198cd3f3a642712676d69db7d1474d47d589bcb1cd3810",
+      "stage5/e33_data_windows.py": "50493b7946d44a2bc10359ca974200578a2c02defb0432a413581ef6f6a7c890",
+      "stage5/consumer-authority-windows.json": "c7b2e34bd5e7e96fdf47c67e44f55c41eab1eaac2fba0f0c86870f1d5c5996dd",
+      "stage5/requests-windows.json": "4d1cc81001486f37a90fafeb0f692b2a5193cc23f1efae158b1bfa1060911845",
+      "build_control_v3.py": "22714dad1a3cae8913c4cf4a334934f6a8901097e8df975f1bc23c74f8d62bed",
+      "subjects.rs": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+      "selectors-subjects.json": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19",
+      "observer_v3.rs": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1",
+      "observer-v3": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+      "source-identities.json": "c9667edb92a910b2cbacfa2a70174fe3a5be91dc6f5df07f7cb221123dc54ecb"
+    },
+    "target_receipt_sha256": "7fa5209409ec071efd04e77529a27216d4764f486bc0af4016505356acb06b46",
+    "target_files": 45,
+    "target_bytes": 116133518,
+    "tools": {
+      "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+      "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa"
+    },
+    "actual_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+    "candidate_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+  },
+  "candidate_pins": {
+    "manifest_sha256": "58735b875c183a0bbfaf1fdb5d17d685493fbb770c9d2b435a5f14ae342b7f33",
+    "candidate_data_results_sha256": "ab450ef6c12dd96ea93ba4dc7a094efbde7d305d038178d24034ae26f4d7a06d",
+    "candidates": {
+      "stale-target": {
+        "bytes": 162042,
+        "sha256": "30ef59da979651e3024c59cc4cb8c556b94365bba0f7fb62b68f9a68e060ff56"
+      },
+      "stale-generic-instance": {
+        "bytes": 162045,
+        "sha256": "fc9ee086faa8c2008ed77f2546dd51fe97bf45cc2d6bac5386056611f7ba0fc4"
+      },
+      "change-selected-variadic-extra": {
+        "bytes": 162044,
+        "sha256": "47a2a2d802a4e4bbd1235f6b24120aabdccd48ab3dd4bc45824a66ebd6e3ebd5"
+      },
+      "hidden-result-size": {
+        "bytes": 162044,
+        "sha256": "af1de5d81ead938f8cc5a49433b2065de2b6b6152ee89582c8a3acc5397f7712"
+      },
+      "omit-hidden-caller": {
+        "bytes": 160080,
+        "sha256": "3c6e50b8c9e97781de508ddac8a3558b81bb58a657d0e221e14148bcbcc5bac7"
+      },
+      "omit-variadic-extra": {
+        "bytes": 160393,
+        "sha256": "5c2793bfdbf528f6117d06f00c2ede6c48777136095a11fc87d4b661866ff37b"
+      },
+      "narrow-extension": {
+        "bytes": 162044,
+        "sha256": "b34df74df8234b7cf47383743cd2b328ee5425c935f500ced22b746f27f29a89"
+      },
+      "reference-attribute-bits": {
+        "bytes": 162044,
+        "sha256": "204bc4664542446646c6e1d3b9b53304e954c9fab7a63740abc3aee78b6777b2"
+      },
+      "opaque-layout": {
+        "bytes": 162052,
+        "sha256": "b0e478d7a74c32542c0ead39a8776cb817ce959025dddda3423ce66c27a9dd36"
+      },
+      "opaque-target": {
+        "bytes": 162052,
+        "sha256": "4210dafb9a56e9a5205b790dd0cb3fb15d4fe407e63f232f9905c8059f7a438b"
+      }
+    }
+  }
+}

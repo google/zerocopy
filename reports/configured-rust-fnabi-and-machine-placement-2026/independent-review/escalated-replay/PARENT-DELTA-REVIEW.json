@@ -1,0 +1,48 @@
+{
+  "status": "PASS bounded reviewed correction delta",
+  "manifest_sha256": "292e31602e2293e86ecb8c09af969599ae7af4601a600e650e82f99f5365b8fe",
+  "report_sha256": "6219810ef4d773690306a0a3033b6857c29e4339f70ef531396b937b728e22b1",
+  "listed_files": 930,
+  "actual_files": 931,
+  "actual_total_bytes": 15923848,
+  "added": [
+    "ERRATA.md",
+    "UPSTREAM-LICENSES.json",
+    "upstream-licenses/rust/COPYRIGHT",
+    "upstream-licenses/rust/LICENSE-APACHE",
+    "upstream-licenses/rust/LICENSE-MIT"
+  ],
+  "deleted": [],
+  "changed": [
+    "MANIFEST.json",
+    "REPORT.md"
+  ],
+  "all_manifest_bindings_match": true,
+  "census_matches": true,
+  "licenses": [
+    {
+      "path": "upstream-licenses/rust/LICENSE-MIT",
+      "sha256": "b71bd43a069ca0641a9ecfe585ca7b3c53b5cc1608f8b68321168698e28b5ea1",
+      "git_blob": "a2070c4be7acd5316f8d0357ca3c12419a2f3c62",
+      "matches_receipt": true,
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6"
+    },
+    {
+      "path": "upstream-licenses/rust/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "git_blob": "1b5ec8b78e237b5c3b3d812a7c0a6589d0f7161d",
+      "matches_receipt": true,
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6"
+    },
+    {
+      "path": "upstream-licenses/rust/COPYRIGHT",
+      "sha256": "172020dbfd5b53a226dfde77616190a48dcff519b0bc0e6deb91a8450782c4af",
+      "git_blob": "4dad74f234eaaaa3c311ca031216e16fc9c4e940",
+      "matches_receipt": true,
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6"
+    }
+  ],
+  "private_prefix_hits": [],
+  "prose_verdict": "904B corrected; explicit ERRATA preserves historical896 artifacts; root upstream notices and exact immutable identity receipt retained. Main REPORT one italic AI line unchanged. All source/evidence/projection bytes unchanged. No new findings or weakened boundaries in delta.",
+  "provenance_boundary": "Git blob digests recomputed without Git/network; pinned revision association is supplied by parent acquisition evidence/receipt, not independently fetched by this reviewer."
+}

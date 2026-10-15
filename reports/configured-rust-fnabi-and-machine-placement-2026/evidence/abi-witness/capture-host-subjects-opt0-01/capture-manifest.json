@@ -1,0 +1,56 @@
+{
+  "algorithm": "sha256",
+  "scope": "All retained files of the one authorized stopped capture except this manifest; previous gate unchanged",
+  "files": [
+    {
+      "path": "child.json",
+      "bytes": 1309,
+      "sha256": "e2a30bf30543f3cb37b33ddee412b3d648fdc876e9041d9da49069f76984a6fd"
+    },
+    {
+      "path": "diagnosis.json",
+      "bytes": 4269,
+      "sha256": "951a55e8fa4845f609a122010f630f8a83bbd49e77147eaab940de8b0b1b0c60"
+    },
+    {
+      "path": "effective-request.json",
+      "bytes": 1185,
+      "sha256": "931208b90088f08173273cc8ec9eab94d866b7d5bef7e29f5173e92410b606b8"
+    },
+    {
+      "path": "invocation.json",
+      "bytes": 1651,
+      "sha256": "492bf6de2af55a46c0a64a851eb6e5191190f6ef06914a5797aa340ad4571fa6"
+    },
+    {
+      "path": "proposed-selector-fix.diff",
+      "bytes": 2048,
+      "sha256": "4ddedd05258c32c251c6738990473a62f096f1037aeff9d3365aa30517d0ffcc"
+    },
+    {
+      "path": "reference.json",
+      "bytes": 121,
+      "sha256": "d32d6c4619373ad2308e6d6ec4e85b2fcebbc3b9e09a60487012d543b0491a10"
+    },
+    {
+      "path": "result.json",
+      "bytes": 534,
+      "sha256": "57e01b1a4c368e96f805fad567da407e304b4a8469c13da4ca7c1a8a46c5ca86"
+    },
+    {
+      "path": "rss-samples.json",
+      "bytes": 262,
+      "sha256": "2acea200dadd9668a8273e646e5169b9cbabf1bc2ec5976ad8d999ba7fc7d3d6"
+    },
+    {
+      "path": "stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "status": "bounded stage4 PASS with preserved reviewed warning stop",
+  "positive_fresh_checks": [
+    {
+      "profile": "host-subjects-opt0",
+      "status": "accepted_against_fresh_pinned_compiler_observation",
+      "effective_request_sha256": "a8745b7dcb76c63a5d969241fa800dfb02442e1b2f70f9021d4af7a7c8df031c",
+      "candidate_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "fresh_reference_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "observer_PID": 11970
+    },
+    {
+      "profile": "host-subjects-opt2",
+      "status": "accepted_against_fresh_pinned_compiler_observation",
+      "effective_request_sha256": "e7e54510d21ef3a78d34c63d40bd55f42b1aa032d4de3721599f7fa238000e5d",
+      "candidate_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+      "fresh_reference_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+      "observer_PID": 12000
+    },
+    {
+      "profile": "host-vectors-opt0",
+      "status": "accepted_against_fresh_pinned_compiler_observation",
+      "effective_request_sha256": "934224e67af8d87234287449f18c0891af924f525feaaa8f0b456a2d6e6ef788",
+      "candidate_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+      "fresh_reference_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+      "observer_PID": 13368
+    },
+    {
+      "profile": "host-vectors-opt2",
+      "status": "accepted_against_fresh_pinned_compiler_observation",
+      "effective_request_sha256": "1a302a8d61255e7d9d0a49fb552fdf0fcc27acc6c88118d6ddeed159b3d389e6",
+      "candidate_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+      "fresh_reference_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+      "observer_PID": 20230
+    }
+  ],
+  "actual_candidate_controls": {
+    "count": 24,
+    "fresh_reference_rejections": 15,
+    "zero-observer_schema_rejections": 9,
+    "results_sha256": "7467e3d1bbc64e6f9ecca3c2af58e2964e5203ba5f3929b8fb1c81162b5cacc6",
+    "manifest_sha256": "00cc08967543a530f02f315fe40e430b85f16d42c504479e5c1a75476dc89571"
+  },
+  "new_consumer_calls": 31,
+  "new_observer_processes": 22,
+  "observer_PIDs": [
+    11986,
+    12041,
+    20045,
+    11970,
+    12000,
+    13368,
+    20230,
+    20379,
+    20388,
+    20395,
+    20404,
+    20411,
+    20418,
+    20425,
+    20432,
+    20440,
+    20447,
+    20455,
+    20462,
+    20471,
+    20481,
+    20489
+  ],
+  "all_observer_wait_statuses": 0,
+  "vector_diagnostic_bundle_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec",
+  "original_warning_STOP_unchanged": true,
+  "source_grammar_catalog_observer_consumer_and_prior_freezes_unchanged": true,
+  "readonly_tools_before_after": "All5 original sizes/hashes unchanged",
+  "diagnostic_primary_sources": [
+    {
+      "path": "compiler/rustc_lint/src/types/improper_ctypes.rs",
+      "sha256": "b5ed5f3c986143a6463d1b0fe7fcb633bb7f5db10f93739ec147e98b64d4e0ca",
+      "lines": [
+        [
+          550,
+          579
+        ],
+        [
+          1007,
+          1054
+        ]
+      ],
+      "role": "FFI layout lint cause"
+    },
+    {
+      "path": "compiler/rustc_hir_analysis/src/collect.rs",
+      "sha256": "030d2775b45e71eeef76853ecb64939b5b2199fc3b34ef7a30e5695d651751cc",
+      "lines": [
+        [
+          1486,
+          1507
+        ]
+      ],
+      "role": "Experimental SIMD gate"
+    },
+    {
+      "path": "compiler/rustc_hir_analysis/src/errors.rs",
+      "sha256": "4aa296c68a9d6c2effb22a3fe111e781c1db514ff240b55024ca1a3790f28e92",
+      "lines": [
+        [
+          873,
+          879
+        ]
+      ],
+      "role": "SIMD FFI highly experimental diagnostic"
+    }
+  ],
+  "resource_scope": "Periodic samples only, including missed/startup peaks; not hardAS/isolation or native analysis-peak proof.",
+  "forbidden_work_performed": {
+    "fixture_codegen": 0,
+    "Windows_queries_or_setup": 0,
+    "native_or_foreign_fixture_execution": 0,
+    "source_or_image_mutant_execution": 0
+  },
+  "remaining_physical_plan": "CODEGEN-WINDOWS-PLAN.md/json: unperformed and separately authorized",
+  "publication_status": "Internal raw evidence; no canonical/public mutation or normalization."
+}

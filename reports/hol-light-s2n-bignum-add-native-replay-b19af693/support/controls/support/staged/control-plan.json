@@ -1,0 +1,198 @@
+{
+  "status": "FROZEN PREPARATION ONLY; no control compiled/staged/executed",
+  "container": "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+  "root": "/home/opam/anneal-cross-output/controls",
+  "environment": {
+    "OPAMROOT": "/home/opam/anneal-hol-opam",
+    "LC_ALL": "C",
+    "HOLLIGHT_DIR": "/home/opam/anneal-cross-sources/hol-light",
+    "HOLLIGHT_LOAD_PATH": "",
+    "TASK_HOL": "/home/opam/anneal-cross-sources/hol-light",
+    "TASK_S2N": "/home/opam/anneal-cross-sources/s2n-bignum",
+    "CTRL_ROOT": "/home/opam/anneal-cross-output/controls"
+  },
+  "producer_entries": [
+    "ImporterControl",
+    "ArithmeticObservation",
+    "AxiomPolicyNegative"
+  ],
+  "producer_argv_form": [
+    "opam",
+    "exec",
+    "--switch=hol54",
+    "--",
+    "timeout",
+    "--signal=KILL",
+    "300",
+    "bash",
+    "/home/opam/anneal-cross-output/controls/build-one-control.sh",
+    "<one exact whitelisted entry>"
+  ],
+  "producer_count": 3,
+  "native_control_process_count": 8,
+  "native_cases": [
+    {
+      "id": "C0",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C0",
+        "/home/opam/anneal-cross-output/controls/objects/original.o"
+      ],
+      "role": "coherent importer baseline",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C1",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C1",
+        "/home/opam/anneal-cross-output/controls/objects/original.o"
+      ],
+      "role": "expected literal rejection",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C2",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C2",
+        "/home/opam/anneal-cross-output/controls/objects/bad-text.o"
+      ],
+      "role": "expected changed-byte rejection",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C3",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C3",
+        "/home/opam/anneal-cross-output/controls/objects/wrong-machine.o"
+      ],
+      "role": "expected domain rejection",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C4",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C4",
+        "/home/opam/anneal-cross-output/controls/objects/renamed-symbol.o"
+      ],
+      "role": "expected importer acceptance; separate symbol check rejection",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C9",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ImporterControl.native",
+        "C9",
+        "/home/opam/anneal-cross-output/controls/objects/missing.o"
+      ],
+      "role": "operational missing-input control",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C5",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/ArithmeticObservation.native"
+      ],
+      "role": "core numeral-conversion observation; not x86 semantics",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    },
+    {
+      "id": "C6",
+      "argv": [
+        "opam",
+        "exec",
+        "--switch=hol54",
+        "--",
+        "timeout",
+        "--signal=KILL",
+        "120",
+        "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative.native"
+      ],
+      "role": "negative-only original global-policy rejection after deliberate T registration",
+      "cwd": "/home/opam/anneal-cross-sources/s2n-bignum",
+      "status": "not executed; requires separate parent grant"
+    }
+  ],
+  "data_only_cases": {
+    "C4": "require_symbol.py on original then renamed ELF",
+    "C7": "check_shadow_fixture.py on exact forbidden-checker text; not compiled",
+    "C8": "prepare copied log fixture then run unchanged observed verify_positive.py; no native proof"
+  },
+  "bounds_not_granted": {
+    "one_process_at_time": true,
+    "combined_producer_seconds": 300,
+    "per_native_seconds": 120,
+    "combined_native_seconds": 600,
+    "additional_control_output_MiB": 500,
+    "existing_total_project_output_GiB": 2
+  },
+  "always_excluded": [
+    "Original selected.native execution by author",
+    "native_once.py",
+    "Any full bignum_add proof import",
+    "Source/module/package changes",
+    "Install/network/cleanup/resources/nested workers"
+  ],
+  "unexpected_result_policy": "STOP for parent diagnosis; no automatic edits/retries",
+  "positive_subject_manifest_sha256": "542dca2e5208bb559138078cf4aeccf9157011a75d5d06a4d67e843911182917",
+  "publication_note": "Original frozen candidate has a display-prefix disclosure in its projection receipt; parent owns label-only public correction. No source/program proof identity affected."
+}

@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "list",
+    "--switch=hol54",
+    "--installed",
+    "--columns=name,version",
+    "--short"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:09:51.669042+00:00",
+  "classification": "read-only installed49-package identity query",
+  "host_pid": 20970,
+  "returncode": 0,
+  "elapsed_seconds": 0.251966958,
+  "stdout_bytes": 1338,
+  "stdout_sha256": "6e79c65b0b82375e35ba16d5d1229de95d8f65f222dfcd0218bd8abcb4e16c4c",
+  "stderr_bytes": 45,
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+}

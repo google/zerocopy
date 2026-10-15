@@ -1,0 +1,29 @@
+{
+  "milestones": [
+    {
+      "id": "E03",
+      "section": "Findings: theorem replay, inclusion and global axiom policy",
+      "scope": "Actual selected HOL/s2n LCF replay contribution; no whole milestone completion",
+      "stronger_unestablished": [
+        "Independent serialized proof checking",
+        "Individual theorem axiom dependencies",
+        "Other requested mechanizations"
+      ]
+    },
+    {
+      "id": "E31",
+      "section": "Findings: real object-bound bignum_add theorem and one-limb specialization",
+      "scope": "One actual existing HOL/s2n interface; broader cross-foundation execution remains open",
+      "genuinely_unexamined_experiments": [
+        "Negative controls (not granted)",
+        "Sail/Isla/Islaris/Jasmin/Vale/F*/Dafny/ACL2/K/Bedrock2/other HOL ports in this wave"
+      ],
+      "stronger_unestablished": [
+        "Common operational/resource correspondence across foundations",
+        "Rust/MiniRust/hardware linkage",
+        "Broad E31 completion"
+      ]
+    }
+  ],
+  "original_52_question_status": "No original question is newly marked complete by this finite replay alone."
+}

@@ -1,0 +1,79 @@
+{
+  "observer_sha256_before_after": "c1c6ecdcdd07d779c50f83ad3b55bf789d905288d87d283e0b1cffa7fed6cc41",
+  "observer_bytes": 1103224,
+  "mode_octal": "0o755",
+  "symlink": false,
+  "mach_o_RPATHs": [
+    "@loader_path/../toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib"
+  ],
+  "direct_dependencies": [
+    {
+      "dependency": "@rpath/librustc_driver-16d1e96e5b674978.dylib",
+      "matching_files": [
+        {
+          "rpath": "@loader_path/../toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib",
+          "resolved_path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+          "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+          "bytes": 202329432,
+          "symlink": false
+        }
+      ]
+    },
+    {
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    },
+    {
+      "dependency": "/usr/lib/libobjc.A.dylib",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    },
+    {
+      "dependency": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    },
+    {
+      "dependency": "/usr/lib/libz.1.dylib",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    },
+    {
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    },
+    {
+      "dependency": "/usr/lib/libiconv.2.dylib",
+      "file_present": false,
+      "meaning": "System/OS dynamic runtime remains trusted; shared-cache paths may have no standalone file."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-L",
+        "${WORKSPACE}/work/execution/abi-witness/observer-v2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "8a55a449792788a52513cfcfebeb82186d83fe0df07d78dbfb3bd421f6c49e8d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-l",
+        "${WORKSPACE}/work/execution/abi-witness/observer-v2"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "47d40e11617fa0ec13840a630df1315799f8f9f169fe06ba669186c16dd50439",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "resolved_driver_deps_stdout_sha256": "27ed1ec57bb8f51d0f3b7b680738731d4c4e10ad692075703dad31663fb563b3",
+  "resolved_driver_deps": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib:\n\t@rpath/librustc_driver-16d1e96e5b674978.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 4201.0.0)\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2000.67.0)\n\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)\n",
+  "runtime_scope": "Actual standalone driver bytes resolved from new executable load commands; OS/shared-cache libraries not dependency-closure proved or all hashed. Observer not launched.",
+  "observer_invocations": 0
+}

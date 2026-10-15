@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/e33_consumer_v3.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "host-subjects-opt2",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/candidates/05-wrong-root.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/runs/05-wrong-root"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/jobs/05-wrong-root/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "helper_sha256": "8bdc45a36f11f8036712cad4dbec008859864f5dc80dde0a63515f24bd3c19d8",
+  "candidate_sha256": "70b6504b719c6e267a02ccd72bb8a7af049d6ffcf660b50076f74778d8961536"
+}

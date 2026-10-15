@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:18:17.701460+00:00",
+  "classification": "read-only original-source/tool/library checkpoint after successful producer, before single positive native run",
+  "host_pid": 25994,
+  "returncode": 0,
+  "elapsed_seconds": 0.915244875,
+  "stdout_bytes": 914641,
+  "stdout_sha256": "6dd62489054fe98b6e8a598f9498435a66436eb87da89170e8958243c85dac27",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

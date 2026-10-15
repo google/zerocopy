@@ -1,0 +1,8 @@
+{
+  "known_diagnostic": "1 internal repr_simd +4 improper_ctypes_definitions V4 C/system argument/result warnings, source-qualified compiler experimental ABI data only",
+  "known_raw_stderr_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec",
+  "preserved_STOP_sha256": "c2c8e753d3bb624322372d7f43bbde9db8b276bc848234f3c1be672f6a84e355",
+  "source_rule": "No source/flags/grammar/domain edits; exact warning bytes only. Existing O0 vector packet used for fresh check, no recapture.",
+  "meaning": "Parent-reviewed warning continuation, not erasure of original stop or FFI-safety proof.",
+  "resume_helper_sha256": "48e60d748839c7fc20a7ba0b0e54c7b96731251962bec59722bfe87670f271eb"
+}

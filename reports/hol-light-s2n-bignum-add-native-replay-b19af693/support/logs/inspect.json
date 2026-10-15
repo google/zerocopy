@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "inspect",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:08:56.053566+00:00",
+  "classification": "read-only exact assigned runtime identity query",
+  "host_pid": 20705,
+  "returncode": 1,
+  "elapsed_seconds": 0.016353667,
+  "stdout_bytes": 3,
+  "stdout_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "stderr_bytes": 109,
+  "stderr_sha256": "04a3faf39fb94119676a774b1955c3c84628c33c2000cee7d8e38e40897b73af"
+}

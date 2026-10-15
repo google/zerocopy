@@ -1,0 +1,2 @@
+[WARNING] Running as root is not recommended
+[NOTE] Requirement for system package xdot overridden in this switch. Use `opam option depext-bypass-=xdot' to revert.

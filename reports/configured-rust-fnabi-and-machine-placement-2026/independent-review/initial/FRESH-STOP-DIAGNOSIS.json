@@ -1,0 +1,57 @@
+{
+  "status": "STOP retained; no retries or repair",
+  "consumer_exit": 70,
+  "actual_observer_invocations": 0,
+  "host_observer_spawned": false,
+  "observer_child_pid": null,
+  "observer_wait_status": null,
+  "consumer_waited_and_reaped": true,
+  "controller_failure": "monitor preflight PermissionError EPERM executing /bin/ps before observer Popen",
+  "unexpected_CLI_stderr": "110-byte Python confstr DARWIN_USER_TEMP_DIR warning retained",
+  "windows_launched": false,
+  "new_reference_or_comparison": false,
+  "original_frozen_manifest_sha256": "49219fcca8820d9d5f864d569e3b52c5156fb53110d05f8232b590e5f4fec5ea",
+  "original_public_and_raw_postcheck_errors": [],
+  "raw_run_files": {
+    "result.json": {
+      "bytes": 1946,
+      "sha256": "59aae402be5144db1c107bd954259992aac0451886185b84103d855764e00713"
+    },
+    "rss-samples.json": {
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "invocation.json": {
+      "bytes": 1657,
+      "sha256": "3bacbf80416770d905506f4cf455c92f0b3b94e0c825eaa8fc62991030f56626"
+    },
+    "effective-request.json": {
+      "bytes": 1185,
+      "sha256": "6e1bca3da6acd40dbe46d01b221ae7e1b28c3f571295225dcf588f1507a8fa07"
+    }
+  },
+  "review_evidence": {
+    "host-opt0-consumer-status.json": {
+      "bytes": 274,
+      "sha256": "aabea9e71a92b6d36245f62efdb4d70746039389ec950a57a50aa808cf24d3fc"
+    },
+    "host-opt0-consumer.stdout": {
+      "bytes": 108,
+      "sha256": "a2ac77e717a490c9c2549d08619db48652fdf2299c2149240d6c4d09e491175b"
+    },
+    "host-opt0-consumer.stderr": {
+      "bytes": 110,
+      "sha256": "2a13af67601624cb4924e88c89583b6d14c362a01c585716097d241c0a47bd61"
+    },
+    "host-opt0-command.json": {
+      "bytes": 1305,
+      "sha256": "5fc7f17a21356731d967c12f6ac31f4a132f7150538feb7392e9aeccbb91c5bd"
+    },
+    "host-opt0-consumer-child.json": {
+      "bytes": 833,
+      "sha256": "93d9c753c7a8efa451b38a007c2c30973bb15d33a176c9ffd31581300e86a63b"
+    }
+  },
+  "requested_settings": "gpt-6.1-sol/medium; effective settings not exposed",
+  "scope": "Operational prelaunch failure. No evidence against or fresh confirmation of configured ABI semantics. Prior independently reviewed raw observations remain distinct; no candidate mutation."
+}

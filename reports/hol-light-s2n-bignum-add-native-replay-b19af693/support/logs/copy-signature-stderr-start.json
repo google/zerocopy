@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-output/signature.stderr",
+    "$TASK/work/execution/hol-replay/artifacts/signature.stderr"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:22:27.197172+00:00",
+  "classification": "narrow read-only copy of exact authorized task evidence into own host scratch",
+  "host_pid": 36061
+}

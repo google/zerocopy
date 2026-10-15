@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-output/selected.native",
+    "$TASK/work/execution/hol-replay/artifacts/selected.native"
+  ],
+  "classification": "read-only exact produced artifact copy into assigned host scratch; no executable run"
+}

@@ -1,0 +1,311 @@
+
+${WORKSPACE}/work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01/abi_subjects.o:	file format coff-x86-64
+architecture: x86_64
+start address: 0x0000000000000000
+
+Sections:
+Idx Name          Size     VMA              Type
+  0 .text         00000000 0000000000000000 TEXT
+  1 .data         00000000 0000000000000000 DATA
+  2 .bss          00000000 0000000000000000 BSS
+  3 .text         00000012 0000000000000000 TEXT
+  4 .text         00000009 0000000000000000 TEXT
+  5 .text         0000000a 0000000000000000 TEXT
+  6 .text         00000012 0000000000000000 TEXT
+  7 .text         00000010 0000000000000000 TEXT
+  8 .text         00000004 0000000000000000 TEXT
+  9 .text         00000004 0000000000000000 TEXT
+ 10 .text         00000012 0000000000000000 TEXT
+ 11 .text         00000004 0000000000000000 TEXT
+ 12 .text         00000004 0000000000000000 TEXT
+ 13 .text         00000004 0000000000000000 TEXT
+ 14 .text         00000045 0000000000000000 TEXT
+ 15 .text         00000007 0000000000000000 TEXT
+ 16 .text         0000000a 0000000000000000 TEXT
+ 17 .text         00000001 0000000000000000 TEXT
+ 18 .text         00000024 0000000000000000 TEXT
+ 19 .xdata        00000008 0000000000000000 DATA
+ 20 .xdata        00000008 0000000000000000 DATA
+ 21 .pdata        0000000c 0000000000000000 DATA
+ 22 .pdata        0000000c 0000000000000000 DATA
+
+SYMBOL TABLE:
+[ 0](sec  1)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x0 nreloc 0 nlnno 0 checksum 0x0 assoc 1 comdat 0
+[ 2](sec  2)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .data
+AUX scnlen 0x0 nreloc 0 nlnno 0 checksum 0x0 assoc 2 comdat 0
+[ 4](sec  3)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .bss
+AUX scnlen 0x0 nreloc 0 nlnno 0 checksum 0x0 assoc 3 comdat 0
+[ 6](sec  4)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x12 nreloc 0 nlnno 0 checksum 0x925b4dc0 assoc 4 comdat 1
+[ 8](sec  4)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_big
+[ 9](sec  5)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x9 nreloc 0 nlnno 0 checksum 0x38a25cd8 assoc 5 comdat 1
+[11](sec  5)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_fp
+[12](sec  6)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0xa nreloc 0 nlnno 0 checksum 0x3f77f78a assoc 6 comdat 1
+[14](sec  6)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_hfa
+[15](sec  7)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x12 nreloc 0 nlnno 0 checksum 0x6f704a57 assoc 7 comdat 1
+[17](sec  7)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_narrow
+[18](sec  8)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x10 nreloc 0 nlnno 0 checksum 0x59a92297 assoc 8 comdat 1
+[20](sec  8)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_pair
+[21](sec  9)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x4 nreloc 0 nlnno 0 checksum 0xb10a9e91 assoc 9 comdat 1
+[23](sec  9)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_c_raw
+[24](sec 10)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x4 nreloc 0 nlnno 0 checksum 0xb10a9e91 assoc 10 comdat 1
+[26](sec 10)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_interior
+[27](sec 11)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x12 nreloc 0 nlnno 0 checksum 0x6f704a57 assoc 11 comdat 1
+[29](sec 11)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_rust_narrow
+[30](sec 12)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x4 nreloc 0 nlnno 0 checksum 0xb10a9e91 assoc 12 comdat 1
+[32](sec 12)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_rust_tuple
+[33](sec 13)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x4 nreloc 0 nlnno 0 checksum 0xa8b626f8 assoc 13 comdat 1
+[35](sec 13)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_shared
+[36](sec 14)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x4 nreloc 0 nlnno 0 checksum 0x331106c8 assoc 14 comdat 1
+[38](sec 14)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_slice
+[39](sec 15)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x45 nreloc 1 nlnno 0 checksum 0x2290b90b assoc 15 comdat 1
+[41](sec 15)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_stack_driver
+[42](sec 20)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .xdata
+AUX scnlen 0x8 nreloc 0 nlnno 0 checksum 0xeef02251 assoc 15 comdat 5
+[44](sec 16)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x7 nreloc 0 nlnno 0 checksum 0xd226b3d4 assoc 16 comdat 1
+[46](sec 16)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_track
+[47](sec 17)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0xa nreloc 0 nlnno 0 checksum 0x74c053c7 assoc 17 comdat 1
+[49](sec 17)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_unique
+[50](sec 18)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x1 nreloc 0 nlnno 0 checksum 0x26d930a assoc 18 comdat 1
+[52](sec 18)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_unit
+[53](sec 19)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .text
+AUX scnlen 0x24 nreloc 1 nlnno 0 checksum 0x415f1c07 assoc 19 comdat 1
+[55](sec 19)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_vararg_driver
+[56](sec 21)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .xdata
+AUX scnlen 0x8 nreloc 0 nlnno 0 checksum 0xfc539d1 assoc 19 comdat 5
+[58](sec 22)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .pdata
+AUX scnlen 0xc nreloc 3 nlnno 0 checksum 0x617dcc89 assoc 15 comdat 5
+[60](sec 23)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .pdata
+AUX scnlen 0xc nreloc 3 nlnno 0 checksum 0x7d3c6cac assoc 19 comdat 5
+[62](sec -1)(fl 0x00)(ty   0)(scl   3) (nx 0) 0x00000000 @feat.00
+[63](sec  0)(fl 0x00)(ty   0)(scl   2) (nx 0) 0x00000000 abi_opaque_twelve
+[64](sec  0)(fl 0x00)(ty   0)(scl   2) (nx 0) 0x00000000 abi_opaque_vararg
+[65](sec  4)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_rust_big
+[66](sec  4)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_system_big
+[67](sec  7)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_system_narrow
+[68](sec  8)(fl 0x00)(ty  20)(scl   2) (nx 0) 0x00000000 abi_system_pair
+[69](sec  0)(fl 0x00)(ty   0)(scl   2) (nx 0) 0x00000000 _fltused
+[70](sec -2)(fl 0x00)(ty   0)(scl  67) (nx 2) 0x00000000 .file
+AUX abi_subjects.e2113a355ceea76a-cgu.0
+Contents of section .text:
+ 0000 4889c848 8b4a1048 8948100f 10020f11  H..H.J.H.H......
+ 0010 00c3                                 ..
+Contents of section .text:
+ 0000 f30f5ac0 f20f58c1 c3                 ..Z...X..
+Contents of section .text:
+ 0000 4889c80f 10020f11 01c3               H.........
+Contents of section .text:
+ 0000 0fb6c148 0fbfca48 31c1410f b6c04831  ...H...H1.A...H1
+ 0010 c8c3                                 ..
+Contents of section .text:
+ 0000 4889c848 8b0a8b52 08488908 895008c3  H..H...R.H...P..
+Contents of section .text:
+ 0000 4889c8c3                             H...
+Contents of section .text:
+ 0000 4889c8c3                             H...
+Contents of section .text:
+ 0000 0fb6c148 0fbfca48 31c1410f b6c04831  ...H...H1.A...H1
+ 0010 c8c3                                 ..
+Contents of section .text:
+ 0000 4889c8c3                             H...
+Contents of section .text:
+ 0000 488b01c3                             H...
+Contents of section .text:
+ 0000 4889d0c3                             H...
+Contents of section .text:
+ 0000 4883ec68 0f288424 90000000 0f288c24  H..h.(.$.....(.$
+ 0010 a0000000 0f289424 b0000000 0f289c24  .....(.$.....(.$
+ 0020 c0000000 0f115c24 500f1154 24400f11  ......\$P..T$@..
+ 0030 4c24300f 11442420 e8000000 0048ffc0  L$0..D$ .....H..
+ 0040 4883c468 c3                          H..h.
+Contents of section .text:
+ 0000 8b421048 31c8c3                      .B.H1..
+Contents of section .text:
+ 0000 488b0148 ffc04889 01c3               H..H..H...
+Contents of section .text:
+ 0000 c3                                   .
+Contents of section .text:
+ 0000 4883ec28 89cab901 00000066 0f6fd166  H..(.......f.o.f
+ 0010 490f7ec8 4531c9e8 00000000 48ffc048  I.~.E1......H..H
+ 0020 83c428c3                             ..(.
+Contents of section .xdata:
+ 0000 01040100 04c20000                    ........
+Contents of section .xdata:
+ 0000 01040100 04420000                    .....B..
+Contents of section .pdata:
+ 0000 00000000 45000000 00000000           ....E.......
+Contents of section .pdata:
+ 0000 00000000 24000000 00000000           ....$.......
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_big>:
+0000000000000000 <abi_rust_big>:
+0000000000000000 <abi_system_big>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: 48 8b 4a 10                  	movq	0x10(%rdx), %rcx
+       7: 48 89 48 10                  	movq	%rcx, 0x10(%rax)
+       b: 0f 10 02                     	movups	(%rdx), %xmm0
+       e: 0f 11 00                     	movups	%xmm0, (%rax)
+      11: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_fp>:
+       0: f3 0f 5a c0                  	cvtss2sd	%xmm0, %xmm0
+       4: f2 0f 58 c1                  	addsd	%xmm1, %xmm0
+       8: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_hfa>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: 0f 10 02                     	movups	(%rdx), %xmm0
+       6: 0f 11 01                     	movups	%xmm0, (%rcx)
+       9: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_narrow>:
+0000000000000000 <abi_system_narrow>:
+       0: 0f b6 c1                     	movzbl	%cl, %eax
+       3: 48 0f bf ca                  	movswq	%dx, %rcx
+       7: 48 31 c1                     	xorq	%rax, %rcx
+       a: 41 0f b6 c0                  	movzbl	%r8b, %eax
+       e: 48 31 c8                     	xorq	%rcx, %rax
+      11: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_pair>:
+0000000000000000 <abi_system_pair>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: 48 8b 0a                     	movq	(%rdx), %rcx
+       6: 8b 52 08                     	movl	0x8(%rdx), %edx
+       9: 48 89 08                     	movq	%rcx, (%rax)
+       c: 89 50 08                     	movl	%edx, 0x8(%rax)
+       f: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_c_raw>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_interior>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_rust_narrow>:
+       0: 0f b6 c1                     	movzbl	%cl, %eax
+       3: 48 0f bf ca                  	movswq	%dx, %rcx
+       7: 48 31 c1                     	xorq	%rax, %rcx
+       a: 41 0f b6 c0                  	movzbl	%r8b, %eax
+       e: 48 31 c8                     	xorq	%rcx, %rax
+      11: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_rust_tuple>:
+       0: 48 89 c8                     	movq	%rcx, %rax
+       3: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_shared>:
+       0: 48 8b 01                     	movq	(%rcx), %rax
+       3: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_slice>:
+       0: 48 89 d0                     	movq	%rdx, %rax
+       3: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_stack_driver>:
+       0: 48 83 ec 68                  	subq	$0x68, %rsp
+       4: 0f 28 84 24 90 00 00 00      	movaps	0x90(%rsp), %xmm0
+       c: 0f 28 8c 24 a0 00 00 00      	movaps	0xa0(%rsp), %xmm1
+      14: 0f 28 94 24 b0 00 00 00      	movaps	0xb0(%rsp), %xmm2
+      1c: 0f 28 9c 24 c0 00 00 00      	movaps	0xc0(%rsp), %xmm3
+      24: 0f 11 5c 24 50               	movups	%xmm3, 0x50(%rsp)
+      29: 0f 11 54 24 40               	movups	%xmm2, 0x40(%rsp)
+      2e: 0f 11 4c 24 30               	movups	%xmm1, 0x30(%rsp)
+      33: 0f 11 44 24 20               	movups	%xmm0, 0x20(%rsp)
+      38: e8 00 00 00 00               	callq	0x3d <abi_stack_driver+0x3d>
+		0000000000000039:  IMAGE_REL_AMD64_REL32	abi_opaque_twelve
+      3d: 48 ff c0                     	incq	%rax
+      40: 48 83 c4 68                  	addq	$0x68, %rsp
+      44: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_track>:
+       0: 8b 42 10                     	movl	0x10(%rdx), %eax
+       3: 48 31 c8                     	xorq	%rcx, %rax
+       6: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_unique>:
+       0: 48 8b 01                     	movq	(%rcx), %rax
+       3: 48 ff c0                     	incq	%rax
+       6: 48 89 01                     	movq	%rax, (%rcx)
+       9: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_unit>:
+       0: c3                           	retq
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+0000000000000000 <abi_vararg_driver>:
+       0: 48 83 ec 28                  	subq	$0x28, %rsp
+       4: 89 ca                        	movl	%ecx, %edx
+       6: b9 01 00 00 00               	movl	$0x1, %ecx
+       b: 66 0f 6f d1                  	movdqa	%xmm1, %xmm2
+       f: 66 49 0f 7e c8               	movq	%xmm1, %r8
+      14: 45 31 c9                     	xorl	%r9d, %r9d
+      17: e8 00 00 00 00               	callq	0x1c <abi_vararg_driver+0x1c>
+		0000000000000018:  IMAGE_REL_AMD64_REL32	abi_opaque_vararg
+      1c: 48 ff c0                     	incq	%rax
+      1f: 48 83 c4 28                  	addq	$0x28, %rsp
+      23: c3                           	retq

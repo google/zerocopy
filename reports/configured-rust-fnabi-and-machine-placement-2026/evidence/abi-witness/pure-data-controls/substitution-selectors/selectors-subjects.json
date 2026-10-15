@@ -1,0 +1,175 @@
+{
+  "schema": "e33-proposed-selectors-v1",
+  "selections": [
+    {
+      "path": "abi_subjects::abi_c_narrow",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_system_narrow",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_rust_narrow",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_c_pair",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_system_pair",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_rust_tuple",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_c_big",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_system_big",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_rust_big",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_c_hfa",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_c_fp",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_c_raw",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_shared",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_unique",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_interior",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_slice",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_unit",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_track",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_stack_driver",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::abi_vararg_driver",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::generic_id",
+      "query": "instance",
+      "type_args": [
+        "u8"
+      ],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::generic_id",
+      "query": "instance",
+      "type_args": [
+        "u64"
+      ],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::TrackFn",
+      "query": "fn_ptr",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::VarC",
+      "query": "fn_ptr",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_subjects::VarC",
+      "query": "fn_ptr",
+      "type_args": [],
+      "extra_args": [
+        "i32",
+        "f64",
+        "*const u8"
+      ]
+    },
+    {
+      "path": "abi_subjects::VarSystem",
+      "query": "fn_ptr",
+      "type_args": [],
+      "extra_args": [
+        "i32",
+        "f64",
+        "*const u8"
+      ]
+    }
+  ]
+}
+
+ 

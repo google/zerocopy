@@ -1,0 +1,590 @@
+{
+  "status": "PASS",
+  "completed": 24,
+  "expected_rejections": 24,
+  "observer_calls": 15,
+  "zero-observer_schema_rejections": 9,
+  "manifest_sha256": "00cc08967543a530f02f315fe40e430b85f16d42c504479e5c1a75476dc89571",
+  "rows": [
+    {
+      "id": "01-stale-target",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "selected built-in target"
+      },
+      "seconds": 0.32445495799999996,
+      "fresh_observer": null,
+      "candidate_sha256": "14c0c965165d28d2bd4012a4e010de8d93aff57010b5f4cd8530107c071e9c31",
+      "stdout_sha256": "1a6231d140d80e51c5c8777b08d97dc8cf54056481cb1b00b42fa59c8ab34ced",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "02-stale-opt-profile",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "selected optimization"
+      },
+      "seconds": 0.32534149999999995,
+      "fresh_observer": null,
+      "candidate_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "stdout_sha256": "3cc44a555de51d846dfef53afffd27892a8486da39ccfa4a829b4794558f9ef8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "03-wrong-CPU",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "selected CPU"
+      },
+      "seconds": 0.32050770800000006,
+      "fresh_observer": null,
+      "candidate_sha256": "2e001e689d6a11776e070af81a3a684f4d3391810f64ed4a669d67a248f4a2a6",
+      "stdout_sha256": "710a00e6577af1b1a7e385ed49751926e4cc928cdb82ea05b76501b86cada2e3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "04-unqualified-name",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "seconds": 0.32560083399999995,
+      "fresh_observer": null,
+      "candidate_sha256": "5a9b95b23e7c07b8cd12fa3e64d4c8c5cf332344f097c10f8e0d948d630381c2",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "05-wrong-root",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "seconds": 0.3266348330000002,
+      "fresh_observer": null,
+      "candidate_sha256": "70b6504b719c6e267a02ccd72bb8a7af049d6ffcf660b50076f74778d8961536",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "06-wrong-generic-instance",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "seconds": 0.32172358300000004,
+      "fresh_observer": null,
+      "candidate_sha256": "e5619bbdd611549ca6e0fd91fb1f572a280d912608fd18e2bac335339030ff22",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "07-omitted-selection",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete selected request set"
+      },
+      "seconds": 0.32123829100000023,
+      "fresh_observer": null,
+      "candidate_sha256": "04bc583bf1f340f8a3d706e0d4b6faab4ff7321b4f85acfd47f1ea9b3665ab1b",
+      "stdout_sha256": "79cb7891640a032f9800312619e7131a4719d8188a4032136ac17056337078a6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "08-reordered-selection",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "seconds": 0.32116762499999973,
+      "fresh_observer": null,
+      "candidate_sha256": "9424b883fd1a13f156422125751917ec88dbbbd5a7dcd8d2e109a3fd0be97bfc",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "09-omitted-selected-vararg-extra",
+      "schema_admissible": false,
+      "observer_calls": 0,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "seconds": 0.322004583,
+      "fresh_observer": null,
+      "candidate_sha256": "86b6a062bb11934b01ec66c3ad2d7f25638d671c2b8ed8e662e51d507c2d1c20",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "10-omitted-hidden-location",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9767454169999996,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20379,
+        "seconds": 0.19291362499999998,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 68599808,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168664,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "5d0da13227d0f27a385979460922b1a333bf51840fd68dbca36524c7a8357be5",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "11-omitted-vararg-ABI-argument",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9866972919999997,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20388,
+        "seconds": 0.19304849999999996,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168680,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "d139d5dfc03b23bee3445e27794434e1ce85bf12152c1957a361d165c3d5bf07",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "12-wrong-result-mode",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9786798330000002,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20395,
+        "seconds": 0.193147375,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75087872,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168635,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "974a510e872a7367b2c664b3763944c0bee80521739fa42ee6c66abbea0152b9",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "13-wrong-indirect-on-stack",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9901629590000001,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20404,
+        "seconds": 0.20243124999999995,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75087872,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168666,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "54c9ce0ba5e7f349f7e08412418ce7afeb8498fe3667536df5f40f29252d13cc",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "14-wrong-extension",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.985337167,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20411,
+        "seconds": 0.19550954099999995,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75071488,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168624,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "07a56203d228e555ed8eced68d5a6c2591d2896d45eb002f5416594eb9a6176f",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "15-removed-NoAlias",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.984183959000001,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20418,
+        "seconds": 0.19998074999999993,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 74989568,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168626,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "71ba766df2013dcbb2e7c973c9432ffcd33c81e1cc7a8a6c4b9011622783a92d",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "16-wrong-pointee-size",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9885641669999998,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20425,
+        "seconds": 0.19485858299999992,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 74973184,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168639,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "5526a2cdceae1389397ffa3cb1304cb067d861fa96e5cf11f61e4c5bacbc491b",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "17-wrong-pointee-alignment",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9878628750000011,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20432,
+        "seconds": 0.20140741699999998,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75169792,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168665,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "807e55c7708ad50243048ec814f871287ef24721f107e80af8e3af556b4cb58a",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "18-wrong-cast-coverage",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9925796659999992,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20440,
+        "seconds": 0.2034073329999999,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168639,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "5617c30e2c767131679c7a4d67ebf5f6d3f03b90dcb626f378dd85eacebbf886",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "19-wrong-HFA-consecutiveness",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 1.0052015829999998,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20447,
+        "seconds": 0.20417558299999994,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75087872,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168676,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "390c71da303d84c473de11e99a3a1c67b5d804478f52f342b0577dc2de55982b",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "20-widened-bool-range",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9899050000000003,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20455,
+        "seconds": 0.20316466700000002,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75087872,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168641,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "86c533a92a45de9f04aa2f47efcb2f10f3c0f5196c3790564f8a3ab7c3c2dfac",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "21-wrong-generic-return-size",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 1.0027154169999992,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20462,
+        "seconds": 0.20145316599999996,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168670,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "bb04b6083bf05714e0a8e16ef60f2aa464b8c73b736540512b23a31dd602a33c",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "22-opaque-layout-change",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.988205541000001,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20471,
+        "seconds": 0.20171549999999994,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168644,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "8dcb3d59e7a90d04c0800bb3b23c85b5febe54c803cb5f575bd99d22779d3b6f",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "23-removed-NoUndef",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 1.0004896250000002,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20481,
+        "seconds": 0.195282583,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168619,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "cd5447dd81fe93c202401f78f8661c723105e3d0405099912d0ee8c5a6539b89",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    },
+    {
+      "id": "24-false-unwind-permission",
+      "schema_admissible": true,
+      "observer_calls": 1,
+      "consumer_exit": 64,
+      "CLI_json": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "seconds": 0.9968323750000003,
+      "fresh_observer": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 20489,
+        "seconds": 0.201751542,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 75022336,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 168667,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "candidate_sha256": "519a2fbf5e81d10558b4fbde13c488bb634b915d8239531daebaaed18836c0ae",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null
+    }
+  ],
+  "scope": "Actual candidate data only; same consumer-chosen hostO2 source/target/options. No source/image/invalid-native execution."
+}

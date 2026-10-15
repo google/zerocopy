@@ -1,0 +1,105 @@
+{
+  "settings": "Parent requested gpt-6.1-sol/medium; effective model/reasoning not exposed",
+  "inputs": {
+    "work/execution/abi-witness/stage5/windows-runs/capture-subjects-o2-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/check-subjects-o2-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/check-subjects-o2-01/comparison.json": {
+      "bytes": 770,
+      "sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350"
+    },
+    "work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01/abi_subjects.ll": {
+      "bytes": 8375,
+      "sha256": "10c750313470ad04c2073c7c8ada22effd90763b7395f24fe30f889832c30b5c"
+    },
+    "work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01/abi_subjects.o": {
+      "bytes": 2883,
+      "sha256": "e60f2c51f131496d62fca49ce5c56ee0b28d1f36a9e490f5e9d4e4b2616b4e77"
+    },
+    "work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01/abi_subjects.s": {
+      "bytes": 4266,
+      "sha256": "d2dfd499b9988433eddaafa5eb9e7b2efc06a6a54ab7e6d80061338aeb3040bb"
+    }
+  },
+  "outputs": {
+    "work/execution/abi-witness/stage6/analysis/reader.stdout": {
+      "bytes": 14089,
+      "sha256": "cc7170619ed6b88437fc447048bce4c6131c402607847c6a577b49a8f5b142b1"
+    },
+    "work/execution/abi-witness/stage6/analysis/opaque-target.json": {
+      "bytes": 162052,
+      "sha256": "4210dafb9a56e9a5205b790dd0cb3fb15d4fe407e63f232f9905c8059f7a438b"
+    },
+    "work/execution/abi-witness/stage6/analysis/bind_evidence.py": {
+      "bytes": 3810,
+      "sha256": "eac2797d0c064e4bad612866705712f1615c964be08b1c60799f0bb8a922a206"
+    },
+    "work/execution/abi-witness/stage6/analysis/omit-hidden-caller.json": {
+      "bytes": 160080,
+      "sha256": "3c6e50b8c9e97781de508ddac8a3558b81bb58a657d0e221e14148bcbcc5bac7"
+    },
+    "work/execution/abi-witness/stage6/analysis/WINDOWS-ORACLES-CANDIDATE.md": {
+      "bytes": 8928,
+      "sha256": "195827305346d7ba34e146f4bd180a73fec9098080b8ccfa8ff996c263b632d5"
+    },
+    "work/execution/abi-witness/stage6/analysis/stale-target.json": {
+      "bytes": 162042,
+      "sha256": "30ef59da979651e3024c59cc4cb8c556b94365bba0f7fb62b68f9a68e060ff56"
+    },
+    "work/execution/abi-witness/stage6/analysis/test_candidate_data.py": {
+      "bytes": 3308,
+      "sha256": "16bddb4b85b36716dc84ada72ce67a8db0f9b84803f3f24e588f33c746dd0d38"
+    },
+    "work/execution/abi-witness/stage6/analysis/candidate-data-results.json": {
+      "bytes": 2474,
+      "sha256": "ab450ef6c12dd96ea93ba4dc7a094efbde7d305d038178d24034ae26f4d7a06d"
+    },
+    "work/execution/abi-witness/stage6/analysis/reference-attribute-bits.json": {
+      "bytes": 162044,
+      "sha256": "204bc4664542446646c6e1d3b9b53304e954c9fab7a63740abc3aee78b6777b2"
+    },
+    "work/execution/abi-witness/stage6/analysis/reader.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/stage6/analysis/change-selected-variadic-extra.json": {
+      "bytes": 162044,
+      "sha256": "47a2a2d802a4e4bbd1235f6b24120aabdccd48ab3dd4bc45824a66ebd6e3ebd5"
+    },
+    "work/execution/abi-witness/stage6/analysis/narrow-extension.json": {
+      "bytes": 162044,
+      "sha256": "b34df74df8234b7cf47383743cd2b328ee5425c935f500ced22b746f27f29a89"
+    },
+    "work/execution/abi-witness/stage6/analysis/artifact-comparison.json": {
+      "bytes": 25797,
+      "sha256": "2479799a0df6a800933514ab8fecbe8684860fe3baf9aee905519cbb64e83b71"
+    },
+    "work/execution/abi-witness/stage6/analysis/hidden-result-size.json": {
+      "bytes": 162044,
+      "sha256": "af1de5d81ead938f8cc5a49433b2065de2b6b6152ee89582c8a3acc5397f7712"
+    },
+    "work/execution/abi-witness/stage6/analysis/opaque-layout.json": {
+      "bytes": 162052,
+      "sha256": "b0e478d7a74c32542c0ead39a8776cb817ce959025dddda3423ce66c27a9dd36"
+    },
+    "work/execution/abi-witness/stage6/analysis/omit-variadic-extra.json": {
+      "bytes": 160393,
+      "sha256": "5c2793bfdbf528f6117d06f00c2ede6c48777136095a11fc87d4b661866ff37b"
+    },
+    "work/execution/abi-witness/stage6/analysis/stale-generic-instance.json": {
+      "bytes": 162045,
+      "sha256": "fc9ee086faa8c2008ed77f2546dd51fe97bf45cc2d6bac5386056611f7ba0fc4"
+    },
+    "work/execution/abi-witness/stage6/analysis/reader-invocation.json": {
+      "bytes": 772,
+      "sha256": "05af5d39632dcbc8a471d81957a149850d071ecb473b4973c4b1c34f54f5138e"
+    }
+  },
+  "actual_actions": "One selected objdump invocation; data-only binder and launch-trapped offline candidate test. No compiler/observer/link/native execution.",
+  "limits": "Candidate report only; parent owns review/integration. No ABI/ISA correspondence theorem."
+}

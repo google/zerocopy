@@ -1,0 +1,39 @@
+--- e33_data_v3.py
++++ stage5/e33_data_windows.py
+@@ -5,7 +5,7 @@
+ """
+ from pathlib import Path
+ import hashlib,json
+-AUTHORITY_SHA256='d9b0b86788625c0d9f23c4662a39708c587fa6a34ea21e8790e5f26532700078'
++AUTHORITY_SHA256='c7b2e34bd5e7e96fdf47c67e44f55c41eab1eaac2fba0f0c86870f1d5c5996dd'
+ MAX_BYTES=4*1024*1024
+ MAX_DEPTH=64
+ class Reject(ValueError):pass
+@@ -109,20 +109,23 @@
+  for x in v['type_args']+v['extra_args']:require(x in ['u8','u32','u64','i32','f64','*const u8'],'finite type selector')
+  require(v['query']!='instance' or v['extra_args']==[],'instance extras outside selection')
+ def load_request(root,request_id):
+- root=Path(root).resolve();a=parse(read(root/'consumer-authority-v3.json'));require(sha(read(root/'consumer-authority-v3.json'))==AUTHORITY_SHA256,'consumer authority digest')
++ root=Path(root).resolve();a=parse(read(root/'stage5/consumer-authority-windows.json'));require(sha(read(root/'stage5/consumer-authority-windows.json'))==AUTHORITY_SHA256,'consumer authority digest')
+  require(request_id in a['profile_ids'],'unknown consumer request')
+  mbytes=read(root/'prepared-manifest.json');require(sha(mbytes)==a['preparation_manifest_sha256'],'historical preparation digest')
+  for f in parse(mbytes)['files']:
+   p=root/f['path'];require(sha(read(p))==f['sha256'] and p.stat().st_size==f['bytes'],'historical input changed')
+- cb=read(root/'requests.json');require(sha(cb)==a['historical_catalog_sha256'],'catalog digest');catalog=parse(cb)
++ require(sha(read(root/'requests.json'))==a['historical_catalog_sha256'],'historical catalog digest')
++ require(sha(read(root/'source-identities.json'))==a['source_identities_sha256'],'source identity digest')
++ cb=read(root/'stage5/requests-windows.json');require(sha(cb)==a['catalog_sha256'],'Windows catalog digest');catalog=parse(cb)
++ q=a['installed_target_identities'];require(sha(read(root/q['path']))==q['sha256'],'installed target identity digest')
+  ps=[x for x in catalog['profiles'] if x['id']==request_id];require(len(ps)==1,'request uniqueness');p=ps[0]
+- require(p['extra_flags']==[] and p['target']=='aarch64-apple-darwin' and p['edition']=='2021' and p['optimization'] in [0,2] and not p['incremental'] and p['panic']=='abort' and p['target_cpu']=='apple-m1' and p['target_features']=='' and p['compiler_threads']==p['codegen_units']==1,'finite fixed caller profile')
++ require(p['extra_flags']==[] and p['target']=='x86_64-pc-windows-msvc' and p['edition']=='2021' and p['optimization']==2 and not p['incremental'] and p['panic']=='abort' and p['target_cpu']=='x86-64' and p['target_features']=='' and p['compiler_threads']==p['codegen_units']==1,'finite fixed caller profile')
+  for k in ['source','selectors']:require(sha(read(root/p[k]['path']))==p[k]['sha256'],'fixed selected input changed')
+  selections=parse(read(root/p['selectors']['path']));obj(selections,['schema','selections']);require(selections['schema']=='e33-proposed-selectors-v1','selector schema');array(selections['selections'],32);require(len(selections['selections'])>0,'selection nonempty')
+  for s in selections['selections']:selector(s)
+  for k in ['corrected_observer_source','corrected_observer_binary']:
+   q=a[k];require(sha(read(root/q['path']))==q['sha256'],'corrected observer binding')
+- effective={'schema':'e33-effective-consumer-request-v2','authority_sha256':AUTHORITY_SHA256,'historical_catalog_sha256':a['historical_catalog_sha256'],'profile':p,'observer_source':a['corrected_observer_source'],'observer_binary':a['corrected_observer_binary']}
++ effective={'schema':'e33-windows-effective-consumer-request-v1','authority_sha256':AUTHORITY_SHA256,'historical_catalog_sha256':a['historical_catalog_sha256'],'catalog_sha256':a['catalog_sha256'],'installed_target_identities':a['installed_target_identities'],'profile':p,'observer_source':a['corrected_observer_source'],'observer_binary':a['corrected_observer_binary']}
+  return {'root':root,'authority':a,'profile':p,'selections':selections['selections'],'source':read(root/p['source']['path']).decode('utf-8'),'effective_request':effective,'effective_request_sha256':sha(json.dumps(effective,sort_keys=True,separators=(',',':')).encode())}
+ def validate_observation(v,request):
+  obj(v,['schema','crate_name','target_spec_debug','target_triple_debug','target_cpu','target_features','opt_level','incremental_enabled','effective_cfg','source_files','external_crates','selected','trust_frontier'])

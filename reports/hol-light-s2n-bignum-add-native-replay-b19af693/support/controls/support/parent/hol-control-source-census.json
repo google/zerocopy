@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "$DOCKER",
+    "exec",
+    "-i",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "returncode": 0,
+  "payload_sha256": "57518d0d94f082000b718c3e508c52d4aa57f5a062dbbc01c8aa16631163041c",
+  "raw_parent_receipt_sha256": "caad7712da801878f6259660a14057e2af8ffc860c64fee69c11786ac5f9aec6",
+  "projection_disclosure": "Host path prefixes projected to placeholders only; original parent receipt retained privately."
+}

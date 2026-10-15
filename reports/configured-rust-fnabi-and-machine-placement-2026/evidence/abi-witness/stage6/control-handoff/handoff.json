@@ -1,0 +1,241 @@
+{
+  "status": "PASS",
+  "failure": null,
+  "seconds": 16.709095625,
+  "actual_observer_invocations": 7,
+  "prelaunch_rejections": 3,
+  "results": [
+    {
+      "name": "stale-target",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-stale-target-01",
+      "stdout_sha256": "1a6231d140d80e51c5c8777b08d97dc8cf54056481cb1b00b42fa59c8ab34ced",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "selected built-in target"
+      },
+      "observer_invocations": 0
+    },
+    {
+      "name": "stale-generic-instance",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-stale-generic-instance-01",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "observer_invocations": 0
+    },
+    {
+      "name": "change-selected-variadic-extra",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-change-selected-variadic-extra-01",
+      "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "consumer selected root/instance/extras"
+      },
+      "observer_invocations": 0
+    },
+    {
+      "name": "hidden-result-size",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-hidden-result-size-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 70615,
+        "seconds": 0.22199737500000005,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 48644096,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165236,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "omit-hidden-caller",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-omit-hidden-caller-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 72437,
+        "seconds": 0.21690474999999998,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 72974336,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165238,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "omit-variadic-extra",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-omit-variadic-extra-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 74313,
+        "seconds": 0.21995708299999994,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165236,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "narrow-extension",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-narrow-extension-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 76113,
+        "seconds": 0.199673541,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165213,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "reference-attribute-bits",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-reference-attribute-bits-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 77774,
+        "seconds": 0.20199945799999997,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 73334784,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165260,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "opaque-layout",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-opaque-layout-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 78082,
+        "seconds": 0.19947041600000004,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165206,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    {
+      "name": "opaque-target",
+      "exit_code": 64,
+      "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-opaque-target-01",
+      "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cli": {
+        "status": "rejected_data",
+        "reason": "complete observation mismatch"
+      },
+      "result": {
+        "exit_code": 0,
+        "spawned": true,
+        "child_pid": 78337,
+        "seconds": 0.20603095800000004,
+        "stop_reason": null,
+        "controller_failure": null,
+        "remaining_group_after_parent_wait": [],
+        "max_observed_group_rss_bytes": 0,
+        "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+        "output_bytes": 165206,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "observer_invocations": 1,
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    }
+  ]
+}

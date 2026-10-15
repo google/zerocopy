@@ -1,0 +1,138 @@
+{
+  "self_excluded": "REPLAY-MANIFEST.json",
+  "files": {
+    "work/execution/review-abi-witness/escalated-replay/host-opt0-consumer-status.json": {
+      "bytes": 271,
+      "sha256": "7997129d8001e0260a9c2f419e2f2402a11359f3094ba39fc274112df7dbe217"
+    },
+    "work/execution/review-abi-witness/escalated-replay/host-opt0-consumer.stdout": {
+      "bytes": 770,
+      "sha256": "72494325d11ca606b93ef2a8b844d234cb30914ec8fc749deebb2f12fcd2fa1e"
+    },
+    "work/execution/review-abi-witness/escalated-replay/host-opt0-consumer.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/review-abi-witness/escalated-replay/fresh-preflight.json": {
+      "bytes": 761,
+      "sha256": "e76640d3475fda71ebf8c121556961f1cc0b413d7308ef469814e95fa0d4ade3"
+    },
+    "work/execution/review-abi-witness/escalated-replay/windows-opt2-consumer.stdout": {
+      "bytes": 770,
+      "sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350"
+    },
+    "work/execution/review-abi-witness/escalated-replay/NEXT-REPLAY-PLAN.json": {
+      "bytes": 7474,
+      "sha256": "e910c312dc0f39b6d961f0cfc44eeb91d8cf01d5009ba934198ed2556be46076"
+    },
+    "work/execution/review-abi-witness/escalated-replay/host-opt0-command.json": {
+      "bytes": 1305,
+      "sha256": "e8923bc006578813bd39ae63928ee9fc2f24e87fb4fd946da01ad4a01c8f83ca"
+    },
+    "work/execution/review-abi-witness/escalated-replay/run_two_checks.py": {
+      "bytes": 7317,
+      "sha256": "286ae259055ef4b100ef0fcfd51074ff601db23cc3030a8b4a25b15c70809c3e"
+    },
+    "work/execution/review-abi-witness/escalated-replay/windows-opt2-consumer-status.json": {
+      "bytes": 278,
+      "sha256": "2330988ffaee9ae00e696947d2e8ee60b1f0395ae8b8a3db289500f33a54aeb3"
+    },
+    "work/execution/review-abi-witness/escalated-replay/PARENT-DELTA-REVIEW.json": {
+      "bytes": 2100,
+      "sha256": "d6f2cc35a72fb37cbb20da84cfe6fac56339b0ee80a68c6b9d8502f4b233fdfc"
+    },
+    "work/execution/review-abi-witness/escalated-replay/host-opt0-consumer-child.json": {
+      "bytes": 833,
+      "sha256": "6f47818b697689de118dd2a519e26f6fe9c5942e2f275b962d0c59d75c2eb77b"
+    },
+    "work/execution/review-abi-witness/escalated-replay/fresh-two-checks-result.json": {
+      "bytes": 3714,
+      "sha256": "9ab677ebd7c9641685e8ba4880071acf2d966a476c7635f26bb6a677498f62e2"
+    },
+    "work/execution/review-abi-witness/escalated-replay/windows-opt2-consumer-child.json": {
+      "bytes": 881,
+      "sha256": "e2311fab30a87ac807daff52313d037ece8c6fceb7b184722ed02911ab448801"
+    },
+    "work/execution/review-abi-witness/escalated-replay/windows-opt2-command.json": {
+      "bytes": 1376,
+      "sha256": "54e709ddf473423341e3b3cf423da27504d8d5f646da5df8e2c4effbd5909adc"
+    },
+    "work/execution/review-abi-witness/escalated-replay/windows-opt2-consumer.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/result.json": {
+      "bytes": 542,
+      "sha256": "9d9adeb84b3228b07386a61d736994be713b2938b02a5e1ba443f3ac034741b5"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/comparison.json": {
+      "bytes": 770,
+      "sha256": "72494325d11ca606b93ef2a8b844d234cb30914ec8fc749deebb2f12fcd2fa1e"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/reference.json": {
+      "bytes": 165403,
+      "sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/rss-samples.json": {
+      "bytes": 137,
+      "sha256": "852e66b70f43e32d522c8c06786366a4a7224f55c70f49d842d11cb7fded6095"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/child.json": {
+      "bytes": 1311,
+      "sha256": "21230400e0f65f00753b7946ec9662bb3f64363444c5986078c6382e7d4d5bf9"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/invocation.json": {
+      "bytes": 1657,
+      "sha256": "e5b33bf03b2007fcce20bfb2fc0c58a1d89b70fa6fdd423a7a9c2f963359541d"
+    },
+    "work/execution/abi-witness/independent-review-host-opt0-02/effective-request.json": {
+      "bytes": 1185,
+      "sha256": "6e1bca3da6acd40dbe46d01b221ae7e1b28c3f571295225dcf588f1507a8fa07"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/result.json": {
+      "bytes": 534,
+      "sha256": "142077fc70524a33e9ad350419f4a8d83730d3cffc283548875640a9873907f1"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/comparison.json": {
+      "bytes": 770,
+      "sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/rss-samples.json": {
+      "bytes": 139,
+      "sha256": "fcb82e6f4fe9f4891f4463297a128f41821ca5fa0c5ca506281ee4d8473529ff"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/child.json": {
+      "bytes": 1357,
+      "sha256": "98bff852ad39bfa7a1eb822f4263fe3db685074cd72d365036d1c06160ca50dd"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/invocation.json": {
+      "bytes": 1726,
+      "sha256": "4cd59e243e2e5fc548d9d1c580162fe0f4125c8daf80060e01226327a4f9d3c2"
+    },
+    "work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    }
+  },
+  "scope": "Private independent review/replay evidence; does not mutate public candidate or raw prior evidence."
+}

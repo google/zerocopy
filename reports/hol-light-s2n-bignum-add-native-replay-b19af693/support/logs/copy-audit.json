@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "$TASK/work/execution/hol-replay/staged-audit",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-output/audit"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:11:45.101905+00:00",
+  "classification": "narrow copy of three unchanged reviewed audit/driver files to authorized fresh output",
+  "host_pid": 22373,
+  "returncode": 0,
+  "elapsed_seconds": 0.052161415999999995,
+  "stdout_bytes": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

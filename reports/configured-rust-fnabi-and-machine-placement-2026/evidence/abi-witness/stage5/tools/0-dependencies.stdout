@@ -1,0 +1,4 @@
+/Library/Developer/CommandLineTools/usr/bin/llvm-objdump:
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1900.171.0)

@@ -1,0 +1,46 @@
+{
+  "manifest_sha256": "58735b875c183a0bbfaf1fdb5d17d685493fbb770c9d2b435a5f14ae342b7f33",
+  "candidate_data_results_sha256": "ab450ef6c12dd96ea93ba4dc7a094efbde7d305d038178d24034ae26f4d7a06d",
+  "candidates": {
+    "stale-target": {
+      "bytes": 162042,
+      "sha256": "30ef59da979651e3024c59cc4cb8c556b94365bba0f7fb62b68f9a68e060ff56"
+    },
+    "stale-generic-instance": {
+      "bytes": 162045,
+      "sha256": "fc9ee086faa8c2008ed77f2546dd51fe97bf45cc2d6bac5386056611f7ba0fc4"
+    },
+    "change-selected-variadic-extra": {
+      "bytes": 162044,
+      "sha256": "47a2a2d802a4e4bbd1235f6b24120aabdccd48ab3dd4bc45824a66ebd6e3ebd5"
+    },
+    "hidden-result-size": {
+      "bytes": 162044,
+      "sha256": "af1de5d81ead938f8cc5a49433b2065de2b6b6152ee89582c8a3acc5397f7712"
+    },
+    "omit-hidden-caller": {
+      "bytes": 160080,
+      "sha256": "3c6e50b8c9e97781de508ddac8a3558b81bb58a657d0e221e14148bcbcc5bac7"
+    },
+    "omit-variadic-extra": {
+      "bytes": 160393,
+      "sha256": "5c2793bfdbf528f6117d06f00c2ede6c48777136095a11fc87d4b661866ff37b"
+    },
+    "narrow-extension": {
+      "bytes": 162044,
+      "sha256": "b34df74df8234b7cf47383743cd2b328ee5425c935f500ced22b746f27f29a89"
+    },
+    "reference-attribute-bits": {
+      "bytes": 162044,
+      "sha256": "204bc4664542446646c6e1d3b9b53304e954c9fab7a63740abc3aee78b6777b2"
+    },
+    "opaque-layout": {
+      "bytes": 162052,
+      "sha256": "b0e478d7a74c32542c0ead39a8776cb817ce959025dddda3423ce66c27a9dd36"
+    },
+    "opaque-target": {
+      "bytes": 162052,
+      "sha256": "4210dafb9a56e9a5205b790dd0cb3fb15d4fe407e63f232f9905c8059f7a438b"
+    }
+  }
+}

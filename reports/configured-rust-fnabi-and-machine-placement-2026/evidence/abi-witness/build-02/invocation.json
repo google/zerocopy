@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/observer_v2.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "rpath",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "-o",
+    "${WORKSPACE}/work/execution/abi-witness/observer-v2"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/build-02/tmp",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "cwd": "${WORKSPACE}/work/execution/abi-witness",
+  "controller_sha256": "9aa830ca10fd4f50bd318cc338fb197881bb96dc379a36da4fd89a37e7d45594"
+}

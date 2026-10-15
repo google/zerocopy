@@ -1,0 +1,142 @@
+{
+  "reader_tools": [
+    {
+      "selected_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "sha256_before_after": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+      "bytes": 18133888,
+      "symlink": false
+    },
+    {
+      "selected_path": "/Library/Developer/CommandLineTools/usr/bin/otool",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "sha256_before_after": "8353ad3c42743a93e9ca7d0d4e9d3df22305252d169c42c543ee22eeb8c33809",
+      "bytes": 72672,
+      "symlink": true
+    }
+  ],
+  "resolved_dependencies": [
+    {
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "scope": "OS/shared-cache runtime trust; no standalone file hash or closure proof."
+    },
+    {
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "dependency": "/usr/lib/libz.1.dylib",
+      "scope": "OS/shared-cache runtime trust; no standalone file hash or closure proof."
+    },
+    {
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "scope": "OS/shared-cache runtime trust; no standalone file hash or closure proof."
+    },
+    {
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "scope": "OS/shared-cache runtime trust; no standalone file hash or closure proof."
+    },
+    {
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "scope": "OS/shared-cache runtime trust; no standalone file hash or closure proof."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/otool",
+        "-L",
+        "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "c096963c8f1fed52cecabd2637a2679c8b574b0c7f041910070424cd7d8eedbf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/otool",
+        "-l",
+        "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "4c9d1532438c104f21bf8ff0c552b8b72b018220e46b6d1fee034798fde80af0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/otool",
+        "-L",
+        "/Library/Developer/CommandLineTools/usr/bin/llvm-otool"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "30df07145e496470c715c7b5fc081811df918d01a6ce879f5d3f47c61d0a958b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/otool",
+        "-l",
+        "/Library/Developer/CommandLineTools/usr/bin/llvm-otool"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "808b5f0bdadf6665f7129f441786262b0801f1e269059b817f73e5e9bcf33700",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "daf97ed1902b65c69716a2f0b1477d0a3a180f1cc673170ac733282e06fed5fb"
+    }
+  ],
+  "backend": {
+    "enclosing_native_image": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+    "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+    "bytes": 202329432,
+    "direct_dylib_dependencies": [
+      "/usr/lib/libSystem.B.dylib",
+      "/usr/lib/libobjc.A.dylib",
+      "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "/usr/lib/libz.1.dylib",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libiconv.2.dylib"
+    ],
+    "defined_backend_symbols": [
+      {
+        "symbol": "_LLVMInitializeX86Target",
+        "n_type": 30,
+        "n_sect": 1,
+        "value": 51968740,
+        "defined_section": true
+      },
+      {
+        "symbol": "_LLVMInitializeAArch64Target",
+        "n_type": 30,
+        "n_sect": 1,
+        "value": 69972280,
+        "defined_section": true
+      },
+      {
+        "symbol": "_LLVMRustVersionMajor",
+        "n_type": 30,
+        "n_sect": 1,
+        "value": 98870408,
+        "defined_section": true
+      }
+    ],
+    "source_dispatch": {
+      "path": "compiler/rustc_interface/src/util.rs",
+      "sha256": "d1884a515aead465a9391dea65ef555b09faa432ca6d79e661766ae46f8dca3d",
+      "lines": [
+        329,
+        361
+      ]
+    },
+    "inference": "Default reviewed no-backend-override command selects compiled LLVM constructor; actual defined LLVM target symbols are enclosed by exact driver hash. No separately loaded LLVM backend dylib was listed; not a source-to-binary theorem or complete OS runtime closure."
+  },
+  "fixture_codegen_invocations": 0,
+  "scope": "Read-only source/binary/tool availability and hashes before codegen; OS runtime trust retained."
+}

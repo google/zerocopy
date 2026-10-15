@@ -14456,6 +14456,54 @@
         "certificates/subject-binding"
       ]
     },
+    "configured-rust-fnabi-and-machine-placement-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+            "repository": "rust-lang/rust",
+            "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6"
+          },
+          "name": "May1 Rust compiler"
+        },
+        {
+          "identity": {
+            "artifact": "subjects.rs",
+            "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+          },
+          "name": "ordinary ABI fixture"
+        },
+        {
+          "identity": {
+            "artifact": "vectors.rs",
+            "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+          },
+          "name": "experimental vector fixture"
+        },
+        {
+          "identity": {
+            "artifact": "observer_v3.rs",
+            "sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1"
+          },
+          "name": "observer v3 source"
+        },
+        {
+          "identity": {
+            "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+            "version": "21.0.0"
+          },
+          "name": "Apple LLVM object reader"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/abi",
+        "rust/compiler",
+        "machine-code",
+        "ffi"
+      ]
+    },
     "constructive-imperative-refinement-memory-bridges": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -16277,6 +16325,55 @@
         "rust/atomics",
         "rust/inline-assembly",
         "compiler/effects"
+      ]
+    },
+    "hol-light-s2n-bignum-add-native-replay-b19af693": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "b19af6934759eed622d7aca25092367f81656eee"
+          },
+          "name": "HOL Light"
+        },
+        {
+          "identity": {
+            "path": "x86/proofs/bignum_add.ml",
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "s2n-bignum complete x86 bignum_add proof"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/opam-repository",
+            "revision": "56aefa37456aa263913289a4174daca01c4b9339"
+          },
+          "name": "Immutable opam metadata"
+        },
+        {
+          "identity": {
+            "artifact": "support/audit/AnnealSelectedAudit.ml",
+            "sha256": "db978dac1ae14501aa610e4c2ccccaa5e1e6697f0439267a18329316c9a2a700"
+          },
+          "name": "Owned observation entry"
+        },
+        {
+          "identity": {
+            "architecture": "AArch64 Linux",
+            "artifact": "support/artifacts/selected.native",
+            "sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8"
+          },
+          "name": "Actual native OCaml proof program"
+        }
+      ],
+      "topics": [
+        "hol-light",
+        "assembly/s2n-bignum",
+        "proof/replay",
+        "proof/axioms",
+        "assembly/byte-binding"
       ]
     },
     "hol-proof-producing-synthesis-and-binary-lifting": {

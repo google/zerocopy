@@ -1,0 +1,15 @@
+{
+  "status": "FROZEN preparation only; no control grant",
+  "path": "$CONTROL_PLAN",
+  "PLAN_sha256": "9f0ecc416f75d2ddd40f244f00be2172fea797c1fa560c727f3027839ef38710",
+  "manifest_sha256": "95c6e2c2f62e2033100d4635bec09072e50429103e8e4e0c579a7e6285370d01",
+  "file_count": 18,
+  "bytes": 45622,
+  "positive_report_unchanged": true,
+  "positive_native_invocations_by_author": 1,
+  "control_native_invocations": 0,
+  "control_compilations": 0,
+  "control_runtime_staging": false,
+  "projection_disclosure": "Only private host path replaced by placeholder; frozen original retained by owner.",
+  "raw_handoff_sha256": "22e3511dd978ce7d1a89a32518dbcf5c8477f892155b55249ff97f8f8e60d3d2"
+}

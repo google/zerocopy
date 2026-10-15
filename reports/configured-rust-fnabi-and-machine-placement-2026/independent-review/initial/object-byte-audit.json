@@ -1,0 +1,223 @@
+[
+  {
+    "profile": "host-subjects-opt0",
+    "text_bytes": 616,
+    "instructions": 154,
+    "branch26": [
+      {
+        "offset": 596,
+        "symbol": "_abi_opaque_vararg",
+        "word": "0x94000000"
+      },
+      {
+        "offset": 504,
+        "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects",
+        "word": "0x94000000"
+      },
+      {
+        "offset": 500,
+        "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects",
+        "word": "0x94000000"
+      },
+      {
+        "offset": 348,
+        "symbol": "_abi_opaque_twelve",
+        "word": "0x94000000"
+      }
+    ]
+  },
+  {
+    "profile": "host-subjects-opt2",
+    "text_bytes": 252,
+    "instructions": 63,
+    "branch26": [
+      {
+        "offset": 232,
+        "symbol": "_abi_opaque_vararg",
+        "word": "0x94000000"
+      },
+      {
+        "offset": 148,
+        "symbol": "_abi_opaque_twelve",
+        "word": "0x94000000"
+      }
+    ]
+  },
+  {
+    "profile": "host-vectors-opt0",
+    "text_bytes": 20,
+    "instructions": 5,
+    "branch26": []
+  },
+  {
+    "profile": "host-vectors-opt2",
+    "text_bytes": 16,
+    "instructions": 4,
+    "branch26": []
+  },
+  {
+    "profile": "windows-subjects-opt2",
+    "sections": [
+      {
+        "section_one_based": 4,
+        "bytes": 18,
+        "instructions": 6,
+        "relocations": [],
+        "symbols": [
+          "abi_c_big",
+          "abi_rust_big",
+          "abi_system_big"
+        ]
+      },
+      {
+        "section_one_based": 5,
+        "bytes": 9,
+        "instructions": 3,
+        "relocations": [],
+        "symbols": [
+          "abi_c_fp"
+        ]
+      },
+      {
+        "section_one_based": 6,
+        "bytes": 10,
+        "instructions": 4,
+        "relocations": [],
+        "symbols": [
+          "abi_c_hfa"
+        ]
+      },
+      {
+        "section_one_based": 7,
+        "bytes": 18,
+        "instructions": 6,
+        "relocations": [],
+        "symbols": [
+          "abi_c_narrow",
+          "abi_system_narrow"
+        ]
+      },
+      {
+        "section_one_based": 8,
+        "bytes": 16,
+        "instructions": 6,
+        "relocations": [],
+        "symbols": [
+          "abi_c_pair",
+          "abi_system_pair"
+        ]
+      },
+      {
+        "section_one_based": 9,
+        "bytes": 4,
+        "instructions": 2,
+        "relocations": [],
+        "symbols": [
+          "abi_c_raw"
+        ]
+      },
+      {
+        "section_one_based": 10,
+        "bytes": 4,
+        "instructions": 2,
+        "relocations": [],
+        "symbols": [
+          "abi_interior"
+        ]
+      },
+      {
+        "section_one_based": 11,
+        "bytes": 18,
+        "instructions": 6,
+        "relocations": [],
+        "symbols": [
+          "abi_rust_narrow"
+        ]
+      },
+      {
+        "section_one_based": 12,
+        "bytes": 4,
+        "instructions": 2,
+        "relocations": [],
+        "symbols": [
+          "abi_rust_tuple"
+        ]
+      },
+      {
+        "section_one_based": 13,
+        "bytes": 4,
+        "instructions": 2,
+        "relocations": [],
+        "symbols": [
+          "abi_shared"
+        ]
+      },
+      {
+        "section_one_based": 14,
+        "bytes": 4,
+        "instructions": 2,
+        "relocations": [],
+        "symbols": [
+          "abi_slice"
+        ]
+      },
+      {
+        "section_one_based": 15,
+        "bytes": 69,
+        "instructions": 13,
+        "relocations": [
+          {
+            "offset": 57,
+            "symbol": "abi_opaque_twelve",
+            "type": 4
+          }
+        ],
+        "symbols": [
+          "abi_stack_driver"
+        ]
+      },
+      {
+        "section_one_based": 16,
+        "bytes": 7,
+        "instructions": 3,
+        "relocations": [],
+        "symbols": [
+          "abi_track"
+        ]
+      },
+      {
+        "section_one_based": 17,
+        "bytes": 10,
+        "instructions": 4,
+        "relocations": [],
+        "symbols": [
+          "abi_unique"
+        ]
+      },
+      {
+        "section_one_based": 18,
+        "bytes": 1,
+        "instructions": 1,
+        "relocations": [],
+        "symbols": [
+          "abi_unit"
+        ]
+      },
+      {
+        "section_one_based": 19,
+        "bytes": 36,
+        "instructions": 10,
+        "relocations": [
+          {
+            "offset": 24,
+            "symbol": "abi_opaque_vararg",
+            "type": 4
+          }
+        ],
+        "symbols": [
+          "abi_vararg_driver"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/e33_consumer_v3.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "host-subjects-opt2",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/candidates/09-omitted-selected-vararg-extra.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/runs/09-omitted-selected-vararg-extra"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/jobs/09-omitted-selected-vararg-extra/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "helper_sha256": "8bdc45a36f11f8036712cad4dbec008859864f5dc80dde0a63515f24bd3c19d8",
+  "candidate_sha256": "86b6a062bb11934b01ec66c3ad2d7f25638d671c2b8ed8e662e51d507c2d1c20"
+}

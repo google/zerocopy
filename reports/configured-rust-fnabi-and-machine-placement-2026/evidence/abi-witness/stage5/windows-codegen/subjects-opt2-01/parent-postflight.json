@@ -1,0 +1,21 @@
+{
+  "status": "PASS exact fixed Windows compile-only; no link or fixture execution",
+  "inputs_tools_target_before_after": "all unchanged",
+  "outputs": [
+    {
+      "path": "abi_subjects.ll",
+      "bytes": 8375,
+      "sha256": "10c750313470ad04c2073c7c8ada22effd90763b7395f24fe30f889832c30b5c"
+    },
+    {
+      "path": "abi_subjects.o",
+      "bytes": 2883,
+      "sha256": "e60f2c51f131496d62fca49ce5c56ee0b28d1f36a9e490f5e9d4e4b2616b4e77"
+    },
+    {
+      "path": "abi_subjects.s",
+      "bytes": 4266,
+      "sha256": "d2dfd499b9988433eddaafa5eb9e7b2efc06a6a54ab7e6d80061338aeb3040bb"
+    }
+  ]
+}

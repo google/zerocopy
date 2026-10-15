@@ -1,0 +1,16 @@
+{
+  "id": "06-wrong-generic-instance",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "consumer selected root/instance/extras"
+  },
+  "seconds": 0.32172358300000004,
+  "fresh_observer": null,
+  "candidate_sha256": "e5619bbdd611549ca6e0fd91fb1f572a280d912608fd18e2bac335339030ff22",
+  "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

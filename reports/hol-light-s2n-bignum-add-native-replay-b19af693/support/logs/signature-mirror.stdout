@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/collect-signatures.py"
+  ],
+  "cwd": "/home/opam/anneal-cross-output/signature-mirror",
+  "returncode": 0,
+  "generator_sha256": "628faf39123c192d03dfdb461620630345b09d9a71d915136f3c07bd7c2f2d21",
+  "outputs": [
+    {
+      "path": "arm/proofs/subroutine_signatures.ml",
+      "exists": true,
+      "bytes": 149393,
+      "sha256": "cbae5684deb4758a7d391e1a4e4d61ed9e33fedffdb2c0a6de80693116a852d0",
+      "original_sha256": "cbae5684deb4758a7d391e1a4e4d61ed9e33fedffdb2c0a6de80693116a852d0",
+      "byte_equal_to_original": true
+    },
+    {
+      "path": "x86/proofs/subroutine_signatures.ml",
+      "exists": true,
+      "bytes": 153958,
+      "sha256": "f9268864aace2c66063541bd12eef06313d4634bc977cd09b6600a3b824910e6",
+      "original_sha256": "f9268864aace2c66063541bd12eef06313d4634bc977cd09b6600a3b824910e6",
+      "byte_equal_to_original": true
+    }
+  ]
+}

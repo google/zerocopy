@@ -1,0 +1,68 @@
+{
+  "consumer_exit": 0,
+  "consumer_stdout": "{\n  \"status\": \"accepted_against_fresh_pinned_compiler_observation\",\n  \"effective_request_sha256\": \"70261ec10722d9627e265adebdcf1279c75102a767be99c6c299729192db2afc\",\n  \"candidate_sha256\": \"7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354\",\n  \"reference_sha256\": \"7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354\",\n  \"meaning\": \"Complete parsed data equality under a consumer-fixed request. Actual fresh reference provenance is a separate mandatory consumer premise; synthetic calls prove no FnAbi semantics.\",\n  \"scope\": \"Trusted compiler/observer ABI witness equality for this selected source/target/profile/instance. No verified classification, full dependency closure, source safety, IR/machine placement or correspondence theorem.\"\n}\n",
+  "consumer_stderr": "",
+  "result": {
+    "exit_code": 0,
+    "spawned": true,
+    "child_pid": 46513,
+    "seconds": 0.20445941700000003,
+    "stop_reason": null,
+    "controller_failure": null,
+    "remaining_group_after_parent_wait": [],
+    "max_observed_group_rss_bytes": 42975232,
+    "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+    "output_bytes": 165196,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "comparison": {
+    "status": "accepted_against_fresh_pinned_compiler_observation",
+    "effective_request_sha256": "70261ec10722d9627e265adebdcf1279c75102a767be99c6c299729192db2afc",
+    "candidate_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+    "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+    "meaning": "Complete parsed data equality under a consumer-fixed request. Actual fresh reference provenance is a separate mandatory consumer premise; synthetic calls prove no FnAbi semantics.",
+    "scope": "Trusted compiler/observer ABI witness equality for this selected source/target/profile/instance. No verified classification, full dependency closure, source safety, IR/machine placement or correspondence theorem."
+  },
+  "selected_count": 26,
+  "before_after_identical": true,
+  "fresh_reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+  "run_files": {
+    "stage5/windows-runs/check-subjects-o2-01/child.json": {
+      "bytes": 1331,
+      "sha256": "ad65b68a60a726d8b17a2288c569a8b6b8ae18ce5f7bc3627cfa4927b821ccd1"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/comparison.json": {
+      "bytes": 770,
+      "sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/invocation.json": {
+      "bytes": 1684,
+      "sha256": "ab2c6b40cc14b8e25d1d48862b17fcadbe94cbd313f2cf15fd45643b3eadc2d5"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/result.json": {
+      "bytes": 543,
+      "sha256": "f77162446fee20a59f4673e464d68d77881acbaf7a9f86b580543a935ca1a772"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/rss-samples.json": {
+      "bytes": 138,
+      "sha256": "c85e6d10d5146c6e4ec5b847d4a9ffc9de946765cfb6cfe04e5e2deb4e49e120"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/check-subjects-o2-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/bin/curl",
+    "--fail",
+    "--location",
+    "--silent",
+    "--show-error",
+    "--max-time",
+    "180",
+    "--max-filesize",
+    "134217728",
+    "https://codeload.github.com/jrh13/hol-light/tar.gz/b19af6934759eed622d7aca25092367f81656eee",
+    "--output",
+    "work/execution/cross-foundation-runtime/acquisition/hol-light.tar.gz"
+  ],
+  "exit_code": 0,
+  "seconds": 1.584411292,
+  "bytes": 9207008,
+  "sha256": "e9973678cc80dd0d3b4b60f40aceac060c3a8a33bf97de5d6b647d9f0f71f80a"
+}

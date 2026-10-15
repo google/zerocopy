@@ -1,0 +1,8 @@
+{
+  "status": "accepted_against_fresh_pinned_compiler_observation",
+  "effective_request_sha256": "e7e54510d21ef3a78d34c63d40bd55f42b1aa032d4de3721599f7fa238000e5d",
+  "candidate_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+  "reference_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+  "meaning": "Complete parsed data equality under a consumer-fixed request. Actual fresh reference provenance is a separate mandatory consumer premise; synthetic calls prove no FnAbi semantics.",
+  "scope": "Trusted compiler/observer ABI witness equality for this selected source/target/profile/instance. No verified classification, full dependency closure, source safety, IR/machine placement or correspondence theorem."
+}

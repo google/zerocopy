@@ -1,0 +1,59 @@
+{
+  "classification": "Data preparation only; no compiler/proof/native/x86 execution",
+  "original_sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb",
+  "original_text_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+  "text_file_offset": 64,
+  "text_bytes": 185,
+  "symbol_string_offset": 773,
+  "mutants": [
+    {
+      "path": "objects/bad-text.o",
+      "bytes": 1528,
+      "sha256": "c7043eb5d0c1a32eac91771a1c4b6bc8a5c8ccfa1efefe3720e4814ce59eb9c1",
+      "changed_file_offsets": [
+        64
+      ],
+      "original_bytes_at_changed_offsets": [
+        243
+      ],
+      "new_bytes_at_changed_offsets": [
+        242
+      ],
+      "text_equal_original": false
+    },
+    {
+      "path": "objects/wrong-machine.o",
+      "bytes": 1528,
+      "sha256": "4e0d08e2fb43c904d8cb90e62b8ad27ae9d395b14861c3815c1577a729ff4ddd",
+      "changed_file_offsets": [
+        18
+      ],
+      "original_bytes_at_changed_offsets": [
+        62
+      ],
+      "new_bytes_at_changed_offsets": [
+        183
+      ],
+      "text_equal_original": true
+    },
+    {
+      "path": "objects/renamed-symbol.o",
+      "bytes": 1528,
+      "sha256": "2acb08cadb3fac8aa81a175f7011fc3416db1684f8318bedea72e91dbed708eb",
+      "changed_file_offsets": [
+        780,
+        781
+      ],
+      "original_bytes_at_changed_offsets": [
+        97,
+        100
+      ],
+      "new_bytes_at_changed_offsets": [
+        98,
+        97
+      ],
+      "text_equal_original": true
+    }
+  ],
+  "positive_object_unchanged_after": true
+}

@@ -1,0 +1,6 @@
+{
+  "postpositive_source_tools_modules_objects_exactly_equal_preexecution": true,
+  "all_output_audit_inliner_executable_hashes_exactly_equal_preexecution": true,
+  "all_positive_acceptance_checks_pass": true,
+  "single_positive_start_receipt": true
+}

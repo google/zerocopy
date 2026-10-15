@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "list",
+    "--switch=hol54",
+    "--installed",
+    "--columns=name,version",
+    "--short"
+  ],
+  "classification": "read-only installed49-package identity query"
+}

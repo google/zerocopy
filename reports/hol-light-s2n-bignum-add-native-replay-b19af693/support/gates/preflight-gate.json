@@ -1,0 +1,16 @@
+{
+  "exact_container": true,
+  "running": true,
+  "no_mounts": true,
+  "cpu2": true,
+  "memory4GiB": true,
+  "pids512": true,
+  "no_new_privileges": true,
+  "no_published_ports": true,
+  "all23177_originals_match": true,
+  "tools_match_parent": true,
+  "libraries_match_parent": true,
+  "output_absent": true,
+  "local_switch_absent": true,
+  "objects_absent": true
+}

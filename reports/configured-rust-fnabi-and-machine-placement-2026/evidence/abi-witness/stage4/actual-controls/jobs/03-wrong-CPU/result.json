@@ -1,0 +1,16 @@
+{
+  "id": "03-wrong-CPU",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "selected CPU"
+  },
+  "seconds": 0.32050770800000006,
+  "fresh_observer": null,
+  "candidate_sha256": "2e001e689d6a11776e070af81a3a684f4d3391810f64ed4a669d67a248f4a2a6",
+  "stdout_sha256": "710a00e6577af1b1a7e385ed49751926e4cc928cdb82ea05b76501b86cada2e3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

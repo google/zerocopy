@@ -1,0 +1,18 @@
+{
+  "pid": 4802,
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/e33_consumer_windows.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "windows-subjects-opt2",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/capture-subjects-o2-01/reference.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+  ],
+  "started_unix_ns": 1792029357676182000
+}

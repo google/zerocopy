@@ -1,0 +1,128 @@
+{
+  "status": "PASS selected original HOL/s2n positive replay; broad E03/E31 remain open",
+  "container_id": "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+  "resource_limits": {
+    "cpu": 2,
+    "memory_GiB": 4,
+    "pids": 512,
+    "no_new_privileges": true,
+    "mounts": [],
+    "published_ports": []
+  },
+  "native_program": {
+    "path": "/home/opam/anneal-cross-output/selected.native",
+    "bytes": 30819144,
+    "sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8",
+    "md5": "260876d219112e6f525704b8a9085a7b"
+  },
+  "producer": {
+    "returncode": 0,
+    "wall_seconds": 47.718131542
+  },
+  "positive": {
+    "returncode": 0,
+    "wall_seconds": 68.422963958,
+    "stdout_sha256": "775c0ec380bd5098bd57c841fd8768085973c7f44fa382c3b8236e0c36a09778",
+    "stdout_bytes": 842395,
+    "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+    "stderr_bytes": 45,
+    "GNU_timeout_KILL_seconds": 1200,
+    "native_PID_RSS_maps": "not observed",
+    "native_run_count": 1
+  },
+  "original_source_files_checked": 23177,
+  "original_HOL_s2n_files": 3778,
+  "tool_files": 69,
+  "compiler_library_files": 2417,
+  "original_source_tool_module_object_bytes_stable": true,
+  "all_output_artifact_hashes_stable": true,
+  "core_sources": 47,
+  "selected_sources": 37,
+  "additional_original_proof_sources": 35,
+  "owned_entries": 2,
+  "runtime_ledger_counts": [
+    47,
+    83
+  ],
+  "fixed_theorem_observations": 12,
+  "decode_some": 59,
+  "decode_none": 122,
+  "decode_array_length": 181,
+  "theorem_observations_total": 71,
+  "positive_acceptance": {
+    "exit0": true,
+    "no_incomplete_theorem": true,
+    "exact_fixed12_plus_actual_decode_names": true,
+    "all_statements_have_closed_sequent_print": true,
+    "one_decode_length181": true,
+    "every_decode_offset_exactly_once": true,
+    "core47_runtime_ledger_exact": true,
+    "after_inner83_runtime_ledger_exact": true,
+    "three_global_axiom_headers": true,
+    "inner_check_marker_once": true,
+    "outer_check_marker_once": true,
+    "inner_end_once": true,
+    "outer_end_once": true
+  },
+  "elfs": [
+    {
+      "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/generic/bignum_add.o",
+      "object_bytes": 1528,
+      "sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb",
+      "machine": 62,
+      "text_section_index": 1,
+      "text_file_offset": 64,
+      "text_bytes": 185,
+      "text_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+      "text_hex": "f30f1efa4d31d24839d7480f42d74c39c74c0f42c74c39c272474829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff7543c34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff7501c34a8904d64831c0eb044a8904d649ffc248ffcf75f4c3",
+      "bignum_add_symbols": [
+        {
+          "name": "bignum_add",
+          "section_index": 1,
+          "value": 0,
+          "size": 185,
+          "info": 18,
+          "other": 0,
+          "equals_entire_text": true
+        }
+      ]
+    },
+    {
+      "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/generic/bignum_add.obj",
+      "object_bytes": 1592,
+      "sha256": "a81541b03aa800d646b113b6da1d81363f0d8921bc74ddceae76a82a9d5d7f73",
+      "machine": 62,
+      "text_section_index": 1,
+      "text_file_offset": 64,
+      "text_bytes": 215,
+      "text_sha256": "18fc6c30fba62f3376f71f511658d8ac79684350bfe9c397632931406557247b",
+      "text_hex": "f30f1efa57564889cf4889d64c89c24c89c94c8b4424384c8b4c24404d31d24839d7480f42d74c39c74c0f42c74c39c272494829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff75475e5fc34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff75035e5fc34a8904d64831c0eb044a8904d649ffc248ffcf75f45e5fc3",
+      "bignum_add_symbols": [
+        {
+          "name": "bignum_add",
+          "section_index": 1,
+          "value": 0,
+          "size": 215,
+          "info": 18,
+          "other": 0,
+          "equals_entire_text": true
+        }
+      ]
+    }
+  ],
+  "signature_generator": {
+    "input_files": 690,
+    "unchanged_original_generator": true,
+    "returncode": 0,
+    "both_generated_outputs_byte_equal_to_checked_in_originals": true
+  },
+  "global_axiom_policy": "Only INFINITY_AX/SELECT_AX/ETA_AX; original qualified checker captured before selected proof",
+  "per_theorem_axiom_dependencies": "not computed",
+  "output_bytes_observed_before_after": 64277053,
+  "generated_HOL_module_bytes": 41973923,
+  "budget_is": "before/after observation below2GiB, not a hard disk cap",
+  "controls": "not granted or executed",
+  "rejected_native_wrapper": "never staged or run",
+  "upstream_original_source_changes": false,
+  "x86_machine_code_execution": false
+}

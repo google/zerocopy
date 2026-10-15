@@ -1,0 +1,57 @@
+{
+  "consumer_exit": 0,
+  "consumer_stdout": "{\n  \"status\": \"captured_consumer_reference\",\n  \"effective_request_sha256\": \"70261ec10722d9627e265adebdcf1279c75102a767be99c6c299729192db2afc\",\n  \"reference_sha256\": \"7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354\",\n  \"accepted_candidates\": 0\n}\n",
+  "consumer_stderr": "",
+  "result": {
+    "exit_code": 0,
+    "spawned": true,
+    "child_pid": 44757,
+    "seconds": 0.19637191600000004,
+    "stop_reason": null,
+    "controller_failure": null,
+    "remaining_group_after_parent_wait": [],
+    "max_observed_group_rss_bytes": 35979264,
+    "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+    "output_bytes": 165206,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "selected_count": 26,
+  "before_after_identical": true,
+  "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+  "run_files": {
+    "stage5/windows-runs/capture-subjects-o2-01/child.json": {
+      "bytes": 1335,
+      "sha256": "950a5d4afc6e77d2113f56c23b946ee767aa9e787cd46344fbec3f9e7147b99d"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/invocation.json": {
+      "bytes": 1690,
+      "sha256": "382e245448ddc57fd0bdecc42bbbe5ac0a37c245a951befae420e28742df07aa"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/result.json": {
+      "bytes": 543,
+      "sha256": "9e70d8f527dc64f20ae4cdb9b09d13de166bfb73d7a6b333a31a88b3333113c7"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/rss-samples.json": {
+      "bytes": 138,
+      "sha256": "87174a387fac2099aca1881f08ad4e7cf0f017500293c3ef6cdaa18b98d65904"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/capture-subjects-o2-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "settings": "Parent requested gpt-6.1-sol/low; effective model and reasoning setting not exposed to this child."
+}

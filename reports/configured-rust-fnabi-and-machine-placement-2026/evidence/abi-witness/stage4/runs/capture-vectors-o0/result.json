@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "spawned": true,
+  "child_pid": 12041,
+  "seconds": 0.20367437499999996,
+  "stop_reason": null,
+  "controller_failure": null,
+  "remaining_group_after_parent_wait": [],
+  "max_observed_group_rss_bytes": 0,
+  "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "output_bytes": 29402,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec"
+}

@@ -1,0 +1,432 @@
+{
+  "files": {
+    "stage5/windows-runs/mutant-hidden-result-size-01/child.json": {
+      "bytes": 1347,
+      "sha256": "91d3995a2190988e8c1e3b095bbb5ad14bff0f6453cce20ab798caa4fafb2eb5"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/invocation.json": {
+      "bytes": 1708,
+      "sha256": "28a392896991bb123d325a2f4f67a5d5fa626b3835c623cb7ceb506170d4ecf8"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/result.json": {
+      "bytes": 543,
+      "sha256": "b98f717de3e89b0156e3e625c9c1f722ebbd0a9b0b9871a53ff78b18bc8a8371"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/rss-samples.json": {
+      "bytes": 138,
+      "sha256": "5c830a994fe6f0230469c9f7736b434ddd9ec37268c7c7c1246755604a3aa0d2"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-hidden-result-size-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/child.json": {
+      "bytes": 1343,
+      "sha256": "d57152c2a25e3282c5d9a2ad8347de2d284d7e399061f0d7f09586330c2415f6"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/invocation.json": {
+      "bytes": 1702,
+      "sha256": "dede11dc8ea7d425ee2cf8e4190db104ec0f8647ac58da8cad0e344910c528c0"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/result.json": {
+      "bytes": 528,
+      "sha256": "8d98dd31d45a614f160325174e4d79091663d2a5775dc82176f6b2a5f993c9c4"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/rss-samples.json": {
+      "bytes": 125,
+      "sha256": "2f23d70662c4aa002e100dc6f3197960c9043bdc56ed171fc8a4ef0312881459"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-narrow-extension-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/child.json": {
+      "bytes": 1347,
+      "sha256": "b06da2d9087e20fb60f99e9d4fa35baa2aa04048e39482c423f4b56903b59a8d"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/invocation.json": {
+      "bytes": 1708,
+      "sha256": "70187cb7ba1b6c1bf4415a84910041e7943b6156c026152a6a2bfc809d4188bb"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/result.json": {
+      "bytes": 543,
+      "sha256": "68e8cd42ec6eb3b6e9e16d80b1608d5b0778fe95c63e467734290cae8da8a2d1"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/rss-samples.json": {
+      "bytes": 140,
+      "sha256": "b7a3089e8156fe062f96d16f7b3b50cc275e966a0324b6217b9ae8d974686ca0"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-omit-hidden-caller-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/child.json": {
+      "bytes": 1349,
+      "sha256": "74548c507c55506ab7733ace0fd00a420048b32dd5279f9681d5d77dfb0cc249"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/invocation.json": {
+      "bytes": 1711,
+      "sha256": "73215699011780ca0a4acdd6456043f4be417a63236c1f364507df45beaeea53"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/result.json": {
+      "bytes": 536,
+      "sha256": "5d94a02bfd1089f3fd15a88e54e528fc18d8f991c332a2e5109d565de1abf9ee"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/rss-samples.json": {
+      "bytes": 133,
+      "sha256": "c1da073b58f9f1c2375f938aa59b6a4174236743d2780e5790f35167d942b55b"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-omit-variadic-extra-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/child.json": {
+      "bytes": 1337,
+      "sha256": "5e52a94c54c65f20fe554b8e171bf71f175101d3a50968dbaed184bf50974fda"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/invocation.json": {
+      "bytes": 1693,
+      "sha256": "ff0931fcf72b4e4d2ba81058fca359407d29c305fd2cce7b019db43681e47d7c"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/result.json": {
+      "bytes": 536,
+      "sha256": "92f12ea95285fec204cdebe54b0f8b8e328b1f2c424756d6b4bc35ebf14f098d"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/rss-samples.json": {
+      "bytes": 133,
+      "sha256": "4df51136be3152659a60612f403cdd7b45d6a5485185f3a2fc2ddc07ad5e678a"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-opaque-layout-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/child.json": {
+      "bytes": 1337,
+      "sha256": "12e537d6c2ac05a00dbf7b3aa47a48ee7dd7f559915d61ff107854aaa4ad9d4e"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/invocation.json": {
+      "bytes": 1693,
+      "sha256": "5e3a94bafd6b12163c568e836548bea624a25e05db1cb63d0bec98d7c55fd2e2"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/result.json": {
+      "bytes": 536,
+      "sha256": "62d1df0550025a83bccfef1ada27b2b0ba2916e354aabf7d0c18c34f746ec9d9"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/rss-samples.json": {
+      "bytes": 133,
+      "sha256": "ec35e2d2f58873be063fa43b6241004adb7a3e70fa7596aec23f219fb8dcafc3"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-opaque-target-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/child.json": {
+      "bytes": 1359,
+      "sha256": "4515dfd8537ce4c961a45797b211b47f9c019d21028509a37569e556802e87e4"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/comparison.json": {
+      "bytes": 175,
+      "sha256": "45799f792e944f7a7211e3ce93474a3856e342c4a93485ed098d856bfa9e4129"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/effective-request.json": {
+      "bytes": 1422,
+      "sha256": "8499e616ce2d3502620d1f7ab376d73ed72f2436b9d76dbd6019a18be8db04c3"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/invocation.json": {
+      "bytes": 1726,
+      "sha256": "c8a9d788ec79f9cb8c56b5f8e9acf58421207b6f59dc186069b2db35abf01d43"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/reference.json": {
+      "bytes": 162043,
+      "sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/result.json": {
+      "bytes": 543,
+      "sha256": "008c88fc088878f13e7f94029cde5318f48906d5b6e0d58b0eeca37281d940d9"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/rss-samples.json": {
+      "bytes": 132,
+      "sha256": "e6002c63e96d4576bd9423e3d82252203ebdd6cf6bc33f50f344f92d9348cda1"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage5/windows-runs/mutant-reference-attribute-bits-01/stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/after.json": {
+      "bytes": 4776,
+      "sha256": "b74763b4faf26e6f8b1d08ae3324772001bd54ae045a0bca48e1b2ef72d21ff2"
+    },
+    "stage6/control-handoff/before.json": {
+      "bytes": 4776,
+      "sha256": "b74763b4faf26e6f8b1d08ae3324772001bd54ae045a0bca48e1b2ef72d21ff2"
+    },
+    "stage6/control-handoff/candidate-pins.json": {
+      "bytes": 1632,
+      "sha256": "616d4e37e4c9c06213077cf6f4dd2d207528b76f20c855ad83e63baca71cd787"
+    },
+    "stage6/control-handoff/change-selected-variadic-extra.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/change-selected-variadic-extra.invocation.json": {
+      "bytes": 815,
+      "sha256": "2b5715376c7b6f2963791d33310d003fc2f4caf45b58957e3e7831fc3aa9f7c6"
+    },
+    "stage6/control-handoff/change-selected-variadic-extra.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/change-selected-variadic-extra.stdout": {
+      "bytes": 80,
+      "sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d"
+    },
+    "stage6/control-handoff/handoff.json": {
+      "bytes": 11649,
+      "sha256": "22dbe12746a5ea1b16fad69a166a4b5708170eeae3083dc6c8c8dda531b9ed6c"
+    },
+    "stage6/control-handoff/hidden-result-size.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/hidden-result-size.invocation.json": {
+      "bytes": 791,
+      "sha256": "d44de601bb2f7fd32fcdffe311a92cfe9b79da97665e75318fd698cc3d8bd915"
+    },
+    "stage6/control-handoff/hidden-result-size.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/hidden-result-size.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/narrow-extension.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/narrow-extension.invocation.json": {
+      "bytes": 787,
+      "sha256": "86169aaac3dcd4a2886d7c0f74d31e57f833764616779854630a79d965f1cfc8"
+    },
+    "stage6/control-handoff/narrow-extension.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/narrow-extension.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/omit-hidden-caller.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/omit-hidden-caller.invocation.json": {
+      "bytes": 791,
+      "sha256": "39ce14344b418172536637129769cdc05baedc518ea9acf63fea34bb07c8c827"
+    },
+    "stage6/control-handoff/omit-hidden-caller.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/omit-hidden-caller.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/omit-variadic-extra.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/omit-variadic-extra.invocation.json": {
+      "bytes": 793,
+      "sha256": "caa1e7a7f61e78567c6568705e93d1f8c21cc663a53279b67e6c450c064562c7"
+    },
+    "stage6/control-handoff/omit-variadic-extra.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/omit-variadic-extra.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/opaque-layout.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/opaque-layout.invocation.json": {
+      "bytes": 781,
+      "sha256": "11cb09d31867df7c540f8fda4ee8ae96e9c3f36410810b653408c374a4fad877"
+    },
+    "stage6/control-handoff/opaque-layout.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/opaque-layout.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/opaque-target.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/opaque-target.invocation.json": {
+      "bytes": 781,
+      "sha256": "c8d9b12d38ffe6418a3dcdd6f31be802ef2fabd143f13df56cbb65f3d26b8bd5"
+    },
+    "stage6/control-handoff/opaque-target.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/opaque-target.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/reference-attribute-bits.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/reference-attribute-bits.invocation.json": {
+      "bytes": 803,
+      "sha256": "8ab37842a42240bda4a2ecf824744fb6d60d3d211145a42c2edee301255784cf"
+    },
+    "stage6/control-handoff/reference-attribute-bits.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/reference-attribute-bits.stdout": {
+      "bytes": 71,
+      "sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf"
+    },
+    "stage6/control-handoff/stale-generic-instance.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/stale-generic-instance.invocation.json": {
+      "bytes": 799,
+      "sha256": "b73dd6a824adce1ae8df27d67b90469d441430222ddea5823cd5681792706cdf"
+    },
+    "stage6/control-handoff/stale-generic-instance.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/stale-generic-instance.stdout": {
+      "bytes": 80,
+      "sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d"
+    },
+    "stage6/control-handoff/stale-target.exit-status": {
+      "bytes": 3,
+      "sha256": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc"
+    },
+    "stage6/control-handoff/stale-target.invocation.json": {
+      "bytes": 779,
+      "sha256": "297da9d7c58bbc087fa0193eb860e45e92872c0b76bd31e1f4a49c0e1fea9765"
+    },
+    "stage6/control-handoff/stale-target.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stage6/control-handoff/stale-target.stdout": {
+      "bytes": 66,
+      "sha256": "1a6231d140d80e51c5c8777b08d97dc8cf54056481cb1b00b42fa59c8ab34ced"
+    }
+  }
+}

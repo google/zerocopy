@@ -1,0 +1,8 @@
+{
+  "public_summary_files": [
+    "INDEPENDENT-REPLAY.md",
+    "INDEPENDENT-REPLAY.json"
+  ],
+  "private_raw_evidence": "All remaining retained files preserve original bytes including historical host paths; parent must project raw host path prefixes before public packaging and retain any mapping privately. No public projection performed here.",
+  "manifest_scope": "All files in this owned root excluding evidence-freeze.json itself; no source or executable duplication."
+}

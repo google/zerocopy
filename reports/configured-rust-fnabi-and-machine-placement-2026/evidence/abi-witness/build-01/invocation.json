@@ -1,0 +1,60 @@
+{
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/proposed_observer.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "rpath",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "-o",
+    "${WORKSPACE}/work/execution/abi-witness/observer"
+  ],
+  "cwd": "${WORKSPACE}/work/execution/abi-witness",
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/build-01/tmp",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "source_sha256": "6d203c833d496d1950b21def146d99eba0d6986649d42a32e0a4d549f1b83eba",
+  "tools_before": [
+    {
+      "toolchain_relative_path": "bin/rustc",
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "bytes": 412504,
+      "role": "Compiler executable, not rustup launcher."
+    },
+    {
+      "toolchain_relative_path": "lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432,
+      "role": "Selected driver artifact."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432,
+      "role": "Actual retained observer-resolved matching driver location."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+      "bytes": 2435976,
+      "role": "Installed host target core."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta",
+      "sha256": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa",
+      "bytes": 1733127,
+      "role": "Compiler-distributed serde_json metadata; proposed driver dependency, not separately installed."
+    }
+  ],
+  "harness_sha256": "eac8ad08762e20813c93151597a50e1cafd5cfb9e1fb25c7143224d712657995"
+}

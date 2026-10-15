@@ -1,0 +1,83 @@
+{
+  "status": "STOPPED; selector/observer naming-contract failure",
+  "consumer_CLI_exit_code": 70,
+  "observer_PID_PGID": 10683,
+  "observer_wait_exit_code": 65,
+  "seconds": 0.344819959,
+  "max_sampled_group_RSS_bytes": 65159168,
+  "resource_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "stdout_stderr_empty": true,
+  "remaining_group_after_wait": [],
+  "actual_failure_packet": {
+    "path": "reference.json",
+    "sha256": "d32d6c4619373ad2308e6d6ec4e85b2fcebbc3b9e09a60487012d543b0491a10",
+    "bytes": 121,
+    "json": {
+      "reason": "selected definition absent/ambiguous: abi_subjects::abi_c_narrow",
+      "status": "outside-observer-domain"
+    }
+  },
+  "full_ABI_packet_produced": false,
+  "observer_launches": 1,
+  "fixture_codegen_native_or_foreign_executions": 0,
+  "previous_gate_manifest_sha256": "43e6a3b23827048d83a54d4f23514fd772427303c200f501b0218a39b1ee415a",
+  "previous_130_files_unchanged": true,
+  "readonly_tools_before_after": "All5 frozen identities revalidated",
+  "root_cause": "Caller selects crate-qualified paths; ordinary edition2021 local def_path_str omits local crate prefix unless the explicit print guard is set. Thus the first observer selector lookup fails before any requested observer FnAbi query; normal compiler analysis internal query counts were not instrumented.",
+  "primary_sources": [
+    {
+      "path": "compiler/rustc_middle/src/ty/print/pretty.rs",
+      "sha256": "279cfe75b17d06cb8a2c38237644d7bff1f6e5ae08e893bd78e25772b3865298",
+      "lines": [
+        [
+          102,
+          117
+        ],
+        [
+          2191,
+          2209
+        ],
+        [
+          2363,
+          2377
+        ]
+      ],
+      "finding": "def_path_str is user-output formatting; print_crate_name suppresses LOCAL_CRATE prefix by default on Rust2018+."
+    },
+    {
+      "path": "compiler/rustc_public_bridge/src/context/impls.rs",
+      "sha256": "de853a3ba21fa2a3c511bc370e5f93571fa962fa0edd2571ba9a5d9b0fdf02cb",
+      "lines": [
+        [
+          13,
+          15
+        ],
+        [
+          264,
+          271
+        ]
+      ],
+      "finding": "In-tree public bridge explicitly uses with_resolve_crate_name!(with_no_trimmed_paths!(def_path_str)) for full local names."
+    }
+  ],
+  "previous_same_compiler_observation": {
+    "request": "source-capture/requests/base/request.json",
+    "request_root_item": "root",
+    "packet": "source-capture/producer-base/independent-capture.json",
+    "packet_sha256": "83482423f40d6a6130d5190ae502a4c0913fe6fadd943f0a49f8f32702d9e6bc",
+    "observed_crate": "capture",
+    "observed_root": "root",
+    "meaning": "Retained earlier source-capture corroboration of unqualified local names; no new compiler query."
+  },
+  "smallest_proposed_resolution": "Keep original caller catalog/selectors/fixture domains unchanged. In a distinct future observer source use the in-tree public bridge full-name guard only for both lookup and resolved_definition output. No suffix/ambiguous/wildcard matching or producer redefinition.",
+  "proposed_diff_sha256": "4ddedd05258c32c251c6738990473a62f096f1037aeff9d3365aa30517d0ffcc",
+  "proposed_source_sha256_if_applied": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1",
+  "changes_or_retries_performed": "None: diff is data only; no patched source file, build or second observer capture.",
+  "regression_oracle_for_new_grant": [
+    "Source-review exact3-line diff and in-tree macro contract; keep source/catalog/authority history immutable.",
+    "After an explicitly authorized distinct build, all26 original requested local definitions must resolve uniquely with the actual abi_subjects crate name; resolved_definition and selections remain exactly original qualified paths.",
+    "Complete returned selected set must equal all26 requests, including2 generic instances and function-pointer alias extras; no shortened root accepted.",
+    "Wrong crate, wrong root/instance, missing selection and unqualified producer path remain rejected by unchanged data grammar and future fresh comparison.",
+    "Do not label a string-concatenation unit test actual formatter execution; Rust guard behavior/complete FnAbi capture remains unobserved until new grant."
+  ]
+}

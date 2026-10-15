@@ -1,0 +1,23 @@
+{
+  "classification": "Own independent retained-evidence helper origin-mapping defect, not a proof/source/identity discrepancy",
+  "first_returncode": 1,
+  "first_stream_capture_origin": "Exact traceback copied from tool transcript; no separately redirected original raw stream existed",
+  "old_source_reconstruction": "Reconstructed byte-for-byte from sole explicit mapping replacement, not re-executed",
+  "before_source_sha256": "2993b5311bb68dd23f729714684ffd4df22225ccf484d58c20e10e70eda0dabc",
+  "after_source_sha256": "8e571372c87cbd74a16f37737e609c41afc5393cb5010b2884693b8e1ed778aa",
+  "exact_mappings": [
+    {
+      "package_path": "support/environment/hol-module-start.json",
+      "raw_origin": "work/execution/cross-foundation-runtime/hol-module-start.json",
+      "raw_sha256": "cfabb0540dd832d004e8cdae4df6a3fce4746ce9e115ab4b9b152661c7aa49b9"
+    },
+    {
+      "package_path": "support/environment/hol-install-start.json",
+      "raw_origin": "work/execution/cross-foundation-runtime/hol-install-start.json",
+      "raw_sha256": "073a89af8f910f491752faec0a83d999022f8a8d19bfa5ff7645b843e37780ff"
+    }
+  ],
+  "rerun_returncode": 0,
+  "rerun_count_after_diagnosis": 1,
+  "ordering_disclosure": "Narrow fix and rerun occurred after read-only diagnosis but before parent request to freeze/review first result; parent informed. No further mechanism revision or runtime launch."
+}

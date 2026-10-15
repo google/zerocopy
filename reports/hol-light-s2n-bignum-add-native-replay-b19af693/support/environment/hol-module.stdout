@@ -1,0 +1,92 @@
+make: Entering directory '/home/opam/anneal-cross-sources/hol-light'
+\
+  cp pa_j/`pa_j/chooser.sh` pa_j.ml
+if test `ocamlc -version | cut -c1-3` = "3.0" ; \
+                   then ocamlc -c -pp "camlp4r pa_extend.cmo q_MLast.cmo" -I `camlp4 -where` pa_j.ml ; \
+                   elif test `ocamlc -version | cut -c1-3` = "3.1" -o `ocamlc -version | cut -c1-4` = "4.00" -o `ocamlc -version | cut -c1-4` = "4.01"  -o `ocamlc -version | cut -c1-4` = "4.02" -o `ocamlc -version | cut -c1-4` = "4.03" -o `ocamlc -version | cut -c1-4` = "4.04" -o `ocamlc -version | cut -c1-4` = "4.05" ; \
+                   then ocamlc -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` pa_j.ml ; \
+                   else ocamlc -safe-string -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` -I `ocamlfind query camlp-streams` pa_j.ml ; \
+                   fi
+\
+  cp update_database/`update_database/chooser.sh` update_database.ml
+\
+        if test `ocamlc -version | cut -c1-4` = "4.14" -o `ocamlc -version | cut -c1` = "5" ; \
+        then ocamlfind ocamlc -package zarith -c -o bignum.cmo bignum_zarith.ml ; \
+        else ocamlc -c -o bignum.cmo bignum_num.ml ; \
+        fi
+\
+        ocamlc -verbose -c hol_loader.ml -o hol_loader.cmo
+\
+        HOLLIGHT_DIR="`pwd`" ocaml inline_load.ml hol_lib.ml hol_lib_inlined.ml -omit-prelude
+File "lib.ml" already loaded
+File "fusion.ml" already loaded
+File "basics.ml" already loaded
+File "nets.ml" already loaded
+File "printer.ml" already loaded
+File "preterm.ml" already loaded
+File "printer.ml" already loaded
+File "equal.ml" already loaded
+File "bool.ml" already loaded
+File "drule.ml" already loaded
+File "tactics.ml" already loaded
+File "itab.ml" already loaded
+File "simp.ml" already loaded
+File "theorems.ml" already loaded
+File "ind_defs.ml" already loaded
+File "class.ml" already loaded
+File "trivia.ml" already loaded
+File "canon.ml" already loaded
+File "meson.ml" already loaded
+File "firstorder.ml" already loaded
+File "metis.ml" already loaded
+File "thecops.ml" already loaded
+File "quot.ml" already loaded
+File "impconv.ml" already loaded
+File "pair.ml" already loaded
+File "compute.ml" already loaded
+File "nums.ml" already loaded
+File "recursion.ml" already loaded
+File "arith.ml" already loaded
+File "wf.ml" already loaded
+File "calc_num.ml" already loaded
+File "normalizer.ml" already loaded
+File "grobner.ml" already loaded
+File "ind_types.ml" already loaded
+File "lists.ml" already loaded
+File "realax.ml" already loaded
+File "calc_int.ml" already loaded
+File "realarith.ml" already loaded
+File "real.ml" already loaded
+File "calc_rat.ml" already loaded
+File "int.ml" already loaded
+File "sets.ml" already loaded
+File "iterate.ml" already loaded
+File "cart.ml" already loaded
+\
+        ocamlc -verbose -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" hol_loader.cmo hol_lib_inlined.ml bignum.cmo -o hol_lib.cmo
+if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
+	if [ `ocamlc -version | cut -c1` = "5" ] || [ `ocamlc -version | cut -c1-4` = "4.14" ] ; then \
+		ocamlfind ocamlmktop -package zarith -o ocaml-hol zarith.cma bignum.cmo hol_loader.cmo ; \
+		sed "s^__DIR__^`pwd`^g; s^__USE_MODULE__^1^g" hol_4.14.sh > hol.sh ; \
+	else \
+		ocamlmktop -o ocaml-hol nums.cma bignum.cmo hol_loader.cmo ; \
+		sed "s^__DIR__^`pwd`^g; s^__USE_MODULE__^1^g" hol_4.sh > hol.sh ; \
+	fi ; \
+	chmod +x hol.sh ; \
+else \
+	echo 'FAILURE: hol.sh assumes Linux' ; \
+fi
+\
+        ocamlopt -verbose -c hol_loader.ml -o hol_loader.cmx
+\
+        if test `ocamlc -version | cut -c1-4` = "4.14" -o `ocamlc -version | cut -c1` = "5" ; \
+        then ocamlfind ocamlopt -package zarith -c -o bignum.cmx bignum_zarith.ml ; \
+        else ocamlopt -c -o bignum.cmx bignum_num.ml ; \
+        fi
+\
+        OCAMLRUNPARAM=l=1000000000 ocamlopt.byte -verbose -c \
+              -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" \
+              hol_lib_inlined.ml hol_loader.cmx bignum.cmx -o hol_lib.cmx
+\
+        ocamlfind ocamlopt -package zarith -a -o hol_lib.cmxa bignum.cmx hol_loader.cmx hol_lib.cmx
+make: Leaving directory '/home/opam/anneal-cross-sources/hol-light'

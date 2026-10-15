@@ -1,0 +1,33 @@
+{
+  "helpers": {
+    "host_run.py": {
+      "bytes": 1587,
+      "sha256": "d81a4e48cbc64b6964f054e341b4317fcd323fee60bc92fb82b879e404e29fe5",
+      "exact_copy_of": "work/execution/hol-replay/host_run.py"
+    },
+    "preflight_reader.py": {
+      "bytes": 176636,
+      "sha256": "8db441e4f7c6e7f52f7778d9e34b28fc936aeddfcd21b4e0de0aae661e14c544",
+      "exact_copy_of": "work/execution/hol-replay/preflight_reader.py"
+    },
+    "inline_census_reader.py": {
+      "bytes": 1547,
+      "sha256": "329858f20a3e2e4813685a034d5c691e3d0a94375dd4fa2d129e805c202900b1",
+      "exact_copy_of": "work/execution/hol-replay/inline_census_reader.py"
+    },
+    "supplemental_identity_reader.py": {
+      "bytes": 2199,
+      "sha256": "c4a99cf5ed1a8d199d5a374dc306f68a74952876850c6699ec269396a57327cf",
+      "status": "new read-only query proposed; not run"
+    }
+  },
+  "host_docker_cli": {
+    "path": "$DOCKER_BIN",
+    "resolved": "/Applications/OrbStack.app/Contents/MacOS/xbin/docker-tools",
+    "bytes": 72068112,
+    "sha256": "70d5a06adf388bd09b652f47ddc9ca31663a3e5353d24188bdb0054b3014ab3e",
+    "role": "preparation-observed host CLI; fresh identity required before/after; no historical worker identity inference"
+  },
+  "runtime_calls_executed": 0,
+  "native_calls_executed": 0
+}

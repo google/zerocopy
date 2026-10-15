@@ -1,0 +1,28 @@
+
+${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-vectors-opt0/abi_vectors.o:	file format mach-o arm64
+
+Sections:
+Idx Name          Size     VMA              Type
+  0 __text        00000014 0000000000000000 TEXT
+
+SYMBOL TABLE:
+0000000000000000 l     F __TEXT,__text ltmp0
+0000000000000000 g     F __TEXT,__text _abi_c_vector
+0000000000000004 g     F __TEXT,__text _abi_rust_vector
+0000000000000010 g     F __TEXT,__text _abi_system_vector
+Contents of section __TEXT,__text:
+ 0000 c0035fd6 0000c03d 0001803d c0035fd6  .._....=...=.._.
+ 0010 c0035fd6                             .._.
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <ltmp0>:
+       0: d65f03c0     	ret
+
+0000000000000004 <_abi_rust_vector>:
+       4: 3dc00000     	ldr	q0, [x0]
+       8: 3d800100     	str	q0, [x8]
+       c: d65f03c0     	ret
+
+0000000000000010 <_abi_system_vector>:
+      10: d65f03c0     	ret

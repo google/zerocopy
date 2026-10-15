@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-independent-replay",
+  "started_utc": "2026-10-15T02:15:11.191871+00:00",
+  "classification": "PROPOSED NOT RUN: read-only after original/source/tool/module/output census",
+  "host_pid": 54390,
+  "returncode": 0,
+  "elapsed_seconds": 0.42769524999999997,
+  "stdout_bytes": 230165,
+  "stdout_sha256": "9dee59467e9f42eab2f7b85b17059dddf1d4329d4e7a984e29c4da5223ed32a0",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

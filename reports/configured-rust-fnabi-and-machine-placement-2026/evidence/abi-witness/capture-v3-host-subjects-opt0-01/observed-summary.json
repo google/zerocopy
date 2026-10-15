@@ -1,0 +1,1498 @@
+{
+  "basis": "Derived solely from full actual raw packet; physical placement and source-safety meaning unestablished",
+  "packet_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+  "selected_count": 26,
+  "rows": [
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_narrow",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 3,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 3,
+      "arg_types": [
+        "u8",
+        "i16",
+        "bool"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "Zext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "Sext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "Zext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_system_narrow",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 3,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 3,
+      "arg_types": [
+        "u8",
+        "i16",
+        "bool"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "Zext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "Sext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "Zext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_rust_narrow",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 3,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 3,
+      "arg_types": [
+        "u8",
+        "i16",
+        "bool"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "Zext",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_pair",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Pair"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 0,
+            "regular_debug": ""
+          },
+          "kind": "cast",
+          "pad_i32": false,
+          "prefix": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "rest_is_consecutive": false,
+          "rest_offset_bytes": null,
+          "rest_total_bytes": 16,
+          "rest_unit": {
+            "kind": "Integer",
+            "size_bytes": 8
+          }
+        }
+      ],
+      "ret_type": "Pair",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 0,
+          "regular_debug": ""
+        },
+        "kind": "cast",
+        "pad_i32": false,
+        "prefix": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "rest_is_consecutive": false,
+        "rest_offset_bytes": null,
+        "rest_total_bytes": 16,
+        "rest_unit": {
+          "kind": "Integer",
+          "size_bytes": 8
+        }
+      },
+      "ret_size_bytes": 16,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_system_pair",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Pair"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 0,
+            "regular_debug": ""
+          },
+          "kind": "cast",
+          "pad_i32": false,
+          "prefix": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "rest_is_consecutive": false,
+          "rest_offset_bytes": null,
+          "rest_total_bytes": 16,
+          "rest_unit": {
+            "kind": "Integer",
+            "size_bytes": 8
+          }
+        }
+      ],
+      "ret_type": "Pair",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 0,
+          "regular_debug": ""
+        },
+        "kind": "cast",
+        "pad_i32": false,
+        "prefix": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "rest_is_consecutive": false,
+        "rest_offset_bytes": null,
+        "rest_total_bytes": 16,
+        "rest_unit": {
+          "kind": "Integer",
+          "size_bytes": 8
+        }
+      },
+      "ret_size_bytes": 16,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_rust_tuple",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "(u64, u32)"
+      ],
+      "arg_modes": [
+        {
+          "first": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "pair",
+          "second": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          }
+        }
+      ],
+      "ret_type": "(u64, u32)",
+      "ret_mode": {
+        "first": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "pair",
+        "second": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        }
+      },
+      "ret_size_bytes": 16,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_big",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Big"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 24,
+            "regular_bits": 158,
+            "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+          },
+          "kind": "indirect",
+          "meta_attrs": null,
+          "on_stack": false
+        }
+      ],
+      "ret_type": "Big",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": 8,
+          "pointee_size_bytes": 24,
+          "regular_bits": 158,
+          "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+        },
+        "kind": "indirect",
+        "meta_attrs": null,
+        "on_stack": false
+      },
+      "ret_size_bytes": 24,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_system_big",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Big"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 24,
+            "regular_bits": 158,
+            "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+          },
+          "kind": "indirect",
+          "meta_attrs": null,
+          "on_stack": false
+        }
+      ],
+      "ret_type": "Big",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": 8,
+          "pointee_size_bytes": 24,
+          "regular_bits": 158,
+          "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+        },
+        "kind": "indirect",
+        "meta_attrs": null,
+        "on_stack": false
+      },
+      "ret_size_bytes": 24,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_rust_big",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Big"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 24,
+            "regular_bits": 158,
+            "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+          },
+          "kind": "indirect",
+          "meta_attrs": null,
+          "on_stack": false
+        }
+      ],
+      "ret_type": "Big",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": 8,
+          "pointee_size_bytes": 24,
+          "regular_bits": 158,
+          "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+        },
+        "kind": "indirect",
+        "meta_attrs": null,
+        "on_stack": false
+      },
+      "ret_size_bytes": 24,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_hfa",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "Hfa"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 0,
+            "regular_debug": ""
+          },
+          "kind": "cast",
+          "pad_i32": false,
+          "prefix": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "rest_is_consecutive": true,
+          "rest_offset_bytes": null,
+          "rest_total_bytes": 16,
+          "rest_unit": {
+            "kind": "Float",
+            "size_bytes": 4
+          }
+        }
+      ],
+      "ret_type": "Hfa",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 0,
+          "regular_debug": ""
+        },
+        "kind": "cast",
+        "pad_i32": false,
+        "prefix": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "rest_is_consecutive": true,
+        "rest_offset_bytes": null,
+        "rest_total_bytes": 16,
+        "rest_unit": {
+          "kind": "Float",
+          "size_bytes": 4
+        }
+      },
+      "ret_size_bytes": 16,
+      "ret_align_bytes": 4
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_fp",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 2,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 2,
+      "arg_types": [
+        "f32",
+        "f64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "f64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_c_raw",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "*const u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "*const u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_shared",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "&u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 0,
+            "regular_bits": 144,
+            "regular_debug": "NonNull | NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_unique",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "&mut u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 0,
+            "regular_bits": 144,
+            "regular_debug": "NonNull | NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_interior",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "&core::cell::UnsafeCell<u64>"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 0,
+            "regular_bits": 144,
+            "regular_debug": "NonNull | NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "*mut u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_slice",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "&[u8]"
+      ],
+      "arg_modes": [
+        {
+          "first": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 144,
+            "regular_debug": "NonNull | NoUndef"
+          },
+          "kind": "pair",
+          "second": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          }
+        }
+      ],
+      "ret_type": "usize",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_unit",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "()"
+      ],
+      "arg_modes": [
+        {
+          "kind": "ignore"
+        }
+      ],
+      "ret_type": "()",
+      "ret_mode": {
+        "kind": "ignore"
+      },
+      "ret_size_bytes": 0,
+      "ret_align_bytes": 1
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_track",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 2,
+      "arg_types": [
+        "u64",
+        "&core::panic::Location<'_>"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": 8,
+            "pointee_size_bytes": 0,
+            "regular_bits": 144,
+            "regular_debug": "NonNull | NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_stack_driver",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 12,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 12,
+      "arg_types": [
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64",
+        "u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::abi_vararg_driver",
+        "query": "instance",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 2,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 2,
+      "arg_types": [
+        "i32",
+        "f64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::generic_id",
+        "query": "instance",
+        "type_args": [
+          "u8"
+        ],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "u8"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u8",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 1,
+      "ret_align_bytes": 1
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::generic_id",
+        "query": "instance",
+        "type_args": [
+          "u64"
+        ],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::TrackFn",
+        "query": "fn_ptr",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "Rust",
+      "fixed_count": 1,
+      "c_variadic": false,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "u64"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::VarC",
+        "query": "fn_ptr",
+        "type_args": [],
+        "extra_args": []
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": true,
+      "can_unwind": false,
+      "arg_count": 1,
+      "arg_types": [
+        "i32"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::VarC",
+        "query": "fn_ptr",
+        "type_args": [],
+        "extra_args": [
+          "i32",
+          "f64",
+          "*const u8"
+        ]
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": true,
+      "can_unwind": false,
+      "arg_count": 4,
+      "arg_types": [
+        "i32",
+        "i32",
+        "f64",
+        "*const u8"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    },
+    {
+      "selection": {
+        "path": "abi_subjects::VarSystem",
+        "query": "fn_ptr",
+        "type_args": [],
+        "extra_args": [
+          "i32",
+          "f64",
+          "*const u8"
+        ]
+      },
+      "canonical_convention": "C",
+      "fixed_count": 1,
+      "c_variadic": true,
+      "can_unwind": false,
+      "arg_count": 4,
+      "arg_types": [
+        "i32",
+        "i32",
+        "f64",
+        "*const u8"
+      ],
+      "arg_modes": [
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        },
+        {
+          "attrs": {
+            "extension": "None",
+            "pointee_align_bytes": null,
+            "pointee_size_bytes": 0,
+            "regular_bits": 128,
+            "regular_debug": "NoUndef"
+          },
+          "kind": "direct"
+        }
+      ],
+      "ret_type": "u64",
+      "ret_mode": {
+        "attrs": {
+          "extension": "None",
+          "pointee_align_bytes": null,
+          "pointee_size_bytes": 0,
+          "regular_bits": 128,
+          "regular_debug": "NoUndef"
+        },
+        "kind": "direct"
+      },
+      "ret_size_bytes": 8,
+      "ret_align_bytes": 8
+    }
+  ]
+}

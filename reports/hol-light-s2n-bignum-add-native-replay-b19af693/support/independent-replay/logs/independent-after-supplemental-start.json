@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "--workdir",
+    "/home/opam/anneal-cross-sources/s2n-bignum",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "--env",
+    "HOLLIGHT_DIR=/home/opam/anneal-cross-sources/hol-light",
+    "--env",
+    "HOLLIGHT_LOAD_PATH=",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "exec",
+    "--switch=hol54",
+    "--",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-independent-replay",
+  "started_utc": "2026-10-15T02:15:13.793590+00:00",
+  "classification": "PROPOSED NOT RUN: after supplemental loader/DSO/hash-manifest/native/entry identities under same opam environment; no producer or native program",
+  "host_pid": 54401
+}

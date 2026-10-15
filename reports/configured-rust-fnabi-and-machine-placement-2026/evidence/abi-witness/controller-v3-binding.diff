@@ -1,0 +1,38 @@
+--- build_control_v2.py
++++ build_control_v3.py
+@@ -72,7 +72,7 @@
+  return result
+ 
+ def regression():
+- R=B/'controller-regression';assert not R.exists();R.mkdir()
++ R=B/'controller-regression-v3';assert not R.exists();R.mkdir()
+  argv=[sys.executable,'-B','-c','import time; time.sleep(30)']
+  a=run_owned(R/'denied-before-launch',argv,{},DenyPreflight(),seconds=3)
+  assert not a['spawned'] and a['exit_code'] is None and a['controller_failure']['type']=='PermissionError'
+@@ -89,19 +89,19 @@
+  assert h(B/'prepared-manifest.json')=='f43a6306944d5ee5c2e1984f1bafd20fe95706e6217e0c6c3ec1640547ca26b8'
+  for f in json.loads((B/'prepared-manifest.json').read_text())['files']:
+   p=B/f['path'];assert p.stat().st_size==f['bytes'] and h(p)==f['sha256']
+- assert h(B/'observer_v2.rs')=='88c4552c3f51f66b204e0aec9d415ed9211836f8f9ed1dc5992a58b94dc716b6'
+- assert json.loads((B/'controller-regression/regression.json').read_text())['status']=='PASS'
+- assert h(Path(__file__))==json.loads((B/'controller-regression/regression.json').read_text())['controller_sha256']
++ assert h(B/'observer_v3.rs')=='e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1'
++ assert json.loads((B/'controller-regression-v3/regression.json').read_text())['status']=='PASS'
++ assert h(Path(__file__))==json.loads((B/'controller-regression-v3/regression.json').read_text())['controller_sha256']
+  ident=json.loads((B/'source-identities.json').read_text())
+  def tools():
+   for f in ident['readonly_tools']:
+    p=T/f['toolchain_relative_path'];assert p.stat().st_size==f['bytes'] and h(p)==f['sha256']
+- tools();R=B/'build-02';O=B/'observer-v2';assert not O.exists()
+- argv=[str(T/'bin/rustc'),str(B/'observer_v2.rs'),'--sysroot',str(T),'--edition=2021','-C','opt-level=0','-C','debuginfo=0','-C','rpath','-Zthreads=1','-Ccodegen-units=1','-o',str(O)]
++ tools();R=B/'build-03';O=B/'observer-v3';assert not O.exists()
++ argv=[str(T/'bin/rustc'),str(B/'observer_v3.rs'),'--sysroot',str(T),'--edition=2021','-C','opt-level=0','-C','debuginfo=0','-C','rpath','-Zthreads=1','-Ccodegen-units=1','-o',str(O)]
+  env={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','TMPDIR':str(R/'tmp'),'LC_ALL':'C','LANG':'C'}
+- save(B/'build-02-plan.json',{'argv':argv,'source_sha256':h(B/'observer_v2.rs'),'original_preparation_manifest_sha256':h(B/'prepared-manifest.json'),'historical_request_catalog_sha256':h(B/'requests.json'),'new_profile_status':'Planned corrected observer source only; historical request/catalog not rewritten.','controller_sha256':h(Path(__file__))})
++ save(B/'build-03-plan.json',{'argv':argv,'source_sha256':h(B/'observer_v3.rs'),'original_preparation_manifest_sha256':h(B/'prepared-manifest.json'),'historical_request_catalog_sha256':h(B/'requests.json'),'new_profile_status':'Planned corrected observer source only; historical request/catalog not rewritten.','controller_sha256':h(Path(__file__))})
+  result=run_owned(R,argv,env,ScopedMonitor(),O)
+- tools();assert h(B/'observer_v2.rs')=='88c4552c3f51f66b204e0aec9d415ed9211836f8f9ed1dc5992a58b94dc716b6'
++ tools();assert h(B/'observer_v3.rs')=='e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1'
+  result['tools_before_after']='All5 frozen tool hashes/sizes unchanged';result['observer_sha256']=h(O) if O.is_file() else None;result['observer_bytes']=O.stat().st_size if O.is_file() else None;result['observer_or_fixture_invocations']=0
+  save(R/'result.json',result);print(json.dumps(result,indent=2))
+ if __name__=='__main__':

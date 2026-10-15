@@ -1,0 +1,138 @@
+{
+  "status": "All four approved compiler commands exited0; accepted after explicit vector-warning classification",
+  "rows": [
+    {
+      "profile": "host-subjects-opt0",
+      "source_sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+      "query_packet": "capture-v3-host-subjects-opt0-01/reference.json",
+      "query_packet_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "compiler_exit": 0,
+      "compiler_pid": 27096,
+      "seconds_controller": 0.20152495800000003,
+      "max_sampled_group_rss_bytes": 38076416,
+      "controller_failure": null,
+      "remaining_group": [],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_gate": "PASS",
+      "artifacts": [
+        {
+          "path": "codegen/host-subjects-opt0/abi_subjects.ll",
+          "bytes": 7720,
+          "sha256": "ec851701c0d63bfed54d94e6bffab7a40a37d86106e3bb2ffa55f746a50363d7"
+        },
+        {
+          "path": "codegen/host-subjects-opt0/abi_subjects.s",
+          "bytes": 3821,
+          "sha256": "b908f1c9f4e29f76e912d2520249b3f9f4d41a873f49aad0f3824b6307a27709"
+        },
+        {
+          "path": "codegen/host-subjects-opt0/abi_subjects.o",
+          "bytes": 1872,
+          "sha256": "7a3bde908a9db19a1d2c16c526efc34b282d0db5e088cc47a167ef31c0b4ca81"
+        }
+      ],
+      "classification": "No diagnostics"
+    },
+    {
+      "profile": "host-subjects-opt2",
+      "source_sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+      "query_packet": "stage4/runs/capture-subjects-o2/reference.json",
+      "query_packet_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+      "compiler_exit": 0,
+      "compiler_pid": 27327,
+      "seconds_controller": 0.19834225,
+      "max_sampled_group_rss_bytes": 86327296,
+      "controller_failure": null,
+      "remaining_group": [],
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_gate": "PASS",
+      "artifacts": [
+        {
+          "path": "codegen/host-subjects-opt2/abi_subjects.ll",
+          "bytes": 7585,
+          "sha256": "ddcc9da50a6deda7b505863e115d8dc8b890a6779ac55315f595b68009a671c3"
+        },
+        {
+          "path": "codegen/host-subjects-opt2/abi_subjects.s",
+          "bytes": 1971,
+          "sha256": "25b0736b8ecaae4eb07d7a28a6404c88754b287560a7d86169f2b911ba217ef2"
+        },
+        {
+          "path": "codegen/host-subjects-opt2/abi_subjects.o",
+          "bytes": 1272,
+          "sha256": "d32110ee7561bf797389e0d4877b2e6ea9e7f5fdfe5b99af9213a925b2f9dc80"
+        }
+      ],
+      "classification": "No diagnostics"
+    },
+    {
+      "profile": "host-vectors-opt0",
+      "source_sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8",
+      "query_packet": "stage4/runs/capture-vectors-o0/reference.json",
+      "query_packet_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+      "compiler_exit": 0,
+      "compiler_pid": 27438,
+      "seconds_controller": 0.19213191699999999,
+      "max_sampled_group_rss_bytes": 79134720,
+      "controller_failure": null,
+      "remaining_group": [],
+      "stderr_sha256": "078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8",
+      "original_gate": "STOP",
+      "artifacts": [
+        {
+          "path": "codegen/host-vectors-opt0/abi_vectors.ll",
+          "bytes": 1002,
+          "sha256": "36dad0cc3d18a1bd6673b7eb41ad89bb8b413364092e88a2f8d3228692e9ff3e"
+        },
+        {
+          "path": "codegen/host-vectors-opt0/abi_vectors.s",
+          "bytes": 313,
+          "sha256": "940ca32ff82e7f60bd142d2130ebc1736bed1b6f29f3cee0b9ddb18d6ba6f845"
+        },
+        {
+          "path": "codegen/host-vectors-opt0/abi_vectors.o",
+          "bytes": 464,
+          "sha256": "cf2450a3d2c3722d484fc99bdbbf4b93e455b328e6c47828961e790b3ed637aa"
+        }
+      ],
+      "classification": "Parent-reviewed exact six-warning compile-only bundle; O0 initial STOP preserved, no retry"
+    },
+    {
+      "profile": "host-vectors-opt2",
+      "source_sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8",
+      "query_packet": "stage4/runs/capture-vectors-o2/reference.json",
+      "query_packet_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+      "compiler_exit": 0,
+      "compiler_pid": 28408,
+      "seconds_controller": 0.20296479100000003,
+      "max_sampled_group_rss_bytes": 88342528,
+      "controller_failure": null,
+      "remaining_group": [],
+      "stderr_sha256": "078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8",
+      "original_gate": "PASS",
+      "artifacts": [
+        {
+          "path": "codegen/host-vectors-opt2/abi_vectors.ll",
+          "bytes": 1527,
+          "sha256": "e303a78b6daecda1a3e843145078ea855f2eb1a5e2411d9a1295cad6f7f232c3"
+        },
+        {
+          "path": "codegen/host-vectors-opt2/abi_vectors.s",
+          "bytes": 310,
+          "sha256": "a08dea3b37d5c2efb22bdc34e65a6a708d1dcc5ca8c514e91a77e7ea0573b46f"
+        },
+        {
+          "path": "codegen/host-vectors-opt2/abi_vectors.o",
+          "bytes": 456,
+          "sha256": "7d9929992f94b4206054b3990d62a37372a0908312add05e5bbaeb731ba5f772"
+        }
+      ],
+      "classification": "Parent-reviewed exact six-warning compile-only bundle; O0 initial STOP preserved, no retry"
+    }
+  ],
+  "total_text_bytes": 904,
+  "total_instructions_compared": 226,
+  "artifact_comparison_sha256": "2a606ac719c9dff2913bd450a605feb1bf2410efe3451eb4d04d2672daab3c0f",
+  "resource_scope": "Sampled owned-process-group RSS, not hard address-space isolation or peak proof; compiler process waited/reaped. Four compile-only invocations, no links/fixture/native/vector/foreign runs.",
+  "whole_backend_and_reader_hashes_before_after": "Unchanged; each reviewed-result.json binds all5 historical readonly tools and actual reader selections; driver dcaea7cc\u2026969d encloses defined LLVM target code. OS/shared-cache libraries remain runtime trust."
+}

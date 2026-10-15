@@ -1,0 +1,190 @@
+{
+  "classification": "Supplemental fresh identities; direct expected loader/DSO locations, not actual process maps or full OS closure",
+  "uname": [
+    "Linux",
+    "94afa6889b4a",
+    "7.0.14-orbstack-00380-ga7e0a2dc9535",
+    "#1 SMP PREEMPT Fri Aug  7 03:48:40 UTC 2026",
+    "aarch64"
+  ],
+  "files": [
+    {
+      "path": "/home/opam/anneal-cross-source-sha256sum.txt",
+      "resolved": "/home/opam/anneal-cross-source-sha256sum.txt",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 2773753,
+      "sha256": "eed7dd6b8ce62b4d71411955bfe2627389f1d5a9d1f53378cfb6ff2a0cd6e3df"
+    },
+    {
+      "path": "/home/opam/anneal-cross-output/selected.native",
+      "resolved": "/home/opam/anneal-cross-output/selected.native",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o755",
+      "bytes": 30819144,
+      "sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8"
+    },
+    {
+      "path": "/home/opam/anneal-cross-output/selected_inlined.ml",
+      "resolved": "/home/opam/anneal-cross-output/selected_inlined.ml",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 2079196,
+      "sha256": "7063d0b883617faaaf516de6ffc0ae3608d4f2f70248247fbfa53f875604b12b"
+    },
+    {
+      "path": "/home/opam/anneal-cross-output/audit/AnnealDriver.ml",
+      "resolved": "/home/opam/anneal-cross-output/audit/AnnealDriver.ml",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 395,
+      "sha256": "3ed4ba1a35cf48b0a01df981222d5579fa80900e96f681d9f927a78a4aa4b64f"
+    },
+    {
+      "path": "/home/opam/anneal-cross-output/audit/AnnealSelectedAudit.ml",
+      "resolved": "/home/opam/anneal-cross-output/audit/AnnealSelectedAudit.ml",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 2702,
+      "sha256": "db978dac1ae14501aa610e4c2ccccaa5e1e6697f0439267a18329316c9a2a700"
+    },
+    {
+      "path": "/home/opam/anneal-cross-output/audit/build-selected-preserving.sh",
+      "resolved": "/home/opam/anneal-cross-output/audit/build-selected-preserving.sh",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 1470,
+      "sha256": "f11aaf4c47df7f61d91807919489a893aa74aa1ec3a1fe09ae05c31c785b10e1"
+    },
+    {
+      "path": "/lib/ld-linux-aarch64.so.1",
+      "resolved": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+      "symlink": true,
+      "link_target": "aarch64-linux-gnu/ld-linux-aarch64.so.1",
+      "mode": "0o755",
+      "bytes": 202912,
+      "sha256": "17538b8f9889a470c061f69a8fea8124da89627311cd16546c133a89f09056df"
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libgmp.so.10",
+      "resolved": "/usr/lib/aarch64-linux-gnu/libgmp.so.10.4.1",
+      "symlink": true,
+      "link_target": "libgmp.so.10.4.1",
+      "mode": "0o644",
+      "bytes": 529184,
+      "sha256": "391b336ee37cd47a1d4748ba2d15bd125c1a082864f7bca9c92612f8a0ac305e"
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libm.so.6",
+      "resolved": "/usr/lib/aarch64-linux-gnu/libm.so.6",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o644",
+      "bytes": 591960,
+      "sha256": "3c4cb3be0b974edf05f023f85ab15107fb5afc2687163593d0d4cf8e80c17b39"
+    },
+    {
+      "path": "/lib/aarch64-linux-gnu/libc.so.6",
+      "resolved": "/usr/lib/aarch64-linux-gnu/libc.so.6",
+      "symlink": false,
+      "link_target": null,
+      "mode": "0o755",
+      "bytes": 1651408,
+      "sha256": "e4ac8ae1d81e4865e3aadedb962879cf9415903b3f2ba81ec75e9962b86ab8b0"
+    }
+  ],
+  "loader_configuration": [
+    {
+      "path": "/etc/ld.so.cache",
+      "exists": true,
+      "identity": {
+        "path": "/etc/ld.so.cache",
+        "resolved": "/etc/ld.so.cache",
+        "symlink": false,
+        "link_target": null,
+        "mode": "0o644",
+        "bytes": 17699,
+        "sha256": "f1c1b651c969d680be9f731e4fca9820816c144315ba269320b2ec53f2dc3559"
+      }
+    },
+    {
+      "path": "/etc/ld.so.conf",
+      "exists": true,
+      "identity": {
+        "path": "/etc/ld.so.conf",
+        "resolved": "/etc/ld.so.conf",
+        "symlink": false,
+        "link_target": null,
+        "mode": "0o644",
+        "bytes": 34,
+        "sha256": "d4b198c463418b493208485def26a6f4c57279467b9dfa491b70433cedb602e8"
+      }
+    },
+    {
+      "path": "/etc/ld.so.preload",
+      "exists": false,
+      "identity": null
+    },
+    {
+      "path": "/etc/ld.so.conf.d/aarch64-linux-gnu.conf",
+      "exists": true,
+      "identity": {
+        "path": "/etc/ld.so.conf.d/aarch64-linux-gnu.conf",
+        "resolved": "/etc/ld.so.conf.d/aarch64-linux-gnu.conf",
+        "symlink": false,
+        "link_target": null,
+        "mode": "0o644",
+        "bytes": 103,
+        "sha256": "0a4000ec63eff65b2a41d8cab5688b6bd81efab5fbcabd72036ece1d227bf08a"
+      }
+    },
+    {
+      "path": "/etc/ld.so.conf.d/fakeroot-aarch64-linux-gnu.conf",
+      "exists": true,
+      "identity": {
+        "path": "/etc/ld.so.conf.d/fakeroot-aarch64-linux-gnu.conf",
+        "resolved": "/etc/ld.so.conf.d/fakeroot-aarch64-linux-gnu.conf",
+        "symlink": false,
+        "link_target": null,
+        "mode": "0o644",
+        "bytes": 39,
+        "sha256": "bb90d1c51cf60ed748afcb61c350bd0b16d98f5b9d924dabfd751fbaba92036b"
+      }
+    },
+    {
+      "path": "/etc/ld.so.conf.d/libc.conf",
+      "exists": true,
+      "identity": {
+        "path": "/etc/ld.so.conf.d/libc.conf",
+        "resolved": "/etc/ld.so.conf.d/libc.conf",
+        "symlink": false,
+        "link_target": null,
+        "mode": "0o644",
+        "bytes": 44,
+        "sha256": "90d4c7e43e7661cd116010eb9f50ad5817e43162df344bd1ad10898851b15d41"
+      }
+    }
+  ],
+  "effective_selected_environment": {
+    "OPAMROOT": "/home/opam/anneal-hol-opam",
+    "OPAMSWITCH": null,
+    "PATH": "/home/opam/anneal-hol-opam/hol54/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LC_ALL": "C",
+    "HOLLIGHT_DIR": "/home/opam/anneal-cross-sources/hol-light",
+    "HOLLIGHT_LOAD_PATH": "",
+    "LD_LIBRARY_PATH": null,
+    "LD_PRELOAD": null,
+    "LD_AUDIT": null,
+    "CAML_LD_LIBRARY_PATH": "/home/opam/anneal-hol-opam/hol54/lib/stublibs:/home/opam/anneal-hol-opam/hol54/lib/ocaml/stublibs:/home/opam/anneal-hol-opam/hol54/lib/ocaml",
+    "OCAML_TOPLEVEL_PATH": "/home/opam/anneal-hol-opam/hol54/lib/toplevel",
+    "OCAMLPATH": null,
+    "OCAMLLIB": null,
+    "OCAMLRUNPARAM": null
+  }
+}

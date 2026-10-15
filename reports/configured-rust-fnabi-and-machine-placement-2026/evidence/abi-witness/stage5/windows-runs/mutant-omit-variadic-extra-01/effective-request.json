@@ -1,0 +1,40 @@
+{
+  "schema": "e33-windows-effective-consumer-request-v1",
+  "authority_sha256": "c7b2e34bd5e7e96fdf47c67e44f55c41eab1eaac2fba0f0c86870f1d5c5996dd",
+  "historical_catalog_sha256": "8e466823b3aa953c68539f903497c1c33216500d9f1d39235bacda0f6020f0f8",
+  "catalog_sha256": "4d1cc81001486f37a90fafeb0f692b2a5193cc23f1efae158b1bfa1060911845",
+  "installed_target_identities": {
+    "path": "stage5/windows-target-identities.json",
+    "sha256": "7fa5209409ec071efd04e77529a27216d4764f486bc0af4016505356acb06b46"
+  },
+  "profile": {
+    "id": "windows-subjects-opt2",
+    "source": {
+      "path": "subjects.rs",
+      "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+    },
+    "selectors": {
+      "path": "selectors-subjects.json",
+      "sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19"
+    },
+    "crate_name": "abi_subjects",
+    "target": "x86_64-pc-windows-msvc",
+    "edition": "2021",
+    "optimization": 2,
+    "target_cpu": "x86-64",
+    "target_features": "",
+    "panic": "abort",
+    "incremental": false,
+    "codegen_units": 1,
+    "compiler_threads": 1,
+    "extra_flags": []
+  },
+  "observer_source": {
+    "path": "observer_v3.rs",
+    "sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1"
+  },
+  "observer_binary": {
+    "path": "observer-v3",
+    "sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b"
+  }
+}

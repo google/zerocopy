@@ -1,0 +1,9 @@
+{
+  "native_sha_matches_runtime": true,
+  "native_bytes_match_runtime": true,
+  "ELF64_little_endian": true,
+  "native_aarch64_machine183": true,
+  "declared_section_table_within_artifact": true,
+  "inlined_source_copy_exact": true,
+  "prior_native_start_absent": true
+}

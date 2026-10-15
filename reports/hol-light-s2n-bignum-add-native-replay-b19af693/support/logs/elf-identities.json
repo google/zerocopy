@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:11:43.555208+00:00",
+  "classification": "read-only actual two-ELF byte and symbol census",
+  "host_pid": 22327,
+  "returncode": 0,
+  "elapsed_seconds": 0.106493208,
+  "stdout_bytes": 2065,
+  "stdout_sha256": "ee3381d31aff98a6a4def8dd5817f29af91ced2604831688fe7ba722a6f31fa1",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

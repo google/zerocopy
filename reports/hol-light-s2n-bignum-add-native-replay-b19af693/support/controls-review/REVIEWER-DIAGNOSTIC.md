@@ -1,0 +1,20 @@
+# Reviewer helper diagnostic
+
+*Authored by an AI agent acting on joshlf's behalf.*
+
+This records reviewer implementation failures, in execution order, before acceptance of dependent review. These were local offline audit failures, not HOL subject failures. No subject/helper/evidence source was changed; no subject process was rerun. The review-controls helper has not been revised or rerun in response to this diagnostic request. Four reconstructed pre-final sources preserve the exact source corrections; the final source already frozen separately adds further offline checks.
+
+1. audit-00-syntax-error.py.txt: Python rejected the script at line 26 before execution with `SyntaxError: Generator expression must be parenthesized`. The POSITIVE_PACKAGE branch misspelled the slice as `b[len('$POSITIVE_PACKAGE'):]))`. Corrected to `b[len('$POSITIVE_PACKAGE'):])))` in audit-01. Effect: no assertions ran and no audit output was written.
+2. audit-01-task-prefix-error.py.txt: execution stopped with `RuntimeError: unexpected invariant: argv_projection:C8-prepare:2`. Before retry, a separate read-only JSON inspection printed the original and projected C8-prepare argv. The argument was `$TASK/work/execution/hol-replay/control-plan/prepare_log_control.py`; the published counterpart was `$TASK_WORKSPACE/work/execution/hol-replay/control-plan/prepare_log_control.py`. Root cause: the reviewer had not implemented the disclosed TASK_WORKSPACE substitution and used heuristic suffix allowances. The script stopped before writing its final output. Replaced this heuristic block with explicit prefix substitutions and exact argv equality, also adding exact cwd projection checks. This correction introduced an assumed Docker location, examined next.
+3. audit-02-docker-prefix-error.py.txt: execution stopped with `RuntimeError: unexpected invariant: argv_projection:before:0`. Before retry, separate read-only inspection printed the actual original Docker path `$DOCKER_BIN`. Root cause: the reviewer had assumed `/Applications/Docker.app/Contents/Resources/bin/docker`, rather than reading the already preserved command. Changed only that mapping to the observed exact path, producing audit-03. Effect: prior checks were run, but no final output written because the exception occurred before the final write.
+4. audit-03-first-pass.py.txt: completed 1,648 checks and printed `PASS 1648 independent offline invariants`. It also printed C8 JSON key names. A later deliberate audit extension added generated inclusion/completion-order checks, all original-positive inventory entries, and the exact 13-check C8 map; the final already frozen review_controls.py then completed 2,651 checks. This was additional offline data validation, not recovery from a subject failure.
+
+The assertion failures were caused entirely by reviewer placeholder-mapping defects. Both were diagnosed through inspection before retry. The final mapping compares exact argv/cwd expansion using the original private receipts, and all remaining fields/stream hashes are checked independently. Initial failed executions could not have partially written controls-checks.json because its sole write occurs after all assertions. The source snapshots are reconstructed from the preserved tool-call source and ordered edits; they are explicitly marked .txt and are not newly executed. Traceback text below is transcribed verbatim from preserved tool responses; Python displayed the absolute helper path and the offending line as well.
+
+```text
+SyntaxError: Generator expression must be parenthesized
+RuntimeError: unexpected invariant: argv_projection:C8-prepare:2
+RuntimeError: unexpected invariant: argv_projection:before:0
+```
+
+No correction changes the reviewed supplement, the global-axiom disposition, any control classification, a runtime result, or the finite verdict. The original review's historical labels qualification remains bounded. Parent may independently decide whether the fully disclosed review implementation supports dependent acceptance.

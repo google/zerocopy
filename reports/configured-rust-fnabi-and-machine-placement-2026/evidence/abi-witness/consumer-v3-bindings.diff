@@ -1,0 +1,85 @@
+--- e33_data.py
++++ e33_data_v3.py
+@@ -5,7 +5,7 @@
+ """
+ from pathlib import Path
+ import hashlib,json
+-AUTHORITY_SHA256='4af1a36c1ad3cb1fc7d808b06cdbe94abd80c74da62a673eae0879e687a898ac'
++AUTHORITY_SHA256='d9b0b86788625c0d9f23c4662a39708c587fa6a34ea21e8790e5f26532700078'
+ MAX_BYTES=4*1024*1024
+ MAX_DEPTH=64
+ class Reject(ValueError):pass
+@@ -109,7 +109,7 @@
+  for x in v['type_args']+v['extra_args']:require(x in ['u8','u32','u64','i32','f64','*const u8'],'finite type selector')
+  require(v['query']!='instance' or v['extra_args']==[],'instance extras outside selection')
+ def load_request(root,request_id):
+- root=Path(root).resolve();a=parse(read(root/'consumer-authority.json'));require(sha(read(root/'consumer-authority.json'))==AUTHORITY_SHA256,'consumer authority digest')
++ root=Path(root).resolve();a=parse(read(root/'consumer-authority-v3.json'));require(sha(read(root/'consumer-authority-v3.json'))==AUTHORITY_SHA256,'consumer authority digest')
+  require(request_id in a['profile_ids'],'unknown consumer request')
+  mbytes=read(root/'prepared-manifest.json');require(sha(mbytes)==a['preparation_manifest_sha256'],'historical preparation digest')
+  for f in parse(mbytes)['files']:
+--- e33_consumer.py
++++ e33_consumer_v3.py
+@@ -6,8 +6,8 @@
+ """
+ from pathlib import Path
+ import argparse,json,sys
+-import e33_data as D
+-import build_control_v2 as C
++import e33_data_v3 as D
++import build_control_v3 as C
+ ROOT=Path(__file__).resolve().parent
+ class Operational(RuntimeError):pass
+ def file_sha(p):return C.h(Path(p))
+@@ -27,7 +27,7 @@
+  run_path=Path(run_path)
+  D.require(run_path.is_absolute() and run_path.parent.resolve().is_relative_to(ROOT) and not run_path.exists(),'fresh owned run directory')
+  p=request['profile'];source=ROOT/p['source']['path'];output=run_path/'reference.json'
+- args=[str(ROOT/'observer-v2'),str(ROOT/p['selectors']['path']),str(output),'--',str(source),'--sysroot',str(toolchain),'--edition=2021','--crate-type=lib','--crate-name='+p['crate_name'],'--target='+p['target'],'-Copt-level='+str(p['optimization']),'-Cpanic=abort','-Ctarget-cpu='+p['target_cpu'],'-Zthreads=1','-Ccodegen-units=1','--emit=metadata','--out-dir',str(run_path)]
++ args=[str(ROOT/'observer-v3'),str(ROOT/p['selectors']['path']),str(output),'--',str(source),'--sysroot',str(toolchain),'--edition=2021','--crate-type=lib','--crate-name='+p['crate_name'],'--target='+p['target'],'-Copt-level='+str(p['optimization']),'-Cpanic=abort','-Ctarget-cpu='+p['target_cpu'],'-Zthreads=1','-Ccodegen-units=1','--emit=metadata','--out-dir',str(run_path)]
+  env={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','TMPDIR':str(run_path/'tmp'),'LC_ALL':'C','LANG':'C'}
+  result=C.run_owned(run_path,args,env,C.ScopedMonitor(),seconds=60)
+  (run_path/'effective-request.json').write_text(json.dumps(request['effective_request'],indent=2)+'\n')
+--- test_pure_data.py
++++ test_pure_data_v3.py
+@@ -3,10 +3,10 @@
+ """
+ from pathlib import Path
+ import copy,contextlib,hashlib,io,json,sys
+-import e33_data as D
+-import e33_consumer as K
++import e33_data_v3 as D
++import e33_consumer_v3 as K
+ B=Path(__file__).resolve().parent
+-R=B/'pure-data-controls'
++R=B/'pure-data-controls-v3'
+ assert not R.exists();R.mkdir()
+ rows=[];attempted_capture_calls=[]
+ def blocked_capture(*args,**kwargs):
+@@ -70,9 +70,9 @@
+ for kind in ['authority','catalog','source','selectors']:
+  root=R/('substitution-'+kind);root.mkdir()
+  if kind=='authority':
+-  a=json.loads((B/'consumer-authority.json').read_text());a['profile_ids'].append('producer-chosen-root');(root/'consumer-authority.json').write_text(json.dumps(a))
++  a=json.loads((B/'consumer-authority-v3.json').read_text());a['profile_ids'].append('producer-chosen-root');(root/'consumer-authority-v3.json').write_text(json.dumps(a))
+  else:
+-  names=[x['path'] for x in json.loads((B/'prepared-manifest.json').read_text())['files']]+['prepared-manifest.json','consumer-authority.json']
++  names=[x['path'] for x in json.loads((B/'prepared-manifest.json').read_text())['files']]+['prepared-manifest.json','consumer-authority-v3.json']
+   for name in names:(root/name).write_bytes((B/name).read_bytes())
+   target={'catalog':'requests.json','source':'subjects.rs','selectors':'selectors-subjects.json'}[kind]
+   (root/target).write_bytes((root/target).read_bytes()+b'\n ')
+@@ -88,11 +88,11 @@
+ result('synthetic-nonvariadic-extra-hidden-shape','pass',lambda:D.compare_data(data,data,r),'synthetic grammar branch only')
+ old=sys.argv
+ try:
+- sys.argv=['e33_consumer.py','preflight','--toolchain','unused','--profile','host-subjects-opt0','--producer-request','bad']
++ sys.argv=['e33_consumer_v3.py','preflight','--toolchain','unused','--profile','host-subjects-opt0','--producer-request','bad']
+  with contextlib.redirect_stderr(io.StringIO()):result('unknown-CLI-flag','CLI-reject',K.main,'CLI grammar; no observer call')
+- sys.argv=['e33_consumer.py','preflight','--toolchain','unused','--profile','host-subjects-opt0','--pro','bad']
++ sys.argv=['e33_consumer_v3.py','preflight','--toolchain','unused','--profile','host-subjects-opt0','--pro','bad']
+  with contextlib.redirect_stderr(io.StringIO()):result('abbreviated-CLI-flag','CLI-reject',K.main,'CLI grammar; no observer call')
+ finally:sys.argv=old
+ assert not attempted_capture_calls
+-summary={'status':'PASS','case_count':len(rows),'outcomes':{x:sum(row['observed']==x for row in rows) for x in ['pass','reject','CLI-reject']},'observer_or_compiler_invocations':0,'meaning':'Synthetic schema/comparison and immutable preflight controls only. No invented ABI data was claimed as actual captured or accepted compiler evidence. Fresh-capture consumer mode remains unexecuted.','sources_sha256':{n:D.sha((B/n).read_bytes()) for n in ['e33_data.py','e33_consumer.py','test_pure_data.py']},'results':rows}
++summary={'status':'PASS','case_count':len(rows),'outcomes':{x:sum(row['observed']==x for row in rows) for x in ['pass','reject','CLI-reject']},'observer_or_compiler_invocations':0,'meaning':'Synthetic schema/comparison and immutable preflight controls only. No invented ABI data was claimed as actual captured or accepted compiler evidence. Fresh-capture consumer mode remains unexecuted.','sources_sha256':{n:D.sha((B/n).read_bytes()) for n in ['e33_data_v3.py','e33_consumer_v3.py','test_pure_data_v3.py']},'results':rows}
+ (R/'results.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({k:v for k,v in summary.items() if k!='results'},indent=2))

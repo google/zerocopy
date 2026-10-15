@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "stdin_file": "inline_census_reader.py",
+  "classification": "read-only actual HOL inliner census and copied-audit identity gate"
+}

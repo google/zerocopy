@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "hol-light",
+    "assembly/s2n-bignum",
+    "proof/replay",
+    "proof/axioms",
+    "assembly/byte-binding"
+  ],
+  "subjects": [
+    {
+      "name": "HOL Light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "b19af6934759eed622d7aca25092367f81656eee"
+      }
+    },
+    {
+      "name": "s2n-bignum complete x86 bignum_add proof",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+        "path": "x86/proofs/bignum_add.ml"
+      }
+    },
+    {
+      "name": "Immutable opam metadata",
+      "identity": {
+        "repository": "ocaml/opam-repository",
+        "revision": "56aefa37456aa263913289a4174daca01c4b9339"
+      }
+    },
+    {
+      "name": "Owned observation entry",
+      "identity": {
+        "artifact": "support/audit/AnnealSelectedAudit.ml",
+        "sha256": "db978dac1ae14501aa610e4c2ccccaa5e1e6697f0439267a18329316c9a2a700"
+      }
+    },
+    {
+      "name": "Actual native OCaml proof program",
+      "identity": {
+        "artifact": "support/artifacts/selected.native",
+        "sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8",
+        "architecture": "AArch64 Linux"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "meaning": "Harmless owned Python child only; injected monitor denial retained PID/status, terminated and reaped child. No compiler or observer run.",
+  "controller_sha256": "9aa830ca10fd4f50bd318cc338fb197881bb96dc379a36da4fd89a37e7d45594",
+  "before_spawned": false,
+  "after_PID": 8496,
+  "after_exit_code": -15,
+  "child_reaped": true
+}

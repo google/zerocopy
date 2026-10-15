@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "${WORKSPACE}/work/execution/abi-witness/observer-v3",
+    "${WORKSPACE}/work/execution/abi-witness/selectors-subjects.json",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/runs/13-wrong-indirect-on-stack/reference.json",
+    "--",
+    "${WORKSPACE}/work/execution/abi-witness/subjects.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "--crate-type=lib",
+    "--crate-name=abi_subjects",
+    "--target=aarch64-apple-darwin",
+    "-Copt-level=2",
+    "-Cpanic=abort",
+    "-Ctarget-cpu=apple-m1",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "--emit=metadata",
+    "--out-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/runs/13-wrong-indirect-on-stack"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/stage4/actual-controls/runs/13-wrong-indirect-on-stack/tmp",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "cwd": "${WORKSPACE}/work/execution/abi-witness",
+  "controller_sha256": "22714dad1a3cae8913c4cf4a334934f6a8901097e8df975f1bc23c74f8d62bed"
+}

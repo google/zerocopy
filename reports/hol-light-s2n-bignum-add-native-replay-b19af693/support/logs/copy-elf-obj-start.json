@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-sources/s2n-bignum/x86/generic/bignum_add.obj",
+    "$TASK/work/execution/hol-replay/artifacts/bignum_add.obj"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:22:23.591291+00:00",
+  "classification": "narrow read-only copy of exact authorized task evidence into own host scratch",
+  "host_pid": 36028
+}

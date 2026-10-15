@@ -1,0 +1,18 @@
+--- static-review-before-origin-map.py
++++ static_review.py
+@@ -247,7 +247,14 @@
+     for row in projection["projected_files"]:
+         rel = row["path"]
+         require(rel.startswith("support/"), "Projection origin domain")
+-        original = RAW / rel[len("support/"):]
++        # These two installation/module receipts were imported from the parent
++        # runtime, not produced in the worker's local log root. Exact origins
++        # were diagnosed before this mapping correction; hash checks stay exact.
++        environment_origins = {
++            "support/environment/hol-module-start.json": TASK / "work/execution/cross-foundation-runtime/hol-module-start.json",
++            "support/environment/hol-install-start.json": TASK / "work/execution/cross-foundation-runtime/hol-install-start.json",
++        }
++        original = environment_origins.get(rel, RAW / rel[len("support/"):])
+         require(original.is_file(), "Missing raw projection origin: " + rel)
+         raw = original.read_bytes()
+         public = raw

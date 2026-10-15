@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "exec",
+    "--switch=hol54",
+    "--",
+    "timeout",
+    "--signal=KILL",
+    "300",
+    "make",
+    "-C",
+    "/home/opam/anneal-cross-sources/s2n-bignum/x86",
+    "-j1",
+    "generic/bignum_add.o",
+    "generic/bignum_add.obj"
+  ],
+  "classification": "authorized two original object targets only; 300s KILL stop bound"
+}
