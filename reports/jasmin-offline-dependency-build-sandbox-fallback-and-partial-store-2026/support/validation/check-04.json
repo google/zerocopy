@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "support/check.py"
+  ],
+  "source_sha256": "94ef02871d0269a885d33d9f509e600cd898d3f4e78973624a814c34f1983359",
+  "status": 0,
+  "seconds": 0.04647783400000001,
+  "stdout_sha256": "81e3d5d1c76bb181026d98d5e5bed1bdbfa7444a4279c79c33fd50277cd1858d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

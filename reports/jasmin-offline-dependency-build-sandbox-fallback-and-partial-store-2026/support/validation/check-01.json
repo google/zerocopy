@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "python3",
+    "support/check.py"
+  ],
+  "status": 0,
+  "seconds": 0.046447709000000004,
+  "stdout_sha256": "81e3d5d1c76bb181026d98d5e5bed1bdbfa7444a4279c79c33fd50277cd1858d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

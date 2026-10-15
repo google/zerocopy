@@ -1,0 +1,31 @@
+{
+  "snapshots": [
+    {
+      "name": "jasmin-home.tar",
+      "bytes": 6656,
+      "sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856"
+    },
+    {
+      "name": "jasmin-store-db.tar",
+      "bytes": 10462208,
+      "sha256": "7e3667920dc4efa75bc012a4aa0884da85bb927465e10ef2880a2e0360555034"
+    }
+  ],
+  "other_inputs": [
+    {
+      "name": "parent/jasmin-stopped-readback-20261015/identity-gate.json",
+      "bytes": 1638,
+      "sha256": "d495df59ecff85f29cb505ca950deb10f50826055f294f29d1ef5fd8585abfcc"
+    },
+    {
+      "name": "parent/jasmin-stopped-readback-20261015/copies.json",
+      "bytes": 1099,
+      "sha256": "1a21e5468e91d656b1e7457dd51a7f58377bfe53fffa6fa9dcab816101acbbf0"
+    },
+    {
+      "name": "jasmin-execution-plan/offline-home-analysis/target-18-attrs.json",
+      "bytes": 14117,
+      "sha256": "989c4945af020fc2e43247c1827bec463a63ae8eb3a74d74e994abb66b209e0a"
+    }
+  ]
+}

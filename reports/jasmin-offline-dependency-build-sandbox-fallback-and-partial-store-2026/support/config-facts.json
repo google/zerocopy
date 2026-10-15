@@ -1,0 +1,15 @@
+{
+  "sandbox": true,
+  "sandbox-fallback": true,
+  "external-builders": [],
+  "build-users-group": "",
+  "post-build-hook": "",
+  "max-jobs": 1,
+  "cores": 2,
+  "system-features": [
+    "benchmark",
+    "big-parallel",
+    "nixos-test",
+    "uid-range"
+  ]
+}

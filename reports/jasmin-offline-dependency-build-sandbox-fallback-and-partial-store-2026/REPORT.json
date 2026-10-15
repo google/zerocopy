@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "jasmin",
+    "nix/sandbox",
+    "nix/build-failure",
+    "nix/reproducibility",
+    "proof/toolchain-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Jasmin pinned dependency environment",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "nixpkgs_revision": "652efddd59a21783edff64959252ec1cfce09041"
+      }
+    },
+    {
+      "name": "Nix native AArch64 runtime used for failed dependency build",
+      "identity": {
+        "version": "2.34.8",
+        "platform": "aarch64-linux",
+        "platform_manifest_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "config_sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87",
+        "executable_sha256": "20d14cac461d9a879b9058ed1e5b5ce8112afb05dcee8f33ece9181f7e265842"
+      }
+    },
+    {
+      "name": "Nix release implementation inspected for diagnosis",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+        "source_manifest_sha256": "4da635ccb9c56cce98617d2949f2d537314a76da7d84e467ba5508ddb8d12a7e"
+      }
+    },
+    {
+      "name": "Failed offline dependency invocation",
+      "identity": {
+        "artifact": "build-phase.json",
+        "sha256": "7beab87dc465f049bfc2960ff6496279314992a106b4c344f279abdea41b69ef",
+        "stderr_sha256": "7b4d0775bfc9da53493d933581b3fe2c8c315bf59fb9aaecc2e6e8d00ba25d10"
+      }
+    },
+    {
+      "name": "Stopped HOME snapshot",
+      "identity": {
+        "artifact": "jasmin-home.tar",
+        "sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856"
+      }
+    },
+    {
+      "name": "Stopped Nix store database snapshot, payload omitted",
+      "identity": {
+        "artifact": "jasmin-store-db.tar",
+        "sha256": "7e3667920dc4efa75bc012a4aa0884da85bb927465e10ef2880a2e0360555034"
+      }
+    },
+    {
+      "name": "Registered EasyCrypt output",
+      "identity": {
+        "repository": "easycrypt/easycrypt",
+        "release": "r2026.09",
+        "normalized_source_sha256": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+        "derivation": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+        "recorded_output_nar_hash": "sha256:5da60afaf1c45459837decd6ce3675be732c45f2d750013a144e0ffac5f50f57"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

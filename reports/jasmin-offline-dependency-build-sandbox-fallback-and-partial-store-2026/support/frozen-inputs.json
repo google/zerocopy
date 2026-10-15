@@ -1,0 +1,6 @@
+{
+  "offline_home_analysis_manifest_sha256": "27bbffd856799311fd58abf9e83e9b48946d12e90a16205f9b6b4c47b21c3bad",
+  "stopped_home_store_manifest_sha256": "f3a02c9d58876532c0014e031823569b2446789ac2c592c5ce029038d39309ba",
+  "build_phase_sha256": "7beab87dc465f049bfc2960ff6496279314992a106b4c344f279abdea41b69ef",
+  "prebuild_report_commit": "e616e78a38a318554aa58a9508f04086c1828671"
+}

@@ -1,0 +1,18 @@
+{
+  "omissions": [
+    {
+      "artifact": "jasmin-store-db.tar",
+      "bytes": 10462208,
+      "sha256": "7e3667920dc4efa75bc012a4aa0884da85bb927465e10ef2880a2e0360555034",
+      "role": "stopped SQLite snapshot; exact member metadata/hashes and SQL results retained, full payload omitted for size and privacy minimization"
+    },
+    {
+      "artifact": "snapshot-db/db.sqlite + db.sqlite-shm + db.sqlite-wal + schema",
+      "role": "selected extracted database files omitted; their exact hashes/sizes are in archive-censuses.json; WAL empty"
+    },
+    {
+      "artifact": "OCI exports, NAR/package binaries, full upstream trees and redundant copied build receipts",
+      "role": "not necessary for diagnosis; prebuild report identifies upstream/runtime/input subject; original diagnosis evidence/ is byte-identical to build-receipts archive"
+    }
+  ]
+}

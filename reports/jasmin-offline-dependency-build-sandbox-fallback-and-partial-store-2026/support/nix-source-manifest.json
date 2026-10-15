@@ -1,0 +1,44 @@
+[
+  {
+    "path": "src/libstore/unix/build/derivation-builder.cc",
+    "sha": "fe17d2a5c9abfa44f62b528ceb8e5e2d33827aca",
+    "bytes": 77045,
+    "sha256": "20e6b09df2b4f0b31b7bd4dd4a0f8041d955a7c66ef1852476bf82503cbcb25b"
+  },
+  {
+    "path": "src/libstore/unix/build/linux-derivation-builder.cc",
+    "sha": "476baabe24ad45302c10e1157794fdda4fae7bf9",
+    "bytes": 33836,
+    "sha256": "358bf4288f86e9b0475734c89a288870ca734d012b5143589e36ce62e7b9c888"
+  },
+  {
+    "path": "src/libstore/unix/build/chroot-derivation-builder.cc",
+    "sha": "eb95c3aeb2fe392fe75dda9c3b253ea9944cf046",
+    "bytes": 7803,
+    "sha256": "449de15272e6a12c13fbcd2076454e6902af0ab4cd736c83c494a36b0c915441"
+  },
+  {
+    "path": "src/libstore/derivation-options.cc",
+    "sha": "5208440c7d943503440051e372b524a90555a02c",
+    "bytes": 27210,
+    "sha256": "6fce1f7cbf1dcca841c5fedddd88ae7ee73136d33ac4cb687e867cc90cdf5623"
+  },
+  {
+    "path": "src/libutil/linux/linux-namespaces.cc",
+    "sha": "83a800e4729eddd389020d100b3f91e929540948",
+    "bytes": 4260,
+    "sha256": "f21dc2ee6f4313a9661d478aec7d301aa12711d7f98aa0bea123af19da4134ea"
+  },
+  {
+    "path": "src/libstore/build/derivation-building-goal.cc",
+    "sha": "60ca5492c168238cc1e5c83df4c5380e1998a4ab",
+    "bytes": 51020,
+    "sha256": "c51b3cd0e9546f332f284b024989acade81f59da719c212b6af884602cff49ff"
+  },
+  {
+    "path": "src/libstore/include/nix/store/derivation-options.hh",
+    "sha": "4e6ec22f9ccd131540f2afe921246fcf4c981b05",
+    "bytes": 7225,
+    "sha256": "fcda7141b044ef80da2ed4a33a02792bab64f20b69559aa7dc16a0a27bd2ada2"
+  }
+]

@@ -1,0 +1,401 @@
+[
+  {
+    "drv": "/nix/store/fs3q1hxa80yp14xfw4rr7rak0xzxl9i4-ocaml4.14.4-elpi-2.0.7.drv",
+    "name": "ocaml4.14.4-elpi-2.0.7",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/747wp1kcqaiymqdp40mb4w4j5yc36k6n-elpi-2.0.7.tbz",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/h2xp9vk3q48w88r4jj06yyr7vd0dpw35-rocq-core9.0-elpi-2.5.2.drv",
+    "name": "rocq-core9.0-elpi-2.5.2",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "kkzb6af498dhw88sdgc7y3mb40wy39k5-rocq-core9.0-elpi-2.5.2"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/r6pilabmpgl4lwp1qisgfn7ql0121zg8-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/knfyj86y2pl21chrknr496n2pwpshq87-rocq-core9.0-hierarchy-builder-1.9.1.drv",
+    "name": "rocq-core9.0-hierarchy-builder-1.9.1",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "d6iw084h4ippi1nhh5xv3acf6w11aakw-rocq-core9.0-hierarchy-builder-1.9.1"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/z7fig4nqqa670j9wnwq9nggalr79lsfz-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/6rzgdnd3g59dh5kjwslaiq9mjgxfsmq7-coq9.0-mathcomp-boot-2.4.0.drv",
+    "name": "coq9.0-mathcomp-boot-2.4.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "4w63n2gjvfya8gl0bdam91ab6rnbd4f5-coq9.0-mathcomp-boot-2.4.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/2z6kh1grqzv5c36mj3fvk9dbx47afrmm-coq9.0-mathcomp-fingroup-2.4.0.drv",
+    "name": "coq9.0-mathcomp-fingroup-2.4.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "v0cw5qw110z623i7pmd1l09hvfpj41zl-coq9.0-mathcomp-fingroup-2.4.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/ajrzwqnskdnfmmlms6czafdbbarzmg4w-coq9.0-mathcomp-order-2.4.0.drv",
+    "name": "coq9.0-mathcomp-order-2.4.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "vcnz700kvyv5vnvhwq9y0cmvvknkdih7-coq9.0-mathcomp-order-2.4.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/49ybahayrjykab0j3kjfkbxfzd3j711m-coq9.0-mathcomp-algebra-2.4.0.drv",
+    "name": "coq9.0-mathcomp-algebra-2.4.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "71ginv15dqw700k5s0wn8gf11b4gs5l7-coq9.0-mathcomp-algebra-2.4.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/6g0jvi4pwd2nqbkm60qkj9sa87gcr41c-rocq-core9.0-stdlib-9.0.0.drv",
+    "name": "rocq-core9.0-stdlib-9.0.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/l4qajvqxgpki1cl2gvvgmp05h32k2v1q-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/90fa443xbknqmm99fcjiq5wd37g8miyj-coq9.0-mathcomp-ssreflect-2.4.0.drv",
+    "name": "coq9.0-mathcomp-ssreflect-2.4.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "sq4ng99s0j3czph9xm9a49vfxdlpl53v-coq9.0-mathcomp-ssreflect-2.4.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/5g5c0870s7bda98bad5dyq23q11qs6ak-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/3fzp0yhf84a013kdgdb8z396s6yygwxb-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae.drv",
+    "name": "coq9.0-mathcomp2.4-word-3.5-git-86ed49ae",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "f0j45rkg327yrv5xdw0xa8r0abl1x52x-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/57v55i784s4d94g1asrbpq8qvl379z6w-coq9.0-coq-ext-lib-0.13.1.drv",
+    "name": "coq9.0-coq-ext-lib-0.13.1",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "kdsvnwjp3iyfz2s7m8qaks6ksh7w1mbm-coq9.0-coq-ext-lib-0.13.1"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/hm1z75gy58j9dkvxq1nz0mh7zngpmznp-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/8v31lkzghdy483b31xw6nrg458b4y3zx-setupHook.sh.drv",
+    "name": "setupHook.sh",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": "1",
+      "allowSubstitutes": "",
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": null,
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+    "name": "easycrypt-2026.09",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/1h07ffv5ha497wli56y910j8bsfi59cy-source",
+    "log_status": "builder executed through fixup; registration unobserved"
+  },
+  {
+    "drv": "/nix/store/ggvw9v47w53p9c8xq9ijqc8ql4fg6gj7-ocaml4.14.4-camlidl-1.12.drv",
+    "name": "ocaml4.14.4-camlidl-1.12",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "cm942qr65k803vy00jym6k810xb5rzh2-ocaml4.14.4-camlidl-1.12"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/an1ca64br2yd5xhqclj6ya3qb8xwqil8-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/znry7fvjp9lgkzs81258hydcvxm74f4g-ocaml4.14.4-mlgmpidl-1.3.0.drv",
+    "name": "ocaml4.14.4-mlgmpidl-1.3.0",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "k858w21zwd3sa8nsp3wvknad73hi2zik-ocaml4.14.4-mlgmpidl-1.3.0"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/kyp13hx0gxq28r84raif8c955ypm6qp1-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+    "name": "ocaml4.14.4-apron-0.9.15",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "dev": {
+        "path": "80afbqa0gr8h9n71jl7j7prlg4wwifpg-ocaml4.14.4-apron-0.9.15-dev"
+      },
+      "out": {
+        "path": "r5xa6cr20nsizra4h8hswbcan4i3r5cn-ocaml4.14.4-apron-0.9.15"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/kl4v6az2ljr1n8fa0kx6gi3n2i1b2lb3-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/yyv2cf39abkqs7mzygvslyr8glyvq8rj-coq9.0-paco-4.2.3.drv",
+    "name": "coq9.0-paco-4.2.3",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "vl17mw9sz43gnc7836nzq0cmhaaww8bn-coq9.0-paco-4.2.3"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/cdcq7bgzyf7043hl9z477q8faw1sy5n9-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  },
+  {
+    "drv": "/nix/store/qxmngacfgm5r48na2mgv1qdv023pfmpw-coq9.0-InteractionTrees-5.2.1.drv",
+    "name": "coq9.0-InteractionTrees-5.2.1",
+    "builder": "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9/bin/bash",
+    "system": "aarch64-linux",
+    "outputs": {
+      "out": {
+        "path": "9xkpcgw45njnh24vlrsb2y3i49bnqa5p-coq9.0-InteractionTrees-5.2.1"
+      }
+    },
+    "attrs": {
+      "__noChroot": null,
+      "preferLocalBuild": null,
+      "allowSubstitutes": null,
+      "HOME": null,
+      "requiredSystemFeatures": null,
+      "doCheck": "",
+      "doInstallCheck": ""
+    },
+    "source": "/nix/store/b6s2qa23lgkypd2xy90avq2zxq9c439x-source",
+    "log_status": "no builder-start line; one unidentified start rejected before log open; individual validity unknown"
+  }
+]
