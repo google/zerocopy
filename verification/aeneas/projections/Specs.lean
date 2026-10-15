@@ -11,6 +11,7 @@ public import Zerocopy.Funs
 public import SpecPrelude
 public import SpecsSyntax
 public import Models
+public import Arithmetic
 public import TraitLaws
 @[expose] public section
 
@@ -200,11 +201,25 @@ spec write_be_word_prefix_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.write_be_word_prefix_spec for Zerocopy.util.bytewrite.be_word_prefix with 2
 
+check_model_inputs Zerocopy.util.checks.check_arithmetic with 0 type parameters
+aeneas_spec_begin
+spec arithmetic_checks_spec
+  for @Zerocopy.util.checks.check_arithmetic with 0 type parameters
+  ensures _ => True
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.arithmetic_checks_spec for Zerocopy.util.checks.check_arithmetic with 2
+
 check_model_inputs Zerocopy.util.padding_needed_for with 0 type parameters
 aeneas_spec_begin
 spec padding_lt_alignment
   for @Zerocopy.util.padding_needed_for with 0 type parameters
-  ensures p => (p : Nat) < (align : Nat)
+  requires h : (align : Nat).isPowerOfTwo
+  ensures p => (p : Nat) < (align : Nat) ∧
+    let L : Nat := len
+    let A : Nat := align
+    let P : Nat := p
+    P = (A - L % A) % A ∧ (L + P) % A = 0 ∧
+      (∀ q : Nat, (L + q) % A = 0 → P ≤ q) ∧ (P = 0 ↔ L % A = 0)
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.padding_lt_alignment for Zerocopy.util.padding_needed_for with 2
 
@@ -213,7 +228,12 @@ aeneas_spec_begin
 spec round_down_spec
   for @Zerocopy.util.round_down_to_next_multiple_of_alignment with 0 type parameters
   requires h : (align : Nat).isPowerOfTwo
-  ensures m => (m : Nat) ≤ (n : Nat) ∧ (m : Nat) % (align : Nat) = 0
+  ensures m => (m : Nat) ≤ (n : Nat) ∧
+    let N : Nat := n
+    let A : Nat := align
+    let M : Nat := m
+    M = N - N % A ∧ M % A = 0 ∧ N < M + A ∧
+      (∀ q : Nat, q ≤ N → q % A = 0 → q ≤ M)
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.round_down_spec for Zerocopy.util.round_down_to_next_multiple_of_alignment with 2
 
@@ -221,7 +241,8 @@ check_model_inputs Zerocopy.util.max with 0 type parameters
 aeneas_spec_begin
 spec max_spec
   for @Zerocopy.util.max with 0 type parameters
-  ensures r => (r : Nat) = Nat.max (a : Nat) (b : Nat)
+  ensures r => (r : Nat) = max (a : Nat) (b : Nat) ∧ (r = a ∨ r = b) ∧
+    (a : Nat) ≤ (r : Nat) ∧ (b : Nat) ≤ (r : Nat)
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.max_spec for Zerocopy.util.max with 2
 
@@ -229,7 +250,8 @@ check_model_inputs Zerocopy.util.min with 0 type parameters
 aeneas_spec_begin
 spec min_spec
   for @Zerocopy.util.min with 0 type parameters
-  ensures r => (r : Nat) = Nat.min (a : Nat) (b : Nat)
+  ensures r => (r : Nat) = min (a : Nat) (b : Nat) ∧ (r = a ∨ r = b) ∧
+    (r : Nat) ≤ (a : Nat) ∧ (r : Nat) ≤ (b : Nat)
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.min_spec for Zerocopy.util.min with 2
 
