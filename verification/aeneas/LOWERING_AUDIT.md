@@ -559,3 +559,10 @@ Admission continues to reject raw-pointer carriers, including when nested under
 references, slices, and arrays. The regression inputs use actual native type
 shapes, rather than malformed pointer syntax. No local zerocopy pointer body is
 made opaque to substitute an assumed geometry theorem for its implementation.
+
+`IndexedReferent.StorageView` independently supports content implications at an
+explicit source/destination metadata pair. Both decoders come from their exact
+retained providers. Composition uses the same intermediate view and metadata;
+equal byte widths cannot substitute a different zero-sized slice count. These
+laws do not change the existing native `TransmuteFrom` contract, choose cast
+metadata, or prove access, provenance, liveness, aliasing, or a Rust ABI identity.
